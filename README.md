@@ -4,6 +4,9 @@ Adds a menu with more options for the game:
 * Tune the volume of in game sounds like wind
 * Toggle certain particles like snow
 
+![Events](doc/img/events.png)
+![Sounds](doc/img/sounds.png)
+
 # Getting started
 
 [Maven](https://maven.apache.org/) is required to compile, package and install the mod.
