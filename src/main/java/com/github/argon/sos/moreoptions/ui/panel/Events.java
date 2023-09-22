@@ -17,8 +17,23 @@ public class Events extends GuiSection {
     private final Map<String, Checkbox> checkboxes = new HashMap<>();
 
     public Events(MoreOptionsConfig.Events eventConfig) {
-        CheckboxBuilder checkboxBuilder = new CheckboxBuilder();
+        GuiSection settlement = settlementCheckboxes(eventConfig);
+        GuiSection world = worldCheckboxes(eventConfig);
 
+        GuiSection settlementSection = new GuiSection();
+        settlementSection.addDown(0, new GHeader("Settlement"));
+        settlementSection.addDown(10, settlement);
+
+        GuiSection worldSection = new GuiSection();
+        worldSection.addDown(0, new GHeader("World"));
+        worldSection.addDown(10, world);
+
+        addRight(0, settlementSection);
+        addRight(0, new VerticalLine(101, settlementSection.body().height(), 1));
+        addRight(0, worldSection);
+    }
+
+    private GuiSection settlementCheckboxes(MoreOptionsConfig.Events eventConfig) {
         Map<String, CheckboxBuilder.CheckboxDescription> settlementCheckboxes = new TreeMap<>();
         settlementCheckboxes.put("disease", CheckboxBuilder.CheckboxDescription.builder()
             .title("Diseases")
@@ -85,9 +100,15 @@ public class Events extends GuiSection {
             .enabled(eventConfig.isAccident())
             .description("TODO")
             .build());
+
+        CheckboxBuilder checkboxBuilder = new CheckboxBuilder();
         GuiSection settlement = checkboxBuilder.build(settlementCheckboxes);
         checkboxes.putAll(checkboxBuilder.getCheckboxes());
 
+        return settlement;
+    }
+
+    private GuiSection worldCheckboxes(MoreOptionsConfig.Events eventConfig) {
         Map<String, CheckboxBuilder.CheckboxDescription> worldCheckboxes = new TreeMap<>();
         worldCheckboxes.put("worldFactionExpand", CheckboxBuilder.CheckboxDescription.builder()
             .title("Faction Expand")
@@ -134,19 +155,11 @@ public class Events extends GuiSection {
             .enabled(eventConfig.isWorldPlague())
             .description("TODO")
             .build());
+
+        CheckboxBuilder checkboxBuilder = new CheckboxBuilder();
         GuiSection world = checkboxBuilder.build(worldCheckboxes);
         checkboxes.putAll(checkboxBuilder.getCheckboxes());
 
-        GuiSection settlementSection = new GuiSection();
-        settlementSection.addDown(0, new GHeader("Settlement"));
-        settlementSection.addDown(10, settlement);
-
-        GuiSection worldSection = new GuiSection();
-        worldSection.addDown(0, new GHeader("World"));
-        worldSection.addDown(10, world);
-
-        addRight(0, settlementSection);
-        addRight(0, new VerticalLine(101, settlementSection.body().height(), 1));
-        addRight(0, worldSection);
+        return world;
     }
 }

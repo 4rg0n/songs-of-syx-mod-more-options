@@ -15,8 +15,18 @@ public class Sounds extends GuiSection {
     @Getter
     private final Map<String, Slider> sliders = new HashMap<>();
     public Sounds(MoreOptionsConfig.AmbienceSounds soundsConfig) {
-        Map<String, SliderBuilder.SliderDescription> ambienceSoundCheckboxes = new TreeMap<>();
-        ambienceSoundCheckboxes.put("wind", SliderBuilder.SliderDescription.builder()
+        GuiSection sliderSection = ambienceSoundSliders(soundsConfig);
+
+        GuiSection section = new GuiSection();
+        section.addDown(0, new GHeader("Ambience Sounds"));
+        section.addDown(10, sliderSection);
+
+        addDownC(0, section);
+    }
+
+    private GuiSection ambienceSoundSliders(MoreOptionsConfig.AmbienceSounds soundsConfig) {
+        Map<String, SliderBuilder.SliderDescription> ambienceSoundSliders = new TreeMap<>();
+        ambienceSoundSliders.put("wind", SliderBuilder.SliderDescription.builder()
             .title("Wind")
             .min(0)
             .max(100)
@@ -25,7 +35,7 @@ public class Sounds extends GuiSection {
             .value(soundsConfig.getNature())
             .description("TODO")
             .build());
-        ambienceSoundCheckboxes.put("windTrees", SliderBuilder.SliderDescription.builder()
+        ambienceSoundSliders.put("windTrees", SliderBuilder.SliderDescription.builder()
             .title("Wind Trees")
             .min(0)
             .max(100)
@@ -34,7 +44,7 @@ public class Sounds extends GuiSection {
             .value(soundsConfig.getWindTrees())
             .description("TODO")
             .build());
-        ambienceSoundCheckboxes.put("windHowl", SliderBuilder.SliderDescription.builder()
+        ambienceSoundSliders.put("windHowl", SliderBuilder.SliderDescription.builder()
             .title("Wind Howl")
             .min(0)
             .max(100)
@@ -43,7 +53,7 @@ public class Sounds extends GuiSection {
             .value(soundsConfig.getWindHowl())
             .description("TODO")
             .build());
-        ambienceSoundCheckboxes.put("nature", SliderBuilder.SliderDescription.builder()
+        ambienceSoundSliders.put("nature", SliderBuilder.SliderDescription.builder()
             .title("Nature")
             .min(0)
             .max(100)
@@ -52,7 +62,7 @@ public class Sounds extends GuiSection {
             .value(soundsConfig.getNature())
             .description("TODO")
             .build());
-        ambienceSoundCheckboxes.put("night", SliderBuilder.SliderDescription.builder()
+        ambienceSoundSliders.put("night", SliderBuilder.SliderDescription.builder()
             .title("Night")
             .min(0)
             .max(100)
@@ -61,7 +71,7 @@ public class Sounds extends GuiSection {
             .value(soundsConfig.getNight())
             .description("TODO")
             .build());
-        ambienceSoundCheckboxes.put("water", SliderBuilder.SliderDescription.builder()
+        ambienceSoundSliders.put("water", SliderBuilder.SliderDescription.builder()
             .title("Water")
             .min(0)
             .max(100)
@@ -70,7 +80,7 @@ public class Sounds extends GuiSection {
             .value(soundsConfig.getWater())
             .description("TODO")
             .build());
-        ambienceSoundCheckboxes.put("rain", SliderBuilder.SliderDescription.builder()
+        ambienceSoundSliders.put("rain", SliderBuilder.SliderDescription.builder()
             .title("Rain")
             .min(0)
             .max(100)
@@ -79,7 +89,7 @@ public class Sounds extends GuiSection {
             .value(soundsConfig.getNature())
             .description("TODO")
             .build());
-        ambienceSoundCheckboxes.put("thunder", SliderBuilder.SliderDescription.builder()
+        ambienceSoundSliders.put("thunder", SliderBuilder.SliderDescription.builder()
             .title("Nature")
             .min(0)
             .max(100)
@@ -90,13 +100,8 @@ public class Sounds extends GuiSection {
             .build());
 
         SliderBuilder sliderBuilder = new SliderBuilder();
-        GuiSection sliderSection = sliderBuilder.build(ambienceSoundCheckboxes);
+        GuiSection sliderSection = sliderBuilder.build(ambienceSoundSliders);
         sliders.putAll(sliderBuilder.getSliders());
-
-        GuiSection section = new GuiSection();
-        section.addDown(0, new GHeader("Ambience Sounds"));
-        section.addDown(10, sliderSection);
-
-        addDownC(0, section);
+        return sliderSection;
     }
 }

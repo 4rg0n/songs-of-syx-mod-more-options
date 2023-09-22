@@ -11,26 +11,42 @@ public class MoreOptionsConfig {
 
     private AmbienceSounds ambienceSounds;
 
-    private Particles particles;
+    private Weather weather;
 
     @Data
     @Builder
-    public static class Particles {
+    public static class Weather {
         @Builder.Default
-        private boolean snowRain = true;
+        private int rain = 100;
+        @Builder.Default
+        private int snow = 100;
+        @Builder.Default
+        private int ice = 100;
+        @Builder.Default
+        private int clouds = 100;
+        @Builder.Default
+        private int thunder = 100;
     }
 
     @Data
     @Builder
     public static class AmbienceSounds {
-        private int wind;
-        private int windTrees;
-        private int windHowl;
-        private int nature;
-        private int night;
-        private int water;
-        private int rain;
-        private int thunder;
+        @Builder.Default
+        private int wind = 100;
+        @Builder.Default
+        private int windTrees = 100;
+        @Builder.Default
+        private int windHowl = 100;
+        @Builder.Default
+        private int nature = 100;
+        @Builder.Default
+        private int night = 100;
+        @Builder.Default
+        private int water = 100;
+        @Builder.Default
+        private int rain = 100;
+        @Builder.Default
+        private int thunder = 100;
     }
 
     @Data

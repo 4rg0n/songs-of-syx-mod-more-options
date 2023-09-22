@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.ui.panel.Events;
-import com.github.argon.sos.moreoptions.ui.panel.Particles;
+import com.github.argon.sos.moreoptions.ui.panel.Weather;
 import com.github.argon.sos.moreoptions.ui.panel.Sounds;
 import init.C;
 import snake2d.MButt;
@@ -43,11 +43,11 @@ public class MoreOptionsModal extends Interrupter {
 
         Events events = new Events(config.getEvents());
         Sounds sounds = new Sounds(config.getAmbienceSounds());
-        Particles particles = new Particles();
+        Weather weather = new Weather(config.getWeather());
 
         panels.put("Events", events);
         panels.put("Sounds", sounds);
-        panels.put("Particles", particles);
+        panels.put("Weather", weather);
 
         GuiSection header = header();
         header.body().moveY1(pan.getInnerArea().y1());
@@ -64,8 +64,6 @@ public class MoreOptionsModal extends Interrupter {
     public void activate() {
         show(VIEW.inters().manager);
     }
-
-
 
     private GuiSection header() {
         GuiSection section = new GuiSection();
@@ -84,6 +82,12 @@ public class MoreOptionsModal extends Interrupter {
 
             }.setDim(136, 32));
         });
+
+        return section;
+    }
+
+    private GuiSection footer() {
+        GuiSection section = new GuiSection();
 
         return section;
     }

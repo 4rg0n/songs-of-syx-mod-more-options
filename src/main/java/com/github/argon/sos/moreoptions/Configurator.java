@@ -8,6 +8,7 @@ import game.GAME;
 import game.events.EVENTS;
 import init.sound.SOUND;
 import init.sound.SoundAmbience;
+import settlement.main.SETT;
 
 public class Configurator {
 
@@ -16,7 +17,7 @@ public class Configurator {
     public void applyConfig(MoreOptionsConfig config) {
         applyEventsConfig(config.getEvents());
         applyAmbienceSoundsConfig(config.getAmbienceSounds());
-        applyParticlesConfig(config.getParticles());
+        applyParticlesConfig(config.getWeather());
     }
 
     private void applyEventsConfig(MoreOptionsConfig.Events eventsConfig) {
@@ -63,8 +64,14 @@ public class Configurator {
         soundAmbience.windTrees.setHardGain(ambienceSoundsConfig.getWindTrees());
     }
 
-    private void applyParticlesConfig(MoreOptionsConfig.Particles particlesConfig) {
-        log.trace("Configure particles: %s", particlesConfig);
+    private void applyParticlesConfig(MoreOptionsConfig.Weather weatherConfig) {
+        log.trace("Configure weather: %s", weatherConfig);
+
+        SETT.WEATHER().rain.setD((double) weatherConfig.getRain() / 100);
+        SETT.WEATHER().snow.setD((double) weatherConfig.getSnow() / 100);
+        SETT.WEATHER().ice.setD((double) weatherConfig.getIce() / 100);
+        SETT.WEATHER().clouds.setD((double) weatherConfig.getClouds() / 100);
+        SETT.WEATHER().thunder.setD((double) weatherConfig.getThunder() / 100);
     }
 
     private void enableEvent(EVENTS.EventResource event, Boolean enabled) {

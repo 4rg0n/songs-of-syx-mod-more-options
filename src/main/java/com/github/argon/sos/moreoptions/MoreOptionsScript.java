@@ -43,7 +43,7 @@ public final class MoreOptionsScript implements SCRIPT<Void> {
 	public SCRIPT_INSTANCE createInstance() {
 
 		moreOptionsConfig = MoreOptionsConfig.builder()
-			.particles(MoreOptionsConfig.Particles.builder().build())
+			.weather(MoreOptionsConfig.Weather.builder().build())
 			.ambienceSounds(MoreOptionsConfig.AmbienceSounds.builder()
 				.nature(0)
 				.windTrees(20)
