@@ -3,6 +3,8 @@ package com.github.argon.sos.moreoptions.ui.panel;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Checkbox;
 import com.github.argon.sos.moreoptions.game.ui.VerticalLine;
+import com.github.argon.sos.moreoptions.log.Logger;
+import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.CheckboxBuilder;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
@@ -12,11 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Events extends GuiSection {
+public class EventsPanel extends GuiSection {
+
+    private static final Logger log = Loggers.getLogger(EventsPanel.class);
+
     @Getter
     private final Map<String, Checkbox> checkboxes = new HashMap<>();
 
-    public Events(MoreOptionsConfig.Events eventConfig) {
+    public EventsPanel(MoreOptionsConfig.Events eventConfig) {
         GuiSection settlement = settlementCheckboxes(eventConfig);
         GuiSection world = worldCheckboxes(eventConfig);
 
@@ -31,6 +36,60 @@ public class Events extends GuiSection {
         addRight(0, settlementSection);
         addRight(0, new VerticalLine(101, settlementSection.body().height(), 1));
         addRight(0, worldSection);
+    }
+
+    public MoreOptionsConfig.Events getConfig() {
+        return MoreOptionsConfig.Events.builder()
+            .accident(checkboxes.get("accident").selectedIs())
+            .advice(checkboxes.get("advice").selectedIs())
+            .farm(checkboxes.get("farm").selectedIs())
+            .fish(checkboxes.get("fish").selectedIs())
+            .riot(checkboxes.get("riot").selectedIs())
+            .killer(checkboxes.get("killer").selectedIs())
+            .orchard(checkboxes.get("orchard").selectedIs())
+            .pasture(checkboxes.get("pasture").selectedIs())
+            .disease(checkboxes.get("disease").selectedIs())
+            .slaver(checkboxes.get("slaver").selectedIs())
+            .temperature(checkboxes.get("temperature").selectedIs())
+            .raceWars(checkboxes.get("raceWars").selectedIs())
+            .uprising(checkboxes.get("uprising").selectedIs())
+            .worldFactionBreak(checkboxes.get("worldFactionBreak").selectedIs())
+            .worldRaider(checkboxes.get("worldRaider").selectedIs())
+            .worldFactionExpand(checkboxes.get("worldFactionExpand").selectedIs())
+            .worldRebellion(checkboxes.get("worldRebellion").selectedIs())
+            .worldPlague(checkboxes.get("worldPlague").selectedIs())
+            .worldWar(checkboxes.get("worldWar").selectedIs())
+            .worldPopup(checkboxes.get("worldPopup").selectedIs())
+            .worldWarPeace(checkboxes.get("worldWarPeace").selectedIs())
+            .worldWarPlayer(checkboxes.get("worldWarPlayer").selectedIs())
+            .build();
+    }
+
+    public void applyConfig(MoreOptionsConfig.Events config) {
+        log.trace("Applying config %s", config);
+
+        checkboxes.get("accident").selectedSet(config.isAccident());
+        checkboxes.get("advice").selectedSet(config.isAdvice());
+        checkboxes.get("farm").selectedSet(config.isFarm());
+        checkboxes.get("fish").selectedSet(config.isFish());
+        checkboxes.get("riot").selectedSet(config.isRiot());
+        checkboxes.get("killer").selectedSet(config.isKiller());
+        checkboxes.get("orchard").selectedSet(config.isOrchard());
+        checkboxes.get("pasture").selectedSet(config.isPasture());
+        checkboxes.get("disease").selectedSet(config.isDisease());
+        checkboxes.get("slaver").selectedSet(config.isSlaver());
+        checkboxes.get("temperature").selectedSet(config.isTemperature());
+        checkboxes.get("raceWars").selectedSet(config.isRaceWars());
+        checkboxes.get("uprising").selectedSet(config.isUprising());
+        checkboxes.get("worldFactionBreak").selectedSet(config.isWorldFactionBreak());
+        checkboxes.get("worldRaider").selectedSet(config.isWorldRaider());
+        checkboxes.get("worldFactionExpand").selectedSet(config.isWorldFactionExpand());
+        checkboxes.get("worldRebellion").selectedSet(config.isWorldRebellion());
+        checkboxes.get("worldPlague").selectedSet(config.isWorldPlague());
+        checkboxes.get("worldWar").selectedSet(config.isWorldWar());
+        checkboxes.get("worldPopup").selectedSet(config.isWorldPopup());
+        checkboxes.get("worldWarPeace").selectedSet(config.isWorldWarPeace());
+        checkboxes.get("worldWarPlayer").selectedSet(config.isWorldWarPlayer());
     }
 
     private GuiSection settlementCheckboxes(MoreOptionsConfig.Events eventConfig) {
@@ -120,7 +179,7 @@ public class Events extends GuiSection {
             .enabled(eventConfig.isWorldFactionBreak())
             .description("TODO")
             .build());
-        worldCheckboxes.put("Popup", CheckboxBuilder.CheckboxDescription.builder()
+        worldCheckboxes.put("worldPopup", CheckboxBuilder.CheckboxDescription.builder()
             .title("Popup")
             .enabled(eventConfig.isWorldPopup())
             .description("TODO")

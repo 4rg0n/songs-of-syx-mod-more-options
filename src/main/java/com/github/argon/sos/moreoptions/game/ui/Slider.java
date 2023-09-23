@@ -43,6 +43,14 @@ public class Slider extends GuiSection {
         D.ts(GSliderInt.class);
     }
 
+    public int getValue() {
+        return in.get();
+    }
+
+    public void setValue(int value) {
+        in.set(value);
+    }
+
     public Slider(INT.INTE in, int width, boolean input){
         this(in, width, 24, input, ValueDisplay.NONE);
     }

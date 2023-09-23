@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
@@ -20,7 +21,9 @@ import java.util.logging.Level;
 public final class MoreOptionsScript implements SCRIPT<Void> {
 
 	public final static INFO MOD_INFO = new INFO("More Options", "TODO");
-	private MoreOptionsConfig moreOptionsConfig;
+
+	private ConfigStore configStore = ConfigStore.getInstance();
+	private Configurator configurator = Configurator.getInstance();
 
 	@Override
 	public CharSequence name() {
@@ -41,23 +44,6 @@ public final class MoreOptionsScript implements SCRIPT<Void> {
 
 	@Override
 	public SCRIPT_INSTANCE createInstance() {
-
-		moreOptionsConfig = MoreOptionsConfig.builder()
-			.weather(MoreOptionsConfig.Weather.builder().build())
-			.ambienceSounds(MoreOptionsConfig.AmbienceSounds.builder()
-				.nature(0)
-				.windTrees(20)
-				.wind(50)
-				.build())
-			.events(MoreOptionsConfig.Events.builder()
-				.killer(false)
-				.build())
-			.build();
-
-		Configurator configurator = new Configurator();
-
-		configurator.applyConfig(moreOptionsConfig);
-
 		return new Instance(this);
 	}
 
@@ -68,10 +54,19 @@ public final class MoreOptionsScript implements SCRIPT<Void> {
 
 	@Override
 	public void initGamePresent() {
+		MoreOptionsConfig moreOptionsConfig = configStore.getProfileConfig()
+			.orElse(MoreOptionsConfig.builder().build());
+
+		configStore.setCurrentConfig(moreOptionsConfig);
+		configurator.applyConfig(moreOptionsConfig);
+
 		UIGameConfig uiGameConfig = new UIGameConfig(
-			new MoreOptionsModal(moreOptionsConfig),
-			GameUiApi.getInstance()
+			new MoreOptionsModal(configStore),
+			GameUiApi.getInstance(),
+			configStore,
+			configurator
 		);
+
 		uiGameConfig.init();
 	}
 

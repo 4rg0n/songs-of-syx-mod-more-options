@@ -1,12 +1,14 @@
 package com.github.argon.sos.moreoptions.ui;
 
+import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
-import com.github.argon.sos.moreoptions.ui.panel.Events;
-import com.github.argon.sos.moreoptions.ui.panel.Sounds;
-import com.github.argon.sos.moreoptions.ui.panel.Weather;
+import com.github.argon.sos.moreoptions.ui.panel.EventsPanel;
+import com.github.argon.sos.moreoptions.ui.panel.SoundsPanel;
+import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
 import init.C;
+import lombok.Getter;
 import snake2d.MButt;
 import snake2d.Renderer;
 import snake2d.util.color.COLOR;
@@ -31,42 +33,57 @@ public class MoreOptionsModal extends Interrupter {
 
     private final Map<String, GuiSection> panels = new LinkedHashMap<>();
 
+    private final ConfigStore configStore;
+    private final EventsPanel eventsPanel;
+    private final SoundsPanel soundsPanel;
+    private final WeatherPanel weatherPanel;
+
+    @Getter
     private Button resetButton;
+
+    @Getter
     private Button applyButton;
 
-    public final static int WIDTH = 800;
-    public final static int HEIGHT = 600;
+    @Getter
+    private Button undoButton;
 
-    public MoreOptionsModal(MoreOptionsConfig config) {
+    private double updateTimerSeconds = 0d;
+    private final static int UPDATE_INTERVAL_SECONDS = 1;
+
+
+    public MoreOptionsModal(ConfigStore configStore) {
         this.section = new GuiSection();
+        this.configStore = configStore;
+        MoreOptionsConfig config = configStore.getCurrentConfig()
+            .orElse(MoreOptionsConfig.builder().build());
 
         GPanelL pan = new GPanelL();
         pan.setTitle("More Options");
         pan.setCloseAction(this::hide);
         section.add(pan);
 
-        Events events = new Events(config.getEvents());
-        Sounds sounds = new Sounds(config.getAmbienceSounds());
-        Weather weather = new Weather(config.getWeather());
+        eventsPanel = new EventsPanel(config.getEvents());
+        soundsPanel = new SoundsPanel(config.getAmbienceSounds());
+        weatherPanel = new WeatherPanel(config.getWeather());
 
-        panels.put("Events", events);
-        panels.put("Sounds", sounds);
-        panels.put("Weather", weather);
+        panels.put("Events", eventsPanel);
+        panels.put("Sounds", soundsPanel);
+        panels.put("Weather", weatherPanel);
 
         GuiSection header = header();
         section.add(header);
 
-        switcher = new CLICKABLE.Switcher(events);
+        switcher = new CLICKABLE.Switcher(eventsPanel);
         section.add(switcher);
 
-        HorizontalLine horizontalLine = new HorizontalLine(events.body().width(), 14, 1);
+        HorizontalLine horizontalLine = new HorizontalLine(eventsPanel.body().width(), 14, 1);
         section.add(horizontalLine);
 
         GuiSection footer = footer();
         section.add(footer);
 
-        int width = events.body().width() + 25;
-        int height = events.body().height() + header.body().height() + horizontalLine.body().height() + footer.body().height() + 45;
+        int width = eventsPanel.body().width() + 25;
+        int height = eventsPanel.body().height() + header.body().height() + horizontalLine.body().height() + footer.body().height() + 45;
 
         pan.body.setDim(width, height);
         pan.body().centerIn(C.DIM());
@@ -74,10 +91,10 @@ public class MoreOptionsModal extends Interrupter {
         header.body().moveY1(pan.getInnerArea().y1());
         header.body().centerX(pan);
 
-        events.body().moveY1(header.body().y2() + 15);
-        events.body().centerX(header);
+        eventsPanel.body().moveY1(header.body().y2() + 15);
+        eventsPanel.body().centerX(header);
 
-        horizontalLine.body().moveY1(events.body().y2() + 15);
+        horizontalLine.body().moveY1(eventsPanel.body().y2() + 15);
         horizontalLine.body().centerX(header);
 
         footer.body().moveY1(horizontalLine.body().y2() + 10);
@@ -86,6 +103,30 @@ public class MoreOptionsModal extends Interrupter {
 
     public void activate() {
         show(VIEW.inters().manager);
+    }
+
+    public MoreOptionsConfig getConfig() {
+        return MoreOptionsConfig.builder()
+            .events(eventsPanel.getConfig())
+            .ambienceSounds(soundsPanel.getConfig())
+            .weather(weatherPanel.getConfig())
+            .build();
+    }
+
+    public void applyConfig(MoreOptionsConfig config) {
+        eventsPanel.applyConfig(config.getEvents());
+        soundsPanel.applyConfig(config.getAmbienceSounds());
+        weatherPanel.applyConfig(config.getWeather());
+    }
+
+    /**
+     * @return whether panel configuration is different from {@link ConfigStore#getCurrentConfig()} ()}
+     */
+    private boolean isDirty() {
+        return configStore.getCurrentConfig()
+            .map(currentConfig -> !getConfig().equals(currentConfig))
+            // no current config in memory
+            .orElse(true);
     }
 
     private GuiSection header() {
@@ -115,6 +156,10 @@ public class MoreOptionsModal extends Interrupter {
         this.resetButton = new Button("Default", COLOR.WHITE25);
         resetButton.hoverInfoSet("Resets to default options");
         section.addRight(0, resetButton);
+
+        this.undoButton = new Button("Undo", COLOR.WHITE25);
+        undoButton.hoverInfoSet("Undo made changes");
+        section.addRight(10, undoButton);
 
         this.applyButton = new Button("Apply", COLOR.WHITE15);
         applyButton.hoverInfoSet("Apply and save options");
@@ -148,7 +193,16 @@ public class MoreOptionsModal extends Interrupter {
     }
 
     @Override
-    protected boolean update(float v) {
-        return true;
+    protected boolean update(float seconds) {
+        updateTimerSeconds += seconds;
+
+        // check for changes in config
+        if (updateTimerSeconds >= UPDATE_INTERVAL_SECONDS) {
+            updateTimerSeconds = 0d;
+
+            applyButton.markApplied(!isDirty());
+        }
+
+        return false;
     }
 }

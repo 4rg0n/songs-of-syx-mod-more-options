@@ -2,19 +2,30 @@ package com.github.argon.sos.moreoptions.config;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Builder
+@EqualsAndHashCode
 public class MoreOptionsConfig {
 
-    private Events events;
+    /**
+     * Name of the config file
+     */
+    public final static String FILE_NAME = "MoreOptions";
 
-    private AmbienceSounds ambienceSounds;
+    @Builder.Default
+    private Events events = Events.builder().build();
 
-    private Weather weather;
+    @Builder.Default
+    private AmbienceSounds ambienceSounds = AmbienceSounds.builder().build();
+
+    @Builder.Default
+    private Weather weather = Weather.builder().build();
 
     @Data
     @Builder
+    @EqualsAndHashCode
     public static class Weather {
         @Builder.Default
         private int rain = 100;
@@ -30,6 +41,7 @@ public class MoreOptionsConfig {
 
     @Data
     @Builder
+    @EqualsAndHashCode
     public static class AmbienceSounds {
         @Builder.Default
         private int wind = 100;
@@ -51,6 +63,7 @@ public class MoreOptionsConfig {
 
     @Data
     @Builder
+    @EqualsAndHashCode
     public static class Events {
         @Builder.Default
         private boolean disease = true;

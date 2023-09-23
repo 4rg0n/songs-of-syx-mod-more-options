@@ -116,8 +116,7 @@ public final class SoundAmbience {
 		private double gain;
 
 		@Setter
-
-		private int hardGain;
+		private int limiter;
 
 		private boolean playFull;
 		private double playExtra;
@@ -150,10 +149,12 @@ public final class SoundAmbience {
 			playFull = false;
 			playExtra = 0;
 
-			if (hardGain == 0) {
+			if (limiter == 0) {
 				gain = 0;
+			} else if (limiter == 100) {
+				gain = gain * 100 / 0.0001f;
 			} else {
-				gain = gain * 100 / hardGain;
+				gain = gain * 100 / (100 - limiter);
 			}
 
 			this.priority = priority*gain;
@@ -169,10 +170,12 @@ public final class SoundAmbience {
 			playExtra ++;
 			playExtra = CLAMP.d(playExtra, 0, 1);
 
-			if (hardGain == 0) {
+			if (limiter == 0) {
 				gain = 0;
+			} else if (limiter == 100) {
+				gain = gain * 100 / 0.0001f;
 			} else {
-				gain = gain * 100 / hardGain;
+				gain = gain * 100 / (100 - limiter);
 			}
 
 			this.priority = priority;

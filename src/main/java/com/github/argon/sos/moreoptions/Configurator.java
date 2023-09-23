@@ -8,9 +8,16 @@ import game.GAME;
 import game.events.EVENTS;
 import init.sound.SOUND;
 import init.sound.SoundAmbience;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import settlement.main.SETT;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Configurator {
+
+    @Getter(lazy = true)
+    private final static Configurator instance = new Configurator();
 
     private final static Logger log = Loggers.getLogger(Configurator.class);
 
@@ -54,24 +61,24 @@ public class Configurator {
         log.trace("Configure ambience sounds: %s", ambienceSoundsConfig);
         SoundAmbience soundAmbience = SOUND.ambience();
 
-        soundAmbience.nature.setHardGain(ambienceSoundsConfig.getNature());
-        soundAmbience.night.setHardGain(ambienceSoundsConfig.getNight());
-        soundAmbience.rain.setHardGain(ambienceSoundsConfig.getRain());
-        soundAmbience.wind.setHardGain(ambienceSoundsConfig.getWind());
-        soundAmbience.thunder.setHardGain(ambienceSoundsConfig.getThunder());
-        soundAmbience.water.setHardGain(ambienceSoundsConfig.getWater());
-        soundAmbience.windhowl.setHardGain(ambienceSoundsConfig.getWindHowl());
-        soundAmbience.windTrees.setHardGain(ambienceSoundsConfig.getWindTrees());
+        soundAmbience.nature.setLimiter(ambienceSoundsConfig.getNature());
+        soundAmbience.night.setLimiter(ambienceSoundsConfig.getNight());
+        soundAmbience.rain.setLimiter(ambienceSoundsConfig.getRain());
+        soundAmbience.wind.setLimiter(ambienceSoundsConfig.getWind());
+        soundAmbience.thunder.setLimiter(ambienceSoundsConfig.getThunder());
+        soundAmbience.water.setLimiter(ambienceSoundsConfig.getWater());
+        soundAmbience.windhowl.setLimiter(ambienceSoundsConfig.getWindHowl());
+        soundAmbience.windTrees.setLimiter(ambienceSoundsConfig.getWindTrees());
     }
 
     private void applyParticlesConfig(MoreOptionsConfig.Weather weatherConfig) {
         log.trace("Configure weather: %s", weatherConfig);
 
-        SETT.WEATHER().rain.setD((double) weatherConfig.getRain() / 100);
-        SETT.WEATHER().snow.setD((double) weatherConfig.getSnow() / 100);
-        SETT.WEATHER().ice.setD((double) weatherConfig.getIce() / 100);
-        SETT.WEATHER().clouds.setD((double) weatherConfig.getClouds() / 100);
-        SETT.WEATHER().thunder.setD((double) weatherConfig.getThunder() / 100);
+        SETT.WEATHER().rain.setLimiter(weatherConfig.getRain());
+        SETT.WEATHER().snow.setLimiter(weatherConfig.getSnow());
+        SETT.WEATHER().ice.setLimiter(weatherConfig.getIce());
+        SETT.WEATHER().clouds.setLimiter(weatherConfig.getClouds());
+        SETT.WEATHER().thunder.setLimiter(weatherConfig.getThunder());
     }
 
     private void enableEvent(EVENTS.EventResource event, Boolean enabled) {
