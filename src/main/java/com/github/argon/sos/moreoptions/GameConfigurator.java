@@ -14,12 +14,12 @@ import lombok.RequiredArgsConstructor;
 import settlement.main.SETT;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class Configurator {
+public class GameConfigurator {
 
     @Getter(lazy = true)
-    private final static Configurator instance = new Configurator();
+    private final static GameConfigurator instance = new GameConfigurator();
 
-    private final static Logger log = Loggers.getLogger(Configurator.class);
+    private final static Logger log = Loggers.getLogger(GameConfigurator.class);
 
     public void applyConfig(MoreOptionsConfig config) {
         applyEventsConfig(config.getEvents());

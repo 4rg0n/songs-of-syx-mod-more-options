@@ -121,16 +121,6 @@ public final class SoundAmbience {
 		private boolean playFull;
 		private double playExtra;
 
-		private boolean enabled = true;
-
-		public void setEnabled(boolean enabled) {
-			this.enabled = enabled;
-		}
-
-		public boolean isEnabled() {
-			return enabled;
-		}
-
 		private Ambience(String key){
 			PATH f = PATHS.SOUND().ambience.getFolder(key);
 			String[] files = f.getFiles();
@@ -194,9 +184,6 @@ public final class SoundAmbience {
 		private void update(double ds) {
 			if (current == null)
 				return;
-			if (!current.isEnabled()) {
-				return;
-			}
 
 			if (!stream.isPlaying()) {
 				current = null;

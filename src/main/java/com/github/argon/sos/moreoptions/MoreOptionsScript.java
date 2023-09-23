@@ -23,7 +23,7 @@ public final class MoreOptionsScript implements SCRIPT<Void> {
 	public final static INFO MOD_INFO = new INFO("More Options", "TODO");
 
 	private ConfigStore configStore = ConfigStore.getInstance();
-	private Configurator configurator = Configurator.getInstance();
+	private GameConfigurator configurator = GameConfigurator.getInstance();
 
 	@Override
 	public CharSequence name() {
@@ -37,7 +37,12 @@ public final class MoreOptionsScript implements SCRIPT<Void> {
 
 	@Override
 	public void initBeforeGameCreated() {
-		Loggers.setLevels(Level.FINEST);
+		// load config from file or use default
+		MoreOptionsConfig moreOptionsConfig = configStore.loadConfig()
+			.orElse(MoreOptionsConfig.builder().build());
+
+		configStore.setCurrentConfig(moreOptionsConfig);
+		Loggers.setLevels(Level.INFO);
 	}
 
 
@@ -54,19 +59,17 @@ public final class MoreOptionsScript implements SCRIPT<Void> {
 
 	@Override
 	public void initGamePresent() {
-		MoreOptionsConfig moreOptionsConfig = configStore.getProfileConfig()
-			.orElse(MoreOptionsConfig.builder().build());
+		// apply loaded configuration to game
+		configurator.applyConfig(configStore.getCurrentConfig()
+			.orElse(MoreOptionsConfig.builder().build()));
 
-		configStore.setCurrentConfig(moreOptionsConfig);
-		configurator.applyConfig(moreOptionsConfig);
-
+		// build and init UI
 		UIGameConfig uiGameConfig = new UIGameConfig(
 			new MoreOptionsModal(configStore),
 			GameUiApi.getInstance(),
 			configStore,
 			configurator
 		);
-
 		uiGameConfig.init();
 	}
 

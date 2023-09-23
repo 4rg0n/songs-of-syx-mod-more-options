@@ -14,7 +14,7 @@ import java.util.TreeMap;
 public class CheckboxBuilder {
 
     @Getter
-    private Map<String, Checkbox> checkboxes = new TreeMap<>();
+    private final Map<String, Checkbox> checkboxes = new TreeMap<>();
 
     public GuiSection build(Map<String, CheckboxDescription> checkboxDescriptions) {
         checkboxes.clear();

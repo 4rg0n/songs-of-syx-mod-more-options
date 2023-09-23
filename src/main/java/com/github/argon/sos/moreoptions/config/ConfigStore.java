@@ -25,7 +25,7 @@ public class ConfigStore {
      * Used by the mod as current configuration to apply and use
      */
     public void setCurrentConfig(MoreOptionsConfig currentConfig) {
-        log.debug("Set current config to: %s", currentConfig);
+        log.trace("Set current config to: %s", currentConfig);
         this.currentConfig = currentConfig;
     }
 
@@ -34,13 +34,18 @@ public class ConfigStore {
     }
 
     /**
-     * @return configuration from the games user profile
+     * @return configuration loaded from file
      */
-    public Optional<MoreOptionsConfig> getProfileConfig() {
-        return configJsonService.loadProfileConfig();
+    public Optional<MoreOptionsConfig> loadConfig() {
+        return configJsonService.loadConfig();
     }
 
-    public boolean saveProfileConfig(MoreOptionsConfig config) {
-       return configJsonService.saveProfileConfig(config);
+    /**
+     * Saves config into file
+     *
+     * @return whether saving was successful
+     */
+    public boolean saveConfig(MoreOptionsConfig config) {
+       return configJsonService.saveConfig(config);
     }
 }

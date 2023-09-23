@@ -22,23 +22,20 @@ public class ConfigJsonService {
     private final static Logger log = Loggers.getLogger(ConfigJsonService.class);
 
     @Getter(lazy = true)
-    private final static ConfigJsonService instance = new ConfigJsonService();
+    private final static ConfigJsonService instance = new ConfigJsonService(PATHS.local().SETTINGS);
 
+    private final PATH savePath;
 
     /**
      * Configuration from games user profile
      */
-    public Optional<MoreOptionsConfig> loadProfileConfig() {
-        PATH profiePath = PATHS.local().PROFILE;
-        return load(profiePath);
+    public Optional<MoreOptionsConfig> loadConfig() {
+        return load(savePath);
     }
 
-    public boolean saveProfileConfig(MoreOptionsConfig config) {
-        PATH profiePath = PATHS.local().PROFILE;
-
-        log.debug("Saving configuration into profile %s", profiePath.get().toString());
+    public boolean saveConfig(MoreOptionsConfig config) {
+        log.debug("Saving configuration into %s", savePath.get().toString());
         log.trace("CONFIG: %s", config);
-
 
         try {
             JsonE configJson = new JsonE();
@@ -46,13 +43,13 @@ public class ConfigJsonService {
             configJson.add("SOUNDS", mapSounds(config.getAmbienceSounds()));
             configJson.add("WEATHER", mapWeather(config.getWeather()));
 
-            // blueprint save file exists?
+            // save file exists?
             Path path;
-            if (!profiePath.exists(MoreOptionsConfig.FILE_NAME)) {
-                path = profiePath.create(MoreOptionsConfig.FILE_NAME);
-                log.debug("Created new configuration profile file %s", path);
+            if (!savePath.exists(MoreOptionsConfig.FILE_NAME)) {
+                path = savePath.create(MoreOptionsConfig.FILE_NAME);
+                log.debug("Created new configuration file %s", path);
             } else {
-                path = profiePath.get(MoreOptionsConfig.FILE_NAME);
+                path = savePath.get(MoreOptionsConfig.FILE_NAME);
             }
 
             boolean success = configJson.save(path);
@@ -61,9 +58,9 @@ public class ConfigJsonService {
 
             return success;
         } catch (Errors.DataError e) {
-            log.warn("Could not save configuration into profile: %s", e.getMessage());
+            log.warn("Could not save configuration into: %s", e.getMessage());
         } catch (Exception e) {
-            log.error("Could not save configuration into profile", e);
+            log.error("Could not save configuration", e);
         }
 
         return false;

@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui;
 
-import com.github.argon.sos.moreoptions.Configurator;
+import com.github.argon.sos.moreoptions.GameConfigurator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
@@ -27,7 +27,7 @@ public class UIGameConfig {
 
     private final ConfigStore configStore;
 
-    private final Configurator configurator;
+    private final GameConfigurator configurator;
 
 
     public void init() {
@@ -43,7 +43,7 @@ public class UIGameConfig {
         settlementButton.hoverInfoSet(MOD_INFO.name);
         settlementButton.setDim(32, UIPanelTop.HEIGHT);
 
-        // inject into game UI
+        // inject button for opening modal into game UI
         gameUiApi.findUIElementInSettlementView(UIPanelTop.class)
             .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
             .ifPresent(o -> {
@@ -57,7 +57,7 @@ public class UIGameConfig {
             MoreOptionsConfig config = moreOptionsModal.getConfig();
             configurator.applyConfig(config);
             configStore.setCurrentConfig(config);
-            configStore.saveProfileConfig(config);
+            configStore.saveConfig(config);
         });
 
         // Reset to default
@@ -65,7 +65,7 @@ public class UIGameConfig {
             MoreOptionsConfig defaultConfig = MoreOptionsConfig.builder().build();
             configurator.applyConfig(defaultConfig);
             configStore.setCurrentConfig(defaultConfig);
-            configStore.saveProfileConfig(defaultConfig);
+            configStore.saveConfig(defaultConfig);
             moreOptionsModal.applyConfig(defaultConfig);
         });
 

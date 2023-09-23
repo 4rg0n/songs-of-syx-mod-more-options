@@ -97,67 +97,67 @@ public class EventsPanel extends GuiSection {
         settlementCheckboxes.put("disease", CheckboxBuilder.CheckboxDescription.builder()
             .title("Diseases")
             .enabled(eventConfig.isDisease())
-            .description("TODO")
+            .description("A disease can spread at your citizens making them sick.")
             .build());
         settlementCheckboxes.put("slaver", CheckboxBuilder.CheckboxDescription.builder()
             .title("Slaver Visits")
             .enabled(eventConfig.isSlaver())
-            .description("TODO")
+            .description("A slaver will visit your settlement regularly for buying and selling slaves")
             .build());
         settlementCheckboxes.put("riot", CheckboxBuilder.CheckboxDescription.builder()
             .title("Riots")
             .enabled(eventConfig.isRiot())
-            .description("TODO")
+            .description("Riots can break out among your citizen.")
             .build());
         settlementCheckboxes.put("uprising", CheckboxBuilder.CheckboxDescription.builder()
-            .title("Uprising")
+            .title("Slave Revolts")
             .enabled(eventConfig.isUprising())
-            .description("TODO")
+            .description("Slaves can revolt against you.")
             .build());
         settlementCheckboxes.put("killer", CheckboxBuilder.CheckboxDescription.builder()
             .title("Serial Killer")
             .enabled(eventConfig.isKiller())
-            .description("TODO")
+            .description("A serial killer can kill your citizens until captured.")
             .build());
         settlementCheckboxes.put("temperature", CheckboxBuilder.CheckboxDescription.builder()
             .title("Temperature")
             .enabled(eventConfig.isTemperature())
-            .description("TODO")
+            .description("The temperature can randomly fluctuate.")
             .build());
         settlementCheckboxes.put("farm", CheckboxBuilder.CheckboxDescription.builder()
             .title("Farm Production")
             .enabled(eventConfig.isFarm())
-            .description("TODO")
+            .description("Farms can produce less or more randomly.")
             .build());
         settlementCheckboxes.put("pasture", CheckboxBuilder.CheckboxDescription.builder()
             .title("Pasture Production")
             .enabled(eventConfig.isPasture())
-            .description("TODO")
+            .description("Pastures can produce less or more randomly.")
             .build());
         settlementCheckboxes.put("orchard", CheckboxBuilder.CheckboxDescription.builder()
             .title("Orchard Production")
             .enabled(eventConfig.isOrchard())
-            .description("TODO")
+            .description("Orchards can produce less or more randomly.")
             .build());
         settlementCheckboxes.put("fish", CheckboxBuilder.CheckboxDescription.builder()
-            .title("Fish Production")
+            .title("Fishery Production")
             .enabled(eventConfig.isFish())
-            .description("TODO")
+            .description("Fisheries can produce less or more randomly.")
             .build());
         settlementCheckboxes.put("raceWars", CheckboxBuilder.CheckboxDescription.builder()
             .title("Race Wars")
             .enabled(eventConfig.isRaceWars())
-            .description("TODO")
+            .description("A fight between different races in your settlement can break out.")
             .build());
         settlementCheckboxes.put("advice", CheckboxBuilder.CheckboxDescription.builder()
             .title("Advices")
             .enabled(eventConfig.isAdvice())
-            .description("TODO")
+            .description("If you are low on workers, someone gets sick, loyalty is low or your first crime happens.")
             .build());
         settlementCheckboxes.put("accident", CheckboxBuilder.CheckboxDescription.builder()
             .title("Accidents")
             .enabled(eventConfig.isAccident())
-            .description("TODO")
+            .description("Workers can harm themselves at workplaces.")
             .build());
 
         CheckboxBuilder checkboxBuilder = new CheckboxBuilder();
@@ -172,12 +172,12 @@ public class EventsPanel extends GuiSection {
         worldCheckboxes.put("worldFactionExpand", CheckboxBuilder.CheckboxDescription.builder()
             .title("Faction Expand")
             .enabled(eventConfig.isWorldFactionExpand())
-            .description("TODO")
+            .description("Factions will expand to other territories.")
             .build());
         worldCheckboxes.put("worldFactionBreak", CheckboxBuilder.CheckboxDescription.builder()
-            .title("Faction Break")
+            .title("Faction Collapse")
             .enabled(eventConfig.isWorldFactionBreak())
-            .description("TODO")
+            .description("Factions can randomly collapse under certain conditions.")
             .build());
         worldCheckboxes.put("worldPopup", CheckboxBuilder.CheckboxDescription.builder()
             .title("Popup")
@@ -185,34 +185,34 @@ public class EventsPanel extends GuiSection {
             .description("TODO")
             .build());
         worldCheckboxes.put("worldWar", CheckboxBuilder.CheckboxDescription.builder()
-            .title("War")
+            .title("Faction War")
             .enabled(eventConfig.isWorldWar())
-            .description("TODO")
+            .description("Factions will fight with each other.")
             .build());
         worldCheckboxes.put("worldWarPlayer", CheckboxBuilder.CheckboxDescription.builder()
             .title("War Player")
             .enabled(eventConfig.isWorldWarPlayer())
-            .description("TODO")
+            .description("Factions will declare war against a player.")
             .build());
         worldCheckboxes.put("worldWarPeace", CheckboxBuilder.CheckboxDescription.builder()
             .title("War Peace")
             .enabled(eventConfig.isWorldWarPeace())
-            .description("TODO")
+            .description("Factions can end war randomly under certain conditions.")
             .build());
         worldCheckboxes.put("worldRaider", CheckboxBuilder.CheckboxDescription.builder()
             .title("Raider")
             .enabled(eventConfig.isWorldRaider())
-            .description("TODO")
+            .description("Raiders will raid your settlement.")
             .build());
         worldCheckboxes.put("worldRebellion", CheckboxBuilder.CheckboxDescription.builder()
             .title("Rebellion")
             .enabled(eventConfig.isWorldRebellion())
-            .description("TODO")
+            .description("Citizens of factions can rebel when there is low order.")
             .build());
         worldCheckboxes.put("worldPlague", CheckboxBuilder.CheckboxDescription.builder()
             .title("Plague")
             .enabled(eventConfig.isWorldPlague())
-            .description("TODO")
+            .description("A plague can threaten the some parts of the world.")
             .build());
 
         CheckboxBuilder checkboxBuilder = new CheckboxBuilder();

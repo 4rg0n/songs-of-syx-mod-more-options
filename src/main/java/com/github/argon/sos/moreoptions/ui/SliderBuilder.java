@@ -60,7 +60,10 @@ public class SliderBuilder {
 
         private int value;
 
-        private boolean input;
-        private Slider.ValueDisplay valueDisplay;
+        @Builder.Default
+        private boolean input = true;
+
+        @Builder.Default
+        private Slider.ValueDisplay valueDisplay = Slider.ValueDisplay.NONE;
     }
 }
