@@ -23,7 +23,7 @@ public class GameConfigurator {
 
     public void applyConfig(MoreOptionsConfig config) {
         applyEventsConfig(config.getEvents());
-        applyAmbienceSoundsConfig(config.getAmbienceSounds());
+        applySoundsConfig(config.getSounds());
         applyParticlesConfig(config.getWeather());
     }
 
@@ -57,18 +57,18 @@ public class GameConfigurator {
         enableEvent(events.world.plague, eventsConfig.isWorldPlague());
     }
 
-    private void applyAmbienceSoundsConfig(MoreOptionsConfig.AmbienceSounds ambienceSoundsConfig) {
-        log.trace("Configure ambience sounds: %s", ambienceSoundsConfig);
+    private void applySoundsConfig(MoreOptionsConfig.Sounds soundsConfig) {
+        log.trace("Configure sounds: %s", soundsConfig);
         SoundAmbience soundAmbience = SOUND.ambience();
 
-        soundAmbience.nature.setLimiter(ambienceSoundsConfig.getNature());
-        soundAmbience.night.setLimiter(ambienceSoundsConfig.getNight());
-        soundAmbience.rain.setLimiter(ambienceSoundsConfig.getRain());
-        soundAmbience.wind.setLimiter(ambienceSoundsConfig.getWind());
-        soundAmbience.thunder.setLimiter(ambienceSoundsConfig.getThunder());
-        soundAmbience.water.setLimiter(ambienceSoundsConfig.getWater());
-        soundAmbience.windhowl.setLimiter(ambienceSoundsConfig.getWindHowl());
-        soundAmbience.windTrees.setLimiter(ambienceSoundsConfig.getWindTrees());
+        soundAmbience.nature.setLimiter(soundsConfig.getNature());
+        soundAmbience.night.setLimiter(soundsConfig.getNight());
+        soundAmbience.rain.setLimiter(soundsConfig.getRain());
+        soundAmbience.wind.setLimiter(soundsConfig.getWind());
+        soundAmbience.thunder.setLimiter(soundsConfig.getThunder());
+        soundAmbience.water.setLimiter(soundsConfig.getWater());
+        soundAmbience.windhowl.setLimiter(soundsConfig.getWindHowl());
+        soundAmbience.windTrees.setLimiter(soundsConfig.getWindTrees());
     }
 
     private void applyParticlesConfig(MoreOptionsConfig.Weather weatherConfig) {

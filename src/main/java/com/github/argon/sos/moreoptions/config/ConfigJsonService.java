@@ -39,8 +39,9 @@ public class ConfigJsonService {
 
         try {
             JsonE configJson = new JsonE();
+            configJson.add("VERSION", config.getVersion());
             configJson.add("EVENTS", mapEvents(config.getEvents()));
-            configJson.add("SOUNDS", mapSounds(config.getAmbienceSounds()));
+            configJson.add("SOUNDS", mapSounds(config.getSounds()));
             configJson.add("WEATHER", mapWeather(config.getWeather()));
 
             // save file exists?
@@ -89,8 +90,9 @@ public class ConfigJsonService {
         }
 
         return Optional.of(MoreOptionsConfig.builder()
+            .version((json.has("VERSION")) ? json.i("VERSION") : MoreOptionsConfig.VERSION)
             .events((json.has("EVENTS")) ? mapEvents(json.json("EVENTS")) : MoreOptionsConfig.Events.builder().build())
-            .ambienceSounds((json.has("SOUNDS")) ? mapSounds(json.json("SOUNDS")) : MoreOptionsConfig.AmbienceSounds.builder().build())
+            .sounds((json.has("SOUNDS")) ? mapSounds(json.json("SOUNDS")) : MoreOptionsConfig.Sounds.builder().build())
             .weather((json.has("WEATHER")) ? mapWeather(json.json("WEATHER")) : MoreOptionsConfig.Weather.builder().build())
             .build());
     }
@@ -116,8 +118,8 @@ public class ConfigJsonService {
         return json;
     }
 
-    private MoreOptionsConfig.AmbienceSounds mapSounds(Json sounds) {
-        return MoreOptionsConfig.AmbienceSounds.builder()
+    private MoreOptionsConfig.Sounds mapSounds(Json sounds) {
+        return MoreOptionsConfig.Sounds.builder()
             .wind(sounds.i("WIND", 0, 100, 100))
             .water(sounds.i("WATER", 0, 100, 100))
             .windTrees(sounds.i("WIND_TREES", 0, 100, 100))
@@ -129,7 +131,7 @@ public class ConfigJsonService {
             .build();
     }
 
-    private JsonE mapSounds(MoreOptionsConfig.AmbienceSounds config) {
+    private JsonE mapSounds(MoreOptionsConfig.Sounds config) {
         JsonE json = new JsonE();
         json.add("WIND", config.getWind());
         json.add("WATER", config.getWater());

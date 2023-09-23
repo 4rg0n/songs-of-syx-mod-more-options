@@ -47,8 +47,12 @@ public class MoreOptionsModal extends Interrupter {
     @Getter
     private Button undoButton;
 
+    @Getter
+    private Button okButton;
+
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
+
 
 
     public MoreOptionsModal(ConfigStore configStore) {
@@ -63,7 +67,7 @@ public class MoreOptionsModal extends Interrupter {
         section.add(pan);
 
         eventsPanel = new EventsPanel(config.getEvents());
-        soundsPanel = new SoundsPanel(config.getAmbienceSounds());
+        soundsPanel = new SoundsPanel(config.getSounds());
         weatherPanel = new WeatherPanel(config.getWeather());
 
         panels.put("Events", eventsPanel);
@@ -101,21 +105,24 @@ public class MoreOptionsModal extends Interrupter {
         footer.body().centerX(header);
     }
 
-    public void activate() {
+    public void show() {
         show(VIEW.inters().manager);
+    }
+    public void hide() {
+        super.hide();
     }
 
     public MoreOptionsConfig getConfig() {
         return MoreOptionsConfig.builder()
             .events(eventsPanel.getConfig())
-            .ambienceSounds(soundsPanel.getConfig())
+            .sounds(soundsPanel.getConfig())
             .weather(weatherPanel.getConfig())
             .build();
     }
 
     public void applyConfig(MoreOptionsConfig config) {
         eventsPanel.applyConfig(config.getEvents());
-        soundsPanel.applyConfig(config.getAmbienceSounds());
+        soundsPanel.applyConfig(config.getSounds());
         weatherPanel.applyConfig(config.getWeather());
     }
 
@@ -159,11 +166,17 @@ public class MoreOptionsModal extends Interrupter {
 
         this.undoButton = new Button("Undo", COLOR.WHITE25);
         undoButton.hoverInfoSet("Undo made changes");
+        undoButton.setEnabled(false);
         section.addRight(10, undoButton);
 
         this.applyButton = new Button("Apply", COLOR.WHITE15);
         applyButton.hoverInfoSet("Apply and save options");
+        applyButton.setEnabled(false);
         section.addRight(150, applyButton);
+
+        this.okButton = new Button("OK", COLOR.WHITE15);
+        okButton.hoverInfoSet("Apply and exit");
+        section.addRight(10, okButton);
 
         return section;
     }
@@ -200,7 +213,8 @@ public class MoreOptionsModal extends Interrupter {
         if (updateTimerSeconds >= UPDATE_INTERVAL_SECONDS) {
             updateTimerSeconds = 0d;
 
-            applyButton.markApplied(!isDirty());
+            applyButton.setEnabled(isDirty());
+            undoButton.setEnabled(isDirty());
         }
 
         return false;

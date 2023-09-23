@@ -18,7 +18,7 @@ public class SoundsPanel extends GuiSection {
 
     @Getter
     private final Map<String, Slider> sliders = new HashMap<>();
-    public SoundsPanel(MoreOptionsConfig.AmbienceSounds soundsConfig) {
+    public SoundsPanel(MoreOptionsConfig.Sounds soundsConfig) {
         GuiSection sliderSection = ambienceSoundSliders(soundsConfig);
 
         GuiSection section = new GuiSection();
@@ -28,8 +28,8 @@ public class SoundsPanel extends GuiSection {
         addDownC(0, section);
     }
 
-    public MoreOptionsConfig.AmbienceSounds getConfig() {
-        return MoreOptionsConfig.AmbienceSounds.builder()
+    public MoreOptionsConfig.Sounds getConfig() {
+        return MoreOptionsConfig.Sounds.builder()
             .nature(sliders.get("nature").getValue())
             .night(sliders.get("night").getValue())
             .water(sliders.get("water").getValue())
@@ -41,7 +41,7 @@ public class SoundsPanel extends GuiSection {
             .build();
     }
 
-    public void applyConfig(MoreOptionsConfig.AmbienceSounds config) {
+    public void applyConfig(MoreOptionsConfig.Sounds config) {
         log.trace("Applying config %s", config);
 
         sliders.get("nature").setValue(config.getNature());
@@ -54,7 +54,7 @@ public class SoundsPanel extends GuiSection {
         sliders.get("thunder").setValue(config.getThunder());
     }
 
-    private GuiSection ambienceSoundSliders(MoreOptionsConfig.AmbienceSounds soundsConfig) {
+    private GuiSection ambienceSoundSliders(MoreOptionsConfig.Sounds soundsConfig) {
         Map<String, SliderBuilder.SliderDescription> ambienceSoundSliders = new TreeMap<>();
         ambienceSoundSliders.put("wind", SliderBuilder.SliderDescription.builder()
             .title("Wind")

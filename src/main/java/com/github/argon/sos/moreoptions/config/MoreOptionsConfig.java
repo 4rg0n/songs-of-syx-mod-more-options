@@ -9,16 +9,20 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public class MoreOptionsConfig {
 
+    public final static int VERSION = 1;
+
     /**
      * Name of the config file
      */
     public final static String FILE_NAME = "MoreOptions";
 
     @Builder.Default
+    private int version = VERSION;
+    @Builder.Default
     private Events events = Events.builder().build();
 
     @Builder.Default
-    private AmbienceSounds ambienceSounds = AmbienceSounds.builder().build();
+    private Sounds sounds = Sounds.builder().build();
 
     @Builder.Default
     private Weather weather = Weather.builder().build();
@@ -42,7 +46,7 @@ public class MoreOptionsConfig {
     @Data
     @Builder
     @EqualsAndHashCode
-    public static class AmbienceSounds {
+    public static class Sounds {
         @Builder.Default
         private int wind = 100;
         @Builder.Default

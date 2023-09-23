@@ -36,7 +36,7 @@ public class UIGameConfig {
         GButt.ButtPanel settlementButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
             @Override
             protected void clickA() {
-                moreOptionsModal.activate();
+                moreOptionsModal.show();
             }
         };
 
@@ -76,6 +76,16 @@ public class UIGameConfig {
                 moreOptionsModal.applyConfig(config);
             })
         );
+
+        // Apply & Save & Exit
+        moreOptionsModal.getOkButton().clickActionSet(() -> {
+            MoreOptionsConfig config = moreOptionsModal.getConfig();
+            configurator.applyConfig(config);
+            configStore.setCurrentConfig(config);
+            configStore.saveConfig(config);
+
+            moreOptionsModal.hide();
+        });
     }
 
 }
