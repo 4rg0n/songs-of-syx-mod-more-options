@@ -12,6 +12,8 @@ import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -40,9 +42,11 @@ public class ConfigJsonService {
         try {
             JsonE configJson = new JsonE();
             configJson.add("VERSION", config.getVersion());
-            configJson.add("EVENTS", mapEvents(config.getEvents()));
-            configJson.add("SOUNDS", mapSounds(config.getSounds()));
-            configJson.add("WEATHER", mapWeather(config.getWeather()));
+            configJson.add("EVENTS_SETTLEMENT", mapBool(config.getEventsSettlement()));
+            configJson.add("EVENTS_WORLD", mapBool(config.getEventsWorld()));
+            configJson.add("SOUNDS_AMBIENCE", mapInteger(config.getSoundsAmbience()));
+            configJson.add("SOUNDS_SETTLEMENT", mapInteger(config.getSoundsSettlement()));
+            configJson.add("WEATHER", mapInteger(config.getWeather()));
 
             // save file exists?
             Path path;
@@ -91,109 +95,46 @@ public class ConfigJsonService {
 
         return Optional.of(MoreOptionsConfig.builder()
             .version((json.has("VERSION")) ? json.i("VERSION") : MoreOptionsConfig.VERSION)
-            .events((json.has("EVENTS")) ? mapEvents(json.json("EVENTS")) : MoreOptionsConfig.Events.builder().build())
-            .sounds((json.has("SOUNDS")) ? mapSounds(json.json("SOUNDS")) : MoreOptionsConfig.Sounds.builder().build())
-            .weather((json.has("WEATHER")) ? mapWeather(json.json("WEATHER")) : MoreOptionsConfig.Weather.builder().build())
+            .eventsWorld((json.has("EVENTS_WORLD")) ? mapBool(json.json("EVENTS_WORLD")) : new HashMap<>())
+            .eventsSettlement((json.has("EVENTS_SETTLEMENT")) ? mapBool(json.json("EVENTS_SETTLEMENT")) : new HashMap<>())
+            .soundsAmbience((json.has("SOUNDS_AMBIENCE")) ? mapInteger(json.json("SOUNDS_AMBIENCE"), 0, 100) : new HashMap<>())
+            .soundsSettlement((json.has("SOUNDS_SETTLEMENT")) ? mapInteger(json.json("SOUNDS_SETTLEMENT"), 0 , 100) : new HashMap<>())
+            .weather((json.has("WEATHER")) ? mapInteger(json.json("WEATHER"), 0, 100) : new HashMap<>())
             .build());
     }
 
-    private MoreOptionsConfig.Weather mapWeather(Json weather) {
-        return MoreOptionsConfig.Weather.builder()
-            .clouds(weather.i("CLOUDS", 0, 100, 100))
-            .ice(weather.i("ICE", 0, 100, 100))
-            .snow(weather.i("SNOW", 0, 100, 100))
-            .thunder(weather.i("THUNDER", 0, 100, 100))
-            .rain(weather.i("RAIN", 0, 100, 100))
-            .build();
+    private Map<String, Boolean> mapBool(Json json) {
+        Map<String, Boolean> configs = new HashMap<>();
+
+        for (String key : json.keys()) {
+            boolean value = json.bool(key, true);
+            configs.put(key, value);
+        }
+
+        return configs;
     }
 
-    private JsonE mapWeather(MoreOptionsConfig.Weather config) {
+    private JsonE mapBool(Map<String, Boolean> config) {
         JsonE json = new JsonE();
-        json.add("CLOUDS", config.getClouds());
-        json.add("ICE", config.getIce());
-        json.add("SNOW", config.getSnow());
-        json.add("THUNDER", config.getThunder());
-        json.add("RAIN", config.getRain());
+        config.forEach(json::add);
 
         return json;
     }
 
-    private MoreOptionsConfig.Sounds mapSounds(Json sounds) {
-        return MoreOptionsConfig.Sounds.builder()
-            .wind(sounds.i("WIND", 0, 100, 100))
-            .water(sounds.i("WATER", 0, 100, 100))
-            .windTrees(sounds.i("WIND_TREES", 0, 100, 100))
-            .windHowl(sounds.i("WIND_HOWL", 0, 100, 100))
-            .night(sounds.i("NIGHT", 0, 100, 100))
-            .rain(sounds.i("RAIN", 0, 100, 100))
-            .nature(sounds.i("NATURE", 0, 100, 100))
-            .thunder(sounds.i("THUNDER", 0, 100, 100))
-            .build();
+    private Map<String, Integer> mapInteger(Json json, int min, int max) {
+        Map<String, Integer> configs = new HashMap<>();
+
+        for (String key : json.keys()) {
+            int value = json.i(key, min, max);
+            configs.put(key, value);
+        }
+
+        return configs;
     }
 
-    private JsonE mapSounds(MoreOptionsConfig.Sounds config) {
+    private JsonE mapInteger(Map<String, Integer> config) {
         JsonE json = new JsonE();
-        json.add("WIND", config.getWind());
-        json.add("WATER", config.getWater());
-        json.add("WIND_TREES", config.getWindTrees());
-        json.add("WIND_HOWL", config.getWindHowl());
-        json.add("NIGHT", config.getNight());
-        json.add("RAIN", config.getRain());
-        json.add("NATURE", config.getNature());
-        json.add("THUNDER", config.getThunder());
-
-        return json;
-    }
-
-    private MoreOptionsConfig.Events mapEvents(Json json) {
-        return MoreOptionsConfig.Events.builder()
-            .accident(json.bool("ACCIDENT", true))
-            .advice(json.bool("ADVICE", true))
-            .farm(json.bool("FARM", true))
-            .fish(json.bool("FISH", true))
-            .riot(json.bool("RIOT", true))
-            .killer(json.bool("KILLER", true))
-            .orchard(json.bool("ORCHARD", true))
-            .pasture(json.bool("PASTURE", true))
-            .disease(json.bool("DISEASE", true))
-            .slaver(json.bool("SLAVER", true))
-            .temperature(json.bool("TEMPERATURE", true))
-            .raceWars(json.bool("RACE_WARS", true))
-            .uprising(json.bool("UPRISING", true))
-            .worldFactionBreak(json.bool("WORLD_FACTION_BREAK", true))
-            .worldRaider(json.bool("WORLD_RAIDER", true))
-            .worldFactionExpand(json.bool("WORLD_FACTION_EXPAND", true))
-            .worldRebellion(json.bool("WORLD_REBELLION", true))
-            .worldPlague(json.bool("WORLD_PLAGUE", true))
-            .worldWar(json.bool("WORLD_WAR", true))
-            .worldPopup(json.bool("WORLD_POPUP", true))
-            .worldWarPeace(json.bool("WORLD_WAR_PEACE", true))
-            .worldWarPlayer(json.bool("WORLD_WAR_PLAYER", true))
-            .build();
-    }
-
-    private JsonE mapEvents(MoreOptionsConfig.Events config) {
-        JsonE json = new JsonE();
-        json.add("ACCIDENT", config.isAccident());
-        json.add("ADVICE", config.isAdvice());
-        json.add("FARM", config.isFarm());
-        json.add("FISH", config.isFish());
-        json.add("RIOT", config.isRiot());
-        json.add("KILLER", config.isKiller());
-        json.add("ORCHARD", config.isOrchard());
-        json.add("PASTURE", config.isPasture());
-        json.add("DISEASE", config.isDisease());
-        json.add("SLAVER", config.isSlaver());
-        json.add("RACE_WARS", config.isRaceWars());
-        json.add("UPRISING", config.isUprising());
-        json.add("WORLD_FACTION_BREAK", config.isWorldFactionBreak());
-        json.add("WORLD_RAIDER", config.isWorldRaider());
-        json.add("WORLD_FACTION_EXPAND", config.isWorldFactionExpand());
-        json.add("WORLD_REBELLION", config.isWorldRebellion());
-        json.add("WORLD_WAR", config.isWorldWar());
-        json.add("WORLD_POPUP", config.isWorldPopup());
-        json.add("WORLD_WAR_PEACE", config.isWorldWarPeace());
-        json.add("WORLD_WAR_PLAYER", config.isWorldWarPlayer());
+        config.forEach(json::add);
 
         return json;
     }

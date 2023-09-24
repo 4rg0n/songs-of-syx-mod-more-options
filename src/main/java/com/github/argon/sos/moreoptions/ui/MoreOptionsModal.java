@@ -53,8 +53,6 @@ public class MoreOptionsModal extends Interrupter {
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
 
-
-
     public MoreOptionsModal(ConfigStore configStore) {
         this.section = new GuiSection();
         this.configStore = configStore;
@@ -66,28 +64,28 @@ public class MoreOptionsModal extends Interrupter {
         pan.setCloseAction(this::hide);
         section.add(pan);
 
-        eventsPanel = new EventsPanel(config.getEvents());
-        soundsPanel = new SoundsPanel(config.getSounds());
+        soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement());
+        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld());
         weatherPanel = new WeatherPanel(config.getWeather());
 
-        panels.put("Events", eventsPanel);
         panels.put("Sounds", soundsPanel);
+        panels.put("Events", eventsPanel);
         panels.put("Weather", weatherPanel);
 
         GuiSection header = header();
         section.add(header);
 
-        switcher = new CLICKABLE.Switcher(eventsPanel);
+        switcher = new CLICKABLE.Switcher(soundsPanel);
         section.add(switcher);
 
-        HorizontalLine horizontalLine = new HorizontalLine(eventsPanel.body().width(), 14, 1);
+        HorizontalLine horizontalLine = new HorizontalLine(header.body().width(), 14, 1);
         section.add(horizontalLine);
 
         GuiSection footer = footer();
         section.add(footer);
 
-        int width = eventsPanel.body().width() + 25;
-        int height = eventsPanel.body().height() + header.body().height() + horizontalLine.body().height() + footer.body().height() + 45;
+        int width = soundsPanel.body().width() + 50;
+        int height = soundsPanel.body().height() + header.body().height() + horizontalLine.body().height() + footer.body().height() + 45;
 
         pan.body.setDim(width, height);
         pan.body().centerIn(C.DIM());
@@ -95,10 +93,10 @@ public class MoreOptionsModal extends Interrupter {
         header.body().moveY1(pan.getInnerArea().y1());
         header.body().centerX(pan);
 
-        eventsPanel.body().moveY1(header.body().y2() + 15);
-        eventsPanel.body().centerX(header);
+        soundsPanel.body().moveY1(header.body().y2() + 15);
+        soundsPanel.body().centerX(header);
 
-        horizontalLine.body().moveY1(eventsPanel.body().y2() + 15);
+        horizontalLine.body().moveY1(soundsPanel.body().y2() + 15);
         horizontalLine.body().centerX(header);
 
         footer.body().moveY1(horizontalLine.body().y2() + 10);
@@ -114,15 +112,17 @@ public class MoreOptionsModal extends Interrupter {
 
     public MoreOptionsConfig getConfig() {
         return MoreOptionsConfig.builder()
-            .events(eventsPanel.getConfig())
-            .sounds(soundsPanel.getConfig())
+            .eventsSettlement(eventsPanel.getSettlementEventsConfig())
+            .eventsWorld(eventsPanel.getWorldEventsConfig())
+            .soundsAmbience(soundsPanel.getSoundsAmbienceConfig())
+            .soundsSettlement(soundsPanel.getSoundsSettlementConfig())
             .weather(weatherPanel.getConfig())
             .build();
     }
 
     public void applyConfig(MoreOptionsConfig config) {
-        eventsPanel.applyConfig(config.getEvents());
-        soundsPanel.applyConfig(config.getSounds());
+        eventsPanel.applyConfig(config.getEventsSettlement(), config.getEventsWorld());
+        soundsPanel.applyConfig(config.getSoundsAmbience(), config.getSoundsSettlement());
         weatherPanel.applyConfig(config.getWeather());
     }
 

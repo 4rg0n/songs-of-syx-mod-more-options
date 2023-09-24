@@ -16,6 +16,10 @@ public class StringUtil {
             .collect(Collectors.joining(", ", "{", "}"));
     }
 
+    public static String unCapitalize(String text) {
+        return Character.toLowerCase(text.charAt(0)) + text.substring(1);
+    }
+
     public static String toStringPrimitiveArray(Object arg) {
         if (arg instanceof int[]) {
             return Arrays.toString((int[]) arg);
@@ -50,7 +54,9 @@ public class StringUtil {
     }
 
     public static String stringifyValue(Object arg) {
-        if (arg instanceof String) {
+        if (arg == null) {
+            return "null";
+        } else if (arg instanceof String) {
             return (String) arg;
         } if (arg instanceof Double) {
             return String.format("%1$,.4f", (Double) arg);

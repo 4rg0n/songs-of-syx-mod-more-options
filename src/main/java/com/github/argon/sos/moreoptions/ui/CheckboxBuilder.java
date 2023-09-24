@@ -16,7 +16,7 @@ public class CheckboxBuilder {
     @Getter
     private final Map<String, Checkbox> checkboxes = new TreeMap<>();
 
-    public GuiSection build(Map<String, CheckboxDescription> checkboxDescriptions) {
+    public GuiSection build(Map<String, Definition> checkboxDescriptions) {
         checkboxes.clear();
         GuiSection nameSection = new GuiSection();
         GuiSection checkSection = new GuiSection();
@@ -43,7 +43,7 @@ public class CheckboxBuilder {
 
     @Data
     @Builder
-    public static class CheckboxDescription {
+    public static class Definition {
         private String title;
         private String description;
         private boolean enabled;

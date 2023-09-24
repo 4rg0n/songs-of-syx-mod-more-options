@@ -42,6 +42,10 @@ public final class SoundAmbience {
 		
 	}
 	private double last = VIEW.renderSecond();
+
+	public LinkedList<Ambience> all() {
+		return Ambience.all;
+	}
 	
 	public void update(float ds) {
 		

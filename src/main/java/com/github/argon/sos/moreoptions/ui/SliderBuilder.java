@@ -8,19 +8,21 @@ import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 import util.data.INT;
 import util.gui.misc.GText;
+import util.gui.table.GScrollRows;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SliderBuilder {
     @Getter
     private final Map<String, Slider> sliders = new HashMap<>();
 
-    public GuiSection build(Map<String, SliderDescription> sliderDescriptions) {
+    public GuiSection build(Map<String, Definition> sliderDescriptions, int displayHeight) {
         sliders.clear();
 
-        GuiSection nameSection = new GuiSection();
-        GuiSection sliderSection = new GuiSection();
+        snake2d.util.sets.LinkedList<ScrollableBuilder.ColumnRow> builds = new snake2d.util.sets.LinkedList<>();
 
         sliderDescriptions.forEach((key, description) -> {
             int min = description.getMin();
@@ -29,34 +31,45 @@ public class SliderBuilder {
 
             INT.IntImp sliderValue = new INT.IntImp(min, max);
             sliderValue.set(description.getValue());
-            Slider slider = new Slider(sliderValue, width, description.isInput(), description.getValueDisplay());
+            Slider slider = new Slider(sliderValue, width, description.isInput(), description.isLockScroll(), description.getValueDisplay());
 
             if (description.getDescription() != null) {
                 slider.hoverInfoSet(description.getDescription());
             }
 
-            nameSection.addDown(5, new GText(UI.FONT().M, description.getTitle()));
-            sliderSection.addDown(5, slider);
+            GuiSection text = new GuiSection();
+            text.addRight(0, new GText(UI.FONT().M, description.getTitle()));
+
+            List<GuiSection> container = new ArrayList<>();
+            container.add(text);
+            container.add(slider);
+
+            int height = slider.body().height();
+            builds.add(new ScrollableBuilder.ColumnRow(container, width, height));
 
             sliders.put(key, slider);
         });
 
-        GuiSection section = new GuiSection();
+        ScrollableBuilder scrollableBuilder = new ScrollableBuilder();
+        GScrollRows gScrollRows = scrollableBuilder.build(builds, displayHeight);
 
-        section.addRight(0, nameSection);
-        section.addRight(10, sliderSection);
+        GuiSection section = new GuiSection();
+        section.add(gScrollRows.view());
 
         return section;
     }
 
     @Data
     @Builder
-    public static class SliderDescription {
+    public static class Definition {
         private String title;
         private String description;
-        private int min;
 
-        private int max;
+        @Builder.Default
+        private int min = 0;
+
+        @Builder.Default
+        private int max = 100;
 
         private int value;
 
@@ -64,6 +77,9 @@ public class SliderBuilder {
         private boolean input = true;
 
         @Builder.Default
-        private Slider.ValueDisplay valueDisplay = Slider.ValueDisplay.NONE;
+        private boolean lockScroll = true;
+
+        @Builder.Default
+        private Slider.ValueDisplay valueDisplay = Slider.ValueDisplay.PERCENTAGE;
     }
 }

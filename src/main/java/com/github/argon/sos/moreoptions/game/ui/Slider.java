@@ -39,9 +39,13 @@ public class Slider extends GuiSection {
     @Setter
     private boolean enabled = true;
 
+    @Setter
+    private boolean lockScroll = false;
+
     static {
         D.ts(GSliderInt.class);
     }
+
 
     public int getValue() {
         return in.get();
@@ -51,16 +55,23 @@ public class Slider extends GuiSection {
         in.set(value);
     }
 
+
+
     public Slider(INT.INTE in, int width, boolean input){
-        this(in, width, 24, input, ValueDisplay.NONE);
+        this(in, width, 24, input, false, ValueDisplay.NONE);
     }
 
     public Slider(INT.INTE in, int width, boolean input, ValueDisplay valueDisplay){
-        this(in, width, 24, input, valueDisplay);
+        this(in, width, 24, input, false, valueDisplay);
     }
 
-    public Slider(INT.INTE in, int width, int height, boolean input, ValueDisplay valueDisplay){
+    public Slider(INT.INTE in, int width, boolean input, boolean lockScroll, ValueDisplay valueDisplay){
+        this(in, width, 24, input, lockScroll, valueDisplay);
+    }
+
+    public Slider(INT.INTE in, int width, int height, boolean input, boolean lockScroll, ValueDisplay valueDisplay){
         this.in = in;
+        setLockScroll(lockScroll);
 
         if (input) {
             width -= (Icon.S+2)*3;
@@ -139,9 +150,18 @@ public class Slider extends GuiSection {
         }
 
         if (valueDisplay != ValueDisplay.NONE) {
-            GStat value;
+            GuiSection section = new GuiSection();
+            int max = Math.max(Math.abs(in.min()), Math.abs(in.max()));
+            String maxString = Integer.toString(max);
+            if (in.min() < 0) {
+                maxString = "-" + maxString;
+            } else {
+                maxString = "+" + maxString;
+            }
 
+            GStat value;
             if (valueDisplay == ValueDisplay.PERCENTAGE) {
+                maxString = maxString + "%";
                 value = new GStat() {
                     @Override
                     public void update(GText text) {
@@ -155,14 +175,6 @@ public class Slider extends GuiSection {
                         GFORMAT.iBig(text, in.get());
                     }
                 };
-            }
-
-
-            GuiSection section = new GuiSection();
-            int max = Math.max(Math.abs(in.min()), Math.abs(in.max()));
-            String maxString = Integer.toString(max);
-            if (in.min() < 0) {
-                maxString = "-" + maxString;
             }
 
             int valueWidth = UI.FONT().S.width(maxString, 0, maxString.length() - 1, 1.4);
@@ -347,7 +359,7 @@ public class Slider extends GuiSection {
         }
         @Override
         public boolean hover(COORDINATE mCoo) {
-            if (super.hover(mCoo)) {
+            if (super.hover(mCoo) && !lockScroll) {
                 double d = MButt.clearWheelSpin();
                 if (d < 0)
                     in.inc(-1);

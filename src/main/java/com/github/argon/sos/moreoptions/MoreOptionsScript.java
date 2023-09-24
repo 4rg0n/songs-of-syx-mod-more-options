@@ -37,15 +37,8 @@ public final class MoreOptionsScript implements SCRIPT<Void> {
 
 	@Override
 	public void initBeforeGameCreated() {
-		// load config from file or use default
-		MoreOptionsConfig moreOptionsConfig = configStore.loadConfig()
-			.orElse(MoreOptionsConfig.builder().build());
-
-		configStore.setCurrentConfig(moreOptionsConfig);
-		Loggers.setLevels(Level.INFO);
+		Loggers.setLevels(Level.FINEST);
 	}
-
-
 
 	@Override
 	public SCRIPT_INSTANCE createInstance() {
@@ -59,9 +52,13 @@ public final class MoreOptionsScript implements SCRIPT<Void> {
 
 	@Override
 	public void initGamePresent() {
+		// load config from file or use default
+		MoreOptionsConfig moreOptionsConfig = configStore.loadConfig()
+			.orElse(configStore.getDefault());
+		configStore.setCurrentConfig(moreOptionsConfig);
+
 		// apply loaded configuration to game
-		configurator.applyConfig(configStore.getCurrentConfig()
-			.orElse(MoreOptionsConfig.builder().build()));
+		configurator.applyConfig(moreOptionsConfig);
 
 		// build and init UI
 		UIGameConfig uiGameConfig = new UIGameConfig(
