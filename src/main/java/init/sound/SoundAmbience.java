@@ -119,8 +119,11 @@ public final class SoundAmbience {
 		private double priority;
 		private double gain;
 
+		/**
+		 * 1.0 = 100% volume
+		 */
 		@Setter
-		private int limiter;
+		private double gainLimiter = 1.0d;
 
 		private boolean playFull;
 		private double playExtra;
@@ -134,7 +137,7 @@ public final class SoundAmbience {
 			}
 			all.add(this);
 		}
-		
+
 		public void play(double gain) {
 			play(gain, gain);
 		}
@@ -143,13 +146,7 @@ public final class SoundAmbience {
 			playFull = false;
 			playExtra = 0;
 
-			if (limiter == 0) {
-				gain = 0;
-			} else if (limiter == 100) {
-				gain = gain * 100 / 0.0001f;
-			} else {
-				gain = gain * 100 / (100 - limiter);
-			}
+			gain = gain * gainLimiter;
 
 			this.priority = priority*gain;
 			this.gain = gain;
@@ -164,13 +161,7 @@ public final class SoundAmbience {
 			playExtra ++;
 			playExtra = CLAMP.d(playExtra, 0, 1);
 
-			if (limiter == 0) {
-				gain = 0;
-			} else if (limiter == 100) {
-				gain = gain * 100 / 0.0001f;
-			} else {
-				gain = gain * 100 / (100 - limiter);
-			}
+			gain = gain * gainLimiter;
 
 			this.priority = priority;
 			this.gain = gain;

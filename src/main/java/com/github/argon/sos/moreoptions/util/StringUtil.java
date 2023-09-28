@@ -20,6 +20,16 @@ public class StringUtil {
         return Character.toLowerCase(text.charAt(0)) + text.substring(1);
     }
 
+    public static String extractTail(String text, String delimiterRegex) {
+        String[] split = text.split(delimiterRegex);
+
+        if (split.length == 0) {
+            return text;
+        }
+
+        return split[split.length - 1];
+    }
+
     public static String toStringPrimitiveArray(Object arg) {
         if (arg instanceof int[]) {
             return Arrays.toString((int[]) arg);

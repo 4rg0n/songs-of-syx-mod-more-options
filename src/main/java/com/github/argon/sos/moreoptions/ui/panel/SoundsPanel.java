@@ -4,37 +4,51 @@ import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.SliderBuilder;
-import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SoundsPanel extends GuiSection {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
 
-    @Getter
-    private final Map<String, Slider> ambienceSoundSliders = new HashMap<>();
-    private final Map<String, Slider> settlementSoundSliders = new HashMap<>();
+    private final Map<String, Slider> ambienceSoundSliders;
+    private final Map<String, Slider> settlementSoundSliders;
+    private final Map<String, Slider> roomSoundSliders;
     public SoundsPanel(
         Map<String, Integer> soundsAmbienceConfig,
-        Map<String, Integer> soundsSettlementConfig
+        Map<String, Integer> soundsSettlementConfig,
+        Map<String, Integer> soundsRoomConfig
     ) {
-        GuiSection ambienceSoundSliders = ambienceSoundSliders(soundsAmbienceConfig);
-        GuiSection settlementSoundSliders = settlementSoundSliders(soundsSettlementConfig);
+        SliderBuilder sliderBuilder = new SliderBuilder();
+
+        GuiSection ambienceSoundSection = sliderBuilder.buildDefault(soundsAmbienceConfig, 150);
+        this.ambienceSoundSliders = sliderBuilder.getSliders();
+        GuiSection settlementSoundSection = sliderBuilder.buildDefault(soundsSettlementConfig, 150);
+        this.settlementSoundSliders = sliderBuilder.getSliders();
+        GuiSection roomSoundSection = sliderBuilder.buildDefault(soundsRoomConfig, 150);
+        this.roomSoundSliders = sliderBuilder.getSliders();
 
         GuiSection section = new GuiSection();
-        section.addDown(0, new GHeader("Ambience Sounds"));
-        section.addDown(10, ambienceSoundSliders);
+        GHeader ambienceSoundsHeader = new GHeader("Ambience Sounds");
+        ambienceSoundsHeader.hoverInfoSet("Ambience Sounds playing in your settlement");
+        section.addDown(0, ambienceSoundsHeader);
+        section.addDown(5, ambienceSoundSection);
 
-        section.addDown(25, new GHeader("Settlement Sounds"));
-        section.addDown(10, settlementSoundSliders);
+        GHeader settlementSoundsHeader = new GHeader("Settlement Sounds");
+        settlementSoundsHeader.hoverInfoSet("Sounds playing in your settlement");
+        section.addDown(10, settlementSoundsHeader);
+        section.addDown(5, settlementSoundSection);
+
+        GHeader roomSoundsHeader = new GHeader("Room Sounds");
+        roomSoundsHeader.hoverInfoSet("Sounds playing from buildings in your settlement");
+        section.addDown(10, roomSoundsHeader);
+        section.addDown(5, roomSoundSection);
 
         addDownC(0, section);
 
-        applyConfig(soundsAmbienceConfig, soundsSettlementConfig);
+        applyConfig(soundsAmbienceConfig, soundsSettlementConfig, soundsRoomConfig);
 
     }
 
@@ -48,45 +62,42 @@ public class SoundsPanel extends GuiSection {
             .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
     }
 
+    public Map<String, Integer> getSoundsRoomConfig() {
+        return roomSoundSliders.entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
+    }
+
     public void applyConfig(
         Map<String, Integer> soundsAmbienceConfig,
-        Map<String, Integer> soundsSettlementConfig
+        Map<String, Integer> soundsSettlementConfig,
+        Map<String, Integer> soundsRoomConfig
     ) {
-        log.trace("Applying ambience sounds config %s", soundsAmbienceConfig);
-        log.trace("Applying settlement sounds config %s", soundsSettlementConfig);
+        log.trace("Applying UI ambience sounds config %s", soundsAmbienceConfig);
+        log.trace("Applying UI settlement sounds config %s", soundsSettlementConfig);
+        log.trace("Applying UI room sounds config %s", soundsRoomConfig);
 
         soundsAmbienceConfig.forEach((key, value) -> {
-            ambienceSoundSliders.get(key).setValue(value);
+            if (ambienceSoundSliders.containsKey(key)) {
+                ambienceSoundSliders.get(key).setValue(value);
+            } else {
+                log.warn("No slider with key %s found in UI", key);
+            }
         });
 
         soundsSettlementConfig.forEach((key, value) -> {
-            settlementSoundSliders.get(key).setValue(value);
+            if (settlementSoundSliders.containsKey(key)) {
+                settlementSoundSliders.get(key).setValue(value);
+            } else {
+                log.warn("No slider with key %s found in UI", key);
+            }
         });
-    }
 
-    private GuiSection settlementSoundSliders(Map<String, Integer> soundsSettlementConfig) {
-        Map<String, SliderBuilder.Definition> settlementSoundSliders = soundsSettlementConfig.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            config -> SliderBuilder.Definition.builder()
-                .title(config.getKey())
-                .build()));
-
-        SliderBuilder sliderBuilder = new SliderBuilder();
-        GuiSection sliderSection = sliderBuilder.build(settlementSoundSliders, 200);
-        this.settlementSoundSliders.putAll(sliderBuilder.getSliders());
-        return sliderSection;
-    }
-
-    private GuiSection ambienceSoundSliders(Map<String, Integer> ambienceSoundsConfig) {
-        Map<String, SliderBuilder.Definition> ambienceSoundSliders = ambienceSoundsConfig.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            config -> SliderBuilder.Definition.builder()
-                .title(config.getKey())
-                .build()));
-
-        SliderBuilder sliderBuilder = new SliderBuilder();
-        GuiSection sliderSection = sliderBuilder.build(ambienceSoundSliders, 200);
-        this.ambienceSoundSliders.putAll(sliderBuilder.getSliders());
-        return sliderSection;
+        soundsRoomConfig.forEach((key, value) -> {
+            if (roomSoundSliders.containsKey(key)) {
+                roomSoundSliders.get(key).setValue(value);
+            } else {
+                log.warn("No slider with key %s found in UI", key);
+            }
+        });
     }
 }

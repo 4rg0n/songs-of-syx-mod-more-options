@@ -2,6 +2,8 @@
   <configuration default="false" name="DEBUG" type="Application" factoryName="Application">
     <classpathModifications>
       <entry path="C:\Program Files (x86)\Steam\steamapps\common\Songs of Syx\base\script\jar\Example.jar" />
+      <entry path="C:\Users\Argon\AppData\Roaming\songsofsyx\mods\Plant Trees\V64\script\jar\Plant Trees.jar" />
+      <entry path="C:\Users\Argon\AppData\Roaming\songsofsyx\mods\Stronger Walls 10x\V64\script\jar\Stronger Walls 10x.jar" />
     </classpathModifications>
     <option name="MAIN_CLASS_NAME" value="init.MainProcess" />
     <module name="songs-of-syx-mod-more-options" />

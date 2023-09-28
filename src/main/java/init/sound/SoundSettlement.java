@@ -112,8 +112,11 @@ public class SoundSettlement {
 		private final int index;
 		public final String key;
 
+		/**
+		 * 1.0 = 100% volume
+		 */
 		@Setter
-		private int limiter;
+		private double gainLimiter = 1.0d;
 		
 		
 		Sound(int index, String key, PATH path){
@@ -127,7 +130,7 @@ public class SoundSettlement {
 			this.index = index;
 			this.key = key;
 		}
-		
+
 		public void rnd(RECTANGLE body) {
 			rnd(body, 0.8f + RND.rFloat(0.2));
 		}
@@ -143,13 +146,7 @@ public class SoundSettlement {
 			float pitch = RND.rFloat1(0.3);
 			gain *= ggain;
 
-			if (limiter == 0) {
-				gain = 0;
-			} else if (limiter == 100) {
-				gain = gain * 100 / 0.0001f;
-			} else {
-				gain = gain * 100 / (100 - limiter);
-			}
+			gain = gain * gainLimiter;
 			
 			sounds[i].play(x, y, pitch, (float)gain, false);
 		}

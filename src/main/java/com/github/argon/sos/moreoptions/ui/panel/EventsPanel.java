@@ -1,10 +1,13 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.game.ui.Checkbox;
+import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
+import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.VerticalLine;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.CheckboxBuilder;
+import com.github.argon.sos.moreoptions.ui.SliderBuilder;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
@@ -20,13 +23,17 @@ public class EventsPanel extends GuiSection {
     @Getter
     private final Map<String, Checkbox> settlementEventsCheckboxes = new HashMap<>();
     private final Map<String, Checkbox> worldEventsCheckboxes = new HashMap<>();
+    private final Map<String, Slider> eventsChanceSliders;
 
     public EventsPanel(
         Map<String, Boolean> settlementEventsConfig,
-        Map<String, Boolean> worldEventsConfig
+        Map<String, Boolean> worldEventsConfig,
+        Map<String, Integer> eventsChanceConfig
     ) {
         GuiSection settlement = settlementCheckboxes(settlementEventsConfig);
         GuiSection world = worldCheckboxes(worldEventsConfig);
+
+        // todo event reset buttons
 
         GuiSection settlementSection = new GuiSection();
         settlementSection.addDown(0, new GHeader("Settlement"));
@@ -36,11 +43,33 @@ public class EventsPanel extends GuiSection {
         worldSection.addDown(0, new GHeader("World"));
         worldSection.addDown(10, world);
 
-        addRight(0, settlementSection);
-        addRight(0, new VerticalLine(101, settlementSection.body().height(), 1));
-        addRight(0, worldSection);
+        GuiSection checkBoxSection = new GuiSection();
+        checkBoxSection.addRight(0, settlementSection);
+        checkBoxSection.addRight(0, new VerticalLine(101, settlementSection.body().height(), 1));
+        checkBoxSection.addRight(0, worldSection);
+        addDownC(0, checkBoxSection);
 
-        applyConfig(settlementEventsConfig, worldEventsConfig);
+        SliderBuilder sliderBuilder = new SliderBuilder();
+        Map<String, SliderBuilder.Definition> eventsChanceSlidersConfig = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey,
+            config -> SliderBuilder.Definition.builder()
+                .title(config.getKey())
+                .maxWidth(200)
+                .max(1000)
+                .build()));
+
+        GuiSection sliders = sliderBuilder.build(eventsChanceSlidersConfig, 150);
+        eventsChanceSliders = sliderBuilder.getSliders();
+
+        GuiSection eventsChanceSection = new GuiSection();
+        eventsChanceSection.addDown(0, new GHeader("Event Chances"));
+        eventsChanceSection.addDown(5, sliders);
+
+        HorizontalLine horizontalLine = new HorizontalLine(eventsChanceSection.body().width(), 14, 1);
+        addDownC(10, horizontalLine);
+        addDownC(10, eventsChanceSection);
+
+        applyConfig(settlementEventsConfig, worldEventsConfig, eventsChanceConfig);
     }
 
     public Map<String, Boolean> getSettlementEventsConfig() {
@@ -53,16 +82,42 @@ public class EventsPanel extends GuiSection {
             .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().selectedIs()));
     }
 
-    public void applyConfig(Map<String, Boolean> settlementEventsConfig, Map<String, Boolean> worldEventsConfig) {
-        log.trace("Applying settlement events config %s", settlementEventsConfig);
-        log.trace("Applying world events config %s", worldEventsConfig);
+    public Map<String, Integer> getEventsChanceConfig() {
+        return eventsChanceSliders.entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
+    }
+
+    public void applyConfig(
+        Map<String, Boolean> settlementEventsConfig,
+        Map<String, Boolean> worldEventsConfig,
+        Map<String, Integer> eventsChanceConfig
+    ) {
+        log.trace("Applying UI settlement events config %s", settlementEventsConfig);
+        log.trace("Applying UI world events config %s", worldEventsConfig);
+        log.trace("Applying UI events chance config %s", eventsChanceConfig);
 
         settlementEventsConfig.forEach((key, value) -> {
-            settlementEventsCheckboxes.get(key).selectedSet(value);
+            if (settlementEventsCheckboxes.containsKey(key)) {
+                settlementEventsCheckboxes.get(key).selectedSet(value);
+            } else {
+                log.warn("No checkbox with key %s found in UI", key);
+            }
         });
 
         worldEventsConfig.forEach((key, value) -> {
-            worldEventsCheckboxes.get(key).selectedSet(value);
+            if (worldEventsCheckboxes.containsKey(key)) {
+                worldEventsCheckboxes.get(key).selectedSet(value);
+            } else {
+                log.warn("No checkbox with key %s found in UI", key);
+            }
+        });
+
+        eventsChanceConfig.forEach((key, value) -> {
+            if (eventsChanceSliders.containsKey(key)) {
+                eventsChanceSliders.get(key).setValue(value);
+            } else {
+                log.warn("No slider with key %s found in UI", key);
+            }
         });
     }
 

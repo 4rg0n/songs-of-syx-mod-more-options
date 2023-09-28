@@ -1,7 +1,5 @@
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import init.sound.SOUND;
 import init.sound.SoundAmbience;
 import init.sound.SoundSettlement;
@@ -16,35 +14,59 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameSoundsApi {
 
-    private final static Logger log = Loggers.getLogger(GameSoundsApi.class);
-
     @Getter(lazy = true)
     private final static GameSoundsApi instance = new GameSoundsApi();
 
+    private Map<String, SoundSettlement.Sound> settlementSounds;
+    private Map<String, SoundSettlement.Sound> roomSounds;
+    private Map<String, SoundAmbience.Ambience> ambienceSounds;
+
     public  Map<String, SoundSettlement.Sound> getSettlementSounds() {
-        LIST<SoundSettlement.Sound> gameSounds = SOUND.sett().action.all();
-        Map<String, SoundSettlement.Sound> sounds = new HashMap<>();
+        if (settlementSounds == null) {
+            LIST<SoundSettlement.Sound> gameSounds = SOUND.sett().action.all();
+            settlementSounds = new HashMap<>();
 
-        gameSounds.forEach(sound -> {
-            sounds.put(sound.key, sound);
-        });
+            gameSounds.forEach(sound -> {
+                if (sound.key.charAt(0) == '_') {
+                    settlementSounds.put("sounds.settlement." + sound.key, sound);
+                }
+            });
+        }
 
-        return sounds;
+        return settlementSounds;
+    }
+
+    public  Map<String, SoundSettlement.Sound> getRoomSounds() {
+        if (roomSounds == null) {
+            LIST<SoundSettlement.Sound> gameSounds = SOUND.sett().action.all();
+             roomSounds = new HashMap<>();
+
+            gameSounds.forEach(sound -> {
+                if (sound.key.charAt(0) != '_') {
+                    roomSounds.put("sounds.room." + sound.key, sound);
+                }
+            });
+        }
+
+
+        return roomSounds;
     }
 
     public Map<String, SoundAmbience.Ambience> getAmbienceSounds() {
-        SoundAmbience soundAmbience = SOUND.ambience();
-        Map<String, SoundAmbience.Ambience> sounds = new HashMap<>();
+        if (ambienceSounds == null) {
+            SoundAmbience soundAmbience = SOUND.ambience();
+            ambienceSounds = new HashMap<>();
 
-        sounds.put("nature", soundAmbience.nature);
-        sounds.put("night", soundAmbience.night);
-        sounds.put("rain", soundAmbience.rain);
-        sounds.put("wind", soundAmbience.wind);
-        sounds.put("thunder", soundAmbience.thunder);
-        sounds.put("water", soundAmbience.water);
-        sounds.put("windhowl", soundAmbience.windhowl);
-        sounds.put("windTrees", soundAmbience.windTrees);
+            ambienceSounds.put("sounds.ambience.nature", soundAmbience.nature);
+            ambienceSounds.put("sounds.ambience.night", soundAmbience.night);
+            ambienceSounds.put("sounds.ambience.rain", soundAmbience.rain);
+            ambienceSounds.put("sounds.ambience.wind", soundAmbience.wind);
+            ambienceSounds.put("sounds.ambience.thunder", soundAmbience.thunder);
+            ambienceSounds.put("sounds.ambience.water", soundAmbience.water);
+            ambienceSounds.put("sounds.ambience.windhowl", soundAmbience.windhowl);
+            ambienceSounds.put("sounds.ambience.windTrees", soundAmbience.windTrees);
+        }
 
-        return sounds;
+        return ambienceSounds;
     }
 }

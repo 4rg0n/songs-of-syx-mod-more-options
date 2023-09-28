@@ -10,20 +10,28 @@ import snake2d.util.gui.GuiSection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class WeatherPanel extends GuiSection {
-    private static final Logger log = Loggers.getLogger(WeatherPanel.class);
+public class BoostersPanel extends GuiSection {
+    private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
     private final Map<String, Slider> sliders;
-    public WeatherPanel(Map<String, Integer> weatherConfig) {
+    public BoostersPanel(Map<String, Integer> boosterConfig) {
         SliderBuilder sliderBuilder = new SliderBuilder();
-        GuiSection sliderSection = sliderBuilder.buildDefault(weatherConfig, 400);
+        Map<String, SliderBuilder.Definition> sliderDefinitions = boosterConfig.entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey,
+            config -> SliderBuilder.Definition.builder()
+                .title(config.getKey())
+                .maxWidth(200)
+                .max(1000)
+                .build()));
+
+        GuiSection sliderSection = sliderBuilder.build(sliderDefinitions, 600);
         sliders = sliderBuilder.getSliders();
 
         GuiSection section = new GuiSection();
         section.addDown(0, sliderSection);
         addDownC(0, section);
 
-        applyConfig(weatherConfig);
+        applyConfig(boosterConfig);
     }
 
     public Map<String, Integer> getConfig() {

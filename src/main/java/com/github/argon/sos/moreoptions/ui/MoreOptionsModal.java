@@ -4,11 +4,13 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
+import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.EventsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.SoundsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
 import init.C;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import snake2d.MButt;
 import snake2d.Renderer;
 import snake2d.util.color.COLOR;
@@ -25,19 +27,31 @@ import view.main.VIEW;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Window containing all other UI elements.
+ * Will pop up in the middle of the game and pauses the game.
+ *
+ * FIXME BUG? hovering over elements behind the window will trigger ui elements beneath e.g. showing tooltips from citizens
+ */
+@RequiredArgsConstructor
 public class MoreOptionsModal extends Interrupter {
 
-    private final GuiSection section;
+    private final GuiSection section = new GuiSection();;
 
-    private final CLICKABLE.Switcher switcher;
+    private CLICKABLE.Switcher switcher;
 
     private final Map<String, GuiSection> panels = new LinkedHashMap<>();
 
-    private final ConfigStore configStore;
-    private final EventsPanel eventsPanel;
-    private final SoundsPanel soundsPanel;
-    private final WeatherPanel weatherPanel;
+    private EventsPanel eventsPanel;
+    private  SoundsPanel soundsPanel;
+    private  WeatherPanel weatherPanel;
 
+    private  BoostersPanel boostersPanel;
+
+    private final ConfigStore configStore;
+
+    @Getter
+    private Button cancelButton;
     @Getter
     private Button resetButton;
 
@@ -53,24 +67,21 @@ public class MoreOptionsModal extends Interrupter {
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
 
-    public MoreOptionsModal(ConfigStore configStore) {
-        this.section = new GuiSection();
-        this.configStore = configStore;
-        MoreOptionsConfig config = configStore.getCurrentConfig()
-            .orElse(MoreOptionsConfig.builder().build());
-
+    public void init(MoreOptionsConfig config) {
         GPanelL pan = new GPanelL();
         pan.setTitle("More Options");
         pan.setCloseAction(this::hide);
         section.add(pan);
 
-        soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement());
-        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld());
+        soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
+        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance());
         weatherPanel = new WeatherPanel(config.getWeather());
+        boostersPanel = new BoostersPanel(config.getBoosters());
 
         panels.put("Sounds", soundsPanel);
         panels.put("Events", eventsPanel);
         panels.put("Weather", weatherPanel);
+        panels.put("Boosters", boostersPanel);
 
         GuiSection header = header();
         section.add(header);
@@ -78,7 +89,7 @@ public class MoreOptionsModal extends Interrupter {
         switcher = new CLICKABLE.Switcher(soundsPanel);
         section.add(switcher);
 
-        HorizontalLine horizontalLine = new HorizontalLine(header.body().width(), 14, 1);
+        HorizontalLine horizontalLine = new HorizontalLine(soundsPanel.body().width(), 14, 1);
         section.add(horizontalLine);
 
         GuiSection footer = footer();
@@ -114,16 +125,20 @@ public class MoreOptionsModal extends Interrupter {
         return MoreOptionsConfig.builder()
             .eventsSettlement(eventsPanel.getSettlementEventsConfig())
             .eventsWorld(eventsPanel.getWorldEventsConfig())
+            .eventsChance(eventsPanel.getEventsChanceConfig())
             .soundsAmbience(soundsPanel.getSoundsAmbienceConfig())
             .soundsSettlement(soundsPanel.getSoundsSettlementConfig())
+            .soundsRoom(soundsPanel.getSoundsRoomConfig())
             .weather(weatherPanel.getConfig())
+            .boosters(boostersPanel.getConfig())
             .build();
     }
 
     public void applyConfig(MoreOptionsConfig config) {
-        eventsPanel.applyConfig(config.getEventsSettlement(), config.getEventsWorld());
-        soundsPanel.applyConfig(config.getSoundsAmbience(), config.getSoundsSettlement());
+        eventsPanel.applyConfig(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance());
+        soundsPanel.applyConfig(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
         weatherPanel.applyConfig(config.getWeather());
+        boostersPanel.applyConfig(config.getBoosters());
     }
 
     /**
@@ -160,9 +175,13 @@ public class MoreOptionsModal extends Interrupter {
     private GuiSection footer() {
         GuiSection section = new GuiSection();
 
+        this.cancelButton = new Button("Cancel", COLOR.WHITE25);
+        cancelButton.hoverInfoSet("Closes window without applying changes");
+        section.addRight(0, cancelButton);
+
         this.resetButton = new Button("Default", COLOR.WHITE25);
         resetButton.hoverInfoSet("Resets to default options");
-        section.addRight(0, resetButton);
+        section.addRight(10, resetButton);
 
         this.undoButton = new Button("Undo", COLOR.WHITE25);
         undoButton.hoverInfoSet("Undo made changes");

@@ -11,6 +11,7 @@ import snake2d.Errors;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,11 +29,12 @@ public class ConfigJsonService {
 
     private final PATH savePath;
 
-    /**
-     * Configuration from games user profile
-     */
     public Optional<MoreOptionsConfig> loadConfig() {
-        return load(savePath);
+        return load(savePath, null);
+    }
+
+    public Optional<MoreOptionsConfig> loadConfig(MoreOptionsConfig defaultConfig) {
+        return load(savePath, defaultConfig);
     }
 
     public boolean saveConfig(MoreOptionsConfig config) {
@@ -44,9 +46,12 @@ public class ConfigJsonService {
             configJson.add("VERSION", config.getVersion());
             configJson.add("EVENTS_SETTLEMENT", mapBool(config.getEventsSettlement()));
             configJson.add("EVENTS_WORLD", mapBool(config.getEventsWorld()));
+            configJson.add("EVENTS_CHANCE", mapInteger(config.getEventsChance()));
             configJson.add("SOUNDS_AMBIENCE", mapInteger(config.getSoundsAmbience()));
             configJson.add("SOUNDS_SETTLEMENT", mapInteger(config.getSoundsSettlement()));
+            configJson.add("SOUNDS_ROOM", mapInteger(config.getSoundsRoom()));
             configJson.add("WEATHER", mapInteger(config.getWeather()));
+            configJson.add("BOOSTERS", mapInteger(config.getBoosters()));
 
             // save file exists?
             Path path;
@@ -71,19 +76,19 @@ public class ConfigJsonService {
         return false;
     }
 
-    public Optional<MoreOptionsConfig> load(PATH path) {
+    public Optional<MoreOptionsConfig> load(PATH path, MoreOptionsConfig defaultConfig) {
         log.debug("Loading json config from %s", path.get());
         if (!path.exists(MoreOptionsConfig.FILE_NAME)) {
             // do not load what's not there
-            log.debug("Configuration %s/%s not present using defaults.", path.get(), MoreOptionsConfig.FILE_NAME);
+            log.debug("Configuration %s" + File.separator + "%s.txt not present", path.get(), MoreOptionsConfig.FILE_NAME);
             return Optional.empty();
         }
 
         Path loadPath = path.get(MoreOptionsConfig.FILE_NAME);
-        return load(loadPath);
+        return load(loadPath, defaultConfig);
     }
 
-    public Optional<MoreOptionsConfig> load(Path path) {
+    public Optional<MoreOptionsConfig> load(Path path, MoreOptionsConfig defaultConfig) {
         Json json;
 
         try {
@@ -94,14 +99,35 @@ public class ConfigJsonService {
         }
 
         return Optional.of(MoreOptionsConfig.builder()
-            .version((json.has("VERSION")) ? json.i("VERSION") : MoreOptionsConfig.VERSION)
-            .eventsWorld((json.has("EVENTS_WORLD")) ? mapBool(json.json("EVENTS_WORLD")) : new HashMap<>())
-            .eventsSettlement((json.has("EVENTS_SETTLEMENT")) ? mapBool(json.json("EVENTS_SETTLEMENT")) : new HashMap<>())
-            .soundsAmbience((json.has("SOUNDS_AMBIENCE")) ? mapInteger(json.json("SOUNDS_AMBIENCE"), 0, 100) : new HashMap<>())
-            .soundsSettlement((json.has("SOUNDS_SETTLEMENT")) ? mapInteger(json.json("SOUNDS_SETTLEMENT"), 0 , 100) : new HashMap<>())
-            .weather((json.has("WEATHER")) ? mapInteger(json.json("WEATHER"), 0, 100) : new HashMap<>())
+            .version((json.has("VERSION")) ? json.i("VERSION")
+                : MoreOptionsConfig.VERSION)
+
+            .eventsWorld((json.has("EVENTS_WORLD")) ? mapBool(json.json("EVENTS_WORLD"))
+                : (defaultConfig != null) ? defaultConfig.getEventsWorld() : new HashMap<>())
+
+            .eventsSettlement((json.has("EVENTS_SETTLEMENT")) ? mapBool(json.json("EVENTS_SETTLEMENT"))
+                : (defaultConfig != null) ? defaultConfig.getEventsSettlement() : new HashMap<>())
+
+            .eventsChance((json.has("EVENTS_CHANCE")) ? mapInteger(json.json("EVENTS_CHANCE"), 0, 1000)
+                : (defaultConfig != null) ? defaultConfig.getEventsChance() : new HashMap<>())
+
+            .soundsAmbience((json.has("SOUNDS_AMBIENCE")) ? mapInteger(json.json("SOUNDS_AMBIENCE"), 0, 100)
+                : (defaultConfig != null) ? defaultConfig.getSoundsAmbience() : new HashMap<>())
+
+            .soundsSettlement((json.has("SOUNDS_SETTLEMENT")) ? mapInteger(json.json("SOUNDS_SETTLEMENT"), 0 , 100)
+                : (defaultConfig != null) ? defaultConfig.getSoundsSettlement() : new HashMap<>())
+
+            .soundsRoom((json.has("SOUNDS_ROOM")) ? mapInteger(json.json("SOUNDS_ROOM"), 0 , 100)
+                : (defaultConfig != null) ? defaultConfig.getSoundsRoom() : new HashMap<>())
+
+            .weather((json.has("WEATHER")) ? mapInteger(json.json("WEATHER"), 0, 100)
+                : (defaultConfig != null) ? defaultConfig.getWeather() : new HashMap<>())
+
+            .boosters((json.has("BOOSTERS")) ? mapInteger(json.json("BOOSTERS"), 0, 100)
+                : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
             .build());
     }
+
 
     private Map<String, Boolean> mapBool(Json json) {
         Map<String, Boolean> configs = new HashMap<>();

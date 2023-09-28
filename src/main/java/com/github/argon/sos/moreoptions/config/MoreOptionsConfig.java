@@ -28,11 +28,17 @@ public class MoreOptionsConfig {
     private Map<String, Boolean> eventsWorld = new HashMap<>();
 
     @Builder.Default
+    private Map<String, Integer> eventsChance = new HashMap<>();
+
+    @Builder.Default
     private Map<String, Integer> soundsAmbience = new HashMap<>();
 
     @Builder.Default
     private Map<String, Integer> soundsSettlement = new HashMap<>();
-
+    @Builder.Default
+    private Map<String, Integer> soundsRoom = new HashMap<>();
     @Builder.Default
     private Map<String, Integer> weather = new HashMap<>();
+    @Builder.Default
+    private Map<String, Integer> boosters = new HashMap<>();
 }

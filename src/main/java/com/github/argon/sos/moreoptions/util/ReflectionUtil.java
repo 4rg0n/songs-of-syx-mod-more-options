@@ -6,10 +6,7 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -39,24 +36,31 @@ public class ReflectionUtil {
     public static <T> Optional<T> getDeclaredField(String fieldName, Object instance)  {
         try {
             Field field = instance.getClass().getDeclaredField(fieldName);
-            return getDeclaredField(field, instance);
+            return getDeclaredFieldValue(field, instance);
         } catch (NoSuchFieldException e) {
             log.error("Field %s does not exist", fieldName, e);
             return Optional.empty();
         }
     }
 
-    public static <T> Optional<T> getDeclaredField(Field field, Object instance) {
+    public static <T> Optional<T> getDeclaredFieldValue(Field field, Object instance) {
         field.setAccessible(true);
 
         try {
             //noinspection unchecked
-            return Optional.of((T) field.get(instance));
+            return Optional.ofNullable((T) field.get(instance));
         } catch (Exception e) {
             log.error("Can not access field %s in %s.",
                     field.getName(), instance.getClass().getSimpleName(), e);
             return Optional.empty();
         }
+    }
+
+    public static <T> Optional<T> getDeclaredFieldValue(String fieldName, Object instance) {
+
+        return getDeclaredField(fieldName, instance.getClass()).map(field ->
+            (T) getDeclaredFieldValue(field, instance).orElse(null)
+        );
     }
 
     public static Optional<Field> getDeclaredField(String fieldName, Class<?> clazz) {

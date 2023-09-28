@@ -1,7 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import lombok.Getter;
-import lombok.Setter;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.sprite.SPRITE;
@@ -15,7 +14,6 @@ public class Button extends GButt.ButtPanel {
     private boolean markError = false;
 
     @Getter
-    @Setter
     private boolean enabled = true;
 
     private double markUpdateTimerSeconds = 0d;
@@ -31,6 +29,11 @@ public class Button extends GButt.ButtPanel {
         super(label);
         this.color = color;
         bg(color);
+    }
+
+    public void setEnabled(boolean enabled) {
+        activeSet(enabled);
+        this.enabled = enabled;
     }
 
     public Button(SPRITE label) {

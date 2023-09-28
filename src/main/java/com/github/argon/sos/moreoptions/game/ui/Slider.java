@@ -35,10 +35,16 @@ public class Slider extends GuiSection {
     private static final CharSequence setAmount = "Set amount";
     private static final CharSequence setAmountD = "Set amount {0}-{1}";
 
+    /**
+     * Makes slider unusable and greyed out
+     */
     @Getter
     @Setter
     private boolean enabled = true;
 
+    /**
+     * Will lock the possibility to move the slider with the mouse wheel
+     */
     @Setter
     private boolean lockScroll = false;
 
@@ -359,7 +365,11 @@ public class Slider extends GuiSection {
         }
         @Override
         public boolean hover(COORDINATE mCoo) {
-            if (super.hover(mCoo) && !lockScroll) {
+            boolean hover = super.hover(mCoo);
+
+            // move slider when mouse wheel scrolls
+            // this can be a bad idea when the slider is in a scrollable area
+            if (hover && !lockScroll) {
                 double d = MButt.clearWheelSpin();
                 if (d < 0)
                     in.inc(-1);
@@ -367,7 +377,8 @@ public class Slider extends GuiSection {
                     in.inc(1);
                 return true;
             }
-            return false;
+
+            return hover;
         }
     }
 
