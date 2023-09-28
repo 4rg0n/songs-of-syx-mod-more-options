@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui;
+package com.github.argon.sos.moreoptions.ui.builder;
 
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.ui.Checkbox;

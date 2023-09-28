@@ -17,7 +17,17 @@ public class Dictionary {
     @Getter(lazy = true)
     private final static Dictionary instance = new Dictionary();
 
+    /**
+     * Name of the config file
+     */
+    public final static String FILE_NAME = "MoreOptionsDictionary";
+
+    @Getter
     private final Map<String, Entry> entries = new HashMap<>();
+
+    public void addAll(Map<String, Entry> entries) {
+        this.entries.putAll(entries);
+    }
 
     public Dictionary add(String key, String title, String description) {
         entries.put(key, Entry.builder()

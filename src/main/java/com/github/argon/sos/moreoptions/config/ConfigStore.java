@@ -1,12 +1,15 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import init.paths.PATHS;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -14,12 +17,12 @@ import java.util.stream.Collectors;
 public class ConfigStore {
     private final static Logger log = Loggers.getLogger(ConfigStore.class);
 
-    private final ConfigJsonService configJsonService;
+    private final ConfigService configService;
     private final GameApis gameApis;
 
     @Getter(lazy = true)
     private final static ConfigStore instance = new ConfigStore(
-        ConfigJsonService.getInstance(),
+        ConfigService.getInstance(),
         GameApis.getInstance()
     );
 
@@ -68,14 +71,14 @@ public class ConfigStore {
      * @return configuration loaded from file
      */
     public Optional<MoreOptionsConfig> loadConfig() {
-        return configJsonService.loadConfig();
+        return configService.loadConfig(PATHS.local().SETTINGS, MoreOptionsConfig.FILE_NAME);
     }
 
     /**
      * @return configuration loaded from file with merged defaults
      */
     public Optional<MoreOptionsConfig> loadConfig(MoreOptionsConfig defaultConfig) {
-        return configJsonService.loadConfig(defaultConfig);
+        return configService.loadConfig(PATHS.local().SETTINGS, MoreOptionsConfig.FILE_NAME, defaultConfig);
     }
 
     /**
@@ -84,6 +87,14 @@ public class ConfigStore {
      * @return whether saving was successful
      */
     public boolean saveConfig(MoreOptionsConfig config) {
-       return configJsonService.saveConfig(config);
+       return configService.saveConfig(PATHS.local().SETTINGS, MoreOptionsConfig.FILE_NAME, config);
+    }
+
+    public Optional<Map<String, Dictionary.Entry>> loadDictionary() {
+        return configService.loadDictionary(PATHS.INIT().getFolder("config"), Dictionary.FILE_NAME);
+    }
+
+    public boolean saveDictionary(Map<String, Dictionary.Entry> entries) {
+        return configService.saveDictionary(entries, PATHS.INIT().getFolder("config"), Dictionary.FILE_NAME);
     }
 }

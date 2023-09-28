@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.ui.panel;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.SliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.SliderBuilder;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
 

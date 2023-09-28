@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui;
+package com.github.argon.sos.moreoptions.ui.builder;
 
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
