@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
+import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.JsonMapper;
@@ -43,6 +44,7 @@ public class ConfigService {
 
         JsonE configJson = new JsonE();
         configJson.add("VERSION", config.getVersion());
+        configJson.addString("LOG_LEVEL", config.getLogLevel().getName());
         configJson.add("EVENTS_SETTLEMENT", JsonMapper.mapBoolean(config.getEventsSettlement()));
         configJson.add("EVENTS_WORLD", JsonMapper.mapBoolean(config.getEventsWorld()));
         configJson.add("EVENTS_CHANCE", JsonMapper.mapInteger(config.getEventsChance()));
@@ -60,6 +62,8 @@ public class ConfigService {
             MoreOptionsConfig.builder()
                 .version((json.has("VERSION")) ? json.i("VERSION")
                     : MoreOptionsConfig.VERSION)
+                .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
+                    : Level.INFO)
 
                 .eventsWorld((json.has("EVENTS_WORLD")) ? JsonMapper.mapBoolean(json.json("EVENTS_WORLD"), true)
                     : (defaultConfig != null) ? defaultConfig.getEventsWorld() : new HashMap<>())
@@ -67,7 +71,7 @@ public class ConfigService {
                 .eventsSettlement((json.has("EVENTS_SETTLEMENT")) ? JsonMapper.mapBoolean(json.json("EVENTS_SETTLEMENT"), true)
                     : (defaultConfig != null) ? defaultConfig.getEventsSettlement() : new HashMap<>())
 
-                .eventsChance((json.has("EVENTS_CHANCE")) ? JsonMapper.mapInteger(json.json("EVENTS_CHANCE"), 0, 1000)
+                .eventsChance((json.has("EVENTS_CHANCE")) ? JsonMapper.mapInteger(json.json("EVENTS_CHANCE"), 0, 10000)
                     : (defaultConfig != null) ? defaultConfig.getEventsChance() : new HashMap<>())
 
                 .soundsAmbience((json.has("SOUNDS_AMBIENCE")) ? JsonMapper.mapInteger(json.json("SOUNDS_AMBIENCE"), 0, 100)
@@ -82,7 +86,7 @@ public class ConfigService {
                 .weather((json.has("WEATHER")) ? JsonMapper.mapInteger(json.json("WEATHER"), 0, 100)
                     : (defaultConfig != null) ? defaultConfig.getWeather() : new HashMap<>())
 
-                .boosters((json.has("BOOSTERS")) ? JsonMapper.mapInteger(json.json("BOOSTERS"), 0, 100)
+                .boosters((json.has("BOOSTERS")) ? JsonMapper.mapInteger(json.json("BOOSTERS"), 0, 10000)
                     : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
                 .build()
         );
@@ -124,5 +128,27 @@ public class ConfigService {
         });
 
         return jsonService.saveJson(jsonEntries, path, fileName);
+    }
+
+    public MoreOptionsConfig mergeMissing(MoreOptionsConfig target, MoreOptionsConfig source) {
+
+        target.setEventsChance(mergeMissing(target.getEventsChance(), source.getEventsChance()));
+        target.setEventsSettlement(mergeMissing(target.getEventsSettlement(), source.getEventsSettlement()));
+        target.setEventsWorld(mergeMissing(target.getEventsWorld(), source.getEventsWorld()));
+        target.setSoundsAmbience(mergeMissing(target.getSoundsAmbience(), source.getSoundsAmbience()));
+        target.setSoundsRoom(mergeMissing(target.getSoundsRoom(), source.getSoundsRoom()));
+        target.setSoundsSettlement(mergeMissing(target.getSoundsSettlement(), source.getSoundsSettlement()));
+        target.setWeather(mergeMissing(target.getWeather(), source.getWeather()));
+        target.setBoosters(mergeMissing(target.getBoosters(), source.getBoosters()));
+
+        return target;
+    }
+
+    private <T> Map<String, T> mergeMissing(Map<String, T> target, Map<String, T> source) {
+        source.forEach((key, value) -> {
+            target.computeIfAbsent(key, s -> value);
+        });
+
+        return target;
     }
 }

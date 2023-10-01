@@ -15,4 +15,6 @@ public interface SCRIPT<T> extends script.SCRIPT {
      * @param config nullable
      */
     void initGameSaveLoaded(T config);
+
+    void update(double seconds);
 }

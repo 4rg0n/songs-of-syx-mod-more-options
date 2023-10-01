@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.util.MathUtil;
 import init.boostable.BOOSTABLE;
 import init.boostable.BOOSTABLES;
 import lombok.AccessLevel;
@@ -22,6 +23,10 @@ public class GameBoosterApi {
     @Getter(lazy = true)
     private final static GameBoosterApi instance = new GameBoosterApi();
 
+    public void clearCached() {
+        boosters = null;
+    }
+
     public Map<String, BOOSTABLE> getBoosters() {
         if (boosters == null) {
             boosters = new HashMap<>();
@@ -31,5 +36,13 @@ public class GameBoosterApi {
         }
 
         return boosters;
+    }
+
+    public void setBoostValue(BOOSTABLE boostable, int boost) {
+        double currentValue = boostable.defAdd;
+        double newValue = currentValue * MathUtil.toPercentage(boost);
+
+        log.trace("Applying boost value %s%% to %s = %s", boost, boostable.key, newValue);
+        boostable.setDefAdd(newValue);
     }
 }

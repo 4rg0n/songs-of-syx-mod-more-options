@@ -1,8 +1,10 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.util.StringUtil;
 import lombok.*;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +29,27 @@ public class Dictionary {
 
     public void addAll(Map<String, Entry> entries) {
         this.entries.putAll(entries);
+    }
+
+    /**
+     * @return same list, but translated
+     */
+    public <T extends Translatable> Collection<T> translate(Collection<T> translatables) {
+        translatables.forEach(this::translate);
+        return translatables;
+    }
+
+    public <T extends Translatable> T translate(T translatable) {
+        String key = translatable.getKey();
+
+        if (key != null && translatable.isTranslate()) {
+            Entry entry = get(key);
+
+            translatable.setTitle(entry.getTitle());
+            translatable.setDescription(entry.getDescription());
+        }
+
+        return translatable;
     }
 
     public Dictionary add(String key, String title, String description) {

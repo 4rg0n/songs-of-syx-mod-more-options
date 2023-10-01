@@ -6,8 +6,10 @@ import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.VerticalLine;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.builder.CheckboxBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.SliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
+import com.github.argon.sos.moreoptions.ui.builder.element.*;
+import com.github.argon.sos.moreoptions.ui.builder.section.CheckboxesBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.section.SlidersBuilder;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
@@ -30,17 +32,26 @@ public class EventsPanel extends GuiSection {
         Map<String, Boolean> worldEventsConfig,
         Map<String, Integer> eventsChanceConfig
     ) {
-        GuiSection settlement = settlementCheckboxes(settlementEventsConfig);
-        GuiSection world = worldCheckboxes(worldEventsConfig);
+        BuildResult<GuiSection, Checkbox> settlementCheckboxesResult = checkboxes(settlementEventsConfig);
+        GuiSection settlement = settlementCheckboxesResult.getResult();
+        settlementEventsCheckboxes.putAll(settlementCheckboxesResult.getElements());
 
-        // todo event reset buttons
+        BuildResult<GuiSection, Checkbox> worldCheckboxesResult = checkboxes(worldEventsConfig);
+        GuiSection world = worldCheckboxesResult.getResult();
+        worldEventsCheckboxes.putAll(worldCheckboxesResult.getElements());
+
+        // todo event reset buttons?
 
         GuiSection settlementSection = new GuiSection();
-        settlementSection.addDown(0, new GHeader("Settlement"));
+        GHeader settlementHeader = new GHeader("Settlement");
+        settlementHeader.hoverInfoSet("Events occurring in your settlement.");
+        settlementSection.addDown(0, settlementHeader);
         settlementSection.addDown(10, settlement);
 
         GuiSection worldSection = new GuiSection();
-        worldSection.addDown(0, new GHeader("World"));
+        GHeader worldHeader = new GHeader("World");
+        settlementHeader.hoverInfoSet("Events occurring in the world.");
+        worldSection.addDown(0, worldHeader);
         worldSection.addDown(10, world);
 
         GuiSection checkBoxSection = new GuiSection();
@@ -49,20 +60,14 @@ public class EventsPanel extends GuiSection {
         checkBoxSection.addRight(0, worldSection);
         addDownC(0, checkBoxSection);
 
-        SliderBuilder sliderBuilder = new SliderBuilder();
-        Map<String, SliderBuilder.Definition> eventsChanceSlidersConfig = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            config -> SliderBuilder.Definition.builder()
-                .title(config.getKey())
-                .maxWidth(200)
-                .max(1000)
-                .build()));
-
-        GuiSection sliders = sliderBuilder.build(eventsChanceSlidersConfig, 150);
-        eventsChanceSliders = sliderBuilder.getSliders();
+        BuildResult<GuiSection, Slider> buildResult = sliders(eventsChanceConfig);
+        GuiSection sliders = buildResult.getResult();
+        eventsChanceSliders = buildResult.getElements();
 
         GuiSection eventsChanceSection = new GuiSection();
-        eventsChanceSection.addDown(0, new GHeader("Event Chances"));
+        GHeader eventChancesHeader = new GHeader("Event Chances");
+        eventChancesHeader.hoverInfoSet("How often an event occurs. Will be multiplied.");
+        eventsChanceSection.addDown(0, eventChancesHeader);
         eventsChanceSection.addDown(5, sliders);
 
         HorizontalLine horizontalLine = new HorizontalLine(eventsChanceSection.body().width(), 14, 1);
@@ -70,6 +75,26 @@ public class EventsPanel extends GuiSection {
         addDownC(10, eventsChanceSection);
 
         applyConfig(settlementEventsConfig, worldEventsConfig, eventsChanceConfig);
+    }
+
+    private BuildResult<GuiSection, Slider> sliders(Map<String, Integer> eventsChanceConfig) {
+        Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey,
+            config -> LabeledSliderBuilder.Definition.builder()
+                .labelDefinition(LabelBuilder.Definition.builder()
+                    .key(config.getKey())
+                    .title(config.getKey())
+                    .build())
+                .sliderDefinition(SliderBuilder.Definition.builder()
+                    .maxWidth(300)
+                    .max(10000)
+                    .build())
+                .build()));
+
+        return SlidersBuilder.builder()
+            .displayHeight(150)
+            .definitions(sliderDefinitions)
+            .build().build();
     }
 
     public Map<String, Boolean> getSettlementEventsConfig() {
@@ -122,30 +147,21 @@ public class EventsPanel extends GuiSection {
     }
 
 
-    private GuiSection settlementCheckboxes(Map<String, Boolean> eventConfig) {
-        Map<String, CheckboxBuilder.Definition> settlementCheckboxes = eventConfig.entrySet().stream().collect(Collectors.toMap(
+    private BuildResult<GuiSection, Checkbox> checkboxes(Map<String, Boolean> eventConfig) {
+        Map<String, LabeledCheckboxBuilder.Definition> settlementCheckboxes = eventConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
-            config -> CheckboxBuilder.Definition.builder()
-                .title(config.getKey())
+            config -> LabeledCheckboxBuilder.Definition.builder()
+                .labelDefinition(LabelBuilder.Definition.builder()
+                    .key(config.getKey())
+                    .title(config.getKey())
+                    .build()
+                )
+                .checkboxDefinition(CheckboxBuilder.Definition.builder().build())
                 .build()));
 
-        CheckboxBuilder checkboxBuilder = new CheckboxBuilder();
-        GuiSection settlement = checkboxBuilder.build(settlementCheckboxes);
-        settlementEventsCheckboxes.putAll(checkboxBuilder.getCheckboxes());
-        return settlement;
-    }
 
-    private GuiSection worldCheckboxes(Map<String, Boolean> eventConfig) {
-        Map<String, CheckboxBuilder.Definition> worldCheckboxes = eventConfig.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            config -> CheckboxBuilder.Definition.builder()
-                .title(config.getKey())
-                .build()));
-
-        CheckboxBuilder checkboxBuilder = new CheckboxBuilder();
-        GuiSection world = checkboxBuilder.build(worldCheckboxes);
-        worldEventsCheckboxes.putAll(checkboxBuilder.getCheckboxes());
-
-        return world;
+        return CheckboxesBuilder.builder()
+            .displayHeight(300)
+            .translate(settlementCheckboxes).build().build();
     }
 }

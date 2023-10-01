@@ -114,8 +114,8 @@ event.settlement.pasture: {
 	DESC: "Pastures can produce less or more randomly.",
 	},
 event.settlement.disease: {
-	TITLE: "Animal Diseases",
-	DESC: "A disease can spread among your pastures and decimate your animal population.",
+	TITLE: "Diseases",
+	DESC: "A disease can spread among your citizens.",
 	},
 sounds.room.MACHINE: {
 	TITLE: "Machine Work",
@@ -224,5 +224,13 @@ event.world.plague: {
 weather.wind: {
 	TITLE: "Wind",
 	DESC: "How strong flora is waving in the wind.",
+	},
+event.chance.raider: {
+	TITLE: "Raider Attack",
+	DESC: "Chance in which raiders can attack you.",
+	},
+event.chance.disease: {
+	TITLE: "Disease",
+	DESC: "Chance of an outbreak among your citizens.",
 	},
 

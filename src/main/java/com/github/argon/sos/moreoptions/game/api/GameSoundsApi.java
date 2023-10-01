@@ -1,5 +1,8 @@
 package com.github.argon.sos.moreoptions.game.api;
 
+import com.github.argon.sos.moreoptions.log.Logger;
+import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.util.MathUtil;
 import init.sound.SOUND;
 import init.sound.SoundAmbience;
 import init.sound.SoundSettlement;
@@ -14,12 +17,20 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameSoundsApi {
 
+    private final static Logger log = Loggers.getLogger(GameSoundsApi.class);
+
     @Getter(lazy = true)
     private final static GameSoundsApi instance = new GameSoundsApi();
 
     private Map<String, SoundSettlement.Sound> settlementSounds;
     private Map<String, SoundSettlement.Sound> roomSounds;
     private Map<String, SoundAmbience.Ambience> ambienceSounds;
+
+    public void clearCached() {
+        settlementSounds = null;
+        roomSounds = null;
+        ambienceSounds = null;
+    }
 
     public  Map<String, SoundSettlement.Sound> getSettlementSounds() {
         if (settlementSounds == null) {
@@ -68,5 +79,19 @@ public class GameSoundsApi {
         }
 
         return ambienceSounds;
+    }
+
+    public void setSoundGainLimiter(SoundAmbience.Ambience sound, int limit) {
+        double limitPerc = MathUtil.toPercentage(limit);
+
+        log.trace("Applying %s%% volume to ambience sound", limit);
+        sound.setGainLimiter(limitPerc);
+    }
+
+    public void setSoundsGainLimiter(SoundSettlement.Sound sound, int limit) {
+        double limitPerc = MathUtil.toPercentage(limit);
+
+        log.trace("Applying %s%% volume to settlement sound", limit, sound.getClass().getSimpleName());
+        sound.setGainLimiter(limitPerc);
     }
 }

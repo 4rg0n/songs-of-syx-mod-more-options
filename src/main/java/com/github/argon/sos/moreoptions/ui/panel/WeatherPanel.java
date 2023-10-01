@@ -3,7 +3,8 @@ package com.github.argon.sos.moreoptions.ui.panel;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.builder.SliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
+import com.github.argon.sos.moreoptions.ui.builder.section.SlidersBuilder;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 
@@ -15,9 +16,14 @@ public class WeatherPanel extends GuiSection {
     @Getter
     private final Map<String, Slider> sliders;
     public WeatherPanel(Map<String, Integer> weatherConfig) {
-        SliderBuilder sliderBuilder = new SliderBuilder();
-        GuiSection sliderSection = sliderBuilder.buildDefault(weatherConfig, 400);
-        sliders = sliderBuilder.getSliders();
+
+        BuildResult<GuiSection, Slider> slidersBuildResult = SlidersBuilder.builder()
+            .displayHeight(400)
+            .defaults(weatherConfig)
+            .build().build();
+
+        GuiSection sliderSection = slidersBuildResult.getResult();
+        sliders = slidersBuildResult.getElements();
 
         GuiSection section = new GuiSection();
         section.addDown(0, sliderSection);

@@ -3,7 +3,8 @@ package com.github.argon.sos.moreoptions.ui.panel;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.builder.SliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
+import com.github.argon.sos.moreoptions.ui.builder.section.SlidersBuilder;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
 
@@ -21,14 +22,26 @@ public class SoundsPanel extends GuiSection {
         Map<String, Integer> soundsSettlementConfig,
         Map<String, Integer> soundsRoomConfig
     ) {
-        SliderBuilder sliderBuilder = new SliderBuilder();
+        BuildResult<GuiSection, Slider> ambienceSlidersResult = SlidersBuilder.builder()
+            .displayHeight(150)
+            .defaults(soundsAmbienceConfig)
+            .build().build();
+        GuiSection ambienceSoundSection = ambienceSlidersResult.getResult();
+        this.ambienceSoundSliders = ambienceSlidersResult.getElements();
 
-        GuiSection ambienceSoundSection = sliderBuilder.buildDefault(soundsAmbienceConfig, 150);
-        this.ambienceSoundSliders = sliderBuilder.getSliders();
-        GuiSection settlementSoundSection = sliderBuilder.buildDefault(soundsSettlementConfig, 150);
-        this.settlementSoundSliders = sliderBuilder.getSliders();
-        GuiSection roomSoundSection = sliderBuilder.buildDefault(soundsRoomConfig, 150);
-        this.roomSoundSliders = sliderBuilder.getSliders();
+        BuildResult<GuiSection, Slider> settlementSlidersResult = SlidersBuilder.builder()
+            .displayHeight(150)
+            .defaults(soundsSettlementConfig)
+            .build().build();
+        GuiSection settlementSoundSection = settlementSlidersResult.getResult();
+        this.settlementSoundSliders = settlementSlidersResult.getElements();
+
+        BuildResult<GuiSection, Slider> roomSlidersResult = SlidersBuilder.builder()
+            .displayHeight(150)
+            .defaults(soundsRoomConfig)
+            .build().build();
+        GuiSection roomSoundSection = roomSlidersResult.getResult();
+        this.roomSoundSliders = roomSlidersResult.getElements();
 
         GuiSection section = new GuiSection();
         GHeader ambienceSoundsHeader = new GHeader("Ambience Sounds");

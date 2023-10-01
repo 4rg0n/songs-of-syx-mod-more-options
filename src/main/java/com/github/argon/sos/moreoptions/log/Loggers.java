@@ -2,16 +2,7 @@ package com.github.argon.sos.moreoptions.log;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
-/**
- * For building and getting loggers.
- * trace {@link Level#FINER}
- * debug {@link Level#FINE}
- * info {@link Level#INFO}
- * warn {@link Level#WARNING}
- * error {@link Level#SEVERE}
- */
 public class Loggers {
     private final static Map<String, Logger> loggers = new HashMap<>();
 

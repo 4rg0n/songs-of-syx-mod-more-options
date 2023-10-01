@@ -97,4 +97,8 @@ public class ConfigStore {
     public boolean saveDictionary(Map<String, Dictionary.Entry> entries) {
         return configService.saveDictionary(entries, PATHS.INIT().getFolder("config"), Dictionary.FILE_NAME);
     }
+
+    public MoreOptionsConfig mergeMissing(MoreOptionsConfig target, MoreOptionsConfig source) {
+        return configService.mergeMissing(target, source);
+    }
 }

@@ -3,10 +3,12 @@ Adds a menu with more options for the game:
 * Toggle certain random events
 * Tune the volume of in game sounds like wind
 * Tune the amount of weather effects like snow
+* Influence bonuses
 
 ![Events](doc/img/events.png)
 ![Sounds](doc/img/sounds.png)
 ![Weather](doc/img/weather.png)
+![Boosters](doc/img/boosters.png)
 
 # Getting started
 

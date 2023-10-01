@@ -15,7 +15,8 @@ public class GameApis {
         GameSoundsApi.getInstance(),
         GameUiApi.getInstance(),
         GameWeatherApi.getInstance(),
-        GameBoosterApi.getInstance()
+        GameBoosterApi.getInstance(),
+        GameModApi.getInstance()
     );
 
     @Accessors(fluent = true)
@@ -32,4 +33,6 @@ public class GameApis {
 
     @Accessors(fluent = true)
     private final  GameBoosterApi boosterApi;
+    @Accessors(fluent = true)
+    private final GameModApi modApi;
 }

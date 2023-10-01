@@ -39,6 +39,8 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 			script.initGamePresent();
 			initGamePresent = true;
 		}
+
+		script.update(v);
 	}
 
 	@Override

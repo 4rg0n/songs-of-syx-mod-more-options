@@ -4,7 +4,6 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.events.EVENTS;
 import init.boostable.BOOSTABLE;
 import init.sound.SoundAmbience;
@@ -55,12 +54,7 @@ public class MoreOptionsConfigurator {
 
             if (boostables.containsKey(key)) {
                 BOOSTABLE boostable = boostables.get(key);
-                double currentValue = boostable.defAdd;
-                double newValue = currentValue * MathUtil.toPercentage(boost);
-
-                log.trace("Applying %s%% to %s = %s", boost, key, newValue);
-                boostable.setDefAdd(newValue);
-
+                gameApis.boosterApi().setBoostValue(boostable, boost);
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", boostables);
@@ -131,10 +125,8 @@ public class MoreOptionsConfigurator {
 
         soundsAmbienceConfig.forEach((key, limit) -> {
             if (ambienceSounds.containsKey(key)) {
-                double limitPerc = MathUtil.toPercentage(limit);
-
-                log.trace("Applying %s%% volume for %s", limit, key);
-                ambienceSounds.get(key).setGainLimiter(limitPerc);
+                SoundAmbience.Ambience ambienceSound = ambienceSounds.get(key);
+                gameApis.soundsApi().setSoundGainLimiter(ambienceSound, limit);
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", ambienceSounds);
@@ -148,10 +140,8 @@ public class MoreOptionsConfigurator {
 
         soundsSettlementConfig.forEach((key, limit) -> {
             if (settlementSounds.containsKey(key)) {
-                double limitPerc = MathUtil.toPercentage(limit);
-
-                log.trace("Applying %s%% volume for %s", limit, key);
-                settlementSounds.get(key).setGainLimiter(limitPerc);
+                SoundSettlement.Sound settlementSound = settlementSounds.get(key);
+                gameApis.soundsApi().setSoundsGainLimiter(settlementSound, limit);
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", settlementSounds);
@@ -165,10 +155,8 @@ public class MoreOptionsConfigurator {
 
         soundsRoomConfig.forEach((key, limit) -> {
             if (roomSounds.containsKey(key)) {
-                double limitPerc = MathUtil.toPercentage(limit);
-
-                log.trace("Applying %s%% volume for %s", limit, key);
-                roomSounds.get(key).setGainLimiter(limitPerc);
+                SoundSettlement.Sound roomeSound = roomSounds.get(key);
+                gameApis.soundsApi().setSoundsGainLimiter(roomeSound, limit);
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", roomSounds);
@@ -184,13 +172,7 @@ public class MoreOptionsConfigurator {
         weatherConfig.forEach((key, value) -> {
             if (weatherThings.containsKey(key)) {
                 WeatherThing weatherThing = weatherThings.get(key);
-
-                double currentValue = weatherThing.getD();
-                double newValue = currentValue * MathUtil.toPercentage(value);
-
-                log.trace("Applying %s%% to %s = %s", value, key, newValue);
-
-                weatherThing.setD(newValue);
+                gameApis.weatherApi().setAmountLimit(weatherThing, value);
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", weatherConfig);

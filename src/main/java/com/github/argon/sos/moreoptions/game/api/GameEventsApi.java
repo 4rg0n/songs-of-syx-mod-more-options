@@ -12,7 +12,6 @@ import init.disease.DISEASES;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import util.data.DOUBLE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,78 +29,94 @@ public class GameEventsApi {
     @Getter(lazy = true)
     private final static GameEventsApi instance = new GameEventsApi();
 
+
+    public void clearCached() {
+        settlementEvents = null;
+        worldEvents = null;
+        eventsChance = null;
+    }
+
     public Map<String, EVENTS.EventResource> getSettlementEvents() {
         if (settlementEvents == null) {
-            settlementEvents = new HashMap<>();
-            EVENTS gameEvents = GAME.events();
-
-            settlementEvents.put("event.settlement.accident", gameEvents.accident);
-            settlementEvents.put("event.settlement.advice", gameEvents.advice);
-            settlementEvents.put("event.settlement.disease", gameEvents.disease);
-            settlementEvents.put("event.settlement.farm", gameEvents.farm);
-            settlementEvents.put("event.settlement.fish", gameEvents.fish);
-            settlementEvents.put("event.settlement.killer", gameEvents.killer);
-            settlementEvents.put("event.settlement.orchard", gameEvents.orchard);
-            settlementEvents.put("event.settlement.pasture", gameEvents.pasture);
-            settlementEvents.put("event.settlement.raceWars", gameEvents.raceWars);
-            settlementEvents.put("event.settlement.riot", gameEvents.riot);
-            settlementEvents.put("event.settlement.slaver", gameEvents.slaver);
-            settlementEvents.put("event.settlement.temperature", gameEvents.temperature);
-            settlementEvents.put("event.settlement.uprising", gameEvents.uprising);
+            settlementEvents = readSettlementEvents();
         }
+
+        return settlementEvents;
+    }
+    public Map<String, EVENTS.EventResource> readSettlementEvents() {
+        Map<String, EVENTS.EventResource> settlementEvents = new HashMap<>();
+        EVENTS gameEvents = GAME.events();
+
+        settlementEvents.put("event.settlement.accident", gameEvents.accident);
+        settlementEvents.put("event.settlement.advice", gameEvents.advice);
+        settlementEvents.put("event.settlement.disease", gameEvents.disease);
+        settlementEvents.put("event.settlement.farm", gameEvents.farm);
+        settlementEvents.put("event.settlement.fish", gameEvents.fish);
+        settlementEvents.put("event.settlement.killer", gameEvents.killer);
+        settlementEvents.put("event.settlement.orchard", gameEvents.orchard);
+        settlementEvents.put("event.settlement.pasture", gameEvents.pasture);
+        settlementEvents.put("event.settlement.raceWars", gameEvents.raceWars);
+        settlementEvents.put("event.settlement.riot", gameEvents.riot);
+        settlementEvents.put("event.settlement.slaver", gameEvents.slaver);
+        settlementEvents.put("event.settlement.temperature", gameEvents.temperature);
+        settlementEvents.put("event.settlement.uprising", gameEvents.uprising);
 
         return settlementEvents;
     }
 
     public Map<String, EVENTS.EventResource> getWorldEvents() {
         if (worldEvents == null) {
-            worldEvents = new HashMap<>();
-            EVENTS gameEvents = GAME.events();
-
-            worldEvents.put("event.world.factionExpand", gameEvents.world.factionExpand);
-            worldEvents.put("event.world.factionBreak", gameEvents.world.factionBreak);
-            worldEvents.put("event.world.popup", gameEvents.world.popup);
-            worldEvents.put("event.world.war", gameEvents.world.war);
-            worldEvents.put("event.world.warPlayer", gameEvents.world.warPlayer);
-            worldEvents.put("event.world.raider", gameEvents.world.raider);
-            worldEvents.put("event.world.rebellion", gameEvents.world.rebellion);
-            worldEvents.put("event.world.plague", gameEvents.world.plague);
+            worldEvents = readWorldEvents();
         }
+
+        return worldEvents;
+    }
+
+    public Map<String, EVENTS.EventResource> readWorldEvents() {
+        Map<String, EVENTS.EventResource> worldEvents = new HashMap<>();
+        EVENTS gameEvents = GAME.events();
+
+        worldEvents.put("event.world.factionExpand", gameEvents.world.factionExpand);
+        worldEvents.put("event.world.factionBreak", gameEvents.world.factionBreak);
+        worldEvents.put("event.world.popup", gameEvents.world.popup);
+        worldEvents.put("event.world.war", gameEvents.world.war);
+        worldEvents.put("event.world.warPlayer", gameEvents.world.warPlayer);
+        worldEvents.put("event.world.raider", gameEvents.world.raider);
+        worldEvents.put("event.world.rebellion", gameEvents.world.rebellion);
+        worldEvents.put("event.world.plague", gameEvents.world.plague);
 
         return worldEvents;
     }
 
     public Map<String, EVENTS.EventResource> getEventsChance() {
         if (eventsChance == null) {
-            eventsChance = new HashMap<>();
-            EVENTS gameEvents = GAME.events();
-
-            eventsChance.put("event.chance.raider", gameEvents.world.raider);
-            eventsChance.put("event.chance.disease", gameEvents.disease);
+            eventsChance = readEventsChance();
         }
+
+        return eventsChance;
+    }
+
+    public Map<String, EVENTS.EventResource> readEventsChance() {
+        Map<String, EVENTS.EventResource> eventsChance = new HashMap<>();
+        EVENTS gameEvents = GAME.events();
+
+        eventsChance.put("event.chance.raider", gameEvents.world.raider);
+        eventsChance.put("event.chance.disease", gameEvents.disease);
 
         return eventsChance;
     }
 
     public boolean setChance(EVENTS.EventResource event, int chance) {
         if (event instanceof EventDisease) {
-            DISEASES.EPIDEMIC_CHANCE = MathUtil.toPercentage(chance);
-
+            double current = DISEASES.EPIDEMIC_CHANCE;
+            DISEASES.EPIDEMIC_CHANCE = current * MathUtil.toPercentage(chance);
             return true;
         } else if (event instanceof EventWorldRaider) {
-            DOUBLE raiderChance = GAME.events().world.raider.CHANCE;
-            double currentChance = raiderChance.getD();
-            double newChance = currentChance * MathUtil.toPercentage(chance);
-
-            try {
-                ReflectionUtil.setField("cache", raiderChance, newChance);
-                return true;
-            } catch (Exception e) {
-                log.warn("Could not set %s chance to %s", event.getClass().getSimpleName(), newChance, e);
-                return false;
-            }
+            ((EventWorldRaider) event).setChanceMulti(MathUtil.toPercentage(chance));
+            return true;
         }
 
+        log.warn("Could not set chance for %s", event.getClass().getSimpleName());
         return false;
     }
 

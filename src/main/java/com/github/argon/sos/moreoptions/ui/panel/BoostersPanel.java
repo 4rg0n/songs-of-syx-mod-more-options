@@ -3,7 +3,11 @@ package com.github.argon.sos.moreoptions.ui.panel;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.builder.SliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
+import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.LabeledSliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.section.SlidersBuilder;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 
@@ -14,18 +18,29 @@ public class BoostersPanel extends GuiSection {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
     private final Map<String, Slider> sliders;
+
     public BoostersPanel(Map<String, Integer> boosterConfig) {
-        SliderBuilder sliderBuilder = new SliderBuilder();
-        Map<String, SliderBuilder.Definition> sliderDefinitions = boosterConfig.entrySet().stream().collect(Collectors.toMap(
+
+
+        Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = boosterConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
-            config -> SliderBuilder.Definition.builder()
-                .title(config.getKey())
-                .maxWidth(200)
-                .max(1000)
+            config -> LabeledSliderBuilder.Definition.builder()
+                .labelDefinition(LabelBuilder.Definition.builder()
+                    .key(config.getKey())
+                    .title(config.getKey())
+                    .build())
+                .sliderDefinition(SliderBuilder.Definition.builder()
+                    .maxWidth(300)
+                    .max(10000)
+                    .build())
                 .build()));
 
-        GuiSection sliderSection = sliderBuilder.build(sliderDefinitions, 600);
-        sliders = sliderBuilder.getSliders();
+        BuildResult<GuiSection, Slider> buildResult = SlidersBuilder.builder()
+            .displayHeight(550)
+            .translate(sliderDefinitions).build().build();
+
+        GuiSection sliderSection = buildResult.getResult();
+        sliders = buildResult.getElements();
 
         GuiSection section = new GuiSection();
         section.addDown(0, sliderSection);

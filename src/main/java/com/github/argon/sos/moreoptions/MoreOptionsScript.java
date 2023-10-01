@@ -4,15 +4,17 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModal;
 import com.github.argon.sos.moreoptions.ui.UIGameConfig;
+import init.paths.ModInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import util.info.INFO;
 
-import java.util.logging.Level;
+
 
 /**
  * Entry point for the mod.
@@ -24,7 +26,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 
 	private final static Logger log = Loggers.getLogger(MoreOptionsScript.class);
 
-	public final static INFO MOD_INFO = new INFO("More Options", "TODO");
+	public final static INFO MOD_INFO = new INFO("More Options", "Adds more options to the game :)");
 
 	@Getter
 	private final ConfigStore configStore = ConfigStore.getInstance();
@@ -51,18 +53,30 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		return MOD_INFO.desc;
 	}
 
+	static {
+		Loggers.setLevels(Level.INFO);
+	}
+
 	@Override
 	public void initBeforeGameCreated() {
-		Loggers.setLevels(Level.FINEST);
 		log.debug("PHASE: initBeforeGameCreated");
 
+		// load config from file
+		configStore.loadConfig()
+			.ifPresent(currentConfig -> {
+				Loggers.setLevels(currentConfig.getLogLevel());
+				configStore.setCurrentConfig(currentConfig);
+			});
+
+		ModInfo modInfo = gameApis.modApi().getCurrentMod().orElse(null);
 		uiGameConfig = new UIGameConfig(
-			new MoreOptionsModal(configStore),
+			new MoreOptionsModal(configStore, modInfo),
 			gameApis,
 			configurator,
 			configStore
 		);
 
+		// load dictionary entries from file
 		configStore.loadDictionary()
 			.ifPresent(dictionary::addAll);
 	}
@@ -77,14 +91,16 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		if (instance == null) {
 			log.debug("Creating Mod Instance");
 
-			// try to load from file and merge with defaults; or use whole defaults
+			// try get current config and merge with defaults; or use whole defaults
 			MoreOptionsConfig defaultConfig = configStore.getDefault();
-			MoreOptionsConfig config = configStore.loadConfig(defaultConfig)
+			MoreOptionsConfig config = configStore.getCurrentConfig()
+				.map(currentConfig -> configStore.mergeMissing(currentConfig, defaultConfig))
 				.orElseGet(() -> {
 					log.info("No config file loaded. Using default.");
 					log.trace("Default: %s", defaultConfig);
 					return defaultConfig;
 				});
+			Loggers.setLevels(config.getLogLevel());
 			configStore.setCurrentConfig(config);
 
 			// we want to apply the config as soon as possible
@@ -106,17 +122,31 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 
 	@Override
 	public void initGamePresent() {
+		// config should already be loaded or use default
 		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
 			.orElse(configStore.getDefault());
 
 		// build and init UI (only possible if the UI is present)
 		uiGameConfig.initUi(moreOptionsConfig);
+
+		// todo experimental
+//		gameApis.weatherApi().lockDayCycle(1, true);
 	}
 
 	@Override
 	public void initGameSaveLoaded(MoreOptionsConfig config) {
+		// game will initialize new instances of the cached class references on load
+		gameApis.eventsApi().clearCached();
+		gameApis.soundsApi().clearCached();
+		gameApis.weatherApi().clearCached();
+		gameApis.boosterApi().clearCached();
+
+		// re-apply config when new game is loaded
+		configurator.applyConfig(config);
+	}
+
+	@Override
+	public void update(double seconds) {
 
 	}
 }
-
-//!(e instanceof EventAdvisor) && !(e instanceof Tutorial) && !(e instanceof EventWorldExpand) && !(e instanceof EventWorldBreakoff) && !(e instanceof EventWorldWar) && !(e instanceof EventWorldPeace) && !(e instanceof EventSlaver)}
