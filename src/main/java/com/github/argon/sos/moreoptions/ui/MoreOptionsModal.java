@@ -88,22 +88,26 @@ public class MoreOptionsModal extends Interrupter {
         panels.put(new Tuple.TupleImp<>("Weather", "Influence weather effects."), weatherPanel);
         panels.put(new Tuple.TupleImp<>("Boosters", "Increase or decrease various bonuses."), boostersPanel);
 
-        GuiSection header = header(panels);
+        int width = UiUtil.getMaxWidth(panels.values());
+
+        GuiSection header = header(panels, config);
         section.add(header);
 
         switcher = new CLICKABLE.Switcher(soundsPanel);
         section.add(switcher);
 
-        HorizontalLine horizontalLine = new HorizontalLine(soundsPanel.body().width(), 14, 1);
+        HorizontalLine horizontalLine = new HorizontalLine(width, 14, 1);
         section.add(horizontalLine);
 
         GuiSection footer = footer();
         section.add(footer);
 
-        int width = UiUtil.getMaxWidth(panels.values()) + 50;
-        int height = switcher.body().height() + header.body().height() + horizontalLine.body().height() + footer.body().height() + 50;
+        int height = switcher.body().height()
+            + header.body().height()
+            + horizontalLine.body().height()
+            + footer.body().height();
 
-        pan.body.setDim(width, height);
+        pan.body.setDim(width + 50, height + 50);
         pan.body().centerIn(C.DIM());
 
         header.body().moveY1(pan.getInnerArea().y1());
@@ -156,9 +160,9 @@ public class MoreOptionsModal extends Interrupter {
             .orElse(true);
     }
 
-    private GuiSection header(Map<Tuple<String, String>, GuiSection> panels) {
+    private GuiSection header(Map<Tuple<String, String>, GuiSection> panels, MoreOptionsConfig config) {
         GuiSection section = new GuiSection();
-        GuiSection versions = versions();
+        GuiSection versions = versions(config.getVersion());
         GuiSection space = new GuiSection();
         space.body().setWidth(versions.body().width());
         section.addRightC(0, space);
@@ -185,7 +189,7 @@ public class MoreOptionsModal extends Interrupter {
         return section;
     }
 
-    private GuiSection versions() {
+    private GuiSection versions(int configVersionNumber) {
         COLOR color = COLOR.WHITE50;
         GuiSection versions = new GuiSection();
 
@@ -200,8 +204,12 @@ public class MoreOptionsModal extends Interrupter {
         GText modVersion = new GText(UI.FONT().S, "Mod Version: " + modVersionString);
         modVersion.color(color);
 
+        GText configVersion = new GText(UI.FONT().S, "Config Version: " + configVersionNumber);
+        configVersion.color(color);
+
         versions.addDown(0, gameVersion);
         versions.addDown(2, modVersion);
+        versions.addDown(2, configVersion);
 
         return versions;
     }
