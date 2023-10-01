@@ -78,47 +78,46 @@ public class UIGameConfig {
                 right.addRelBody(8, DIR.W, settlementButton);
             });
 
-        // Cancel
+        // Cancel & Undo
         moreOptionsModal.getCancelButton().clickActionSet(() -> {
-            configStore.getCurrentConfig().ifPresent(moreOptionsModal::applyConfig);
-
+            undo();
             moreOptionsModal.hide();
         });
 
         // Apply & Save
         moreOptionsModal.getApplyButton().clickActionSet(() -> {
             MoreOptionsConfig config = moreOptionsModal.getConfig();
-            configurator.applyConfig(config);
-            configStore.setCurrentConfig(config);
-            configStore.saveConfig(config);
+            apply(config);
         });
 
-        // Reset to default
+        // Reset UI to default
         moreOptionsModal.getResetButton().clickActionSet(() -> {
-            MoreOptionsConfig defaultConfig = MoreOptionsConfig.builder().build();
-            configurator.applyConfig(defaultConfig);
-            configStore.setCurrentConfig(defaultConfig);
-            configStore.saveConfig(defaultConfig);
+            MoreOptionsConfig defaultConfig = configStore.getDefault();
             moreOptionsModal.applyConfig(defaultConfig);
         });
 
         // Undo changes
-        moreOptionsModal.getUndoButton().clickActionSet(() ->
-            configStore.getCurrentConfig().ifPresent(moreOptionsModal::applyConfig)
+        moreOptionsModal.getUndoButton().clickActionSet(this::undo
         );
 
         //Ok: Apply & Save & Exit
         moreOptionsModal.getOkButton().clickActionSet(() -> {
             MoreOptionsConfig config = moreOptionsModal.getConfig();
-            configurator.applyConfig(config);
-            configStore.setCurrentConfig(config);
-            configStore.saveConfig(config);
-
+            apply(config);
             moreOptionsModal.hide();
         });
     }
 
-    public void applyConfig(MoreOptionsConfig config) {
-        moreOptionsModal.applyConfig(config);
+    private void apply(MoreOptionsConfig config) {
+        // only save when changes were made
+        if (moreOptionsModal.isDirty()) {
+            configurator.applyConfig(config);
+            configStore.setCurrentConfig(config);
+            configStore.saveConfig(config);
+        }
+    }
+
+    private void undo() {
+        configStore.getCurrentConfig().ifPresent(moreOptionsModal::applyConfig);
     }
 }

@@ -153,7 +153,7 @@ public class MoreOptionsModal extends Interrupter {
     /**
      * @return whether panel configuration is different from {@link ConfigStore#getCurrentConfig()} ()}
      */
-    private boolean isDirty() {
+    public boolean isDirty() {
         return configStore.getCurrentConfig()
             .map(currentConfig -> !getConfig().equals(currentConfig))
             // no current config in memory
