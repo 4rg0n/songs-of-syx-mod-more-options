@@ -2,23 +2,19 @@ package com.github.argon.sos.moreoptions.ui.builder.section;
 
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.ui.Checkbox;
-import com.github.argon.sos.moreoptions.game.ui.GridRow;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.LabeledCheckboxBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.ScrollableBuilder;
-import com.github.argon.sos.moreoptions.util.UiUtil;
+import com.github.argon.sos.moreoptions.ui.builder.element.TableBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
-import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
-import util.gui.table.GScrollRows;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class CheckboxesBuilder implements UiBuilder<GuiSection, Checkbox> {
+public class CheckboxesBuilder implements UiBuilder<GuiSection, Map<String, Checkbox>> {
 
     private final Map<String, LabeledCheckboxBuilder.Definition> definitions;
 
@@ -27,7 +23,7 @@ public class CheckboxesBuilder implements UiBuilder<GuiSection, Checkbox> {
     /**
      * Builds a section with a list of checkboxes with titles according to the given {@link LabeledCheckboxBuilder.Definition}s
      */
-    public BuildResult<GuiSection, Checkbox> build() {
+    public BuildResult<GuiSection, Map<String, Checkbox>> build() {
         Map<String, Checkbox> elements = new HashMap<>();
         
         // map and order entries by dictionary title
@@ -36,38 +32,25 @@ public class CheckboxesBuilder implements UiBuilder<GuiSection, Checkbox> {
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                 (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
-        List<GridRow> gridRows = new ArrayList<>();
-
+        List<List<? extends GuiSection>> rows = new ArrayList<>();
         definitions.forEach((key, definition) -> {
-            BuildResult<GridRow, Checkbox> buildResult = LabeledCheckboxBuilder.builder().definition(definition).build();
-            Checkbox checkbox = buildResult.getElement().orElseThrow(() -> new RuntimeException(""));
-            elements.put(key, checkbox);
-            gridRows.add(buildResult.getResult());
+            BuildResult<List<GuiSection>, Checkbox> buildResult = LabeledCheckboxBuilder.builder()
+                .definition(definition)
+                .build();
+            elements.put(key, buildResult.getInteractable());
+            rows.add(buildResult.getResult());
         });
 
-        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(gridRows);
-        int maxHeight = UiUtil.getMaxColumnHeight(gridRows);
+        GuiSection table = TableBuilder.builder()
+            .evenOdd(true)
+            .displayHeight(displayHeight)
+            .rows(rows)
+            .build()
+            .getResult();
 
-        for (int i = 0; i < gridRows.size(); i++) {
-            GridRow gridRow = gridRows.get(i);
-            gridRow.initGrid(maxWidths, maxHeight);
-
-            if (i % 2 == 0) {
-                gridRow.background(COLOR.WHITE15);
-            }
-        }
-
-        // build scrollable ui elements
-        GScrollRows gScrollRows = ScrollableBuilder.builder()
-            .height(displayHeight)
-            .rows(gridRows)
-            .build().getResult();
-        GuiSection section = new GuiSection();
-        section.add(gScrollRows.view());
-
-        return BuildResult.<GuiSection, Checkbox>builder()
-            .result(section)
-            .elements(elements)
+        return BuildResult.<GuiSection, Map<String, Checkbox>>builder()
+            .result(table)
+            .interactable(elements)
             .build();
     }
 
@@ -92,7 +75,7 @@ public class CheckboxesBuilder implements UiBuilder<GuiSection, Checkbox> {
             return definitions(definitions);
         }
 
-        public BuildResult<GuiSection, Checkbox> build() {
+        public BuildResult<GuiSection, Map<String, Checkbox>> build() {
             assert definitions != null : "definitions must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
 

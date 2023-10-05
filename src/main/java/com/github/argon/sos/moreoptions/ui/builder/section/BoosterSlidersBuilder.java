@@ -4,8 +4,7 @@ import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.LabeledSliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.BoosterSliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.TableBuilder;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class SlidersBuilder implements UiBuilder<GuiSection, Map<String, Slider>> {
-    private final Map<String, LabeledSliderBuilder.Definition> definitions;
+public class BoosterSlidersBuilder implements UiBuilder<GuiSection, Map<String, Slider>> {
+    private final Map<String, BoosterSliderBuilder.Definition> definitions;
 
     private final int displayHeight;
 
@@ -29,20 +28,17 @@ public class SlidersBuilder implements UiBuilder<GuiSection, Map<String, Slider>
     public BuildResult<GuiSection, Map<String, Slider>> build() {
         Map<String, Slider> elements = new HashMap<>();
         // sort by label title
-        LinkedHashMap<String, LabeledSliderBuilder.Definition> definitions = this.definitions.entrySet()
+        LinkedHashMap<String, BoosterSliderBuilder.Definition> definitions = this.definitions.entrySet()
             .stream().sorted(Comparator.comparing(entry -> entry.getValue().getLabelDefinition().getTitle()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                 (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
         List<List<? extends GuiSection>> rows = new ArrayList<>();
         definitions.forEach((key, definition) -> {
-            BuildResult<List<GuiSection>, Slider> buildResult = LabeledSliderBuilder.builder()
+            BuildResult<List<GuiSection>, Slider> buildResult = BoosterSliderBuilder.builder()
                 .definition(definition)
                 .build();
-
-            Slider slider = buildResult.getInteractable();
-
-            elements.put(key, slider);
+            elements.put(key, buildResult.getInteractable());
             rows.add(buildResult.getResult());
         });
 
@@ -67,28 +63,13 @@ public class SlidersBuilder implements UiBuilder<GuiSection, Map<String, Slider>
 
         @lombok.Setter
         @Accessors(fluent = true)
-        private Map<String, LabeledSliderBuilder.Definition> definitions;
+        private Map<String, BoosterSliderBuilder.Definition> definitions;
 
         @lombok.Setter
         @Accessors(fluent = true)
         private int displayHeight = 100;
 
-
-        public Builder defaults(Map<String, Integer> sliderConfigs) {
-            Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = sliderConfigs.entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                config -> LabeledSliderBuilder.Definition.builder()
-                    .labelDefinition(LabelBuilder.Definition.builder()
-                        .key(config.getKey())
-                        .title(config.getKey())
-                        .build())
-                    .sliderDefinition(SliderBuilder.Definition.builder().build())
-                    .build()));
-
-            return definitions(sliderDefinitions);
-        }
-
-        public Builder translate(Map<String, LabeledSliderBuilder.Definition> definitions) {
+        public Builder translate(Map<String, BoosterSliderBuilder.Definition> definitions) {
             Dictionary dictionary = Dictionary.getInstance();
             dictionary.translate(definitions.values());
 
@@ -99,7 +80,7 @@ public class SlidersBuilder implements UiBuilder<GuiSection, Map<String, Slider>
             assert definitions != null : "definitions must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
 
-            return new SlidersBuilder(definitions, displayHeight).build();
+            return new BoosterSlidersBuilder(definitions, displayHeight).build();
         }
     }
 }

@@ -25,26 +25,26 @@ public class SoundsPanel extends GuiSection {
         Map<String, Integer> soundsSettlementConfig,
         Map<String, Integer> soundsRoomConfig
     ) {
-        BuildResult<GuiSection, Slider> ambienceSlidersResult = SlidersBuilder.builder()
+        BuildResult<GuiSection, Map<String, Slider>> ambienceSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
             .definitions(sliders(soundsAmbienceConfig))
             .build();
         GuiSection ambienceSoundSection = ambienceSlidersResult.getResult();
-        this.ambienceSoundSliders = ambienceSlidersResult.getElements();
+        this.ambienceSoundSliders = ambienceSlidersResult.getInteractable();
 
-        BuildResult<GuiSection, Slider> settlementSlidersResult = SlidersBuilder.builder()
+        BuildResult<GuiSection, Map<String, Slider>> settlementSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
             .definitions(sliders(soundsSettlementConfig))
             .build();
         GuiSection settlementSoundSection = settlementSlidersResult.getResult();
-        this.settlementSoundSliders = settlementSlidersResult.getElements();
+        this.settlementSoundSliders = settlementSlidersResult.getInteractable();
 
-        BuildResult<GuiSection, Slider> roomSlidersResult = SlidersBuilder.builder()
+        BuildResult<GuiSection, Map<String, Slider>> roomSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
             .definitions(sliders(soundsRoomConfig))
             .build();
         GuiSection roomSoundSection = roomSlidersResult.getResult();
-        this.roomSoundSliders = roomSlidersResult.getElements();
+        this.roomSoundSliders = roomSlidersResult.getInteractable();
 
         GuiSection section = new GuiSection();
         GHeader ambienceSoundsHeader = new GHeader("Ambience Sounds");

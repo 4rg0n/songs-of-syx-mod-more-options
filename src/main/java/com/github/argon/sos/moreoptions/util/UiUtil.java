@@ -55,6 +55,25 @@ public class UiUtil {
         return columnWidths;
     }
 
+    public static List<Integer> getMaxColumnWidths(List<List<? extends GuiSection>> gridRows) {
+        List<Integer> columnWidths = new ArrayList<>();
+
+        for (List<? extends GuiSection> columns : gridRows) {
+            for (int i = 0; i < columns.size(); i++) {
+                GuiSection column = columns.get(i);
+                int width = column.body().width();
+
+                if (columnWidths.size() <= i) {
+                    columnWidths.add(width);
+                } else if (columnWidths.get(i) < width) {
+                    columnWidths.set(i, width);
+                }
+            }
+        }
+
+        return columnWidths;
+    }
+
     public static int getMaxColumnHeight(Collection<GridRow> gridRows) {
         int maxHeight = 0;
         for (GridRow gridRow : gridRows) {

@@ -32,13 +32,13 @@ public class EventsPanel extends GuiSection {
         Map<String, Boolean> worldEventsConfig,
         Map<String, Integer> eventsChanceConfig
     ) {
-        BuildResult<GuiSection, Checkbox> settlementCheckboxesResult = checkboxes(settlementEventsConfig);
+        BuildResult<GuiSection, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(settlementEventsConfig);
         GuiSection settlement = settlementCheckboxesResult.getResult();
-        settlementEventsCheckboxes.putAll(settlementCheckboxesResult.getElements());
+        settlementEventsCheckboxes.putAll(settlementCheckboxesResult.getInteractable());
 
-        BuildResult<GuiSection, Checkbox> worldCheckboxesResult = checkboxes(worldEventsConfig);
+        BuildResult<GuiSection, Map<String, Checkbox>> worldCheckboxesResult = checkboxes(worldEventsConfig);
         GuiSection world = worldCheckboxesResult.getResult();
-        worldEventsCheckboxes.putAll(worldCheckboxesResult.getElements());
+        worldEventsCheckboxes.putAll(worldCheckboxesResult.getInteractable());
 
         // todo event reset buttons?
 
@@ -60,9 +60,9 @@ public class EventsPanel extends GuiSection {
         checkBoxSection.addRight(0, worldSection);
         addDownC(0, checkBoxSection);
 
-        BuildResult<GuiSection, Slider> buildResult = sliders(eventsChanceConfig);
+        BuildResult<GuiSection, Map<String, Slider>> buildResult = sliders(eventsChanceConfig);
         GuiSection sliders = buildResult.getResult();
-        eventsChanceSliders = buildResult.getElements();
+        eventsChanceSliders = buildResult.getInteractable();
 
         GuiSection eventsChanceSection = new GuiSection();
         GHeader eventChancesHeader = new GHeader("Event Chances");
@@ -75,7 +75,7 @@ public class EventsPanel extends GuiSection {
         addDownC(10, eventsChanceSection);
     }
 
-    private BuildResult<GuiSection, Slider> sliders(Map<String, Integer> eventsChanceConfig) {
+    private BuildResult<GuiSection, Map<String, Slider>> sliders(Map<String, Integer> eventsChanceConfig) {
         Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             config -> LabeledSliderBuilder.Definition.builder()
@@ -145,7 +145,7 @@ public class EventsPanel extends GuiSection {
     }
 
 
-    private BuildResult<GuiSection, Checkbox> checkboxes(Map<String, Boolean> eventConfig) {
+    private BuildResult<GuiSection, Map<String, Checkbox>> checkboxes(Map<String, Boolean> eventConfig) {
         Map<String, LabeledCheckboxBuilder.Definition> settlementCheckboxes = eventConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             config -> LabeledCheckboxBuilder.Definition.builder()

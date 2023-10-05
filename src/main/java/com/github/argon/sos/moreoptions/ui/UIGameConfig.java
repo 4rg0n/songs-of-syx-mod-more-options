@@ -8,9 +8,11 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
+import init.paths.PATHS;
 import init.sprite.SPRITES;
 import lombok.RequiredArgsConstructor;
 import snake2d.util.datatypes.DIR;
+import snake2d.util.file.FileManager;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GButt;
 import view.interrupter.IDebugPanel;
@@ -60,14 +62,14 @@ public class UIGameConfig {
     public void initUi(MoreOptionsConfig currentConfig) {
         log.debug("Initialize %s UI", MOD_INFO.name);
 
-        List<BoostersPanel.Entry> boosterEntries = currentConfig.getBoosters().entrySet().stream().map(entry -> {
-            return BoostersPanel.Entry.builder()
+        List<BoostersPanel.Entry> boosterEntries = currentConfig.getBoosters().entrySet().stream().map(entry ->
+            BoostersPanel.Entry.builder()
                 .key(entry.getKey())
                 .value(entry.getValue())
                 .enemy(gameApis.boosterApi().isEnemyBooster(entry.getKey()))
                 .player(gameApis.boosterApi().isPlayerBooster(entry.getKey()))
-                .build();
-        }).collect(Collectors.toList());
+                .build()
+        ).collect(Collectors.toList());
 
         moreOptionsModal.init(currentConfig, boosterEntries);
 
@@ -117,6 +119,11 @@ public class UIGameConfig {
             MoreOptionsConfig config = moreOptionsModal.getConfig();
             applyAndSave(config);
             moreOptionsModal.hide();
+        });
+
+        // opens folder with mod configuration
+        moreOptionsModal.getFolderButton().clickActionSet(() -> {
+            FileManager.openDesctop(PATHS.local().SETTINGS.get().toString());
         });
     }
 

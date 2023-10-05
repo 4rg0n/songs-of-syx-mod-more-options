@@ -25,6 +25,11 @@ import util.gui.slider.GSliderInt;
 import util.info.GFORMAT;
 import view.main.VIEW;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 
 /**
  * Uses mostly code from {@link GSliderInt} and adds handling for negative values.
@@ -48,6 +53,8 @@ public class Slider extends GuiSection {
     @Setter
     private boolean lockScroll = false;
 
+    private final TreeMap<Integer, COLOR> thresholds;
+
     static {
         D.ts(GSliderInt.class);
     }
@@ -64,19 +71,29 @@ public class Slider extends GuiSection {
 
 
     public Slider(INT.INTE in, int width, boolean input){
-        this(in, width, 24, input, false, ValueDisplay.NONE);
+        this(in, width, 24, input, false, ValueDisplay.NONE, Collections.emptyMap());
     }
 
     public Slider(INT.INTE in, int width, boolean input, ValueDisplay valueDisplay){
-        this(in, width, 24, input, false, valueDisplay);
+        this(in, width, 24, input, false, valueDisplay, Collections.emptyMap());
     }
 
     public Slider(INT.INTE in, int width, boolean input, boolean lockScroll, ValueDisplay valueDisplay){
-        this(in, width, 24, input, lockScroll, valueDisplay);
+        this(in, width, 24, input, lockScroll, valueDisplay, Collections.emptyMap());
     }
 
-    public Slider(INT.INTE in, int width, int height, boolean input, boolean lockScroll, ValueDisplay valueDisplay){
+    public Slider(INT.INTE in, int width, boolean input, boolean lockScroll, ValueDisplay valueDisplay, Map<Integer, COLOR> thresholds){
+        this(in, width, 24, input, lockScroll, valueDisplay, thresholds);
+    }
+
+    public Slider(INT.INTE in, int width, int height, boolean input, boolean lockScroll, ValueDisplay valueDisplay, Map<Integer, COLOR> thresholds){
         this.in = in;
+        // sort by key
+        this.thresholds = thresholds.entrySet()
+            .stream().sorted(Map.Entry.comparingByKey())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                (oldValue, newValue) -> oldValue, TreeMap::new));
+
         setLockScroll(lockScroll);
 
         if (input) {
@@ -229,10 +246,30 @@ public class Slider extends GuiSection {
     }
 
     protected void renderPositiveMidColor(SPRITE_RENDERER r, int x1, int width, int y1, int y2) {
+        for (Map.Entry<Integer, COLOR> entry : thresholds.descendingMap().entrySet()) {
+            Integer threshold = entry.getKey();
+            COLOR color = entry.getValue();
+
+            if (threshold <= getValue()) {
+                color.render(r, x1, x1+width, y1, y2);
+                return;
+            }
+        }
+
         COLOR.WHITE50.render(r, x1, x1+width, y1, y2);
     }
 
     protected void renderNegativeMidColor(SPRITE_RENDERER r, int x1, int width, int y1, int y2) {
+        for (Map.Entry<Integer, COLOR> entry : thresholds.entrySet()) {
+            Integer threshold = entry.getKey();
+            COLOR color = entry.getValue();
+
+            if (threshold >= getValue()) {
+                color.shade(0.66d).render(r, x1, x1+width, y1, y2);
+                return;
+            }
+        }
+
         COLOR.WHITE35.render(r, x1, x1+width, y1, y2);
     }
 

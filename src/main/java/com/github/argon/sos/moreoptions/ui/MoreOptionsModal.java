@@ -71,6 +71,9 @@ public class MoreOptionsModal extends Interrupter {
     @Getter
     private Button okButton;
 
+    @Getter
+    private Button folderButton;
+
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
 
@@ -86,7 +89,7 @@ public class MoreOptionsModal extends Interrupter {
         soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
         eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance());
         weatherPanel = new WeatherPanel(config.getWeather());
-        boostersPanel = new BoostersPanel(boosterEntries);
+        boostersPanel = new BoostersPanel(boosterEntries, configStore.getConfigPath().toString());
 
         Map<Tuple<String, String>, GuiSection> panels = new LinkedHashMap<>();
         panels.put(new Tuple.TupleImp<>("Sounds", "Tune the volume of various sounds."), soundsPanel);
@@ -110,7 +113,8 @@ public class MoreOptionsModal extends Interrupter {
         GuiSection footer = footer();
         section.add(footer);
 
-        int height = switcher.body().height()
+        int maxPanelHeight = UiUtil.getMaxHeight(panels.values());
+        int height = maxPanelHeight
             + header.body().height()
             + horizontalLine.body().height()
             + footer.body().height();
@@ -231,6 +235,10 @@ public class MoreOptionsModal extends Interrupter {
         cancelButton.hoverInfoSet("Closes window without applying changes");
         section.addRight(0, cancelButton);
 
+        this.folderButton = new Button("Folder", COLOR.WHITE25);
+        folderButton.hoverInfoSet("Opens settings folder with mod config");
+        section.addRight(10, folderButton);
+
         this.resetButton = new Button("Default", COLOR.WHITE25);
         resetButton.hoverInfoSet("Resets to default options");
         section.addRight(10, resetButton);
@@ -243,7 +251,7 @@ public class MoreOptionsModal extends Interrupter {
         this.applyButton = new Button("Apply", COLOR.WHITE15);
         applyButton.hoverInfoSet("Apply and save options");
         applyButton.setEnabled(false);
-        section.addRight(150, applyButton);
+        section.addRight(300, applyButton);
 
         this.okButton = new Button("OK", COLOR.WHITE15);
         okButton.hoverInfoSet("Apply and exit");

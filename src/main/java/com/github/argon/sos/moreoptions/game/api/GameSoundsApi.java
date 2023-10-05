@@ -26,6 +26,8 @@ public class GameSoundsApi {
     private Map<String, SoundSettlement.Sound> roomSounds;
     private Map<String, SoundAmbience.Ambience> ambienceSounds;
 
+    public final static String KEY_PREFIX = "sounds";
+
     public void clearCached() {
         settlementSounds = null;
         roomSounds = null;
@@ -39,7 +41,7 @@ public class GameSoundsApi {
 
             gameSounds.forEach(sound -> {
                 if (sound.key.charAt(0) == '_') {
-                    settlementSounds.put("sounds.settlement." + sound.key, sound);
+                    settlementSounds.put(KEY_PREFIX + ".settlement." + sound.key, sound);
                 }
             });
         }
@@ -54,7 +56,7 @@ public class GameSoundsApi {
 
             gameSounds.forEach(sound -> {
                 if (sound.key.charAt(0) != '_') {
-                    roomSounds.put("sounds.room." + sound.key, sound);
+                    roomSounds.put(KEY_PREFIX + ".room." + sound.key, sound);
                 }
             });
         }
@@ -68,14 +70,14 @@ public class GameSoundsApi {
             SoundAmbience soundAmbience = SOUND.ambience();
             ambienceSounds = new HashMap<>();
 
-            ambienceSounds.put("sounds.ambience.nature", soundAmbience.nature);
-            ambienceSounds.put("sounds.ambience.night", soundAmbience.night);
-            ambienceSounds.put("sounds.ambience.rain", soundAmbience.rain);
-            ambienceSounds.put("sounds.ambience.wind", soundAmbience.wind);
-            ambienceSounds.put("sounds.ambience.thunder", soundAmbience.thunder);
-            ambienceSounds.put("sounds.ambience.water", soundAmbience.water);
-            ambienceSounds.put("sounds.ambience.windhowl", soundAmbience.windhowl);
-            ambienceSounds.put("sounds.ambience.windTrees", soundAmbience.windTrees);
+            ambienceSounds.put(KEY_PREFIX + ".ambience.nature", soundAmbience.nature);
+            ambienceSounds.put(KEY_PREFIX + ".ambience.night", soundAmbience.night);
+            ambienceSounds.put(KEY_PREFIX + ".ambience.rain", soundAmbience.rain);
+            ambienceSounds.put(KEY_PREFIX + ".ambience.wind", soundAmbience.wind);
+            ambienceSounds.put(KEY_PREFIX + ".ambience.thunder", soundAmbience.thunder);
+            ambienceSounds.put(KEY_PREFIX + ".ambience.water", soundAmbience.water);
+            ambienceSounds.put(KEY_PREFIX + ".ambience.windhowl", soundAmbience.windhowl);
+            ambienceSounds.put(KEY_PREFIX + ".ambience.windTrees", soundAmbience.windTrees);
         }
 
         return ambienceSounds;

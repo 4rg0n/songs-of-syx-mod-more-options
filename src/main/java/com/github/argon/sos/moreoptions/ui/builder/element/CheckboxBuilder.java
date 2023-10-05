@@ -6,18 +6,20 @@ import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import snake2d.util.gui.GuiSection;
 
 @RequiredArgsConstructor
-public class CheckboxBuilder implements UiBuilder<Checkbox, Checkbox> {
+public class CheckboxBuilder implements UiBuilder<GuiSection, Checkbox> {
 
     private final Definition definition;
 
-    public BuildResult<Checkbox, Checkbox> build() {
+    public BuildResult<GuiSection, Checkbox> build() {
         Checkbox checkbox = new Checkbox(definition.isEnabled());
+        GuiSection section = new GuiSection(checkbox);
 
-        return BuildResult.<Checkbox, Checkbox>builder()
-            .result(checkbox)
-            .element(BuildResult.NO_KEY, checkbox)
+        return BuildResult.<GuiSection, Checkbox>builder()
+            .result(section)
+            .interactable(checkbox)
             .build();
     }
 
@@ -31,7 +33,7 @@ public class CheckboxBuilder implements UiBuilder<Checkbox, Checkbox> {
         @Accessors(fluent = true)
         private Definition definition;
 
-        public BuildResult<Checkbox, Checkbox> build() {
+        public BuildResult<GuiSection, Checkbox> build() {
             assert definition != null : "definition must not be null";
 
             return new CheckboxBuilder(definition).build();

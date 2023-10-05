@@ -22,6 +22,8 @@ public class GameWeatherApi {
     @Getter(lazy = true)
     private final static GameWeatherApi instance = new GameWeatherApi();
 
+    public final static String KEY_PREFIX = "weather";
+
     private Map<String, WeatherThing> weatherThings;
 
     public Map<String, WeatherThing> getWeatherThings() {
@@ -29,15 +31,15 @@ public class GameWeatherApi {
             weatherThings = new HashMap<>();
             SWEATHER gameWeather = SETT.WEATHER();
 
-            weatherThings.put("weather.thunder", gameWeather.thunder);
-            weatherThings.put("weather.ice", gameWeather.ice);
-            weatherThings.put("weather.rain", gameWeather.rain);
-            weatherThings.put("weather.clouds", gameWeather.clouds);
-            weatherThings.put("weather.snow", gameWeather.snow);
-            weatherThings.put("weather.moisture", gameWeather.moisture);
-            weatherThings.put("weather.wind", gameWeather.wind);
-            weatherThings.put("weather.growth", gameWeather.growth);
-            weatherThings.put("weather.growthRipe", gameWeather.growthRipe);
+            weatherThings.put(KEY_PREFIX + ".thunder", gameWeather.thunder);
+            weatherThings.put(KEY_PREFIX + ".ice", gameWeather.ice);
+            weatherThings.put(KEY_PREFIX + ".rain", gameWeather.rain);
+            weatherThings.put(KEY_PREFIX + ".clouds", gameWeather.clouds);
+            weatherThings.put(KEY_PREFIX + ".snow", gameWeather.snow);
+            weatherThings.put(KEY_PREFIX + ".moisture", gameWeather.moisture);
+            weatherThings.put(KEY_PREFIX + ".wind", gameWeather.wind);
+            weatherThings.put(KEY_PREFIX + ".growth", gameWeather.growth);
+            weatherThings.put(KEY_PREFIX + ".growthRipe", gameWeather.growthRipe);
         }
 
         return weatherThings;

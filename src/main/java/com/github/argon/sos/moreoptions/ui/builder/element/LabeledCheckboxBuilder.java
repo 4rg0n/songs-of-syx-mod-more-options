@@ -2,32 +2,35 @@ package com.github.argon.sos.moreoptions.ui.builder.element;
 
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.ui.Checkbox;
-import com.github.argon.sos.moreoptions.game.ui.GridRow;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
-import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class LabeledCheckboxBuilder implements UiBuilder<GridRow, Checkbox> {
+public class LabeledCheckboxBuilder implements UiBuilder<List<GuiSection>, Checkbox> {
     private final Definition definition;
 
     @Override
-    public BuildResult<GridRow, Checkbox> build() {
-        GuiSection label = LabelBuilder.builder().translate(definition.getLabelDefinition()).build().getResult();
+    public BuildResult<List<GuiSection>, Checkbox> build() {
+        GuiSection label = LabelBuilder.builder()
+            .translate(definition.getLabelDefinition())
+            .build()
+            .getResult();
         label.pad(10, 5);
 
-        Checkbox checkbox = CheckboxBuilder.builder().definition(definition.getCheckboxDefinition()).build().getResult();
-        GuiSection checkBoxSection = new GuiSection().add(checkbox);
+        BuildResult<GuiSection, Checkbox> checkboxBuildResult = CheckboxBuilder.builder()
+            .definition(definition.getCheckboxDefinition())
+            .build();
+        Checkbox checkbox = checkboxBuildResult.getInteractable();
+        GuiSection checkBoxSection = checkboxBuildResult.getResult();
         checkBoxSection.pad(10, 5);
 
         List<GuiSection> row = Stream.of(
@@ -35,17 +38,9 @@ public class LabeledCheckboxBuilder implements UiBuilder<GridRow, Checkbox> {
             checkBoxSection
         ).collect(Collectors.toList());
 
-        List<Integer> columnWidths = new ArrayList<>();
-        columnWidths.add(label.body().width());
-        columnWidths.add(checkBoxSection.body().width());
-        int maxHeight = UiUtil.getMaxHeight(row);
-
-        GridRow gridRow = new GridRow(row);
-        gridRow.initGrid(columnWidths, maxHeight);
-
-        return BuildResult.<GridRow, Checkbox>builder()
-            .result(gridRow)
-            .element(BuildResult.NO_KEY, checkbox)
+         return BuildResult.<List<GuiSection>, Checkbox>builder()
+            .result(row)
+            .interactable(checkbox)
             .build();
     }
 
@@ -66,7 +61,7 @@ public class LabeledCheckboxBuilder implements UiBuilder<GridRow, Checkbox> {
             return definition(definition);
         }
 
-        public BuildResult<GridRow, Checkbox> build() {
+        public BuildResult<List<GuiSection>, Checkbox> build() {
             assert definition != null : "definition must not be null";
 
             return new LabeledCheckboxBuilder(definition).build();

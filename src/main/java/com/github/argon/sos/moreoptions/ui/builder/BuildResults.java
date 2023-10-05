@@ -2,12 +2,16 @@ package com.github.argon.sos.moreoptions.ui.builder;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Singular;
+
+import java.util.Map;
 
 @Getter
 @Builder
-public class BuildResult<T, E> {
+public class BuildResults<T, E> {
 
     private T result;
 
-    private E interactable;
+    @Singular
+    private Map<String, E> elements;
 }

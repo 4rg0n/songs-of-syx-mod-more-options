@@ -22,6 +22,8 @@ public class GameBoosterApi {
     private Map<String, BOOSTABLE> enemyBoosters;
     private Map<String, BOOSTABLE> playerBoosters;
 
+    public final static String KEY_PREFIX = "booster";
+
     @Getter(lazy = true)
     private final static GameBoosterApi instance = new GameBoosterApi();
 
@@ -33,7 +35,7 @@ public class GameBoosterApi {
         if (allBoosters == null) {
             allBoosters = new HashMap<>();
             BOOSTABLES.all().forEach(boostable -> {
-                allBoosters.put("booster." + boostable.key, boostable);
+                allBoosters.put(KEY_PREFIX + "." + boostable.key, boostable);
             });
         }
 
@@ -44,7 +46,7 @@ public class GameBoosterApi {
         if (playerBoosters == null) {
             playerBoosters = new HashMap<>();
             BOOSTABLES.player().getBoosters().forEach(boostable -> {
-                allBoosters.put("booster." + boostable.key, boostable);
+                playerBoosters.put(KEY_PREFIX + "." + boostable.key, boostable);
             });
         }
 
@@ -55,7 +57,7 @@ public class GameBoosterApi {
         if (enemyBoosters == null) {
             enemyBoosters = new HashMap<>();
             BOOSTABLES.enemy().getBoosters().forEach(boostable -> {
-                enemyBoosters.put("booster." + boostable.key, boostable);
+                enemyBoosters.put(KEY_PREFIX + "." + boostable.key, boostable);
             });
         }
 

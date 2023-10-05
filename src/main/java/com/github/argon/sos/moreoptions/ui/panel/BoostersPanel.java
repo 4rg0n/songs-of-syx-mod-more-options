@@ -4,16 +4,17 @@ import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
+import com.github.argon.sos.moreoptions.ui.builder.element.BoosterSliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.LabeledSliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.section.SlidersBuilder;
-import init.sprite.UI.UI;
+import com.github.argon.sos.moreoptions.ui.builder.section.BoosterSlidersBuilder;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
-import util.gui.misc.GText;
+import util.gui.misc.GHeader;
+import util.info.INFO;
 
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,10 @@ public class BoostersPanel extends GuiSection {
     @Getter
     private final Map<String, Slider> sliders;
 
-    public BoostersPanel(List<Entry> boosterEntries) {
-        Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = boosterEntries.stream().collect(Collectors.toMap(
+    public BoostersPanel(List<Entry> boosterEntries, String configFilePath) {
+        Map<String, BoosterSliderBuilder.Definition> boosterDefinitions = boosterEntries.stream().collect(Collectors.toMap(
             Entry::getKey,
-            entry -> LabeledSliderBuilder.Definition.builder()
+            entry -> BoosterSliderBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
                     .key(entry.getKey())
                     .title(entry.getKey())
@@ -35,19 +36,28 @@ public class BoostersPanel extends GuiSection {
                 .sliderDefinition(SliderBuilder.Definition.builder()
                     .maxWidth(300)
                     .max(10000)
+                    .threshold(1000, COLOR.YELLOW100.shade(0.7d))
+                    .threshold(5000, COLOR.ORANGE100.shade(0.7d))
+                    .threshold(7500, COLOR.RED100.shade(0.7d))
+                    .threshold(9000, COLOR.RED2RED)
                     .build())
+                .player(entry.isPlayer())
+                .enemy(entry.isEnemy())
                 .build()));
 
-        BuildResult<GuiSection, Slider> buildResult = SlidersBuilder.builder()
-            .displayHeight(550)
-            .translate(sliderDefinitions)
+        BuildResult<GuiSection, Map<String, Slider>> buildResult = BoosterSlidersBuilder.builder()
+            .displayHeight(500)
+            .translate(boosterDefinitions)
             .build();
 
         GuiSection sliderSection = buildResult.getResult();
-        sliders = buildResult.getElements();
+        sliders = buildResult.getInteractable();
 
-        addDownC(0, new GText(UI.FONT().S, "Changing boosters to higher values can slow down the game or even crash it."));
-        addDownC(15, sliderSection);
+        GHeader disclaimer = new GHeader("High values can slow or even crash your game");
+        disclaimer.hoverInfoSet(new INFO("In case of a crash", "Delete configuration file in:" + configFilePath));
+
+        addDown(0, disclaimer);
+        addDown(10, sliderSection);
     }
 
     public Map<String, Integer> getConfig() {

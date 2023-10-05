@@ -28,7 +28,7 @@ public class ScrollableBuilder implements UiBuilder<GScrollRows, GScrollRows> {
         GScrollRows gScrollRows = new GScrollRows(rows, height);
 
         return BuildResult.<GScrollRows, GScrollRows>builder()
-            .element(BuildResult.NO_KEY, gScrollRows)
+            .interactable(gScrollRows)
             .result(gScrollRows)
             .build();
     }

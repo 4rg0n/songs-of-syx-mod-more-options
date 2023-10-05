@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
+import init.sprite.SPRITES;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider> {
+public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Slider> {
     private final Definition definition;
 
     public BuildResult<List<GuiSection>, Slider> build() {
@@ -28,6 +29,30 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
             .translate(definition.getLabelDefinition())
             .build().getResult();
         label.pad(10, 5);
+
+        int iconDim = SPRITES.icons().m.DIM;
+
+        GuiSection effectSection = new GuiSection();
+
+        if (definition.isPlayer()) {
+            GuiSection icon = new GuiSection(SPRITES.icons().m.city, iconDim, iconDim);
+            icon.pad(2);
+            icon.hoverInfoSet("Effects your settlement");
+            effectSection.addRight(0, icon);
+        }
+        if (definition.isEnemy()) {
+            GuiSection icon = new GuiSection(SPRITES.icons().m.map, iconDim, iconDim);
+            icon.pad(2);
+            icon.hoverInfoSet("Effects other realms");
+            effectSection.addRight(0, icon);
+        }
+        if (!definition.isEnemy() && !definition.isPlayer()) {
+            GuiSection icon = new GuiSection(SPRITES.icons().m.cog, iconDim, iconDim);
+            icon.pad(2);
+            icon.hoverInfoSet("Effects difficulty settings");
+            effectSection.addRight(0, icon);
+        }
+
         Slider slider = SliderBuilder.builder()
             .definition(definition.getSliderDefinition())
             .build().getResult();
@@ -35,6 +60,7 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
 
         List<GuiSection> row = Stream.of(
             label,
+            effectSection,
             slider
         ).collect(Collectors.toList());
 
@@ -64,7 +90,7 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
         public BuildResult<List<GuiSection>, Slider> build() {
             assert definition != null : "definition must not be null";
 
-            return new LabeledSliderBuilder(definition).build();
+            return new BoosterSliderBuilder(definition).build();
         }
     }
 
@@ -73,7 +99,14 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
     public static class Definition implements Translatable {
 
         private LabelBuilder.Definition labelDefinition;
+
         private SliderBuilder.Definition sliderDefinition;
+
+        @lombok.Builder.Default
+        private boolean player = true;
+
+        @lombok.Builder.Default
+        private boolean enemy = false;
 
         @lombok.Builder.Default
         private int labelWidth = 0;

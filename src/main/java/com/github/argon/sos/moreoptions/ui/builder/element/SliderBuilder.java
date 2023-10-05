@@ -5,8 +5,12 @@ import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Singular;
 import lombok.experimental.Accessors;
+import snake2d.util.color.COLOR;
 import util.data.INT;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class SliderBuilder implements UiBuilder<Slider, Slider> {
@@ -25,11 +29,15 @@ public class SliderBuilder implements UiBuilder<Slider, Slider> {
 
         INT.IntImp sliderValue = new INT.IntImp(min, max);
         sliderValue.set(definition.getValue());
-        Slider slider = new Slider(sliderValue, sliderWidth, definition.isInput(), definition.isLockScroll(), definition.getValueDisplay());
+        Slider slider = new Slider(sliderValue, sliderWidth,
+            definition.isInput(),
+            definition.isLockScroll(),
+            definition.getValueDisplay(),
+            definition.getThresholds());
 
         return BuildResult.<Slider, Slider>builder()
             .result(slider)
-            .element(BuildResult.NO_KEY, slider)
+            .interactable(slider)
             .build();
     }
 
@@ -68,6 +76,9 @@ public class SliderBuilder implements UiBuilder<Slider, Slider> {
 
         @lombok.Builder.Default
         private boolean lockScroll = true;
+
+        @Singular
+        private Map<Integer, COLOR> thresholds;
 
         @lombok.Builder.Default
         private Slider.ValueDisplay valueDisplay = Slider.ValueDisplay.PERCENTAGE;

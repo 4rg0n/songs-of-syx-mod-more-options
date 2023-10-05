@@ -25,6 +25,7 @@ public class LabelBuilder implements UiBuilder<GuiSection, GText> {
 
         if (definition.getMaxWidth() > 0) {
             text.setMaxWidth(definition.getMaxWidth());
+            section.body().setWidth(definition.getMaxWidth());
         }
 
         if (definition.getDescription() != null) {
@@ -33,7 +34,7 @@ public class LabelBuilder implements UiBuilder<GuiSection, GText> {
 
         return BuildResult.<GuiSection, GText>builder()
             .result(section)
-            .element(BuildResult.NO_KEY, text)
+            .interactable(text)
             .build();
     }
 

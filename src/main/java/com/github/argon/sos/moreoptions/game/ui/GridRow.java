@@ -11,15 +11,15 @@ public class GridRow extends GuiSection {
 
     private COLOR color;
     @Getter
-    private final List<GuiSection> columns;
+    private final List<? extends GuiSection> columns;
 
-    public GridRow(List<GuiSection> columns) {
+    public GridRow(List<? extends GuiSection> columns) {
         this.columns = columns;
 
         pad(5, 5);
     }
 
-    public void initGrid(List<Integer> columnWidths, int columnHeight) {
+    public void initGrid(List<Integer> columnWidths) {
         clear();
 
         if (columnWidths.size() != columns.size()) {

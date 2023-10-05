@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.util.StringUtil;
 import init.boostable.BOOSTABLE;
@@ -106,7 +107,7 @@ public class Dictionary {
 
         public static Entry fromBoostable(BOOSTABLE boostable) {
             return Entry.builder()
-                .key("booster." + boostable.key)
+                .key(GameBoosterApi.KEY_PREFIX + "." + boostable.key)
                 .title(boostable.name.toString())
                 .description(boostable.desc.toString())
                 .build();

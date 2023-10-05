@@ -16,14 +16,13 @@ public class WeatherPanel extends GuiSection {
     @Getter
     private final Map<String, Slider> sliders;
     public WeatherPanel(Map<String, Integer> weatherConfig) {
-
-        BuildResult<GuiSection, Slider> slidersBuildResult = SlidersBuilder.builder()
+        BuildResult<GuiSection, Map<String, Slider>> slidersBuildResult = SlidersBuilder.builder()
             .displayHeight(400)
             .defaults(weatherConfig)
             .build();
 
         GuiSection sliderSection = slidersBuildResult.getResult();
-        sliders = slidersBuildResult.getElements();
+        sliders = slidersBuildResult.getInteractable();
 
         GuiSection section = new GuiSection();
         section.addDown(0, sliderSection);

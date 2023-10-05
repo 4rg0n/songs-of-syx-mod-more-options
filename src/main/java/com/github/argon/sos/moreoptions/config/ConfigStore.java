@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -71,6 +72,11 @@ public class ConfigStore {
        return configService.saveConfig(PATHS.local().SETTINGS, MoreOptionsConfig.FILE_NAME, config);
     }
 
+    public Path getConfigPath() {
+        return PATHS.local().SETTINGS.get()
+            .resolve(MoreOptionsConfig.FILE_NAME + ".txt");
+    }
+
     public Optional<Map<String, Dictionary.Entry>> loadDictionary() {
         return configService.loadDictionary(PATHS.INIT().getFolder("config"), Dictionary.FILE_NAME);
     }
@@ -125,41 +131,49 @@ public class ConfigStore {
         }
 
         private Map<String, Integer> boosters() {
+            //noinspection DataFlowIssue
             return gameApis.boosterApi().getAllBoosters().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> 100));
         }
 
-        public Map<String, Integer> weather() {
+        private Map<String, Integer> weather() {
+            //noinspection DataFlowIssue
             return gameApis.weatherApi().getWeatherThings().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> 100));
         }
 
-        public Map<String, Integer> soundsRoom() {
+        private Map<String, Integer> soundsRoom() {
+            //noinspection DataFlowIssue
             return gameApis.soundsApi().getRoomSounds().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> 100));
         }
 
-        public Map<String, Integer> soundsSettlement() {
+        private Map<String, Integer> soundsSettlement() {
+            //noinspection DataFlowIssue
             return gameApis.soundsApi().getSettlementSounds().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> 100));
         }
 
-        public Map<String, Integer> soundsAmbience() {
+        private Map<String, Integer> soundsAmbience() {
+            //noinspection DataFlowIssue
             return gameApis.soundsApi().getAmbienceSounds().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> 100));
         }
 
-        public Map<String, Integer> eventsChance() {
+        private Map<String, Integer> eventsChance() {
+            //noinspection DataFlowIssue
             return gameApis.eventsApi().getEventsChance().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> 100));
         }
 
-        public Map<String, Boolean> eventsSettlement() {
+        private Map<String, Boolean> eventsSettlement() {
+            //noinspection DataFlowIssue
             return gameApis.eventsApi().getSettlementEvents().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> true));
         }
 
-        public Map<String, Boolean> eventsWorld() {
+        private Map<String, Boolean> eventsWorld() {
+            //noinspection DataFlowIssue
             return gameApis.eventsApi().getWorldEvents().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> true));
         }

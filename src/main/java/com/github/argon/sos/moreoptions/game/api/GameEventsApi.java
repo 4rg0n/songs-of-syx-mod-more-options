@@ -26,6 +26,8 @@ public class GameEventsApi {
     private Map<String, EVENTS.EventResource> worldEvents;
     private Map<String, EVENTS.EventResource> eventsChance;
 
+    public final static String KEY_PREFIX = "event";
+
     @Getter(lazy = true)
     private final static GameEventsApi instance = new GameEventsApi();
 
@@ -47,19 +49,19 @@ public class GameEventsApi {
         Map<String, EVENTS.EventResource> settlementEvents = new HashMap<>();
         EVENTS gameEvents = GAME.events();
 
-        settlementEvents.put("event.settlement.accident", gameEvents.accident);
-        settlementEvents.put("event.settlement.advice", gameEvents.advice);
-        settlementEvents.put("event.settlement.disease", gameEvents.disease);
-        settlementEvents.put("event.settlement.farm", gameEvents.farm);
-        settlementEvents.put("event.settlement.fish", gameEvents.fish);
-        settlementEvents.put("event.settlement.killer", gameEvents.killer);
-        settlementEvents.put("event.settlement.orchard", gameEvents.orchard);
-        settlementEvents.put("event.settlement.pasture", gameEvents.pasture);
-        settlementEvents.put("event.settlement.raceWars", gameEvents.raceWars);
-        settlementEvents.put("event.settlement.riot", gameEvents.riot);
-        settlementEvents.put("event.settlement.slaver", gameEvents.slaver);
-        settlementEvents.put("event.settlement.temperature", gameEvents.temperature);
-        settlementEvents.put("event.settlement.uprising", gameEvents.uprising);
+        settlementEvents.put(KEY_PREFIX + ".settlement.accident", gameEvents.accident);
+        settlementEvents.put(KEY_PREFIX + ".settlement.advice", gameEvents.advice);
+        settlementEvents.put(KEY_PREFIX + ".settlement.disease", gameEvents.disease);
+        settlementEvents.put(KEY_PREFIX + ".settlement.farm", gameEvents.farm);
+        settlementEvents.put(KEY_PREFIX + ".settlement.fish", gameEvents.fish);
+        settlementEvents.put(KEY_PREFIX + ".settlement.killer", gameEvents.killer);
+        settlementEvents.put(KEY_PREFIX + ".settlement.orchard", gameEvents.orchard);
+        settlementEvents.put(KEY_PREFIX + ".settlement.pasture", gameEvents.pasture);
+        settlementEvents.put(KEY_PREFIX + ".settlement.raceWars", gameEvents.raceWars);
+        settlementEvents.put(KEY_PREFIX + ".settlement.riot", gameEvents.riot);
+        settlementEvents.put(KEY_PREFIX + ".settlement.slaver", gameEvents.slaver);
+        settlementEvents.put(KEY_PREFIX + ".settlement.temperature", gameEvents.temperature);
+        settlementEvents.put(KEY_PREFIX + ".settlement.uprising", gameEvents.uprising);
 
         return settlementEvents;
     }
@@ -76,14 +78,14 @@ public class GameEventsApi {
         Map<String, EVENTS.EventResource> worldEvents = new HashMap<>();
         EVENTS gameEvents = GAME.events();
 
-        worldEvents.put("event.world.factionExpand", gameEvents.world.factionExpand);
-        worldEvents.put("event.world.factionBreak", gameEvents.world.factionBreak);
-        worldEvents.put("event.world.popup", gameEvents.world.popup);
-        worldEvents.put("event.world.war", gameEvents.world.war);
-        worldEvents.put("event.world.warPlayer", gameEvents.world.warPlayer);
-        worldEvents.put("event.world.raider", gameEvents.world.raider);
-        worldEvents.put("event.world.rebellion", gameEvents.world.rebellion);
-        worldEvents.put("event.world.plague", gameEvents.world.plague);
+        worldEvents.put(KEY_PREFIX + ".world.factionExpand", gameEvents.world.factionExpand);
+        worldEvents.put(KEY_PREFIX + ".world.factionBreak", gameEvents.world.factionBreak);
+        worldEvents.put(KEY_PREFIX + ".world.popup", gameEvents.world.popup);
+        worldEvents.put(KEY_PREFIX + ".world.war", gameEvents.world.war);
+        worldEvents.put(KEY_PREFIX + ".world.warPlayer", gameEvents.world.warPlayer);
+        worldEvents.put(KEY_PREFIX + ".world.raider", gameEvents.world.raider);
+        worldEvents.put(KEY_PREFIX + ".world.rebellion", gameEvents.world.rebellion);
+        worldEvents.put(KEY_PREFIX + ".world.plague", gameEvents.world.plague);
 
         return worldEvents;
     }
@@ -100,8 +102,8 @@ public class GameEventsApi {
         Map<String, EVENTS.EventResource> eventsChance = new HashMap<>();
         EVENTS gameEvents = GAME.events();
 
-        eventsChance.put("event.chance.raider", gameEvents.world.raider);
-        eventsChance.put("event.chance.disease", gameEvents.disease);
+        eventsChance.put(KEY_PREFIX + ".chance.raider", gameEvents.world.raider);
+        eventsChance.put(KEY_PREFIX + ".chance.disease", gameEvents.disease);
 
         return eventsChance;
     }
