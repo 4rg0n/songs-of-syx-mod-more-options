@@ -37,24 +37,28 @@ public class MoreOptionsConfigurator {
      */
     public void applyConfig(MoreOptionsConfig config) {
         log.debug("Apply More Options config to game");
-        applySettlementEventsConfig(config.getEventsSettlement());
-        applyWorldEventsConfig(config.getEventsWorld());
-        applyEventsChanceConfig(config.getEventsChance());
-        applySoundsAmbienceConfig(config.getSoundsAmbience());
-        applySoundsSettlementConfig(config.getSoundsSettlement());
-        applySoundsRoomConfig(config.getSoundsRoom());
-        applyWeatherConfig(config.getWeather());
-        applyBoostersConfig(config.getBoosters());
+        try {
+            applySettlementEventsConfig(config.getEventsSettlement());
+            applyWorldEventsConfig(config.getEventsWorld());
+            applyEventsChanceConfig(config.getEventsChance());
+            applySoundsAmbienceConfig(config.getSoundsAmbience());
+            applySoundsSettlementConfig(config.getSoundsSettlement());
+            applySoundsRoomConfig(config.getSoundsRoom());
+            applyWeatherConfig(config.getWeather());
+            applyBoostersConfig(config.getBoosters());
+        } catch (Exception e) {
+            log.error("Could not apply config: %s", config, e);
+        }
     }
 
     private void applyBoostersConfig(Map<String, Integer> boostersConfig) {
         log.trace("Apply boosters config: %s", boostersConfig);
         boostersConfig.forEach((key, boost) -> {
-            Map<String, BOOSTABLE> boostables = gameApis.boosterApi().getBoosters();
+            Map<String, BOOSTABLE> boostables = gameApis.boosterApi().getAllBoosters();
 
             if (boostables.containsKey(key)) {
                 BOOSTABLE boostable = boostables.get(key);
-                gameApis.boosterApi().setBoostValue(boostable, boost);
+                gameApis.boosterApi().setBoosterValue(boostable, boost);
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", boostables);

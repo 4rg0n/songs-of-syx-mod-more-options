@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,9 +22,18 @@ public class LabeledSliderBuilder implements UiBuilder<GridRow, Slider> {
     private final Definition definition;
 
     public BuildResult<GridRow, Slider> build() {
-        GuiSection label = LabelBuilder.builder().translate(definition.getLabelDefinition()).build().build().getResult();
+
+        if (definition.getLabelWidth() > 0) {
+            definition.getLabelDefinition().setMaxWidth(definition.getLabelWidth());
+        }
+
+        GuiSection label = LabelBuilder.builder()
+            .translate(definition.getLabelDefinition())
+            .build().getResult();
         label.pad(10, 5);
-        Slider slider = SliderBuilder.builder().definition(definition.getSliderDefinition()).build().build().getResult();
+        Slider slider = SliderBuilder.builder()
+            .definition(definition.getSliderDefinition())
+            .build().getResult();
         slider.pad(10, 5);
 
         List<GuiSection> row = Stream.of(
@@ -31,11 +41,16 @@ public class LabeledSliderBuilder implements UiBuilder<GridRow, Slider> {
             slider
         ).collect(Collectors.toList());
 
+        int labelWidth = (definition.getLabelWidth() > 0) ? definition.getLabelWidth() : label.body().width();
+        int sliderWidth = slider.body().width();
+
+        List<Integer> columnWidths = new ArrayList<>();
+        columnWidths.add(labelWidth);
+        columnWidths.add(sliderWidth);
         int maxHeight = UiUtil.getMaxHeight(row);
-        int maxWidth = UiUtil.getMaxWidth(row);
 
         GridRow gridRow = new GridRow(row);
-        gridRow.initGrid(maxWidth, maxHeight);
+        gridRow.initGrid(columnWidths, maxHeight);
 
         return BuildResult.<GridRow, Slider>builder()
             .result(gridRow)
@@ -60,10 +75,10 @@ public class LabeledSliderBuilder implements UiBuilder<GridRow, Slider> {
             return definition(definition);
         }
 
-        public LabeledSliderBuilder build() {
+        public BuildResult<GridRow, Slider> build() {
             assert definition != null : "definition must not be null";
 
-            return new LabeledSliderBuilder(definition);
+            return new LabeledSliderBuilder(definition).build();
         }
     }
 
@@ -75,10 +90,7 @@ public class LabeledSliderBuilder implements UiBuilder<GridRow, Slider> {
         private SliderBuilder.Definition sliderDefinition;
 
         @lombok.Builder.Default
-        private int width = 100;
-
-        @lombok.Builder.Default
-        private int height = 32;
+        private int labelWidth = 0;
 
         @Override
         public String getKey() {

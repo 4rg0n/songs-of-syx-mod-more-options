@@ -92,7 +92,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			log.debug("Creating Mod Instance");
 
 			// try get current config and merge with defaults; or use whole defaults
-			MoreOptionsConfig defaultConfig = configStore.getDefault();
+			MoreOptionsConfig defaultConfig = configStore.getDefaults().get();
 			MoreOptionsConfig config = configStore.getCurrentConfig()
 				.map(currentConfig -> configStore.mergeMissing(currentConfig, defaultConfig))
 				.orElseGet(() -> {
@@ -106,6 +106,10 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			// we want to apply the config as soon as possible
 			configurator.applyConfig(config);
 			uiGameConfig.initDebug();
+
+			// add description from game boostables
+			gameApis.boosterApi().getAllBoosters()
+				.values().forEach(dictionary::add);
 
 			instance = new Instance(this);
 		}
@@ -124,7 +128,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	public void initGamePresent() {
 		// config should already be loaded or use default
 		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
-			.orElse(configStore.getDefault());
+			.orElse(configStore.getDefaults().get());
 
 		// build and init UI (only possible if the UI is present)
 		uiGameConfig.initUi(moreOptionsConfig);

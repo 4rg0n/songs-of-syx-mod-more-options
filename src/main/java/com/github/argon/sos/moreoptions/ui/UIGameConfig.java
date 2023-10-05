@@ -6,6 +6,7 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import init.sprite.SPRITES;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import util.gui.misc.GButt;
 import view.interrupter.IDebugPanel;
 import view.ui.UIPanelTop;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
@@ -57,7 +59,17 @@ public class UIGameConfig {
      */
     public void initUi(MoreOptionsConfig currentConfig) {
         log.debug("Initialize %s UI", MOD_INFO.name);
-        moreOptionsModal.init(currentConfig);
+
+        List<BoostersPanel.Entry> boosterEntries = currentConfig.getBoosters().entrySet().stream().map(entry -> {
+            return BoostersPanel.Entry.builder()
+                .key(entry.getKey())
+                .value(entry.getValue())
+                .enemy(gameApis.boosterApi().isEnemyBooster(entry.getKey()))
+                .player(gameApis.boosterApi().isPlayerBooster(entry.getKey()))
+                .build();
+        }).collect(Collectors.toList());
+
+        moreOptionsModal.init(currentConfig, boosterEntries);
 
         GButt.ButtPanel settlementButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
             @Override
@@ -87,12 +99,12 @@ public class UIGameConfig {
         // Apply & Save
         moreOptionsModal.getApplyButton().clickActionSet(() -> {
             MoreOptionsConfig config = moreOptionsModal.getConfig();
-            apply(config);
+            applyAndSave(config);
         });
 
         // Reset UI to default
         moreOptionsModal.getResetButton().clickActionSet(() -> {
-            MoreOptionsConfig defaultConfig = configStore.getDefault();
+            MoreOptionsConfig defaultConfig = configStore.getDefaults().get();
             moreOptionsModal.applyConfig(defaultConfig);
         });
 
@@ -103,12 +115,12 @@ public class UIGameConfig {
         //Ok: Apply & Save & Exit
         moreOptionsModal.getOkButton().clickActionSet(() -> {
             MoreOptionsConfig config = moreOptionsModal.getConfig();
-            apply(config);
+            applyAndSave(config);
             moreOptionsModal.hide();
         });
     }
 
-    private void apply(MoreOptionsConfig config) {
+    private void applyAndSave(MoreOptionsConfig config) {
         // only save when changes were made
         if (moreOptionsModal.isDirty()) {
             configurator.applyConfig(config);

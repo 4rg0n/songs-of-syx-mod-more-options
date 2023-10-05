@@ -20,7 +20,7 @@ public class WeatherPanel extends GuiSection {
         BuildResult<GuiSection, Slider> slidersBuildResult = SlidersBuilder.builder()
             .displayHeight(400)
             .defaults(weatherConfig)
-            .build().build();
+            .build();
 
         GuiSection sliderSection = slidersBuildResult.getResult();
         sliders = slidersBuildResult.getElements();
@@ -28,8 +28,6 @@ public class WeatherPanel extends GuiSection {
         GuiSection section = new GuiSection();
         section.addDown(0, sliderSection);
         addDownC(0, section);
-
-        applyConfig(weatherConfig);
     }
 
     public Map<String, Integer> getConfig() {

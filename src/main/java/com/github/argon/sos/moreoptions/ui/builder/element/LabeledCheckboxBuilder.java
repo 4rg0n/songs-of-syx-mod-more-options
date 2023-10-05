@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,10 +23,10 @@ public class LabeledCheckboxBuilder implements UiBuilder<GridRow, Checkbox> {
 
     @Override
     public BuildResult<GridRow, Checkbox> build() {
-        GuiSection label = LabelBuilder.builder().translate(definition.getLabelDefinition()).build().build().getResult();
+        GuiSection label = LabelBuilder.builder().translate(definition.getLabelDefinition()).build().getResult();
         label.pad(10, 5);
 
-        Checkbox checkbox = CheckboxBuilder.builder().definition(definition.getCheckboxDefinition()).build().build().getResult();
+        Checkbox checkbox = CheckboxBuilder.builder().definition(definition.getCheckboxDefinition()).build().getResult();
         GuiSection checkBoxSection = new GuiSection().add(checkbox);
         checkBoxSection.pad(10, 5);
 
@@ -34,11 +35,13 @@ public class LabeledCheckboxBuilder implements UiBuilder<GridRow, Checkbox> {
             checkBoxSection
         ).collect(Collectors.toList());
 
+        List<Integer> columnWidths = new ArrayList<>();
+        columnWidths.add(label.body().width());
+        columnWidths.add(checkBoxSection.body().width());
         int maxHeight = UiUtil.getMaxHeight(row);
-        int maxWidth = UiUtil.getMaxWidth(row);
 
         GridRow gridRow = new GridRow(row);
-        gridRow.initGrid(maxWidth, maxHeight);
+        gridRow.initGrid(columnWidths, maxHeight);
 
         return BuildResult.<GridRow, Checkbox>builder()
             .result(gridRow)
@@ -63,10 +66,10 @@ public class LabeledCheckboxBuilder implements UiBuilder<GridRow, Checkbox> {
             return definition(definition);
         }
 
-        public LabeledCheckboxBuilder build() {
+        public BuildResult<GridRow, Checkbox> build() {
             assert definition != null : "definition must not be null";
 
-            return new LabeledCheckboxBuilder(definition);
+            return new LabeledCheckboxBuilder(definition).build();
         }
     }
 

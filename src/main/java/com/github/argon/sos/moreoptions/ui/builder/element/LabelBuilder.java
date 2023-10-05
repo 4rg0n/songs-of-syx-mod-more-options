@@ -23,6 +23,10 @@ public class LabelBuilder implements UiBuilder<GuiSection, GText> {
         GuiSection section = new GuiSection();
         section.addRight(0, text);
 
+        if (definition.getMaxWidth() > 0) {
+            text.setMaxWidth(definition.getMaxWidth());
+        }
+
         if (definition.getDescription() != null) {
             section.hoverInfoSet(definition.getDescription());
         }
@@ -50,10 +54,10 @@ public class LabelBuilder implements UiBuilder<GuiSection, GText> {
             return definition(translate);
         }
 
-        public LabelBuilder build() {
+        public BuildResult<GuiSection, GText> build() {
             assert definition != null : "definition must not be null";
 
-            return new LabelBuilder(definition);
+            return new LabelBuilder(definition).build();
         }
 
 
@@ -68,9 +72,12 @@ public class LabelBuilder implements UiBuilder<GuiSection, GText> {
         private String description;
 
         @lombok.Builder.Default
+        private int maxWidth = 0;
+
+        @lombok.Builder.Default
         private boolean translate = true;
 
         @lombok.Builder.Default
-        private Font font = UI.FONT().M;
+        private Font font = UI.FONT().H2;
     }
 }

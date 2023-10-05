@@ -22,6 +22,7 @@ import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.clickable.CLICKABLE;
+import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sets.Tuple;
 import util.gui.misc.GBox;
 import util.gui.misc.GButt;
@@ -30,7 +31,9 @@ import util.gui.panel.GPanelL;
 import view.interrupter.Interrupter;
 import view.main.VIEW;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -71,7 +74,10 @@ public class MoreOptionsModal extends Interrupter {
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
 
-    public void init(MoreOptionsConfig config) {
+    /**
+     * Builds the UI with given config
+     */
+    public void init(MoreOptionsConfig config, List<BoostersPanel.Entry> boosterEntries) {
         GPanelL pan = new GPanelL();
         pan.setTitle("More Options");
         pan.setCloseAction(this::hide);
@@ -80,7 +86,7 @@ public class MoreOptionsModal extends Interrupter {
         soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
         eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance());
         weatherPanel = new WeatherPanel(config.getWeather());
-        boostersPanel = new BoostersPanel(config.getBoosters());
+        boostersPanel = new BoostersPanel(boosterEntries);
 
         Map<Tuple<String, String>, GuiSection> panels = new LinkedHashMap<>();
         panels.put(new Tuple.TupleImp<>("Sounds", "Tune the volume of various sounds."), soundsPanel);
@@ -88,13 +94,15 @@ public class MoreOptionsModal extends Interrupter {
         panels.put(new Tuple.TupleImp<>("Weather", "Influence weather effects."), weatherPanel);
         panels.put(new Tuple.TupleImp<>("Boosters", "Increase or decrease various bonuses."), boostersPanel);
 
-        int width = UiUtil.getMaxWidth(panels.values());
-
         GuiSection header = header(panels, config);
         section.add(header);
 
         switcher = new CLICKABLE.Switcher(soundsPanel);
         section.add(switcher);
+
+        List<RENDEROBJ> widths = new ArrayList<>(panels.values());
+        widths.add(header);
+        int width = UiUtil.getMaxWidth(widths);
 
         HorizontalLine horizontalLine = new HorizontalLine(width, 14, 1);
         section.add(horizontalLine);
@@ -116,11 +124,13 @@ public class MoreOptionsModal extends Interrupter {
         soundsPanel.body().moveY1(header.body().y2() + 15);
         soundsPanel.body().centerX(header);
 
-        horizontalLine.body().moveY1(soundsPanel.body().y2() + 15);
+        horizontalLine.body().moveY1(soundsPanel.body().y2() + 20);
         horizontalLine.body().centerX(header);
 
         footer.body().moveY1(horizontalLine.body().y2() + 10);
         footer.body().centerX(header);
+
+        applyConfig(config);
     }
 
     public void show() {

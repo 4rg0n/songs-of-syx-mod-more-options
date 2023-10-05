@@ -120,6 +120,7 @@ public final class SoundAmbience {
 		private double gain;
 
 		/**
+		 * MODDED: for limiting the sound level
 		 * 1.0 = 100% volume
 		 */
 		@Setter
@@ -146,6 +147,7 @@ public final class SoundAmbience {
 			playFull = false;
 			playExtra = 0;
 
+			// MODDED
 			gain = gain * gainLimiter;
 
 			this.priority = priority*gain;
@@ -161,6 +163,7 @@ public final class SoundAmbience {
 			playExtra ++;
 			playExtra = CLAMP.d(playExtra, 0, 1);
 
+			// MODDED
 			gain = gain * gainLimiter;
 
 			this.priority = priority;

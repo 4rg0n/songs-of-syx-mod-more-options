@@ -186,6 +186,7 @@ public class Slider extends GuiSection {
             int valueWidth = UI.FONT().S.width(maxString, 0, maxString.length() - 1, 1.4);
 
             section.body().setWidth(valueWidth);
+            body().setWidth(valueWidth);
             section.body().setHeight(body().height());
 
             section.addCentredX(value, 0);

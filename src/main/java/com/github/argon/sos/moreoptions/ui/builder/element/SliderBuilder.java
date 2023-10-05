@@ -19,7 +19,7 @@ public class SliderBuilder implements UiBuilder<Slider, Slider> {
         int max = definition.getMax();
         int sliderWidth = (Math.abs(min) + Math.abs(max)) * 2;
 
-        if (definition.getMaxWidth() != 0 && sliderWidth > definition.getMaxWidth()) {
+        if (definition.getMaxWidth() > 0) {
             sliderWidth = definition.getMaxWidth();
         }
 
@@ -43,10 +43,10 @@ public class SliderBuilder implements UiBuilder<Slider, Slider> {
         @Accessors(fluent = true)
         private Definition definition;
 
-        public SliderBuilder build() {
+        public BuildResult<Slider, Slider> build() {
             assert definition != null : "definition must not be null";
 
-            return new SliderBuilder(definition);
+            return new SliderBuilder(definition).build();
         }
     }
 

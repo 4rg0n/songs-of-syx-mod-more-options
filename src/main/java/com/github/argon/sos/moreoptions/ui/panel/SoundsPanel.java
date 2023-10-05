@@ -4,6 +4,9 @@ import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
+import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.LabeledSliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.section.SlidersBuilder;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
@@ -24,22 +27,22 @@ public class SoundsPanel extends GuiSection {
     ) {
         BuildResult<GuiSection, Slider> ambienceSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
-            .defaults(soundsAmbienceConfig)
-            .build().build();
+            .definitions(sliders(soundsAmbienceConfig))
+            .build();
         GuiSection ambienceSoundSection = ambienceSlidersResult.getResult();
         this.ambienceSoundSliders = ambienceSlidersResult.getElements();
 
         BuildResult<GuiSection, Slider> settlementSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
-            .defaults(soundsSettlementConfig)
-            .build().build();
+            .definitions(sliders(soundsSettlementConfig))
+            .build();
         GuiSection settlementSoundSection = settlementSlidersResult.getResult();
         this.settlementSoundSliders = settlementSlidersResult.getElements();
 
         BuildResult<GuiSection, Slider> roomSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
-            .defaults(soundsRoomConfig)
-            .build().build();
+            .definitions(sliders(soundsRoomConfig))
+            .build();
         GuiSection roomSoundSection = roomSlidersResult.getResult();
         this.roomSoundSliders = roomSlidersResult.getElements();
 
@@ -60,9 +63,20 @@ public class SoundsPanel extends GuiSection {
         section.addDown(5, roomSoundSection);
 
         addDownC(0, section);
+    }
 
-        applyConfig(soundsAmbienceConfig, soundsSettlementConfig, soundsRoomConfig);
-
+    private Map<String, LabeledSliderBuilder.Definition> sliders(Map<String, Integer> slidersConfig) {
+        return slidersConfig.entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey,
+            config -> LabeledSliderBuilder.Definition.builder()
+                .labelDefinition(LabelBuilder.Definition.builder()
+                    .key(config.getKey())
+                    .title(config.getKey())
+                    .build())
+                .sliderDefinition(SliderBuilder.Definition.builder()
+                    .build())
+                .labelWidth(200)
+                .build()));
     }
 
     public Map<String, Integer> getSoundsAmbienceConfig() {

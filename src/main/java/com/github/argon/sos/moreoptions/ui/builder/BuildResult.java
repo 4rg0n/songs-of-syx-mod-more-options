@@ -18,6 +18,9 @@ public class BuildResult<T, E> {
     @Singular
     private Map<String, E> elements;
 
+    /**
+     * @return element with {@link this#NO_KEY} as key
+     */
     public Optional<E> getElement() {
         if (elements.containsKey(NO_KEY)) {
             return Optional.of(elements.get(NO_KEY));

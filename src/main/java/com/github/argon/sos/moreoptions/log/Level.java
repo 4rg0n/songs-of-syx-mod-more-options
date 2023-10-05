@@ -26,6 +26,7 @@ public class Level {
             case "critical":
                 return Optional.of(CRIT);
             case "error":
+            case "err":
                 return Optional.of(ERROR);
             case "warning":
             case "warn":
@@ -39,5 +40,10 @@ public class Level {
             default:
                 return Optional.empty();
         }
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

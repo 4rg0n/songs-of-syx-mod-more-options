@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.util.StringUtil;
+import init.boostable.BOOSTABLE;
 import lombok.*;
 
 import java.util.Collection;
@@ -39,6 +40,9 @@ public class Dictionary {
         return translatables;
     }
 
+    /**
+     * Will look into {@link this#entries} for a match and replace title and description in the given object.
+     */
     public <T extends Translatable> T translate(T translatable) {
         String key = translatable.getKey();
 
@@ -62,6 +66,22 @@ public class Dictionary {
         return this;
     }
 
+    public Dictionary add(Entry entry) {
+        entries.put(entry.getKey(), entry);
+
+        return this;
+    }
+
+    public Dictionary add(BOOSTABLE boostable) {
+        Dictionary.Entry dictEntry = Dictionary.Entry.fromBoostable(boostable);
+        entries.put(dictEntry.getKey(), dictEntry);
+
+        return this;
+    }
+
+    /**
+     * @return Found entry or a "No dictionary entry available" entry
+     */
     public Entry get(String key) {
         if (!entries.containsKey(key)) {
             return Entry.builder()
@@ -77,10 +97,19 @@ public class Dictionary {
     @Data
     @Builder
     public static class Entry {
+
         private String key;
 
         private String title;
 
         private String description;
+
+        public static Entry fromBoostable(BOOSTABLE boostable) {
+            return Entry.builder()
+                .key("booster." + boostable.key)
+                .title(boostable.name.toString())
+                .description(boostable.desc.toString())
+                .build();
+        }
     }
 }

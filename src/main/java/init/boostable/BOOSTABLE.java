@@ -20,6 +20,7 @@ public class BOOSTABLE extends INFO implements INDEXED{
 	public final int index;
 	public final String key;
 	final SPRITE icon;
+	// MODDED: was final; must be changeable
 	@Setter
 	public double defAdd;
 	double[] climates = new double[CLIMATES.ALL().size()];

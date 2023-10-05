@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
-
+/**
+ * Contains all game apis for accessing its functionality
+ */
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameApis {

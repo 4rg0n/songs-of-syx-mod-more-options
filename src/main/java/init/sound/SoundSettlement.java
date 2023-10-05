@@ -113,6 +113,8 @@ public class SoundSettlement {
 		public final String key;
 
 		/**
+		 * MODDED: for limiting the sound level
+		 *
 		 * 1.0 = 100% volume
 		 */
 		@Setter
@@ -146,6 +148,7 @@ public class SoundSettlement {
 			float pitch = RND.rFloat1(0.3);
 			gain *= ggain;
 
+			// MODDED
 			gain = gain * gainLimiter;
 			
 			sounds[i].play(x, y, pitch, (float)gain, false);

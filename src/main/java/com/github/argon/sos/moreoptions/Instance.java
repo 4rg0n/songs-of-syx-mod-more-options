@@ -53,7 +53,7 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 		log.debug("PHASE: load");
 		// Pass current config or use default
 		MoreOptionsConfig config = script.getConfigStore().getCurrentConfig()
-			.orElse(script.getConfigStore().getDefault());
+			.orElse(script.getConfigStore().getDefaults().get());
 
 		script.initGameSaveLoaded(config);
 	}

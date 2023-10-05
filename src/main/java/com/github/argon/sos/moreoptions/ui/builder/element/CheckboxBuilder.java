@@ -31,10 +31,10 @@ public class CheckboxBuilder implements UiBuilder<Checkbox, Checkbox> {
         @Accessors(fluent = true)
         private Definition definition;
 
-        public CheckboxBuilder build() {
+        public BuildResult<Checkbox, Checkbox> build() {
             assert definition != null : "definition must not be null";
 
-            return new CheckboxBuilder(definition);
+            return new CheckboxBuilder(definition).build();
         }
     }
 

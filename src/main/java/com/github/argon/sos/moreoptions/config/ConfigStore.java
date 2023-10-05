@@ -18,42 +18,15 @@ public class ConfigStore {
     private final static Logger log = Loggers.getLogger(ConfigStore.class);
 
     private final ConfigService configService;
-    private final GameApis gameApis;
+
+    private Defaults defaultConfig;
 
     @Getter(lazy = true)
     private final static ConfigStore instance = new ConfigStore(
-        ConfigService.getInstance(),
-        GameApis.getInstance()
+        ConfigService.getInstance()
     );
 
     private MoreOptionsConfig currentConfig;
-
-    /**
-     * This thing is a little flaky!
-     * Because it relies on reading game data to build the configs, it is only usable after a certain phase.
-     * When called too early, some game classes might not be available yet
-     * and the method could fail or deliver en empty result.
-     */
-    public MoreOptionsConfig getDefault() {
-       return MoreOptionsConfig.builder()
-            .eventsWorld(gameApis.eventsApi().getWorldEvents().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> true)))
-            .eventsSettlement(gameApis.eventsApi().getSettlementEvents().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> true)))
-           .eventsChance(gameApis.eventsApi().getEventsChance().keySet().stream()
-               .collect(Collectors.toMap(key -> key, o -> 100)))
-            .soundsAmbience(gameApis.soundsApi().getAmbienceSounds().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> 100)))
-            .soundsSettlement(gameApis.soundsApi().getSettlementSounds().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> 100)))
-            .soundsRoom(gameApis.soundsApi().getRoomSounds().keySet().stream()
-               .collect(Collectors.toMap(key -> key, o -> 100)))
-            .weather(gameApis.weatherApi().getWeatherThings().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> 100)))
-           .boosters(gameApis.boosterApi().getBoosters().keySet().stream()
-               .collect(Collectors.toMap(key -> key, o -> 100)))
-            .build();
-    }
 
     /**
      * Used by the mod as current configuration to apply and use
@@ -72,6 +45,14 @@ public class ConfigStore {
      */
     public Optional<MoreOptionsConfig> loadConfig() {
         return configService.loadConfig(PATHS.local().SETTINGS, MoreOptionsConfig.FILE_NAME);
+    }
+
+    public Defaults getDefaults() {
+        if (defaultConfig == null) {
+            defaultConfig = new Defaults(GameApis.getInstance());
+        }
+
+        return defaultConfig;
     }
 
     /**
@@ -100,5 +81,87 @@ public class ConfigStore {
 
     public MoreOptionsConfig mergeMissing(MoreOptionsConfig target, MoreOptionsConfig source) {
         return configService.mergeMissing(target, source);
+    }
+
+    @RequiredArgsConstructor
+    public static class Defaults {
+
+        private final GameApis gameApis;
+
+        @Getter(lazy=true)
+        private final Map<String, Integer> boosters = boosters();
+        @Getter(lazy=true)
+        private final Map<String, Integer> weather = weather();
+        @Getter(lazy=true)
+        private final Map<String, Integer> soundsRoom = soundsRoom();
+        @Getter(lazy=true)
+        private final Map<String, Integer> soundsAmbience = soundsAmbience();
+        @Getter(lazy=true)
+        private final Map<String, Integer> soundsSettlement = soundsSettlement();
+        @Getter(lazy=true)
+        private final Map<String, Integer> eventsChance = eventsChance();
+        @Getter(lazy=true)
+        private final Map<String, Boolean> eventsWorld = eventsWorld();
+        @Getter(lazy=true)
+        private final Map<String, Boolean> eventsSettlement = eventsSettlement();
+
+        /**
+         * This thing is a little flaky!
+         * Because it relies on reading game data to build the configs, it is only usable after a certain phase.
+         * When called too early, some game classes might not be available yet
+         * and the method could fail or deliver en empty result.
+         */
+        public MoreOptionsConfig get() {
+            return MoreOptionsConfig.builder()
+                .eventsWorld(getEventsWorld())
+                .eventsSettlement(getEventsSettlement())
+                .eventsChance(getEventsChance())
+                .soundsAmbience(getSoundsAmbience())
+                .soundsSettlement(getSoundsSettlement())
+                .soundsRoom(getSoundsRoom())
+                .weather(getWeather())
+                .boosters(getBoosters())
+                .build();
+        }
+
+        private Map<String, Integer> boosters() {
+            return gameApis.boosterApi().getAllBoosters().keySet().stream()
+                .collect(Collectors.toMap(key -> key, o -> 100));
+        }
+
+        public Map<String, Integer> weather() {
+            return gameApis.weatherApi().getWeatherThings().keySet().stream()
+                .collect(Collectors.toMap(key -> key, o -> 100));
+        }
+
+        public Map<String, Integer> soundsRoom() {
+            return gameApis.soundsApi().getRoomSounds().keySet().stream()
+                .collect(Collectors.toMap(key -> key, o -> 100));
+        }
+
+        public Map<String, Integer> soundsSettlement() {
+            return gameApis.soundsApi().getSettlementSounds().keySet().stream()
+                .collect(Collectors.toMap(key -> key, o -> 100));
+        }
+
+        public Map<String, Integer> soundsAmbience() {
+            return gameApis.soundsApi().getAmbienceSounds().keySet().stream()
+                .collect(Collectors.toMap(key -> key, o -> 100));
+        }
+
+        public Map<String, Integer> eventsChance() {
+            return gameApis.eventsApi().getEventsChance().keySet().stream()
+                .collect(Collectors.toMap(key -> key, o -> 100));
+        }
+
+        public Map<String, Boolean> eventsSettlement() {
+            return gameApis.eventsApi().getSettlementEvents().keySet().stream()
+                .collect(Collectors.toMap(key -> key, o -> true));
+        }
+
+        public Map<String, Boolean> eventsWorld() {
+            return gameApis.eventsApi().getWorldEvents().keySet().stream()
+                .collect(Collectors.toMap(key -> key, o -> true));
+        }
     }
 }

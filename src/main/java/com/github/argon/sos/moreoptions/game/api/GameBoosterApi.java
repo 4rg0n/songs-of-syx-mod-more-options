@@ -18,27 +18,59 @@ public class GameBoosterApi {
 
     private final static Logger log = Loggers.getLogger(GameBoosterApi.class);
 
-    private Map<String, BOOSTABLE> boosters;
+    private Map<String, BOOSTABLE> allBoosters;
+    private Map<String, BOOSTABLE> enemyBoosters;
+    private Map<String, BOOSTABLE> playerBoosters;
 
     @Getter(lazy = true)
     private final static GameBoosterApi instance = new GameBoosterApi();
 
     public void clearCached() {
-        boosters = null;
+        allBoosters = null;
     }
 
-    public Map<String, BOOSTABLE> getBoosters() {
-        if (boosters == null) {
-            boosters = new HashMap<>();
+    public Map<String, BOOSTABLE> getAllBoosters() {
+        if (allBoosters == null) {
+            allBoosters = new HashMap<>();
             BOOSTABLES.all().forEach(boostable -> {
-                boosters.put("booster." + boostable.key, boostable);
+                allBoosters.put("booster." + boostable.key, boostable);
             });
         }
 
-        return boosters;
+        return allBoosters;
     }
 
-    public void setBoostValue(BOOSTABLE boostable, int boost) {
+    public Map<String, BOOSTABLE> getPlayerBoosters() {
+        if (playerBoosters == null) {
+            playerBoosters = new HashMap<>();
+            BOOSTABLES.player().getBoosters().forEach(boostable -> {
+                allBoosters.put("booster." + boostable.key, boostable);
+            });
+        }
+
+        return playerBoosters;
+    }
+
+    public Map<String, BOOSTABLE> getEnemyBoosters() {
+        if (enemyBoosters == null) {
+            enemyBoosters = new HashMap<>();
+            BOOSTABLES.enemy().getBoosters().forEach(boostable -> {
+                enemyBoosters.put("booster." + boostable.key, boostable);
+            });
+        }
+
+        return enemyBoosters;
+    }
+
+    public boolean isEnemyBooster(String key) {
+        return getEnemyBoosters().containsKey(key);
+    }
+
+    public boolean isPlayerBooster(String key) {
+        return getPlayerBoosters().containsKey(key);
+    }
+
+    public void setBoosterValue(BOOSTABLE boostable, int boost) {
         double currentValue = boostable.defAdd;
         double newValue = currentValue * MathUtil.toPercentage(boost);
 

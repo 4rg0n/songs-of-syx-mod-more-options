@@ -8,9 +8,14 @@ import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.LabeledSliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.section.SlidersBuilder;
+import init.sprite.UI.UI;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
+import util.gui.misc.GText;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -19,15 +24,13 @@ public class BoostersPanel extends GuiSection {
     @Getter
     private final Map<String, Slider> sliders;
 
-    public BoostersPanel(Map<String, Integer> boosterConfig) {
-
-
-        Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = boosterConfig.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            config -> LabeledSliderBuilder.Definition.builder()
+    public BoostersPanel(List<Entry> boosterEntries) {
+        Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = boosterEntries.stream().collect(Collectors.toMap(
+            Entry::getKey,
+            entry -> LabeledSliderBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
-                    .key(config.getKey())
-                    .title(config.getKey())
+                    .key(entry.getKey())
+                    .title(entry.getKey())
                     .build())
                 .sliderDefinition(SliderBuilder.Definition.builder()
                     .maxWidth(300)
@@ -37,16 +40,14 @@ public class BoostersPanel extends GuiSection {
 
         BuildResult<GuiSection, Slider> buildResult = SlidersBuilder.builder()
             .displayHeight(550)
-            .translate(sliderDefinitions).build().build();
+            .translate(sliderDefinitions)
+            .build();
 
         GuiSection sliderSection = buildResult.getResult();
         sliders = buildResult.getElements();
 
-        GuiSection section = new GuiSection();
-        section.addDown(0, sliderSection);
-        addDownC(0, section);
-
-        applyConfig(boosterConfig);
+        addDownC(0, new GText(UI.FONT().S, "Changing boosters to higher values can slow down the game or even crash it."));
+        addDownC(15, sliderSection);
     }
 
     public Map<String, Integer> getConfig() {
@@ -64,5 +65,19 @@ public class BoostersPanel extends GuiSection {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
+    }
+
+    @Data
+    @Builder
+    public static class Entry {
+        private int value;
+
+        private String key;
+
+        @Builder.Default
+        private boolean player = false;
+
+        @Builder.Default
+        private boolean enemy = false;
     }
 }

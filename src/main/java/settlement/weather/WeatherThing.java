@@ -15,6 +15,9 @@ public class WeatherThing implements DOUBLE_MUTABLE{
 	static LinkedList<WeatherThing> all;
 	private double d;
 	public final INFO info;
+	/**
+	 * MODDED: for limiting the amount of weather effects and particles
+	 */
 	@Setter
 	private double amountLimit = 1.0d;
 	
@@ -25,6 +28,7 @@ public class WeatherThing implements DOUBLE_MUTABLE{
 	
 	@Override
 	public double getD() {
+		// MODDED
 		return d * amountLimit;
 	}
 

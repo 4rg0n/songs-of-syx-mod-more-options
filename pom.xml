@@ -6,7 +6,7 @@
 
     <groupId>com.argon.sos</groupId>
     <artifactId>songs-of-syx-mod-more-options</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
 
     <profiles>
         <profile>
@@ -98,9 +98,9 @@
         <!-- These settings will go into the mods _Info.txt file -->
         <mod.version>${project.version}</mod.version>
         <mod.name>More Options</mod.name>
-        <mod.description>TODO</mod.description>
+        <mod.description>Adds more options to the game :)</mod.description>
         <mod.author>4rg0n</mod.author>
-        <mod.info>TODO</mod.info>
+        <mod.info></mod.info>
         <game.version.major>64</game.version.major>
         <game.version.minor>40</game.version.minor>
 

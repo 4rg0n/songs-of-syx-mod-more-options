@@ -47,11 +47,11 @@ public class ScrollableBuilder implements UiBuilder<GScrollRows, GScrollRows> {
         @Accessors(fluent = true)
         private int height;
 
-        public ScrollableBuilder build() {
+        public BuildResult<GScrollRows, GScrollRows> build() {
             assert rows != null : "rows must not be null";
             assert height > 0 : "height must be greater than 0";
 
-            return new ScrollableBuilder(rows, height);
+            return new ScrollableBuilder(rows, height).build();
         }
     }
 }

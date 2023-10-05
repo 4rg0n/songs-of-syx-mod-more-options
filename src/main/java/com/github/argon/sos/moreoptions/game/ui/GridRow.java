@@ -3,15 +3,10 @@ package com.github.argon.sos.moreoptions.game.ui;
 import lombok.Getter;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
-import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 
 import java.util.List;
 
-/**
- * Represents a row with multiple columns.
- * Each column has the same width.
- */
 public class GridRow extends GuiSection {
 
     private COLOR color;
@@ -24,11 +19,18 @@ public class GridRow extends GuiSection {
         pad(5, 5);
     }
 
-    public void initGrid(int columnWidth, int columnHeight) {
+    public void initGrid(List<Integer> columnWidths, int columnHeight) {
         clear();
+
+        if (columnWidths.size() != columns.size()) {
+            throw new RuntimeException("Amount of columns (" + columns.size() + ") in row does match given column widths " + columnWidths.size());
+        }
+
         for (int i = 0; i < columns.size(); i++) {
             GuiSection section = columns.get(i);
-            addGridD(section, i, columns.size(), columnWidth, columnHeight, DIR.W);
+            Integer width = columnWidths.get(i);
+            section.body().setWidth(width);
+            addRight(5, section);
         }
     }
 

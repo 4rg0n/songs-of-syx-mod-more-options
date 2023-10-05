@@ -73,8 +73,6 @@ public class EventsPanel extends GuiSection {
         HorizontalLine horizontalLine = new HorizontalLine(eventsChanceSection.body().width(), 14, 1);
         addDownC(10, horizontalLine);
         addDownC(10, eventsChanceSection);
-
-        applyConfig(settlementEventsConfig, worldEventsConfig, eventsChanceConfig);
     }
 
     private BuildResult<GuiSection, Slider> sliders(Map<String, Integer> eventsChanceConfig) {
@@ -94,7 +92,7 @@ public class EventsPanel extends GuiSection {
         return SlidersBuilder.builder()
             .displayHeight(150)
             .definitions(sliderDefinitions)
-            .build().build();
+            .build();
     }
 
     public Map<String, Boolean> getSettlementEventsConfig() {
@@ -162,6 +160,6 @@ public class EventsPanel extends GuiSection {
 
         return CheckboxesBuilder.builder()
             .displayHeight(300)
-            .translate(settlementCheckboxes).build().build();
+            .translate(settlementCheckboxes).build();
     }
 }

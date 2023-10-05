@@ -41,22 +41,22 @@ public class SlidersBuilder implements UiBuilder<GuiSection, Slider> {
         List<GridRow> gridRows = new ArrayList<>();
 
         definitions.forEach((key, definition) -> {
-            BuildResult<GridRow, Slider> buildResult = LabeledSliderBuilder.builder().definition(definition).build().build();
+            BuildResult<GridRow, Slider> buildResult = LabeledSliderBuilder.builder().definition(definition).build();
             Slider slider = buildResult.getElement().orElseThrow(() -> new RuntimeException(""));
 
             elements.put(key, slider);
             gridRows.add(buildResult.getResult());
         });
 
-        int maxWidth = UiUtil.getMaxColumnWidth(gridRows);
+        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(gridRows);
         int maxHeight = UiUtil.getMaxColumnHeight(gridRows);
 
         for (int i = 0; i < gridRows.size(); i++) {
-            GridRow row = gridRows.get(i);
-            row.initGrid(maxWidth, maxHeight);
+            GridRow gridRow = gridRows.get(i);
+            gridRow.initGrid(maxWidths, maxHeight);
 
             if (i % 2 == 0) {
-                row.background(COLOR.WHITE15);
+                gridRow.background(COLOR.WHITE15);
             }
         }
 
@@ -64,7 +64,7 @@ public class SlidersBuilder implements UiBuilder<GuiSection, Slider> {
         GScrollRows gScrollRows = ScrollableBuilder.builder()
             .height(displayHeight)
             .rows(gridRows)
-            .build().build().getResult();
+            .build().getResult();
         GuiSection section = new GuiSection();
         section.add(gScrollRows.view());
 
@@ -110,11 +110,11 @@ public class SlidersBuilder implements UiBuilder<GuiSection, Slider> {
             return definitions(definitions);
         }
 
-        public SlidersBuilder build() {
+        public BuildResult<GuiSection, Slider> build() {
             assert definitions != null : "definitions must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
 
-            return new SlidersBuilder(definitions, displayHeight);
+            return new SlidersBuilder(definitions, displayHeight).build();
         }
     }
 }
