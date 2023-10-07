@@ -24,10 +24,10 @@ import java.util.HashMap;
 public class ScriptEngine extends GameResource {
 
 	private LIST<Script> loads = new ArrayList<Script>(0);
-	
+
 
 	public ScriptEngine() {
-		
+
 		LIST<ScriptLoad> loads = ScriptLoad.getAll();
 		LinkedList<Script> all = new LinkedList<>();
 		for (ScriptLoad l : loads) {
@@ -39,7 +39,7 @@ public class ScriptEngine extends GameResource {
 			}
 		}
 		this.loads = new ArrayList<Script>(all);
-		
+
 	}
 
 	public void initAfter() {
@@ -51,9 +51,9 @@ public class ScriptEngine extends GameResource {
 			}
 		}
 	}
-	
 
-	
+
+
 	public String[] currentScripts() {
 		String[] scripts = new String[loads.size()];
 		int i = 0;
@@ -61,19 +61,19 @@ public class ScriptEngine extends GameResource {
 			scripts[i++] = l.load.file;
 		return scripts;
 	}
-	
+
 	private void error(ScriptLoad l, Exception e) {
-		
+
 		StringWriter writer = new StringWriter();
 		PrintWriter out = new PrintWriter(writer);
 		out.append("error in script " + l.className);
 		out.append(System.lineSeparator());
 		e.printStackTrace(out);
-		
+
 		throw new Errors.DataError(writer.toString(), l.file);
-		
+
 	}
-	
+
 //	public void set(LIST<ScriptLoad> scripts) {
 //		LinkedList<Script> res = new LinkedList<>();
 //		for (ScriptLoad l : scripts) {
@@ -82,7 +82,7 @@ public class ScriptEngine extends GameResource {
 //		}
 //		this.scripts = new ArrayList<Script>(res);
 //	}
-	
+
 //	public LIST<ScriptLoad> makeCurrent(){
 //		LinkedList<ScriptLoad> res = new LinkedList<>();
 //		for (Script s : scripts)
@@ -120,14 +120,14 @@ public class ScriptEngine extends GameResource {
 		for (Script l : this.loads) {
 			alreadyLoaded.put(l.load.file+l.load.className, l);
 		}
-		
+
 		KeyMap<ScriptLoad> map = new KeyMap<>();
 		{
-			
+
 			for (ScriptLoad l : ScriptLoad.getAll()) {
 				map.put(l.file+l.className, l);
 			}
-			
+
 			for (int i = 0; i < am; i++) {
 				String nfile = file.chars();
 				String nclass = file.chars();
@@ -143,9 +143,9 @@ public class ScriptEngine extends GameResource {
 					}
 				}
 			}
-			
+
 		}
-		
+
 		while(am > 0) {
 			am--;
 			String nfile = file.chars();
@@ -154,34 +154,38 @@ public class ScriptEngine extends GameResource {
 			int size = file.i();
 			int position = file.getPosition();
 
-			if (map.containsKey(key) && !alreadyLoaded.containsKey(key)) {
-				ScriptLoad ld = map.get(key);
-				SCRIPT_INSTANCE ins = ld.script.createInstance();
+			if (map.containsKey(key)) {
+				SCRIPT_INSTANCE ins;
+				if (alreadyLoaded.containsKey(key)) {
+					Script script = alreadyLoaded.get(key);
+					ins = script.ins;
+				} else {
+					ScriptLoad ld = map.get(key);
+					ins = ld.script.createInstance();
+					alreadyLoaded.put(key, new Script(ld, ins));
+				}
+
 				ins.load(file);
 				if (size != (file.getPosition()-position)) {
 					LOG.ln("Unable to load script. Was saved with + " + size + " bytes, but read " + (file.getPosition()-position) + " " + ins.hashCode());
 					file.setPosition(position+size);
 					if (ins.handleBrokenSavedState()) {
 						LOG.ln("Script wants to carry on anyway, so be it.");
-					}else
-						continue;
+					}
 				}
-
-				alreadyLoaded.put(key, new Script(ld, ins));
-			}else {
+			} else {
 				LOG.ln("Unable to find script. Skipping. " + size + " " + key);
 				for (int i = 0; i < size; i++)
 					file.b();
 			}
 		}
 
-
 		this.loads = new ArrayList<Script>(alreadyLoaded.values());
 	}
 
 	@Override
 	protected void update(float ds) {
-		
+
 		for(Script s : loads)
 			try {
 				s.ins.update(ds);
@@ -207,7 +211,7 @@ public class ScriptEngine extends GameResource {
 				error(s.load, e);
 			}
 	}
-	
+
 	public void mouseClick(MButt button) {
 		for(Script s : loads)
 			try {
@@ -225,17 +229,17 @@ public class ScriptEngine extends GameResource {
 				error(s.load, e);
 			}
 	}
-	
+
 	private static class Script {
-		
+
 		private final ScriptLoad load;
 		private SCRIPT_INSTANCE ins;
-		
+
 		Script(ScriptLoad load, SCRIPT_INSTANCE ins){
 			this.load = load;
 			this.ins = ins;
 		}
-		
+
 	}
 
 

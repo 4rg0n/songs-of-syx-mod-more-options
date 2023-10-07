@@ -60,7 +60,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	}
 
 	static {
-		Loggers.setLevels(Level.DEBUG);
+		Loggers.setLevels(Level.WARN);
 	}
 
 	@Override
@@ -126,7 +126,6 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 				.values().forEach(dictionary::add);
 
 			instance = new Instance(this);
-//			throw new RuntimeException("BOOM!");
 		}
 
 		// or else the init methods won't be called again when a save game is loaded
