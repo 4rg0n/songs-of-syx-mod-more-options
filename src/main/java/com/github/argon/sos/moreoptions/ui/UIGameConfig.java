@@ -42,6 +42,29 @@ public class UIGameConfig {
 
     private final ConfigStore configStore;
 
+
+    public void inject(Modal<MoreOptionsModal> moreOptionsModal) {
+        log.debug("Injecting button into game ui");
+        GButt.ButtPanel settlementButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
+            @Override
+            protected void clickA() {
+                moreOptionsModal.show();
+            }
+        };
+
+        settlementButton.hoverInfoSet(MOD_INFO.name);
+        settlementButton.setDim(32, UIPanelTop.HEIGHT);
+
+        // inject button for opening modal into game UI
+        gameApis.uiApi().findUIElementInSettlementView(UIPanelTop.class)
+            .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
+            .ifPresent(o -> {
+                log.debug("Injecting into UIPanelTop#right in settlement view");
+                GuiSection right = (GuiSection) o;
+                right.addRelBody(8, DIR.W, settlementButton);
+            });
+    }
+
     /**
      * Debug commands are executable via the in game debug panel
      */
@@ -135,24 +158,6 @@ public class UIGameConfig {
 
         moreOptionsModal.getSection().init(config, boosterEntries);
         moreOptionsModal.center();
-        GButt.ButtPanel settlementButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
-            @Override
-            protected void clickA() {
-                moreOptionsModal.show();
-            }
-        };
-
-        settlementButton.hoverInfoSet(MOD_INFO.name);
-        settlementButton.setDim(32, UIPanelTop.HEIGHT);
-
-        // inject button for opening modal into game UI
-        gameApis.uiApi().findUIElementInSettlementView(UIPanelTop.class)
-            .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
-            .ifPresent(o -> {
-                log.debug("Injecting into UIPanelTop#right in settlement view");
-                GuiSection right = (GuiSection) o;
-                right.addRelBody(8, DIR.W, settlementButton);
-            });
 
         // Cancel & Undo
         moreOptionsModal.getSection().getCancelButton().clickActionSet(() -> {

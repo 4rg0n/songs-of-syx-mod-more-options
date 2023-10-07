@@ -6,7 +6,7 @@
 
     <groupId>com.argon.sos</groupId>
     <artifactId>songs-of-syx-mod-more-options</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 
     <profiles>
         <profile>
@@ -261,7 +261,7 @@
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <groupId>org.songsofsyx</groupId>
+                            <groupId>com.songsofsyx</groupId>
                             <artifactId>songsofsyx</artifactId>
                             <version>${game.version.major}.${game.version.minor}</version>
                             <packaging>jar</packaging>

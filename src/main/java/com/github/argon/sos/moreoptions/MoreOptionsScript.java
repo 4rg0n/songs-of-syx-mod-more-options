@@ -60,7 +60,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	}
 
 	static {
-		Loggers.setLevels(Level.INFO);
+		Loggers.setLevels(Level.DEBUG);
 	}
 
 	@Override
@@ -111,7 +111,6 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 					log.trace("Default: %s", defaultConfig);
 					return defaultConfig;
 				});
-			Loggers.setLevels(config.getLogLevel());
 			configStore.setCurrentConfig(config);
 
 			// don't apply when there's a backup
@@ -150,6 +149,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			.orElse(configStore.getDefaults().get());
 
 		uiGameConfig.init(moreOptionsModal, moreOptionsConfig);
+		uiGameConfig.inject(moreOptionsModal);
 
 		if (backupConfig.isPresent()) {
 			// show backup dialog
@@ -183,7 +183,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 
 	@Override
 	public void update(double seconds) {
-		log.debug("PHASE: update");
+		log.trace("PHASE: update");
 	}
 
 	@Override
