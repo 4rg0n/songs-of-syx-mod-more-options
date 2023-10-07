@@ -4,10 +4,12 @@ import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
+import init.paths.ModInfo;
 import init.paths.PATHS;
 import init.sprite.SPRITES;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +34,7 @@ public class UIGameConfig {
 
     private final static Logger log = Loggers.getLogger(UIGameConfig.class);
 
-    private final MoreOptionsModal moreOptionsModal;
+    private final ModInfo modInfo;
 
     private final GameApis gameApis;
 
@@ -43,7 +45,7 @@ public class UIGameConfig {
     /**
      * Debug commands are executable via the in game debug panel
      */
-    public void initDebug() {
+    public void initDebug(Modal<MoreOptionsModal> moreOptionsModal) {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":show", moreOptionsModal::show);
         IDebugPanel.add(MOD_INFO.name + ":log.stats", () -> {
@@ -53,16 +55,76 @@ public class UIGameConfig {
         });
     }
 
+    public void initForBackup(Modal<BackupModal> backupModal, Modal<MoreOptionsModal> moreOptionsModal, MoreOptionsConfig config) {
+        init(moreOptionsModal, config);
+
+        // Close: More Options modal with backup config
+        moreOptionsModal.getPanel().setCloseAction(() -> {
+            configStore.deleteBackupConfig();
+            moreOptionsModal.hide();
+            backupModal.show();
+        });
+
+        // Cancel & Undo
+        moreOptionsModal.getSection().getCancelButton().clickActionSet(() -> {
+            undo(moreOptionsModal.getSection());
+            configStore.deleteBackupConfig();
+            moreOptionsModal.hide();
+        });
+
+        // Ok
+        moreOptionsModal.getSection().getOkButton().clickActionSet(() -> {
+            applyAndSave(moreOptionsModal.getSection());
+            configStore.deleteBackupConfig();
+            moreOptionsModal.hide();
+        });
+
+        // Edit Backup
+        backupModal.getSection().getEditButton().clickActionSet(() -> {
+            backupModal.hide();
+            moreOptionsModal.show();
+        });
+
+        // Close: Backup Modal
+        backupModal.getPanel().setCloseAction(() -> {
+            configStore.deleteBackupConfig();
+            MoreOptionsConfig defaultConfig = configStore.getDefaults().get();
+            configurator.applyConfig(defaultConfig);
+            configStore.setCurrentConfig(defaultConfig);
+            configStore.saveConfig(defaultConfig);
+            backupModal.hide();
+        });
+
+        // Discard Backup
+        backupModal.getSection().getDiscardButton().clickActionSet(() -> {
+            configStore.deleteBackupConfig();
+            MoreOptionsConfig defaultConfig = configStore.getDefaults().get();
+            configurator.applyConfig(defaultConfig);
+            configStore.setCurrentConfig(defaultConfig);
+            configStore.saveConfig(defaultConfig);
+            backupModal.hide();
+        });
+
+        // Apply Backup
+        backupModal.getSection().getApplyButton().clickActionSet(() -> {
+            applyAndSave(moreOptionsModal.getSection());
+            configStore.deleteBackupConfig();
+            backupModal.hide();
+        });
+    }
+
+
     /**
      * Generates UI with available config.
      * Adds config modal buttons functionality.
      *
-     * @param currentConfig used to generate the UI
+     * @param config used to generate the UI
      */
-    public void initUi(MoreOptionsConfig currentConfig) {
+    public void init(Modal<MoreOptionsModal> moreOptionsModal, MoreOptionsConfig config) {
         log.debug("Initialize %s UI", MOD_INFO.name);
 
-        List<BoostersPanel.Entry> boosterEntries = currentConfig.getBoosters().entrySet().stream().map(entry ->
+
+        List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream().map(entry ->
             BoostersPanel.Entry.builder()
                 .key(entry.getKey())
                 .value(entry.getValue())
@@ -71,8 +133,8 @@ public class UIGameConfig {
                 .build()
         ).collect(Collectors.toList());
 
-        moreOptionsModal.init(currentConfig, boosterEntries);
-
+        moreOptionsModal.getSection().init(config, boosterEntries);
+        moreOptionsModal.center();
         GButt.ButtPanel settlementButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
             @Override
             protected void clickA() {
@@ -93,50 +155,48 @@ public class UIGameConfig {
             });
 
         // Cancel & Undo
-        moreOptionsModal.getCancelButton().clickActionSet(() -> {
-            undo();
+        moreOptionsModal.getSection().getCancelButton().clickActionSet(() -> {
+            undo(moreOptionsModal.getSection());
             moreOptionsModal.hide();
         });
 
         // Apply & Save
-        moreOptionsModal.getApplyButton().clickActionSet(() -> {
-            MoreOptionsConfig config = moreOptionsModal.getConfig();
-            applyAndSave(config);
+        moreOptionsModal.getSection().getApplyButton().clickActionSet(() -> {
+            applyAndSave(moreOptionsModal.getSection());
         });
 
         // Reset UI to default
-        moreOptionsModal.getResetButton().clickActionSet(() -> {
+        moreOptionsModal.getSection().getResetButton().clickActionSet(() -> {
             MoreOptionsConfig defaultConfig = configStore.getDefaults().get();
-            moreOptionsModal.applyConfig(defaultConfig);
+            moreOptionsModal.getSection().applyConfig(defaultConfig);
         });
 
         // Undo changes
-        moreOptionsModal.getUndoButton().clickActionSet(this::undo
-        );
+        moreOptionsModal.getSection().getUndoButton().clickActionSet(() -> undo(moreOptionsModal.getSection()));
 
         //Ok: Apply & Save & Exit
-        moreOptionsModal.getOkButton().clickActionSet(() -> {
-            MoreOptionsConfig config = moreOptionsModal.getConfig();
-            applyAndSave(config);
+        moreOptionsModal.getSection().getOkButton().clickActionSet(() -> {
+            applyAndSave(moreOptionsModal.getSection());
             moreOptionsModal.hide();
         });
 
         // opens folder with mod configuration
-        moreOptionsModal.getFolderButton().clickActionSet(() -> {
+        moreOptionsModal.getSection().getFolderButton().clickActionSet(() -> {
             FileManager.openDesctop(PATHS.local().SETTINGS.get().toString());
         });
     }
 
-    private void applyAndSave(MoreOptionsConfig config) {
+    private void applyAndSave(MoreOptionsModal moreOptionsModal) {
         // only save when changes were made
         if (moreOptionsModal.isDirty()) {
+            MoreOptionsConfig config = moreOptionsModal.getConfig();
             configurator.applyConfig(config);
             configStore.setCurrentConfig(config);
             configStore.saveConfig(config);
         }
     }
 
-    private void undo() {
-        configStore.getCurrentConfig().ifPresent(moreOptionsModal::applyConfig);
+    private void undo(MoreOptionsModal moreOptionsModal) {
+        moreOptionsModal.getCurrentConfig().get().ifPresent(moreOptionsModal::applyConfig);
     }
 }

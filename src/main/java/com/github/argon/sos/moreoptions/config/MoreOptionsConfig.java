@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,10 @@ public class MoreOptionsConfig {
      * Name of the config file
      */
     public final static String FILE_NAME = "MoreOptions";
+    public final static String FILE_NAME_BACKUP = FILE_NAME + ".backup";
+
+    @EqualsAndHashCode.Exclude
+    private Path filePath;
 
     @Builder.Default
     private int version = VERSION;

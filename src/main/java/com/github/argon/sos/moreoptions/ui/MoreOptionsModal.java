@@ -10,31 +10,22 @@ import com.github.argon.sos.moreoptions.ui.panel.SoundsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import game.VERSION;
-import init.C;
 import init.paths.ModInfo;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import snake2d.MButt;
-import snake2d.Renderer;
+import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
-import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.clickable.CLICKABLE;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sets.Tuple;
-import util.gui.misc.GBox;
 import util.gui.misc.GButt;
 import util.gui.misc.GText;
-import util.gui.panel.GPanelL;
-import view.interrupter.Interrupter;
-import view.main.VIEW;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Window containing all other UI elements.
@@ -43,10 +34,10 @@ import java.util.Map;
  * FIXME BUG? hovering over elements behind the window will trigger ui elements beneath e.g. showing tooltips from citizens
  */
 @RequiredArgsConstructor
-public class MoreOptionsModal extends Interrupter {
+public class MoreOptionsModal extends GuiSection {
 
-    private final GuiSection section = new GuiSection();
-    private final ConfigStore configStore;
+    @Getter
+    private final Supplier<Optional<MoreOptionsConfig>> currentConfig;
     private final ModInfo modInfo;
 
     private CLICKABLE.Switcher switcher;
@@ -81,15 +72,11 @@ public class MoreOptionsModal extends Interrupter {
      * Builds the UI with given config
      */
     public void init(MoreOptionsConfig config, List<BoostersPanel.Entry> boosterEntries) {
-        GPanelL pan = new GPanelL();
-        pan.setTitle("More Options");
-        pan.setCloseAction(this::hide);
-        section.add(pan);
-
+        clear();
         soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
         eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance());
         weatherPanel = new WeatherPanel(config.getWeather());
-        boostersPanel = new BoostersPanel(boosterEntries, configStore.getConfigPath().toString());
+        boostersPanel = new BoostersPanel(boosterEntries, config.getFilePath().toString());
 
         Map<Tuple<String, String>, GuiSection> panels = new LinkedHashMap<>();
         panels.put(new Tuple.TupleImp<>("Sounds", "Tune the volume of various sounds."), soundsPanel);
@@ -98,50 +85,19 @@ public class MoreOptionsModal extends Interrupter {
         panels.put(new Tuple.TupleImp<>("Boosters", "Increase or decrease various bonuses."), boostersPanel);
 
         GuiSection header = header(panels, config);
-        section.add(header);
+        addDownC(0, header);
 
         switcher = new CLICKABLE.Switcher(soundsPanel);
-        section.add(switcher);
+        addDownC(20, switcher);
 
         List<RENDEROBJ> widths = new ArrayList<>(panels.values());
         widths.add(header);
         int width = UiUtil.getMaxWidth(widths);
-
         HorizontalLine horizontalLine = new HorizontalLine(width, 14, 1);
-        section.add(horizontalLine);
+        addDownC(20, horizontalLine);
 
         GuiSection footer = footer();
-        section.add(footer);
-
-        int maxPanelHeight = UiUtil.getMaxHeight(panels.values());
-        int height = maxPanelHeight
-            + header.body().height()
-            + horizontalLine.body().height()
-            + footer.body().height();
-
-        pan.body.setDim(width + 50, height + 50);
-        pan.body().centerIn(C.DIM());
-
-        header.body().moveY1(pan.getInnerArea().y1());
-        header.body().centerX(pan);
-
-        soundsPanel.body().moveY1(header.body().y2() + 15);
-        soundsPanel.body().centerX(header);
-
-        horizontalLine.body().moveY1(soundsPanel.body().y2() + 20);
-        horizontalLine.body().centerX(header);
-
-        footer.body().moveY1(horizontalLine.body().y2() + 10);
-        footer.body().centerX(header);
-
-        applyConfig(config);
-    }
-
-    public void show() {
-        show(VIEW.inters().manager);
-    }
-    public void hide() {
-        super.hide();
+        addDownC(20, footer);
     }
 
     public MoreOptionsConfig getConfig() {
@@ -168,7 +124,7 @@ public class MoreOptionsModal extends Interrupter {
      * @return whether panel configuration is different from {@link ConfigStore#getCurrentConfig()} ()}
      */
     public boolean isDirty() {
-        return configStore.getCurrentConfig()
+        return currentConfig.get()
             .map(currentConfig -> !getConfig().equals(currentConfig))
             // no current config in memory
             .orElse(true);
@@ -261,31 +217,7 @@ public class MoreOptionsModal extends Interrupter {
     }
 
     @Override
-    protected boolean hover(COORDINATE coordinate, boolean b) {
-        return section.hover(coordinate);
-    }
-
-    @Override
-    protected void mouseClick(MButt mButt) {
-        if (mButt == MButt.RIGHT)
-            hide();
-        else if (mButt == MButt.LEFT)
-            section.click();
-    }
-
-    @Override
-    protected void hoverTimer(GBox gBox) {
-        section.hoverInfoGet(gBox);
-    }
-
-    @Override
-    protected boolean render(Renderer renderer, float v) {
-        section.render(renderer, v);
-        return true;
-    }
-
-    @Override
-    protected boolean update(float seconds) {
+    public void render(SPRITE_RENDERER r, float seconds) {
         updateTimerSeconds += seconds;
 
         // check for changes in config
@@ -295,7 +227,6 @@ public class MoreOptionsModal extends Interrupter {
             applyButton.setEnabled(isDirty());
             undoButton.setEnabled(isDirty());
         }
-
-        return false;
+        super.render(r, seconds);
     }
 }

@@ -30,6 +30,21 @@ public class ConfigService {
 
     private final JsonService jsonService;
 
+    public boolean delete(PATH path, String fileName) {
+        if (!path.exists(fileName)) {
+            return true;
+        }
+
+        try {
+            path.delete(fileName);
+        } catch (Exception e) {
+            log.warn("Could not delete file %s", path.get(fileName));
+            return false;
+        }
+
+        return true;
+    }
+
     public Optional<MoreOptionsConfig> loadConfig(PATH path, String fileName) {
         return loadConfig(path, fileName, null);
     }
@@ -60,6 +75,7 @@ public class ConfigService {
     public Optional<MoreOptionsConfig> loadConfig(PATH path, String fileName, MoreOptionsConfig defaultConfig) {
         return jsonService.loadJson(path, fileName).map(json ->
             MoreOptionsConfig.builder()
+                .filePath(path.get(fileName))
                 .version((json.has("VERSION")) ? json.i("VERSION")
                     : MoreOptionsConfig.VERSION)
                 .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)

@@ -17,4 +17,6 @@ public interface SCRIPT<T> extends script.SCRIPT {
     void initGameSaveLoaded(T config);
 
     void update(double seconds);
+
+    void crash(Throwable throwable);
 }

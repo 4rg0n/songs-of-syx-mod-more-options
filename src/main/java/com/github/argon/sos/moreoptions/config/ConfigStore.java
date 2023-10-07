@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import init.paths.PATH;
 import init.paths.PATHS;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 public class ConfigStore {
     private final static Logger log = Loggers.getLogger(ConfigStore.class);
 
+    private final static PATH SAVE_PATH = PATHS.local().SETTINGS;
+
     private final ConfigService configService;
 
     private Defaults defaultConfig;
@@ -28,6 +31,8 @@ public class ConfigStore {
     );
 
     private MoreOptionsConfig currentConfig;
+    private MoreOptionsConfig backupConfig;
+
 
     /**
      * Used by the mod as current configuration to apply and use
@@ -37,15 +42,41 @@ public class ConfigStore {
         this.currentConfig = currentConfig;
     }
 
+    public void setBackupConfig(MoreOptionsConfig backupConfig) {
+        log.trace("Set %s.backupConfig to %s", ConfigStore.class.getSimpleName(), backupConfig);
+        this.backupConfig = backupConfig;
+    }
+
     public Optional<MoreOptionsConfig> getCurrentConfig() {
         return Optional.ofNullable(currentConfig);
+    }
+
+    public Optional<MoreOptionsConfig> getBackupConfig() {
+        return Optional.ofNullable(backupConfig);
     }
 
     /**
      * @return configuration loaded from file
      */
     public Optional<MoreOptionsConfig> loadConfig() {
-        return configService.loadConfig(PATHS.local().SETTINGS, MoreOptionsConfig.FILE_NAME);
+        return configService.loadConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME);
+    }
+
+
+    public boolean deleteConfig() {
+        return configService.delete(SAVE_PATH, MoreOptionsConfig.FILE_NAME);
+    }
+
+    public Optional<MoreOptionsConfig> loadBackupConfig() {
+        return configService.loadConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME_BACKUP);
+    }
+
+    public boolean deleteBackupConfig() {
+        return configService.delete(SAVE_PATH, MoreOptionsConfig.FILE_NAME_BACKUP);
+    }
+
+    public boolean createBackupConfig(MoreOptionsConfig config) {
+        return configService.saveConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME_BACKUP, config);
     }
 
     public Defaults getDefaults() {
@@ -60,7 +91,7 @@ public class ConfigStore {
      * @return configuration loaded from file with merged defaults
      */
     public Optional<MoreOptionsConfig> loadConfig(MoreOptionsConfig defaultConfig) {
-        return configService.loadConfig(PATHS.local().SETTINGS, MoreOptionsConfig.FILE_NAME, defaultConfig);
+        return configService.loadConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME, defaultConfig);
     }
 
     /**
@@ -69,12 +100,17 @@ public class ConfigStore {
      * @return whether saving was successful
      */
     public boolean saveConfig(MoreOptionsConfig config) {
-       return configService.saveConfig(PATHS.local().SETTINGS, MoreOptionsConfig.FILE_NAME, config);
+       return configService.saveConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME, config);
     }
 
-    public Path getConfigPath() {
-        return PATHS.local().SETTINGS.get()
+    public static Path configPath() {
+        return SAVE_PATH.get()
             .resolve(MoreOptionsConfig.FILE_NAME + ".txt");
+    }
+
+    public static Path backupConfigPath() {
+        return SAVE_PATH.get()
+            .resolve(MoreOptionsConfig.FILE_NAME_BACKUP + ".txt");
     }
 
     public Optional<Map<String, Dictionary.Entry>> loadDictionary() {
@@ -119,6 +155,7 @@ public class ConfigStore {
          */
         public MoreOptionsConfig get() {
             return MoreOptionsConfig.builder()
+                .filePath(ConfigStore.configPath())
                 .eventsWorld(getEventsWorld())
                 .eventsSettlement(getEventsSettlement())
                 .eventsChance(getEventsChance())

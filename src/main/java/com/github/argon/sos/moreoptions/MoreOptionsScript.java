@@ -4,16 +4,20 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.ui.BackupModal;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModal;
 import com.github.argon.sos.moreoptions.ui.UIGameConfig;
 import init.paths.ModInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import snake2d.Errors;
 import util.info.INFO;
 
+import java.util.Optional;
 
 
 /**
@@ -42,6 +46,8 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	private UIGameConfig uiGameConfig;
 
 	private Instance instance;
+	private Modal<MoreOptionsModal> moreOptionsModal;
+	private ModInfo modInfo;
 
 	@Override
 	public CharSequence name() {
@@ -61,6 +67,8 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	public void initBeforeGameCreated() {
 		log.debug("PHASE: initBeforeGameCreated");
 
+		Errors.setHandler(new MoreOptionsErrorHandler<>(this));
+
 		// load config from file
 		configStore.loadConfig()
 			.ifPresent(currentConfig -> {
@@ -68,9 +76,12 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 				configStore.setCurrentConfig(currentConfig);
 			});
 
-		ModInfo modInfo = gameApis.modApi().getCurrentMod().orElse(null);
+		// load backup config
+		configStore.loadBackupConfig().ifPresent(configStore::setBackupConfig);
+
+		modInfo = gameApis.modApi().getCurrentMod().orElse(null);
 		uiGameConfig = new UIGameConfig(
-			new MoreOptionsModal(configStore, modInfo),
+			modInfo,
 			gameApis,
 			configurator,
 			configStore
@@ -103,15 +114,20 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			Loggers.setLevels(config.getLogLevel());
 			configStore.setCurrentConfig(config);
 
-			// we want to apply the config as soon as possible
-			configurator.applyConfig(config);
-			uiGameConfig.initDebug();
+			// don't apply when there's a backup
+			if (!configStore.getBackupConfig().isPresent()) {
+				configurator.applyConfig(config);
+			}
+			moreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
+				new MoreOptionsModal(configStore::getCurrentConfig, modInfo));
+			uiGameConfig.initDebug(moreOptionsModal);
 
 			// add description from game boostables
 			gameApis.boosterApi().getAllBoosters()
 				.values().forEach(dictionary::add);
 
 			instance = new Instance(this);
+//			throw new RuntimeException("BOOM!");
 		}
 
 		// or else the init methods won't be called again when a save game is loaded
@@ -121,17 +137,33 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 
 	@Override
 	public void initGameRunning() {
-
+		log.debug("PHASE: initGameRunning");
 	}
 
 	@Override
 	public void initGamePresent() {
+		log.debug("PHASE: initGamePresent");
+
+		Optional<MoreOptionsConfig> backupConfig = configStore.getBackupConfig();
 		// config should already be loaded or use default
 		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
 			.orElse(configStore.getDefaults().get());
 
-		// build and init UI (only possible if the UI is present)
-		uiGameConfig.initUi(moreOptionsConfig);
+		uiGameConfig.init(moreOptionsModal, moreOptionsConfig);
+
+		if (backupConfig.isPresent()) {
+			// show backup dialog
+			Modal<BackupModal> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupModal(), true);
+			Modal<MoreOptionsModal> moreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
+				new MoreOptionsModal(configStore::getCurrentConfig, modInfo), true);
+
+			uiGameConfig.initForBackup(backupModal, moreOptionsModal, backupConfig.get());
+			moreOptionsModal.getSection().applyConfig(backupConfig.get());
+			configStore.setCurrentConfig(backupConfig.get());
+			backupModal.show();
+		} else {
+			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
+		}
 
 		// todo experimental
 //		gameApis.weatherApi().lockDayCycle(1, true);
@@ -151,6 +183,29 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 
 	@Override
 	public void update(double seconds) {
+		log.debug("PHASE: update");
+	}
 
+	@Override
+	public void crash(Throwable throwable) {
+		log.warn("Game crash detected!");
+		log.debug("", throwable);
+
+		try {
+			// backup and delete config file
+			configStore.getCurrentConfig().ifPresent(config -> {
+				if (configStore.createBackupConfig(config)) {
+					log.warn("Backup config file created at: %s",
+						ConfigStore.backupConfigPath());
+				}
+
+				if (configStore.deleteConfig()) {
+					log.warn("Deleted possible faulty config file at: %s",
+						ConfigStore.configPath());
+				}
+			});
+		} catch (Exception e) {
+			log.error("Something bad happened while trying to handle game crash", e);
+		}
 	}
 }

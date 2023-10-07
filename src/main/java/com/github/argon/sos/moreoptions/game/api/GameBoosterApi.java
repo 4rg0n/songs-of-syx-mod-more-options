@@ -29,6 +29,8 @@ public class GameBoosterApi {
 
     public void clearCached() {
         allBoosters = null;
+        playerBoosters = null;
+        enemyBoosters = null;
     }
 
     public Map<String, BOOSTABLE> getAllBoosters() {

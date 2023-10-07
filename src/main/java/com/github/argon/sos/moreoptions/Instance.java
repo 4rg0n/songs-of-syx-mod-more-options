@@ -29,13 +29,11 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 	@Override
 	public void update(double v) {
 		if (!initGameRunning) {
-			log.debug("PHASE: initGameRunning");
 			script.initGameRunning();
 			initGameRunning = true;
 		}
 
 		if (!initGamePresent && !VIEW.inters().load.isActivated()) {
-			log.debug("PHASE: initGamePresent");
 			script.initGamePresent();
 			initGamePresent = true;
 		}
