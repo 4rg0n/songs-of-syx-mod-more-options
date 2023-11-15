@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class GameEventsApi {
 
     @Getter
-    private final FactionWarBooster factionWarBooster;
+    private static FactionWarBooster factionWarBooster;
 
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
@@ -36,11 +36,17 @@ public class GameEventsApi {
     @Getter(lazy = true)
     private final static GameEventsApi instance = new GameEventsApi();
 
-    private GameEventsApi() {
-        factionWarBooster = new FactionWarBooster(MoreOptionsScript.MOD_INFO.name, -100, 100, false);
-        factionWarBooster.add(ROpinions.GET());
+    public static void initLazy() {
+        if (factionWarBooster == null) {
+            log.debug("Creating faction war booster");
+            factionWarBooster = new FactionWarBooster(MoreOptionsScript.MOD_INFO.name, -100, 100, false);
+            factionWarBooster.add(ROpinions.GET());
+        }
     }
 
+    public GameEventsApi() {
+        initLazy();
+    }
 
     public void clearCached() {
         settlementEvents = null;

@@ -259,7 +259,7 @@ event.chance.disease: {
 	DESC: "Chance of an outbreak among your citizens.",
 	},
 event.chance.factionWarAdd: {
-	TITLE: "Realm War",
-	DESC: "Negative values lower the chance to get attacked by another realm while positive values increases it.",
+	TITLE: "Realms Opinion",
+	DESC: "Positive values decreases the chance to get attacked by another realm while negative values increases it.",
 	},
 

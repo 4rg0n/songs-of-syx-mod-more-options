@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import view.main.VIEW;
 import view.sett.SettView;
+import view.world.WorldView;
 
 import java.util.Optional;
 
@@ -38,12 +39,24 @@ public class GameUiApi {
         return settView;
     }
 
-    /**
-     * Tries to find an ui element by class in {@link VIEW#s()} ui manager.
-     */
+    public WorldView world() {
+        WorldView worldView = VIEW.world();
+
+        if (worldView == null) {
+            throw new GameUiNotAvailableException("Games world ui isn't initialized yet.");
+        }
+
+        return worldView;
+    }
+
     public <T> Optional<T> findUIElementInSettlementView(Class<T> clazz) {
         return ReflectionUtil.getDeclaredField("inters", settlement().uiManager)
                 .flatMap(inters -> extractFromIterable((Iterable<?>) inters, clazz));
+    }
+
+    public <T> Optional<T> findUIElementInWorldView(Class<T> clazz) {
+        return ReflectionUtil.getDeclaredField("inters", world().uiManager)
+            .flatMap(inters -> extractFromIterable((Iterable<?>) inters, clazz));
     }
 
     private <T> Optional<T> extractFromIterable(Iterable<?> iterable, Class<T> clazz) {

@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.moreoptions.game.api.GameEventsApi;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -60,14 +61,14 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	}
 
 	static {
-		Loggers.setLevels(Level.DEBUG);
+		Loggers.setLevels(Level.TRACE);
 	}
 
 	@Override
 	public void initBeforeGameCreated() {
 		log.debug("PHASE: initBeforeGameCreated");
-
 		Errors.setHandler(new MoreOptionsErrorHandler<>(this));
+		GameEventsApi.initLazy();
 
 		// load config from file
 		configStore.loadMeta()
@@ -182,6 +183,8 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 		}
 
+
+
 		// fixme: is there something wrong with the Lifespan booster?
 		//        was set to 0% for some reason and after changing back to 100% ppl died nonetheless after some time
 		//        is scrolling an issue?
@@ -207,7 +210,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 
 	@Override
 	public void update(double seconds) {
-		log.trace("PHASE: update");
+//		log.trace("PHASE: update");
 	}
 
 	@Override

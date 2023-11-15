@@ -85,6 +85,11 @@ public class EventsPanel extends GuiSection {
             .map(Slider::getValue);
     }
 
+    public void setFactionWarAdd(Integer value) {
+        Optional.ofNullable(eventsChanceSliders.get(GameEventsApi.FACTION_WAR_ADD))
+            .ifPresent(slider -> {slider.setValue(value);});
+    }
+
     private BuildResult<GuiSection, Map<String, Slider>> sliders(
         Map<String, MoreOptionsConfig.Range> eventsChanceConfig,
         MoreOptionsConfig.Range factionWarAdd
@@ -141,11 +146,13 @@ public class EventsPanel extends GuiSection {
     public void applyConfig(
         Map<String, Boolean> settlementEventsConfig,
         Map<String, Boolean> worldEventsConfig,
-        Map<String, Integer> eventsChanceConfig
+        Map<String, Integer> eventsChanceConfig,
+        Integer factionWarAdd
     ) {
         log.trace("Applying UI settlement events config %s", settlementEventsConfig);
         log.trace("Applying UI world events config %s", worldEventsConfig);
         log.trace("Applying UI events chance config %s", eventsChanceConfig);
+        log.trace("Applying UI events chance factionWarAdd %s", factionWarAdd);
 
         settlementEventsConfig.forEach((key, value) -> {
             if (settlementEventsCheckboxes.containsKey(key)) {
@@ -170,6 +177,8 @@ public class EventsPanel extends GuiSection {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
+
+        setFactionWarAdd(factionWarAdd);
     }
 
 

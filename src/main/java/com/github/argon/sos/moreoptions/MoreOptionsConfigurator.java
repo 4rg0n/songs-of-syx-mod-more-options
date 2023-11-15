@@ -39,6 +39,7 @@ public class MoreOptionsConfigurator {
     public void applyConfig(MoreOptionsConfig config) {
         log.debug("Apply More Options config to game");
         try {
+            applyFactionWarAdd(config.getFactionWarAdd().getValue());
             applySettlementEventsConfig(config.getEventsSettlement());
             applyWorldEventsConfig(config.getEventsWorld());
             applyEventsChanceConfig(ConfigUtil.extract(config.getEventsChance()));
@@ -50,6 +51,10 @@ public class MoreOptionsConfigurator {
         } catch (Exception e) {
             log.error("Could not apply config: %s", config, e);
         }
+    }
+
+    private void applyFactionWarAdd(Integer value) {
+        gameApis.eventsApi().setFactionWarAddValue(value);
     }
 
     private void applyBoostersConfig(Map<String, Integer> boostersConfig) {

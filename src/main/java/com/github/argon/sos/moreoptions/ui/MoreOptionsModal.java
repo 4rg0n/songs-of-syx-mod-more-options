@@ -127,7 +127,10 @@ public class MoreOptionsModal extends GuiSection {
 
 
     public void applyConfig(MoreOptionsConfig config) {
-        eventsPanel.applyConfig(config.getEventsSettlement(), config.getEventsWorld(), ConfigUtil.extract(config.getEventsChance()));
+        eventsPanel.applyConfig(
+            config.getEventsSettlement(),
+            config.getEventsWorld(), ConfigUtil.extract(config.getEventsChance()),
+            config.getFactionWarAdd().getValue());
         soundsPanel.applyConfig(ConfigUtil.extract(config.getSoundsAmbience()), ConfigUtil.extract(config.getSoundsSettlement()), ConfigUtil.extract(config.getSoundsRoom()));
         weatherPanel.applyConfig(ConfigUtil.extract(config.getWeather()));
         boostersPanel.applyConfig(ConfigUtil.extract(config.getBoosters()));

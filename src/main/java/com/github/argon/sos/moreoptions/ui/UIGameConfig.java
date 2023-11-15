@@ -56,13 +56,23 @@ public class UIGameConfig {
         settlementButton.setDim(32, UIPanelTop.HEIGHT);
 
         // inject button for opening modal into game UI
-        gameApis.uiApi().findUIElementInSettlementView(UIPanelTop.class)
+        gameApis.uiApi().findUIElementInWorldView(UIPanelTop.class)
             .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
             .ifPresent(o -> {
                 log.debug("Injecting into UIPanelTop#right in settlement view");
                 GuiSection right = (GuiSection) o;
                 right.addRelBody(8, DIR.W, settlementButton);
             });
+
+        gameApis.uiApi().findUIElementInSettlementView(UIPanelTop.class)
+            .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
+            .ifPresent(o -> {
+                log.debug("Injecting into UIPanelTop#right in world view");
+                GuiSection right = (GuiSection) o;
+                right.addRelBody(8, DIR.W, settlementButton);
+            });
+
+        // todo: add panel button to world ui
     }
 
     /**
