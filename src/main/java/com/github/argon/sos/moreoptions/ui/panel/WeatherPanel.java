@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
+import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -15,7 +16,7 @@ public class WeatherPanel extends GuiSection {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
     @Getter
     private final Map<String, Slider> sliders;
-    public WeatherPanel(Map<String, Integer> weatherConfig) {
+    public WeatherPanel(Map<String, MoreOptionsConfig.Range> weatherConfig) {
         BuildResult<GuiSection, Map<String, Slider>> slidersBuildResult = SlidersBuilder.builder()
             .displayHeight(400)
             .defaults(weatherConfig)

@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -40,12 +41,12 @@ public class MoreOptionsConfigurator {
         try {
             applySettlementEventsConfig(config.getEventsSettlement());
             applyWorldEventsConfig(config.getEventsWorld());
-            applyEventsChanceConfig(config.getEventsChance());
-            applySoundsAmbienceConfig(config.getSoundsAmbience());
-            applySoundsSettlementConfig(config.getSoundsSettlement());
-            applySoundsRoomConfig(config.getSoundsRoom());
-            applyWeatherConfig(config.getWeather());
-            applyBoostersConfig(config.getBoosters());
+            applyEventsChanceConfig(ConfigUtil.extract(config.getEventsChance()));
+            applySoundsAmbienceConfig(ConfigUtil.extract(config.getSoundsAmbience()));
+            applySoundsSettlementConfig(ConfigUtil.extract(config.getSoundsSettlement()));
+            applySoundsRoomConfig(ConfigUtil.extract(config.getSoundsRoom()));
+            applyWeatherConfig(ConfigUtil.extract(config.getWeather()));
+            applyBoostersConfig(ConfigUtil.extract(config.getBoosters()));
         } catch (Exception e) {
             log.error("Could not apply config: %s", config, e);
         }
@@ -68,13 +69,12 @@ public class MoreOptionsConfigurator {
 
     private void applyEventsChanceConfig(Map<String, Integer> eventsChanceConfig) {
         log.trace("Apply events chance config: %s", eventsChanceConfig);
-        eventsChanceConfig.forEach((key, chance) -> {
+        eventsChanceConfig.forEach((key, value) -> {
             Map<String, EVENTS.EventResource> eventsChance = gameApis.eventsApi().getEventsChance();
 
             if (eventsChance.containsKey(key)) {
-                EVENTS.EventResource event = eventsChance.get(key);
-                log.trace("Setting %s chance to %s%%", key, chance);
-                gameApis.eventsApi().setChance(event, chance);
+                log.trace("Setting %s chance to %s%%", key, value);
+                gameApis.eventsApi().setChance(key, value);
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", eventsChance);

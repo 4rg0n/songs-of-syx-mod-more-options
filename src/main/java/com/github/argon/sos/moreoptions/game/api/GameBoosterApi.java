@@ -62,9 +62,10 @@ public class GameBoosterApi {
                 enemyBoosters.put(KEY_PREFIX + "." + boostable.key, boostable);
             });
         }
-
         return enemyBoosters;
     }
+
+
 
     public boolean isEnemyBooster(String key) {
         return getEnemyBoosters().containsKey(key);

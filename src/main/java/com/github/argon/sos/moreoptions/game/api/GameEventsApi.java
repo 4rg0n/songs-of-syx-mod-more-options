@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.game.api;
 
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.game.booster.FactionWarBooster;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
@@ -8,17 +10,19 @@ import game.GAME;
 import game.events.EVENTS;
 import game.events.EventDisease;
 import game.events.world.EventWorldRaider;
+import game.faction.npc.ruler.opinion.ROpinions;
 import init.disease.DISEASES;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+
 public class GameEventsApi {
+
+    @Getter
+    private final FactionWarBooster factionWarBooster;
 
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
@@ -27,9 +31,15 @@ public class GameEventsApi {
     private Map<String, EVENTS.EventResource> eventsChance;
 
     public final static String KEY_PREFIX = "event";
+    public final static String FACTION_WAR_ADD = KEY_PREFIX + "chance.factionWarAdd";
 
     @Getter(lazy = true)
     private final static GameEventsApi instance = new GameEventsApi();
+
+    private GameEventsApi() {
+        factionWarBooster = new FactionWarBooster(MoreOptionsScript.MOD_INFO.name, -100, 100, false);
+        factionWarBooster.add(ROpinions.GET());
+    }
 
 
     public void clearCached() {
@@ -108,7 +118,15 @@ public class GameEventsApi {
         return eventsChance;
     }
 
-    public boolean setChance(EVENTS.EventResource event, int chance) {
+    public boolean setChance(String eventKey, int chance) {
+        // chance for faction war against player is handled extra
+        if (FACTION_WAR_ADD.equals(eventKey)) {
+            setFactionWarAddValue(chance);
+            return true;
+        }
+
+        EVENTS.EventResource event = eventsChance.get(eventKey);
+
         if (event instanceof EventDisease) {
             double current = DISEASES.EPIDEMIC_CHANCE;
             DISEASES.EPIDEMIC_CHANCE = current * MathUtil.toPercentage(chance);
@@ -120,6 +138,11 @@ public class GameEventsApi {
 
         log.warn("Could not set chance for %s", event.getClass().getSimpleName());
         return false;
+    }
+
+    public void setFactionWarAddValue(int value) {
+        log.trace("Set faction war adder to %s", value);
+        factionWarBooster.set(value);
     }
 
     public Map<String, Boolean> readEventsEnabledStatus() {

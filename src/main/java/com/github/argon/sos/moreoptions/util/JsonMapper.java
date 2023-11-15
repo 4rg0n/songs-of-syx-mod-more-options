@@ -25,11 +25,11 @@ public class JsonMapper {
         return json;
     }
 
-    public static Map<String, Integer> mapInteger(Json json, int min, int max) {
+    public static Map<String, Integer> mapInteger(Json json) {
         Map<String, Integer> map = new HashMap<>();
 
         for (String key : json.keys()) {
-            int value = json.i(key, min, max);
+            int value = json.i(key);
             map.put(key, value);
         }
 

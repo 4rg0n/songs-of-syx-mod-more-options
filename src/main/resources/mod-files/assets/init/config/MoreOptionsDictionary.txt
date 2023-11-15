@@ -1,3 +1,28 @@
+ui.moreOptions.switcher.sounds: {
+	TITLE: "Sounds",
+	DESC: "Tune the volume of various sounds.",
+	},
+ui.moreOptions.switcher.events: {
+    TITLE: "Events",
+    DESC: "Toggle and tune events.",
+    },
+ui.moreOptions.switcher.weather: {
+    TITLE: "Weather",
+    DESC: "Influence weather effects.",
+    },
+ui.moreOptions.switcher.boosters: {
+    TITLE: "Boosters",
+    DESC: "Increase or decrease various bonuses.",
+    },
+ui.moreOptions.version.game: {
+    TITLE: "Game Version: {0}",
+    },
+ui.moreOptions.version.mod: {
+    TITLE: "Mod Version: {0}",
+    },
+ui.moreOptions.version.config: {
+    TITLE: "Config Version: {0}",
+    },
 event.settlement.raceWars: {
 	TITLE: "Race Wars",
 	DESC: "A fight between different races in your settlement can break out.",
@@ -232,5 +257,9 @@ event.chance.raider: {
 event.chance.disease: {
 	TITLE: "Disease",
 	DESC: "Chance of an outbreak among your citizens.",
+	},
+event.chance.factionWarAdd: {
+	TITLE: "Realm War",
+	DESC: "Negative values lower the chance to get attacked by another realm while positive values increases it.",
 	},
 

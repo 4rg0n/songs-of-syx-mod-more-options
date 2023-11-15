@@ -27,8 +27,12 @@ public class ReflectionUtil {
 
     public static void setField(Field field, Object instance, Object newValue) throws NoSuchFieldException, IllegalAccessException {
         field.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
+        try {
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+        } catch (Exception e) {
+            log.debug("Could not manipulate modifiers of field %s in %s", field.getName(), instance.getClass().getName(), e);
+        }
 
         field.set(instance, newValue);
     }

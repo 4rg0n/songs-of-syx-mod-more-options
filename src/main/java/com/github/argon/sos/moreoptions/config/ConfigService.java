@@ -1,10 +1,8 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
-import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.JsonMapper;
 import init.paths.PATH;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,10 +24,13 @@ public class ConfigService {
 
     @Getter(lazy = true)
     private final static ConfigService instance = new ConfigService(
-        JsonService.getInstance()
+        JsonService.getInstance(),
+        ConfigMapper.getInstance()
     );
 
     private final JsonService jsonService;
+
+    private final ConfigMapper configMapper;
 
     public boolean delete(PATH path, String fileName) {
         if (!path.exists(fileName)) {
@@ -45,6 +47,11 @@ public class ConfigService {
         return true;
     }
 
+    public Optional<MoreOptionsConfig.Meta> loadMeta(PATH path, String fileName) {
+        return jsonService.loadJson(path.get(fileName))
+            .map(configMapper::mapMeta);
+    }
+
     public Optional<MoreOptionsConfig> loadConfig(PATH path, String fileName) {
         return loadConfig(path, fileName, null);
     }
@@ -54,58 +61,31 @@ public class ConfigService {
     }
 
     public boolean saveConfig(PATH path, String fileName, MoreOptionsConfig config) {
-        log.debug("Saving configuration into %s", path.get().toString());
+        log.debug("Saving configuration v%s into %s", config.getVersion(), path.get().toString());
         log.trace("CONFIG: %s", config);
 
-        JsonE configJson = new JsonE();
-        configJson.add("VERSION", config.getVersion());
-        configJson.addString("LOG_LEVEL", config.getLogLevel().getName());
-        configJson.add("EVENTS_SETTLEMENT", JsonMapper.mapBoolean(config.getEventsSettlement()));
-        configJson.add("EVENTS_WORLD", JsonMapper.mapBoolean(config.getEventsWorld()));
-        configJson.add("EVENTS_CHANCE", JsonMapper.mapInteger(config.getEventsChance()));
-        configJson.add("SOUNDS_AMBIENCE", JsonMapper.mapInteger(config.getSoundsAmbience()));
-        configJson.add("SOUNDS_SETTLEMENT", JsonMapper.mapInteger(config.getSoundsSettlement()));
-        configJson.add("SOUNDS_ROOM", JsonMapper.mapInteger(config.getSoundsRoom()));
-        configJson.add("WEATHER", JsonMapper.mapInteger(config.getWeather()));
-        configJson.add("BOOSTERS", JsonMapper.mapInteger(config.getBoosters()));
+        JsonE configJson = configMapper.mapConfig(config);
 
         return jsonService.saveJson(configJson, path, fileName);
     }
 
     public Optional<MoreOptionsConfig> loadConfig(PATH path, String fileName, MoreOptionsConfig defaultConfig) {
-        return jsonService.loadJson(path, fileName).map(json ->
-            MoreOptionsConfig.builder()
-                .filePath(path.get(fileName))
-                .version((json.has("VERSION")) ? json.i("VERSION")
-                    : MoreOptionsConfig.VERSION)
-                .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
-                    : Level.INFO)
+        return jsonService.loadJson(path, fileName).map(json -> {
+            MoreOptionsConfig.Meta meta = configMapper.mapMeta(json);
+            int version = meta.getVersion();
+            Path filePath = path.get(fileName);
+            log.debug("Loaded config v%s", version);
 
-                .eventsWorld((json.has("EVENTS_WORLD")) ? JsonMapper.mapBoolean(json.json("EVENTS_WORLD"), true)
-                    : (defaultConfig != null) ? defaultConfig.getEventsWorld() : new HashMap<>())
-
-                .eventsSettlement((json.has("EVENTS_SETTLEMENT")) ? JsonMapper.mapBoolean(json.json("EVENTS_SETTLEMENT"), true)
-                    : (defaultConfig != null) ? defaultConfig.getEventsSettlement() : new HashMap<>())
-
-                .eventsChance((json.has("EVENTS_CHANCE")) ? JsonMapper.mapInteger(json.json("EVENTS_CHANCE"), 0, 10000)
-                    : (defaultConfig != null) ? defaultConfig.getEventsChance() : new HashMap<>())
-
-                .soundsAmbience((json.has("SOUNDS_AMBIENCE")) ? JsonMapper.mapInteger(json.json("SOUNDS_AMBIENCE"), 0, 100)
-                    : (defaultConfig != null) ? defaultConfig.getSoundsAmbience() : new HashMap<>())
-
-                .soundsSettlement((json.has("SOUNDS_SETTLEMENT")) ? JsonMapper.mapInteger(json.json("SOUNDS_SETTLEMENT"), 0 , 100)
-                    : (defaultConfig != null) ? defaultConfig.getSoundsSettlement() : new HashMap<>())
-
-                .soundsRoom((json.has("SOUNDS_ROOM")) ? JsonMapper.mapInteger(json.json("SOUNDS_ROOM"), 0 , 100)
-                    : (defaultConfig != null) ? defaultConfig.getSoundsRoom() : new HashMap<>())
-
-                .weather((json.has("WEATHER")) ? JsonMapper.mapInteger(json.json("WEATHER"), 0, 100)
-                    : (defaultConfig != null) ? defaultConfig.getWeather() : new HashMap<>())
-
-                .boosters((json.has("BOOSTERS")) ? JsonMapper.mapInteger(json.json("BOOSTERS"), 0, 10000)
-                    : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
-                .build()
-        );
+            switch (version) {
+                case 1:
+                    return configMapper.mapV1(filePath, json, defaultConfig);
+                case 2:
+                    return configMapper.mapV2(filePath, version, json, defaultConfig);
+                default:
+                    log.warn("Unsupported config version v%s found in %s", version, filePath);
+                    return null;
+            }
+        });
     }
 
     public Optional<Map<String, Dictionary.Entry>> loadDictionary(PATH path, String fileName) {
@@ -147,7 +127,6 @@ public class ConfigService {
     }
 
     public MoreOptionsConfig mergeMissing(MoreOptionsConfig target, MoreOptionsConfig source) {
-
         target.setEventsChance(mergeMissing(target.getEventsChance(), source.getEventsChance()));
         target.setEventsSettlement(mergeMissing(target.getEventsSettlement(), source.getEventsSettlement()));
         target.setEventsWorld(mergeMissing(target.getEventsWorld(), source.getEventsWorld()));

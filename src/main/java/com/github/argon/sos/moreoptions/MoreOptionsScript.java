@@ -60,7 +60,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	}
 
 	static {
-		Loggers.setLevels(Level.WARN);
+		Loggers.setLevels(Level.DEBUG);
 	}
 
 	@Override
@@ -70,10 +70,10 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		Errors.setHandler(new MoreOptionsErrorHandler<>(this));
 
 		// load config from file
-		configStore.loadConfig()
-			.ifPresent(currentConfig -> {
-				Loggers.setLevels(currentConfig.getLogLevel());
-				configStore.setCurrentConfig(currentConfig);
+		configStore.loadMeta()
+			.ifPresent(meta -> {
+				// FIXME Loggers.setLevels(meta.getLogLevel());
+				configStore.setMetaInfo(meta);
 			});
 
 		// load backup config
@@ -102,23 +102,41 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		if (instance == null) {
 			log.debug("Creating Mod Instance");
 
-			// try get current config and merge with defaults; or use whole defaults
-			MoreOptionsConfig defaultConfig = configStore.getDefaults().get();
+			// try to get current config and merge with defaults; or use whole defaults
+			MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
 			MoreOptionsConfig config = configStore.getCurrentConfig()
-				.map(currentConfig -> configStore.mergeMissing(currentConfig, defaultConfig))
-				.orElseGet(() -> {
-					log.info("No config file loaded. Using default.");
-					log.trace("Default: %s", defaultConfig);
-					return defaultConfig;
-				});
+				.orElseGet(() -> configStore.loadConfig(defaultConfig)
+					.map(currentConfig -> configStore.mergeMissing(currentConfig, defaultConfig))
+					.orElseGet(() -> {
+						log.info("No config file loaded. Using default.");
+						log.trace("Default: %s", defaultConfig);
+						return defaultConfig;
+					}));
 			configStore.setCurrentConfig(config);
+
+			// detect version change in config
+			configStore.getMetaInfo().ifPresent(meta -> {
+				log.trace("Detecting config version with meta: %s", meta);
+
+				int configVersion = config.getVersion();
+				int metaVersion = meta.getVersion();
+				// do we have a version increase?
+				if (configVersion > metaVersion) {
+					log.info("Detected config version increase from %s to %s." +
+						"Saving version %s", metaVersion, configVersion, configVersion);
+					configStore.saveConfig(config);
+				} else if (configVersion < metaVersion) {
+					log.warn("Detected config version decrease from %s to %s. This shouldn't happen...", metaVersion, configVersion);
+					// FIXME persist newest? discard old?
+				}
+			});
 
 			// don't apply when there's a backup
 			if (!configStore.getBackupConfig().isPresent()) {
 				configurator.applyConfig(config);
 			}
 			moreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
-				new MoreOptionsModal(configStore::getCurrentConfig, modInfo));
+				new MoreOptionsModal(configStore, modInfo));
 			uiGameConfig.initDebug(moreOptionsModal);
 
 			// add description from game boostables
@@ -145,7 +163,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		Optional<MoreOptionsConfig> backupConfig = configStore.getBackupConfig();
 		// config should already be loaded or use default
 		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
-			.orElse(configStore.getDefaults().get());
+			.orElse(configStore.getDefaultConfig());
 
 		uiGameConfig.init(moreOptionsModal, moreOptionsConfig);
 		uiGameConfig.inject(moreOptionsModal);
@@ -154,7 +172,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			// show backup dialog
 			Modal<BackupModal> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupModal(), true);
 			Modal<MoreOptionsModal> moreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
-				new MoreOptionsModal(configStore::getCurrentConfig, modInfo), true);
+				new MoreOptionsModal(configStore, modInfo), true);
 
 			uiGameConfig.initForBackup(backupModal, moreOptionsModal, backupConfig.get());
 			moreOptionsModal.getSection().applyConfig(backupConfig.get());
@@ -163,6 +181,13 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		} else {
 			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 		}
+
+		// fixme: is there something wrong with the Lifespan booster?
+		//        was set to 0% for some reason and after changing back to 100% ppl died nonetheless after some time
+		//        is scrolling an issue?
+
+		// todo categorize boosters?
+		//      see: https://steamcommunity.com/workshop/filedetails/discussion/3044071344/3881597531962263472/?tscn=1699699254#c3952532649325145153
 
 		// todo experimental
 //		gameApis.weatherApi().lockDayCycle(1, true);

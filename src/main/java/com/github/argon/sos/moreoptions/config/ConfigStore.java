@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.moreoptions.game.api.GameEventsApi;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATH;
@@ -31,6 +32,8 @@ public class ConfigStore {
     );
 
     private MoreOptionsConfig currentConfig;
+
+    private MoreOptionsConfig.Meta metaInfo;
     private MoreOptionsConfig backupConfig;
 
 
@@ -42,6 +45,11 @@ public class ConfigStore {
         this.currentConfig = currentConfig;
     }
 
+    public void setMetaInfo(MoreOptionsConfig.Meta metaInfo) {
+        log.trace("Set %s.metaInfo to %s", ConfigStore.class.getSimpleName(), metaInfo);
+        this.metaInfo = metaInfo;
+    }
+
     public void setBackupConfig(MoreOptionsConfig backupConfig) {
         log.trace("Set %s.backupConfig to %s", ConfigStore.class.getSimpleName(), backupConfig);
         this.backupConfig = backupConfig;
@@ -49,6 +57,10 @@ public class ConfigStore {
 
     public Optional<MoreOptionsConfig> getCurrentConfig() {
         return Optional.ofNullable(currentConfig);
+    }
+
+    public Optional<MoreOptionsConfig.Meta> getMetaInfo() {
+        return Optional.ofNullable(metaInfo);
     }
 
     public Optional<MoreOptionsConfig> getBackupConfig() {
@@ -59,9 +71,12 @@ public class ConfigStore {
      * @return configuration loaded from file
      */
     public Optional<MoreOptionsConfig> loadConfig() {
-        return configService.loadConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME);
+        return configService.loadConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME, null);
     }
 
+    public Optional<MoreOptionsConfig.Meta> loadMeta() {
+        return configService.loadMeta(SAVE_PATH, MoreOptionsConfig.FILE_NAME);
+    }
 
     public boolean deleteConfig() {
         return configService.delete(SAVE_PATH, MoreOptionsConfig.FILE_NAME);
@@ -85,6 +100,10 @@ public class ConfigStore {
         }
 
         return defaultConfig;
+    }
+
+    public MoreOptionsConfig getDefaultConfig() {
+        return getDefaults().get();
     }
 
     /**
@@ -131,17 +150,17 @@ public class ConfigStore {
         private final GameApis gameApis;
 
         @Getter(lazy=true)
-        private final Map<String, Integer> boosters = boosters();
+        private final Map<String, MoreOptionsConfig.Range> boosters = boosters();
         @Getter(lazy=true)
-        private final Map<String, Integer> weather = weather();
+        private final Map<String, MoreOptionsConfig.Range> weather = weather();
         @Getter(lazy=true)
-        private final Map<String, Integer> soundsRoom = soundsRoom();
+        private final Map<String, MoreOptionsConfig.Range> soundsRoom = soundsRoom();
         @Getter(lazy=true)
-        private final Map<String, Integer> soundsAmbience = soundsAmbience();
+        private final Map<String, MoreOptionsConfig.Range> soundsAmbience = soundsAmbience();
         @Getter(lazy=true)
-        private final Map<String, Integer> soundsSettlement = soundsSettlement();
+        private final Map<String, MoreOptionsConfig.Range> soundsSettlement = soundsSettlement();
         @Getter(lazy=true)
-        private final Map<String, Integer> eventsChance = eventsChance();
+        private final Map<String, MoreOptionsConfig.Range> eventsChance = eventsChance();
         @Getter(lazy=true)
         private final Map<String, Boolean> eventsWorld = eventsWorld();
         @Getter(lazy=true)
@@ -167,40 +186,80 @@ public class ConfigStore {
                 .build();
         }
 
-        private Map<String, Integer> boosters() {
+        private Map<String, MoreOptionsConfig.Range> boosters() {
             //noinspection DataFlowIssue
             return gameApis.boosterApi().getAllBoosters().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> 100));
+                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+                    .value(100)
+                    .min(0)
+                    .max(10000)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                    .build()));
         }
 
-        private Map<String, Integer> weather() {
+        private Map<String, MoreOptionsConfig.Range> weather() {
             //noinspection DataFlowIssue
             return gameApis.weatherApi().getWeatherThings().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> 100));
+                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+                    .value(100)
+                    .min(0)
+                    .max(100)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                    .build()));
         }
 
-        private Map<String, Integer> soundsRoom() {
+        private Map<String, MoreOptionsConfig.Range> soundsRoom() {
             //noinspection DataFlowIssue
             return gameApis.soundsApi().getRoomSounds().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> 100));
+                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+                    .value(100)
+                    .min(0)
+                    .max(100)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                    .build()));
         }
 
-        private Map<String, Integer> soundsSettlement() {
+        private Map<String, MoreOptionsConfig.Range> soundsSettlement() {
             //noinspection DataFlowIssue
             return gameApis.soundsApi().getSettlementSounds().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> 100));
+                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+                    .value(100)
+                    .min(0)
+                    .max(100)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                    .build()));
         }
 
-        private Map<String, Integer> soundsAmbience() {
+        private Map<String, MoreOptionsConfig.Range> soundsAmbience() {
             //noinspection DataFlowIssue
             return gameApis.soundsApi().getAmbienceSounds().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> 100));
+                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+                    .value(100)
+                    .min(0)
+                    .max(100)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                    .build()));
         }
 
-        private Map<String, Integer> eventsChance() {
+        private Map<String, MoreOptionsConfig.Range> eventsChance() {
             //noinspection DataFlowIssue
             return gameApis.eventsApi().getEventsChance().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> 100));
+                .collect(Collectors.toMap(key -> key, key -> {
+                    MoreOptionsConfig.Range range = MoreOptionsConfig.Range.builder()
+                        .value(100)
+                        .min(0)
+                        .max(100)
+                        .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                        .build();
+
+                    // fixme ugly...
+                    if (GameEventsApi.FACTION_WAR_ADD.equals(key)) {
+                        range.setDisplayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE);
+                        range.setMin(-100);
+                    }
+
+                    return range;
+                }));
         }
 
         private Map<String, Boolean> eventsSettlement() {

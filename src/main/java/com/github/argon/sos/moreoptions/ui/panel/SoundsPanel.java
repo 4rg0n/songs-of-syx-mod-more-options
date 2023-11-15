@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
+import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -21,9 +22,9 @@ public class SoundsPanel extends GuiSection {
     private final Map<String, Slider> settlementSoundSliders;
     private final Map<String, Slider> roomSoundSliders;
     public SoundsPanel(
-        Map<String, Integer> soundsAmbienceConfig,
-        Map<String, Integer> soundsSettlementConfig,
-        Map<String, Integer> soundsRoomConfig
+        Map<String, MoreOptionsConfig.Range> soundsAmbienceConfig,
+        Map<String, MoreOptionsConfig.Range> soundsSettlementConfig,
+        Map<String, MoreOptionsConfig.Range> soundsRoomConfig
     ) {
         BuildResult<GuiSection, Map<String, Slider>> ambienceSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
@@ -65,7 +66,7 @@ public class SoundsPanel extends GuiSection {
         addDownC(0, section);
     }
 
-    private Map<String, LabeledSliderBuilder.Definition> sliders(Map<String, Integer> slidersConfig) {
+    private Map<String, LabeledSliderBuilder.Definition> sliders(Map<String, MoreOptionsConfig.Range> slidersConfig) {
         return slidersConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             config -> LabeledSliderBuilder.Definition.builder()
@@ -74,6 +75,9 @@ public class SoundsPanel extends GuiSection {
                     .title(config.getKey())
                     .build())
                 .sliderDefinition(SliderBuilder.Definition.builder()
+                    .min(config.getValue().getMin())
+                    .max(config.getValue().getMax())
+                    .valueDisplay(Slider.ValueDisplay.valueOf(config.getValue().getDisplayMode().name()))
                     .build())
                 .labelWidth(200)
                 .build()));

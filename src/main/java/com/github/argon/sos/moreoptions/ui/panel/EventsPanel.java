@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
+import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.game.api.GameEventsApi;
 import com.github.argon.sos.moreoptions.game.ui.Checkbox;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
@@ -30,7 +32,8 @@ public class EventsPanel extends GuiSection {
     public EventsPanel(
         Map<String, Boolean> settlementEventsConfig,
         Map<String, Boolean> worldEventsConfig,
-        Map<String, Integer> eventsChanceConfig
+        Map<String, MoreOptionsConfig.Range> eventsChanceConfig,
+        MoreOptionsConfig.Range factionWarAdd
     ) {
         BuildResult<GuiSection, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(settlementEventsConfig);
         GuiSection settlement = settlementCheckboxesResult.getResult();
@@ -60,7 +63,7 @@ public class EventsPanel extends GuiSection {
         checkBoxSection.addRight(0, worldSection);
         addDownC(0, checkBoxSection);
 
-        BuildResult<GuiSection, Map<String, Slider>> buildResult = sliders(eventsChanceConfig);
+        BuildResult<GuiSection, Map<String, Slider>> buildResult = sliders(eventsChanceConfig, factionWarAdd);
         GuiSection sliders = buildResult.getResult();
         eventsChanceSliders = buildResult.getInteractable();
 
@@ -75,7 +78,10 @@ public class EventsPanel extends GuiSection {
         addDownC(10, eventsChanceSection);
     }
 
-    private BuildResult<GuiSection, Map<String, Slider>> sliders(Map<String, Integer> eventsChanceConfig) {
+    private BuildResult<GuiSection, Map<String, Slider>> sliders(
+        Map<String, MoreOptionsConfig.Range> eventsChanceConfig,
+        MoreOptionsConfig.Range factionWarAdd
+    ) {
         Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             config -> LabeledSliderBuilder.Definition.builder()
@@ -85,9 +91,24 @@ public class EventsPanel extends GuiSection {
                     .build())
                 .sliderDefinition(SliderBuilder.Definition.builder()
                     .maxWidth(300)
-                    .max(10000)
+                    .min(config.getValue().getMin())
+                    .max(config.getValue().getMax())
+                    .valueDisplay(Slider.ValueDisplay.valueOf(config.getValue().getDisplayMode().name()))
                     .build())
                 .build()));
+
+        sliderDefinitions.put(GameEventsApi.FACTION_WAR_ADD, LabeledSliderBuilder.Definition.builder()
+            .labelDefinition(LabelBuilder.Definition.builder()
+                .key(GameEventsApi.FACTION_WAR_ADD)
+                .title(GameEventsApi.FACTION_WAR_ADD)
+                .build())
+            .sliderDefinition(SliderBuilder.Definition.builder()
+                .maxWidth(300)
+                .min(factionWarAdd.getMin())
+                .max(factionWarAdd.getMax())
+                .valueDisplay(Slider.ValueDisplay.valueOf(factionWarAdd.getDisplayMode().name()))
+                .build())
+            .build());
 
         return SlidersBuilder.builder()
             .displayHeight(150)

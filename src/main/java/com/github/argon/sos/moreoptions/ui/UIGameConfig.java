@@ -111,7 +111,7 @@ public class UIGameConfig {
         // Close: Backup Modal
         backupModal.getPanel().setCloseAction(() -> {
             configStore.deleteBackupConfig();
-            MoreOptionsConfig defaultConfig = configStore.getDefaults().get();
+            MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
             configurator.applyConfig(defaultConfig);
             configStore.setCurrentConfig(defaultConfig);
             configStore.saveConfig(defaultConfig);
@@ -121,7 +121,7 @@ public class UIGameConfig {
         // Discard Backup
         backupModal.getSection().getDiscardButton().clickActionSet(() -> {
             configStore.deleteBackupConfig();
-            MoreOptionsConfig defaultConfig = configStore.getDefaults().get();
+            MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
             configurator.applyConfig(defaultConfig);
             configStore.setCurrentConfig(defaultConfig);
             configStore.saveConfig(defaultConfig);
@@ -150,7 +150,7 @@ public class UIGameConfig {
         List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream().map(entry ->
             BoostersPanel.Entry.builder()
                 .key(entry.getKey())
-                .value(entry.getValue())
+                .range(entry.getValue())
                 .enemy(gameApis.boosterApi().isEnemyBooster(entry.getKey()))
                 .player(gameApis.boosterApi().isPlayerBooster(entry.getKey()))
                 .build()
@@ -172,7 +172,7 @@ public class UIGameConfig {
 
         // Reset UI to default
         moreOptionsModal.getSection().getResetButton().clickActionSet(() -> {
-            MoreOptionsConfig defaultConfig = configStore.getDefaults().get();
+            MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
             moreOptionsModal.getSection().applyConfig(defaultConfig);
         });
 
@@ -202,6 +202,6 @@ public class UIGameConfig {
     }
 
     private void undo(MoreOptionsModal moreOptionsModal) {
-        moreOptionsModal.getCurrentConfig().get().ifPresent(moreOptionsModal::applyConfig);
+        moreOptionsModal.getConfigStore().getCurrentConfig().ifPresent(moreOptionsModal::applyConfig);
     }
 }

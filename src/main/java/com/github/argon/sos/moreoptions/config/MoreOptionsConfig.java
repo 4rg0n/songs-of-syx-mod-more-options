@@ -14,7 +14,7 @@ import java.util.Map;
 @EqualsAndHashCode
 public class MoreOptionsConfig {
 
-    public final static int VERSION = 1;
+    public final static int VERSION = 2;
 
     /**
      * Name of the config file
@@ -37,19 +37,60 @@ public class MoreOptionsConfig {
     private Map<String, Boolean> eventsWorld = new HashMap<>();
 
     @Builder.Default
-    private Map<String, Integer> eventsChance = new HashMap<>();
+    private Map<String, Range> eventsChance = new HashMap<>();
 
     @Builder.Default
-    private Map<String, Integer> soundsAmbience = new HashMap<>();
+    private Range factionWarAdd = Range.builder()
+        .value(0)
+        .min(-100)
+        .max(100)
+        .build();
 
     @Builder.Default
-    private Map<String, Integer> soundsSettlement = new HashMap<>();
+    private Map<String, Range> soundsAmbience = new HashMap<>();
+
     @Builder.Default
-    private Map<String, Integer> soundsRoom = new HashMap<>();
+    private Map<String, Range> soundsSettlement = new HashMap<>();
     @Builder.Default
-    private Map<String, Integer> weather = new HashMap<>();
+    private Map<String, Range> soundsRoom = new HashMap<>();
     @Builder.Default
-    private Map<String, Integer> boosters = new HashMap<>();
+    private Map<String, Range> weather = new HashMap<>();
+    @Builder.Default
+    private Map<String, Range> boosters = new HashMap<>();
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    public static class Range {
+        @Builder.Default
+        private int value = 0;
+
+        @Builder.Default
+        private int min = 0;
+
+        @Builder.Default
+        private int max = 10000;
+
+        @Builder.Default
+        private DisplayMode displayMode = DisplayMode.PERCENTAGE;
+
+        public enum DisplayMode {
+            NONE,
+            ABSOLUTE,
+            PERCENTAGE
+        }
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    public static class Meta {
+        @Builder.Default
+        private int version = VERSION;
+
+        @Builder.Default
+        private Level logLevel = Level.WARN;
+    }
 
     /* TODO
        * day night / cycle; lightning

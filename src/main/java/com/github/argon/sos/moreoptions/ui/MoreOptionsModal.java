@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
+import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
@@ -24,8 +25,10 @@ import snake2d.util.sets.Tuple;
 import util.gui.misc.GButt;
 import util.gui.misc.GText;
 
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Window containing all other UI elements.
@@ -37,7 +40,7 @@ import java.util.function.Supplier;
 public class MoreOptionsModal extends GuiSection {
 
     @Getter
-    private final Supplier<Optional<MoreOptionsConfig>> currentConfig;
+    private final ConfigStore configStore;
     private final ModInfo modInfo;
 
     private CLICKABLE.Switcher switcher;
@@ -74,7 +77,7 @@ public class MoreOptionsModal extends GuiSection {
     public void init(MoreOptionsConfig config, List<BoostersPanel.Entry> boosterEntries) {
         clear();
         soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
-        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance());
+        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance(), config.getFactionWarAdd());
         weatherPanel = new WeatherPanel(config.getWeather());
         boostersPanel = new BoostersPanel(boosterEntries, config.getFilePath().toString());
 
@@ -101,30 +104,34 @@ public class MoreOptionsModal extends GuiSection {
     }
 
     public MoreOptionsConfig getConfig() {
+        MoreOptionsConfig currentConfig = configStore.getCurrentConfig()
+            .orElseGet(configStore::getDefaultConfig);
+
         return MoreOptionsConfig.builder()
             .eventsSettlement(eventsPanel.getSettlementEventsConfig())
             .eventsWorld(eventsPanel.getWorldEventsConfig())
-            .eventsChance(eventsPanel.getEventsChanceConfig())
-            .soundsAmbience(soundsPanel.getSoundsAmbienceConfig())
-            .soundsSettlement(soundsPanel.getSoundsSettlementConfig())
-            .soundsRoom(soundsPanel.getSoundsRoomConfig())
-            .weather(weatherPanel.getConfig())
-            .boosters(boostersPanel.getConfig())
+            .eventsChance(ConfigUtil.mergeInts(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
+            .soundsAmbience(ConfigUtil.mergeInts(soundsPanel.getSoundsAmbienceConfig(), currentConfig.getSoundsAmbience()))
+            .soundsSettlement(ConfigUtil.mergeInts(soundsPanel.getSoundsSettlementConfig(), currentConfig.getSoundsSettlement()))
+            .soundsRoom(ConfigUtil.mergeInts(soundsPanel.getSoundsRoomConfig(), currentConfig.getSoundsRoom()))
+            .weather(ConfigUtil.mergeInts(weatherPanel.getConfig(), currentConfig.getWeather()))
+            .boosters(ConfigUtil.mergeInts(boostersPanel.getConfig(), currentConfig.getBoosters()))
             .build();
     }
 
+
     public void applyConfig(MoreOptionsConfig config) {
-        eventsPanel.applyConfig(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance());
-        soundsPanel.applyConfig(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
-        weatherPanel.applyConfig(config.getWeather());
-        boostersPanel.applyConfig(config.getBoosters());
+        eventsPanel.applyConfig(config.getEventsSettlement(), config.getEventsWorld(), ConfigUtil.extract(config.getEventsChance()));
+        soundsPanel.applyConfig(ConfigUtil.extract(config.getSoundsAmbience()), ConfigUtil.extract(config.getSoundsSettlement()), ConfigUtil.extract(config.getSoundsRoom()));
+        weatherPanel.applyConfig(ConfigUtil.extract(config.getWeather()));
+        boostersPanel.applyConfig(ConfigUtil.extract(config.getBoosters()));
     }
 
     /**
      * @return whether panel configuration is different from {@link ConfigStore#getCurrentConfig()} ()}
      */
     public boolean isDirty() {
-        return currentConfig.get()
+        return configStore.getCurrentConfig()
             .map(currentConfig -> !getConfig().equals(currentConfig))
             // no current config in memory
             .orElse(true);

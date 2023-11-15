@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
+import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -35,7 +36,9 @@ public class BoostersPanel extends GuiSection {
                     .build())
                 .sliderDefinition(SliderBuilder.Definition.builder()
                     .maxWidth(300)
-                    .max(10000)
+                    .min(entry.getRange().getMin())
+                    .max(entry.getRange().getMax())
+                    .valueDisplay(Slider.ValueDisplay.valueOf(entry.getRange().getDisplayMode().name()))
                     .threshold(1000, COLOR.YELLOW100.shade(0.7d))
                     .threshold(5000, COLOR.ORANGE100.shade(0.7d))
                     .threshold(7500, COLOR.RED100.shade(0.7d))
@@ -80,7 +83,7 @@ public class BoostersPanel extends GuiSection {
     @Data
     @Builder
     public static class Entry {
-        private int value;
+        private MoreOptionsConfig.Range range;
 
         private String key;
 
