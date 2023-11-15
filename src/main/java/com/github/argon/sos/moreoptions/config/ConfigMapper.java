@@ -25,7 +25,7 @@ public class ConfigMapper {
             .version(2)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
-            .factionWarAdd((json.has("FACTION_WAR_ADD")) ? mapRange(json.i("FACTION_WAR_ADD", -100, 100, 0), (defaultConfig != null) ? defaultConfig.getFactionWarAdd() : MoreOptionsConfig.Range.builder().build())
+            .factionWarAdd((json.has("FACTION_WAR_ADD")) ? ConfigUtil.mergeIntoRange(json.i("FACTION_WAR_ADD", -100, 100, 0), (defaultConfig != null) ? defaultConfig.getFactionWarAdd() : MoreOptionsConfig.Range.builder().build())
                 : (defaultConfig != null) ? defaultConfig.getFactionWarAdd() : null)
 
             .eventsWorld((json.has("EVENTS_WORLD")) ? JsonMapper.mapBoolean(json.json("EVENTS_WORLD"), true)
@@ -37,37 +37,37 @@ public class ConfigMapper {
             .eventsChance((json.has("EVENTS_CHANCE")) ? JsonMapper.mapInteger(json.json("EVENTS_CHANCE")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> mapRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getEventsChance().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntoRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getEventsChance().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getEventsChance() : new HashMap<>())
 
             .soundsAmbience((json.has("SOUNDS_AMBIENCE")) ? JsonMapper.mapInteger(json.json("SOUNDS_AMBIENCE")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> mapRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsAmbience().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntoRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsAmbience().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getSoundsAmbience() : new HashMap<>())
 
             .soundsSettlement((json.has("SOUNDS_SETTLEMENT")) ? JsonMapper.mapInteger(json.json("SOUNDS_SETTLEMENT")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> mapRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsSettlement().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntoRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsSettlement().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getSoundsSettlement() : new HashMap<>())
 
             .soundsRoom((json.has("SOUNDS_ROOM")) ? JsonMapper.mapInteger(json.json("SOUNDS_ROOM")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> mapRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsRoom().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntoRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsRoom().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getSoundsRoom() : new HashMap<>())
 
             .weather((json.has("WEATHER")) ? JsonMapper.mapInteger(json.json("WEATHER")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> mapRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getWeather().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntoRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getWeather().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getWeather() : new HashMap<>())
 
             .boosters((json.has("BOOSTERS")) ? JsonMapper.mapInteger(json.json("BOOSTERS")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> mapRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getBoosters().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntoRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getBoosters().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
             .build();
     }
@@ -130,19 +130,7 @@ public class ConfigMapper {
             .build();
     }
 
-    public MoreOptionsConfig.Range mapRange(int value, MoreOptionsConfig.Range defaultRange) {
-        MoreOptionsConfig.Range range = MoreOptionsConfig.Range.builder()
-            .value(value)
-            .build();
 
-        if (defaultRange != null) {
-            range.setMin(defaultRange.getMin());
-            range.setMax(defaultRange.getMax());
-            range.setDisplayMode(defaultRange.getDisplayMode());
-        }
-
-        return range;
-    }
 
     public Map<String, MoreOptionsConfig.Range> mapRanges(Json json) {
         Map<String, MoreOptionsConfig.Range> map = new HashMap<>();
@@ -182,7 +170,7 @@ public class ConfigMapper {
         rangeJson.add("VALUE", (defaultValue != null) ? defaultValue : range.getValue());
         rangeJson.add("MIN", range.getMin());
         rangeJson.add("MAX", range.getMax());
-        rangeJson.add("DISPLAY_MODE", range.getDisplayMode().toString());
+        rangeJson.addString("DISPLAY_MODE", range.getDisplayMode().toString());
 
         return rangeJson;
     }

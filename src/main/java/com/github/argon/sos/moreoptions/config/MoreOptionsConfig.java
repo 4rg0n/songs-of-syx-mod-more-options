@@ -44,6 +44,7 @@ public class MoreOptionsConfig {
         .value(0)
         .min(-100)
         .max(100)
+        .displayMode(Range.DisplayMode.ABSOLUTE)
         .build();
 
     @Builder.Default

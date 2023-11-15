@@ -31,7 +31,7 @@ public class GameEventsApi {
     private Map<String, EVENTS.EventResource> eventsChance;
 
     public final static String KEY_PREFIX = "event";
-    public final static String FACTION_WAR_ADD = KEY_PREFIX + "chance.factionWarAdd";
+    public final static String FACTION_WAR_ADD = KEY_PREFIX + ".chance.factionWarAdd";
 
     @Getter(lazy = true)
     private final static GameEventsApi instance = new GameEventsApi();

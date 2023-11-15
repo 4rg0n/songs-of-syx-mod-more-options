@@ -20,4 +20,18 @@ public class ConfigUtil {
                 Map.Entry::getKey,
                 entry -> entry.getValue().getValue()));
     }
+
+    public static MoreOptionsConfig.Range mergeIntoRange(int value, MoreOptionsConfig.Range defaultRange) {
+        MoreOptionsConfig.Range range = MoreOptionsConfig.Range.builder()
+            .value(value)
+            .build();
+
+        if (defaultRange != null) {
+            range.setMin(defaultRange.getMin());
+            range.setMax(defaultRange.getMax());
+            range.setDisplayMode(defaultRange.getDisplayMode());
+        }
+
+        return range;
+    }
 }

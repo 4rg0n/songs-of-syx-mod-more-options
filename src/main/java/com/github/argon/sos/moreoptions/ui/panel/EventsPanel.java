@@ -18,6 +18,7 @@ import util.gui.misc.GHeader;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class EventsPanel extends GuiSection {
@@ -26,6 +27,7 @@ public class EventsPanel extends GuiSection {
 
     @Getter
     private final Map<String, Checkbox> settlementEventsCheckboxes = new HashMap<>();
+
     private final Map<String, Checkbox> worldEventsCheckboxes = new HashMap<>();
     private final Map<String, Slider> eventsChanceSliders;
 
@@ -76,6 +78,11 @@ public class EventsPanel extends GuiSection {
         HorizontalLine horizontalLine = new HorizontalLine(eventsChanceSection.body().width(), 14, 1);
         addDownC(10, horizontalLine);
         addDownC(10, eventsChanceSection);
+    }
+
+    public Optional<Integer> getFactionWarAdd() {
+        return Optional.ofNullable(eventsChanceSliders.get(GameEventsApi.FACTION_WAR_ADD))
+            .map(Slider::getValue);
     }
 
     private BuildResult<GuiSection, Map<String, Slider>> sliders(

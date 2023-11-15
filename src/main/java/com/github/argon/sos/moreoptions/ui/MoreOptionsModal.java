@@ -104,10 +104,16 @@ public class MoreOptionsModal extends GuiSection {
     }
 
     public MoreOptionsConfig getConfig() {
+        MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
         MoreOptionsConfig currentConfig = configStore.getCurrentConfig()
-            .orElseGet(configStore::getDefaultConfig);
+            .orElse(defaultConfig);
+
+        MoreOptionsConfig.Range factionWarAdd = eventsPanel.getFactionWarAdd().map(integer ->
+            ConfigUtil.mergeIntoRange(integer, currentConfig.getFactionWarAdd())
+        ).orElse(defaultConfig.getFactionWarAdd());
 
         return MoreOptionsConfig.builder()
+            .factionWarAdd(factionWarAdd)
             .eventsSettlement(eventsPanel.getSettlementEventsConfig())
             .eventsWorld(eventsPanel.getWorldEventsConfig())
             .eventsChance(ConfigUtil.mergeInts(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
