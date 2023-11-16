@@ -36,6 +36,44 @@ public class ConfigStore {
     private MoreOptionsConfig.Meta metaInfo;
     private MoreOptionsConfig backupConfig;
 
+    public MoreOptionsConfig initConfig() {
+        MoreOptionsConfig defaultConfig = getDefaultConfig();
+        MoreOptionsConfig config = getCurrentConfig()
+            .orElseGet(() -> loadConfig(defaultConfig)
+                .orElseGet(() -> {
+                    log.info("No config file loaded. Using default.");
+                    log.trace("Default: %s", defaultConfig);
+                    return defaultConfig;
+                }));
+        setCurrentConfig(config);
+
+        // detect version change in config
+        getMetaInfo().ifPresent(meta -> {
+            log.trace("Detecting config version with meta: %s", meta);
+
+            int configVersion = config.getVersion();
+            int metaVersion = meta.getVersion();
+            // do we have a version increase?
+            if (configVersion > metaVersion) {
+                log.info("Detected config version increase from %s to %s." +
+                    "Saving version %s", metaVersion, configVersion, configVersion);
+                saveConfig(config);
+            } else if (configVersion < metaVersion) {
+                log.warn("Detected config version decrease from %s to %s. This shouldn't happen...", metaVersion, configVersion);
+                // FIXME persist newest? discard old?
+            }
+        });
+
+        return config;
+    }
+
+    public MoreOptionsConfig.Meta initMetaInfo() {
+        MoreOptionsConfig.Meta meta = loadMeta()
+            .orElse(MoreOptionsConfig.Meta.builder().build());
+        setMetaInfo(meta);
+
+        return meta;
+    }
 
     /**
      * Used by the mod as current configuration to apply and use
@@ -91,6 +129,7 @@ public class ConfigStore {
     }
 
     public boolean createBackupConfig(MoreOptionsConfig config) {
+        log.debug("Creating backup config file: %s", backupConfigPath());
         return configService.saveConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME_BACKUP, config);
     }
 

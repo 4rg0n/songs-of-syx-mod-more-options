@@ -77,6 +77,7 @@ public class SoundsPanel extends GuiSection {
                 .sliderDefinition(SliderBuilder.Definition.builder()
                     .min(config.getValue().getMin())
                     .max(config.getValue().getMax())
+                    .maxWidth(300)
                     .valueDisplay(Slider.ValueDisplay.valueOf(config.getValue().getDisplayMode().name()))
                     .build())
                 .labelWidth(200)

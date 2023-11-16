@@ -109,19 +109,19 @@ public class MoreOptionsModal extends GuiSection {
             .orElse(defaultConfig);
 
         MoreOptionsConfig.Range factionOpinionAdd = eventsPanel.getFactionWarAdd().map(integer ->
-            ConfigUtil.mergeIntoRange(integer, currentConfig.getFactionOpinionAdd())
+            ConfigUtil.mergeIntoNewRange(integer, currentConfig.getFactionOpinionAdd())
         ).orElse(defaultConfig.getFactionOpinionAdd());
 
         return MoreOptionsConfig.builder()
             .factionOpinionAdd(factionOpinionAdd)
             .eventsSettlement(eventsPanel.getSettlementEventsConfig())
             .eventsWorld(eventsPanel.getWorldEventsConfig())
-            .eventsChance(ConfigUtil.mergeInts(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
-            .soundsAmbience(ConfigUtil.mergeInts(soundsPanel.getSoundsAmbienceConfig(), currentConfig.getSoundsAmbience()))
-            .soundsSettlement(ConfigUtil.mergeInts(soundsPanel.getSoundsSettlementConfig(), currentConfig.getSoundsSettlement()))
-            .soundsRoom(ConfigUtil.mergeInts(soundsPanel.getSoundsRoomConfig(), currentConfig.getSoundsRoom()))
-            .weather(ConfigUtil.mergeInts(weatherPanel.getConfig(), currentConfig.getWeather()))
-            .boosters(ConfigUtil.mergeInts(boostersPanel.getConfig(), currentConfig.getBoosters()))
+            .eventsChance(ConfigUtil.mergeIntoNewRange(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
+            .soundsAmbience(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsAmbienceConfig(), currentConfig.getSoundsAmbience()))
+            .soundsSettlement(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsSettlementConfig(), currentConfig.getSoundsSettlement()))
+            .soundsRoom(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsRoomConfig(), currentConfig.getSoundsRoom()))
+            .weather(ConfigUtil.mergeIntoNewRange(weatherPanel.getConfig(), currentConfig.getWeather()))
+            .boosters(ConfigUtil.mergeIntoNewRange(boostersPanel.getConfig(), currentConfig.getBoosters()))
             .build();
     }
 

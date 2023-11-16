@@ -34,7 +34,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	public final static INFO MOD_INFO = new INFO("More Options", "Adds more options to the game :)");
 
 	@Getter
-	private final ConfigStore configStore = ConfigStore.getInstance();
+	private final static ConfigStore configStore = ConfigStore.getInstance();
 	@Getter
 	private final MoreOptionsConfigurator configurator = MoreOptionsConfigurator.getInstance();
 	@Getter
@@ -50,6 +50,8 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	private Modal<MoreOptionsModal> moreOptionsModal;
 	private ModInfo modInfo;
 
+	public final static Level LOG_LEVEL_DEFAULT = Level.TRACE;
+
 	@Override
 	public CharSequence name() {
 		return MOD_INFO.name;
@@ -61,21 +63,17 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	}
 
 	static {
-		Loggers.setLevels(Level.TRACE);
+		Loggers.setLevels(LOG_LEVEL_DEFAULT);
 	}
 
 	@Override
 	public void initBeforeGameCreated() {
+		Level level = configStore.initMetaInfo().getLogLevel();
+		Loggers.setLevels(level);
+
 		log.debug("PHASE: initBeforeGameCreated");
 		Errors.setHandler(new MoreOptionsErrorHandler<>(this));
 		GameEventsApi.initLazy();
-
-		// load config from file
-		configStore.loadMeta()
-			.ifPresent(meta -> {
-				// FIXME Loggers.setLevels(meta.getLogLevel());
-				configStore.setMetaInfo(meta);
-			});
 
 		// load backup config
 		configStore.loadBackupConfig().ifPresent(configStore::setBackupConfig);
@@ -104,33 +102,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			log.debug("Creating Mod Instance");
 
 			// try to get current config and merge with defaults; or use whole defaults
-			MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
-			MoreOptionsConfig config = configStore.getCurrentConfig()
-				.orElseGet(() -> configStore.loadConfig(defaultConfig)
-					.map(currentConfig -> configStore.mergeMissing(currentConfig, defaultConfig))
-					.orElseGet(() -> {
-						log.info("No config file loaded. Using default.");
-						log.trace("Default: %s", defaultConfig);
-						return defaultConfig;
-					}));
-			configStore.setCurrentConfig(config);
-
-			// detect version change in config
-			configStore.getMetaInfo().ifPresent(meta -> {
-				log.trace("Detecting config version with meta: %s", meta);
-
-				int configVersion = config.getVersion();
-				int metaVersion = meta.getVersion();
-				// do we have a version increase?
-				if (configVersion > metaVersion) {
-					log.info("Detected config version increase from %s to %s." +
-						"Saving version %s", metaVersion, configVersion, configVersion);
-					configStore.saveConfig(config);
-				} else if (configVersion < metaVersion) {
-					log.warn("Detected config version decrease from %s to %s. This shouldn't happen...", metaVersion, configVersion);
-					// FIXME persist newest? discard old?
-				}
-			});
+			MoreOptionsConfig config = configStore.initConfig();
 
 			// don't apply when there's a backup
 			if (!configStore.getBackupConfig().isPresent()) {
@@ -140,7 +112,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 				new MoreOptionsModal(configStore, modInfo));
 			uiGameConfig.initDebug(moreOptionsModal);
 
-			// add description from game boostables
+			// add description from game boosters
 			gameApis.boosterApi().getAllBoosters()
 				.values().forEach(dictionary::add);
 
@@ -169,8 +141,8 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		uiGameConfig.init(moreOptionsModal, moreOptionsConfig);
 		uiGameConfig.inject(moreOptionsModal);
 
+		// show backup dialog?
 		if (backupConfig.isPresent()) {
-			// show backup dialog
 			Modal<BackupModal> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupModal(), true);
 			Modal<MoreOptionsModal> moreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
 				new MoreOptionsModal(configStore, modInfo), true);
@@ -218,13 +190,14 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			// backup and delete config file
 			configStore.getCurrentConfig().ifPresent(config -> {
 				if (configStore.createBackupConfig(config)) {
-					log.warn("Backup config file created at: %s",
+					log.warn("Backup config file successfully created at: %s",
 						ConfigStore.backupConfigPath());
-				}
 
-				if (configStore.deleteConfig()) {
-					log.warn("Deleted possible faulty config file at: %s",
-						ConfigStore.configPath());
+					// only delete original when backup config was created successfully
+					if (configStore.deleteConfig()) {
+						log.warn("Deleted possible faulty config file at: %s",
+							ConfigStore.configPath());
+					}
 				}
 			});
 		} catch (Exception e) {

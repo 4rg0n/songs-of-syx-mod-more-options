@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.log.Level;
 import lombok.Builder;
 import lombok.Data;
@@ -80,6 +81,15 @@ public class MoreOptionsConfig {
             ABSOLUTE,
             PERCENTAGE
         }
+
+        public Range clone() {
+            return Range.builder()
+                .displayMode(displayMode)
+                .max(max)
+                .min(min)
+                .value(value)
+                .build();
+        }
     }
 
     @Data
@@ -90,7 +100,7 @@ public class MoreOptionsConfig {
         private int version = VERSION;
 
         @Builder.Default
-        private Level logLevel = Level.WARN;
+        private Level logLevel = MoreOptionsScript.LOG_LEVEL_DEFAULT;
     }
 
     /* TODO

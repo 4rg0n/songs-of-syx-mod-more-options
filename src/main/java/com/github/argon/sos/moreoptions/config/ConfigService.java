@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class ConfigService {
     }
 
     public Optional<MoreOptionsConfig.Meta> loadMeta(PATH path, String fileName) {
-        return jsonService.loadJson(path.get(fileName))
+        return jsonService.loadJson(path, fileName)
             .map(configMapper::mapMeta);
     }
 
@@ -70,17 +71,23 @@ public class ConfigService {
     }
 
     public Optional<MoreOptionsConfig> loadConfig(PATH path, String fileName, MoreOptionsConfig defaultConfig) {
-        return jsonService.loadJson(path, fileName).map(json -> {
+        if (!path.exists(fileName)) {
+            // do not load what's not there
+            log.debug("File %s" + File.separator + "%s.txt not present", path.get(), fileName);
+            return Optional.empty();
+        }
+
+        Path filePath = path.get(fileName);
+        return jsonService.loadJson(filePath).map(json -> {
             MoreOptionsConfig.Meta meta = configMapper.mapMeta(json);
             int version = meta.getVersion();
-            Path filePath = path.get(fileName);
             log.debug("Loaded config v%s", version);
 
             switch (version) {
                 case 1:
                     return configMapper.mapV1(filePath, json, defaultConfig);
                 case 2:
-                    return configMapper.mapV2(filePath, version, json, defaultConfig);
+                    return configMapper.mapV2(filePath, json, defaultConfig);
                 default:
                     log.warn("Unsupported config version v%s found in %s", version, filePath);
                     return null;
