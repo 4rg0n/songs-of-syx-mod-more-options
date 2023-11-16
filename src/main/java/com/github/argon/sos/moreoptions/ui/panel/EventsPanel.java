@@ -35,7 +35,7 @@ public class EventsPanel extends GuiSection {
         Map<String, Boolean> settlementEventsConfig,
         Map<String, Boolean> worldEventsConfig,
         Map<String, MoreOptionsConfig.Range> eventsChanceConfig,
-        MoreOptionsConfig.Range factionWarAdd
+        MoreOptionsConfig.Range factionOpinionAdd
     ) {
         BuildResult<GuiSection, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(settlementEventsConfig);
         GuiSection settlement = settlementCheckboxesResult.getResult();
@@ -65,7 +65,7 @@ public class EventsPanel extends GuiSection {
         checkBoxSection.addRight(0, worldSection);
         addDownC(0, checkBoxSection);
 
-        BuildResult<GuiSection, Map<String, Slider>> buildResult = sliders(eventsChanceConfig, factionWarAdd);
+        BuildResult<GuiSection, Map<String, Slider>> buildResult = sliders(eventsChanceConfig, factionOpinionAdd);
         GuiSection sliders = buildResult.getResult();
         eventsChanceSliders = buildResult.getInteractable();
 
@@ -81,18 +81,18 @@ public class EventsPanel extends GuiSection {
     }
 
     public Optional<Integer> getFactionWarAdd() {
-        return Optional.ofNullable(eventsChanceSliders.get(GameEventsApi.FACTION_WAR_ADD))
+        return Optional.ofNullable(eventsChanceSliders.get(GameEventsApi.FACTION_OPINION_ADD))
             .map(Slider::getValue);
     }
 
     public void setFactionWarAdd(Integer value) {
-        Optional.ofNullable(eventsChanceSliders.get(GameEventsApi.FACTION_WAR_ADD))
+        Optional.ofNullable(eventsChanceSliders.get(GameEventsApi.FACTION_OPINION_ADD))
             .ifPresent(slider -> {slider.setValue(value);});
     }
 
     private BuildResult<GuiSection, Map<String, Slider>> sliders(
         Map<String, MoreOptionsConfig.Range> eventsChanceConfig,
-        MoreOptionsConfig.Range factionWarAdd
+        MoreOptionsConfig.Range factionOpinionAdd
     ) {
         Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
@@ -109,16 +109,16 @@ public class EventsPanel extends GuiSection {
                     .build())
                 .build()));
 
-        sliderDefinitions.put(GameEventsApi.FACTION_WAR_ADD, LabeledSliderBuilder.Definition.builder()
+        sliderDefinitions.put(GameEventsApi.FACTION_OPINION_ADD, LabeledSliderBuilder.Definition.builder()
             .labelDefinition(LabelBuilder.Definition.builder()
-                .key(GameEventsApi.FACTION_WAR_ADD)
-                .title(GameEventsApi.FACTION_WAR_ADD)
+                .key(GameEventsApi.FACTION_OPINION_ADD)
+                .title(GameEventsApi.FACTION_OPINION_ADD)
                 .build())
             .sliderDefinition(SliderBuilder.Definition.builder()
                 .maxWidth(300)
-                .min(factionWarAdd.getMin())
-                .max(factionWarAdd.getMax())
-                .valueDisplay(Slider.ValueDisplay.valueOf(factionWarAdd.getDisplayMode().name()))
+                .min(factionOpinionAdd.getMin())
+                .max(factionOpinionAdd.getMax())
+                .valueDisplay(Slider.ValueDisplay.valueOf(factionOpinionAdd.getDisplayMode().name()))
                 .build())
             .build());
 
@@ -147,12 +147,12 @@ public class EventsPanel extends GuiSection {
         Map<String, Boolean> settlementEventsConfig,
         Map<String, Boolean> worldEventsConfig,
         Map<String, Integer> eventsChanceConfig,
-        Integer factionWarAdd
+        Integer factionOpinionAdd
     ) {
         log.trace("Applying UI settlement events config %s", settlementEventsConfig);
         log.trace("Applying UI world events config %s", worldEventsConfig);
         log.trace("Applying UI events chance config %s", eventsChanceConfig);
-        log.trace("Applying UI events chance factionWarAdd %s", factionWarAdd);
+        log.trace("Applying UI events chance factionOpinionAdd %s", factionOpinionAdd);
 
         settlementEventsConfig.forEach((key, value) -> {
             if (settlementEventsCheckboxes.containsKey(key)) {
@@ -178,7 +178,7 @@ public class EventsPanel extends GuiSection {
             }
         });
 
-        setFactionWarAdd(factionWarAdd);
+        setFactionWarAdd(factionOpinionAdd);
     }
 
 

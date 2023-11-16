@@ -253,7 +253,7 @@ public class ConfigStore {
                         .build();
 
                     // fixme ugly...
-                    if (GameEventsApi.FACTION_WAR_ADD.equals(key)) {
+                    if (GameEventsApi.FACTION_OPINION_ADD.equals(key)) {
                         range.setDisplayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE);
                         range.setMin(-100);
                     }

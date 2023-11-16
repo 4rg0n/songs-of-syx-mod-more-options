@@ -77,7 +77,7 @@ public class MoreOptionsModal extends GuiSection {
     public void init(MoreOptionsConfig config, List<BoostersPanel.Entry> boosterEntries) {
         clear();
         soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
-        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance(), config.getFactionWarAdd());
+        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance(), config.getFactionOpinionAdd());
         weatherPanel = new WeatherPanel(config.getWeather());
         boostersPanel = new BoostersPanel(boosterEntries, config.getFilePath().toString());
 
@@ -108,12 +108,12 @@ public class MoreOptionsModal extends GuiSection {
         MoreOptionsConfig currentConfig = configStore.getCurrentConfig()
             .orElse(defaultConfig);
 
-        MoreOptionsConfig.Range factionWarAdd = eventsPanel.getFactionWarAdd().map(integer ->
-            ConfigUtil.mergeIntoRange(integer, currentConfig.getFactionWarAdd())
-        ).orElse(defaultConfig.getFactionWarAdd());
+        MoreOptionsConfig.Range factionOpinionAdd = eventsPanel.getFactionWarAdd().map(integer ->
+            ConfigUtil.mergeIntoRange(integer, currentConfig.getFactionOpinionAdd())
+        ).orElse(defaultConfig.getFactionOpinionAdd());
 
         return MoreOptionsConfig.builder()
-            .factionWarAdd(factionWarAdd)
+            .factionOpinionAdd(factionOpinionAdd)
             .eventsSettlement(eventsPanel.getSettlementEventsConfig())
             .eventsWorld(eventsPanel.getWorldEventsConfig())
             .eventsChance(ConfigUtil.mergeInts(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
@@ -130,7 +130,7 @@ public class MoreOptionsModal extends GuiSection {
         eventsPanel.applyConfig(
             config.getEventsSettlement(),
             config.getEventsWorld(), ConfigUtil.extract(config.getEventsChance()),
-            config.getFactionWarAdd().getValue());
+            config.getFactionOpinionAdd().getValue());
         soundsPanel.applyConfig(ConfigUtil.extract(config.getSoundsAmbience()), ConfigUtil.extract(config.getSoundsSettlement()), ConfigUtil.extract(config.getSoundsRoom()));
         weatherPanel.applyConfig(ConfigUtil.extract(config.getWeather()));
         boostersPanel.applyConfig(ConfigUtil.extract(config.getBoosters()));

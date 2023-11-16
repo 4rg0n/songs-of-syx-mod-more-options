@@ -25,8 +25,8 @@ public class ConfigMapper {
             .version(2)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
-            .factionWarAdd((json.has("FACTION_WAR_ADD")) ? ConfigUtil.mergeIntoRange(json.i("FACTION_WAR_ADD", -100, 100, 0), (defaultConfig != null) ? defaultConfig.getFactionWarAdd() : MoreOptionsConfig.Range.builder().build())
-                : (defaultConfig != null) ? defaultConfig.getFactionWarAdd() : null)
+            .factionOpinionAdd((json.has("FACTION_OPINION_ADD")) ? ConfigUtil.mergeIntoRange(json.i("FACTION_WAR_ADD", -100, 100, 0), (defaultConfig != null) ? defaultConfig.getFactionOpinionAdd() : MoreOptionsConfig.Range.builder().build())
+                : (defaultConfig != null) ? defaultConfig.getFactionOpinionAdd() : null)
 
             .eventsWorld((json.has("EVENTS_WORLD")) ? JsonMapper.mapBoolean(json.json("EVENTS_WORLD"), true)
                 : (defaultConfig != null) ? defaultConfig.getEventsWorld() : new HashMap<>())
@@ -78,8 +78,8 @@ public class ConfigMapper {
             .version(version)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
-            .factionWarAdd((json.has("FACTION_WAR_ADD")) ? mapRange(json.json("FACTION_WAR_ADD"), (defaultConfig != null) ? defaultConfig.getFactionWarAdd().getValue() : null)
-                : (defaultConfig != null) ? defaultConfig.getFactionWarAdd() : null)
+            .factionOpinionAdd((json.has("FACTION_OPINION_ADD")) ? mapRange(json.json("FACTION_WAR_ADD"), (defaultConfig != null) ? defaultConfig.getFactionOpinionAdd().getValue() : null)
+                : (defaultConfig != null) ? defaultConfig.getFactionOpinionAdd() : null)
 
             .eventsWorld((json.has("EVENTS_WORLD")) ? JsonMapper.mapBoolean(json.json("EVENTS_WORLD"), true)
                 : (defaultConfig != null) ? defaultConfig.getEventsWorld() : new HashMap<>())
@@ -111,7 +111,7 @@ public class ConfigMapper {
         JsonE configJson = new JsonE();
         configJson.add("VERSION", config.getVersion());
         configJson.addString("LOG_LEVEL", config.getLogLevel().getName());
-        configJson.add("FACTION_WAR_ADD", mapRange(config.getFactionWarAdd(), null));
+        configJson.add("FACTION_OPINION_ADD", mapRange(config.getFactionOpinionAdd(), null));
         configJson.add("EVENTS_SETTLEMENT", JsonMapper.mapBoolean(config.getEventsSettlement()));
         configJson.add("EVENTS_WORLD", JsonMapper.mapBoolean(config.getEventsWorld()));
         configJson.add("EVENTS_CHANCE", mapRanges(config.getEventsChance()));

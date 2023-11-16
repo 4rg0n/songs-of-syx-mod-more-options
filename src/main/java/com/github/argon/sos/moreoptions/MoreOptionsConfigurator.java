@@ -39,7 +39,7 @@ public class MoreOptionsConfigurator {
     public void applyConfig(MoreOptionsConfig config) {
         log.debug("Apply More Options config to game");
         try {
-            applyFactionWarAdd(config.getFactionWarAdd().getValue());
+            applyFactionWarAdd(config.getFactionOpinionAdd().getValue());
             applySettlementEventsConfig(config.getEventsSettlement());
             applyWorldEventsConfig(config.getEventsWorld());
             applyEventsChanceConfig(ConfigUtil.extract(config.getEventsChance()));

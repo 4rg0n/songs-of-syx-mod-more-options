@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
-import com.github.argon.sos.moreoptions.game.booster.FactionWarBooster;
+import com.github.argon.sos.moreoptions.game.booster.FactionOpinionBooster;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class GameEventsApi {
 
     @Getter
-    private static FactionWarBooster factionWarBooster;
+    private static FactionOpinionBooster factionOpinionBooster;
 
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
@@ -31,16 +31,16 @@ public class GameEventsApi {
     private Map<String, EVENTS.EventResource> eventsChance;
 
     public final static String KEY_PREFIX = "event";
-    public final static String FACTION_WAR_ADD = KEY_PREFIX + ".chance.factionWarAdd";
+    public final static String FACTION_OPINION_ADD = KEY_PREFIX + ".chance.factionOpinionAdd";
 
     @Getter(lazy = true)
     private final static GameEventsApi instance = new GameEventsApi();
 
     public static void initLazy() {
-        if (factionWarBooster == null) {
+        if (factionOpinionBooster == null) {
             log.debug("Creating faction war booster");
-            factionWarBooster = new FactionWarBooster(MoreOptionsScript.MOD_INFO.name, -100, 100, false);
-            factionWarBooster.add(ROpinions.GET());
+            factionOpinionBooster = new FactionOpinionBooster(MoreOptionsScript.MOD_INFO.name, -100, 100, false);
+            factionOpinionBooster.add(ROpinions.GET());
         }
     }
 
@@ -126,7 +126,7 @@ public class GameEventsApi {
 
     public boolean setChance(String eventKey, int chance) {
         // chance for faction war against player is handled extra
-        if (FACTION_WAR_ADD.equals(eventKey)) {
+        if (FACTION_OPINION_ADD.equals(eventKey)) {
             setFactionWarAddValue(chance);
             return true;
         }
@@ -148,7 +148,7 @@ public class GameEventsApi {
 
     public void setFactionWarAddValue(int value) {
         log.trace("Set faction war adder to %s", value);
-        factionWarBooster.set(value);
+        factionOpinionBooster.set(value);
     }
 
     public Map<String, Boolean> readEventsEnabledStatus() {

@@ -40,7 +40,7 @@ public class MoreOptionsConfig {
     private Map<String, Range> eventsChance = new HashMap<>();
 
     @Builder.Default
-    private Range factionWarAdd = Range.builder()
+    private Range factionOpinionAdd = Range.builder()
         .value(0)
         .min(-100)
         .max(100)

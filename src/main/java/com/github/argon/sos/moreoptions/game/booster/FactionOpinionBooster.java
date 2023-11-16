@@ -3,11 +3,11 @@ package com.github.argon.sos.moreoptions.game.booster;
 import game.boosting.BoosterImp;
 import game.faction.npc.ruler.Royalty;
 
-public class FactionWarBooster extends BoosterImp<Royalty> {
+public class FactionOpinionBooster extends BoosterImp<Royalty> {
 
     private double value = 0.0;
 
-    public FactionWarBooster(CharSequence sourceName, double from, double to, boolean isMul) {
+    public FactionOpinionBooster(CharSequence sourceName, double from, double to, boolean isMul) {
         super(sourceName, from, to, isMul);
     }
 

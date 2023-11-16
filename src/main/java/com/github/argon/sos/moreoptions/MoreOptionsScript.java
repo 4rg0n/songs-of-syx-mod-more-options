@@ -183,13 +183,9 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 		}
 
+		// todo V65 add army size slider: negative to positive
 
-
-		// fixme: is there something wrong with the Lifespan booster?
-		//        was set to 0% for some reason and after changing back to 100% ppl died nonetheless after some time
-		//        is scrolling an issue?
-
-		// todo categorize boosters?
+		// todo V65 categorize boosters?
 		//      see: https://steamcommunity.com/workshop/filedetails/discussion/3044071344/3881597531962263472/?tscn=1699699254#c3952532649325145153
 
 		// todo experimental
