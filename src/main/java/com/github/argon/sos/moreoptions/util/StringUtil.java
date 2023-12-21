@@ -1,9 +1,13 @@
 package com.github.argon.sos.moreoptions.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StringUtil {
 
     public static String toString(Object[] objects) {

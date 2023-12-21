@@ -1,6 +1,8 @@
 package com.github.argon.sos.moreoptions.util;
 
 import com.github.argon.sos.moreoptions.game.ui.GridRow;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiUtil {
     public static int getMaxWidth(Collection<? extends RENDEROBJ> sections) {
         int maxWidth = 0;

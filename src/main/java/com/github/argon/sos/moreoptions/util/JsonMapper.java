@@ -1,11 +1,14 @@
 package com.github.argon.sos.moreoptions.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonMapper {
     public static Map<String, Boolean> mapBoolean(Json json, boolean fallback) {
         Map<String, Boolean> map = new HashMap<>();

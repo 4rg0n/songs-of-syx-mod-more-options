@@ -128,6 +128,10 @@ public class ConfigStore {
         return configService.delete(SAVE_PATH, MoreOptionsConfig.FILE_NAME_BACKUP);
     }
 
+    public boolean createBackupConfig() {
+        return getCurrentConfig().map(this::createBackupConfig).orElse(false);
+    }
+
     public boolean createBackupConfig(MoreOptionsConfig config) {
         log.debug("Creating backup config file: %s", backupConfigPath());
         return configService.saveConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME_BACKUP, config);

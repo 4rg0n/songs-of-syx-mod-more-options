@@ -3,6 +3,8 @@ package com.github.argon.sos.moreoptions.util;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -12,6 +14,7 @@ import java.util.stream.Stream;
 /**
  * For accessing game classes and properties, which are normally not public available
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReflectionUtil {
 
     private final static Logger log = Loggers.getLogger(ReflectionUtil.class);

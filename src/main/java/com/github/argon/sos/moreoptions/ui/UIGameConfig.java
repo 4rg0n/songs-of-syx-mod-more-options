@@ -78,9 +78,10 @@ public class UIGameConfig {
     /**
      * Debug commands are executable via the in game debug panel
      */
-    public void initDebug(Modal<MoreOptionsModal> moreOptionsModal) {
+    public void initDebug(Modal<MoreOptionsModal> moreOptionsModal, ConfigStore configStore) {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":show", moreOptionsModal::show);
+        IDebugPanel.add(MOD_INFO.name + ":createBackup", configStore::createBackupConfig);
         IDebugPanel.add(MOD_INFO.name + ":log.stats", () -> {
             log.info("Events Status:\n%s", gameApis.eventsApi().readEventsEnabledStatus()
                 .entrySet().stream().map(entry -> entry.getKey() + " enabled: " + entry.getValue() + "\n")
@@ -88,40 +89,42 @@ public class UIGameConfig {
         });
     }
 
-    public void initForBackup(Modal<BackupModal> backupModal, Modal<MoreOptionsModal> moreOptionsModal, MoreOptionsConfig config) {
-        init(moreOptionsModal, config);
+    public void initForBackup(Modal<BackupModal> backupModal, Modal<MoreOptionsModal> backupMoreOptionsModal, Modal<MoreOptionsModal> moreOptionsModal, MoreOptionsConfig config) {
+        init(backupMoreOptionsModal, config);
 
         // Close: More Options modal with backup config
-        moreOptionsModal.getPanel().setCloseAction(() -> {
+        backupMoreOptionsModal.getPanel().setCloseAction(() -> {
             configStore.deleteBackupConfig();
-            moreOptionsModal.hide();
+            backupMoreOptionsModal.hide();
             backupModal.show();
         });
 
         // Cancel & Undo
-        moreOptionsModal.getSection().getCancelButton().clickActionSet(() -> {
-            undo(moreOptionsModal.getSection());
+        backupMoreOptionsModal.getSection().getCancelButton().clickActionSet(() -> {
+            undo(backupMoreOptionsModal.getSection());
             configStore.deleteBackupConfig();
-            moreOptionsModal.hide();
+            backupMoreOptionsModal.hide();
         });
 
         // Ok
-        moreOptionsModal.getSection().getOkButton().clickActionSet(() -> {
-            applyAndSave(moreOptionsModal.getSection());
+        backupMoreOptionsModal.getSection().getOkButton().clickActionSet(() -> {
+            applyAndSave(backupMoreOptionsModal.getSection());
+            moreOptionsModal.getSection().applyConfig(backupMoreOptionsModal.getSection().getConfig());
             configStore.deleteBackupConfig();
-            moreOptionsModal.hide();
+            backupMoreOptionsModal.hide();
         });
 
         // Edit Backup
         backupModal.getSection().getEditButton().clickActionSet(() -> {
             backupModal.hide();
-            moreOptionsModal.show();
+            backupMoreOptionsModal.show();
         });
 
         // Close: Backup Modal
         backupModal.getPanel().setCloseAction(() -> {
             configStore.deleteBackupConfig();
             MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
+            moreOptionsModal.getSection().applyConfig(defaultConfig);
             configurator.applyConfig(defaultConfig);
             configStore.setCurrentConfig(defaultConfig);
             configStore.saveConfig(defaultConfig);
@@ -132,6 +135,7 @@ public class UIGameConfig {
         backupModal.getSection().getDiscardButton().clickActionSet(() -> {
             configStore.deleteBackupConfig();
             MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
+            moreOptionsModal.getSection().applyConfig(defaultConfig);
             configurator.applyConfig(defaultConfig);
             configStore.setCurrentConfig(defaultConfig);
             configStore.saveConfig(defaultConfig);
@@ -140,7 +144,10 @@ public class UIGameConfig {
 
         // Apply Backup
         backupModal.getSection().getApplyButton().clickActionSet(() -> {
-            applyAndSave(moreOptionsModal.getSection());
+            configurator.applyConfig(config);
+            moreOptionsModal.getSection().applyConfig(config);
+            configStore.setCurrentConfig(config);
+            configStore.saveConfig(config);
             configStore.deleteBackupConfig();
             backupModal.hide();
         });

@@ -7,12 +7,11 @@
     </classpathModifications>
     <option name="MAIN_CLASS_NAME" value="init.MainProcess" />
     <module name="songs-of-syx-mod-more-options" />
-    <option name="PROGRAM_PARAMETERS" value="-Djava.system.class.loader=script.SyxClassLoader" />
+    <option name="PROGRAM_PARAMETERS" value="-Xms512m -Xmx1024m -XX:+UseCompressedOops" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
     <method v="2">
       <option name="Make" enabled="true" />
-      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="clean" />
-      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="install" />
+      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="clean install" />
     </method>
   </configuration>
 </component>

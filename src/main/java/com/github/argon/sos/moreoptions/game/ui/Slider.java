@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.moreoptions.game.util.TextFormatUtil;
 import init.D;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
@@ -178,8 +179,6 @@ public class Slider extends GuiSection {
             String maxString = Integer.toString(max);
             if (in.min() < 0) {
                 maxString = "-" + maxString;
-            } else {
-                maxString = "+" + maxString;
             }
 
             GStat value;
@@ -188,14 +187,14 @@ public class Slider extends GuiSection {
                 value = new GStat() {
                     @Override
                     public void update(GText text) {
-                        GFORMAT.perc(text, in.get() / 100d);
+                        TextFormatUtil.perc(text, in.get() / 100d);
                     }
                 };
             } else {
                 value = new GStat() {
                     @Override
                     public void update(GText text) {
-                        GFORMAT.iBig(text, in.get());
+                        TextFormatUtil.iBig(text, in.get());
                     }
                 };
             }

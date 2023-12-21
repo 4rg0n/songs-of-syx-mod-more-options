@@ -110,7 +110,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			}
 			moreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
 				new MoreOptionsModal(configStore, modInfo));
-			uiGameConfig.initDebug(moreOptionsModal);
+			uiGameConfig.initDebug(moreOptionsModal, configStore);
 
 			// add description from game boosters
 			gameApis.boosterApi().getAllBoosters()
@@ -133,7 +133,6 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	public void initGamePresent() {
 		log.debug("PHASE: initGamePresent");
 
-		Optional<MoreOptionsConfig> backupConfig = configStore.getBackupConfig();
 		// config should already be loaded or use default
 		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
 			.orElse(configStore.getDefaultConfig());
@@ -141,19 +140,24 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		uiGameConfig.init(moreOptionsModal, moreOptionsConfig);
 		uiGameConfig.inject(moreOptionsModal);
 
+		Optional<MoreOptionsConfig> backupConfig = configStore.getBackupConfig();
 		// show backup dialog?
 		if (backupConfig.isPresent()) {
+			log.debug("Backup config present at %s", backupConfig.get().getFilePath());
 			Modal<BackupModal> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupModal(), true);
-			Modal<MoreOptionsModal> moreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
+			Modal<MoreOptionsModal> backupMoreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
 				new MoreOptionsModal(configStore, modInfo), true);
 
-			uiGameConfig.initForBackup(backupModal, moreOptionsModal, backupConfig.get());
-			moreOptionsModal.getSection().applyConfig(backupConfig.get());
+			uiGameConfig.initForBackup(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
 			configStore.setCurrentConfig(backupConfig.get());
 			backupModal.show();
-		} else {
-			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 		}
+
+		moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
+
+		// fixme applying backup doesn't apply correctly?
+
+		// todo add a MoreOptionsViewModel inbetween? for easier mapping? mapstruct?
 
 		// todo V65 add army size slider: negative to positive
 
@@ -188,18 +192,16 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 
 		try {
 			// backup and delete config file
-			configStore.getCurrentConfig().ifPresent(config -> {
-				if (configStore.createBackupConfig(config)) {
-					log.warn("Backup config file successfully created at: %s",
-						ConfigStore.backupConfigPath());
+			if (configStore.createBackupConfig()) {
+				log.warn("Backup config file successfully created at: %s",
+					ConfigStore.backupConfigPath());
 
-					// only delete original when backup config was created successfully
-					if (configStore.deleteConfig()) {
-						log.warn("Deleted possible faulty config file at: %s",
-							ConfigStore.configPath());
-					}
+				// only delete original when backup config was created successfully
+				if (configStore.deleteConfig()) {
+					log.warn("Deleted possible faulty config file at: %s",
+						ConfigStore.configPath());
 				}
-			});
+			}
 		} catch (Exception e) {
 			log.error("Something bad happened while trying to handle game crash", e);
 		}
