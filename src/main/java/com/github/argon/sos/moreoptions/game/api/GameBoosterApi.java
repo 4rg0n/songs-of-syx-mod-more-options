@@ -28,7 +28,7 @@ public class GameBoosterApi {
     private Map<String, Boostable> enemyBoosters;
     private Map<String, Boostable> playerBoosters;
 
-    private Map<String, BoostableCat> catBootsers;
+    private Map<String, BoostableCat> catBoosters;
 
     public final static String KEY_PREFIX = "booster";
 
@@ -39,7 +39,7 @@ public class GameBoosterApi {
         allBoosters = null;
         playerBoosters = null;
         enemyBoosters = null;
-        catBootsers = null;
+        catBoosters = null;
     }
 
     public Map<String, Boostable> getAllBoosters() {
@@ -79,15 +79,15 @@ public class GameBoosterApi {
     }
 
     public Map<String, BoostableCat> getCatBoosters() {
-        if (catBootsers == null) {
-            catBootsers = new HashMap<>();
-            BOOSTABLES.CIVICS().all().forEach(civ -> {catBootsers.put(KEY_PREFIX + "." + civ.key, civ.cat);});
-            BOOSTABLES.BATTLE().all().forEach(civ -> {catBootsers.put(KEY_PREFIX + "." + civ.key, civ.cat);});
-            BOOSTABLES.BEHAVIOUR().all().forEach(civ -> {catBootsers.put(KEY_PREFIX + "." + civ.key, civ.cat);});
-            BOOSTABLES.PHYSICS().all().forEach(civ -> {catBootsers.put(KEY_PREFIX + "." + civ.key, civ.cat);});
-            BOOSTABLES.ROOMS().all().forEach(civ -> {catBootsers.put(KEY_PREFIX + "." + civ.key, civ.cat);});
+        if (catBoosters == null) {
+            catBoosters = new HashMap<>();
+            BOOSTABLES.CIVICS().all().forEach(civ -> {catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat);});
+            BOOSTABLES.BATTLE().all().forEach(civ -> {catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat);});
+            BOOSTABLES.BEHAVIOUR().all().forEach(civ -> {catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat);});
+            BOOSTABLES.PHYSICS().all().forEach(civ -> {catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat);});
+            BOOSTABLES.ROOMS().all().forEach(civ -> {catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat);});
         }
-        return catBootsers;
+        return catBoosters;
     }
 
 
@@ -118,7 +118,7 @@ public class GameBoosterApi {
         }
         if(!isExists) {
             MoreOptionsBooster moreOptionsBooster = new MoreOptionsBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), 0, 10000, false);
-            moreOptionsBooster.set(Double.valueOf(boost));
+            moreOptionsBooster.set(boost);
             BoostSpec boostSpec = new BoostSpec(moreOptionsBooster, boostable, charSequence);
             boostable.addFactor(boostSpec);
         }
