@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.game.booster;
 
 import game.boosting.BSourceInfo;
 import game.boosting.BoosterImp;
+import game.faction.FACTIONS;
 import game.faction.Faction;
 import game.faction.npc.NPCBonus;
 import game.faction.npc.ruler.Royalty;
@@ -41,7 +42,13 @@ public class MoreOptionsBooster extends BoosterImp {
 
     @Override
     public double vGet(POP_CL reg) {
-        return value / 10000;
+        if (reg.cl != null && !reg.cl.player)
+        {
+            return 0;
+        }
+        else {
+            return value / 10000;
+        }
     }
 
     @Override
@@ -56,11 +63,16 @@ public class MoreOptionsBooster extends BoosterImp {
 
     @Override
     public double vGet(NPCBonus bonus) {
-        return value / 10000;
+        return 0;
     }
 
     @Override
     public double vGet(Faction f) {
-        return value / 10000;
+        if(FACTIONS.player().equals(f)) {
+            return value / 10000;
+        }
+        else {
+            return 0;
+        }
     }
 }
