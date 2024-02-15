@@ -85,7 +85,7 @@ public class BoostersPanel extends GuiSection {
 
         }
 
-        int width = 0;
+        int width;
 
         Map<String, Slider> elements = new HashMap<>();
         Map<String, List<List<? extends GuiSection>>> mapRows = new HashMap<>();
