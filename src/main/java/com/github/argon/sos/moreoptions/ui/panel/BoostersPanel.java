@@ -46,7 +46,7 @@ public class BoostersPanel extends GuiSection {
 
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
         for (Entry entry : boosterEntries) {
-            if(entry.getCat() != null && entry.getCat().name != null) {
+            if (entry.getCat() != null && entry.getCat().name != null) {
                 String catName = entry.getCat().name.toString();
                 // Check if the map already has a list for this cat name
                 if (!groupedBoosterEntries.containsKey(catName)) {
