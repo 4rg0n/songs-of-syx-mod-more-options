@@ -19,6 +19,6 @@ public class FactionOpinionBooster extends BoosterImp {
 
     @Override
     public double vGet(Faction f) {
-        return 0;
+        return value;
     }
 }
