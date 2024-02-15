@@ -1,6 +1,7 @@
 package script;
 
 import game.GAME.GameResource;
+import game.Profiler;
 import init.paths.PATHS;
 import script.SCRIPT.SCRIPT_INSTANCE;
 import snake2d.Errors;
@@ -184,8 +185,7 @@ public class ScriptEngine extends GameResource {
 	}
 
 	@Override
-	protected void update(float ds) {
-
+	protected void update(float ds, Profiler prof) {
 		for(Script s : loads)
 			try {
 				s.ins.update(ds);

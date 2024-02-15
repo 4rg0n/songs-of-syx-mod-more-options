@@ -163,6 +163,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 
 		// todo V65 categorize boosters?
 		//      see: https://steamcommunity.com/workshop/filedetails/discussion/3044071344/3881597531962263472/?tscn=1699699254#c3952532649325145153
+		// done by me! -- Senso
 
 		// todo experimental
 //		gameApis.weatherApi().lockDayCycle(1, true);

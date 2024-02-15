@@ -34,6 +34,24 @@ public class GridRow extends GuiSection {
         }
     }
 
+    public void initGrid(List<Integer> columnWidths, Integer width) {
+        clear();
+
+        int lastWidth = 0;
+        for (int i = 1; i < columnWidths.size(); i++) {
+            lastWidth += columnWidths.get(i);
+        }
+
+        columnWidths.set(0, width - lastWidth);
+
+        for (int i = 0; i < columns.size(); i++) {
+            GuiSection section = columns.get(i);
+            Integer widthColumn = columnWidths.get(i);
+            section.body().setWidth(widthColumn);
+            addRight(5, section);
+        }
+    }
+
     @Override
     public void render(SPRITE_RENDERER r, float ds) {
         if (color != null) {

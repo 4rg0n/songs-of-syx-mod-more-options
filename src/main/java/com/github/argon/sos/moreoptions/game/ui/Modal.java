@@ -7,7 +7,7 @@ import snake2d.Renderer;
 import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GBox;
-import util.gui.panel.GPanelL;
+import util.gui.panel.GPanel;
 import view.interrupter.Interrupter;
 import view.main.VIEW;
 
@@ -16,7 +16,7 @@ public class Modal<T extends GuiSection> extends Interrupter {
     protected final T section;
 
     @Getter
-    protected final GPanelL panel;
+    protected final GPanel panel;
 
     protected final GuiSection panelSection;
 
@@ -32,7 +32,7 @@ public class Modal<T extends GuiSection> extends Interrupter {
 
     public Modal(String title, T section, boolean overlay) {
         this.section = section;
-        this.panel = new GPanelL();
+        this.panel = new GPanel();
         this.panel.setTitle(title);
         this.panel.setCloseAction(this::hide);
         this.panelSection = new GuiSection();

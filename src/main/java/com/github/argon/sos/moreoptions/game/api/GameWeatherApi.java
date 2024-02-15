@@ -59,26 +59,27 @@ public class GameWeatherApi {
      * 6 = night?
      */
 
-    public void lockDayCycle(int cycle, boolean lock) {
-        if (cycle > 6 || cycle < 0) {
-            log.warn("Invalid day cycle %s. Must be bigger than 0 and lesser than 6", cycle);
-            return;
-        }
-
-        TIME.light().sun().setCycleLock(cycle);
-        TIME.light().sun().setLocked(lock);
-
-        TIME.light().moon().setCycleLock(cycle);
-        TIME.light().moon().setLocked(lock);
-    }
-
-    public void unlockDayCycle() {
-        TIME.light().sun().setCycleLock(0);
-        TIME.light().sun().setLocked(false);
-
-        TIME.light().moon().setCycleLock(0);
-        TIME.light().moon().setLocked(false);
-    }
+    //TODO::experimental, need to do MoreOptionsScript thingy first
+//    public void lockDayCycle(int cycle, boolean lock) {
+//        if (cycle > 6 || cycle < 0) {
+//            log.warn("Invalid day cycle %s. Must be bigger than 0 and lesser than 6", cycle);
+//            return;
+//        }
+//
+//        TIME.light().sun().setCycleLock(cycle);
+//        TIME.light().sun().setLocked(lock);
+//
+//        TIME.light().moon().setCycleLock(cycle);
+//        TIME.light().moon().setLocked(lock);
+//    }
+//
+//    public void unlockDayCycle() {
+//        TIME.light().sun().setCycleLock(0);
+//        TIME.light().sun().setLocked(false);
+//
+//        TIME.light().moon().setCycleLock(0);
+//        TIME.light().moon().setLocked(false);
+//    }
 
     public void setAmountLimit(WeatherThing weatherThing, int percentage) {
         double currentValue = weatherThing.getD();

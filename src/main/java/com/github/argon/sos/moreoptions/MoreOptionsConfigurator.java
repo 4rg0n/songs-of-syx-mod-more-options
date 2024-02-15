@@ -6,7 +6,7 @@ import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import game.events.EVENTS;
-import init.boostable.BOOSTABLE;
+import game.boosting.Boostable;
 import init.sound.SoundAmbience;
 import init.sound.SoundSettlement;
 import lombok.AccessLevel;
@@ -60,10 +60,10 @@ public class MoreOptionsConfigurator {
     private void applyBoostersConfig(Map<String, Integer> boostersConfig) {
         log.trace("Apply boosters config: %s", boostersConfig);
         boostersConfig.forEach((key, boost) -> {
-            Map<String, BOOSTABLE> boostables = gameApis.boosterApi().getAllBoosters();
+            Map<String, Boostable> boostables = gameApis.boosterApi().getAllBoosters();
 
             if (boostables.containsKey(key)) {
-                BOOSTABLE boostable = boostables.get(key);
+                Boostable boostable = boostables.get(key);
                 gameApis.boosterApi().setBoosterValue(boostable, boost);
             } else {
                 log.warn("Could not find entry %s in game api result.", key);

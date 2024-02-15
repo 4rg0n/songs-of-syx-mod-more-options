@@ -18,7 +18,7 @@ import snake2d.util.file.FileManager;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GButt;
 import view.interrupter.IDebugPanel;
-import view.ui.UIPanelTop;
+import view.ui.top.UIPanelTop;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -168,8 +168,7 @@ public class UIGameConfig {
             BoostersPanel.Entry.builder()
                 .key(entry.getKey())
                 .range(entry.getValue())
-                .enemy(gameApis.boosterApi().isEnemyBooster(entry.getKey()))
-                .player(gameApis.boosterApi().isPlayerBooster(entry.getKey()))
+                .cat(gameApis.boosterApi().getCat(entry.getKey()))
                 .build()
         ).collect(Collectors.toList());
 

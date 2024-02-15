@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MainLaunchLauncher" type="Application" factoryName="Application" nameIsGenerated="true">
+  <configuration default="false" name="init.MainLaunchLauncher" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="init.MainLaunchLauncher" />
     <module name="songs-of-syx-mod-more-options" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.github.argon.sos.moreoptions.config.*" />
+        <option name="PATTERN" value="com.github.argon.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
