@@ -45,7 +45,7 @@ public class GameEventsApi {
             try {
                 factionOpinionBooster.add(ROpinions.GET());
             } catch (NullPointerException e) { //No factions to get boost for!
-                log.debug("No factions to boos!");
+                log.debug("No factions to boost!");
             }
         }
     }
