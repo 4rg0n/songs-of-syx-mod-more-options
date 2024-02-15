@@ -7,7 +7,7 @@ public final class BoostSpec {
 	public final CharSequence tName;
 //	public final boolean isMul;
 	
-	BoostSpec(Booster source, Boostable target, CharSequence append) {
+	public BoostSpec(Booster source, Boostable target, CharSequence append) {
 		this.booster = source;
 		this.boostable = target;
 		CharSequence tName = target.name;

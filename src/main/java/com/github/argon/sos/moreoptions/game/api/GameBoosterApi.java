@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.booster.FactionOpinionBooster;
+import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBooster;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
@@ -103,10 +104,23 @@ public class GameBoosterApi {
     }
 
     public void setBoosterValue(Boostable boostable, int boost) {
-        double currentValue = boostable.baseValue;
-        double newValue = currentValue * MathUtil.toPercentage(boost);
 
-        log.trace("Applying boost value %s%% to %s = %s", boost, boostable.key, newValue);
-        boostable.setBaseValue(newValue);
+        LIST<BoostSpec> adds = boostable.adds();
+        CharSequence charSequence = "More Options";
+        boolean isExists = false;
+        for(BoostSpec boostSpec : adds) {
+            if(boostSpec.boostable.equals(boostable)){
+                if(boostSpec.booster.info.name.equals(charSequence)){
+                    isExists = true;
+                    ((MoreOptionsBooster) boostSpec.booster).set(boost);
+                }
+            }
+        }
+        if(!isExists) {
+            MoreOptionsBooster moreOptionsBooster = new MoreOptionsBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), 0, 10000, false);
+            moreOptionsBooster.set(Double.valueOf(boost));
+            BoostSpec boostSpec = new BoostSpec(moreOptionsBooster, boostable, charSequence);
+            boostable.addFactor(boostSpec);
+        }
     }
 }

@@ -233,7 +233,7 @@ public class ConfigStore {
             //noinspection DataFlowIssue
             return gameApis.boosterApi().getAllBoosters().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
-                    .value(100)
+                    .value(0)
                     .min(0)
                     .max(10000)
                     .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
