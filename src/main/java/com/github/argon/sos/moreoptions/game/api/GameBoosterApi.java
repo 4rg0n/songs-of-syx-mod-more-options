@@ -9,6 +9,7 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.boosting.*;
 import game.faction.FACTIONS;
+import game.faction.npc.ruler.ROpinions;
 import init.race.RACES;
 import init.sprite.SPRITES;
 import lombok.AccessLevel;
@@ -45,6 +46,16 @@ public class GameBoosterApi {
     public Map<String, Boostable> getAllBoosters() {
         if (allBoosters == null) {
             allBoosters = new HashMap<>();
+
+            LIST<BoostSpec> adds = ROpinions.GET().adds();
+            CharSequence charSequence = "More Options";
+            for(BoostSpec boostSpec : adds) {
+                if(boostSpec.booster.info.name.equals(charSequence)){
+                    allBoosters.put(KEY_PREFIX + "." + boostSpec.boostable.key, boostSpec.boostable);
+                }
+            }
+
+
             BOOSTABLES.CIVICS().all().forEach(civ -> {allBoosters.put(KEY_PREFIX + "." + civ.key, civ);});
             BOOSTABLES.BATTLE().all().forEach(civ -> {allBoosters.put(KEY_PREFIX + "." + civ.key, civ);});
             BOOSTABLES.BEHAVIOUR().all().forEach(civ -> {allBoosters.put(KEY_PREFIX + "." + civ.key, civ);});
@@ -81,6 +92,15 @@ public class GameBoosterApi {
     public Map<String, BoostableCat> getCatBoosters() {
         if (catBoosters == null) {
             catBoosters = new HashMap<>();
+
+            LIST<BoostSpec> adds = ROpinions.GET().adds();
+            CharSequence charSequence = "More Options";
+            for(BoostSpec boostSpec : adds) {
+                if(boostSpec.booster.info.name.equals(charSequence)){
+                    catBoosters.put(KEY_PREFIX + "." + boostSpec.boostable.key, boostSpec.boostable.cat);
+                }
+            }
+
             BOOSTABLES.CIVICS().all().forEach(civ -> {catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat);});
             BOOSTABLES.BATTLE().all().forEach(civ -> {catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat);});
             BOOSTABLES.BEHAVIOUR().all().forEach(civ -> {catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat);});
