@@ -59,7 +59,8 @@ public class MoreOptionsConfigurator {
 
     private void applyBoostersConfig(Map<String, MoreOptionsConfig.Range> rangeMap) {
         rangeMap.forEach((key, value) -> {
-            log.trace("Apply boosters config: %s", rangeMap);
+            log.debug("Apply booster config for: %s", key);
+            log.trace("Booster: %s", value);
 
             Map<String, Boostable> boostables = gameApis.boosterApi().getAllBoosters();
 
