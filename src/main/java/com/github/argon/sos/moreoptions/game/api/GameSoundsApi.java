@@ -86,14 +86,16 @@ public class GameSoundsApi {
     public void setSoundGainLimiter(SoundAmbience.Ambience sound, int limit) {
         double limitPerc = MathUtil.toPercentage(limit);
 
-        log.trace("Applying %s%% volume to ambience sound", limit);
+        log.trace("Applying %s%% volume to ambience sound: %s#%s",
+            limit, sound.getClass().getSimpleName(), sound.hashCode());
         sound.setGainLimiter(limitPerc);
     }
 
     public void setSoundsGainLimiter(SoundSettlement.Sound sound, int limit) {
         double limitPerc = MathUtil.toPercentage(limit);
 
-        log.trace("Applying %s%% volume to settlement sound", limit, sound.getClass().getSimpleName());
+        log.trace("Applying %s%% volume to settlement sound: %s#%s",
+            limit, sound.getClass().getSimpleName(), sound.hashCode());
         sound.setGainLimiter(limitPerc);
     }
 }
