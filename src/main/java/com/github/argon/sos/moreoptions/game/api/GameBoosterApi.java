@@ -49,7 +49,7 @@ public class GameBoosterApi {
             allBoosters = new HashMap<>();
 
             LIST<BoostSpec> adds = ROpinions.GET().adds();
-            CharSequence charSequence = "More Options";
+            CharSequence charSequence = MoreOptionsScript.MOD_INFO.name;
             for(BoostSpec boostSpec : adds) {
                 if(boostSpec.booster.info.name.equals(charSequence)){
                     allBoosters.put(KEY_PREFIX + "." + boostSpec.boostable.key, boostSpec.boostable);
