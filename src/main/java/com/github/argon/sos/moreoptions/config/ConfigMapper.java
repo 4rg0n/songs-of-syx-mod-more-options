@@ -19,6 +19,9 @@ public class ConfigMapper {
     @Getter(lazy = true)
     private final static ConfigMapper instance = new ConfigMapper();
 
+    /**
+     * Maps old V1 config to the current config structure
+     */
     public MoreOptionsConfig mapV1(Path path, Json json, MoreOptionsConfig defaultConfig) {
         return MoreOptionsConfig.builder()
             .filePath(path)
@@ -67,11 +70,14 @@ public class ConfigMapper {
             .boosters((json.has("BOOSTERS")) ? JsonMapper.mapInteger(json.json("BOOSTERS")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> ConfigUtil.mergeIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getBoosters().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntoNewRange(normalizeV1BoosterValue(entry.getValue()), (defaultConfig != null) ? defaultConfig.getBoosters().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
             .build();
     }
 
+    /**
+     * Maps V2 config to the current config structure
+     */
     public MoreOptionsConfig mapV2(Path path, Json json, MoreOptionsConfig defaultConfig) {
         return MoreOptionsConfig.builder()
             .filePath(path)
@@ -173,5 +179,17 @@ public class ConfigMapper {
         rangeJson.addString("DISPLAY_MODE", range.getDisplayMode().toString());
 
         return rangeJson;
+    }
+
+    /**
+     * Older V1 config had 100% as default value, which meant no change.
+     * For V2 the new default value is now 0%.
+     */
+    private int normalizeV1BoosterValue(int value) {
+        if (value >= 100) {
+            return value - 100;
+        }
+
+        return 0;
     }
 }
