@@ -103,6 +103,8 @@ public class TableHeaderBuilder implements UiBuilderList<RENDEROBJ, RENDEROBJ> {
         public BuildResults<RENDEROBJ, RENDEROBJ> build() {
             assert rows != null : "rows must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
+            assert widthTotal > 0 : "widthTotal must be greater than 0";
+            assert key != null : "key must not be null";
 
             return new TableHeaderBuilder(rows, displayHeight, evenOdd, widthTotal, key, mapRows).build();
         }

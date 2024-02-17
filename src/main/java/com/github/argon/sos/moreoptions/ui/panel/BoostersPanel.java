@@ -32,7 +32,7 @@ public class BoostersPanel extends GuiSection {
     @Getter
     private final Map<String, Slider> sliders;
 
-    public BoostersPanel(List<Entry> boosterEntries, String configFilePath) {
+    public BoostersPanel(List<Entry> boosterEntries) {
         GuiSection section = new GuiSection();
 
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
@@ -67,10 +67,10 @@ public class BoostersPanel extends GuiSection {
                                     .max(entry.getRange().getMax())
                                     .value(entry.getRange().getValue())
                                     .valueDisplay(Slider.ValueDisplay.valueOf(entry.getRange().getDisplayMode().name()))
-                                    .threshold(1000, COLOR.YELLOW100.shade(0.7d))
-                                    .threshold(5000, COLOR.ORANGE100.shade(0.7d))
-                                    .threshold(7500, COLOR.RED100.shade(0.7d))
-                                    .threshold(9000, COLOR.RED2RED)
+                                    .threshold((int) (0.10 *entry.getRange().getMax()), COLOR.YELLOW100.shade(0.7d))
+                                    .threshold((int) (0.50 *entry.getRange().getMax()), COLOR.ORANGE100.shade(0.7d))
+                                    .threshold((int) (0.75 *entry.getRange().getMax()), COLOR.RED100.shade(0.7d))
+                                    .threshold((int) (0.90 *entry.getRange().getMax()), COLOR.RED2RED)
                                     .build())
                             .build())));
 
@@ -83,11 +83,6 @@ public class BoostersPanel extends GuiSection {
 
         GScrollRows gScrollRows = buildResult.getResult();
         sliders = buildResult.getInteractable();
-
-        GHeader disclaimer = new GHeader("High values can slow or even crash your game");
-        disclaimer.hoverInfoSet(new INFO("In case of a crash", "Delete configuration file in:" + configFilePath));
-
-        addDown(0, disclaimer);
         addDown(10, gScrollRows.view());
     }
 

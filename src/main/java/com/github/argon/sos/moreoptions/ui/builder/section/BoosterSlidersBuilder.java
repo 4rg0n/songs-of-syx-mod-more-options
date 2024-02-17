@@ -66,7 +66,7 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
                     .getResults());
         }
 
-        GScrollRows gScrollRows = new GScrollRows(renderobjs, 500, widthTotal);
+        GScrollRows gScrollRows = new GScrollRows(renderobjs, this.displayHeight, widthTotal);
 
         return BuildResult.<GScrollRows, Map<String, Slider>>builder()
             .result(gScrollRows)

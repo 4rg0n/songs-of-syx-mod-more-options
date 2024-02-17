@@ -79,7 +79,7 @@ public class MoreOptionsModal extends GuiSection {
         soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
         eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance(), config.getFactionOpinionAdd());
         weatherPanel = new WeatherPanel(config.getWeather());
-        boostersPanel = new BoostersPanel(boosterEntries, config.getFilePath().toString());
+        boostersPanel = new BoostersPanel(boosterEntries);
 
         Map<Tuple<String, String>, GuiSection> panels = new LinkedHashMap<>();
         panels.put(new Tuple.TupleImp<>("Sounds", "Tune the volume of various sounds."), soundsPanel);
