@@ -1,14 +1,16 @@
 package com.github.argon.sos.moreoptions.game.booster;
 
+import game.boosting.BSourceInfo;
 import game.boosting.BoosterImp;
+import game.faction.Faction;
 import game.faction.npc.ruler.Royalty;
 
-public class FactionOpinionBooster extends BoosterImp<Royalty> {
+public class FactionOpinionBooster extends BoosterImp {
 
     private double value = 0.0;
 
-    public FactionOpinionBooster(CharSequence sourceName, double from, double to, boolean isMul) {
-        super(sourceName, from, to, isMul);
+    public FactionOpinionBooster(BSourceInfo bSourceInfo, double from, double to, boolean isMul) {
+        super(bSourceInfo, from, to, isMul);
     }
 
     public void set(double value) {
@@ -16,7 +18,7 @@ public class FactionOpinionBooster extends BoosterImp<Royalty> {
     }
 
     @Override
-    public double get(Royalty royalty) {
+    public double vGet(Faction f) {
         return value;
     }
 }

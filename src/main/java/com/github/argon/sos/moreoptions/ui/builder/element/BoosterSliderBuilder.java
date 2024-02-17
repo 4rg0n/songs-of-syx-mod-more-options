@@ -30,29 +30,6 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
             .build().getResult();
         label.pad(10, 5);
 
-        int iconDim = SPRITES.icons().m.DIM;
-
-        GuiSection effectSection = new GuiSection();
-
-        if (definition.isPlayer()) {
-            GuiSection icon = new GuiSection(SPRITES.icons().m.city, iconDim, iconDim);
-            icon.pad(2);
-            icon.hoverInfoSet("Effects your settlement");
-            effectSection.addRight(0, icon);
-        }
-        if (definition.isEnemy()) {
-            GuiSection icon = new GuiSection(SPRITES.icons().m.map, iconDim, iconDim);
-            icon.pad(2);
-            icon.hoverInfoSet("Effects other realms");
-            effectSection.addRight(0, icon);
-        }
-        if (!definition.isEnemy() && !definition.isPlayer()) {
-            GuiSection icon = new GuiSection(SPRITES.icons().m.cog, iconDim, iconDim);
-            icon.pad(2);
-            icon.hoverInfoSet("Effects difficulty settings");
-            effectSection.addRight(0, icon);
-        }
-
         Slider slider = SliderBuilder.builder()
             .definition(definition.getSliderDefinition())
             .build().getResult();
@@ -60,7 +37,6 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
 
         List<GuiSection> row = Stream.of(
             label,
-            effectSection,
             slider
         ).collect(Collectors.toList());
 
@@ -102,11 +78,6 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
 
         private SliderBuilder.Definition sliderDefinition;
 
-        @lombok.Builder.Default
-        private boolean player = true;
-
-        @lombok.Builder.Default
-        private boolean enemy = false;
 
         @lombok.Builder.Default
         private int labelWidth = 0;

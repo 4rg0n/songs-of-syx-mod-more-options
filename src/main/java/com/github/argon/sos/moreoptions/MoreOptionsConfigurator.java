@@ -6,7 +6,7 @@ import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import game.events.EVENTS;
-import init.boostable.BOOSTABLE;
+import game.boosting.Boostable;
 import init.sound.SoundAmbience;
 import init.sound.SoundSettlement;
 import lombok.AccessLevel;
@@ -47,7 +47,7 @@ public class MoreOptionsConfigurator {
             applySoundsSettlementConfig(ConfigUtil.extract(config.getSoundsSettlement()));
             applySoundsRoomConfig(ConfigUtil.extract(config.getSoundsRoom()));
             applyWeatherConfig(ConfigUtil.extract(config.getWeather()));
-            applyBoostersConfig(ConfigUtil.extract(config.getBoosters()));
+            applyBoostersConfig(config.getBoosters());
         } catch (Exception e) {
             log.error("Could not apply config: %s", config, e);
         }
@@ -57,14 +57,15 @@ public class MoreOptionsConfigurator {
         gameApis.eventsApi().setFactionWarAddValue(value);
     }
 
-    private void applyBoostersConfig(Map<String, Integer> boostersConfig) {
-        log.trace("Apply boosters config: %s", boostersConfig);
-        boostersConfig.forEach((key, boost) -> {
-            Map<String, BOOSTABLE> boostables = gameApis.boosterApi().getAllBoosters();
+    private void applyBoostersConfig(Map<String, MoreOptionsConfig.Range> rangeMap) {
+        rangeMap.forEach((key, value) -> {
+            log.trace("Apply boosters config: %s", rangeMap);
+
+            Map<String, Boostable> boostables = gameApis.boosterApi().getAllBoosters();
 
             if (boostables.containsKey(key)) {
-                BOOSTABLE boostable = boostables.get(key);
-                gameApis.boosterApi().setBoosterValue(boostable, boost);
+                Boostable boostable = boostables.get(key);
+                gameApis.boosterApi().setBoosterValue(boostable, value);
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", boostables);

@@ -7,11 +7,13 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import game.GAME;
+import game.boosting.BSourceInfo;
 import game.events.EVENTS;
 import game.events.EventDisease;
 import game.events.world.EventWorldRaider;
-import game.faction.npc.ruler.opinion.ROpinions;
+import game.faction.npc.ruler.ROpinions;
 import init.disease.DISEASES;
+import init.sprite.SPRITES;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -39,8 +41,12 @@ public class GameEventsApi {
     public static void initLazy() {
         if (factionOpinionBooster == null) {
             log.debug("Creating faction war booster");
-            factionOpinionBooster = new FactionOpinionBooster(MoreOptionsScript.MOD_INFO.name, -100, 100, false);
-            factionOpinionBooster.add(ROpinions.GET());
+            factionOpinionBooster = new FactionOpinionBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), -100, 100, false);
+            try {
+                factionOpinionBooster.add(ROpinions.GET());
+            } catch (NullPointerException e) { //No factions to get boost for!
+                log.debug("No factions to boost!");
+            }
         }
     }
 
@@ -73,7 +79,6 @@ public class GameEventsApi {
         settlementEvents.put(KEY_PREFIX + ".settlement.killer", gameEvents.killer);
         settlementEvents.put(KEY_PREFIX + ".settlement.orchard", gameEvents.orchard);
         settlementEvents.put(KEY_PREFIX + ".settlement.pasture", gameEvents.pasture);
-        settlementEvents.put(KEY_PREFIX + ".settlement.raceWars", gameEvents.raceWars);
         settlementEvents.put(KEY_PREFIX + ".settlement.riot", gameEvents.riot);
         settlementEvents.put(KEY_PREFIX + ".settlement.slaver", gameEvents.slaver);
         settlementEvents.put(KEY_PREFIX + ".settlement.temperature", gameEvents.temperature);
@@ -101,7 +106,6 @@ public class GameEventsApi {
         worldEvents.put(KEY_PREFIX + ".world.warPlayer", gameEvents.world.warPlayer);
         worldEvents.put(KEY_PREFIX + ".world.raider", gameEvents.world.raider);
         worldEvents.put(KEY_PREFIX + ".world.rebellion", gameEvents.world.rebellion);
-        worldEvents.put(KEY_PREFIX + ".world.plague", gameEvents.world.plague);
 
         return worldEvents;
     }
@@ -157,7 +161,7 @@ public class GameEventsApi {
         events.putAll(worldEvents);
 
         return events.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> isEnabled(entry.getValue())));
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> isEnabled(entry.getValue())));
     }
 
     public void enableEvent(EVENTS.EventResource event, Boolean enabled) {
@@ -178,7 +182,7 @@ public class GameEventsApi {
             try {
                 // checks whether event is suppressed
                 return !(Boolean) ReflectionUtil.getDeclaredFieldValue(field, event)
-                    .orElseThrow(() -> new RuntimeException("Got empty 'supress' from event class " + event.getClass().getName()));
+                        .orElseThrow(() -> new RuntimeException("Got empty 'supress' from event class " + event.getClass().getName()));
             } catch (Exception e) {
                 log.warn("Could not read '%s.supress' field", event.getClass(), e);
                 return true;

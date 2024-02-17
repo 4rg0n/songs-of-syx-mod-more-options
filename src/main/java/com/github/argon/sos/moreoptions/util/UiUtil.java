@@ -58,6 +58,37 @@ public class UiUtil {
         return columnWidths;
     }
 
+    public static Integer getMaxCombinedColumnWidth(List<List<? extends GuiSection>> gridRows) {
+        int combinedWidth = 0;
+
+
+        for (List<? extends GuiSection> columns : gridRows) {
+            List<Integer> columnWidths = new ArrayList<>();
+            for (int i = 0; i < columns.size(); i++) {
+                GuiSection column = columns.get(i);
+                int width = column.body().width();
+
+                if (columnWidths.size() <= i) {
+                    columnWidths.add(width);
+                } else if (columnWidths.get(i) < width) {
+                    columnWidths.set(i, width);
+                }
+            }
+
+            int combined = 0;
+            for (Integer columnWidth : columnWidths) {
+                combined += columnWidth;
+            }
+
+            if(combined > combinedWidth) {
+                combinedWidth = combined;
+            }
+
+        }
+
+        return combinedWidth;
+    }
+
     public static List<Integer> getMaxColumnWidths(List<List<? extends GuiSection>> gridRows) {
         List<Integer> columnWidths = new ArrayList<>();
 

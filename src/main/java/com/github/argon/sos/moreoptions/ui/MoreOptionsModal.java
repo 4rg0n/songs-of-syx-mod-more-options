@@ -43,7 +43,7 @@ public class MoreOptionsModal extends GuiSection {
     private final ConfigStore configStore;
     private final ModInfo modInfo;
 
-    private CLICKABLE.Switcher switcher;
+    private CLICKABLE.ClickSwitch switcher;
 
     private EventsPanel eventsPanel;
     private  SoundsPanel soundsPanel;
@@ -79,7 +79,7 @@ public class MoreOptionsModal extends GuiSection {
         soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
         eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance(), config.getFactionOpinionAdd());
         weatherPanel = new WeatherPanel(config.getWeather());
-        boostersPanel = new BoostersPanel(boosterEntries, config.getFilePath().toString());
+        boostersPanel = new BoostersPanel(boosterEntries);
 
         Map<Tuple<String, String>, GuiSection> panels = new LinkedHashMap<>();
         panels.put(new Tuple.TupleImp<>("Sounds", "Tune the volume of various sounds."), soundsPanel);
@@ -90,7 +90,7 @@ public class MoreOptionsModal extends GuiSection {
         GuiSection header = header(panels, config);
         addDownC(0, header);
 
-        switcher = new CLICKABLE.Switcher(soundsPanel);
+        switcher = new CLICKABLE.ClickSwitch(soundsPanel);
         addDownC(20, switcher);
 
         List<RENDEROBJ> widths = new ArrayList<>(panels.values());
@@ -106,31 +106,31 @@ public class MoreOptionsModal extends GuiSection {
     public MoreOptionsConfig getConfig() {
         MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
         MoreOptionsConfig currentConfig = configStore.getCurrentConfig()
-            .orElse(defaultConfig);
+                .orElse(defaultConfig);
 
         MoreOptionsConfig.Range factionOpinionAdd = eventsPanel.getFactionWarAdd().map(integer ->
-            ConfigUtil.mergeIntoNewRange(integer, currentConfig.getFactionOpinionAdd())
+                ConfigUtil.mergeIntoNewRange(integer, currentConfig.getFactionOpinionAdd())
         ).orElse(defaultConfig.getFactionOpinionAdd());
 
         return MoreOptionsConfig.builder()
-            .factionOpinionAdd(factionOpinionAdd)
-            .eventsSettlement(eventsPanel.getSettlementEventsConfig())
-            .eventsWorld(eventsPanel.getWorldEventsConfig())
-            .eventsChance(ConfigUtil.mergeIntoNewRange(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
-            .soundsAmbience(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsAmbienceConfig(), currentConfig.getSoundsAmbience()))
-            .soundsSettlement(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsSettlementConfig(), currentConfig.getSoundsSettlement()))
-            .soundsRoom(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsRoomConfig(), currentConfig.getSoundsRoom()))
-            .weather(ConfigUtil.mergeIntoNewRange(weatherPanel.getConfig(), currentConfig.getWeather()))
-            .boosters(ConfigUtil.mergeIntoNewRange(boostersPanel.getConfig(), currentConfig.getBoosters()))
-            .build();
+                .factionOpinionAdd(factionOpinionAdd)
+                .eventsSettlement(eventsPanel.getSettlementEventsConfig())
+                .eventsWorld(eventsPanel.getWorldEventsConfig())
+                .eventsChance(ConfigUtil.mergeIntoNewRange(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
+                .soundsAmbience(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsAmbienceConfig(), currentConfig.getSoundsAmbience()))
+                .soundsSettlement(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsSettlementConfig(), currentConfig.getSoundsSettlement()))
+                .soundsRoom(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsRoomConfig(), currentConfig.getSoundsRoom()))
+                .weather(ConfigUtil.mergeIntoNewRange(weatherPanel.getConfig(), currentConfig.getWeather()))
+                .boosters(ConfigUtil.mergeIntoNewRange(boostersPanel.getConfig(), currentConfig.getBoosters()))
+                .build();
     }
 
 
     public void applyConfig(MoreOptionsConfig config) {
         eventsPanel.applyConfig(
-            config.getEventsSettlement(),
-            config.getEventsWorld(), ConfigUtil.extract(config.getEventsChance()),
-            config.getFactionOpinionAdd().getValue());
+                config.getEventsSettlement(),
+                config.getEventsWorld(), ConfigUtil.extract(config.getEventsChance()),
+                config.getFactionOpinionAdd().getValue());
         soundsPanel.applyConfig(ConfigUtil.extract(config.getSoundsAmbience()), ConfigUtil.extract(config.getSoundsSettlement()), ConfigUtil.extract(config.getSoundsRoom()));
         weatherPanel.applyConfig(ConfigUtil.extract(config.getWeather()));
         boostersPanel.applyConfig(ConfigUtil.extract(config.getBoosters()));
@@ -158,12 +158,12 @@ public class MoreOptionsModal extends GuiSection {
             GButt.ButtPanel button = new GButt.ButtPanel(titleDesc.a()) {
                 @Override
                 protected void clickA() {
-                    switcher.set(panel, DIR.N);
+                    switcher.set(panel);
                 }
 
                 @Override
                 protected void renAction() {
-                    selectedSet(switcher.get() == panel);
+                    selectedSet(switcher.pget() == panel);
                 }
             };
             button.hoverInfoSet(titleDesc.b());

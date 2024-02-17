@@ -1,3 +1,6 @@
+
+This is a fork from argoon project to fix it for 65.65 and future releases!
+
 Adds a menu with more options for the game:
 
 

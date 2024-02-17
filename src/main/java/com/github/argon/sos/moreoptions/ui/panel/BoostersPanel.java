@@ -1,24 +1,30 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.game.ui.GridRow;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
-import com.github.argon.sos.moreoptions.ui.builder.element.BoosterSliderBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.*;
 import com.github.argon.sos.moreoptions.ui.builder.section.BoosterSlidersBuilder;
+import com.github.argon.sos.moreoptions.util.UiUtil;
+import game.boosting.BoostableCat;
+import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
+import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.clickable.Scrollable;
+import snake2d.util.gui.renderable.RENDEROBJ;
 import util.gui.misc.GHeader;
+import util.gui.table.GScrollRows;
+import util.gui.table.GScrollable;
 import util.info.INFO;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BoostersPanel extends GuiSection {
@@ -26,41 +32,58 @@ public class BoostersPanel extends GuiSection {
     @Getter
     private final Map<String, Slider> sliders;
 
-    public BoostersPanel(List<Entry> boosterEntries, String configFilePath) {
-        Map<String, BoosterSliderBuilder.Definition> boosterDefinitions = boosterEntries.stream().collect(Collectors.toMap(
-            Entry::getKey,
-            entry -> BoosterSliderBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key(entry.getKey())
-                    .title(entry.getKey())
-                    .build())
-                .sliderDefinition(SliderBuilder.Definition.builder()
-                    .maxWidth(300)
-                    .min(entry.getRange().getMin())
-                    .max(entry.getRange().getMax())
-                    .valueDisplay(Slider.ValueDisplay.valueOf(entry.getRange().getDisplayMode().name()))
-                    .threshold(1000, COLOR.YELLOW100.shade(0.7d))
-                    .threshold(5000, COLOR.ORANGE100.shade(0.7d))
-                    .threshold(7500, COLOR.RED100.shade(0.7d))
-                    .threshold(9000, COLOR.RED2RED)
-                    .build())
-                .player(entry.isPlayer())
-                .enemy(entry.isEnemy())
-                .build()));
+    public BoostersPanel(List<Entry> boosterEntries) {
+        GuiSection section = new GuiSection();
 
-        BuildResult<GuiSection, Map<String, Slider>> buildResult = BoosterSlidersBuilder.builder()
-            .displayHeight(500)
-            .translate(boosterDefinitions)
-            .build();
+        Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
+        for (Entry entry : boosterEntries) {
+            if (entry.getCat() != null && entry.getCat().name != null) {
+                String catName = entry.getCat().name.toString();
+                // Check if the map already has a list for this cat name
+                if (!groupedBoosterEntries.containsKey(catName)) {
+                    // If not, create a new list and add it to the map
+                    groupedBoosterEntries.put(catName, new ArrayList<>());
+                }
+                // Add the entry to the appropriate list
+                groupedBoosterEntries.get(catName).add(entry);
+            }
+        }
 
-        GuiSection sliderSection = buildResult.getResult();
+        Map<String, Map<String, BoosterSliderBuilder.Definition>> boosterDefinitions = new HashMap<>();
+
+        for(String cat : groupedBoosterEntries.keySet()) {
+            List<Entry> groupedBoostersByCat = groupedBoosterEntries.get(cat);
+
+            boosterDefinitions.put(cat, groupedBoostersByCat.stream().collect(Collectors.toMap(
+                    Entry::getKey,
+                    entry -> BoosterSliderBuilder.Definition.builder()
+                            .labelDefinition(LabelBuilder.Definition.builder()
+                                    .key(entry.getKey())
+                                    .title(entry.getKey())
+                                    .build())
+                            .sliderDefinition(SliderBuilder.Definition.builder()
+                                    .maxWidth(300)
+                                    .min(entry.getRange().getMin())
+                                    .max(entry.getRange().getMax())
+                                    .value(entry.getRange().getValue())
+                                    .valueDisplay(Slider.ValueDisplay.valueOf(entry.getRange().getDisplayMode().name()))
+                                    .threshold((int) (0.10 *entry.getRange().getMax()), COLOR.YELLOW100.shade(0.7d))
+                                    .threshold((int) (0.50 *entry.getRange().getMax()), COLOR.ORANGE100.shade(0.7d))
+                                    .threshold((int) (0.75 *entry.getRange().getMax()), COLOR.RED100.shade(0.7d))
+                                    .threshold((int) (0.90 *entry.getRange().getMax()), COLOR.RED2RED)
+                                    .build())
+                            .build())));
+
+        }
+
+        BuildResult<GScrollRows, Map<String, Slider>> buildResult = BoosterSlidersBuilder.builder()
+                .displayHeight(500)
+                .translate(boosterDefinitions)
+                .build();
+
+        GScrollRows gScrollRows = buildResult.getResult();
         sliders = buildResult.getInteractable();
-
-        GHeader disclaimer = new GHeader("High values can slow or even crash your game");
-        disclaimer.hoverInfoSet(new INFO("In case of a crash", "Delete configuration file in:" + configFilePath));
-
-        addDown(0, disclaimer);
-        addDown(10, sliderSection);
+        addDown(10, gScrollRows.view());
     }
 
     public Map<String, Integer> getConfig() {
@@ -69,7 +92,7 @@ public class BoostersPanel extends GuiSection {
     }
 
     public void applyConfig(Map<String, Integer> config) {
-        log.trace("Applying UI weather config %s", config);
+        log.trace("Applying Booster config %s", config);
 
         config.forEach((key, value) -> {
             if (sliders.containsKey(key)) {
@@ -87,10 +110,11 @@ public class BoostersPanel extends GuiSection {
 
         private String key;
 
+        //  |\__/,|   (`\
+        // |_ _  |.--.) )
+        // ( T   )     /
+        //(((^_(((/(((_/
         @Builder.Default
-        private boolean player = false;
-
-        @Builder.Default
-        private boolean enemy = false;
+        private BoostableCat cat = null;
     }
 }
