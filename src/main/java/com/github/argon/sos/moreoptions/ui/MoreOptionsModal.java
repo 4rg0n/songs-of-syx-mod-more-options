@@ -17,7 +17,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
-import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.clickable.CLICKABLE;
 import snake2d.util.gui.renderable.RENDEROBJ;
@@ -163,7 +162,7 @@ public class MoreOptionsModal extends GuiSection {
 
                 @Override
                 protected void renAction() {
-                    selectedSet(switcher.pget() == panel);
+                    selectedSet(switcher.current() == panel);
                 }
             };
             button.hoverInfoSet(titleDesc.b());

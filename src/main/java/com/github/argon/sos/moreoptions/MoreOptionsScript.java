@@ -157,6 +157,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		}
 
 		// fixme Disease and Raid Event chance shall go from 100% (game default) to 10000%
+		//       So players could lower the chance or increase it as they like
 
 		// todo add a MoreOptionsViewModel inbetween? for easier mapping? mapstruct?
 
