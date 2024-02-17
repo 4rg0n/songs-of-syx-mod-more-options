@@ -8,23 +8,14 @@ package game.faction.npc.ruler;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBooster;
 import game.GAME;
-import game.boosting.BOOSTABLE_O;
-import game.boosting.BOOSTING;
-import game.boosting.BSourceInfo;
-import game.boosting.BoostSpec;
-import game.boosting.Boostable;
-import game.boosting.BoostableCat;
-import game.boosting.BoosterImp;
+import game.boosting.*;
 import game.faction.FACTIONS;
 import game.faction.Faction;
 import game.faction.diplomacy.DWar;
 import game.faction.npc.FactionNPC;
 import init.D;
-import init.race.POP_CL;
 import init.resources.RESOURCES;
-import init.sprite.SPRITES;
 import init.sprite.UI.UI;
-import java.util.Iterator;
 import settlement.stats.STATS;
 import snake2d.util.misc.CLAMP;
 import snake2d.util.rnd.RND;
@@ -36,6 +27,8 @@ import util.dic.DicGeo;
 import util.dic.DicMisc;
 import world.regions.data.RD;
 import world.regions.data.pop.RDRace;
+
+import java.util.Iterator;
 
 public class ROpinions {
 	private static ROpinions self;
@@ -277,7 +270,7 @@ public class ROpinions {
 			}
 		};
 
-		(new MoreOptionsBooster(new BSourceInfo(D.g("More Options"), UI.icons().s.cog), 0.0, 10000, false) {
+		(new MoreOptionsBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, UI.icons().s.cog), 0.0, 10000, false) {
 			public boolean has(Class<? extends BOOSTABLE_O> o) {
 				return o == Royalty.class;
 			}
