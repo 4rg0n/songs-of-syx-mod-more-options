@@ -109,8 +109,8 @@
         <mod.description>Adds more options to the game :)</mod.description>
         <mod.author>4rg0n and Senso</mod.author>
         <mod.info></mod.info>
-        <game.version.major>64</game.version.major>
-        <game.version.minor>40</game.version.minor>
+        <game.version.major>65</game.version.major>
+        <game.version.minor>65</game.version.minor>
 
         <!-- Build settings -->
         <game.version.directory>V${game.version.major}</game.version.directory>
