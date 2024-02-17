@@ -1,8 +1,6 @@
-
-This is a fork from argoon project to fix it for 65.65 and future releases!
+Updated for **V65** by [Senso](https://github.com/SensoHakai).
 
 Adds a menu with more options for the game:
-
 
 * Tune the volume of in game sounds like wind
 * Toggle certain random events
