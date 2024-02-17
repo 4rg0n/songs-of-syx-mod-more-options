@@ -148,22 +148,18 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			Modal<MoreOptionsModal> backupMoreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
 				new MoreOptionsModal(configStore, modInfo), true);
 
-			uiGameConfig.initForBackup(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
 			configStore.setCurrentConfig(backupConfig.get());
+			uiGameConfig.initForBackup(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
+
 			backupModal.show();
+		} else {
+			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 		}
 
-		moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 
 		// fixme applying backup doesn't apply correctly?
 
 		// todo add a MoreOptionsViewModel inbetween? for easier mapping? mapstruct?
-
-		// todo V65 add army size slider: negative to positive
-
-		// todo V65 categorize boosters?
-		//      see: https://steamcommunity.com/workshop/filedetails/discussion/3044071344/3881597531962263472/?tscn=1699699254#c3952532649325145153
-		// done by me! -- Senso
 
 		// todo experimental
 //		gameApis.weatherApi().lockDayCycle(1, true);
@@ -177,8 +173,10 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		gameApis.weatherApi().clearCached();
 		gameApis.boosterApi().clearCached();
 
-		// re-apply config when new game is loaded
-		configurator.applyConfig(config);
+		// re-apply config when new game is loaded (only when there's no backup)
+		if (!configStore.getBackupConfig().isPresent()) {
+			configurator.applyConfig(config);
+		}
 	}
 
 	@Override

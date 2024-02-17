@@ -89,7 +89,12 @@ public class UIGameConfig {
         });
     }
 
-    public void initForBackup(Modal<BackupModal> backupModal, Modal<MoreOptionsModal> backupMoreOptionsModal, Modal<MoreOptionsModal> moreOptionsModal, MoreOptionsConfig config) {
+    public void initForBackup(
+        Modal<BackupModal> backupModal,
+        Modal<MoreOptionsModal> backupMoreOptionsModal,
+        Modal<MoreOptionsModal> moreOptionsModal,
+        MoreOptionsConfig config
+    ) {
         init(backupMoreOptionsModal, config);
 
         // Close: More Options modal with backup config
@@ -116,6 +121,7 @@ public class UIGameConfig {
 
         // Edit Backup
         backupModal.getSection().getEditButton().clickActionSet(() -> {
+            backupMoreOptionsModal.getSection().applyConfig(config);
             backupModal.hide();
             backupMoreOptionsModal.show();
         });
@@ -162,7 +168,6 @@ public class UIGameConfig {
      */
     public void init(Modal<MoreOptionsModal> moreOptionsModal, MoreOptionsConfig config) {
         log.debug("Initialize %s UI", MOD_INFO.name);
-
 
         List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream().map(entry ->
             BoostersPanel.Entry.builder()
