@@ -105,7 +105,7 @@ public class GameBoosterApi {
             BOOSTABLES.CIVICS().all().forEach(civ -> catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat));
             BOOSTABLES.BATTLE().all().forEach(civ -> catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat));
             BOOSTABLES.BEHAVIOUR().all().forEach(civ -> catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat));
-            BOOSTABLES.PHYSICS().all().forEach(civ -> {catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat);});
+            BOOSTABLES.PHYSICS().all().forEach(civ -> catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat));
             BOOSTABLES.ROOMS().all().forEach(civ -> {catBoosters.put(KEY_PREFIX + "." + civ.key, civ.cat);});
         }
         return catBoosters;
