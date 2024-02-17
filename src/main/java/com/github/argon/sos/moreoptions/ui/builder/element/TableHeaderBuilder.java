@@ -1,10 +1,8 @@
 package com.github.argon.sos.moreoptions.ui.builder.element;
 
 import com.github.argon.sos.moreoptions.game.ui.GridRow;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
-import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
+import com.github.argon.sos.moreoptions.game.ui.Spacer;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResults;
-import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilderList;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import init.sprite.UI.UI;
@@ -15,8 +13,6 @@ import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import util.gui.misc.GHeader;
-import util.gui.table.GRows;
-import util.gui.table.GScrollRows;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,13 +33,19 @@ public class TableHeaderBuilder implements UiBuilderList<RENDEROBJ, RENDEROBJ> {
     private final Map<String, List<List<? extends GuiSection>>> mapRows;
 
     public BuildResults<RENDEROBJ, RENDEROBJ> build() {
-
         List<RENDEROBJ> renderobjs = new LinkedList<>();
 
         GHeader header = new GHeader(key, UI.FONT().H2);
         header.hoverInfoSet(key);
 
+        Spacer spacerTop = new Spacer();
+        spacerTop.body().setHeight(20);
+        Spacer spacerBottom = new Spacer();
+        spacerBottom.body().setHeight(10);
+
+        renderobjs.add(spacerTop);
         renderobjs.add(header);
+        renderobjs.add(spacerBottom);
 
         List<List<? extends GuiSection>> innerRows = mapRows.get(key);
         List<Integer> maxWidths = UiUtil.getMaxColumnWidths(innerRows);
