@@ -137,7 +137,7 @@ public class GameBoosterApi {
                 }
             }
         }
-        if(!isExists) {
+        if (!isExists) {
             MoreOptionsBooster moreOptionsBooster = new MoreOptionsBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), 0, range.getMax(), false);
             moreOptionsBooster.set(range.getValue());
             moreOptionsBooster.setMax(range.getMax());
