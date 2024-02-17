@@ -72,7 +72,7 @@ public class MoreOptionsBooster extends BoosterImp {
 
     @Override
     public double vGet(Faction f) {
-        if(FACTIONS.player().equals(f)) {
+        if (FACTIONS.player().equals(f)) {
             return value / max;
         }
         else {
