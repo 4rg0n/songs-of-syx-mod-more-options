@@ -4,14 +4,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 
+import java.util.List;
 import java.util.Map;
 
 @Getter
 @Builder
 public class BuildResults<T, E> {
 
-    private T result;
+    private List<T> results;
 
     @Singular
-    private Map<String, E> elements;
+    private List<E> elements;
 }

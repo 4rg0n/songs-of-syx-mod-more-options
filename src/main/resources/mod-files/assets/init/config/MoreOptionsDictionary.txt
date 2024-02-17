@@ -262,4 +262,15 @@ event.chance.factionOpinionAdd: {
 	TITLE: "Realms Opinion",
 	DESC: "Positive values decreases the chance to get attacked by another realm while negative values increases it.",
 	},
-
+sounds.room.MUSKET_SHOT : {
+	TITLE: "Musket shot",
+	DESC: "Sounds of muskets.",
+    },
+sounds.room.CANNON_HIT : {
+	TITLE: "Cannon hit",
+	DESC: "Sounds of cannon hit.",
+    },
+sounds.room.CHOIR : {
+	TITLE: "Choir",
+	DESC: "Sounds of choir.",
+    },

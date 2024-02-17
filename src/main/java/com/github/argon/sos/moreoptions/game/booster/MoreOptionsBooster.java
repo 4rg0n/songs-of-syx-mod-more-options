@@ -16,6 +16,8 @@ public class MoreOptionsBooster extends BoosterImp {
 
     private double value = 0.0;
 
+    private int max = 10000; //default
+
     public MoreOptionsBooster(BSourceInfo bSourceInfo, double from, double to, boolean isMul) {
         super(bSourceInfo, from, to, isMul);
     }
@@ -23,21 +25,23 @@ public class MoreOptionsBooster extends BoosterImp {
     public void set(double value) {
         this.value = value;
     }
-
+    public void setMax(int max) {
+        this.max = max;
+    }
 
     @Override
     public double vGet(Region reg) {
-        return value / 10000;
+        return value / max;
     }
 
     @Override
     public double vGet(Induvidual indu) {
-        return value / 10000;
+        return value / max;
     }
 
     @Override
     public double vGet(Div div) {
-        return value / 10000;
+        return value / max;
     }
 
     @Override
@@ -47,18 +51,18 @@ public class MoreOptionsBooster extends BoosterImp {
             return 0;
         }
         else {
-            return value / 10000;
+            return value / max;
         }
     }
 
     @Override
     public double vGet(Royalty roy) {
-        return value / 10000;
+        return value / max;
     }
 
     @Override
     public double vGet(Race race) {
-        return value / 10000;
+        return value / max;
     }
 
     @Override
@@ -69,7 +73,7 @@ public class MoreOptionsBooster extends BoosterImp {
     @Override
     public double vGet(Faction f) {
         if(FACTIONS.player().equals(f)) {
-            return value / 10000;
+            return value / max;
         }
         else {
             return 0;

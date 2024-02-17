@@ -2,6 +2,7 @@
 package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.booster.FactionOpinionBooster;
 import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBooster;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -123,7 +124,7 @@ public class GameBoosterApi {
         return getPlayerBoosters().containsKey(key);
     }
 
-    public void setBoosterValue(Boostable boostable, int boost) {
+    public void setBoosterValue(Boostable boostable, MoreOptionsConfig.Range range) {
 
         LIST<BoostSpec> adds = boostable.adds();
         CharSequence charSequence = "More Options";
@@ -132,13 +133,14 @@ public class GameBoosterApi {
             if(boostSpec.boostable.equals(boostable)){
                 if(boostSpec.booster.info.name.equals(charSequence)){
                     isExists = true;
-                    ((MoreOptionsBooster) boostSpec.booster).set(boost);
+                    ((MoreOptionsBooster) boostSpec.booster).set(range.getValue());
                 }
             }
         }
         if(!isExists) {
-            MoreOptionsBooster moreOptionsBooster = new MoreOptionsBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), 0, 10000, false);
-            moreOptionsBooster.set(boost);
+            MoreOptionsBooster moreOptionsBooster = new MoreOptionsBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), 0, range.getMax(), false);
+            moreOptionsBooster.set(range.getValue());
+            moreOptionsBooster.setMax(range.getMax());
             BoostSpec boostSpec = new BoostSpec(moreOptionsBooster, boostable, charSequence);
             boostable.addFactor(boostSpec);
         }

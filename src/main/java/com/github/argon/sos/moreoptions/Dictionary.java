@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.util.StringUtil;
 import game.boosting.Boostable;
+import init.sound.SoundAmbience;
 import lombok.*;
 
 import java.util.Collection;

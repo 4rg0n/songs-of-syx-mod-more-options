@@ -30,19 +30,10 @@ import java.util.stream.Collectors;
 public class BoostersPanel extends GuiSection {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
-    private final Map<String, Slider> sliders = new HashMap<>();
+    private final Map<String, Slider> sliders;
 
     public BoostersPanel(List<Entry> boosterEntries, String configFilePath) {
-
-
-        GHeader disclaimer = new GHeader("High values can slow or even crash your game");
-        disclaimer.hoverInfoSet(new INFO("In case of a crash", "Delete configuration file in:" + configFilePath));
-
-        addDown(0, disclaimer);
-
         GuiSection section = new GuiSection();
-
-        List<RENDEROBJ> renderobjs = new LinkedList<>();
 
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
         for (Entry entry : boosterEntries) {
@@ -85,67 +76,19 @@ public class BoostersPanel extends GuiSection {
 
         }
 
-        int width;
+        BuildResult<GScrollRows, Map<String, Slider>> buildResult = BoosterSlidersBuilder.builder()
+                .displayHeight(500)
+                .translate(boosterDefinitions)
+                .build();
 
-        Map<String, Slider> elements = new HashMap<>();
-        Map<String, List<List<? extends GuiSection>>> mapRows = new HashMap<>();
-        List<List<? extends GuiSection>> rows = new ArrayList<>();
+        GScrollRows gScrollRows = buildResult.getResult();
+        sliders = buildResult.getInteractable();
 
-        for(String keyDef: boosterDefinitions.keySet()) { //it's stupid, but it works
-            List<List<? extends GuiSection>> innerList = new ArrayList<>();
-            boosterDefinitions.get(keyDef).entrySet()
-                    .stream().sorted(Comparator.comparing(entry -> entry.getValue().getLabelDefinition().getTitle()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                            (oldValue, newValue) -> oldValue, LinkedHashMap::new)).forEach((key, definition) -> {
-                BuildResult<List<GuiSection>, Slider> buildResult = BoosterSliderBuilder.builder()
-                        .definition(definition)
-                        .build();
-                rows.add(buildResult.getResult());
-                elements.put(key, buildResult.getInteractable());
-                innerList.add(buildResult.getResult());
+        GHeader disclaimer = new GHeader("High values can slow or even crash your game");
+        disclaimer.hoverInfoSet(new INFO("In case of a crash", "Delete configuration file in:" + configFilePath));
 
-            });
-            mapRows.put(keyDef, innerList);
-        }
-
-        width = UiUtil.getMaxCombinedColumnWidth(rows);
-
-        for(String key: boosterDefinitions.keySet()) {
-            GHeader header = new GHeader(key, UI.FONT().H2);
-            header.hoverInfoSet(key);
-
-            renderobjs.add(header);
-
-            List<List<? extends GuiSection>> innerRows = mapRows.get(key);
-            List<Integer> maxWidths = UiUtil.getMaxColumnWidths(innerRows);
-
-
-            int finalWidth = width;
-            List<GridRow> gridRows = innerRows.stream()
-                    .map(columns -> {
-                        GridRow gridRow = new GridRow(columns);
-                        gridRow.initGrid(maxWidths, finalWidth);
-
-                        if (innerRows.indexOf(columns) % 2 == 0) {
-                            gridRow.background(COLOR.WHITE15);
-                        }
-
-                        return gridRow;
-                    })
-                    .collect(Collectors.toList());
-
-            renderobjs.addAll(gridRows);
-
-            for(String sliderKey : elements.keySet()) {
-                Slider slider = elements.get(sliderKey);
-                if (!groupedBoosterEntries.containsKey(sliderKey)) {
-                    sliders.put(sliderKey, slider);
-                }
-            }
-        }
-        GScrollRows gScrollRows = new GScrollRows(renderobjs, 500, width);
-        section.add(gScrollRows.view());
-        addDown(5, section);
+        addDown(0, disclaimer);
+        addDown(10, gScrollRows.view());
     }
 
     public Map<String, Integer> getConfig() {
