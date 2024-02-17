@@ -2,12 +2,15 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.booster.FactionOpinionBooster;
+import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBooster;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import game.GAME;
+import game.boosting.BOOSTABLES;
 import game.boosting.BSourceInfo;
+import game.boosting.BoostSpec;
 import game.events.EVENTS;
 import game.events.EventDisease;
 import game.events.world.EventWorldRaider;
@@ -25,6 +28,9 @@ public class GameEventsApi {
 
     @Getter
     private static FactionOpinionBooster factionOpinionBooster;
+
+    @Getter
+    private static MoreOptionsBooster raidChanceBooster;
 
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
@@ -47,6 +53,12 @@ public class GameEventsApi {
             } catch (NullPointerException e) { //No factions to get boost for!
                 log.debug("No factions to boost!");
             }
+        }
+
+        if (raidChanceBooster == null) {
+            raidChanceBooster = new MoreOptionsBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), 0, 1, true);
+            BoostSpec boostSpec = new BoostSpec(raidChanceBooster, BOOSTABLES.CIVICS().RAIDING, MoreOptionsScript.MOD_INFO.name);
+            BOOSTABLES.CIVICS().RAIDING.addFactor(boostSpec);
         }
     }
 
@@ -142,7 +154,7 @@ public class GameEventsApi {
             DISEASES.EPIDEMIC_CHANCE = current * MathUtil.toPercentage(chance);
             return true;
         } else if (event instanceof EventWorldRaider) {
-            ((EventWorldRaider) event).setChanceMulti(MathUtil.toPercentage(chance));
+            raidChanceBooster.set(MathUtil.toPercentage(chance));
             return true;
         }
 

@@ -71,8 +71,6 @@ public class UIGameConfig {
                 GuiSection right = (GuiSection) o;
                 right.addRelBody(8, DIR.W, settlementButton);
             });
-
-        // todo: add panel button to world ui
     }
 
     /**

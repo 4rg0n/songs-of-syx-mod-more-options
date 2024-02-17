@@ -156,8 +156,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 		}
 
-
-		// fixme applying backup doesn't apply correctly?
+		// fixme Disease and Raid Event chance shall go from 100% (game default) to 10000%
 
 		// todo add a MoreOptionsViewModel inbetween? for easier mapping? mapstruct?
 

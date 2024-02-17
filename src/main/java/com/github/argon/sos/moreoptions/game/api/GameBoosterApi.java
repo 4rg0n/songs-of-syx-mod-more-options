@@ -3,15 +3,12 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
-import com.github.argon.sos.moreoptions.game.booster.FactionOpinionBooster;
 import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBooster;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.boosting.*;
 import game.faction.FACTIONS;
 import game.faction.npc.ruler.ROpinions;
-import init.race.RACES;
 import init.sprite.SPRITES;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -127,7 +124,7 @@ public class GameBoosterApi {
     public void setBoosterValue(Boostable boostable, MoreOptionsConfig.Range range) {
 
         LIST<BoostSpec> adds = boostable.adds();
-        CharSequence charSequence = "More Options";
+        CharSequence charSequence = MoreOptionsScript.MOD_INFO.name;
         boolean isExists = false;
         for(BoostSpec boostSpec : adds) {
             if(boostSpec.boostable.equals(boostable)){
