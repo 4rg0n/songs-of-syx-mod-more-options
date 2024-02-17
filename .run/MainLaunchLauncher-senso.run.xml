@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="init.MainLaunchLauncher" type="Application" factoryName="Application" nameIsGenerated="true">
+  <configuration default="false" name="senso.MainLaunchLauncher" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="init.MainLaunchLauncher" />
     <module name="songs-of-syx-mod-more-options" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
