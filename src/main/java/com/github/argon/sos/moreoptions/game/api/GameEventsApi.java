@@ -44,9 +44,11 @@ public class GameEventsApi {
     @Getter(lazy = true)
     private final static GameEventsApi instance = new GameEventsApi();
 
+    // fixme initializing this here is shit xD
     public static void initLazy() {
         if (factionOpinionBooster == null) {
             log.debug("Creating faction war booster");
+            // fixme max and min needs to be dynamic
             factionOpinionBooster = new FactionOpinionBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), -100, 100, false);
             try {
                 factionOpinionBooster.add(ROpinions.GET());
@@ -56,7 +58,8 @@ public class GameEventsApi {
         }
 
         if (raidChanceBooster == null) {
-            raidChanceBooster = new MoreOptionsBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), 0, 1, true);
+            // fixme max and min needs to be dynamic
+            raidChanceBooster = new MoreOptionsBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), 0, 1000, true);
             BoostSpec boostSpec = new BoostSpec(raidChanceBooster, BOOSTABLES.CIVICS().RAIDING, MoreOptionsScript.MOD_INFO.name);
             BOOSTABLES.CIVICS().RAIDING.addFactor(boostSpec);
         }

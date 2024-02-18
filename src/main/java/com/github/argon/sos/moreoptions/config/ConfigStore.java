@@ -291,7 +291,7 @@ public class ConfigStore {
                     MoreOptionsConfig.Range range = MoreOptionsConfig.Range.builder()
                         .value(100)
                         .min(0)
-                        .max(100)
+                        .max(10000)
                         .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
                         .build();
 
@@ -299,6 +299,7 @@ public class ConfigStore {
                     if (GameEventsApi.FACTION_OPINION_ADD.equals(key)) {
                         range.setDisplayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE);
                         range.setMin(-100);
+                        range.setMax(100);
                     }
 
                     return range;
