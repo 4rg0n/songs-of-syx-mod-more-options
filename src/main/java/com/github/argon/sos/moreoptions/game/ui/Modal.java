@@ -75,7 +75,7 @@ public class Modal<T extends GuiSection> extends Interrupter {
     @Override
     protected boolean render(Renderer renderer, float v) {
         panelSection.render(renderer, v);
-        return overlay;
+        return false;
     }
 
     @Override
