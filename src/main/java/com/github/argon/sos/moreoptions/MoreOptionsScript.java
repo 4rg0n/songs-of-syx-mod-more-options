@@ -144,9 +144,9 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		// show backup dialog?
 		if (backupConfig.isPresent()) {
 			log.debug("Backup config present at %s", backupConfig.get().getFilePath());
-			Modal<BackupModal> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupModal(), true);
+			Modal<BackupModal> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupModal());
 			Modal<MoreOptionsModal> backupMoreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
-				new MoreOptionsModal(configStore, modInfo), true);
+				new MoreOptionsModal(configStore, modInfo));
 
 			configStore.setCurrentConfig(backupConfig.get());
 			uiGameConfig.initForBackup(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());

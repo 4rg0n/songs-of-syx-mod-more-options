@@ -20,17 +20,7 @@ public class Modal<T extends GuiSection> extends Interrupter {
 
     protected final GuiSection panelSection;
 
-    /**
-     * Will render the modal without the game in the background
-     */
-    private final boolean overlay = false;
-
-
     public Modal(String title, T section) {
-        this(title, section, false);
-    }
-
-    public Modal(String title, T section, boolean overlay) {
         this.section = section;
         this.panel = new GPanel();
         this.panel.setTitle(title);
@@ -64,7 +54,10 @@ public class Modal<T extends GuiSection> extends Interrupter {
 
     @Override
     protected boolean hover(COORDINATE coordinate, boolean b) {
-        return panelSection.hover(coordinate);
+        panelSection.hover(coordinate);
+
+        // disable background interaction with true
+        return true;
     }
 
     @Override
