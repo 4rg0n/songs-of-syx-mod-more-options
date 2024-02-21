@@ -1,28 +1,20 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
-import com.github.argon.sos.moreoptions.game.ui.GridRow;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Toggler;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.element.*;
 import com.github.argon.sos.moreoptions.ui.builder.section.BoosterSlidersBuilder;
-import com.github.argon.sos.moreoptions.util.UiUtil;
 import game.boosting.BoostableCat;
-import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
-import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
-import snake2d.util.gui.clickable.Scrollable;
-import snake2d.util.gui.renderable.RENDEROBJ;
-import util.gui.misc.GHeader;
 import util.gui.table.GScrollRows;
-import util.gui.table.GScrollable;
-import util.info.INFO;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,11 +22,9 @@ import java.util.stream.Collectors;
 public class BoostersPanel extends GuiSection {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
-    private final Map<String, Slider> sliders;
+    private final Map<String, Toggler<Integer>> sliders;
 
     public BoostersPanel(List<Entry> boosterEntries) {
-        GuiSection section = new GuiSection();
-
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
         for (Entry entry : boosterEntries) {
             if (entry.getCat() != null && entry.getCat().name != null) {
@@ -61,12 +51,25 @@ public class BoostersPanel extends GuiSection {
                                     .key(entry.getKey())
                                     .title(entry.getKey())
                                     .build())
-                            .sliderDefinition(SliderBuilder.Definition.builder()
+                            .sliderAdditiveiDefinition(SliderBuilder.Definition.builder()
+                                    .maxWidth(300)
+                                    // fixme: wrong ranges
+                                    .min(entry.getRange().getMin())
+                                    .max(entry.getRange().getMax())
+                                    .value(entry.getRange().getValue())
+                                    .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
+
+//                                    .threshold((int) (0.10 *entry.getRange().getMax()), COLOR.YELLOW100.shade(0.7d))
+//                                    .threshold((int) (0.50 *entry.getRange().getMax()), COLOR.ORANGE100.shade(0.7d))
+//                                    .threshold((int) (0.75 *entry.getRange().getMax()), COLOR.RED100.shade(0.7d))
+//                                    .threshold((int) (0.90 *entry.getRange().getMax()), COLOR.RED2RED)
+                                    .build())
+                            .sliderMultiDefinition(SliderBuilder.Definition.builder()
                                     .maxWidth(300)
                                     .min(entry.getRange().getMin())
                                     .max(entry.getRange().getMax())
                                     .value(entry.getRange().getValue())
-                                    .valueDisplay(Slider.ValueDisplay.valueOf(entry.getRange().getDisplayMode().name()))
+                                    .valueDisplay(Slider.ValueDisplay.PERCENTAGE)
                                     .threshold((int) (0.10 *entry.getRange().getMax()), COLOR.YELLOW100.shade(0.7d))
                                     .threshold((int) (0.50 *entry.getRange().getMax()), COLOR.ORANGE100.shade(0.7d))
                                     .threshold((int) (0.75 *entry.getRange().getMax()), COLOR.RED100.shade(0.7d))
@@ -76,7 +79,7 @@ public class BoostersPanel extends GuiSection {
 
         }
 
-        BuildResult<GScrollRows, Map<String, Slider>> buildResult = BoosterSlidersBuilder.builder()
+        BuildResult<GScrollRows, Map<String, Toggler<Integer>>> buildResult = BoosterSlidersBuilder.builder()
                 .displayHeight(500)
                 .translate(boosterDefinitions)
                 .build();

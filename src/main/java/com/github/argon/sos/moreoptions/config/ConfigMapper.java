@@ -28,8 +28,6 @@ public class ConfigMapper {
             .version(MoreOptionsConfig.VERSION)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
-            .factionOpinionAdd((json.has("FACTION_OPINION_ADD")) ? ConfigUtil.mergeIntoNewRange(json.i("FACTION_WAR_ADD", -100, 100, 0), (defaultConfig != null) ? defaultConfig.getFactionOpinionAdd() : MoreOptionsConfig.Range.builder().build())
-                : (defaultConfig != null) ? defaultConfig.getFactionOpinionAdd() : null)
 
             .eventsWorld((json.has("EVENTS_WORLD")) ? JsonMapper.mapBoolean(json.json("EVENTS_WORLD"), true)
                 : (defaultConfig != null) ? defaultConfig.getEventsWorld() : new HashMap<>())
@@ -70,7 +68,7 @@ public class ConfigMapper {
             .boosters((json.has("BOOSTERS")) ? JsonMapper.mapInteger(json.json("BOOSTERS")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> ConfigUtil.mergeIntoNewRange(normalizeV1BoosterValue(entry.getValue()), (defaultConfig != null) ? defaultConfig.getBoosters().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getBoosters().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
             .build();
     }
@@ -84,8 +82,6 @@ public class ConfigMapper {
             .version(MoreOptionsConfig.VERSION)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
-            .factionOpinionAdd((json.has("FACTION_OPINION_ADD")) ? mapRange(json.json("FACTION_OPINION_ADD"), (defaultConfig != null) ? defaultConfig.getFactionOpinionAdd().getValue() : null)
-                : (defaultConfig != null) ? defaultConfig.getFactionOpinionAdd() : null)
 
             .eventsWorld((json.has("EVENTS_WORLD")) ? JsonMapper.mapBoolean(json.json("EVENTS_WORLD"), true)
                 : (defaultConfig != null) ? defaultConfig.getEventsWorld() : new HashMap<>())
@@ -117,7 +113,6 @@ public class ConfigMapper {
         JsonE configJson = new JsonE();
         configJson.add("VERSION", config.getVersion());
         configJson.addString("LOG_LEVEL", config.getLogLevel().getName());
-        configJson.add("FACTION_OPINION_ADD", mapRange(config.getFactionOpinionAdd(), null));
         configJson.add("EVENTS_SETTLEMENT", JsonMapper.mapBoolean(config.getEventsSettlement()));
         configJson.add("EVENTS_WORLD", JsonMapper.mapBoolean(config.getEventsWorld()));
         configJson.add("EVENTS_CHANCE", mapRanges(config.getEventsChance()));
@@ -179,17 +174,5 @@ public class ConfigMapper {
         rangeJson.addString("DISPLAY_MODE", range.getDisplayMode().toString());
 
         return rangeJson;
-    }
-
-    /**
-     * Older V1 config had 100% as default value, which meant no change.
-     * For V2 the new default value is now 0%.
-     */
-    private int normalizeV1BoosterValue(int value) {
-        if (value >= 100) {
-            return value - 100;
-        }
-
-        return 0;
     }
 }

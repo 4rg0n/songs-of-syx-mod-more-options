@@ -2,13 +2,15 @@ package com.github.argon.sos.moreoptions.ui.builder.element;
 
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Toggler;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
-import init.sprite.SPRITES;
+import com.github.argon.sos.moreoptions.util.MapUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 
 import java.util.List;
@@ -16,10 +18,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Slider> {
+public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Toggler<Integer>> {
     private final Definition definition;
 
-    public BuildResult<List<GuiSection>, Slider> build() {
+    public BuildResult<List<GuiSection>, Toggler<Integer>> build() {
 
         if (definition.getLabelWidth() > 0) {
             definition.getLabelDefinition().setMaxWidth(definition.getLabelWidth());
@@ -30,19 +32,29 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
             .build().getResult();
         label.pad(10, 5);
 
-        Slider slider = SliderBuilder.builder()
-            .definition(definition.getSliderDefinition())
+        Slider additiveSlider = SliderBuilder.builder()
+            .definition(definition.getSliderMultiDefinition())
             .build().getResult();
-        slider.pad(10, 5);
+        additiveSlider.pad(10, 5);
+
+        Slider multiSlider = SliderBuilder.builder()
+            .definition(definition.getSliderMultiDefinition())
+            .build().getResult();
+        multiSlider.pad(10, 5);
+
+        Toggler<Integer> toggler = new Toggler<>(MapUtil.of(
+            "Add", additiveSlider,
+            "Multi", multiSlider
+        ), DIR.W);
 
         List<GuiSection> row = Stream.of(
             label,
-            slider
+            toggler
         ).collect(Collectors.toList());
 
-        return BuildResult.<List<GuiSection>, Slider>builder()
+        return BuildResult.<List<GuiSection>, Toggler<Integer>>builder()
             .result(row)
-            .interactable(slider)
+            .interactable(toggler)
             .build();
     }
 
@@ -63,7 +75,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
             return definition(definition);
         }
 
-        public BuildResult<List<GuiSection>, Slider> build() {
+        public BuildResult<List<GuiSection>, Toggler<Integer>> build() {
             assert definition != null : "definition must not be null";
 
             return new BoosterSliderBuilder(definition).build();
@@ -76,7 +88,8 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
 
         private LabelBuilder.Definition labelDefinition;
 
-        private SliderBuilder.Definition sliderDefinition;
+        private SliderBuilder.Definition sliderMultiDefinition;
+        private SliderBuilder.Definition sliderAdditiveiDefinition;
 
 
         @lombok.Builder.Default

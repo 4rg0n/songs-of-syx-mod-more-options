@@ -41,14 +41,6 @@ public class MoreOptionsConfig {
     private Map<String, Range> eventsChance = new HashMap<>();
 
     @Builder.Default
-    private Range factionOpinionAdd = Range.builder()
-        .value(0)
-        .min(-100)
-        .max(100)
-        .displayMode(Range.DisplayMode.ABSOLUTE)
-        .build();
-
-    @Builder.Default
     private Map<String, Range> soundsAmbience = new HashMap<>();
 
     @Builder.Default
@@ -74,12 +66,20 @@ public class MoreOptionsConfig {
         private int max = 10000;
 
         @Builder.Default
+        private ApplyMode applyMode = ApplyMode.MULTI;
+
+        @Builder.Default
         private DisplayMode displayMode = DisplayMode.PERCENTAGE;
 
         public enum DisplayMode {
             NONE,
             ABSOLUTE,
             PERCENTAGE
+        }
+
+        public enum ApplyMode {
+            ADDITIVE,
+            MULTI
         }
 
         public Range clone() {

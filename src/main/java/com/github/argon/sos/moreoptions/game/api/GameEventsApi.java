@@ -1,22 +1,13 @@
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.MoreOptionsScript;
-import com.github.argon.sos.moreoptions.game.booster.FactionOpinionBooster;
-import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBooster;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import game.GAME;
-import game.boosting.BOOSTABLES;
-import game.boosting.BSourceInfo;
-import game.boosting.BoostSpec;
 import game.events.EVENTS;
 import game.events.EventDisease;
-import game.events.world.EventWorldRaider;
-import game.faction.npc.ruler.ROpinions;
 import init.disease.DISEASES;
-import init.sprite.SPRITES;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -26,12 +17,6 @@ import java.util.stream.Collectors;
 
 public class GameEventsApi {
 
-    @Getter
-    private static FactionOpinionBooster factionOpinionBooster;
-
-    @Getter
-    private static MoreOptionsBooster raidChanceBooster;
-
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
     private Map<String, EVENTS.EventResource> settlementEvents;
@@ -39,35 +24,10 @@ public class GameEventsApi {
     private Map<String, EVENTS.EventResource> eventsChance;
 
     public final static String KEY_PREFIX = "event";
-    public final static String FACTION_OPINION_ADD = KEY_PREFIX + ".chance.factionOpinionAdd";
 
     @Getter(lazy = true)
     private final static GameEventsApi instance = new GameEventsApi();
 
-    // fixme initializing this here is shit xD
-    public static void initLazy() {
-        if (factionOpinionBooster == null) {
-            log.debug("Creating faction war booster");
-            // fixme max and min needs to be dynamic
-            factionOpinionBooster = new FactionOpinionBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), -100, 100, false);
-            try {
-                factionOpinionBooster.add(ROpinions.GET());
-            } catch (NullPointerException e) { //No factions to get boost for!
-                log.debug("No factions to boost!");
-            }
-        }
-
-        if (raidChanceBooster == null) {
-            // fixme max and min needs to be dynamic
-            raidChanceBooster = new MoreOptionsBooster(new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog), 0, 1000, true);
-            BoostSpec boostSpec = new BoostSpec(raidChanceBooster, BOOSTABLES.CIVICS().RAIDING, MoreOptionsScript.MOD_INFO.name);
-            BOOSTABLES.CIVICS().RAIDING.addFactor(boostSpec);
-        }
-    }
-
-    public GameEventsApi() {
-        initLazy();
-    }
 
     public void clearCached() {
         settlementEvents = null;
@@ -119,7 +79,6 @@ public class GameEventsApi {
         worldEvents.put(KEY_PREFIX + ".world.popup", gameEvents.world.popup);
         worldEvents.put(KEY_PREFIX + ".world.war", gameEvents.world.war);
         worldEvents.put(KEY_PREFIX + ".world.warPlayer", gameEvents.world.warPlayer);
-        worldEvents.put(KEY_PREFIX + ".world.raider", gameEvents.world.raider);
         worldEvents.put(KEY_PREFIX + ".world.rebellion", gameEvents.world.rebellion);
 
         return worldEvents;
@@ -137,37 +96,22 @@ public class GameEventsApi {
         Map<String, EVENTS.EventResource> eventsChance = new HashMap<>();
         EVENTS gameEvents = GAME.events();
 
-        eventsChance.put(KEY_PREFIX + ".chance.raider", gameEvents.world.raider);
         eventsChance.put(KEY_PREFIX + ".chance.disease", gameEvents.disease);
 
         return eventsChance;
     }
 
     public boolean setChance(String eventKey, int chance) {
-        // chance for faction war against player is handled extra
-        if (FACTION_OPINION_ADD.equals(eventKey)) {
-            setFactionWarAddValue(chance);
-            return true;
-        }
-
         EVENTS.EventResource event = eventsChance.get(eventKey);
 
         if (event instanceof EventDisease) {
             double current = DISEASES.EPIDEMIC_CHANCE;
             DISEASES.EPIDEMIC_CHANCE = current * MathUtil.toPercentage(chance);
             return true;
-        } else if (event instanceof EventWorldRaider) {
-            raidChanceBooster.set(MathUtil.toPercentage(chance));
-            return true;
         }
 
         log.warn("Could not set chance for %s", event.getClass().getSimpleName());
         return false;
-    }
-
-    public void setFactionWarAddValue(int value) {
-        log.trace("Set faction war adder to %s", value);
-        factionOpinionBooster.set(value);
     }
 
     public Map<String, Boolean> readEventsEnabledStatus() {

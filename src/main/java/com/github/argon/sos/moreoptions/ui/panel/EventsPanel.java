@@ -1,7 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
-import com.github.argon.sos.moreoptions.game.api.GameEventsApi;
 import com.github.argon.sos.moreoptions.game.ui.Checkbox;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
@@ -18,7 +17,6 @@ import util.gui.misc.GHeader;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class EventsPanel extends GuiSection {
@@ -34,8 +32,7 @@ public class EventsPanel extends GuiSection {
     public EventsPanel(
         Map<String, Boolean> settlementEventsConfig,
         Map<String, Boolean> worldEventsConfig,
-        Map<String, MoreOptionsConfig.Range> eventsChanceConfig,
-        MoreOptionsConfig.Range factionOpinionAdd
+        Map<String, MoreOptionsConfig.Range> eventsChanceConfig
     ) {
         BuildResult<GuiSection, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(settlementEventsConfig);
         GuiSection settlement = settlementCheckboxesResult.getResult();
@@ -65,7 +62,7 @@ public class EventsPanel extends GuiSection {
         checkBoxSection.addRight(0, worldSection);
         addDownC(0, checkBoxSection);
 
-        BuildResult<GuiSection, Map<String, Slider>> buildResult = sliders(eventsChanceConfig, factionOpinionAdd);
+        BuildResult<GuiSection, Map<String, Slider>> buildResult = sliders(eventsChanceConfig);
         GuiSection sliders = buildResult.getResult();
         eventsChanceSliders = buildResult.getInteractable();
 
@@ -80,19 +77,8 @@ public class EventsPanel extends GuiSection {
         addDownC(10, eventsChanceSection);
     }
 
-    public Optional<Integer> getFactionWarAdd() {
-        return Optional.ofNullable(eventsChanceSliders.get(GameEventsApi.FACTION_OPINION_ADD))
-            .map(Slider::getValue);
-    }
-
-    public void setFactionWarAdd(Integer value) {
-        Optional.ofNullable(eventsChanceSliders.get(GameEventsApi.FACTION_OPINION_ADD))
-            .ifPresent(slider -> {slider.setValue(value);});
-    }
-
     private BuildResult<GuiSection, Map<String, Slider>> sliders(
-        Map<String, MoreOptionsConfig.Range> eventsChanceConfig,
-        MoreOptionsConfig.Range factionOpinionAdd
+        Map<String, MoreOptionsConfig.Range> eventsChanceConfig
     ) {
         Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
@@ -109,18 +95,6 @@ public class EventsPanel extends GuiSection {
                     .build())
                 .build()));
 
-        sliderDefinitions.put(GameEventsApi.FACTION_OPINION_ADD, LabeledSliderBuilder.Definition.builder()
-            .labelDefinition(LabelBuilder.Definition.builder()
-                .key(GameEventsApi.FACTION_OPINION_ADD)
-                .title(GameEventsApi.FACTION_OPINION_ADD)
-                .build())
-            .sliderDefinition(SliderBuilder.Definition.builder()
-                .maxWidth(300)
-                .min(factionOpinionAdd.getMin())
-                .max(factionOpinionAdd.getMax())
-                .valueDisplay(Slider.ValueDisplay.valueOf(factionOpinionAdd.getDisplayMode().name()))
-                .build())
-            .build());
 
         return SlidersBuilder.builder()
             .displayHeight(150)
@@ -146,13 +120,11 @@ public class EventsPanel extends GuiSection {
     public void applyConfig(
         Map<String, Boolean> settlementEventsConfig,
         Map<String, Boolean> worldEventsConfig,
-        Map<String, Integer> eventsChanceConfig,
-        Integer factionOpinionAdd
+        Map<String, Integer> eventsChanceConfig
     ) {
         log.trace("Applying UI settlement events config %s", settlementEventsConfig);
         log.trace("Applying UI world events config %s", worldEventsConfig);
         log.trace("Applying UI events chance config %s", eventsChanceConfig);
-        log.trace("Applying UI events chance factionOpinionAdd %s", factionOpinionAdd);
 
         settlementEventsConfig.forEach((key, value) -> {
             if (settlementEventsCheckboxes.containsKey(key)) {
@@ -177,8 +149,6 @@ public class EventsPanel extends GuiSection {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
-
-        setFactionWarAdd(factionOpinionAdd);
     }
 
 

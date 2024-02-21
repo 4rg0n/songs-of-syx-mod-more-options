@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * Uses mostly code from {@link GSliderInt} and adds handling for negative values.
  */
-public class Slider extends GuiSection {
+public class Slider extends GuiSection implements Valuable<Integer> {
     private final INT.INTE in;
     private static final int midWidth = 8;
     private static final CharSequence setAmount = "Set amount";
@@ -60,15 +60,14 @@ public class Slider extends GuiSection {
         D.ts(GSliderInt.class);
     }
 
-
-    public int getValue() {
+    public Integer getValue() {
         return in.get();
     }
 
-    public void setValue(int value) {
+    @Override
+    public void setValue(Integer value) {
         in.set(value);
     }
-
 
 
     public Slider(INT.INTE in, int width, boolean input){

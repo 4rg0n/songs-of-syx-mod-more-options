@@ -76,7 +76,7 @@ public class MoreOptionsModal extends GuiSection {
     public void init(MoreOptionsConfig config, List<BoostersPanel.Entry> boosterEntries) {
         clear();
         soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
-        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance(), config.getFactionOpinionAdd());
+        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance());
         weatherPanel = new WeatherPanel(config.getWeather());
         boostersPanel = new BoostersPanel(boosterEntries);
 
@@ -107,12 +107,8 @@ public class MoreOptionsModal extends GuiSection {
         MoreOptionsConfig currentConfig = configStore.getCurrentConfig()
                 .orElse(defaultConfig);
 
-        MoreOptionsConfig.Range factionOpinionAdd = eventsPanel.getFactionWarAdd().map(integer ->
-                ConfigUtil.mergeIntoNewRange(integer, currentConfig.getFactionOpinionAdd())
-        ).orElse(defaultConfig.getFactionOpinionAdd());
 
         return MoreOptionsConfig.builder()
-                .factionOpinionAdd(factionOpinionAdd)
                 .eventsSettlement(eventsPanel.getSettlementEventsConfig())
                 .eventsWorld(eventsPanel.getWorldEventsConfig())
                 .eventsChance(ConfigUtil.mergeIntoNewRange(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
@@ -127,10 +123,15 @@ public class MoreOptionsModal extends GuiSection {
 
     public void applyConfig(MoreOptionsConfig config) {
         eventsPanel.applyConfig(
-                config.getEventsSettlement(),
-                config.getEventsWorld(), ConfigUtil.extract(config.getEventsChance()),
-                config.getFactionOpinionAdd().getValue());
-        soundsPanel.applyConfig(ConfigUtil.extract(config.getSoundsAmbience()), ConfigUtil.extract(config.getSoundsSettlement()), ConfigUtil.extract(config.getSoundsRoom()));
+            config.getEventsSettlement(),
+            config.getEventsWorld(),
+            ConfigUtil.extract(config.getEventsChance())
+        );
+        soundsPanel.applyConfig(
+            ConfigUtil.extract(config.getSoundsAmbience()),
+            ConfigUtil.extract(config.getSoundsSettlement()),
+            ConfigUtil.extract(config.getSoundsRoom())
+        );
         weatherPanel.applyConfig(ConfigUtil.extract(config.getWeather()));
         boostersPanel.applyConfig(ConfigUtil.extract(config.getBoosters()));
     }

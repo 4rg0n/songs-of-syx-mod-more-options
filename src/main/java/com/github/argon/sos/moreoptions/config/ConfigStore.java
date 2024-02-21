@@ -2,7 +2,6 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.game.api.GameEventsApi;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATH;
@@ -231,12 +230,11 @@ public class ConfigStore {
 
         private Map<String, MoreOptionsConfig.Range> boosters() {
             //noinspection DataFlowIssue
-            return gameApis.boosterApi().getAllBoosters().keySet().stream()
+            return gameApis.boosterApi().getBoosters().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
-                    .value(0)
+                    .value(100)
                     .min(0)
                     .max(10000)
-                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
                     .build()));
         }
 
@@ -287,23 +285,12 @@ public class ConfigStore {
         private Map<String, MoreOptionsConfig.Range> eventsChance() {
             //noinspection DataFlowIssue
             return gameApis.eventsApi().getEventsChance().keySet().stream()
-                .collect(Collectors.toMap(key -> key, key -> {
-                    MoreOptionsConfig.Range range = MoreOptionsConfig.Range.builder()
-                        .value(100)
-                        .min(0)
-                        .max(10000)
-                        .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
-                        .build();
-
-                    // fixme ugly...
-                    if (GameEventsApi.FACTION_OPINION_ADD.equals(key)) {
-                        range.setDisplayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE);
-                        range.setMin(-100);
-                        range.setMax(100);
-                    }
-
-                    return range;
-                }));
+                .collect(Collectors.toMap(key -> key, key -> MoreOptionsConfig.Range.builder()
+                    .value(100)
+                    .min(0)
+                    .max(10000)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                    .build()));
         }
 
         private Map<String, Boolean> eventsSettlement() {

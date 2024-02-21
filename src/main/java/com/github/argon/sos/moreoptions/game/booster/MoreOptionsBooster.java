@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.game.booster;
 
 import game.boosting.BSourceInfo;
+import game.boosting.Boostable;
 import game.boosting.BoosterImp;
 import game.faction.FACTIONS;
 import game.faction.Faction;
@@ -8,40 +9,48 @@ import game.faction.npc.NPCBonus;
 import game.faction.npc.ruler.Royalty;
 import init.race.POP_CL;
 import init.race.Race;
+import lombok.Getter;
 import settlement.army.Div;
 import settlement.stats.Induvidual;
 import world.regions.Region;
 
 public class MoreOptionsBooster extends BoosterImp {
 
-    private double value = 0.0;
+    private double value;
 
-    private int max = 10000; //default
 
-    public MoreOptionsBooster(BSourceInfo bSourceInfo, double from, double to, boolean isMul) {
+    private final double initValue;
+
+    @Getter
+    private final Boostable origin;
+
+    public MoreOptionsBooster(Boostable origin, BSourceInfo bSourceInfo, double value, double from, double to, boolean isMul) {
         super(bSourceInfo, from, to, isMul);
+        this.initValue = value;
+        this.value = value;
+        this.origin = origin;
+    }
+
+    public void reset() {
+        value = initValue;
     }
 
     public void set(double value) {
         this.value = value;
     }
-    public void setMax(int max) {
-        this.max = max;
-    }
-
     @Override
     public double vGet(Region reg) {
-        return value / max;
+        return value;
     }
 
     @Override
     public double vGet(Induvidual indu) {
-        return value / max;
+        return value;
     }
 
     @Override
     public double vGet(Div div) {
-        return value / max;
+        return value;
     }
 
     @Override
@@ -51,18 +60,18 @@ public class MoreOptionsBooster extends BoosterImp {
             return 0;
         }
         else {
-            return value / max;
+            return value;
         }
     }
 
     @Override
     public double vGet(Royalty roy) {
-        return value / max;
+        return value;
     }
 
     @Override
     public double vGet(Race race) {
-        return value / max;
+        return value;
     }
 
     @Override
@@ -73,7 +82,7 @@ public class MoreOptionsBooster extends BoosterImp {
     @Override
     public double vGet(Faction f) {
         if (FACTIONS.player().equals(f)) {
-            return value / max;
+            return value;
         }
         else {
             return 0;

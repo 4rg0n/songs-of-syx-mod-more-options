@@ -1,10 +1,10 @@
 package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
+import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBooster;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.util.StringUtil;
 import game.boosting.Boostable;
-import init.sound.SoundAmbience;
 import lombok.*;
 
 import java.util.Collection;
@@ -81,6 +81,13 @@ public class Dictionary {
         return this;
     }
 
+    public Dictionary add(MoreOptionsBooster moreOptionsBooster) {
+        Dictionary.Entry dictEntry = Dictionary.Entry.fromMoreOptionsBooster(moreOptionsBooster);
+        entries.put(dictEntry.getKey(), dictEntry);
+
+        return this;
+    }
+
     /**
      * @return Found entry or a "No dictionary entry available" entry
      */
@@ -111,6 +118,14 @@ public class Dictionary {
                 .key(GameBoosterApi.KEY_PREFIX + "." + boostable.key)
                 .title(boostable.name.toString())
                 .description(boostable.desc.toString())
+                .build();
+        }
+
+        public static Entry fromMoreOptionsBooster(MoreOptionsBooster moreOptionsBooster) {
+            return Entry.builder()
+                .key(GameBoosterApi.KEY_PREFIX + "." + moreOptionsBooster.getOrigin().key)
+                .title(moreOptionsBooster.getOrigin().name.toString())
+                .description(moreOptionsBooster.getOrigin().desc.toString())
                 .build();
         }
     }

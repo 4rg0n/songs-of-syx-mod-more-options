@@ -1,11 +1,10 @@
 package com.github.argon.sos.moreoptions.ui.builder.section;
 
 import com.github.argon.sos.moreoptions.Dictionary;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Toggler;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.BoosterSliderBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.ScrollableBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.TableHeaderBuilder;
 import com.github.argon.sos.moreoptions.util.UiUtil;
@@ -19,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String, Slider>> {
+public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String, Toggler<Integer>>> {
     private final Map<String, Map<String, BoosterSliderBuilder.Definition>> definitions;
     private final int displayHeight;
 
@@ -28,10 +27,10 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
      * Builds a section with a scrollable list of sliders with labels in front of them.
      * Each entry is a slider with its {@link SliderBuilder.Definition}
      */
-    public BuildResult<GScrollRows, Map<String, Slider>> build() {
+    public BuildResult<GScrollRows, Map<String, Toggler<Integer>>> build() {
 
         List<RENDEROBJ> renderobjs = new LinkedList<>();
-        Map<String, Slider> elements = new HashMap<>();
+        Map<String, Toggler<Integer>> elements = new HashMap<>();
         Map<String, List<List<? extends GuiSection>>> mapRows = new HashMap<>();
         List<List<? extends GuiSection>> rows = new ArrayList<>();
 
@@ -41,7 +40,7 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
                     .stream().sorted(Comparator.comparing(entry -> entry.getValue().getLabelDefinition().getTitle()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                             (oldValue, newValue) -> oldValue, LinkedHashMap::new)).forEach((key, definition) -> {
-                        BuildResult<List<GuiSection>, Slider> buildResult = BoosterSliderBuilder.builder()
+                        BuildResult<List<GuiSection>, Toggler<Integer>> buildResult = BoosterSliderBuilder.builder()
                                 .definition(definition)
                                 .build();
                         rows.add(buildResult.getResult());
@@ -68,7 +67,7 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
 
         GScrollRows gScrollRows = new GScrollRows(renderobjs, this.displayHeight, widthTotal);
 
-        return BuildResult.<GScrollRows, Map<String, Slider>>builder()
+        return BuildResult.<GScrollRows, Map<String, Toggler<Integer>>>builder()
             .result(gScrollRows)
             .interactable(elements)
             .build();
@@ -97,7 +96,7 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
 
             return definitions(definitions);
         }
-        public BuildResult<GScrollRows, Map<String, Slider>> build() {
+        public BuildResult<GScrollRows, Map<String, Toggler<Integer>>> build() {
             assert definitions != null : "definitions must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
 

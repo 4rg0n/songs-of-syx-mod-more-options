@@ -4,7 +4,7 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.game.api.GameEventsApi;
+import com.github.argon.sos.moreoptions.game.api.InitPhases;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -27,7 +27,7 @@ import java.util.Optional;
  */
 @NoArgsConstructor
 @SuppressWarnings("unused") // used by the game via reflection
-public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
+public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitPhases {
 
 	private final static Logger log = Loggers.getLogger(MoreOptionsScript.class);
 
@@ -68,12 +68,12 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 
 	@Override
 	public void initBeforeGameCreated() {
+		gameApis.initBeforeGameCreated();
 		Level level = configStore.initMetaInfo().getLogLevel();
 		Loggers.setLevels(level);
 
 		log.debug("PHASE: initBeforeGameCreated");
 		Errors.setHandler(new MoreOptionsErrorHandler<>(this));
-		GameEventsApi.initLazy();
 
 		// load backup config
 		configStore.loadBackupConfig().ifPresent(configStore::setBackupConfig);
@@ -91,6 +91,12 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			.ifPresent(dictionary::addAll);
 	}
 
+	@Override
+	public void initCreateInstance() {
+		gameApis.initCreateInstance();
+	}
+
+
 	/**
 	 * BUG!: Method will be executed TWICE by the game
 	 * (will be fixed in v65 =))
@@ -99,6 +105,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	public SCRIPT_INSTANCE createInstance() {
 		log.debug("PHASE: createInstance");
 		if (instance == null) {
+			initCreateInstance();
 			log.debug("Creating Mod Instance");
 
 			// try to get current config and merge with defaults; or use whole defaults
@@ -113,25 +120,29 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			uiGameConfig.initDebug(moreOptionsModal, configStore);
 
 			// add description from game boosters
-			gameApis.boosterApi().getAllBoosters()
-				.values().forEach(dictionary::add);
+			gameApis.boosterApi().getBoosters()
+				.values().forEach(moreOptionsBoosters -> dictionary.add(moreOptionsBoosters.getAdditive()));
 
 			instance = new Instance(this);
 		}
 
 		// or else the init methods won't be called again when a save game is loaded
 		instance.reset();
+
+
 		return instance;
 	}
 
 	@Override
 	public void initGameRunning() {
 		log.debug("PHASE: initGameRunning");
+		gameApis.initGameRunning();
 	}
 
 	@Override
 	public void initGamePresent() {
 		log.debug("PHASE: initGamePresent");
+		gameApis.initGamePresent();
 
 		// config should already be loaded or use default
 		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
