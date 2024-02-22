@@ -3,7 +3,6 @@ package com.github.argon.sos.moreoptions.game.booster;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.boosting.BoostableCat;
 import lombok.Getter;
 
@@ -47,15 +46,19 @@ public class BoosterService {
                 boosters.computeIfPresent(key, (keyAgain, moreOptionsBoosters) -> {
                 log.debug("Apply booster config for: %s", key);
 
+
                 switch (range.getApplyMode()) {
                     case MULTI:
-                        double percentage = MathUtil.toPercentage(range.getValue());
-                        log.trace("Booster %s: %s", range.getApplyMode(), percentage);
-                        moreOptionsBoosters.getMulti().set(percentage);
+                        double multiValue = (double) range.getValue() / 1000;
+                        log.trace("Booster %s: %s", range.getApplyMode(), multiValue);
+                        moreOptionsBoosters.getMulti().set(multiValue);
+                        moreOptionsBoosters.getAdd().reset();
                         break;
                     case ADD:
-                        log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
-                        moreOptionsBoosters.getAdd().set(range.getValue());
+                        double addValue = (double) range.getValue() / 10;
+                        log.trace("Booster %s: %s", range.getApplyMode(), addValue);
+                        moreOptionsBoosters.getAdd().set(addValue);
+                        moreOptionsBoosters.getMulti().reset();
                         break;
                 }
 

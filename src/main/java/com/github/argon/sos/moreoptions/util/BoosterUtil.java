@@ -25,7 +25,7 @@ public class BoosterUtil {
         MoreOptionsBooster moreOptionsBooster = new MoreOptionsBooster(
             booster,
             new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog),
-            (double) value / 100, (double) min / 100, (double) max / 100, false);
+            (double) value / 1000, (double) min / 1000, (double) max / 1000, false);
 
         BoostSpec boostSpec = new BoostSpec(moreOptionsBooster, booster, MoreOptionsScript.MOD_INFO.name);
         booster.addFactor(boostSpec);
@@ -34,9 +34,9 @@ public class BoosterUtil {
     }
 
     public static MoreOptionsBooster extendAsMultiBooster(Boostable booster, int value, int min, int max) {
-        double boosterValue = MathUtil.toPercentage(value) / 100;
-        double boosterMin = MathUtil.toPercentage(min) / 100;
-        double boosterMax = MathUtil.toPercentage(max) / 100;
+        double boosterValue = MathUtil.toPercentage(value) / 10;
+        double boosterMin = MathUtil.toPercentage(min) / 10;
+        double boosterMax = MathUtil.toPercentage(max) / 10;
 
         MoreOptionsBooster moreOptionsBooster = new MoreOptionsBooster(
             booster,
