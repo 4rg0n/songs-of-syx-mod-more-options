@@ -18,15 +18,14 @@ public class BoosterUtil {
     }
 
     public static MoreOptionsBooster extendAsAddBooster(Boostable booster, MoreOptionsConfig.Range range) {
-        int min = range.getMax() / -2;
-        return extendAsAddBooster(booster, range.getValue(), min, range.getMax());
+        return extendAsAddBooster(booster, range.getValue(), range.getMin(), range.getMax());
     }
 
     public static MoreOptionsBooster extendAsAddBooster(Boostable booster, int value, int min, int max) {
         MoreOptionsBooster moreOptionsBooster = new MoreOptionsBooster(
             booster,
             new BSourceInfo(MoreOptionsScript.MOD_INFO.name, SPRITES.icons().m.cog),
-            value, min, max, false);
+            (double) value / 100, (double) min / 100, (double) max / 100, false);
 
         BoostSpec boostSpec = new BoostSpec(moreOptionsBooster, booster, MoreOptionsScript.MOD_INFO.name);
         booster.addFactor(boostSpec);
@@ -35,9 +34,9 @@ public class BoosterUtil {
     }
 
     public static MoreOptionsBooster extendAsMultiBooster(Boostable booster, int value, int min, int max) {
-        double boosterValue = MathUtil.toPercentage(value);
-        double boosterMin = MathUtil.toPercentage(min);
-        double boosterMax = MathUtil.toPercentage(max);
+        double boosterValue = MathUtil.toPercentage(value) / 100;
+        double boosterMin = MathUtil.toPercentage(min) / 100;
+        double boosterMax = MathUtil.toPercentage(max) / 100;
 
         MoreOptionsBooster moreOptionsBooster = new MoreOptionsBooster(
             booster,
@@ -49,4 +48,24 @@ public class BoosterUtil {
 
         return moreOptionsBooster;
     }
+
+    public static boolean alreadyExtended(Boostable booster, boolean isMul) {
+        if (isMul) {
+            for (BoostSpec mul : booster.muls()) {
+                if (mul.tName.toString().contains(MoreOptionsScript.MOD_INFO.name)) {
+                    return true;
+                }
+            }
+        } else {
+            for (BoostSpec add : booster.adds()) {
+                if (add.tName.toString().contains(MoreOptionsScript.MOD_INFO.name)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
 }

@@ -121,7 +121,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 
 			// add description from game boosters
 			gameApis.boosterApi().getBoosters()
-				.values().forEach(moreOptionsBoosters -> dictionary.add(moreOptionsBoosters.getAdditive()));
+				.values().forEach(moreOptionsBoosters -> dictionary.add(moreOptionsBoosters.getAdd()));
 
 			instance = new Instance(this);
 		}
@@ -167,10 +167,9 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 		}
 
-		// FIXME
-		//		* backup ui is off
-		//		* booster ui is off
-		//		  * I guess the table rows aren't reporting their width correctly
+		// TODO
+		//     * further testing
+
 		// TODO
 		//  	is there a better way to streamline the process of adding new ui elements with their data and config?
 		//      * better config mapping? Race Interaction JsonE and ObjectMapper?
@@ -191,6 +190,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 
 		// re-apply config when new game is loaded (only when there's no backup)
 		if (!configStore.getBackupConfig().isPresent()) {
+			log.debug("Reapplying config because of game load.");
 			configurator.applyConfig(config);
 		}
 	}

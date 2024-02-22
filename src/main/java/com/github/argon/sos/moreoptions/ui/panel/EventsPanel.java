@@ -1,10 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
-import com.github.argon.sos.moreoptions.game.ui.Checkbox;
-import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
-import com.github.argon.sos.moreoptions.game.ui.VerticalLine;
+import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
@@ -19,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class EventsPanel extends GuiSection {
+public class EventsPanel extends GuiSection implements Valuable<Void> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
 
@@ -168,5 +165,15 @@ public class EventsPanel extends GuiSection {
         return CheckboxesBuilder.builder()
             .displayHeight(300)
             .translate(settlementCheckboxes).build();
+    }
+
+    @Override
+    public Void getValue() {
+        return null;
+    }
+
+    @Override
+    public void setValue(Void value) {
+
     }
 }

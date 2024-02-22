@@ -47,6 +47,7 @@ public class Modal<T extends GuiSection> extends Interrupter {
         panel.body().setDim(section.body());
 
         panelSection.body().centerIn(C.DIM());
+        panel.body().centerIn(C.DIM());
 
         section.body().centerX(panel.body());
         section.body().moveY1(panel.body().y1());

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor
 public class MoreOptionsBoosters {
-    private final MoreOptionsBooster additive;
+    private final MoreOptionsBooster add;
 
     private final MoreOptionsBooster multi;
 }

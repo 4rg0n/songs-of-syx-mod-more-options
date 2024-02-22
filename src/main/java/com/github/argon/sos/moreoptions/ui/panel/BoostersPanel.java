@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Toggler;
+import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
@@ -20,7 +21,7 @@ import util.gui.table.GScrollRows;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BoostersPanel extends GuiSection {
+public class BoostersPanel extends GuiSection implements Valuable<Void> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
     private final Map<String, Toggler<Integer>> sliders;
@@ -131,6 +132,16 @@ public class BoostersPanel extends GuiSection {
                 .threshold((int) (0.90 * rangeMulti.getMax()), COLOR.RED2RED)
                 .build())
             .build();
+    }
+
+    @Override
+    public Void getValue() {
+        return null;
+    }
+
+    @Override
+    public void setValue(Void value) {
+
     }
 
     @Data

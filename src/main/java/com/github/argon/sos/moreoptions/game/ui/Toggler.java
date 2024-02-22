@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,17 +22,22 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
     private final ClickSwitch switcher;
 
     public Toggler(Map<Info, Valuable<T>> elements) {
-        this(elements, DIR.N, false);
+        this(elements, DIR.N, 0, false);
     }
 
-    public Toggler(Map<Info, Valuable<T>> elements, DIR direction, boolean resetOnToggle) {
+    /**
+     * @param elements list of ui elements to toggle with info for buttons
+     * @param direction where shall the element be placed: DIR.N, DIR.S, DIR.E, DIR.W
+     * @param margin space between element and buttons
+     * @param resetOnToggle whether elements shall be reset when toggling
+     */
+    public Toggler(Map<Info, Valuable<T>> elements, DIR direction, int margin, boolean resetOnToggle) {
         this.elements = elements;
         this.resetOnToggle = resetOnToggle;
 
         // first element in map
         activeElement = elements.values().iterator().next();
         activeInfo = elements.keySet().iterator().next();
-
         switcher = new ClickSwitch(activeElement);
 
         GuiSection buttons = new GuiSection();
@@ -49,26 +55,34 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
             };
             button.hoverInfoSet(info.getDescription());
 
-            buttons.addRight(3, button);
+            buttons.addRight(margin, button);
         });
+
+        // guarantee same width
+        int maxWidth = UiUtil.getMaxWidth(elements.values());
+        int maxHeight = UiUtil.getMaxHeight(elements.values());
+        GuiSection container = new GuiSection();
+        container.body().setDim(maxWidth, maxHeight);
+        container.add(switcher);
+        switcher.body().centerIn(container);
 
         switch (direction) {
             default:
             case N:
-                addDownC(3, switcher);
-                addDownC(3, buttons);
+                addDownC(0, container);
+                addDownC(margin, buttons);
                 break;
             case S:
-                addDownC(3, buttons);
-                addDownC(3, switcher);
+                addDownC(0, buttons);
+                addDownC(margin, container);
                 break;
             case E:
-                addRightC(3, buttons);
-                addRightC(3, switcher);
+                addRightC(0, buttons);
+                addRightC(margin, container);
                 break;
             case W:
-                addRightC(3, switcher);
-                addRightC(3, buttons);
+                addRightC(0, container);
+                addRightC(margin, buttons);
                 break;
         }
     }

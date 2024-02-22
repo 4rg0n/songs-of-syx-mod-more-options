@@ -236,7 +236,7 @@ public class ConfigStore {
             return gameApis.boosterApi().getBoosters().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
                     .value(100)
-                    .min(0)
+                    .min(1)
                     .max(10000)
                     .applyMode(MoreOptionsConfig.Range.ApplyMode.MULTI)
                     .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)

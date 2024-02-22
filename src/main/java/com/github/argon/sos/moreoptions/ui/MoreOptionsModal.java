@@ -5,11 +5,12 @@ import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
+import com.github.argon.sos.moreoptions.game.ui.Toggler;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.EventsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.SoundsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
-import com.github.argon.sos.moreoptions.util.UiUtil;
+import com.github.argon.sos.moreoptions.util.MapUtil;
 import game.VERSION;
 import init.paths.ModInfo;
 import init.sprite.UI.UI;
@@ -17,17 +18,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
+import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
-import snake2d.util.gui.clickable.CLICKABLE;
-import snake2d.util.gui.renderable.RENDEROBJ;
-import snake2d.util.sets.Tuple;
-import util.gui.misc.GButt;
 import util.gui.misc.GText;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Window containing all other UI elements.
@@ -41,8 +36,6 @@ public class MoreOptionsModal extends GuiSection {
     @Getter
     private final ConfigStore configStore;
     private final ModInfo modInfo;
-
-    private CLICKABLE.ClickSwitch switcher;
 
     private EventsPanel eventsPanel;
     private  SoundsPanel soundsPanel;
@@ -80,22 +73,42 @@ public class MoreOptionsModal extends GuiSection {
         weatherPanel = new WeatherPanel(config.getWeather());
         boostersPanel = new BoostersPanel(boosterEntries);
 
-        Map<Tuple<String, String>, GuiSection> panels = new LinkedHashMap<>();
-        panels.put(new Tuple.TupleImp<>("Sounds", "Tune the volume of various sounds."), soundsPanel);
-        panels.put(new Tuple.TupleImp<>("Events", "Toggle and tune events."), eventsPanel);
-        panels.put(new Tuple.TupleImp<>("Weather", "Influence weather effects."), weatherPanel);
-        panels.put(new Tuple.TupleImp<>("Boosters", "Increase or decrease various bonuses."), boostersPanel);
+        Toggler<Void> toggler = new Toggler<>(MapUtil.ofLinked(
+            Toggler.Info.builder()
+                .key("sounds")
+                .title("Sounds")
+                .description("Tune the volume of various sounds.")
+                .build(), soundsPanel,
+            Toggler.Info.builder()
+                .key("events")
+                .title("Events")
+                .description("Toggle and tune events.")
+                .build(), eventsPanel,
+            Toggler.Info.builder()
+                .key("weather")
+                .title("Weather")
+                .description("Influence weather effects.")
+                .build(), weatherPanel,
+            Toggler.Info.builder()
+                .key("boosters")
+                .title("Boosters")
+                .description("Increase or decrease various bonuses.")
+                .build(), boostersPanel
+        ), DIR.S, 20, false);
 
-        GuiSection header = header(panels, config);
-        addDownC(0, header);
+        GuiSection left = new GuiSection();
+        left.addDownC(0, toggler);
 
-        switcher = new CLICKABLE.ClickSwitch(soundsPanel);
-        addDownC(20, switcher);
+        GuiSection right = new GuiSection();
+        GuiSection version = versions(config.getVersion());
+        right.addDownC(0, version);
 
-        List<RENDEROBJ> widths = new ArrayList<>(panels.values());
-        widths.add(header);
-        int width = UiUtil.getMaxWidth(widths);
-        HorizontalLine horizontalLine = new HorizontalLine(width, 14, 1);
+        GuiSection container = new GuiSection();
+        container.addRight(0, left);
+        container.addRight(0, right);
+        addDownC(20, container);
+
+        HorizontalLine horizontalLine = new HorizontalLine(body().width(), 14, 1);
         addDownC(20, horizontalLine);
 
         GuiSection footer = footer();
@@ -132,7 +145,7 @@ public class MoreOptionsModal extends GuiSection {
             ConfigUtil.extract(config.getSoundsSettlement()),
             ConfigUtil.extract(config.getSoundsRoom())
         );
-        weatherPanel.applyConfig(config.getWeather());
+        weatherPanel.applyConfig(ConfigUtil.extract(config.getWeather()));
         boostersPanel.applyConfig(config.getBoosters());
     }
 
@@ -146,36 +159,7 @@ public class MoreOptionsModal extends GuiSection {
             .orElse(true);
     }
 
-    private GuiSection header(Map<Tuple<String, String>, GuiSection> panels, MoreOptionsConfig config) {
-        GuiSection section = new GuiSection();
-        GuiSection versions = versions(config.getVersion());
-        GuiSection space = new GuiSection();
-        space.body().setWidth(versions.body().width());
-        section.addRightC(0, space);
-
-        panels.forEach((titleDesc, panel) -> {
-
-            GButt.ButtPanel button = new GButt.ButtPanel(titleDesc.a()) {
-                @Override
-                protected void clickA() {
-                    switcher.set(panel);
-                }
-
-                @Override
-                protected void renAction() {
-                    selectedSet(switcher.current() == panel);
-                }
-            };
-            button.hoverInfoSet(titleDesc.b());
-            section.addRightC(0, button.setDim(136, 32));
-        });
-
-        section.addRightC(50, versions);
-
-        return section;
-    }
-
-    private GuiSection versions(int configVersionNumber) {
+   private GuiSection versions(int configVersionNumber) {
         COLOR color = COLOR.WHITE50;
         GuiSection versions = new GuiSection();
 
