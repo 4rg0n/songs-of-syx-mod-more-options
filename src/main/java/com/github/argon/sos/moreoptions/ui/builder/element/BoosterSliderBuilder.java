@@ -33,7 +33,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Toggler
         label.pad(10, 5);
 
         Slider additiveSlider = SliderBuilder.builder()
-            .definition(definition.getSliderMultiDefinition())
+            .definition(definition.getSliderAddDefinition())
             .build().getResult();
         additiveSlider.pad(10, 5);
 
@@ -43,9 +43,18 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Toggler
         multiSlider.pad(10, 5);
 
         Toggler<Integer> toggler = new Toggler<>(MapUtil.of(
-            "Add", additiveSlider,
-            "Multi", multiSlider
-        ), DIR.W);
+            // todo dictionary
+            Toggler.Info.builder()
+                .key("add")
+                .title("Add")
+                .description("Adds to the booster value.")
+                .build(), additiveSlider,
+            Toggler.Info.builder()
+                .key("multi")
+                .title("Perc")
+                .description("Regulates the percentage of the booster value. Values under 100% will lower the effect.")
+                .build(), multiSlider
+        ), DIR.W, true);
 
         List<GuiSection> row = Stream.of(
             label,
@@ -87,9 +96,8 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Toggler
     public static class Definition implements Translatable {
 
         private LabelBuilder.Definition labelDefinition;
-
         private SliderBuilder.Definition sliderMultiDefinition;
-        private SliderBuilder.Definition sliderAdditiveiDefinition;
+        private SliderBuilder.Definition sliderAddDefinition;
 
 
         @lombok.Builder.Default

@@ -167,13 +167,13 @@ public class UIGameConfig {
     public void init(Modal<MoreOptionsModal> moreOptionsModal, MoreOptionsConfig config) {
         log.debug("Initialize %s UI", MOD_INFO.name);
 
-        List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream().map(entry ->
-            BoostersPanel.Entry.builder()
+        List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream()
+            .map(entry -> BoostersPanel.Entry.builder()
                 .key(entry.getKey())
                 .range(entry.getValue())
                 .cat(gameApis.boosterApi().getCat(entry.getKey()))
-                .build()
-        ).collect(Collectors.toList());
+                .build())
+            .collect(Collectors.toList());
 
         moreOptionsModal.getSection().init(config, boosterEntries);
         moreOptionsModal.center();

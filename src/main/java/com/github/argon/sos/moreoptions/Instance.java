@@ -50,8 +50,8 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 	public void load(FileGetter fileGetter) throws IOException {
 		log.debug("PHASE: load");
 		// Pass current config or use default
-		MoreOptionsConfig config = script.getConfigStore().getCurrentConfig()
-			.orElse(script.getConfigStore().getDefaultConfig());
+		MoreOptionsConfig config = MoreOptionsScript.getConfigStore().getCurrentConfig()
+			.orElse(MoreOptionsScript.getConfigStore().getDefaultConfig());
 
 		script.initGameSaveLoaded(config);
 	}

@@ -35,12 +35,12 @@ public class WeatherPanel extends GuiSection {
             .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
     }
 
-    public void applyConfig(Map<String, Integer> config) {
+    public void applyConfig(Map<String, MoreOptionsConfig.Range> config) {
         log.trace("Applying UI weather config %s", config);
 
-        config.forEach((key, value) -> {
+        config.forEach((key, range) -> {
             if (sliders.containsKey(key)) {
-                sliders.get(key).setValue(value);
+                sliders.get(key).setValue(range.getValue());
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }

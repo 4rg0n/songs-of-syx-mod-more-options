@@ -111,11 +111,11 @@ public class MoreOptionsModal extends GuiSection {
         return MoreOptionsConfig.builder()
                 .eventsSettlement(eventsPanel.getSettlementEventsConfig())
                 .eventsWorld(eventsPanel.getWorldEventsConfig())
-                .eventsChance(ConfigUtil.mergeIntoNewRange(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
-                .soundsAmbience(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsAmbienceConfig(), currentConfig.getSoundsAmbience()))
-                .soundsSettlement(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsSettlementConfig(), currentConfig.getSoundsSettlement()))
-                .soundsRoom(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsRoomConfig(), currentConfig.getSoundsRoom()))
-                .weather(ConfigUtil.mergeIntoNewRange(weatherPanel.getConfig(), currentConfig.getWeather()))
+                .eventsChance(ConfigUtil.mergeIntegerIntoNewRange(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
+                .soundsAmbience(ConfigUtil.mergeIntegerIntoNewRange(soundsPanel.getSoundsAmbienceConfig(), currentConfig.getSoundsAmbience()))
+                .soundsSettlement(ConfigUtil.mergeIntegerIntoNewRange(soundsPanel.getSoundsSettlementConfig(), currentConfig.getSoundsSettlement()))
+                .soundsRoom(ConfigUtil.mergeIntegerIntoNewRange(soundsPanel.getSoundsRoomConfig(), currentConfig.getSoundsRoom()))
+                .weather(ConfigUtil.mergeIntegerIntoNewRange(weatherPanel.getConfig(), currentConfig.getWeather()))
                 .boosters(ConfigUtil.mergeIntoNewRange(boostersPanel.getConfig(), currentConfig.getBoosters()))
                 .build();
     }
@@ -132,8 +132,8 @@ public class MoreOptionsModal extends GuiSection {
             ConfigUtil.extract(config.getSoundsSettlement()),
             ConfigUtil.extract(config.getSoundsRoom())
         );
-        weatherPanel.applyConfig(ConfigUtil.extract(config.getWeather()));
-        boostersPanel.applyConfig(ConfigUtil.extract(config.getBoosters()));
+        weatherPanel.applyConfig(config.getWeather());
+        boostersPanel.applyConfig(config.getBoosters());
     }
 
     /**

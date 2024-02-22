@@ -1,78 +1,90 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 
 import java.util.Map;
 
-public class Toggler<T> extends GuiSection implements Valuable<T> {
+public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
 
-    private final Map<String, Valuable<T>> elements;
-
-    private Valuable<T> activeElement;
-
-    private DIR direction;
+    private final Map<Info, Valuable<T>> elements;
+    private final boolean resetOnToggle;
 
     @Getter
-    private String activeName;
+    private Valuable<T> activeElement;
 
-    public Toggler(Map<String, Valuable<T>> elements) {
-        this(elements, DIR.N);
+    @Getter
+    private Info activeInfo;
+    private final ClickSwitch switcher;
+
+    public Toggler(Map<Info, Valuable<T>> elements) {
+        this(elements, DIR.N, false);
     }
 
-    public Toggler(Map<String, Valuable<T>> elements, DIR direction) {
+    public Toggler(Map<Info, Valuable<T>> elements, DIR direction, boolean resetOnToggle) {
         this.elements = elements;
-        this.direction = direction;
+        this.resetOnToggle = resetOnToggle;
 
         // first element in map
         activeElement = elements.values().iterator().next();
-        build(elements, direction);
-    }
+        activeInfo = elements.keySet().iterator().next();
 
-    private void build(Map<String, Valuable<T>> elements, DIR direction) {
+        switcher = new ClickSwitch(activeElement);
+
         GuiSection buttons = new GuiSection();
-        elements.forEach((name, renderobj) -> {
-            Button button = new Button(name);
-            button.clickActionSet(() -> {
-                toggle(name);
-            });
+        elements.forEach((info, renderobj) -> {
+            Button button = new Button(info.getTitle()) {
+                @Override
+                protected void clickA() {
+                    toggle(info.getKey());
+                }
+
+                @Override
+                protected void renAction() {
+                    selectedSet(switcher.current().equals(elements.get(info)));
+                }
+            };
+            button.hoverInfoSet(info.getDescription());
+
             buttons.addRight(3, button);
         });
 
         switch (direction) {
             default:
             case N:
-                addDownC(3, activeElement);
+                addDownC(3, switcher);
                 addDownC(3, buttons);
                 break;
             case S:
                 addDownC(3, buttons);
-                addDownC(3, activeElement);
+                addDownC(3, switcher);
                 break;
             case E:
                 addRightC(3, buttons);
-                addRightC(3, activeElement);
+                addRightC(3, switcher);
                 break;
             case W:
-                addRightC(3, activeElement);
+                addRightC(3, switcher);
                 addRightC(3, buttons);
                 break;
         }
     }
 
-    public void toggle(String name) {
-        if (!elements.containsKey(name)) {
-           return;
-        }
+    public void toggle(String key) {
+        elements.entrySet().stream()
+            .filter(element -> element.getKey().getKey().equals(key))
+            .findFirst()
+            .ifPresent(element -> {
+                if (resetOnToggle) reset();
 
-        Valuable<T> renderobj = elements.get(name);
-        renderobj.body().moveX1Y1(activeElement.body());
-        activeName = name;
-        activeElement = renderobj;
-
-        clear();
-        build(elements, direction);
+                Valuable<T> renderobj = element.getValue();
+                activeInfo = element.getKey();
+                activeElement = renderobj;
+                switcher.set(activeElement);
+            });
     }
 
     @Override
@@ -83,5 +95,24 @@ public class Toggler<T> extends GuiSection implements Valuable<T> {
     @Override
     public void setValue(T value) {
         activeElement.setValue(value);
+    }
+
+    @Override
+    public void reset() {
+        elements.values().stream()
+            .filter(element -> element instanceof Resettable)
+            .map(Resettable.class::cast)
+            .forEach(Resettable::reset);
+    }
+
+    @Getter
+    @Builder
+    @EqualsAndHashCode
+    public static class Info {
+
+        private final String key;
+        private final String title;
+
+        private final String description;
     }
 }

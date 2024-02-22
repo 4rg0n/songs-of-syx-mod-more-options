@@ -167,12 +167,17 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 		}
 
-		// fixme Disease and Raid Event chance shall go from 100% (game default) to 10000%
-		//       So players could lower the chance or increase it as they like
+		// FIXME
+		//		* backup ui is off
+		//		* booster ui is off
+		//		  * I guess the table rows aren't reporting their width correctly
+		// TODO
+		//  	is there a better way to streamline the process of adding new ui elements with their data and config?
+		//      * better config mapping? Race Interaction JsonE and ObjectMapper?
+		//      * easier mapping? mapstruct?
 
-		// todo add a MoreOptionsViewModel inbetween? for easier mapping? mapstruct?
-
-		// todo experimental
+		// TODO add a MoreOptionsViewModel inbetween?
+		// TODO experimental
 //		gameApis.weatherApi().lockDayCycle(1, true);
 	}
 

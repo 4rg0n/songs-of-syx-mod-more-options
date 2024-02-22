@@ -38,37 +38,37 @@ public class ConfigMapper {
             .eventsChance((json.has("EVENTS_CHANCE")) ? JsonMapper.mapInteger(json.json("EVENTS_CHANCE")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> ConfigUtil.mergeIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getEventsChance().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getEventsChance().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getEventsChance() : new HashMap<>())
 
             .soundsAmbience((json.has("SOUNDS_AMBIENCE")) ? JsonMapper.mapInteger(json.json("SOUNDS_AMBIENCE")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> ConfigUtil.mergeIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsAmbience().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsAmbience().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getSoundsAmbience() : new HashMap<>())
 
             .soundsSettlement((json.has("SOUNDS_SETTLEMENT")) ? JsonMapper.mapInteger(json.json("SOUNDS_SETTLEMENT")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> ConfigUtil.mergeIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsSettlement().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsSettlement().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getSoundsSettlement() : new HashMap<>())
 
             .soundsRoom((json.has("SOUNDS_ROOM")) ? JsonMapper.mapInteger(json.json("SOUNDS_ROOM")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> ConfigUtil.mergeIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsRoom().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSoundsRoom().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getSoundsRoom() : new HashMap<>())
 
             .weather((json.has("WEATHER")) ? JsonMapper.mapInteger(json.json("WEATHER")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> ConfigUtil.mergeIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getWeather().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getWeather().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getWeather() : new HashMap<>())
 
             .boosters((json.has("BOOSTERS")) ? JsonMapper.mapInteger(json.json("BOOSTERS")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
-                    entry -> ConfigUtil.mergeIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getBoosters().get(entry.getKey()) : null)
+                    entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getBoosters().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
             .build();
     }
@@ -131,8 +131,6 @@ public class ConfigMapper {
             .build();
     }
 
-
-
     public Map<String, MoreOptionsConfig.Range> mapRanges(Json json) {
         Map<String, MoreOptionsConfig.Range> map = new HashMap<>();
 
@@ -150,6 +148,8 @@ public class ConfigMapper {
             .value((defaultValue != null) ? defaultValue : rangeJson.i("VALUE"))
             .min(rangeJson.i("MIN"))
             .max(rangeJson.i("MAX"))
+            .applyMode(MoreOptionsConfig.Range.ApplyMode
+                .valueOf(rangeJson.text("APPLY_MODE")))
             .displayMode(MoreOptionsConfig.Range.DisplayMode
                 .valueOf(rangeJson.text("DISPLAY_MODE")))
             .build();
@@ -171,6 +171,7 @@ public class ConfigMapper {
         rangeJson.add("VALUE", (defaultValue != null) ? defaultValue : range.getValue());
         rangeJson.add("MIN", range.getMin());
         rangeJson.add("MAX", range.getMax());
+        rangeJson.addString("APPLY_MODE", range.getApplyMode().toString());
         rangeJson.addString("DISPLAY_MODE", range.getDisplayMode().toString());
 
         return rangeJson;

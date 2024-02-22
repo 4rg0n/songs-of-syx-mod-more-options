@@ -53,7 +53,7 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
 
         int widthTotal = UiUtil.getMaxCombinedColumnWidth(rows);
 
-        for(String key: definitions.keySet()) {
+        for (String key: definitions.keySet()) {
             renderobjs.addAll(TableHeaderBuilder.builder()
                     .evenOdd(true)
                     .displayHeight(displayHeight)

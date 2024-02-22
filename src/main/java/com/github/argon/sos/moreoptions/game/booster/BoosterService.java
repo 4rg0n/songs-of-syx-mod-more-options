@@ -52,7 +52,7 @@ public class BoosterService {
                         moreOptionsBoosters.getMulti().set(MathUtil.toPercentage(range.getValue()));
                         moreOptionsBoosters.getAdditive().reset();
                         break;
-                    case ADDITIVE:
+                    case ADD:
                         moreOptionsBoosters.getAdditive().set(MathUtil.toPercentage(range.getValue()));
                         moreOptionsBoosters.getMulti().reset();
                         break;

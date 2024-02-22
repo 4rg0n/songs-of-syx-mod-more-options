@@ -192,7 +192,10 @@ public class ConfigStore {
         private final GameApis gameApis;
 
         @Getter(lazy=true)
-        private final Map<String, MoreOptionsConfig.Range> boosters = boosters();
+        private final Map<String, MoreOptionsConfig.Range> boostersMulti = boostersMulti();
+
+        @Getter(lazy=true)
+        private final Map<String, MoreOptionsConfig.Range> boostersAdd = boostersAdd();
         @Getter(lazy=true)
         private final Map<String, MoreOptionsConfig.Range> weather = weather();
         @Getter(lazy=true)
@@ -224,17 +227,31 @@ public class ConfigStore {
                 .soundsSettlement(getSoundsSettlement())
                 .soundsRoom(getSoundsRoom())
                 .weather(getWeather())
-                .boosters(getBoosters())
+                .boosters(getBoostersMulti())
                 .build();
         }
 
-        private Map<String, MoreOptionsConfig.Range> boosters() {
+        private Map<String, MoreOptionsConfig.Range> boostersMulti() {
             //noinspection DataFlowIssue
             return gameApis.boosterApi().getBoosters().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
                     .value(100)
                     .min(0)
                     .max(10000)
+                    .applyMode(MoreOptionsConfig.Range.ApplyMode.MULTI)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                    .build()));
+        }
+
+        private Map<String, MoreOptionsConfig.Range> boostersAdd() {
+            //noinspection DataFlowIssue
+            return gameApis.boosterApi().getBoosters().keySet().stream()
+                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+                    .value(0)
+                    .min(0)
+                    .max(10000)
+                    .applyMode(MoreOptionsConfig.Range.ApplyMode.ADD)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE)
                     .build()));
         }
 

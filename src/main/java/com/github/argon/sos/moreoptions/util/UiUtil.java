@@ -12,14 +12,14 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiUtil {
-    public static int getMaxWidth(Collection<? extends RENDEROBJ> sections) {
+    public static int getMaxWidth(Collection<? extends RENDEROBJ> renderobjs) {
         int maxWidth = 0;
 
-        for (RENDEROBJ section : sections) {
-            int sectionWidth = section.body().width();
+        for (RENDEROBJ renderobj : renderobjs) {
+            int currentWidth = renderobj.body().width();
 
-            if (sectionWidth > maxWidth) {
-                maxWidth = sectionWidth;
+            if (currentWidth > maxWidth) {
+                maxWidth = currentWidth;
             }
         }
 

@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Toggler;
@@ -40,44 +41,13 @@ public class BoostersPanel extends GuiSection {
         }
 
         Map<String, Map<String, BoosterSliderBuilder.Definition>> boosterDefinitions = new HashMap<>();
-
-        for(String cat : groupedBoosterEntries.keySet()) {
+        groupedBoosterEntries.keySet().forEach(cat -> {
             List<Entry> groupedBoostersByCat = groupedBoosterEntries.get(cat);
-
-            boosterDefinitions.put(cat, groupedBoostersByCat.stream().collect(Collectors.toMap(
+            boosterDefinitions.put(cat, groupedBoostersByCat.stream()
+                .collect(Collectors.toMap(
                     Entry::getKey,
-                    entry -> BoosterSliderBuilder.Definition.builder()
-                            .labelDefinition(LabelBuilder.Definition.builder()
-                                    .key(entry.getKey())
-                                    .title(entry.getKey())
-                                    .build())
-                            .sliderAdditiveiDefinition(SliderBuilder.Definition.builder()
-                                    .maxWidth(300)
-                                    // fixme: wrong ranges
-                                    .min(entry.getRange().getMin())
-                                    .max(entry.getRange().getMax())
-                                    .value(entry.getRange().getValue())
-                                    .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
-
-//                                    .threshold((int) (0.10 *entry.getRange().getMax()), COLOR.YELLOW100.shade(0.7d))
-//                                    .threshold((int) (0.50 *entry.getRange().getMax()), COLOR.ORANGE100.shade(0.7d))
-//                                    .threshold((int) (0.75 *entry.getRange().getMax()), COLOR.RED100.shade(0.7d))
-//                                    .threshold((int) (0.90 *entry.getRange().getMax()), COLOR.RED2RED)
-                                    .build())
-                            .sliderMultiDefinition(SliderBuilder.Definition.builder()
-                                    .maxWidth(300)
-                                    .min(entry.getRange().getMin())
-                                    .max(entry.getRange().getMax())
-                                    .value(entry.getRange().getValue())
-                                    .valueDisplay(Slider.ValueDisplay.PERCENTAGE)
-                                    .threshold((int) (0.10 *entry.getRange().getMax()), COLOR.YELLOW100.shade(0.7d))
-                                    .threshold((int) (0.50 *entry.getRange().getMax()), COLOR.ORANGE100.shade(0.7d))
-                                    .threshold((int) (0.75 *entry.getRange().getMax()), COLOR.RED100.shade(0.7d))
-                                    .threshold((int) (0.90 *entry.getRange().getMax()), COLOR.RED2RED)
-                                    .build())
-                            .build())));
-
-        }
+                    BoostersPanel::buildSliderDefinition)));
+        });
 
         BuildResult<GScrollRows, Map<String, Toggler<Integer>>> buildResult = BoosterSlidersBuilder.builder()
                 .displayHeight(500)
@@ -89,28 +59,84 @@ public class BoostersPanel extends GuiSection {
         addDown(10, gScrollRows.view());
     }
 
-    public Map<String, Integer> getConfig() {
+    public Map<String, MoreOptionsConfig.Range> getConfig() {
         return sliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> {
+                    Toggler<Integer> toggler = entry.getValue();
+                    return MoreOptionsConfig.Range.builder()
+                        .value(toggler.getValue())
+                        .applyMode(MoreOptionsConfig.Range.ApplyMode.valueOf(
+                            toggler.getActiveInfo().getKey().toUpperCase()))
+                        .build();
+                }));
     }
 
-    public void applyConfig(Map<String, Integer> config) {
+    public void applyConfig(Map<String, MoreOptionsConfig.Range> config) {
         log.trace("Applying Booster config %s", config);
 
-        config.forEach((key, value) -> {
+        config.forEach((key, range) -> {
             if (sliders.containsKey(key)) {
-                sliders.get(key).setValue(value);
+                Toggler<Integer> toggler = sliders.get(key);
+                toggler.reset();
+                toggler.toggle(range.getApplyMode().name().toLowerCase());
+                toggler.setValue(range.getValue());
+
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
     }
 
+    private static BoosterSliderBuilder.Definition buildSliderDefinition(Entry entry) {
+        MoreOptionsConfig.Range rangeMulti;
+        MoreOptionsConfig.Range rangeAdd;
+
+        if (entry.getRange().getApplyMode().equals(MoreOptionsConfig.Range.ApplyMode.MULTI)) {
+            rangeMulti = entry.getRange();
+            rangeAdd = MoreOptionsScript.getConfigStore()
+                .getDefaults().getBoostersAdd().get(entry.getKey());
+        } else {
+            rangeMulti = MoreOptionsScript.getConfigStore()
+                .getDefaults().getBoostersMulti().get(entry.getKey());
+            rangeAdd = entry.getRange();
+        }
+
+        return BoosterSliderBuilder.Definition.builder()
+            .labelDefinition(LabelBuilder.Definition.builder()
+                .key(entry.getKey())
+                .title(entry.getKey())
+                .build())
+            .sliderAddDefinition(SliderBuilder.Definition.builder()
+                .maxWidth(300)
+                .min(rangeAdd.getMin())
+                .max(rangeAdd.getMax())
+                .value(rangeAdd.getValue())
+                .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
+                .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))
+                .threshold((int) (0.50 * rangeAdd.getMax()), COLOR.ORANGE100.shade(0.7d))
+                .threshold((int) (0.75 * rangeAdd.getMax()), COLOR.RED100.shade(0.7d))
+                .threshold((int) (0.90 * rangeAdd.getMax()), COLOR.RED2RED)
+                .build())
+            .sliderMultiDefinition(SliderBuilder.Definition.builder()
+                .maxWidth(300)
+                .min(rangeMulti.getMin())
+                .max(rangeMulti.getMax())
+                .value(rangeMulti.getValue())
+                .valueDisplay(Slider.ValueDisplay.PERCENTAGE)
+                .threshold((int) (0.10 * rangeMulti.getMax()), COLOR.YELLOW100.shade(0.7d))
+                .threshold((int) (0.50 * rangeMulti.getMax()), COLOR.ORANGE100.shade(0.7d))
+                .threshold((int) (0.75 * rangeMulti.getMax()), COLOR.RED100.shade(0.7d))
+                .threshold((int) (0.90 * rangeMulti.getMax()), COLOR.RED2RED)
+                .build())
+            .build();
+    }
+
     @Data
     @Builder
     public static class Entry {
         private MoreOptionsConfig.Range range;
-
         private String key;
 
         //  |\__/,|   (`\

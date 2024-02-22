@@ -42,21 +42,21 @@ public class Modal<T extends GuiSection> extends Interrupter {
     }
 
     public void center() {
-        int space = 50;
-        int width = section.body().width() + space * 2;
-        int height = section.body().height() + space * 2;
+        section.pad(20);
+        panelSection.body().setDim(section.body());
+        panel.body().setDim(section.body());
 
-        panel.body().setDim(width, height);
-        panel.body().centerIn(C.DIM());
+        panelSection.body().centerIn(C.DIM());
+
         section.body().centerX(panel.body());
-        section.body().moveY1(panel.body().y1() + space);
+        section.body().moveY1(panel.body().y1());
     }
 
     @Override
     protected boolean hover(COORDINATE coordinate, boolean b) {
         panelSection.hover(coordinate);
 
-        // disable background interaction with true
+        // disable background interaction returning true
         return true;
     }
 

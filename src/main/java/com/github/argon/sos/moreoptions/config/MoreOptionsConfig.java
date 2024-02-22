@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.log.Level;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -78,7 +79,7 @@ public class MoreOptionsConfig {
         }
 
         public enum ApplyMode {
-            ADDITIVE,
+            ADD,
             MULTI
         }
 
@@ -101,6 +102,16 @@ public class MoreOptionsConfig {
 
         @Builder.Default
         private Level logLevel = MoreOptionsScript.LOG_LEVEL_DEFAULT;
+    }
+
+    @Getter
+    @Builder
+    public static class BoosterEntry {
+        private final String key;
+
+        private final Range add;
+
+        private final Range multi;
     }
 
     /* TODO
