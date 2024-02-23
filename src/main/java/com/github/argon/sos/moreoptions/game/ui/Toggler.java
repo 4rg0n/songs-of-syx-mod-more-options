@@ -4,8 +4,10 @@ import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import snake2d.SPRITE_RENDERER;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.Map;
 
@@ -19,7 +21,8 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
 
     @Getter
     private Info activeInfo;
-    private final ClickSwitch switcher;
+
+    private final ClickWrap viewContainer;
 
     public Toggler(Map<Info, Valuable<T>> elements) {
         this(elements, DIR.N, 0, false);
@@ -38,7 +41,6 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
         // first element in map
         activeElement = elements.values().iterator().next();
         activeInfo = elements.keySet().iterator().next();
-        switcher = new ClickSwitch(activeElement);
 
         GuiSection buttons = new GuiSection();
         elements.forEach((info, renderobj) -> {
@@ -50,38 +52,39 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
 
                 @Override
                 protected void renAction() {
-                    selectedSet(switcher.current().equals(elements.get(info)));
+                    selectedSet(activeElement.equals(elements.get(info)));
                 }
             };
             button.hoverInfoSet(info.getDescription());
-
             buttons.addRight(margin, button);
         });
 
         // guarantee same width
         int maxWidth = UiUtil.getMaxWidth(elements.values());
         int maxHeight = UiUtil.getMaxHeight(elements.values());
-        GuiSection container = new GuiSection();
-        container.body().setDim(maxWidth, maxHeight);
-        container.add(switcher);
-        switcher.body().centerIn(container);
+        viewContainer = new ClickWrap(maxWidth, maxHeight) {
+            @Override
+            protected RENDEROBJ pget() {
+                return activeElement;
+            }
+        };
 
         switch (direction) {
             default:
             case N:
-                addDownC(0, container);
+                addDownC(0, viewContainer);
                 addDownC(margin, buttons);
                 break;
             case S:
                 addDownC(0, buttons);
-                addDownC(margin, container);
+                addDownC(margin, viewContainer);
                 break;
             case E:
                 addRightC(0, buttons);
-                addRightC(margin, container);
+                addRightC(margin, viewContainer);
                 break;
             case W:
-                addRightC(0, container);
+                addRightC(0, viewContainer);
                 addRightC(margin, buttons);
                 break;
         }
@@ -97,8 +100,12 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
                 Valuable<T> renderobj = element.getValue();
                 activeInfo = element.getKey();
                 activeElement = renderobj;
-                switcher.set(activeElement);
             });
+    }
+
+    @Override
+    public void render(SPRITE_RENDERER r, float ds) {
+        super.render(r, ds);
     }
 
     @Override

@@ -94,24 +94,14 @@ public class MoreOptionsModal extends GuiSection {
                 .title("Boosters")
                 .description("Increase or decrease various bonuses.")
                 .build(), boostersPanel
-        ), DIR.S, 20, false);
+        ), DIR.S, 30, false);
 
-        GuiSection left = new GuiSection();
-        left.addDownC(0, toggler);
-
-        GuiSection right = new GuiSection();
-        GuiSection version = versions(config.getVersion());
-        right.addDownC(0, version);
-
-        GuiSection container = new GuiSection();
-        container.addRight(0, left);
-        container.addRight(0, right);
-        addDownC(20, container);
+        addDownC(0, toggler);
 
         HorizontalLine horizontalLine = new HorizontalLine(body().width(), 14, 1);
         addDownC(20, horizontalLine);
 
-        GuiSection footer = footer();
+        GuiSection footer = footer(config.getVersion());
         addDownC(20, footer);
     }
 
@@ -184,7 +174,7 @@ public class MoreOptionsModal extends GuiSection {
         return versions;
     }
 
-    private GuiSection footer() {
+    private GuiSection footer(int version) {
         GuiSection section = new GuiSection();
 
         this.cancelButton = new Button("Cancel", COLOR.WHITE25);
@@ -207,8 +197,10 @@ public class MoreOptionsModal extends GuiSection {
         this.applyButton = new Button("Apply", COLOR.WHITE15);
         applyButton.hoverInfoSet("Apply and save options");
         applyButton.setEnabled(false);
-        section.addRight(300, applyButton);
 
+        section.addRight(50, versions(version));
+
+        section.addRight(50, applyButton);
         this.okButton = new Button("OK", COLOR.WHITE15);
         okButton.hoverInfoSet("Apply and exit");
         section.addRight(10, okButton);
