@@ -69,7 +69,12 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 	@Override
 	public void initBeforeGameCreated() {
 		gameApis.initBeforeGameCreated();
-		Level level = configStore.initMetaInfo().getLogLevel();
+
+		String logLevelName = System.getenv("MO.LOG_LEVEL");
+		Level level = Optional.ofNullable(logLevelName)
+			.flatMap(Level::fromName)
+			.orElse(configStore.initMetaInfo().getLogLevel());
+
 		Loggers.setLevels(level);
 
 		log.debug("PHASE: initBeforeGameCreated");
