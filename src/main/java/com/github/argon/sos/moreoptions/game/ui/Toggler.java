@@ -22,19 +22,18 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
     @Getter
     private Info activeInfo;
 
-    private final ClickWrap viewContainer;
-
     public Toggler(Map<Info, Valuable<T>> elements) {
-        this(elements, DIR.N, 0, false);
+        this(elements, DIR.N, 0, false, false);
     }
 
     /**
      * @param elements list of ui elements to toggle with info for buttons
      * @param direction where shall the element be placed: DIR.N, DIR.S, DIR.E, DIR.W
      * @param margin space between element and buttons
+     * @param center whether elements shall be centered
      * @param resetOnToggle whether elements shall be reset when toggling
      */
-    public Toggler(Map<Info, Valuable<T>> elements, DIR direction, int margin, boolean resetOnToggle) {
+    public Toggler(Map<Info, Valuable<T>> elements, DIR direction, int margin, boolean center, boolean resetOnToggle) {
         this.elements = elements;
         this.resetOnToggle = resetOnToggle;
 
@@ -62,7 +61,8 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
         // guarantee same width
         int maxWidth = UiUtil.getMaxWidth(elements.values());
         int maxHeight = UiUtil.getMaxHeight(elements.values());
-        viewContainer = new ClickWrap(maxWidth, maxHeight) {
+
+        ClickWrapper clicker = new ClickWrapper(maxWidth, maxHeight, center) {
             @Override
             protected RENDEROBJ pget() {
                 return activeElement;
@@ -72,19 +72,19 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
         switch (direction) {
             default:
             case N:
-                addDownC(0, viewContainer);
+                addDownC(0, clicker);
                 addDownC(margin, buttons);
                 break;
             case S:
                 addDownC(0, buttons);
-                addDownC(margin, viewContainer);
+                addDownC(margin, clicker);
                 break;
             case E:
                 addRightC(0, buttons);
-                addRightC(margin, viewContainer);
+                addRightC(margin, clicker);
                 break;
             case W:
-                addRightC(0, viewContainer);
+                addRightC(0, clicker);
                 addRightC(margin, buttons);
                 break;
         }

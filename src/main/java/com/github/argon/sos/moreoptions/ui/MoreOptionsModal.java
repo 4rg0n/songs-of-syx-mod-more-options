@@ -94,7 +94,7 @@ public class MoreOptionsModal extends GuiSection {
                 .title("Boosters")
                 .description("Increase or decrease various bonuses.")
                 .build(), boostersPanel
-        ), DIR.S, 30, false);
+        ), DIR.S, 30, true, false);
 
         addDownC(0, toggler);
 

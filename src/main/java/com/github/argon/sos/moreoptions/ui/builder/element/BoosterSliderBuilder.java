@@ -54,7 +54,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Toggler
                 .title("Perc")
                 .description("Regulates the percentage of the booster value. Values under 100% will lower the effect.")
                 .build(), multiSlider
-        ), DIR.W, 0, true);
+        ), DIR.W, 0, false, true);
 
         List<GuiSection> row = Stream.of(
             label,
