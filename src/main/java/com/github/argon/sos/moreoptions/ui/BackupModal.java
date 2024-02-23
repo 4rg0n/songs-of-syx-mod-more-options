@@ -9,6 +9,9 @@ import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GText;
 
+/**
+ * Used when the player decides to edit the loaded backup config
+ */
 public class BackupModal extends GuiSection {
     @Getter
     private Button applyButton;

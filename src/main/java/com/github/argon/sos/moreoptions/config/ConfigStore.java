@@ -59,7 +59,6 @@ public class ConfigStore {
                 saveConfig(config);
             } else if (configVersion < metaVersion) {
                 log.warn("Detected config version decrease from %s to %s. This shouldn't happen...", metaVersion, configVersion);
-                // FIXME persist newest? discard old?
             }
         });
 

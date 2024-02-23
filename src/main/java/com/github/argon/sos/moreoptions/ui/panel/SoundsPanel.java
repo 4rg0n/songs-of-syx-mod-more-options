@@ -16,6 +16,9 @@ import util.gui.misc.GHeader;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Contains slider for controlling the volume of game sound effects
+ */
 public class SoundsPanel extends GuiSection implements Valuable<Void> {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
 

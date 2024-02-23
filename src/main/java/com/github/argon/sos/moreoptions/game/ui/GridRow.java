@@ -7,6 +7,9 @@ import snake2d.util.gui.GuiSection;
 
 import java.util.List;
 
+/**
+ * Container, which aligns elements evenly in the row
+ */
 public class GridRow extends GuiSection {
 
     private COLOR color;
@@ -19,6 +22,11 @@ public class GridRow extends GuiSection {
         pad(5, 5);
     }
 
+    /**
+     * Applies widths to each element in the row
+     *
+     * @param columnWidths to apply for each element
+     */
     public void initGrid(List<Integer> columnWidths) {
         clear();
 

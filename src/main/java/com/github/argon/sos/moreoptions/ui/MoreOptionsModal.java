@@ -25,10 +25,8 @@ import util.gui.misc.GText;
 import java.util.List;
 
 /**
- * Window containing all other UI elements.
+ * Main window containing all other UI elements.
  * Will pop up in the middle of the game and pauses the game.
- *
- * FIXME BUG? hovering over elements behind the window will trigger ui elements beneath e.g. showing tooltips from citizens
  */
 @RequiredArgsConstructor
 public class MoreOptionsModal extends GuiSection {

@@ -11,6 +11,10 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.Map;
 
+/**
+ * Builds a row with buttons and displays the associated ui element when a button is toggled
+ * Used for replacing ui elements on button toggle.
+ */
 public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
 
     private final Map<Info, Valuable<T>> elements;

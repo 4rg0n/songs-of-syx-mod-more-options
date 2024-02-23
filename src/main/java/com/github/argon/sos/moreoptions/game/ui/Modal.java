@@ -11,6 +11,11 @@ import util.gui.panel.GPanel;
 import view.interrupter.Interrupter;
 import view.main.VIEW;
 
+/**
+ * For displaying a {@link GuiSection} in a modal window.
+ *
+ * @param <T> ui element to display
+ */
 public class Modal<T extends GuiSection> extends Interrupter {
     @Getter
     protected final T section;

@@ -46,7 +46,6 @@ public class BoosterService {
                 boosters.computeIfPresent(key, (keyAgain, moreOptionsBoosters) -> {
                 log.debug("Apply booster config for: %s", key);
 
-
                 switch (range.getApplyMode()) {
                     case MULTI:
                         double multiValue = (double) range.getValue() / 1000;

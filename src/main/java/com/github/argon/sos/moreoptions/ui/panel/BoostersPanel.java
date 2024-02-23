@@ -21,6 +21,9 @@ import util.gui.table.GScrollRows;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Contains sliders to influence values of game boosters
+ */
 public class BoostersPanel extends GuiSection implements Valuable<Void> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter

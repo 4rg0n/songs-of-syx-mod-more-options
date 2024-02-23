@@ -14,6 +14,9 @@ import settlement.army.Div;
 import settlement.stats.Induvidual;
 import world.regions.Region;
 
+/**
+ * Used for extending and therefore boosting game boosters
+ */
 public class MoreOptionsBooster extends BoosterImp {
 
     private double value;

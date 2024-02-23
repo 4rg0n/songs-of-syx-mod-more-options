@@ -13,6 +13,9 @@ import snake2d.util.gui.GuiSection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Contains slider for controlling the intensity of weather effects
+ */
 public class WeatherPanel extends GuiSection implements Valuable<Void> {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
     @Getter

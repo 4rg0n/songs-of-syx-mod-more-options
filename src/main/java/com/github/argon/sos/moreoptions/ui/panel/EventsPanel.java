@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Contains control elements for enabling and disabling game events.
+ */
 public class EventsPanel extends GuiSection implements Valuable<Void> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
@@ -38,8 +41,6 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
         BuildResult<GuiSection, Map<String, Checkbox>> worldCheckboxesResult = checkboxes(worldEventsConfig);
         GuiSection world = worldCheckboxesResult.getResult();
         worldEventsCheckboxes.putAll(worldCheckboxesResult.getInteractable());
-
-        // todo event reset buttons?
 
         GuiSection settlementSection = new GuiSection();
         GHeader settlementHeader = new GHeader("Settlement");

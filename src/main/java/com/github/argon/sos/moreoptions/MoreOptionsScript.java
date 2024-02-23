@@ -70,22 +70,20 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 	public void initBeforeGameCreated() {
 		gameApis.initBeforeGameCreated();
 
+		// determine log level
 		String logLevelName = System.getenv("MO.LOG_LEVEL");
 		Level level = Optional.ofNullable(logLevelName)
 			.flatMap(Level::fromName)
 			.orElse(configStore.initMetaInfo().getLogLevel());
-
 		Loggers.setLevels(level);
 
 		log.debug("PHASE: initBeforeGameCreated");
+		// custom error handling
 		Errors.setHandler(new MoreOptionsErrorHandler<>(this));
 
-		// load backup config
+		// load backup config if present
 		configStore.loadBackupConfig().ifPresent(configStore::setBackupConfig);
-
-		modInfo = gameApis.modApi().getCurrentMod().orElse(null);
 		uiGameConfig = new UIGameConfig(
-			modInfo,
 			gameApis,
 			configurator,
 			configStore
@@ -133,8 +131,6 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 
 		// or else the init methods won't be called again when a save game is loaded
 		instance.reset();
-
-
 		return instance;
 	}
 

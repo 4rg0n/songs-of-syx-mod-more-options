@@ -21,6 +21,16 @@ public class BoosterUtil {
         return extendAsAddBooster(booster, range.getValue(), range.getMin(), range.getMax());
     }
 
+    /**
+     * Will add a {@link MoreOptionsBooster} as "add" to the given game {@link Boostable}
+     *
+     * @param booster to extend
+     * @param value initial value of the boost effect
+     * @param min lowest possible boost value
+     * @param max highest possible boost value
+     *
+     * @return extended booster
+     */
     public static MoreOptionsBooster extendAsAddBooster(Boostable booster, int value, int min, int max) {
         MoreOptionsBooster moreOptionsBooster = new MoreOptionsBooster(
             booster,
@@ -33,6 +43,16 @@ public class BoosterUtil {
         return moreOptionsBooster;
     }
 
+    /**
+     * Will add a {@link MoreOptionsBooster} as "multi" to the given game {@link Boostable}
+     *
+     * @param booster to extend
+     * @param value initial value of the boost effect
+     * @param min lowest possible boost value
+     * @param max highest possible boost value
+     *
+     * @return extended booster
+     */
     public static MoreOptionsBooster extendAsMultiBooster(Boostable booster, int value, int min, int max) {
         double boosterValue = MathUtil.toPercentage(value) / 10;
         double boosterMin = MathUtil.toPercentage(min) / 10;

@@ -4,6 +4,9 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import util.colors.GCOLOR;
 
+/**
+ * Draws a vertical pixel line
+ */
 public class VerticalLine extends RENDEROBJ.RenderImp {
 
     private final int thickness;

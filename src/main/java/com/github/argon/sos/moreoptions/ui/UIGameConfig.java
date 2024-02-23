@@ -9,7 +9,6 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
-import init.paths.ModInfo;
 import init.paths.PATHS;
 import init.sprite.SPRITES;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +27,12 @@ import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 /**
  * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsConfig}.
  * So when a new entry is added, a new UI element like e.g. an additional slider will also be visible.
+ * For setting up the UI.
  */
 @RequiredArgsConstructor
 public class UIGameConfig {
 
     private final static Logger log = Loggers.getLogger(UIGameConfig.class);
-
-    private final ModInfo modInfo;
 
     private final GameApis gameApis;
 
