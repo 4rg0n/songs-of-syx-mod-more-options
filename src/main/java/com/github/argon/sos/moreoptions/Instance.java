@@ -24,6 +24,8 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 
 	private boolean initGamePresent = false;
 
+	private boolean newGame = true;
+
 	private final MoreOptionsScript script;
 
 	@Override
@@ -49,11 +51,17 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 	@Override
 	public void load(FileGetter fileGetter) throws IOException {
 		log.debug("PHASE: load");
-		// Pass current config or use default
-		MoreOptionsConfig config = MoreOptionsScript.getConfigStore().getCurrentConfig()
-			.orElse(MoreOptionsScript.getConfigStore().getDefaultConfig());
 
-		script.initGameSaveLoaded(config);
+		if (newGame) {
+			log.debug("Game just started");
+			newGame = false;
+		} else {
+			// Pass current config or use default
+			MoreOptionsConfig config = MoreOptionsScript.getConfigStore().getCurrentConfig()
+				.orElse(MoreOptionsScript.getConfigStore().getDefaultConfig());
+
+			script.initGameSaveLoaded(config);
+		}
 	}
 
 	/**
