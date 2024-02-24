@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.ui.panel;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
-import com.github.argon.sos.moreoptions.game.ui.Toggler;
+import com.github.argon.sos.moreoptions.game.ui.Tabulator;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class BoostersPanel extends GuiSection implements Valuable<Void> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
-    private final Map<String, Toggler<Integer>> sliders;
+    private final Map<String, Tabulator<String, Integer>> sliders;
 
     public BoostersPanel(List<Entry> boosterEntries) {
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
@@ -53,7 +53,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
                     BoostersPanel::buildSliderDefinition)));
         });
 
-        BuildResult<GScrollRows, Map<String, Toggler<Integer>>> buildResult = BoosterSlidersBuilder.builder()
+        BuildResult<GScrollRows, Map<String, Tabulator<String, Integer>>> buildResult = BoosterSlidersBuilder.builder()
                 .displayHeight(500)
                 .translate(boosterDefinitions)
                 .build();
@@ -68,11 +68,11 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 entry -> {
-                    Toggler<Integer> toggler = entry.getValue();
+                    Tabulator<String, Integer> tabulator = entry.getValue();
                     return MoreOptionsConfig.Range.builder()
-                        .value(toggler.getValue())
+                        .value(tabulator.getValue())
                         .applyMode(MoreOptionsConfig.Range.ApplyMode.valueOf(
-                            toggler.getActiveInfo().getKey().toUpperCase()))
+                            tabulator.getActiveInfo().getKey().toUpperCase()))
                         .build();
                 }));
     }
@@ -82,10 +82,10 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
 
         config.forEach((key, range) -> {
             if (sliders.containsKey(key)) {
-                Toggler<Integer> toggler = sliders.get(key);
-                toggler.reset();
-                toggler.toggle(range.getApplyMode().name().toLowerCase());
-                toggler.setValue(range.getValue());
+                Tabulator<String, Integer> tabulator = sliders.get(key);
+                tabulator.reset();
+                tabulator.tab(range.getApplyMode().name().toLowerCase());
+                tabulator.setValue(range.getValue());
 
             } else {
                 log.warn("No slider with key %s found in UI", key);

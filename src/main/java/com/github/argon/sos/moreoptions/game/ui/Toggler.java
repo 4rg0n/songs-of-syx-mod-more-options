@@ -1,110 +1,81 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.util.UiUtil;
+import com.github.argon.sos.moreoptions.game.ACTION;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import snake2d.SPRITE_RENDERER;
-import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
-import snake2d.util.gui.renderable.RENDEROBJ;
+import snake2d.util.misc.ACTION.ACTION_O;
 
-import java.util.Map;
+import java.util.Collection;
+import java.util.Optional;
 
 /**
- * Builds a row with buttons and displays the associated ui element when a button is toggled
- * Used for replacing ui elements on button toggle.
+ * Builds a row with buttons to toggle
  */
-public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
+public class Toggler<K> extends GuiSection implements Valuable<K>, Resettable {
 
-    private final Map<Info, Valuable<T>> elements;
-    private final boolean resetOnToggle;
-
-    @Getter
-    private Valuable<T> activeElement;
+    private final Collection<Info<K>> elements;
 
     @Getter
-    private Info activeInfo;
+    private Info<K> activeInfo;
 
-    public Toggler(Map<Info, Valuable<T>> elements) {
-        this(elements, DIR.N, 0, false, false);
+    @Getter
+    private Button activeButton;
+
+    @SuppressWarnings("unchecked")
+    private ACTION_O<K> toggleAction = ACTION.NOPO;
+
+    public Toggler(Collection<Info<K>> elements) {
+        this(elements, 0);
     }
 
     /**
-     * @param elements list of ui elements to toggle with info for buttons
-     * @param direction where shall the element be placed: DIR.N, DIR.S, DIR.E, DIR.W
-     * @param margin space between element and buttons
-     * @param center whether elements shall be centered
-     * @param resetOnToggle whether elements shall be reset when toggling
+     * @param elements list of info elements used for building the buttons
+     * @param margin space between buttons
      */
-    public Toggler(Map<Info, Valuable<T>> elements, DIR direction, int margin, boolean center, boolean resetOnToggle) {
+    public Toggler(Collection<Info<K>> elements, int margin) {
         this.elements = elements;
-        this.resetOnToggle = resetOnToggle;
 
         // first element in map
-        activeElement = elements.values().iterator().next();
-        activeInfo = elements.keySet().iterator().next();
+        activeInfo = elements.iterator().next();
 
-        GuiSection buttons = new GuiSection();
-        elements.forEach((info, renderobj) -> {
+        elements.forEach(info -> {
             Button button = new Button(info.getTitle()) {
                 @Override
                 protected void clickA() {
+                    activeButton = this;
                     toggle(info.getKey());
                 }
 
                 @Override
                 protected void renAction() {
-                    selectedSet(activeElement.equals(elements.get(info)));
+                    boolean selected = info.equals(activeInfo);
+
+                    selectedSet(selected);
                 }
             };
             button.hoverInfoSet(info.getDescription());
-            buttons.addRight(margin, button);
+            addRight(margin, button);
         });
-
-        // guarantee same width
-        int maxWidth = UiUtil.getMaxWidth(elements.values());
-        int maxHeight = UiUtil.getMaxHeight(elements.values());
-
-        ClickWrapper clicker = new ClickWrapper(maxWidth, maxHeight, center) {
-            @Override
-            protected RENDEROBJ pget() {
-                return activeElement;
-            }
-        };
-
-        switch (direction) {
-            default:
-            case N:
-                addDownC(0, clicker);
-                addDownC(margin, buttons);
-                break;
-            case S:
-                addDownC(0, buttons);
-                addDownC(margin, clicker);
-                break;
-            case E:
-                addRightC(0, buttons);
-                addRightC(margin, clicker);
-                break;
-            case W:
-                addRightC(0, clicker);
-                addRightC(margin, buttons);
-                break;
-        }
     }
 
-    public void toggle(String key) {
-        elements.entrySet().stream()
-            .filter(element -> element.getKey().getKey().equals(key))
-            .findFirst()
-            .ifPresent(element -> {
-                if (resetOnToggle) reset();
+    public void toggle(K key) {
+        get(key).ifPresent(element -> {
+            activeInfo = element;
+            toggleAction.exe(key);
+        });
+    }
 
-                Valuable<T> renderobj = element.getValue();
-                activeInfo = element.getKey();
-                activeElement = renderobj;
-            });
+    public void onToggle(ACTION_O<K> action) {
+        toggleAction = action;
+    }
+
+    public Optional<Info<K>> get(K key) {
+        return elements.stream()
+            .filter(element -> element.getKey().equals(key))
+            .findFirst();
     }
 
     @Override
@@ -113,18 +84,18 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
     }
 
     @Override
-    public T getValue() {
-        return activeElement.getValue();
+    public K getValue() {
+        return activeInfo.getKey();
     }
 
     @Override
-    public void setValue(T value) {
-        activeElement.setValue(value);
+    public void setValue(K value) {
+        toggle(value);
     }
 
     @Override
     public void reset() {
-        elements.values().stream()
+        elements.stream()
             .filter(element -> element instanceof Resettable)
             .map(Resettable.class::cast)
             .forEach(Resettable::reset);
@@ -133,9 +104,9 @@ public class Toggler<T> extends GuiSection implements Valuable<T>, Resettable {
     @Getter
     @Builder
     @EqualsAndHashCode
-    public static class Info {
+    public static class Info<T> {
 
-        private final String key;
+        private final T key;
         private final String title;
 
         private final String description;

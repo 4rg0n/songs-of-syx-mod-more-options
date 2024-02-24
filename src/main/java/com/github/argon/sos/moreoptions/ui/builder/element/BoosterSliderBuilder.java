@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.ui.builder.element;
 
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Tabulator;
 import com.github.argon.sos.moreoptions.game.ui.Toggler;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
@@ -18,10 +19,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Toggler<Integer>> {
+public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulator<String, Integer>> {
     private final Definition definition;
 
-    public BuildResult<List<GuiSection>, Toggler<Integer>> build() {
+    public BuildResult<List<GuiSection>, Tabulator<String, Integer>> build() {
 
         if (definition.getLabelWidth() > 0) {
             definition.getLabelDefinition().setMaxWidth(definition.getLabelWidth());
@@ -42,14 +43,13 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Toggler
             .build().getResult();
         multiSlider.pad(10, 5);
 
-        Toggler<Integer> toggler = new Toggler<>(MapUtil.of(
-            // todo dictionary
-            Toggler.Info.builder()
+        Tabulator<String, Integer> tabulator = new Tabulator<>(MapUtil.of(
+            Toggler.Info.<String>builder()
                 .key("add")
                 .title("Add")
                 .description("Adds to the booster value.")
                 .build(), additiveSlider,
-            Toggler.Info.builder()
+            Toggler.Info.<String>builder()
                 .key("multi")
                 .title("Perc")
                 .description("Regulates the percentage of the booster value. Values under 100% will lower the effect.")
@@ -58,12 +58,12 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Toggler
 
         List<GuiSection> row = Stream.of(
             label,
-            toggler
+            tabulator
         ).collect(Collectors.toList());
 
-        return BuildResult.<List<GuiSection>, Toggler<Integer>>builder()
+        return BuildResult.<List<GuiSection>, Tabulator<String, Integer>>builder()
             .result(row)
-            .interactable(toggler)
+            .interactable(tabulator)
             .build();
     }
 
@@ -84,7 +84,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Toggler
             return definition(definition);
         }
 
-        public BuildResult<List<GuiSection>, Toggler<Integer>> build() {
+        public BuildResult<List<GuiSection>, Tabulator<String, Integer>> build() {
             assert definition != null : "definition must not be null";
 
             return new BoosterSliderBuilder(definition).build();

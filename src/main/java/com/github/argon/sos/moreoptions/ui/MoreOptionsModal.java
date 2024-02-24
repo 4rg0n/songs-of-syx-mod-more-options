@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
+import com.github.argon.sos.moreoptions.game.ui.Tabulator;
 import com.github.argon.sos.moreoptions.game.ui.Toggler;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.EventsPanel;
@@ -71,30 +72,30 @@ public class MoreOptionsModal extends GuiSection {
         weatherPanel = new WeatherPanel(config.getWeather());
         boostersPanel = new BoostersPanel(boosterEntries);
 
-        Toggler<Void> toggler = new Toggler<>(MapUtil.ofLinked(
-            Toggler.Info.builder()
+        Tabulator<String, Void> tabulator = new Tabulator<>(MapUtil.ofLinked(
+            Toggler.Info.<String>builder()
                 .key("sounds")
                 .title("Sounds")
                 .description("Tune the volume of various sounds.")
                 .build(), soundsPanel,
-            Toggler.Info.builder()
+            Toggler.Info.<String>builder()
                 .key("events")
                 .title("Events")
                 .description("Toggle and tune events.")
                 .build(), eventsPanel,
-            Toggler.Info.builder()
+            Toggler.Info.<String>builder()
                 .key("weather")
                 .title("Weather")
                 .description("Influence weather effects.")
                 .build(), weatherPanel,
-            Toggler.Info.builder()
+            Toggler.Info.<String>builder()
                 .key("boosters")
                 .title("Boosters")
                 .description("Increase or decrease various bonuses.")
                 .build(), boostersPanel
         ), DIR.S, 30, true, false);
 
-        addDownC(0, toggler);
+        addDownC(0, tabulator);
 
         HorizontalLine horizontalLine = new HorizontalLine(body().width(), 14, 1);
         addDownC(20, horizontalLine);
