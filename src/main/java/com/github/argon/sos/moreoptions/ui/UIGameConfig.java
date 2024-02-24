@@ -7,6 +7,9 @@ import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.metric.MetricCollector;
+import com.github.argon.sos.moreoptions.metric.MetricExporter;
+import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import init.paths.PATHS;
@@ -43,31 +46,31 @@ public class UIGameConfig {
 
     public void inject(Modal<MoreOptionsModal> moreOptionsModal) {
         log.debug("Injecting button into game ui");
-        GButt.ButtPanel settlementButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
+        GButt.ButtPanel moreOptionsButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
             @Override
             protected void clickA() {
                 moreOptionsModal.show();
             }
         };
 
-        settlementButton.hoverInfoSet(MOD_INFO.name);
-        settlementButton.setDim(32, UIPanelTop.HEIGHT);
+        moreOptionsButton.hoverInfoSet(MOD_INFO.name);
+        moreOptionsButton.setDim(32, UIPanelTop.HEIGHT);
 
         // inject button for opening modal into game UI
         gameApis.uiApi().findUIElementInWorldView(UIPanelTop.class)
             .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
             .ifPresent(o -> {
-                log.debug("Injecting into UIPanelTop#right in settlement view");
+                log.debug("Injecting button into UIPanelTop#right in settlement view");
                 GuiSection right = (GuiSection) o;
-                right.addRelBody(8, DIR.W, settlementButton);
+                right.addRelBody(8, DIR.W, moreOptionsButton);
             });
 
         gameApis.uiApi().findUIElementInSettlementView(UIPanelTop.class)
             .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
             .ifPresent(o -> {
-                log.debug("Injecting into UIPanelTop#right in world view");
+                log.debug("Injecting button into UIPanelTop#right in world view");
                 GuiSection right = (GuiSection) o;
-                right.addRelBody(8, DIR.W, settlementButton);
+                right.addRelBody(8, DIR.W, moreOptionsButton);
             });
     }
 
@@ -77,6 +80,11 @@ public class UIGameConfig {
     public void initDebug(Modal<MoreOptionsModal> moreOptionsModal, ConfigStore configStore) {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":show", moreOptionsModal::show);
+        IDebugPanel.add(MOD_INFO.name + ":metrics:buffer", () -> MetricCollector.getInstance().buffer());
+        IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());
+        IDebugPanel.add(MOD_INFO.name + ":metrics:export", () -> MetricExporter.getInstance().export());
+        IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> MetricScheduler.getInstance().start());
+        IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> MetricScheduler.getInstance().stop());
         IDebugPanel.add(MOD_INFO.name + ":createBackup", configStore::createBackupConfig);
         IDebugPanel.add(MOD_INFO.name + ":log.stats", () -> {
             log.info("Events Status:\n%s", gameApis.eventsApi().readEventsEnabledStatus()

@@ -7,7 +7,7 @@ import snake2d.LOG;
 
 import java.time.LocalTime;
 import java.util.Arrays;
-
+import java.util.IllegalFormatException;
 
 import static com.github.argon.sos.moreoptions.util.StringUtil.*;
 
@@ -79,20 +79,31 @@ public class Logger {
         if (ex != null) {
             args = Arrays.copyOf(args, args.length - 1);
 
-            doLog(level.getName(), formatMsg, args);
+            doLog(levelText(level), formatMsg, args);
             printException(ex);
         } else {
-            doLog(level.getName(), formatMsg, args);
+            doLog(levelText(level), formatMsg, args);
         }
     }
 
-    private void doLog(String msgPrefix, String formatMsg, Object[] args) {
-        LOG.ln(String.format(LOG_MSG_FORMAT,
-            PREFIX_MOD,
-            timestamp(),
-            displayName,
-            msgPrefix,
-            String.format(formatMsg, stringifyValues(args))));
+    private void doLog(String levelText, String formatMsg, Object[] args) {
+        try {
+            LOG.ln(String.format(LOG_MSG_FORMAT,
+                PREFIX_MOD,
+                timestamp(),
+                displayName,
+                levelText,
+                String.format(formatMsg, stringifyValues(args))));
+        } catch (Exception e) {
+            LOG.err(PREFIX_MOD + ": PROBLEM WHILE LOGGING!");
+
+            if (e instanceof IllegalFormatException) {
+                LOG.ln(formatMsg);
+                LOG.ln(args);
+            }
+
+            e.printStackTrace();
+        }
     }
 
     private void logErr(Level level, String formatMsg, Object... args) {
@@ -104,26 +115,42 @@ public class Logger {
 
         if (ex != null) {
             args = Arrays.copyOf(args, args.length - 1);
-            doLogErr(level.getName(), formatMsg, args);
+            doLogErr(levelText(level), formatMsg, args);
             printException(ex);
         } else {
-            doLogErr(level.getName(), formatMsg, args);
+            doLogErr(levelText(level), formatMsg, args);
         }
     }
 
     private void doLogErr(String msgPrefix, String formatMsg, Object[] args) {
-        LOG.err((String.format(LOG_MSG_FORMAT,
-            PREFIX_MOD,
-            timestamp(),
-            displayName,
-            msgPrefix,
-            String.format(formatMsg, stringifyValues(args)))));
+        try {
+            LOG.err((String.format(LOG_MSG_FORMAT,
+                PREFIX_MOD,
+                timestamp(),
+                displayName,
+                msgPrefix,
+                String.format(formatMsg, stringifyValues(args)))));
+        } catch (Exception e) {
+            LOG.err(PREFIX_MOD + ": PROBLEM WHILE LOGGING!");
+
+            if (e instanceof IllegalFormatException) {
+                LOG.ln(formatMsg);
+                LOG.ln(args);
+            }
+
+            e.printStackTrace();
+        }
     }
 
     private void printException(Throwable ex) {
         System.out.println("\n" + ex.getMessage());
         ex.printStackTrace(System.out);
         System.out.println();
+    }
+
+    private String levelText(Level level) {
+
+        return level.getName();
     }
 
     private Throwable extractThrowable(Object[] args) {

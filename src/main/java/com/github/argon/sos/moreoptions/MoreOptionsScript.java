@@ -9,6 +9,9 @@ import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.metric.MetricCollector;
+import com.github.argon.sos.moreoptions.metric.MetricExporter;
+import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.ui.BackupModal;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModal;
 import com.github.argon.sos.moreoptions.ui.UIGameConfig;
@@ -19,6 +22,7 @@ import snake2d.Errors;
 import util.info.INFO;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -145,6 +149,11 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 		log.debug("PHASE: initGamePresent");
 		gameApis.initGamePresent();
 
+		MetricScheduler.getInstance()
+			.schedule(() -> MetricCollector.getInstance().buffer(), 5, 5, TimeUnit.SECONDS)
+			.schedule(() -> MetricExporter.getInstance().export(), 1, 1, TimeUnit.MINUTES)
+			.start();
+
 		// config should already be loaded or use default
 		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
 			.orElse(configStore.getDefaultConfig());
@@ -167,6 +176,9 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 		} else {
 			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 		}
+
+		// FIXME
+		//      * Autosave stops metric collecting, exporting still lives though
 
 		// TODO
 		//     * further testing
