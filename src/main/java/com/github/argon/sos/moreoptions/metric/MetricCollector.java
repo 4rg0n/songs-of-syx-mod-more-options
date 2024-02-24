@@ -33,6 +33,9 @@ public class MetricCollector {
     @Getter
     private final List<String> keyList = new ArrayList<>();
 
+    @Getter
+    private final List<String> whiteList = new ArrayList<>();
+
     public void buffer() {
         try {
             buffered.add(collect());
@@ -79,16 +82,18 @@ public class MetricCollector {
             log.trace("Initialized key list: %s", keyList);
         }
 
-        // keep results consistent
-        int sizeDiff = keyList.size() - stats.size();
-        if (sizeDiff > 0) {
-            // fill empty fields with null
-            keyList.forEach(s -> {
-                stats.putIfAbsent(s, null);
-            });
-
-            log.debug("Filled %s missing entries with nulls", sizeDiff);
+        // fill whiteList on first run
+        if (whiteList.isEmpty()) {
+            whiteList.addAll(keyList);
+            log.trace("Initialized white list: %s", whiteList);
         }
+
+        // fill empty fields with null
+        keyList.forEach(s -> {
+            if (isWhitelisted(s)) {
+                stats.putIfAbsent(s, null);
+            }
+        });
 
         Metric metric = Metric.builder()
             .values(stats)
@@ -99,7 +104,11 @@ public class MetricCollector {
         return metric;
     }
 
-    private static Map<String, Integer> getReligionStats(String keyPrefix, LIST<StatsReligion.StatReligion> statList) {
+    private boolean isWhitelisted(String key) {
+        return whiteList.contains(key);
+    }
+
+    private Map<String, Integer> getReligionStats(String keyPrefix, LIST<StatsReligion.StatReligion> statList) {
         Map<String, Integer> stats = new HashMap<>();
 
         for (StatsReligion.StatReligion statReligion : statList) {
@@ -109,7 +118,7 @@ public class MetricCollector {
         return stats;
     }
 
-    private static Map<String, Integer> getReligionRaceStats(String keyPrefix, LIST<StatsReligion.StatReligion> statList) {
+    private Map<String, Integer> getReligionRaceStats(String keyPrefix, LIST<StatsReligion.StatReligion> statList) {
         Map<String, Integer> stats = new HashMap<>();
 
         for (StatsReligion.StatReligion statReligion : statList) {
@@ -118,7 +127,7 @@ public class MetricCollector {
 
         return stats;
     }
-    private static Map<String, Integer> getReligionRaceStats(String keyPrefix, StatsReligion.StatReligion stat) {
+    private Map<String, Integer> getReligionRaceStats(String keyPrefix, StatsReligion.StatReligion stat) {
         Map<String, Integer> stats = new HashMap<>();
         String key = keyPrefix + ":" + stat.religion.key;
 
@@ -131,7 +140,7 @@ public class MetricCollector {
         return stats;
     }
 
-    private static Map<String, Integer> getReligionStats(String keyPrefix, StatsReligion.StatReligion stat) {
+    private Map<String, Integer> getReligionStats(String keyPrefix, StatsReligion.StatReligion stat) {
         Map<String, Integer> stats = new HashMap<>();
         String key = keyPrefix + ":" + stat.religion.key;
 
@@ -144,23 +153,32 @@ public class MetricCollector {
         return stats;
     }
 
-    private static Map<String, Integer> getStats(String keyPrefix, SETT_STATISTICS.SettStatistics stat) {
+    private Map<String, Integer> getStats(String keyPrefix, SETT_STATISTICS.SettStatistics stat) {
         String key = keyPrefix + ":" +  stat.info().name + ":_TOTAL";
+
+        if (!isWhitelisted(key)) {
+            return MapUtil.of();
+        }
 
         try {
             return MapUtil.of(key, stat.data().get(null));
         } catch (Exception e) {
             log.trace("Could not collect settlement stat %s. Skipping", key, e);
 
-            return new HashMap<>();
+            return MapUtil.of();
         }
     }
 
-    private static Map<String, Integer> getRaceStats(String keyPrefix, SETT_STATISTICS.SettStatistics stat) {
+    private Map<String, Integer> getRaceStats(String keyPrefix, SETT_STATISTICS.SettStatistics stat) {
         Map<String, Integer> stats = new HashMap<>();
+
 
         for (Race race : RACES.all()) {
             String key = keyPrefix + ":" + stat.info().name + ":" + race.key;
+
+            if (!isWhitelisted(key)) {
+                continue;
+            }
 
             try {
                 int value = stat.data().get(race);
@@ -173,21 +191,24 @@ public class MetricCollector {
         return stats;
     }
 
-    private static Map<String, Integer> getStats(String keyPrefix, STAT stat) {
+    private Map<String, Integer> getStats(String keyPrefix, STAT stat) {
         String key = keyPrefix + ":" +  stat.key() + ":_TOTAL";
+
+        if (!isWhitelisted(key)) {
+            return MapUtil.of();
+        }
 
         try {
             return MapUtil.of(key, stat.data().get(null));
         } catch (Exception e) {
             log.trace("Could not collect stat %s. Skipping", key, e);
 
-            return new HashMap<>();
+            return MapUtil.of();
         }
     }
 
-    private static Map<String, Integer> getRaceStats(String keyPrefix, STAT stat) {
+    private Map<String, Integer> getRaceStats(String keyPrefix, STAT stat) {
         Map<String, Integer> stats = new HashMap<>();
-
 
         if (!stat.hasIndu()) {
             return stats;
@@ -195,6 +216,10 @@ public class MetricCollector {
 
         for (Race race : RACES.all()) {
             String key = keyPrefix + ":" + stat.key() + ":" + race.key;
+
+            if (!isWhitelisted(key)) {
+                continue;
+            }
 
             try {
                 int value = stat.data().get(race);

@@ -8,7 +8,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -52,6 +54,33 @@ public class MoreOptionsConfig {
     private Map<String, Range> weather = new HashMap<>();
     @Builder.Default
     private Map<String, Range> boosters = new HashMap<>();
+    @Builder.Default
+    private Metrics metrics = Metrics.builder().build();
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    public static class Metrics {
+        @Builder.Default
+        private boolean enabled = false;
+
+        @Builder.Default
+        private Range collectionRateSeconds = Range.builder()
+            .min(1)
+            .value(15)
+            .max(600)
+            .build();
+
+        @Builder.Default
+        private Range exportRateMinutes= Range.builder()
+            .min(1)
+            .value(30)
+            .max(600)
+            .build();
+
+        @Builder.Default
+        private List<String> stats = new ArrayList<>();
+    }
 
     @Data
     @Builder

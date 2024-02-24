@@ -6,7 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MapUtil {
-    public static <K, V, M> Map<K, V> of(K key1, V value1) {
+    public static <K, V> Map<K, V> of() {
+        return Collections.emptyMap();
+    }
+
+    public static <K, V> Map<K, V> of(K key1, V value1) {
         HashMap<K, V> map = new HashMap<>();
         map.put(key1, value1);
 
