@@ -87,7 +87,7 @@ public class MetricCollector {
                 stats.putIfAbsent(s, null);
             });
 
-            log.debug("Filled % missing entries with nulls", sizeDiff);
+            log.debug("Filled %s missing entries with nulls", sizeDiff);
         }
 
         Metric metric = Metric.builder()

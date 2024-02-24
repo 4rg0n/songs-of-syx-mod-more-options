@@ -7,8 +7,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Builder
@@ -22,6 +21,41 @@ public class Metric {
 
     @Builder.Default
     private Map<String, Object> values = new HashMap<>();
+
+    public static List<String> getHeaders() {
+        List<String> headersMetric = new ArrayList<>();
+        headersMetric.add("TIMESTAMP");
+        headersMetric.addAll(GameTime.getHeaders());
+
+        return headersMetric;
+    }
+
+    // todo doesn't scale well and is ugly... but works
+    public Object get(String key) {
+        switch (key) {
+            case "TIMESTAMP":
+                return getTimestamp().getEpochSecond();
+            case "AGE":
+                return getGameTime().getAge();
+            case "SEASONS":
+                return getGameTime().getSeasons();
+            case "SEASON":
+                return getGameTime().getSeason();
+            case "YEARS":
+                return getGameTime().getYears();
+            case "DAYS":
+                return getGameTime().getDays();
+            case "HOURS":
+                return getGameTime().getHours();
+            case "CURRENT_SECONDS":
+                return getGameTime().getCurrentSeconds();
+            case "PLAY_TIME_SECONDS":
+                return getGameTime().getPlayTimeSeconds();
+            default:
+                return null;
+        }
+
+    }
 
     @Getter
     @Builder
@@ -47,7 +81,7 @@ public class Metric {
         private int hours = TIME.hours().bitCurrent();
 
         @Builder.Default
-        private double currentSecond = TIME.currentSecond();
+        private double currentSeconds = TIME.currentSecond();
 
         @Builder.Default
         private double playTimeSeconds = TIME.playedGame();
@@ -59,8 +93,12 @@ public class Metric {
                 " years=" + years +
                 " days=" + days +
                 " hours=" + hours +
-                " currentSecond=" + currentSecond +
+                " currentSeconds=" + currentSeconds +
                 " playTimeSeconds=" + playTimeSeconds;
+        }
+
+        public static List<String> getHeaders() {
+            return Arrays.asList("AGE", "SEASONS", "SEASON", "YEARS", "DAYS", "HOURS", "CURRENT_SECONDS", "PLAY_TIME_SECONDS");
         }
     }
 }

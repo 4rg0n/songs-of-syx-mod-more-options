@@ -1,13 +1,13 @@
 package com.github.argon.sos.moreoptions.log;
 
 
+import com.github.argon.sos.moreoptions.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import snake2d.LOG;
 
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.IllegalFormatException;
 
 import static com.github.argon.sos.moreoptions.util.StringUtil.*;
 
@@ -95,12 +95,9 @@ public class Logger {
                 levelText,
                 String.format(formatMsg, stringifyValues(args))));
         } catch (Exception e) {
-            LOG.err(PREFIX_MOD + ": PROBLEM WHILE LOGGING!");
-
-            if (e instanceof IllegalFormatException) {
-                LOG.ln(formatMsg);
-                LOG.ln(args);
-            }
+            System.err.println("PROBLEM WHILE LOGGING!");
+            System.err.println("formatMsg: " + formatMsg);
+            System.err.println(StringUtil.toString(StringUtil.stringifyValues(args)));
 
             e.printStackTrace();
         }
@@ -131,12 +128,9 @@ public class Logger {
                 msgPrefix,
                 String.format(formatMsg, stringifyValues(args)))));
         } catch (Exception e) {
-            LOG.err(PREFIX_MOD + ": PROBLEM WHILE LOGGING!");
-
-            if (e instanceof IllegalFormatException) {
-                LOG.ln(formatMsg);
-                LOG.ln(args);
-            }
+            System.err.println("PROBLEM WHILE LOGGING!");
+            System.err.println("formatMsg: " + formatMsg);
+            System.err.println(StringUtil.toString(StringUtil.stringifyValues(args)));
 
             e.printStackTrace();
         }

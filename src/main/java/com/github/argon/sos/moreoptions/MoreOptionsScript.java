@@ -178,12 +178,13 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 		}
 
 		// FIXME
-		//      * Autosave stops metric collecting, exporting still lives though
+		//      * NOTHING
 
 		// TODO
+		//     * Notification, which auto disappears in UI?
 		//     * further testing
 
-		// TODO
+		// TODO FUTURE
 		//  	is there a better way to streamline the process of adding new ui elements with their data and config?
 		//      * better config mapping? Race Interaction JsonE and ObjectMapper?
 		//      * easier mapping? mapstruct?
@@ -206,6 +207,9 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 			log.debug("Reapplying config because of game load.");
 			configurator.applyConfig(config);
 		}
+
+		// start a new export file on load
+		MetricExporter.getInstance().newExportFile();
 	}
 
 	@Override

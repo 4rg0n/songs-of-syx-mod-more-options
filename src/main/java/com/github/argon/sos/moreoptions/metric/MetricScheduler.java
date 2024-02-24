@@ -28,23 +28,23 @@ public class MetricScheduler {
         }
 
         try {
-            log.debug("Starting scheduling of %s tasks", tasks.size());
+            log.debug("Start scheduling of %s metric tasks", tasks.size());
             tasks.forEach((runnable, toggle) ->
                 scheduler.scheduleAtFixedRate(runnable,
                     toggle.getInitialDelay(), toggle.getPeriod(), toggle.getUnit())
             );
         } catch (Exception e) {
-            log.warn("Could not start scheduler", e);
+            log.warn("Could not start metric scheduler", e);
         }
 
         return this;
     }
 
     public MetricScheduler stop() {
-        log.debug("Stopping scheduling of % tasks", tasks.size());
         scheduler.shutdownNow();
         scheduler = null;
 
+        log.debug("Stopped scheduling of % metric tasks", tasks.size());
         return this;
     }
 

@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -32,16 +33,25 @@ public class CSVWriter {
         if (metrics.isEmpty()) {
             return;
         }
+        List<String> headersMetric = headersMetric();
+        List<String> headersStats = headersStats(metrics.iterator().next());
 
-        List<String> headers = headers(metrics.iterator().next());
         List<String> lines = metrics.stream()
-            .map(metric -> toLine(headers, metric))
+            .map(metric ->
+                // merge metric values and stats together
+                toLineMetric(headersMetric, metric) +
+                delimiter +
+                toLineStats(headersStats, metric.getValues()))
             .collect(Collectors.toList());
 
         File file = path.toFile();
 
         if (needsHeader(file)) {
-            log.debug("Create new header for CSV file");
+            List<String> headers = new ArrayList<>();
+            headers.addAll(headersMetric);
+            headers.addAll(headersStats);
+
+            log.debug("Create new CSV file %s", file.toPath());
             String headerLine = toHeaderLine(headers);
             log.trace("Header: %s", headerLine);
 
@@ -71,14 +81,19 @@ public class CSVWriter {
             .collect(Collectors.joining(delimiter));
     }
 
-    public String toLine(Metric metric) {
-        List<String> header = headers(metric);
-        return toLine(header, metric);
+    public String toLineStats(List<String> header, Map<String, Object> stats) {
+        List<Object> values = header.stream()
+            .map(stats::get)
+            .collect(Collectors.toList());
+
+        return values.stream()
+            .map(this::escapeSpecialCharacters)
+            .collect(Collectors.joining(delimiter));
     }
 
-    public String toLine(List<String> header, Metric metric) {
-        List<Object> values = header.stream()
-            .map(key -> metric.getValues().get(key))
+    public String toLineMetric(List<String> headers, Metric metric) {
+        List<Object> values = headers.stream()
+            .map(metric::get)
             .collect(Collectors.toList());
 
         return values.stream()
@@ -105,9 +120,13 @@ public class CSVWriter {
         return StringUtil.stringifyValue(data);
     }
 
-    public List<String> headers(Metric metric) {
+    public List<String> headersStats(Metric metric) {
         return metric.getValues().keySet().stream()
             .sorted()
             .collect(Collectors.toList());
+    }
+
+    public List<String> headersMetric() {
+        return Metric.getHeaders();
     }
 }
