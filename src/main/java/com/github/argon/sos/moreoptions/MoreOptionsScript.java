@@ -4,7 +4,7 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.game.api.GameEventsApi;
+import com.github.argon.sos.moreoptions.game.api.InitPhases;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -27,7 +27,7 @@ import java.util.Optional;
  */
 @NoArgsConstructor
 @SuppressWarnings("unused") // used by the game via reflection
-public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
+public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitPhases {
 
 	private final static Logger log = Loggers.getLogger(MoreOptionsScript.class);
 
@@ -68,19 +68,22 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 
 	@Override
 	public void initBeforeGameCreated() {
-		Level level = configStore.initMetaInfo().getLogLevel();
+		gameApis.initBeforeGameCreated();
+
+		// determine log level
+		String logLevelName = System.getenv("MO.LOG_LEVEL");
+		Level level = Optional.ofNullable(logLevelName)
+			.flatMap(Level::fromName)
+			.orElse(configStore.initMetaInfo().getLogLevel());
 		Loggers.setLevels(level);
 
 		log.debug("PHASE: initBeforeGameCreated");
+		// custom error handling
 		Errors.setHandler(new MoreOptionsErrorHandler<>(this));
-		GameEventsApi.initLazy();
 
-		// load backup config
+		// load backup config if present
 		configStore.loadBackupConfig().ifPresent(configStore::setBackupConfig);
-
-		modInfo = gameApis.modApi().getCurrentMod().orElse(null);
 		uiGameConfig = new UIGameConfig(
-			modInfo,
 			gameApis,
 			configurator,
 			configStore
@@ -91,6 +94,12 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			.ifPresent(dictionary::addAll);
 	}
 
+	@Override
+	public void initCreateInstance() {
+		gameApis.initCreateInstance();
+	}
+
+
 	/**
 	 * BUG!: Method will be executed TWICE by the game
 	 * (will be fixed in v65 =))
@@ -99,6 +108,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	public SCRIPT_INSTANCE createInstance() {
 		log.debug("PHASE: createInstance");
 		if (instance == null) {
+			initCreateInstance();
 			log.debug("Creating Mod Instance");
 
 			// try to get current config and merge with defaults; or use whole defaults
@@ -113,8 +123,8 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 			uiGameConfig.initDebug(moreOptionsModal, configStore);
 
 			// add description from game boosters
-			gameApis.boosterApi().getAllBoosters()
-				.values().forEach(dictionary::add);
+			gameApis.boosterApi().getBoosters()
+				.values().forEach(moreOptionsBoosters -> dictionary.add(moreOptionsBoosters.getAdd()));
 
 			instance = new Instance(this);
 		}
@@ -127,11 +137,13 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 	@Override
 	public void initGameRunning() {
 		log.debug("PHASE: initGameRunning");
+		gameApis.initGameRunning();
 	}
 
 	@Override
 	public void initGamePresent() {
 		log.debug("PHASE: initGamePresent");
+		gameApis.initGamePresent();
 
 		// config should already be loaded or use default
 		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
@@ -144,27 +156,28 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		// show backup dialog?
 		if (backupConfig.isPresent()) {
 			log.debug("Backup config present at %s", backupConfig.get().getFilePath());
-			Modal<BackupModal> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupModal(), true);
+			Modal<BackupModal> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupModal());
 			Modal<MoreOptionsModal> backupMoreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
-				new MoreOptionsModal(configStore, modInfo), true);
+				new MoreOptionsModal(configStore, modInfo));
 
-			uiGameConfig.initForBackup(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
 			configStore.setCurrentConfig(backupConfig.get());
+			uiGameConfig.initForBackup(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
+
 			backupModal.show();
+		} else {
+			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
 		}
 
-		moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
+		// TODO
+		//     * further testing
 
-		// fixme applying backup doesn't apply correctly?
+		// TODO
+		//  	is there a better way to streamline the process of adding new ui elements with their data and config?
+		//      * better config mapping? Race Interaction JsonE and ObjectMapper?
+		//      * easier mapping? mapstruct?
 
-		// todo add a MoreOptionsViewModel inbetween? for easier mapping? mapstruct?
-
-		// todo V65 add army size slider: negative to positive
-
-		// todo V65 categorize boosters?
-		//      see: https://steamcommunity.com/workshop/filedetails/discussion/3044071344/3881597531962263472/?tscn=1699699254#c3952532649325145153
-
-		// todo experimental
+		// TODO add a MoreOptionsViewModel inbetween?
+		// TODO experimental
 //		gameApis.weatherApi().lockDayCycle(1, true);
 	}
 
@@ -176,8 +189,11 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig> {
 		gameApis.weatherApi().clearCached();
 		gameApis.boosterApi().clearCached();
 
-		// re-apply config when new game is loaded
-		configurator.applyConfig(config);
+		// re-apply config when new game is loaded (only when there's no backup)
+		if (!configStore.getBackupConfig().isPresent()) {
+			log.debug("Reapplying config because of game load.");
+			configurator.applyConfig(config);
+		}
 	}
 
 	@Override

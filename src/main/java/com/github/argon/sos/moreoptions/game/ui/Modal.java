@@ -7,32 +7,27 @@ import snake2d.Renderer;
 import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GBox;
-import util.gui.panel.GPanelL;
+import util.gui.panel.GPanel;
 import view.interrupter.Interrupter;
 import view.main.VIEW;
 
+/**
+ * For displaying a {@link GuiSection} in a modal window.
+ *
+ * @param <T> ui element to display
+ */
 public class Modal<T extends GuiSection> extends Interrupter {
     @Getter
     protected final T section;
 
     @Getter
-    protected final GPanelL panel;
+    protected final GPanel panel;
 
     protected final GuiSection panelSection;
 
-    /**
-     * Will render the modal without the game in the background
-     */
-    private final boolean overlay = false;
-
-
     public Modal(String title, T section) {
-        this(title, section, false);
-    }
-
-    public Modal(String title, T section, boolean overlay) {
         this.section = section;
-        this.panel = new GPanelL();
+        this.panel = new GPanel();
         this.panel.setTitle(title);
         this.panel.setCloseAction(this::hide);
         this.panelSection = new GuiSection();
@@ -52,19 +47,23 @@ public class Modal<T extends GuiSection> extends Interrupter {
     }
 
     public void center() {
-        int space = 50;
-        int width = section.body().width() + space * 2;
-        int height = section.body().height() + space * 2;
+        section.pad(20);
+        panelSection.body().setDim(section.body());
+        panel.body().setDim(section.body());
 
-        panel.body().setDim(width, height);
+        panelSection.body().centerIn(C.DIM());
         panel.body().centerIn(C.DIM());
+
         section.body().centerX(panel.body());
-        section.body().moveY1(panel.body().y1() + space);
+        section.body().moveY1(panel.body().y1());
     }
 
     @Override
     protected boolean hover(COORDINATE coordinate, boolean b) {
-        return panelSection.hover(coordinate);
+        panelSection.hover(coordinate);
+
+        // disable background interaction returning true
+        return true;
     }
 
     @Override
@@ -82,7 +81,7 @@ public class Modal<T extends GuiSection> extends Interrupter {
     @Override
     protected boolean render(Renderer renderer, float v) {
         panelSection.render(renderer, v);
-        return overlay;
+        return false;
     }
 
     @Override

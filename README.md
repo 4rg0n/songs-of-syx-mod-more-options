@@ -1,5 +1,6 @@
-Adds a menu with more options for the game:
+Updated for **V65** by [Senso](https://github.com/SensoHakai).
 
+Adds a menu with more options for the game:
 
 * Tune the volume of in game sounds like wind
 * Toggle certain random events

@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
@@ -12,7 +13,10 @@ import snake2d.util.gui.GuiSection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class WeatherPanel extends GuiSection {
+/**
+ * Contains slider for controlling the intensity of weather effects
+ */
+public class WeatherPanel extends GuiSection implements Valuable<Void> {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
     @Getter
     private final Map<String, Slider> sliders;
@@ -45,5 +49,15 @@ public class WeatherPanel extends GuiSection {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
+    }
+
+    @Override
+    public Void getValue() {
+        return null;
+    }
+
+    @Override
+    public void setValue(Void value) {
+
     }
 }

@@ -166,7 +166,7 @@ public final class Errors {
 		public synchronized void write(int b) throws IOException {
 			
 			out.write(b);
-			if (data.length() > 10000)
+			if (data.length() > 25000)
 				data.setLength(0);
 			data.append((char) b);
 			

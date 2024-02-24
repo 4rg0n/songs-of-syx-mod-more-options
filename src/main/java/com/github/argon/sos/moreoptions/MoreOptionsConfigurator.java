@@ -6,7 +6,6 @@ import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import game.events.EVENTS;
-import init.boostable.BOOSTABLE;
 import init.sound.SoundAmbience;
 import init.sound.SoundSettlement;
 import lombok.AccessLevel;
@@ -39,7 +38,6 @@ public class MoreOptionsConfigurator {
     public void applyConfig(MoreOptionsConfig config) {
         log.debug("Apply More Options config to game");
         try {
-            applyFactionWarAdd(config.getFactionOpinionAdd().getValue());
             applySettlementEventsConfig(config.getEventsSettlement());
             applyWorldEventsConfig(config.getEventsWorld());
             applyEventsChanceConfig(ConfigUtil.extract(config.getEventsChance()));
@@ -47,29 +45,14 @@ public class MoreOptionsConfigurator {
             applySoundsSettlementConfig(ConfigUtil.extract(config.getSoundsSettlement()));
             applySoundsRoomConfig(ConfigUtil.extract(config.getSoundsRoom()));
             applyWeatherConfig(ConfigUtil.extract(config.getWeather()));
-            applyBoostersConfig(ConfigUtil.extract(config.getBoosters()));
+            applyBoostersConfig(config.getBoosters());
         } catch (Exception e) {
             log.error("Could not apply config: %s", config, e);
         }
     }
 
-    private void applyFactionWarAdd(Integer value) {
-        gameApis.eventsApi().setFactionWarAddValue(value);
-    }
-
-    private void applyBoostersConfig(Map<String, Integer> boostersConfig) {
-        log.trace("Apply boosters config: %s", boostersConfig);
-        boostersConfig.forEach((key, boost) -> {
-            Map<String, BOOSTABLE> boostables = gameApis.boosterApi().getAllBoosters();
-
-            if (boostables.containsKey(key)) {
-                BOOSTABLE boostable = boostables.get(key);
-                gameApis.boosterApi().setBoosterValue(boostable, boost);
-            } else {
-                log.warn("Could not find entry %s in game api result.", key);
-                log.trace("API Result: %s", boostables);
-            }
-        });
+    private void applyBoostersConfig(Map<String, MoreOptionsConfig.Range> rangeMap) {
+        gameApis.boosterApi().setBoosters(rangeMap);
     }
 
     private void applyEventsChanceConfig(Map<String, Integer> eventsChanceConfig) {
@@ -97,7 +80,7 @@ public class MoreOptionsConfigurator {
                 log.trace("Setting event %s enabled = %s", key, enabled);
                 gameApis.eventsApi().enableEvent(event, enabled);
 
-                if (enabled == false) {
+                if (!enabled) {
                     gameApis.eventsApi().reset(event);
                 }
 
@@ -118,7 +101,7 @@ public class MoreOptionsConfigurator {
                 log.trace("Setting event %s enabled = %s", event.getClass().getSimpleName(), enabled);
                 gameApis.eventsApi().enableEvent(event, enabled);
 
-                if (enabled == false) {
+                if (!enabled) {
                     gameApis.eventsApi().reset(event);
                 }
             } else {

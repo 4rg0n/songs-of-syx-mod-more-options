@@ -14,7 +14,20 @@ public class ConfigUtil {
         return rangeMap;
     }
 
-    public static Map<String, MoreOptionsConfig.Range> mergeIntoNewRange(Map<String, Integer> intMap, Map<String, MoreOptionsConfig.Range> rangeMap) {
+    public static Map<String, MoreOptionsConfig.Range> mergeIntoNewRange(Map<String, MoreOptionsConfig.Range> merge, Map<String, MoreOptionsConfig.Range> into) {
+        return into.entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey,
+            (entry) -> {
+                MoreOptionsConfig.Range newRange = entry.getValue().clone();
+                if (merge.containsKey(entry.getKey())) {
+                    newRange.setValue(merge.get(entry.getKey()).getValue());
+                    newRange.setApplyMode(merge.get(entry.getKey()).getApplyMode());
+                }
+                return newRange;
+            }));
+    }
+
+    public static Map<String, MoreOptionsConfig.Range> mergeIntegerIntoNewRange(Map<String, Integer> intMap, Map<String, MoreOptionsConfig.Range> rangeMap) {
         return rangeMap.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             (entry) -> {
@@ -33,7 +46,7 @@ public class ConfigUtil {
                 entry -> entry.getValue().getValue()));
     }
 
-    public static MoreOptionsConfig.Range mergeIntoNewRange(int value, MoreOptionsConfig.Range defaultRange) {
+    public static MoreOptionsConfig.Range mergeIntegerIntoNewRange(int value, MoreOptionsConfig.Range defaultRange) {
         MoreOptionsConfig.Range range = MoreOptionsConfig.Range.builder()
             .value(value)
             .build();
@@ -42,6 +55,7 @@ public class ConfigUtil {
             range.setMin(defaultRange.getMin());
             range.setMax(defaultRange.getMax());
             range.setDisplayMode(defaultRange.getDisplayMode());
+            range.setApplyMode(defaultRange.getApplyMode());
         }
 
         return range;

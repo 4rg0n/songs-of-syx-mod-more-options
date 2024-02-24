@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
  */
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameApis {
+public class GameApis implements InitPhases {
     @Getter(lazy = true)
     private final static GameApis instance = new GameApis(
         GameEventsApi.getInstance(),
@@ -37,4 +37,24 @@ public class GameApis {
     private final  GameBoosterApi boosterApi;
     @Accessors(fluent = true)
     private final GameModApi modApi;
+
+    @Override
+    public void initGamePresent() {
+
+    }
+
+    @Override
+    public void initGameRunning() {
+
+    }
+
+    @Override
+    public void initBeforeGameCreated() {
+
+    }
+
+    @Override
+    public void initCreateInstance() {
+        boosterApi().init();
+    }
 }

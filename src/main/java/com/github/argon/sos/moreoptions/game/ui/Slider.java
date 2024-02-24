@@ -35,11 +35,14 @@ import java.util.stream.Collectors;
 /**
  * Uses mostly code from {@link GSliderInt} and adds handling for negative values.
  */
-public class Slider extends GuiSection {
+public class Slider extends GuiSection implements Valuable<Integer>, Resettable {
     private final INT.INTE in;
     private static final int midWidth = 8;
     private static final CharSequence setAmount = "Set amount";
     private static final CharSequence setAmountD = "Set amount {0}-{1}";
+    private final double initialDValue;
+
+    private final int initialValue;
 
     /**
      * Makes slider unusable and greyed out
@@ -60,16 +63,14 @@ public class Slider extends GuiSection {
         D.ts(GSliderInt.class);
     }
 
-
-    public int getValue() {
+    public Integer getValue() {
         return in.get();
     }
 
-    public void setValue(int value) {
+    @Override
+    public void setValue(Integer value) {
         in.set(value);
     }
-
-
 
     public Slider(INT.INTE in, int width, boolean input){
         this(in, width, 24, input, false, ValueDisplay.NONE, Collections.emptyMap());
@@ -89,6 +90,8 @@ public class Slider extends GuiSection {
 
     public Slider(INT.INTE in, int width, int height, boolean input, boolean lockScroll, ValueDisplay valueDisplay, Map<Integer, COLOR> thresholds){
         this.in = in;
+        this.initialValue = in.get();
+        this.initialDValue = in.getD();
         // sort by key
         this.thresholds = thresholds.entrySet()
             .stream().sorted(Map.Entry.comparingByKey())
@@ -273,8 +276,8 @@ public class Slider extends GuiSection {
     }
 
     public void reset() {
-        in.set(0);
-        in.setD(0d);
+        in.set(initialValue);
+        in.setD(initialDValue);
     }
 
     private class Mid extends ClickableAbs {

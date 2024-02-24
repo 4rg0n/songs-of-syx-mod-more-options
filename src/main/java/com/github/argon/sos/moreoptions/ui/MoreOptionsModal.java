@@ -5,11 +5,12 @@ import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
+import com.github.argon.sos.moreoptions.game.ui.Toggler;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.EventsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.SoundsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
-import com.github.argon.sos.moreoptions.util.UiUtil;
+import com.github.argon.sos.moreoptions.util.MapUtil;
 import game.VERSION;
 import init.paths.ModInfo;
 import init.sprite.UI.UI;
@@ -19,22 +20,13 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
-import snake2d.util.gui.clickable.CLICKABLE;
-import snake2d.util.gui.renderable.RENDEROBJ;
-import snake2d.util.sets.Tuple;
-import util.gui.misc.GButt;
 import util.gui.misc.GText;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Window containing all other UI elements.
+ * Main window containing all other UI elements.
  * Will pop up in the middle of the game and pauses the game.
- *
- * FIXME BUG? hovering over elements behind the window will trigger ui elements beneath e.g. showing tooltips from citizens
  */
 @RequiredArgsConstructor
 public class MoreOptionsModal extends GuiSection {
@@ -42,8 +34,6 @@ public class MoreOptionsModal extends GuiSection {
     @Getter
     private final ConfigStore configStore;
     private final ModInfo modInfo;
-
-    private CLICKABLE.Switcher switcher;
 
     private EventsPanel eventsPanel;
     private  SoundsPanel soundsPanel;
@@ -77,63 +67,74 @@ public class MoreOptionsModal extends GuiSection {
     public void init(MoreOptionsConfig config, List<BoostersPanel.Entry> boosterEntries) {
         clear();
         soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
-        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance(), config.getFactionOpinionAdd());
+        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance());
         weatherPanel = new WeatherPanel(config.getWeather());
-        boostersPanel = new BoostersPanel(boosterEntries, config.getFilePath().toString());
+        boostersPanel = new BoostersPanel(boosterEntries);
 
-        Map<Tuple<String, String>, GuiSection> panels = new LinkedHashMap<>();
-        panels.put(new Tuple.TupleImp<>("Sounds", "Tune the volume of various sounds."), soundsPanel);
-        panels.put(new Tuple.TupleImp<>("Events", "Toggle and tune events."), eventsPanel);
-        panels.put(new Tuple.TupleImp<>("Weather", "Influence weather effects."), weatherPanel);
-        panels.put(new Tuple.TupleImp<>("Boosters", "Increase or decrease various bonuses."), boostersPanel);
+        Toggler<Void> toggler = new Toggler<>(MapUtil.ofLinked(
+            Toggler.Info.builder()
+                .key("sounds")
+                .title("Sounds")
+                .description("Tune the volume of various sounds.")
+                .build(), soundsPanel,
+            Toggler.Info.builder()
+                .key("events")
+                .title("Events")
+                .description("Toggle and tune events.")
+                .build(), eventsPanel,
+            Toggler.Info.builder()
+                .key("weather")
+                .title("Weather")
+                .description("Influence weather effects.")
+                .build(), weatherPanel,
+            Toggler.Info.builder()
+                .key("boosters")
+                .title("Boosters")
+                .description("Increase or decrease various bonuses.")
+                .build(), boostersPanel
+        ), DIR.S, 30, true, false);
 
-        GuiSection header = header(panels, config);
-        addDownC(0, header);
+        addDownC(0, toggler);
 
-        switcher = new CLICKABLE.Switcher(soundsPanel);
-        addDownC(20, switcher);
-
-        List<RENDEROBJ> widths = new ArrayList<>(panels.values());
-        widths.add(header);
-        int width = UiUtil.getMaxWidth(widths);
-        HorizontalLine horizontalLine = new HorizontalLine(width, 14, 1);
+        HorizontalLine horizontalLine = new HorizontalLine(body().width(), 14, 1);
         addDownC(20, horizontalLine);
 
-        GuiSection footer = footer();
+        GuiSection footer = footer(config.getVersion());
         addDownC(20, footer);
     }
 
     public MoreOptionsConfig getConfig() {
         MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
         MoreOptionsConfig currentConfig = configStore.getCurrentConfig()
-            .orElse(defaultConfig);
+                .orElse(defaultConfig);
 
-        MoreOptionsConfig.Range factionOpinionAdd = eventsPanel.getFactionWarAdd().map(integer ->
-            ConfigUtil.mergeIntoNewRange(integer, currentConfig.getFactionOpinionAdd())
-        ).orElse(defaultConfig.getFactionOpinionAdd());
 
         return MoreOptionsConfig.builder()
-            .factionOpinionAdd(factionOpinionAdd)
-            .eventsSettlement(eventsPanel.getSettlementEventsConfig())
-            .eventsWorld(eventsPanel.getWorldEventsConfig())
-            .eventsChance(ConfigUtil.mergeIntoNewRange(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
-            .soundsAmbience(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsAmbienceConfig(), currentConfig.getSoundsAmbience()))
-            .soundsSettlement(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsSettlementConfig(), currentConfig.getSoundsSettlement()))
-            .soundsRoom(ConfigUtil.mergeIntoNewRange(soundsPanel.getSoundsRoomConfig(), currentConfig.getSoundsRoom()))
-            .weather(ConfigUtil.mergeIntoNewRange(weatherPanel.getConfig(), currentConfig.getWeather()))
-            .boosters(ConfigUtil.mergeIntoNewRange(boostersPanel.getConfig(), currentConfig.getBoosters()))
-            .build();
+                .eventsSettlement(eventsPanel.getSettlementEventsConfig())
+                .eventsWorld(eventsPanel.getWorldEventsConfig())
+                .eventsChance(ConfigUtil.mergeIntegerIntoNewRange(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
+                .soundsAmbience(ConfigUtil.mergeIntegerIntoNewRange(soundsPanel.getSoundsAmbienceConfig(), currentConfig.getSoundsAmbience()))
+                .soundsSettlement(ConfigUtil.mergeIntegerIntoNewRange(soundsPanel.getSoundsSettlementConfig(), currentConfig.getSoundsSettlement()))
+                .soundsRoom(ConfigUtil.mergeIntegerIntoNewRange(soundsPanel.getSoundsRoomConfig(), currentConfig.getSoundsRoom()))
+                .weather(ConfigUtil.mergeIntegerIntoNewRange(weatherPanel.getConfig(), currentConfig.getWeather()))
+                .boosters(ConfigUtil.mergeIntoNewRange(boostersPanel.getConfig(), currentConfig.getBoosters()))
+                .build();
     }
 
 
     public void applyConfig(MoreOptionsConfig config) {
         eventsPanel.applyConfig(
             config.getEventsSettlement(),
-            config.getEventsWorld(), ConfigUtil.extract(config.getEventsChance()),
-            config.getFactionOpinionAdd().getValue());
-        soundsPanel.applyConfig(ConfigUtil.extract(config.getSoundsAmbience()), ConfigUtil.extract(config.getSoundsSettlement()), ConfigUtil.extract(config.getSoundsRoom()));
+            config.getEventsWorld(),
+            ConfigUtil.extract(config.getEventsChance())
+        );
+        soundsPanel.applyConfig(
+            ConfigUtil.extract(config.getSoundsAmbience()),
+            ConfigUtil.extract(config.getSoundsSettlement()),
+            ConfigUtil.extract(config.getSoundsRoom())
+        );
         weatherPanel.applyConfig(ConfigUtil.extract(config.getWeather()));
-        boostersPanel.applyConfig(ConfigUtil.extract(config.getBoosters()));
+        boostersPanel.applyConfig(config.getBoosters());
     }
 
     /**
@@ -146,36 +147,7 @@ public class MoreOptionsModal extends GuiSection {
             .orElse(true);
     }
 
-    private GuiSection header(Map<Tuple<String, String>, GuiSection> panels, MoreOptionsConfig config) {
-        GuiSection section = new GuiSection();
-        GuiSection versions = versions(config.getVersion());
-        GuiSection space = new GuiSection();
-        space.body().setWidth(versions.body().width());
-        section.addRightC(0, space);
-
-        panels.forEach((titleDesc, panel) -> {
-
-            GButt.ButtPanel button = new GButt.ButtPanel(titleDesc.a()) {
-                @Override
-                protected void clickA() {
-                    switcher.set(panel, DIR.N);
-                }
-
-                @Override
-                protected void renAction() {
-                    selectedSet(switcher.get() == panel);
-                }
-            };
-            button.hoverInfoSet(titleDesc.b());
-            section.addRightC(0, button.setDim(136, 32));
-        });
-
-        section.addRightC(50, versions);
-
-        return section;
-    }
-
-    private GuiSection versions(int configVersionNumber) {
+   private GuiSection versions(int configVersionNumber) {
         COLOR color = COLOR.WHITE50;
         GuiSection versions = new GuiSection();
 
@@ -200,7 +172,7 @@ public class MoreOptionsModal extends GuiSection {
         return versions;
     }
 
-    private GuiSection footer() {
+    private GuiSection footer(int version) {
         GuiSection section = new GuiSection();
 
         this.cancelButton = new Button("Cancel", COLOR.WHITE25);
@@ -223,8 +195,10 @@ public class MoreOptionsModal extends GuiSection {
         this.applyButton = new Button("Apply", COLOR.WHITE15);
         applyButton.hoverInfoSet("Apply and save options");
         applyButton.setEnabled(false);
-        section.addRight(300, applyButton);
 
+        section.addRight(50, versions(version));
+
+        section.addRight(50, applyButton);
         this.okButton = new Button("OK", COLOR.WHITE15);
         okButton.hoverInfoSet("Apply and exit");
         section.addRight(10, okButton);

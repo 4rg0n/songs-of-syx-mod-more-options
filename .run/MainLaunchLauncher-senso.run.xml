@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Main" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="init.Main" />
+  <configuration default="false" name="senso.MainLaunchLauncher" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="init.MainLaunchLauncher" />
     <module name="songs-of-syx-mod-more-options" />
-    <option name="WORKING_DIRECTORY" value="C:/Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.github.argon.*" />
@@ -11,7 +11,6 @@
     </extension>
     <method v="2">
       <option name="Make" enabled="true" />
-      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="install" />
     </method>
   </configuration>
 </component>

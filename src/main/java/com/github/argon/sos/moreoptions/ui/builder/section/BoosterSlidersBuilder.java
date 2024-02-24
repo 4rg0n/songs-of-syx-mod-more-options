@@ -1,23 +1,25 @@
 package com.github.argon.sos.moreoptions.ui.builder.section;
 
 import com.github.argon.sos.moreoptions.Dictionary;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Toggler;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.BoosterSliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.TableBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.TableHeaderBuilder;
+import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.renderable.RENDEROBJ;
+import util.gui.table.GScrollRows;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class BoosterSlidersBuilder implements UiBuilder<GuiSection, Map<String, Slider>> {
-    private final Map<String, BoosterSliderBuilder.Definition> definitions;
-
+public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String, Toggler<Integer>>> {
+    private final Map<String, Map<String, BoosterSliderBuilder.Definition>> definitions;
     private final int displayHeight;
 
 
@@ -25,32 +27,48 @@ public class BoosterSlidersBuilder implements UiBuilder<GuiSection, Map<String, 
      * Builds a section with a scrollable list of sliders with labels in front of them.
      * Each entry is a slider with its {@link SliderBuilder.Definition}
      */
-    public BuildResult<GuiSection, Map<String, Slider>> build() {
-        Map<String, Slider> elements = new HashMap<>();
-        // sort by label title
-        LinkedHashMap<String, BoosterSliderBuilder.Definition> definitions = this.definitions.entrySet()
-            .stream().sorted(Comparator.comparing(entry -> entry.getValue().getLabelDefinition().getTitle()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    public BuildResult<GScrollRows, Map<String, Toggler<Integer>>> build() {
 
+        List<RENDEROBJ> renderobjs = new LinkedList<>();
+        Map<String, Toggler<Integer>> elements = new HashMap<>();
+        Map<String, List<List<? extends GuiSection>>> mapRows = new HashMap<>();
         List<List<? extends GuiSection>> rows = new ArrayList<>();
-        definitions.forEach((key, definition) -> {
-            BuildResult<List<GuiSection>, Slider> buildResult = BoosterSliderBuilder.builder()
-                .definition(definition)
-                .build();
-            elements.put(key, buildResult.getInteractable());
-            rows.add(buildResult.getResult());
-        });
 
-        GuiSection table = TableBuilder.builder()
-            .evenOdd(true)
-            .displayHeight(displayHeight)
-            .rows(rows)
-            .build()
-            .getResult();
+        for(String keyDef: definitions.keySet()) {
+            List<List<? extends GuiSection>> innerList = new ArrayList<>();
+            definitions.get(keyDef).entrySet()
+                    .stream().sorted(Comparator.comparing(entry -> entry.getValue().getLabelDefinition().getTitle()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                            (oldValue, newValue) -> oldValue, LinkedHashMap::new)).forEach((key, definition) -> {
+                        BuildResult<List<GuiSection>, Toggler<Integer>> buildResult = BoosterSliderBuilder.builder()
+                                .definition(definition)
+                                .build();
+                        rows.add(buildResult.getResult());
+                        elements.put(key, buildResult.getInteractable());
+                        innerList.add(buildResult.getResult());
 
-        return BuildResult.<GuiSection, Map<String, Slider>>builder()
-            .result(table)
+                    });
+            mapRows.put(keyDef, innerList);
+        }
+
+        int widthTotal = UiUtil.getMaxCombinedColumnWidth(rows);
+
+        for (String key: definitions.keySet()) {
+            renderobjs.addAll(TableHeaderBuilder.builder()
+                    .evenOdd(true)
+                    .displayHeight(displayHeight)
+                    .rows(rows)
+                    .widthTotal(widthTotal)
+                    .key(key)
+                    .mapRows(mapRows)
+                    .build()
+                    .getResults());
+        }
+
+        GScrollRows gScrollRows = new GScrollRows(renderobjs, this.displayHeight, widthTotal);
+
+        return BuildResult.<GScrollRows, Map<String, Toggler<Integer>>>builder()
+            .result(gScrollRows)
             .interactable(elements)
             .build();
     }
@@ -63,20 +81,22 @@ public class BoosterSlidersBuilder implements UiBuilder<GuiSection, Map<String, 
 
         @lombok.Setter
         @Accessors(fluent = true)
-        private Map<String, BoosterSliderBuilder.Definition> definitions;
+        private Map<String, Map<String, BoosterSliderBuilder.Definition>> definitions;
 
         @lombok.Setter
         @Accessors(fluent = true)
         private int displayHeight = 100;
 
-        public Builder translate(Map<String, BoosterSliderBuilder.Definition> definitions) {
+        public Builder translate(Map<String, Map<String, BoosterSliderBuilder.Definition>> definitions) {
             Dictionary dictionary = Dictionary.getInstance();
-            dictionary.translate(definitions.values());
+
+            for(Map<String, BoosterSliderBuilder.Definition>  definitionMap : definitions.values()) {
+                dictionary.translate(definitionMap.values());
+            }
 
             return definitions(definitions);
         }
-
-        public BuildResult<GuiSection, Map<String, Slider>> build() {
+        public BuildResult<GScrollRows, Map<String, Toggler<Integer>>> build() {
             assert definitions != null : "definitions must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
 

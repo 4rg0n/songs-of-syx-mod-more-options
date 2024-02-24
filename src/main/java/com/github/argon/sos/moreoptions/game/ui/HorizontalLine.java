@@ -5,6 +5,9 @@ import snake2d.util.color.COLOR;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import util.colors.GCOLOR;
 
+/**
+ * Draws a horizontal pixel line
+ */
 public class HorizontalLine extends RENDEROBJ.RenderImp {
 
     private final int thickness;

@@ -9,7 +9,6 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
-import init.paths.ModInfo;
 import init.paths.PATHS;
 import init.sprite.SPRITES;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import snake2d.util.file.FileManager;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GButt;
 import view.interrupter.IDebugPanel;
-import view.ui.UIPanelTop;
+import view.ui.top.UIPanelTop;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,13 +27,12 @@ import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 /**
  * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsConfig}.
  * So when a new entry is added, a new UI element like e.g. an additional slider will also be visible.
+ * For setting up the UI.
  */
 @RequiredArgsConstructor
 public class UIGameConfig {
 
     private final static Logger log = Loggers.getLogger(UIGameConfig.class);
-
-    private final ModInfo modInfo;
 
     private final GameApis gameApis;
 
@@ -71,8 +69,6 @@ public class UIGameConfig {
                 GuiSection right = (GuiSection) o;
                 right.addRelBody(8, DIR.W, settlementButton);
             });
-
-        // todo: add panel button to world ui
     }
 
     /**
@@ -89,7 +85,12 @@ public class UIGameConfig {
         });
     }
 
-    public void initForBackup(Modal<BackupModal> backupModal, Modal<MoreOptionsModal> backupMoreOptionsModal, Modal<MoreOptionsModal> moreOptionsModal, MoreOptionsConfig config) {
+    public void initForBackup(
+        Modal<BackupModal> backupModal,
+        Modal<MoreOptionsModal> backupMoreOptionsModal,
+        Modal<MoreOptionsModal> moreOptionsModal,
+        MoreOptionsConfig config
+    ) {
         init(backupMoreOptionsModal, config);
 
         // Close: More Options modal with backup config
@@ -116,6 +117,7 @@ public class UIGameConfig {
 
         // Edit Backup
         backupModal.getSection().getEditButton().clickActionSet(() -> {
+            backupMoreOptionsModal.getSection().applyConfig(config);
             backupModal.hide();
             backupMoreOptionsModal.show();
         });
@@ -163,15 +165,13 @@ public class UIGameConfig {
     public void init(Modal<MoreOptionsModal> moreOptionsModal, MoreOptionsConfig config) {
         log.debug("Initialize %s UI", MOD_INFO.name);
 
-
-        List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream().map(entry ->
-            BoostersPanel.Entry.builder()
+        List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream()
+            .map(entry -> BoostersPanel.Entry.builder()
                 .key(entry.getKey())
                 .range(entry.getValue())
-                .enemy(gameApis.boosterApi().isEnemyBooster(entry.getKey()))
-                .player(gameApis.boosterApi().isPlayerBooster(entry.getKey()))
-                .build()
-        ).collect(Collectors.toList());
+                .cat(gameApis.boosterApi().getCat(entry.getKey()))
+                .build())
+            .collect(Collectors.toList());
 
         moreOptionsModal.getSection().init(config, boosterEntries);
         moreOptionsModal.center();

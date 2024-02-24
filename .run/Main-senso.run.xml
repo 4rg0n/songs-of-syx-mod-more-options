@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Main" type="Application" factoryName="Application">
+  <configuration default="false" name="senso.Main" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="init.Main" />
     <module name="songs-of-syx-mod-more-options" />
-    <option name="WORKING_DIRECTORY" value="C:/Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../SteamLibrary/steamapps/common/Songs of Syx" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.github.argon.*" />

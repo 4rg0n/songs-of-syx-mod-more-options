@@ -2,7 +2,6 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.game.api.GameEventsApi;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATH;
@@ -60,7 +59,6 @@ public class ConfigStore {
                 saveConfig(config);
             } else if (configVersion < metaVersion) {
                 log.warn("Detected config version decrease from %s to %s. This shouldn't happen...", metaVersion, configVersion);
-                // FIXME persist newest? discard old?
             }
         });
 
@@ -193,7 +191,10 @@ public class ConfigStore {
         private final GameApis gameApis;
 
         @Getter(lazy=true)
-        private final Map<String, MoreOptionsConfig.Range> boosters = boosters();
+        private final Map<String, MoreOptionsConfig.Range> boostersMulti = boostersMulti();
+
+        @Getter(lazy=true)
+        private final Map<String, MoreOptionsConfig.Range> boostersAdd = boostersAdd();
         @Getter(lazy=true)
         private final Map<String, MoreOptionsConfig.Range> weather = weather();
         @Getter(lazy=true)
@@ -225,18 +226,31 @@ public class ConfigStore {
                 .soundsSettlement(getSoundsSettlement())
                 .soundsRoom(getSoundsRoom())
                 .weather(getWeather())
-                .boosters(getBoosters())
+                .boosters(getBoostersMulti())
                 .build();
         }
 
-        private Map<String, MoreOptionsConfig.Range> boosters() {
+        private Map<String, MoreOptionsConfig.Range> boostersMulti() {
             //noinspection DataFlowIssue
-            return gameApis.boosterApi().getAllBoosters().keySet().stream()
+            return gameApis.boosterApi().getBoosters().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
                     .value(100)
+                    .min(1)
+                    .max(10000)
+                    .applyMode(MoreOptionsConfig.Range.ApplyMode.MULTI)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                    .build()));
+        }
+
+        private Map<String, MoreOptionsConfig.Range> boostersAdd() {
+            //noinspection DataFlowIssue
+            return gameApis.boosterApi().getBoosters().keySet().stream()
+                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+                    .value(0)
                     .min(0)
                     .max(10000)
-                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                    .applyMode(MoreOptionsConfig.Range.ApplyMode.ADD)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE)
                     .build()));
         }
 
@@ -287,22 +301,12 @@ public class ConfigStore {
         private Map<String, MoreOptionsConfig.Range> eventsChance() {
             //noinspection DataFlowIssue
             return gameApis.eventsApi().getEventsChance().keySet().stream()
-                .collect(Collectors.toMap(key -> key, key -> {
-                    MoreOptionsConfig.Range range = MoreOptionsConfig.Range.builder()
-                        .value(100)
-                        .min(0)
-                        .max(100)
-                        .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
-                        .build();
-
-                    // fixme ugly...
-                    if (GameEventsApi.FACTION_OPINION_ADD.equals(key)) {
-                        range.setDisplayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE);
-                        range.setMin(-100);
-                    }
-
-                    return range;
-                }));
+                .collect(Collectors.toMap(key -> key, key -> MoreOptionsConfig.Range.builder()
+                    .value(100)
+                    .min(0)
+                    .max(10000)
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                    .build()));
         }
 
         private Map<String, Boolean> eventsSettlement() {

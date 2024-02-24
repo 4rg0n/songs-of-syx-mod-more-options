@@ -1,96 +1,163 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Toggler;
+import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
-import com.github.argon.sos.moreoptions.ui.builder.element.BoosterSliderBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.*;
 import com.github.argon.sos.moreoptions.ui.builder.section.BoosterSlidersBuilder;
+import game.boosting.BoostableCat;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
-import util.gui.misc.GHeader;
-import util.info.INFO;
+import util.gui.table.GScrollRows;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class BoostersPanel extends GuiSection {
+/**
+ * Contains sliders to influence values of game boosters
+ */
+public class BoostersPanel extends GuiSection implements Valuable<Void> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
-    private final Map<String, Slider> sliders;
+    private final Map<String, Toggler<Integer>> sliders;
 
-    public BoostersPanel(List<Entry> boosterEntries, String configFilePath) {
-        Map<String, BoosterSliderBuilder.Definition> boosterDefinitions = boosterEntries.stream().collect(Collectors.toMap(
-            Entry::getKey,
-            entry -> BoosterSliderBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key(entry.getKey())
-                    .title(entry.getKey())
-                    .build())
-                .sliderDefinition(SliderBuilder.Definition.builder()
-                    .maxWidth(300)
-                    .min(entry.getRange().getMin())
-                    .max(entry.getRange().getMax())
-                    .valueDisplay(Slider.ValueDisplay.valueOf(entry.getRange().getDisplayMode().name()))
-                    .threshold(1000, COLOR.YELLOW100.shade(0.7d))
-                    .threshold(5000, COLOR.ORANGE100.shade(0.7d))
-                    .threshold(7500, COLOR.RED100.shade(0.7d))
-                    .threshold(9000, COLOR.RED2RED)
-                    .build())
-                .player(entry.isPlayer())
-                .enemy(entry.isEnemy())
-                .build()));
+    public BoostersPanel(List<Entry> boosterEntries) {
+        Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
+        for (Entry entry : boosterEntries) {
+            if (entry.getCat() != null && entry.getCat().name != null) {
+                String catName = entry.getCat().name.toString();
+                // Check if the map already has a list for this cat name
+                if (!groupedBoosterEntries.containsKey(catName)) {
+                    // If not, create a new list and add it to the map
+                    groupedBoosterEntries.put(catName, new ArrayList<>());
+                }
+                // Add the entry to the appropriate list
+                groupedBoosterEntries.get(catName).add(entry);
+            }
+        }
 
-        BuildResult<GuiSection, Map<String, Slider>> buildResult = BoosterSlidersBuilder.builder()
-            .displayHeight(500)
-            .translate(boosterDefinitions)
-            .build();
+        Map<String, Map<String, BoosterSliderBuilder.Definition>> boosterDefinitions = new HashMap<>();
+        groupedBoosterEntries.keySet().forEach(cat -> {
+            List<Entry> groupedBoostersByCat = groupedBoosterEntries.get(cat);
+            boosterDefinitions.put(cat, groupedBoostersByCat.stream()
+                .collect(Collectors.toMap(
+                    Entry::getKey,
+                    BoostersPanel::buildSliderDefinition)));
+        });
 
-        GuiSection sliderSection = buildResult.getResult();
+        BuildResult<GScrollRows, Map<String, Toggler<Integer>>> buildResult = BoosterSlidersBuilder.builder()
+                .displayHeight(500)
+                .translate(boosterDefinitions)
+                .build();
+
+        GScrollRows gScrollRows = buildResult.getResult();
         sliders = buildResult.getInteractable();
-
-        GHeader disclaimer = new GHeader("High values can slow or even crash your game");
-        disclaimer.hoverInfoSet(new INFO("In case of a crash", "Delete configuration file in:" + configFilePath));
-
-        addDown(0, disclaimer);
-        addDown(10, sliderSection);
+        addDown(10, gScrollRows.view());
     }
 
-    public Map<String, Integer> getConfig() {
+    public Map<String, MoreOptionsConfig.Range> getConfig() {
         return sliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> {
+                    Toggler<Integer> toggler = entry.getValue();
+                    return MoreOptionsConfig.Range.builder()
+                        .value(toggler.getValue())
+                        .applyMode(MoreOptionsConfig.Range.ApplyMode.valueOf(
+                            toggler.getActiveInfo().getKey().toUpperCase()))
+                        .build();
+                }));
     }
 
-    public void applyConfig(Map<String, Integer> config) {
-        log.trace("Applying UI weather config %s", config);
+    public void applyConfig(Map<String, MoreOptionsConfig.Range> config) {
+        log.trace("Applying Booster config %s", config);
 
-        config.forEach((key, value) -> {
+        config.forEach((key, range) -> {
             if (sliders.containsKey(key)) {
-                sliders.get(key).setValue(value);
+                Toggler<Integer> toggler = sliders.get(key);
+                toggler.reset();
+                toggler.toggle(range.getApplyMode().name().toLowerCase());
+                toggler.setValue(range.getValue());
+
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
     }
 
+    private static BoosterSliderBuilder.Definition buildSliderDefinition(Entry entry) {
+        MoreOptionsConfig.Range rangeMulti;
+        MoreOptionsConfig.Range rangeAdd;
+
+        if (entry.getRange().getApplyMode().equals(MoreOptionsConfig.Range.ApplyMode.MULTI)) {
+            rangeMulti = entry.getRange();
+            rangeAdd = MoreOptionsScript.getConfigStore()
+                .getDefaults().getBoostersAdd().get(entry.getKey());
+        } else {
+            rangeMulti = MoreOptionsScript.getConfigStore()
+                .getDefaults().getBoostersMulti().get(entry.getKey());
+            rangeAdd = entry.getRange();
+        }
+
+        return BoosterSliderBuilder.Definition.builder()
+            .labelDefinition(LabelBuilder.Definition.builder()
+                .key(entry.getKey())
+                .title(entry.getKey())
+                .build())
+            .sliderAddDefinition(SliderBuilder.Definition.builder()
+                .maxWidth(300)
+                .min(rangeAdd.getMin())
+                .max(rangeAdd.getMax())
+                .value(rangeAdd.getValue())
+                .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
+                .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))
+                .threshold((int) (0.50 * rangeAdd.getMax()), COLOR.ORANGE100.shade(0.7d))
+                .threshold((int) (0.75 * rangeAdd.getMax()), COLOR.RED100.shade(0.7d))
+                .threshold((int) (0.90 * rangeAdd.getMax()), COLOR.RED2RED)
+                .build())
+            .sliderMultiDefinition(SliderBuilder.Definition.builder()
+                .maxWidth(300)
+                .min(rangeMulti.getMin())
+                .max(rangeMulti.getMax())
+                .value(rangeMulti.getValue())
+                .valueDisplay(Slider.ValueDisplay.PERCENTAGE)
+                .threshold((int) (0.10 * rangeMulti.getMax()), COLOR.YELLOW100.shade(0.7d))
+                .threshold((int) (0.50 * rangeMulti.getMax()), COLOR.ORANGE100.shade(0.7d))
+                .threshold((int) (0.75 * rangeMulti.getMax()), COLOR.RED100.shade(0.7d))
+                .threshold((int) (0.90 * rangeMulti.getMax()), COLOR.RED2RED)
+                .build())
+            .build();
+    }
+
+    @Override
+    public Void getValue() {
+        return null;
+    }
+
+    @Override
+    public void setValue(Void value) {
+
+    }
+
     @Data
     @Builder
     public static class Entry {
         private MoreOptionsConfig.Range range;
-
         private String key;
 
+        //  |\__/,|   (`\
+        // |_ _  |.--.) )
+        // ( T   )     /
+        //(((^_(((/(((_/
         @Builder.Default
-        private boolean player = false;
-
-        @Builder.Default
-        private boolean enemy = false;
+        private BoostableCat cat = null;
     }
 }

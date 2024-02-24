@@ -1,9 +1,10 @@
 package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
+import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBooster;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.util.StringUtil;
-import init.boostable.BOOSTABLE;
+import game.boosting.Boostable;
 import lombok.*;
 
 import java.util.Collection;
@@ -73,8 +74,15 @@ public class Dictionary {
         return this;
     }
 
-    public Dictionary add(BOOSTABLE boostable) {
+    public Dictionary add(Boostable boostable) {
         Dictionary.Entry dictEntry = Dictionary.Entry.fromBoostable(boostable);
+        entries.put(dictEntry.getKey(), dictEntry);
+
+        return this;
+    }
+
+    public Dictionary add(MoreOptionsBooster moreOptionsBooster) {
+        Dictionary.Entry dictEntry = Dictionary.Entry.fromMoreOptionsBooster(moreOptionsBooster);
         entries.put(dictEntry.getKey(), dictEntry);
 
         return this;
@@ -105,11 +113,19 @@ public class Dictionary {
 
         private String description;
 
-        public static Entry fromBoostable(BOOSTABLE boostable) {
+        public static Entry fromBoostable(Boostable boostable) {
             return Entry.builder()
                 .key(GameBoosterApi.KEY_PREFIX + "." + boostable.key)
                 .title(boostable.name.toString())
                 .description(boostable.desc.toString())
+                .build();
+        }
+
+        public static Entry fromMoreOptionsBooster(MoreOptionsBooster moreOptionsBooster) {
+            return Entry.builder()
+                .key(GameBoosterApi.KEY_PREFIX + "." + moreOptionsBooster.getOrigin().key)
+                .title(moreOptionsBooster.getOrigin().name.toString())
+                .description(moreOptionsBooster.getOrigin().desc.toString())
                 .build();
         }
     }

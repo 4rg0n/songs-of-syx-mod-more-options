@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.log.Level;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -41,14 +42,6 @@ public class MoreOptionsConfig {
     private Map<String, Range> eventsChance = new HashMap<>();
 
     @Builder.Default
-    private Range factionOpinionAdd = Range.builder()
-        .value(0)
-        .min(-100)
-        .max(100)
-        .displayMode(Range.DisplayMode.ABSOLUTE)
-        .build();
-
-    @Builder.Default
     private Map<String, Range> soundsAmbience = new HashMap<>();
 
     @Builder.Default
@@ -74,12 +67,20 @@ public class MoreOptionsConfig {
         private int max = 10000;
 
         @Builder.Default
+        private ApplyMode applyMode = ApplyMode.MULTI;
+
+        @Builder.Default
         private DisplayMode displayMode = DisplayMode.PERCENTAGE;
 
         public enum DisplayMode {
             NONE,
             ABSOLUTE,
             PERCENTAGE
+        }
+
+        public enum ApplyMode {
+            ADD,
+            MULTI
         }
 
         public Range clone() {
@@ -101,6 +102,16 @@ public class MoreOptionsConfig {
 
         @Builder.Default
         private Level logLevel = MoreOptionsScript.LOG_LEVEL_DEFAULT;
+    }
+
+    @Getter
+    @Builder
+    public static class BoosterEntry {
+        private final String key;
+
+        private final Range add;
+
+        private final Range multi;
     }
 
     /* TODO
