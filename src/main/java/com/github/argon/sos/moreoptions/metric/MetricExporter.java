@@ -33,7 +33,7 @@ public class MetricExporter {
     }
 
     public void newExportFile() {
-        exportFilePath = EXPORT_PATH.resolve(Instant.now().getEpochSecond() + "MetricExport.csv");
+        exportFilePath = EXPORT_PATH.resolve(Instant.now().getEpochSecond() + "_MetricExport.csv");
         log.debug("New metric export file path: %s", exportFilePath);
     }
 

@@ -4,12 +4,12 @@
       <entry path="C:\Program Files (x86)\Steam\steamapps\common\Songs of Syx\base\script\jar\Example.jar" />
     </classpathModifications>
     <envs>
-      <env name="MO.LOG_LEVEL" value="trace" />
+      <env name="MO.LOG_LEVEL" value="debug" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="init.MainProcess" />
     <module name="songs-of-syx-mod-more-options" />
     <option name="PROGRAM_PARAMETERS" value="-Xms512m -Xmx1024m -XX:+UseCompressedOops" />
-    <option name="WORKING_DIRECTORY" value="C:/Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.github.argon.*" />
