@@ -1,6 +1,8 @@
 package com.github.argon.sos.moreoptions.util;
 
+import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.GridRow;
+import com.github.argon.sos.moreoptions.game.ui.Slider;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import snake2d.util.gui.GuiSection;
@@ -12,6 +14,19 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiUtil {
+
+    public static Slider.ValueDisplay fromDisplayMode(MoreOptionsConfig.Range.DisplayMode displayMode) {
+            switch (displayMode) {
+                case PERCENTAGE:
+                    return Slider.ValueDisplay.PERCENTAGE;
+                case ABSOLUTE:
+                    return Slider.ValueDisplay.ABSOLUTE;
+                default:
+                case NONE:
+                    return Slider.ValueDisplay.NONE;
+            }
+    }
+
     public static int getMaxWidth(Collection<? extends RENDEROBJ> renderobjs) {
         int maxWidth = 0;
 

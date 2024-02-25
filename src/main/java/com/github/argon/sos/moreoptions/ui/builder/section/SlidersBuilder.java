@@ -83,11 +83,8 @@ public class SlidersBuilder implements UiBuilder<GuiSection, Map<String, Slider>
                         .key(config.getKey())
                         .title(config.getKey())
                         .build())
-                    .sliderDefinition(SliderBuilder.Definition.builder()
-                        .min(config.getValue().getMin())
-                        .max(config.getValue().getMax())
+                    .sliderDefinition(SliderBuilder.Definition.buildFrom(config.getValue())
                         .maxWidth(300)
-                        .valueDisplay(Slider.ValueDisplay.valueOf(config.getValue().getDisplayMode().name()))
                         .build())
                     .build()));
 

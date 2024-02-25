@@ -1,10 +1,10 @@
 package com.github.argon.sos.moreoptions.ui.builder.element;
 
 import com.github.argon.sos.moreoptions.Dictionary;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
+import com.github.argon.sos.moreoptions.util.Lists;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -12,65 +12,62 @@ import snake2d.util.gui.GuiSection;
 
 import java.util.List;
 
+/**
+ * @param <E> element next to the label
+ */
 @RequiredArgsConstructor
-public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider> {
-    private final Definition definition;
+public class LabeledBuilder<E extends GuiSection> implements UiBuilder<List<GuiSection>, E> {
+    private final Definition<E> definition;
 
-    public BuildResult<List<GuiSection>, Slider> build() {
-
+    public BuildResult<List<GuiSection>, E> build() {
         if (definition.getLabelWidth() > 0) {
             definition.getLabelDefinition().setMaxWidth(definition.getLabelWidth());
         }
 
-        Slider slider = SliderBuilder.builder()
-            .definition(definition.getSliderDefinition())
+        GuiSection label = LabelBuilder.builder()
+            .translate(definition.getLabelDefinition())
             .build().getResult();
-        slider.pad(10, 5);
+        label.pad(10, 5);
 
-        List<GuiSection> row = LabeledBuilder.builder()
-            .translate(LabeledBuilder.Definition.builder()
-                .labelDefinition(definition.getLabelDefinition())
-                .element(slider)
-                .build())
-            .build()
-            .getResult();
+        List<GuiSection> row = Lists.of(label, definition.getElement());
 
-        return BuildResult.<List<GuiSection>, Slider>builder()
+        return BuildResult.<List<GuiSection>, E>builder()
             .result(row)
-            .interactable(slider)
+            .interactable(definition.getElement())
             .build();
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static <T extends GuiSection> Builder<T> builder() {
+        return new Builder<>();
     }
 
-    public static class Builder {
+    public static class Builder<E extends GuiSection> {
 
         @lombok.Setter
         @Accessors(fluent = true)
-        private Definition definition;
+        private Definition<E> definition;
 
-        public Builder translate(Definition definition) {
+        public Builder<E> translate(Definition<E> definition) {
             Dictionary dictionary = Dictionary.getInstance();
             dictionary.translate(definition.getLabelDefinition());
 
             return definition(definition);
         }
 
-        public BuildResult<List<GuiSection>, Slider> build() {
+        public BuildResult<List<GuiSection>, E> build() {
             assert definition != null : "definition must not be null";
 
-            return new LabeledSliderBuilder(definition).build();
+            return new LabeledBuilder<>(definition).build();
         }
     }
 
     @Data
     @lombok.Builder
-    public static class Definition implements Translatable {
+    public static class Definition<E extends GuiSection> implements Translatable {
 
         private LabelBuilder.Definition labelDefinition;
-        private SliderBuilder.Definition sliderDefinition;
+
+        private E element;
 
         @lombok.Builder.Default
         private int labelWidth = 0;

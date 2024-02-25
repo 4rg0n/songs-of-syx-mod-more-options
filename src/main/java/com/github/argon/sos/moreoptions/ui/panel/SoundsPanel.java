@@ -74,11 +74,8 @@ public class SoundsPanel extends GuiSection implements Valuable<Void> {
                     .key(config.getKey())
                     .title(config.getKey())
                     .build())
-                .sliderDefinition(SliderBuilder.Definition.builder()
-                    .min(config.getValue().getMin())
-                    .max(config.getValue().getMax())
+                .sliderDefinition(SliderBuilder.Definition.buildFrom(config.getValue())
                     .maxWidth(300)
-                    .valueDisplay(Slider.ValueDisplay.valueOf(config.getValue().getDisplayMode().name()))
                     .build())
                 .labelWidth(200)
                 .build()));

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class MapUtil {
+public class Maps {
     public static <K, V> Map<K, V> of() {
         return Collections.emptyMap();
     }

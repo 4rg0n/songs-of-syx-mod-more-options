@@ -11,8 +11,6 @@ import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class LabeledCheckboxBuilder implements UiBuilder<List<GuiSection>, Checkbox> {
@@ -20,12 +18,6 @@ public class LabeledCheckboxBuilder implements UiBuilder<List<GuiSection>, Check
 
     @Override
     public BuildResult<List<GuiSection>, Checkbox> build() {
-        GuiSection label = LabelBuilder.builder()
-            .translate(definition.getLabelDefinition())
-            .build()
-            .getResult();
-        label.pad(10, 5);
-
         BuildResult<GuiSection, Checkbox> checkboxBuildResult = CheckboxBuilder.builder()
             .definition(definition.getCheckboxDefinition())
             .build();
@@ -33,10 +25,13 @@ public class LabeledCheckboxBuilder implements UiBuilder<List<GuiSection>, Check
         GuiSection checkBoxSection = checkboxBuildResult.getResult();
         checkBoxSection.pad(10, 5);
 
-        List<GuiSection> row = Stream.of(
-            label,
-            checkBoxSection
-        ).collect(Collectors.toList());
+        List<GuiSection> row = LabeledBuilder.builder()
+            .translate(LabeledBuilder.Definition.builder()
+                .labelDefinition(definition.getLabelDefinition())
+                .element(checkBoxSection)
+                .build())
+            .build()
+            .getResult();
 
          return BuildResult.<List<GuiSection>, Checkbox>builder()
             .result(row)

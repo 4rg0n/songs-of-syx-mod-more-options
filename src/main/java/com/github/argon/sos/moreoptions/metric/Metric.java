@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.metric;
 
+import com.github.argon.sos.moreoptions.util.Lists;
 import game.time.TIME;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +8,10 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -98,7 +102,7 @@ public class Metric {
         }
 
         public static List<String> getHeaders() {
-            return Arrays.asList("AGE", "SEASONS", "SEASON", "YEARS", "DAYS", "HOURS", "CURRENT_SECONDS", "PLAY_TIME_SECONDS");
+            return Lists.of("AGE", "SEASONS", "SEASON", "YEARS", "DAYS", "HOURS", "CURRENT_SECONDS", "PLAY_TIME_SECONDS");
         }
     }
 }

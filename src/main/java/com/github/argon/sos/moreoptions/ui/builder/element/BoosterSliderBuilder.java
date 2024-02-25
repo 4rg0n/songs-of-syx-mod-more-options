@@ -7,7 +7,7 @@ import com.github.argon.sos.moreoptions.game.ui.Toggler;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
-import com.github.argon.sos.moreoptions.util.MapUtil;
+import com.github.argon.sos.moreoptions.util.Maps;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -43,7 +43,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
             .build().getResult();
         multiSlider.pad(10, 5);
 
-        Tabulator<String, Integer, Slider> tabulator = new Tabulator<>(MapUtil.of(
+        Tabulator<String, Integer, Slider> tabulator = new Tabulator<>(Maps.of(
             Toggler.Info.<String>builder()
                 .key("add")
                 .title("Add")

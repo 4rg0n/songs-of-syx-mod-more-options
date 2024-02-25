@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.metric;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.MapUtil;
+import com.github.argon.sos.moreoptions.util.Maps;
 import init.race.RACES;
 import init.race.Race;
 import lombok.AccessLevel;
@@ -157,15 +157,15 @@ public class MetricCollector {
         String key = keyPrefix + ":" +  stat.info().name + ":_TOTAL";
 
         if (!isWhitelisted(key)) {
-            return MapUtil.of();
+            return Maps.of();
         }
 
         try {
-            return MapUtil.of(key, stat.data().get(null));
+            return Maps.of(key, stat.data().get(null));
         } catch (Exception e) {
             log.trace("Could not collect settlement stat %s. Skipping", key, e);
 
-            return MapUtil.of();
+            return Maps.of();
         }
     }
 
@@ -195,15 +195,15 @@ public class MetricCollector {
         String key = keyPrefix + ":" +  stat.key() + ":_TOTAL";
 
         if (!isWhitelisted(key)) {
-            return MapUtil.of();
+            return Maps.of();
         }
 
         try {
-            return MapUtil.of(key, stat.data().get(null));
+            return Maps.of(key, stat.data().get(null));
         } catch (Exception e) {
             log.trace("Could not collect stat %s. Skipping", key, e);
 
-            return MapUtil.of();
+            return Maps.of();
         }
     }
 

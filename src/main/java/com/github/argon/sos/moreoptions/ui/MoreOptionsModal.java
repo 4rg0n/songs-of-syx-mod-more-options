@@ -7,7 +7,7 @@ import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.EventsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.SoundsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
-import com.github.argon.sos.moreoptions.util.MapUtil;
+import com.github.argon.sos.moreoptions.util.Maps;
 import game.VERSION;
 import init.paths.ModInfo;
 import init.sprite.UI.UI;
@@ -68,7 +68,7 @@ public class MoreOptionsModal extends GuiSection {
         weatherPanel = new WeatherPanel(config.getWeather());
         boostersPanel = new BoostersPanel(boosterEntries);
 
-        Tabulator<String, Void, Valuable<Void>> tabulator = new Tabulator<>(MapUtil.ofLinked(
+        Tabulator<String, Void, Valuable<Void>> tabulator = new Tabulator<>(Maps.ofLinked(
             Toggler.Info.<String>builder()
                 .key("sounds")
                 .title("Sounds")
