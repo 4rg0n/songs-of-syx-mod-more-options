@@ -34,17 +34,27 @@ public class WeatherPanel extends GuiSection implements Valuable<Void> {
         addDownC(0, section);
     }
 
-    public Map<String, Integer> getConfig() {
+    public Map<String, MoreOptionsConfig.Range> getConfig() {
         return sliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                tab -> MoreOptionsConfig.Range.builder()
+                    .value(tab.getValue().getValue())
+                    .max(tab.getValue().getMax())
+                    .min(tab.getValue().getMin())
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode
+                        .fromValueDisplay(tab.getValue().getValueDisplay()))
+                    .applyMode(MoreOptionsConfig.Range.ApplyMode
+                        .fromValueDisplay(tab.getValue().getValueDisplay()))
+                    .build()));
     }
 
-    public void applyConfig(Map<String, Integer> config) {
+    public void applyConfig(Map<String, MoreOptionsConfig.Range> config) {
         log.trace("Applying UI weather config %s", config);
 
-        config.forEach((key, value) -> {
+        config.forEach((key, range) -> {
             if (sliders.containsKey(key)) {
-                sliders.get(key).setValue(value);
+                sliders.get(key).setValue(range.getValue());
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }

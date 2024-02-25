@@ -13,16 +13,16 @@ import java.util.Map;
  * Builds a row with buttons and displays the associated ui element when a button is toggled
  * Used for replacing ui elements on button toggle.
  */
-public class Tabulator<K, V> extends GuiSection implements Valuable<V>, Resettable {
+public class Tabulator<K, V, E extends Valuable<V>> extends GuiSection implements Valuable<V>, Resettable {
 
-    private final Map<Toggler.Info<K>, Valuable<V>> tabs;
+    private final Map<Toggler.Info<K>, E> tabs;
     private final boolean resetOnToggle;
     private final Toggler<K> toggler;
 
     @Getter
-    private Valuable<V> activeTab;
+    private E activeTab;
 
-    public Tabulator(Map<Toggler.Info<K>, Valuable<V>> tabs) {
+    public Tabulator(Map<Toggler.Info<K>, E> tabs) {
         this(tabs, DIR.N, 0, false, false);
     }
 
@@ -33,7 +33,7 @@ public class Tabulator<K, V> extends GuiSection implements Valuable<V>, Resettab
      * @param center whether elements shall be centered
      * @param resetOnToggle whether elements shall be reset when toggling
      */
-    public Tabulator(Map<Toggler.Info<K>, Valuable<V>> tabs, DIR direction, int margin, boolean center, boolean resetOnToggle) {
+    public Tabulator(Map<Toggler.Info<K>, E> tabs, DIR direction, int margin, boolean center, boolean resetOnToggle) {
         this.tabs = tabs;
         this.resetOnToggle = resetOnToggle;
 

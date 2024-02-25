@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class BoostersPanel extends GuiSection implements Valuable<Void> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
-    private final Map<String, Tabulator<String, Integer>> sliders;
+    private final Map<String, Tabulator<String, Integer, Slider>> sliders;
 
     public BoostersPanel(List<Entry> boosterEntries) {
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
@@ -53,7 +53,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
                     BoostersPanel::buildSliderDefinition)));
         });
 
-        BuildResult<GScrollRows, Map<String, Tabulator<String, Integer>>> buildResult = BoosterSlidersBuilder.builder()
+        BuildResult<GScrollRows, Map<String, Tabulator<String, Integer, Slider>>> buildResult = BoosterSlidersBuilder.builder()
                 .displayHeight(500)
                 .translate(boosterDefinitions)
                 .build();
@@ -67,14 +67,15 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
         return sliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                entry -> {
-                    Tabulator<String, Integer> tabulator = entry.getValue();
-                    return MoreOptionsConfig.Range.builder()
-                        .value(tabulator.getValue())
-                        .applyMode(MoreOptionsConfig.Range.ApplyMode.valueOf(
-                            tabulator.getActiveInfo().getKey().toUpperCase()))
-                        .build();
-                }));
+                tab -> MoreOptionsConfig.Range.builder()
+                    .value(tab.getValue().getValue())
+                    .max(tab.getValue().getActiveTab().getMax())
+                    .min(tab.getValue().getActiveTab().getMin())
+                    .displayMode(MoreOptionsConfig.Range.DisplayMode
+                        .fromValueDisplay(tab.getValue().getActiveTab().getValueDisplay()))
+                    .applyMode(MoreOptionsConfig.Range.ApplyMode
+                        .fromValueDisplay(tab.getValue().getActiveTab().getValueDisplay()))
+                    .build()));
     }
 
     public void applyConfig(Map<String, MoreOptionsConfig.Range> config) {
@@ -82,7 +83,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
 
         config.forEach((key, range) -> {
             if (sliders.containsKey(key)) {
-                Tabulator<String, Integer> tabulator = sliders.get(key);
+                Tabulator<String, Integer, Slider> tabulator = sliders.get(key);
                 tabulator.reset();
                 tabulator.tab(range.getApplyMode().name().toLowerCase());
                 tabulator.setValue(range.getValue());

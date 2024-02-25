@@ -1,12 +1,8 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
-import com.github.argon.sos.moreoptions.game.ui.Button;
-import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
-import com.github.argon.sos.moreoptions.game.ui.Tabulator;
-import com.github.argon.sos.moreoptions.game.ui.Toggler;
+import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.EventsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.SoundsPanel;
@@ -67,12 +63,12 @@ public class MoreOptionsModal extends GuiSection {
      */
     public void init(MoreOptionsConfig config, List<BoostersPanel.Entry> boosterEntries) {
         clear();
-        soundsPanel = new SoundsPanel(config.getSoundsAmbience(), config.getSoundsSettlement(), config.getSoundsRoom());
-        eventsPanel = new EventsPanel(config.getEventsSettlement(), config.getEventsWorld(), config.getEventsChance());
+        soundsPanel = new SoundsPanel(config.getSounds());
+        eventsPanel = new EventsPanel(config.getEvents());
         weatherPanel = new WeatherPanel(config.getWeather());
         boostersPanel = new BoostersPanel(boosterEntries);
 
-        Tabulator<String, Void> tabulator = new Tabulator<>(MapUtil.ofLinked(
+        Tabulator<String, Void, Valuable<Void>> tabulator = new Tabulator<>(MapUtil.ofLinked(
             Toggler.Info.<String>builder()
                 .key("sounds")
                 .title("Sounds")
@@ -105,36 +101,23 @@ public class MoreOptionsModal extends GuiSection {
     }
 
     public MoreOptionsConfig getConfig() {
-        MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
-        MoreOptionsConfig currentConfig = configStore.getCurrentConfig()
-                .orElse(defaultConfig);
-
-
         return MoreOptionsConfig.builder()
-                .eventsSettlement(eventsPanel.getSettlementEventsConfig())
-                .eventsWorld(eventsPanel.getWorldEventsConfig())
-                .eventsChance(ConfigUtil.mergeIntegerIntoNewRange(eventsPanel.getEventsChanceConfig(), currentConfig.getEventsChance()))
-                .soundsAmbience(ConfigUtil.mergeIntegerIntoNewRange(soundsPanel.getSoundsAmbienceConfig(), currentConfig.getSoundsAmbience()))
-                .soundsSettlement(ConfigUtil.mergeIntegerIntoNewRange(soundsPanel.getSoundsSettlementConfig(), currentConfig.getSoundsSettlement()))
-                .soundsRoom(ConfigUtil.mergeIntegerIntoNewRange(soundsPanel.getSoundsRoomConfig(), currentConfig.getSoundsRoom()))
-                .weather(ConfigUtil.mergeIntegerIntoNewRange(weatherPanel.getConfig(), currentConfig.getWeather()))
-                .boosters(ConfigUtil.mergeIntoNewRange(boostersPanel.getConfig(), currentConfig.getBoosters()))
+                .events(eventsPanel.getConfig())
+                .sounds(soundsPanel.getConfig())
+                .weather(weatherPanel.getConfig())
+                .boosters(boostersPanel.getConfig())
                 .build();
     }
 
 
     public void applyConfig(MoreOptionsConfig config) {
         eventsPanel.applyConfig(
-            config.getEventsSettlement(),
-            config.getEventsWorld(),
-            ConfigUtil.extract(config.getEventsChance())
+            config.getEvents()
         );
         soundsPanel.applyConfig(
-            ConfigUtil.extract(config.getSoundsAmbience()),
-            ConfigUtil.extract(config.getSoundsSettlement()),
-            ConfigUtil.extract(config.getSoundsRoom())
+            config.getSounds()
         );
-        weatherPanel.applyConfig(ConfigUtil.extract(config.getWeather()));
+        weatherPanel.applyConfig(config.getWeather());
         boostersPanel.applyConfig(config.getBoosters());
     }
 

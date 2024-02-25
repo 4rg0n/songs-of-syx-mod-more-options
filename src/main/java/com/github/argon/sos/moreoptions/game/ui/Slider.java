@@ -44,6 +44,9 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
     private final int initialValue;
 
+    @Getter
+    private final ValueDisplay valueDisplay;
+
     /**
      * Makes slider unusable and greyed out
      */
@@ -92,6 +95,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
         this.in = in;
         this.initialValue = in.get();
         this.initialDValue = in.getD();
+        this.valueDisplay = valueDisplay;
         // sort by key
         this.thresholds = thresholds.entrySet()
             .stream().sorted(Map.Entry.comparingByKey())
@@ -228,6 +232,14 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
         }
     };
+
+    public int getMax() {
+        return in.max();
+    }
+
+    public int getMin() {
+        return in.min();
+    }
 
     @Override
     public void render(SPRITE_RENDERER r, float ds) {

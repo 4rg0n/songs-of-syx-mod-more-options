@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Level;
 import lombok.Builder;
 import lombok.Data;
@@ -34,28 +35,45 @@ public class MoreOptionsConfig {
 
     @Builder.Default
     private Level logLevel = Level.WARN;
-    @Builder.Default
-    private Map<String, Boolean> eventsSettlement = new HashMap<>();
 
     @Builder.Default
-    private Map<String, Boolean> eventsWorld = new HashMap<>();
+    private Sounds sounds = Sounds.builder().build();
 
     @Builder.Default
-    private Map<String, Range> eventsChance = new HashMap<>();
-
-    @Builder.Default
-    private Map<String, Range> soundsAmbience = new HashMap<>();
-
-    @Builder.Default
-    private Map<String, Range> soundsSettlement = new HashMap<>();
-    @Builder.Default
-    private Map<String, Range> soundsRoom = new HashMap<>();
+    private Events events = Events.builder().build();
     @Builder.Default
     private Map<String, Range> weather = new HashMap<>();
     @Builder.Default
     private Map<String, Range> boosters = new HashMap<>();
     @Builder.Default
     private Metrics metrics = Metrics.builder().build();
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    public static class Events {
+        @Builder.Default
+        private Map<String, Boolean> settlement = new HashMap<>();
+
+        @Builder.Default
+        private Map<String, Boolean> world = new HashMap<>();
+
+        @Builder.Default
+        private Map<String, Range> chance = new HashMap<>();
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    public static class Sounds {
+        @Builder.Default
+        private Map<String, Range> ambience = new HashMap<>();
+
+        @Builder.Default
+        private Map<String, Range> settlement = new HashMap<>();
+        @Builder.Default
+        private Map<String, Range> room = new HashMap<>();
+    }
 
     @Data
     @Builder
@@ -104,17 +122,40 @@ public class MoreOptionsConfig {
         public enum DisplayMode {
             NONE,
             ABSOLUTE,
-            PERCENTAGE
+            PERCENTAGE;
+
+            public static DisplayMode fromValueDisplay(Slider.ValueDisplay valueDisplay) {
+                switch (valueDisplay) {
+                    case PERCENTAGE:
+                        return DisplayMode.PERCENTAGE;
+                    case ABSOLUTE:
+                        return DisplayMode.ABSOLUTE;
+                    default:
+                    case NONE:
+                        return DisplayMode.NONE;
+                }
+            }
         }
 
         public enum ApplyMode {
             ADD,
-            MULTI
+            MULTI;
+
+            public static ApplyMode fromValueDisplay(Slider.ValueDisplay valueDisplay) {
+                switch (valueDisplay) {
+                    case ABSOLUTE:
+                        return ApplyMode.ADD;
+                    default:
+                    case NONE:
+                        return ApplyMode.MULTI;
+                }
+            }
         }
 
         public Range clone() {
             return Range.builder()
                 .displayMode(displayMode)
+                .applyMode(applyMode)
                 .max(max)
                 .min(min)
                 .value(value)

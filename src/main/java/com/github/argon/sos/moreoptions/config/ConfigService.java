@@ -134,12 +134,12 @@ public class ConfigService {
     }
 
     public MoreOptionsConfig mergeMissing(MoreOptionsConfig target, MoreOptionsConfig source) {
-        target.setEventsChance(mergeMissing(target.getEventsChance(), source.getEventsChance()));
-        target.setEventsSettlement(mergeMissing(target.getEventsSettlement(), source.getEventsSettlement()));
-        target.setEventsWorld(mergeMissing(target.getEventsWorld(), source.getEventsWorld()));
-        target.setSoundsAmbience(mergeMissing(target.getSoundsAmbience(), source.getSoundsAmbience()));
-        target.setSoundsRoom(mergeMissing(target.getSoundsRoom(), source.getSoundsRoom()));
-        target.setSoundsSettlement(mergeMissing(target.getSoundsSettlement(), source.getSoundsSettlement()));
+        target.getEvents().setChance(mergeMissing(target.getEvents().getChance(), source.getEvents().getChance()));
+        target.getEvents().setSettlement(mergeMissing(target.getEvents().getSettlement(), source.getEvents().getSettlement()));
+        target.getEvents().setWorld(mergeMissing(target.getEvents().getWorld(), source.getEvents().getWorld()));
+        target.getSounds().setAmbience(mergeMissing(target.getSounds().getAmbience(), source.getSounds().getAmbience()));
+        target.getSounds().setRoom(mergeMissing(target.getSounds().getRoom(), source.getSounds().getRoom()));
+        target.getSounds().setSettlement(mergeMissing(target.getSounds().getSettlement(), source.getSounds().getSettlement()));
         target.setWeather(mergeMissing(target.getWeather(), source.getWeather()));
         target.setBoosters(mergeMissing(target.getBoosters(), source.getBoosters()));
 

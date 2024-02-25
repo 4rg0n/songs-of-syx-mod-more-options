@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulator<String, Integer>> {
+public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulator<String, Integer, Slider>> {
     private final Definition definition;
 
-    public BuildResult<List<GuiSection>, Tabulator<String, Integer>> build() {
+    public BuildResult<List<GuiSection>, Tabulator<String, Integer, Slider>> build() {
 
         if (definition.getLabelWidth() > 0) {
             definition.getLabelDefinition().setMaxWidth(definition.getLabelWidth());
@@ -43,7 +43,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
             .build().getResult();
         multiSlider.pad(10, 5);
 
-        Tabulator<String, Integer> tabulator = new Tabulator<>(MapUtil.of(
+        Tabulator<String, Integer, Slider> tabulator = new Tabulator<>(MapUtil.of(
             Toggler.Info.<String>builder()
                 .key("add")
                 .title("Add")
@@ -61,7 +61,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
             tabulator
         ).collect(Collectors.toList());
 
-        return BuildResult.<List<GuiSection>, Tabulator<String, Integer>>builder()
+        return BuildResult.<List<GuiSection>, Tabulator<String, Integer, Slider>>builder()
             .result(row)
             .interactable(tabulator)
             .build();
@@ -84,7 +84,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
             return definition(definition);
         }
 
-        public BuildResult<List<GuiSection>, Tabulator<String, Integer>> build() {
+        public BuildResult<List<GuiSection>, Tabulator<String, Integer, Slider>> build() {
             assert definition != null : "definition must not be null";
 
             return new BoosterSliderBuilder(definition).build();

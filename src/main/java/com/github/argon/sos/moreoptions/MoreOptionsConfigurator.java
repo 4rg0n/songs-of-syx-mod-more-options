@@ -38,12 +38,12 @@ public class MoreOptionsConfigurator {
     public void applyConfig(MoreOptionsConfig config) {
         log.debug("Apply More Options config to game");
         try {
-            applySettlementEventsConfig(config.getEventsSettlement());
-            applyWorldEventsConfig(config.getEventsWorld());
-            applyEventsChanceConfig(ConfigUtil.extract(config.getEventsChance()));
-            applySoundsAmbienceConfig(ConfigUtil.extract(config.getSoundsAmbience()));
-            applySoundsSettlementConfig(ConfigUtil.extract(config.getSoundsSettlement()));
-            applySoundsRoomConfig(ConfigUtil.extract(config.getSoundsRoom()));
+            applySettlementEventsConfig(config.getEvents().getSettlement());
+            applyWorldEventsConfig(config.getEvents().getWorld());
+            applyEventsChanceConfig(config.getEvents().getChance());
+            applySoundsAmbienceConfig(config.getSounds().getAmbience());
+            applySoundsSettlementConfig(config.getSounds().getSettlement());
+            applySoundsRoomConfig(config.getSounds().getRoom());
             applyWeatherConfig(ConfigUtil.extract(config.getWeather()));
             applyBoostersConfig(config.getBoosters());
         } catch (Exception e) {
@@ -55,14 +55,14 @@ public class MoreOptionsConfigurator {
         gameApis.boosterApi().setBoosters(rangeMap);
     }
 
-    private void applyEventsChanceConfig(Map<String, Integer> eventsChanceConfig) {
+    private void applyEventsChanceConfig(Map<String, MoreOptionsConfig.Range> eventsChanceConfig) {
         log.trace("Apply events chance config: %s", eventsChanceConfig);
-        eventsChanceConfig.forEach((key, value) -> {
+        eventsChanceConfig.forEach((key, range) -> {
             Map<String, EVENTS.EventResource> eventsChance = gameApis.eventsApi().getEventsChance();
 
             if (eventsChance.containsKey(key)) {
-                log.trace("Setting %s chance to %s%%", key, value);
-                gameApis.eventsApi().setChance(key, value);
+                log.trace("Setting %s chance to %s%%", key, range.getValue());
+                gameApis.eventsApi().setChance(key, range.getValue());
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", eventsChance);
@@ -111,14 +111,14 @@ public class MoreOptionsConfigurator {
         });
     }
 
-    private void applySoundsAmbienceConfig(Map<String, Integer> soundsAmbienceConfig) {
+    private void applySoundsAmbienceConfig(Map<String, MoreOptionsConfig.Range> soundsAmbienceConfig) {
         log.trace("Apply ambience sounds config: %s", soundsAmbienceConfig);
         Map<String, SoundAmbience.Ambience> ambienceSounds = gameApis.soundsApi().getAmbienceSounds();
 
-        soundsAmbienceConfig.forEach((key, limit) -> {
+        soundsAmbienceConfig.forEach((key, range) -> {
             if (ambienceSounds.containsKey(key)) {
                 SoundAmbience.Ambience ambienceSound = ambienceSounds.get(key);
-                gameApis.soundsApi().setSoundGainLimiter(ambienceSound, limit);
+                gameApis.soundsApi().setSoundGainLimiter(ambienceSound, range.getValue());
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", ambienceSounds);
@@ -126,14 +126,14 @@ public class MoreOptionsConfigurator {
         });
     }
 
-    private void applySoundsSettlementConfig(Map<String, Integer> soundsSettlementConfig) {
+    private void applySoundsSettlementConfig(Map<String, MoreOptionsConfig.Range> soundsSettlementConfig) {
         log.trace("Apply settlement sounds config: %s", soundsSettlementConfig);
         Map<String, SoundSettlement.Sound> settlementSounds = gameApis.soundsApi().getSettlementSounds();
 
-        soundsSettlementConfig.forEach((key, limit) -> {
+        soundsSettlementConfig.forEach((key, range) -> {
             if (settlementSounds.containsKey(key)) {
                 SoundSettlement.Sound settlementSound = settlementSounds.get(key);
-                gameApis.soundsApi().setSoundsGainLimiter(settlementSound, limit);
+                gameApis.soundsApi().setSoundsGainLimiter(settlementSound, range.getValue());
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", settlementSounds);
@@ -141,14 +141,14 @@ public class MoreOptionsConfigurator {
         });
     }
 
-    private void applySoundsRoomConfig(Map<String, Integer> soundsRoomConfig) {
+    private void applySoundsRoomConfig(Map<String, MoreOptionsConfig.Range> soundsRoomConfig) {
         log.trace("Apply room sounds config: %s", soundsRoomConfig);
         Map<String, SoundSettlement.Sound> roomSounds = gameApis.soundsApi().getRoomSounds();
 
-        soundsRoomConfig.forEach((key, limit) -> {
+        soundsRoomConfig.forEach((key, range) -> {
             if (roomSounds.containsKey(key)) {
                 SoundSettlement.Sound roomeSound = roomSounds.get(key);
-                gameApis.soundsApi().setSoundsGainLimiter(roomeSound, limit);
+                gameApis.soundsApi().setSoundsGainLimiter(roomeSound, range.getValue());
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
                 log.trace("API Result: %s", roomSounds);
