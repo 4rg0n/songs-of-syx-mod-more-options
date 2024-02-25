@@ -15,10 +15,7 @@ import settlement.stats.stat.STAT;
 import settlement.stats.stat.StatCollection;
 import snake2d.util.sets.LIST;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MetricCollector {
@@ -28,7 +25,7 @@ public class MetricCollector {
 
     private final static Logger log = Loggers.getLogger(MetricCollector.class);
 
-    private final List<Metric> buffered = new ArrayList<>();
+    private final List<Metric> buffered = Collections.synchronizedList(new ArrayList<>());
 
     @Getter
     private final List<String> keyList = new ArrayList<>();
@@ -105,7 +102,7 @@ public class MetricCollector {
     }
 
     private boolean isWhitelisted(String key) {
-        return whiteList.contains(key);
+        return !whiteList.isEmpty() && whiteList.contains(key);
     }
 
     private Map<String, Integer> getReligionStats(String keyPrefix, LIST<StatsReligion.StatReligion> statList) {
