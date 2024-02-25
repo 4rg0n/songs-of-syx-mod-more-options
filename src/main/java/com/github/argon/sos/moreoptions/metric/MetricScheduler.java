@@ -20,7 +20,7 @@ public class MetricScheduler {
 
     private ScheduledExecutorService scheduler;
 
-    private final Map<Runnable, Toggle> tasks = new HashMap<>();
+    private final Map<Runnable, Trigger> tasks = new HashMap<>();
 
     public MetricScheduler start() {
         if (scheduler == null) {
@@ -29,9 +29,9 @@ public class MetricScheduler {
 
         try {
             log.debug("Start scheduling of %s metric tasks", tasks.size());
-            tasks.forEach((runnable, toggle) ->
+            tasks.forEach((runnable, trigger) ->
                 scheduler.scheduleAtFixedRate(runnable,
-                    toggle.getInitialDelay(), toggle.getPeriod(), toggle.getUnit())
+                    trigger.getInitialDelay(), trigger.getPeriod(), trigger.getUnit())
             );
         } catch (Exception e) {
             log.warn("Could not start metric scheduler", e);
@@ -49,7 +49,7 @@ public class MetricScheduler {
     }
 
     public MetricScheduler schedule(Runnable runnable, long initialDelay, long period, TimeUnit unit) {
-        tasks.put(runnable, Toggle.builder()
+        tasks.put(runnable, Trigger.builder()
             .initialDelay(initialDelay)
             .period(period)
             .unit(unit)
@@ -65,7 +65,7 @@ public class MetricScheduler {
     @Getter
     @Builder
     @AllArgsConstructor
-    public static class Toggle {
+    public static class Trigger {
         private final long initialDelay;
         private final long period;
 
