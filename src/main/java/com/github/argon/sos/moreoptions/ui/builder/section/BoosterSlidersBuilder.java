@@ -10,6 +10,7 @@ import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.TableHeaderBuilder;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
@@ -58,10 +59,8 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
             renderobjs.addAll(TableHeaderBuilder.builder()
                     .evenOdd(true)
                     .displayHeight(displayHeight)
-                    .rows(rows)
-                    .widthTotal(widthTotal)
                     .key(key)
-                    .mapRows(mapRows)
+                    .headerWithRows(mapRows)
                     .build()
                     .getResults());
         }
@@ -78,13 +77,12 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
         return new Builder();
     }
 
+    @Setter
     public static class Builder {
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private Map<String, Map<String, BoosterSliderBuilder.Definition>> definitions;
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private int displayHeight = 100;
 

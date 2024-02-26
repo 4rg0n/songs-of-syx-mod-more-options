@@ -20,6 +20,7 @@ public class MetricExporter {
 
     public final static Path EXPORT_PATH = PATHS.local().PROFILE.get();
 
+    @Getter
     private Path exportFilePath;
 
     private final MetricCollector metricCollector;

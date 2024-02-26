@@ -7,6 +7,7 @@ import com.github.argon.sos.moreoptions.game.ui.Toggler;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
+import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,6 @@ import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulator<String, Integer, Slider>> {
@@ -56,10 +55,10 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
                 .build(), multiSlider
         ), DIR.W, 0, false, true);
 
-        List<GuiSection> row = Stream.of(
+        List<GuiSection> row = Lists.of(
             label,
             tabulator
-        ).collect(Collectors.toList());
+        );
 
         return BuildResult.<List<GuiSection>, Tabulator<String, Integer, Slider>>builder()
             .result(row)

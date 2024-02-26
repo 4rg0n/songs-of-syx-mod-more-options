@@ -5,18 +5,22 @@ import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @param <E> element next to the label
  */
 @RequiredArgsConstructor
-public class LabeledBuilder<E extends GuiSection> implements UiBuilder<List<GuiSection>, E> {
+public class LabeledBuilder<E extends RENDEROBJ> implements UiBuilder<List<GuiSection>, E> {
     private final Definition<E> definition;
 
     public BuildResult<List<GuiSection>, E> build() {
@@ -29,7 +33,10 @@ public class LabeledBuilder<E extends GuiSection> implements UiBuilder<List<GuiS
             .build().getResult();
         label.pad(10, 5);
 
-        List<GuiSection> row = Lists.of(label, definition.getElement());
+        List<GuiSection> row = Lists.of(label, definition.getElement())
+            .stream()
+            .map(UiUtil::toGuiSection)
+            .collect(Collectors.toList());
 
         return BuildResult.<List<GuiSection>, E>builder()
             .result(row)
@@ -37,13 +44,13 @@ public class LabeledBuilder<E extends GuiSection> implements UiBuilder<List<GuiS
             .build();
     }
 
-    public static <T extends GuiSection> Builder<T> builder() {
+    public static <T extends RENDEROBJ> Builder<T> builder() {
         return new Builder<>();
     }
 
-    public static class Builder<E extends GuiSection> {
+    @Setter
+    public static class Builder<E extends RENDEROBJ> {
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private Definition<E> definition;
 
@@ -63,7 +70,7 @@ public class LabeledBuilder<E extends GuiSection> implements UiBuilder<List<GuiS
 
     @Data
     @lombok.Builder
-    public static class Definition<E extends GuiSection> implements Translatable {
+    public static class Definition<E extends RENDEROBJ> implements Translatable {
 
         private LabelBuilder.Definition labelDefinition;
 
@@ -77,7 +84,7 @@ public class LabeledBuilder<E extends GuiSection> implements UiBuilder<List<GuiS
             return labelDefinition.getKey();
         }
 
-        @Override
+       @Override
         public boolean isTranslate() {
             return labelDefinition.isTranslate();
         }

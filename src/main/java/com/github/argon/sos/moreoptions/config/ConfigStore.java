@@ -231,7 +231,12 @@ public class ConfigStore {
                     .build())
                 .weather(getWeather())
                 .boosters(getBoostersMulti())
+                .metrics(getMetrics())
                 .build();
+        }
+
+        private MoreOptionsConfig.Metrics getMetrics() {
+            return MoreOptionsConfig.Metrics.builder().build();
         }
 
         private Map<String, MoreOptionsConfig.Range> boostersMulti() {

@@ -16,7 +16,7 @@ import view.main.VIEW;
  *
  * @param <T> ui element to display
  */
-public class Modal<T extends GuiSection> extends Interrupter {
+public class Modal<T extends GuiSection> extends Interrupter implements Showable<Modal<T>>, Refreshable<Modal<T>> {
     @Getter
     protected final T section;
 
@@ -24,6 +24,9 @@ public class Modal<T extends GuiSection> extends Interrupter {
     protected final GPanel panel;
 
     protected final GuiSection panelSection;
+
+    private Action<Modal<T>> showAction = o -> {};
+    private Action<Modal<T>> refreshAction = o -> {};
 
     public Modal(String title, T section) {
         this.section = section;
@@ -36,10 +39,6 @@ public class Modal<T extends GuiSection> extends Interrupter {
         panelSection.add(section);
 
         center();
-    }
-
-    public void show() {
-        show(VIEW.inters().manager);
     }
 
     public void hide() {
@@ -82,6 +81,36 @@ public class Modal<T extends GuiSection> extends Interrupter {
     protected boolean render(Renderer renderer, float v) {
         panelSection.render(renderer, v);
         return false;
+    }
+
+    @Override
+    public void refresh() {
+       refreshAction.accept(this);
+
+        if (section instanceof Refreshable) {
+            Refreshable<T> refreshable = (Refreshable<T>) section;
+            refreshable.refresh();
+        }
+    }
+
+    @Override
+    public void onRefresh(Action<Modal<T>> refreshAction) {
+        this.refreshAction = refreshAction;
+    }
+
+    public void show() {
+        showAction.accept(this);
+
+        if (section instanceof Showable) {
+            Showable<T> showable = (Showable<T>) section;
+            showable.show();
+        }
+        show(VIEW.inters().manager);
+    }
+
+    @Override
+    public void onShow(Action<Modal<T>> showAction) {
+        this.showAction = showAction;
     }
 
     @Override

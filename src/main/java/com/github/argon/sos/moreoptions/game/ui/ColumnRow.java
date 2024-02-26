@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
@@ -11,17 +13,22 @@ import java.util.List;
 /**
  * Container, which aligns elements evenly in the row
  */
-public class GridRow extends GuiSection {
+public class ColumnRow extends GuiSection {
 
     @Nullable
     private COLOR color;
     @Getter
     private final List<? extends GuiSection> columns;
 
-    public GridRow(List<? extends GuiSection> columns) {
+    public ColumnRow(List<? extends GuiSection> columns) {
         this.columns = columns;
 
         pad(5, 5);
+    }
+
+    public void init() {
+        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(Lists.of(columns));
+        init(maxWidths);
     }
 
     /**
@@ -29,7 +36,7 @@ public class GridRow extends GuiSection {
      *
      * @param columnWidths to apply for each element
      */
-    public void initGrid(List<Integer> columnWidths) {
+    public void init(List<Integer> columnWidths) {
         clear();
 
         if (columnWidths.size() != columns.size()) {
@@ -40,25 +47,7 @@ public class GridRow extends GuiSection {
             GuiSection section = columns.get(i);
             Integer width = columnWidths.get(i);
             section.body().setWidth(width);
-            addRight(5, section);
-        }
-    }
-
-    public void initGrid(List<Integer> columnWidths, Integer width) {
-        clear();
-
-        int lastWidth = 0;
-        for (int i = 1; i < columnWidths.size(); i++) {
-            lastWidth += columnWidths.get(i);
-        }
-
-        columnWidths.set(0, width - lastWidth);
-
-        for (int i = 0; i < columns.size(); i++) {
-            GuiSection section = columns.get(i);
-            Integer widthColumn = columnWidths.get(i);
-            section.body().setWidth(widthColumn);
-            addRight(5, section);
+            addRightC(5, section);
         }
     }
 

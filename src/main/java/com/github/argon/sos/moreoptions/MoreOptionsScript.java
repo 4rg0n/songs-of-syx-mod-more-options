@@ -92,7 +92,9 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 		uiGameConfig = new UIGameConfig(
 			gameApis,
 			configurator,
-			configStore
+			configStore,
+			MetricExporter.getInstance(),
+			MetricCollector.getInstance()
 		);
 
 		// load dictionary entries from file

@@ -8,19 +8,23 @@ import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Builds a row with buttons and displays the associated ui element when a button is toggled
  * Used for replacing ui elements on button toggle.
  */
-public class Tabulator<K, V, E extends Valuable<V>> extends GuiSection implements Valuable<V>, Resettable {
+public class Tabulator<K, V, E extends Valuable<V>> extends GuiSection implements Valuable<V>, Resettable, Refreshable<Tabulator<K, V, E>> {
 
     private final Map<Toggler.Info<K>, E> tabs;
     private final boolean resetOnToggle;
     private final Toggler<K> toggler;
 
+    private Action<Tabulator<K, V, E>> refreshAction = o -> {};
+
     @Getter
     private E activeTab;
+    private final ClickWrapper clicker;
 
     public Tabulator(Map<Toggler.Info<K>, E> tabs) {
         this(tabs, DIR.N, 0, false, false);
@@ -47,7 +51,7 @@ public class Tabulator<K, V, E extends Valuable<V>> extends GuiSection implement
         int maxWidth = UiUtil.getMaxWidth(tabs.values());
         int maxHeight = UiUtil.getMaxHeight(tabs.values());
 
-        ClickWrapper clicker = new ClickWrapper(maxWidth, maxHeight, center) {
+        clicker = new ClickWrapper(maxWidth, maxHeight, center) {
             @Override
             protected RENDEROBJ pget() {
                 return activeTab;
@@ -110,5 +114,23 @@ public class Tabulator<K, V, E extends Valuable<V>> extends GuiSection implement
             .filter(element -> element instanceof Resettable)
             .map(Resettable.class::cast)
             .forEach(Resettable::reset);
+    }
+
+    @Override
+    public void refresh() {
+        clicker.dirty = true;
+        refreshAction.accept(this);
+
+        // refresh tabs if possible
+        tabs.values().stream()
+            .filter(element -> element instanceof Refreshable)
+            .map(Refreshable.class::cast)
+            .collect(Collectors.toList())
+            .forEach(Refreshable::refresh);
+    }
+
+    @Override
+    public void onRefresh(Action<Tabulator<K, V, E>> refreshAction) {
+        this.refreshAction = refreshAction;
     }
 }

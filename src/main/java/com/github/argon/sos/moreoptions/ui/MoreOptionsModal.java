@@ -3,10 +3,7 @@ package com.github.argon.sos.moreoptions.ui;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.*;
-import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.EventsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.SoundsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
+import com.github.argon.sos.moreoptions.ui.panel.*;
 import com.github.argon.sos.moreoptions.util.Maps;
 import game.VERSION;
 import init.paths.ModInfo;
@@ -22,12 +19,13 @@ import util.gui.misc.GText;
 
 import java.util.List;
 
+
 /**
  * Main window containing all other UI elements.
  * Will pop up in the middle of the game and pauses the game.
  */
 @RequiredArgsConstructor
-public class MoreOptionsModal extends GuiSection {
+public class MoreOptionsModal extends GuiSection implements Showable<MoreOptionsModal>, Refreshable<MoreOptionsModal> {
 
     @Getter
     private final ConfigStore configStore;
@@ -41,24 +39,41 @@ public class MoreOptionsModal extends GuiSection {
     private  BoostersPanel boostersPanel;
 
     @Getter
+    @Nullable
+    private MetricsPanel metricsPanel;
+
+    @Getter
+    @Nullable
     private Button cancelButton;
     @Getter
+    @Nullable
     private Button resetButton;
 
     @Getter
+    @Nullable
     private Button applyButton;
 
     @Getter
+    @Nullable
     private Button undoButton;
 
     @Getter
+    @Nullable
     private Button okButton;
 
     @Getter
+    @Nullable
     private Button folderButton;
+
+    private Action<MoreOptionsModal> showAction = o -> {};
+
+    private Action<MoreOptionsModal> refreshAction = o -> {};
 
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
+
+    @Nullable
+    private Tabulator<String, Void, Valuable<Void>> tabulator;
 
     /**
      * Builds the UI with given config
@@ -69,8 +84,9 @@ public class MoreOptionsModal extends GuiSection {
         eventsPanel = new EventsPanel(config.getEvents());
         weatherPanel = new WeatherPanel(config.getWeather());
         boostersPanel = new BoostersPanel(boosterEntries);
+        metricsPanel = new MetricsPanel(config.getMetrics());
 
-        Tabulator<String, Void, Valuable<Void>> tabulator = new Tabulator<>(Maps.ofLinked(
+        tabulator = new Tabulator<>(Maps.ofLinked(
             Toggler.Info.<String>builder()
                 .key("sounds")
                 .title("Sounds")
@@ -90,7 +106,12 @@ public class MoreOptionsModal extends GuiSection {
                 .key("boosters")
                 .title("Boosters")
                 .description("Increase or decrease various bonuses.")
-                .build(), boostersPanel
+                .build(), boostersPanel,
+            Toggler.Info.<String>builder()
+                .key("metrics")
+                .title("Metrics")
+                .description("Collect and export data about the game.")
+                .build(), metricsPanel
         ), DIR.S, 30, true, false);
 
         addDownC(0, tabulator);
@@ -204,5 +225,26 @@ public class MoreOptionsModal extends GuiSection {
             undoButton.setEnabled(isDirty());
         }
         super.render(r, seconds);
+    }
+
+    @Override
+    public void show() {
+        showAction.accept(this);
+    }
+
+    @Override
+    public void onShow(Action<MoreOptionsModal> showAction) {
+        this.showAction = showAction;
+    }
+
+    @Override
+    public void refresh() {
+        refreshAction.accept(this);
+        tabulator.refresh();
+    }
+
+    @Override
+    public void onRefresh(Action<MoreOptionsModal> refreshAction) {
+        this.refreshAction = refreshAction;
     }
 }

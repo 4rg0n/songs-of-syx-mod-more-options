@@ -87,6 +87,8 @@ public class MoreOptionsConfig {
             .min(1)
             .value(15)
             .max(600)
+            .applyMode(Range.ApplyMode.ADD)
+            .displayMode(Range.DisplayMode.ABSOLUTE)
             .build();
 
         @Builder.Default
@@ -94,6 +96,8 @@ public class MoreOptionsConfig {
             .min(1)
             .value(30)
             .max(600)
+            .applyMode(Range.ApplyMode.ADD)
+            .displayMode(Range.DisplayMode.ABSOLUTE)
             .build();
 
         @Builder.Default

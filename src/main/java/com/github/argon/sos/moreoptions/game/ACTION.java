@@ -9,4 +9,6 @@ public interface ACTION extends snake2d.util.misc.ACTION {
      */
     @SuppressWarnings("rawtypes")
     ACTION_O NOPO = object -> {};
+
+    ACTION NOP = () -> {};
 }

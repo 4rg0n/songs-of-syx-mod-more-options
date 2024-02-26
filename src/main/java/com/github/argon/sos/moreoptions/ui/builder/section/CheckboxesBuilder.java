@@ -2,11 +2,13 @@ package com.github.argon.sos.moreoptions.ui.builder.section;
 
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.ui.Checkbox;
+import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.LabeledCheckboxBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.TableBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 
@@ -14,16 +16,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class CheckboxesBuilder implements UiBuilder<GuiSection, Map<String, Checkbox>> {
+public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>> {
 
     private final Map<String, LabeledCheckboxBuilder.Definition> definitions;
 
     private final int displayHeight;
 
+    private final boolean evenWidth;
+
     /**
      * Builds a section with a list of checkboxes with titles according to the given {@link LabeledCheckboxBuilder.Definition}s
      */
-    public BuildResult<GuiSection, Map<String, Checkbox>> build() {
+    public BuildResult<Table, Map<String, Checkbox>> build() {
         Map<String, Checkbox> elements = new HashMap<>();
         
         // map and order entries by dictionary title
@@ -41,14 +45,15 @@ public class CheckboxesBuilder implements UiBuilder<GuiSection, Map<String, Chec
             rows.add(buildResult.getResult());
         });
 
-        GuiSection table = TableBuilder.builder()
+        Table table = TableBuilder.builder()
             .evenOdd(true)
+            .evenColumnWidth(evenWidth)
             .displayHeight(displayHeight)
             .rows(rows)
             .build()
             .getResult();
 
-        return BuildResult.<GuiSection, Map<String, Checkbox>>builder()
+        return BuildResult.<Table, Map<String, Checkbox>>builder()
             .result(table)
             .interactable(elements)
             .build();
@@ -58,15 +63,17 @@ public class CheckboxesBuilder implements UiBuilder<GuiSection, Map<String, Chec
         return new Builder();
     }
 
+    @Setter
     public static class Builder {
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private Map<String, LabeledCheckboxBuilder.Definition> definitions;
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private int displayHeight = 100;
+
+        @Accessors(fluent = true)
+        private boolean evenWidth = false;
 
         public CheckboxesBuilder.Builder translate(Map<String, LabeledCheckboxBuilder.Definition> definitions) {
             Dictionary dictionary = Dictionary.getInstance();
@@ -75,11 +82,11 @@ public class CheckboxesBuilder implements UiBuilder<GuiSection, Map<String, Chec
             return definitions(definitions);
         }
 
-        public BuildResult<GuiSection, Map<String, Checkbox>> build() {
+        public BuildResult<Table, Map<String, Checkbox>> build() {
             assert definitions != null : "definitions must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
 
-            return new CheckboxesBuilder(definitions, displayHeight).build();
+            return new CheckboxesBuilder(definitions, displayHeight, evenWidth).build();
         }
     }
 }

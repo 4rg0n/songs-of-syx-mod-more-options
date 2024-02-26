@@ -30,11 +30,11 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
     private final Map<String, Slider> eventsChanceSliders;
 
     public EventsPanel(MoreOptionsConfig.Events events) {
-        BuildResult<GuiSection, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(events.getSettlement());
+        BuildResult<Table, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(events.getSettlement());
         GuiSection settlement = settlementCheckboxesResult.getResult();
         settlementEventsCheckboxes.putAll(settlementCheckboxesResult.getInteractable());
 
-        BuildResult<GuiSection, Map<String, Checkbox>> worldCheckboxesResult = checkboxes(events.getWorld());
+        BuildResult<Table, Map<String, Checkbox>> worldCheckboxesResult = checkboxes(events.getWorld());
         GuiSection world = worldCheckboxesResult.getResult();
         worldEventsCheckboxes.putAll(worldCheckboxesResult.getInteractable());
 
@@ -56,7 +56,7 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
         checkBoxSection.addRight(0, worldSection);
         addDownC(0, checkBoxSection);
 
-        BuildResult<GuiSection, Map<String, Slider>> buildResult = sliders(events.getChance());
+        BuildResult<Table, Map<String, Slider>> buildResult = sliders(events.getChance());
         GuiSection sliders = buildResult.getResult();
         eventsChanceSliders = buildResult.getInteractable();
 
@@ -71,7 +71,7 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
         addDownC(10, eventsChanceSection);
     }
 
-    private BuildResult<GuiSection, Map<String, Slider>> sliders(
+    private BuildResult<Table, Map<String, Slider>> sliders(
         Map<String, MoreOptionsConfig.Range> eventsChanceConfig
     ) {
         Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
@@ -157,7 +157,7 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
     }
 
 
-    private BuildResult<GuiSection, Map<String, Checkbox>> checkboxes(Map<String, Boolean> eventConfig) {
+    private BuildResult<Table, Map<String, Checkbox>> checkboxes(Map<String, Boolean> eventConfig) {
         Map<String, LabeledCheckboxBuilder.Definition> settlementCheckboxes = eventConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             config -> LabeledCheckboxBuilder.Definition.builder()

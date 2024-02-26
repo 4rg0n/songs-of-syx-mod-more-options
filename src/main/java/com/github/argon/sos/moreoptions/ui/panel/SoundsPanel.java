@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -26,21 +27,21 @@ public class SoundsPanel extends GuiSection implements Valuable<Void> {
     private final Map<String, Slider> settlementSoundSliders;
     private final Map<String, Slider> roomSoundSliders;
     public SoundsPanel(MoreOptionsConfig.Sounds sounds) {
-        BuildResult<GuiSection, Map<String, Slider>> ambienceSlidersResult = SlidersBuilder.builder()
+        BuildResult<Table, Map<String, Slider>> ambienceSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
             .definitions(sliders(sounds.getAmbience()))
             .build();
         GuiSection ambienceSoundSection = ambienceSlidersResult.getResult();
         this.ambienceSoundSliders = ambienceSlidersResult.getInteractable();
 
-        BuildResult<GuiSection, Map<String, Slider>> settlementSlidersResult = SlidersBuilder.builder()
+        BuildResult<Table, Map<String, Slider>> settlementSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
             .definitions(sliders(sounds.getSettlement()))
             .build();
         GuiSection settlementSoundSection = settlementSlidersResult.getResult();
         this.settlementSoundSliders = settlementSlidersResult.getInteractable();
 
-        BuildResult<GuiSection, Map<String, Slider>> roomSlidersResult = SlidersBuilder.builder()
+        BuildResult<Table, Map<String, Slider>> roomSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
             .definitions(sliders(sounds.getRoom()))
             .build();

@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.builder.element;
 
-import com.github.argon.sos.moreoptions.game.ui.GridRow;
+import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Spacer;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResults;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilderList;
@@ -8,6 +8,7 @@ import com.github.argon.sos.moreoptions.util.UiUtil;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
@@ -23,14 +24,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TableHeaderBuilder implements UiBuilderList<RENDEROBJ, RENDEROBJ> {
 
-    private final List<List<? extends GuiSection>> rows;
-
+    private final Map<String, List<List<? extends GuiSection>>> headerWithRows;
     private final int displayHeight;
-
     private final boolean evenOdd;
-    private final int widthTotal;
     private final String key;
-    private final Map<String, List<List<? extends GuiSection>>> mapRows;
+
 
     public BuildResults<RENDEROBJ, RENDEROBJ> build() {
         List<RENDEROBJ> renderobjs = new LinkedList<>();
@@ -47,24 +45,22 @@ public class TableHeaderBuilder implements UiBuilderList<RENDEROBJ, RENDEROBJ> {
         renderobjs.add(header);
         renderobjs.add(spacerBottom);
 
-        List<List<? extends GuiSection>> innerRows = mapRows.get(key);
-        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(innerRows);
+        List<List<? extends GuiSection>> innerRows = headerWithRows.get(key);
+        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(headerWithRows);
 
-        List<GridRow> gridRows = innerRows.stream()
+        List<ColumnRow> columnRows = innerRows.stream()
                 .map(columns -> {
-                    GridRow gridRow = new GridRow(columns);
-                    gridRow.initGrid(maxWidths, widthTotal);
+                    ColumnRow columnRow = new ColumnRow(columns);
+                    columnRow.init(maxWidths);
 
                     if (innerRows.indexOf(columns) % 2 == 0) {
-                        gridRow.background(COLOR.WHITE15);
+                        columnRow.background(COLOR.WHITE15);
                     }
 
-                    return gridRow;
+                    return columnRow;
                 })
                 .collect(Collectors.toList());
-
-        renderobjs.addAll(gridRows);
-
+        renderobjs.addAll(columnRows);
 
         return BuildResults.<RENDEROBJ, RENDEROBJ>builder()
                 .elements(renderobjs)
@@ -76,39 +72,27 @@ public class TableHeaderBuilder implements UiBuilderList<RENDEROBJ, RENDEROBJ> {
         return new Builder();
     }
 
+    @Setter
     public static class Builder {
 
-        @lombok.Setter
-        @Accessors(fluent = true)
-        private List<List<? extends GuiSection>> rows;
-
-        @lombok.Setter
         @Accessors(fluent = true)
         private int displayHeight;
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private boolean evenOdd = false;
 
-        @lombok.Setter
-        @Accessors(fluent = true)
-        private int widthTotal;
-
-        @lombok.Setter
         @Accessors(fluent = true)
         private String key;
 
-        @lombok.Setter
         @Accessors(fluent = true)
-        Map<String, List<List<? extends GuiSection>>> mapRows;
+        Map<String, List<List<? extends GuiSection>>> headerWithRows;
 
         public BuildResults<RENDEROBJ, RENDEROBJ> build() {
-            assert rows != null : "rows must not be null";
+            assert headerWithRows != null : "headerWithRows must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
-            assert widthTotal > 0 : "widthTotal must be greater than 0";
             assert key != null : "key must not be null";
 
-            return new TableHeaderBuilder(rows, displayHeight, evenOdd, widthTotal, key, mapRows).build();
+            return new TableHeaderBuilder(headerWithRows, displayHeight, evenOdd, key).build();
         }
     }
 }

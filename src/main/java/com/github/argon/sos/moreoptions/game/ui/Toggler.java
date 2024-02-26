@@ -1,12 +1,10 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.ACTION;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.gui.GuiSection;
-import snake2d.util.misc.ACTION.ACTION_O;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -14,7 +12,7 @@ import java.util.Optional;
 /**
  * Builds a row with buttons to toggle
  */
-public class Toggler<K> extends GuiSection implements Valuable<K>, Resettable {
+public class Toggler<K> extends GuiSection implements Valuable<K>, Resettable, Refreshable<Toggler<K>> {
 
     private final Collection<Info<K>> elements;
 
@@ -24,8 +22,9 @@ public class Toggler<K> extends GuiSection implements Valuable<K>, Resettable {
     @Getter
     private Button activeButton;
 
-    @SuppressWarnings("unchecked")
-    private ACTION_O<K> toggleAction = ACTION.NOPO;
+    private Action<K> toggleAction = o -> {};
+
+    private Action<Toggler<K>> refreshAction = o -> {};
 
     public Toggler(Collection<Info<K>> elements) {
         this(elements, 0);
@@ -64,11 +63,11 @@ public class Toggler<K> extends GuiSection implements Valuable<K>, Resettable {
     public void toggle(K key) {
         get(key).ifPresent(element -> {
             activeInfo = element;
-            toggleAction.exe(key);
+            toggleAction.accept(key);
         });
     }
 
-    public void onToggle(ACTION_O<K> action) {
+    public void onToggle(Action<K> action) {
         toggleAction = action;
     }
 
@@ -99,6 +98,16 @@ public class Toggler<K> extends GuiSection implements Valuable<K>, Resettable {
             .filter(element -> element instanceof Resettable)
             .map(Resettable.class::cast)
             .forEach(Resettable::reset);
+    }
+
+    @Override
+    public void refresh() {
+        refreshAction.accept(this);
+    }
+
+    @Override
+    public void onRefresh(Action<Toggler<K>> refreshAction) {
+        this.refreshAction = refreshAction;
     }
 
     @Getter

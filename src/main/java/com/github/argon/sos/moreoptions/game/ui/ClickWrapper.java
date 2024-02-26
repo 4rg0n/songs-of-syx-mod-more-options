@@ -11,7 +11,7 @@ import snake2d.util.misc.ACTION;
 
 public abstract class ClickWrapper implements CLICKABLE {
 
-    boolean dirty = false;
+    public boolean dirty = false;
     private final Rec body = new Rec() {
         /**
          *
@@ -60,6 +60,7 @@ public abstract class ClickWrapper implements CLICKABLE {
         if (o == null)
             return null;
         if (dirty && center) {
+            dirty = false;
             o.body().moveC(body.cX(), body.cY());
         } else if (dirty) {
             dirty = false;

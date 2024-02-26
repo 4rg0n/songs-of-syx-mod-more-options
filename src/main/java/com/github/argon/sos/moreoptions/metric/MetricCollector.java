@@ -102,7 +102,12 @@ public class MetricCollector {
     }
 
     private boolean isWhitelisted(String key) {
-        return !whiteList.isEmpty() && whiteList.contains(key);
+        // no whitelist = accept all
+        if (whiteList.isEmpty()) {
+            return true;
+        }
+
+        return whiteList.contains(key);
     }
 
     private Map<String, Integer> getReligionStats(String keyPrefix, LIST<StatsReligion.StatReligion> statList) {

@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -21,7 +22,7 @@ public class WeatherPanel extends GuiSection implements Valuable<Void> {
     @Getter
     private final Map<String, Slider> sliders;
     public WeatherPanel(Map<String, MoreOptionsConfig.Range> weatherConfig) {
-        BuildResult<GuiSection, Map<String, Slider>> slidersBuildResult = SlidersBuilder.builder()
+        BuildResult<Table, Map<String, Slider>> slidersBuildResult = SlidersBuilder.builder()
             .displayHeight(400)
             .defaults(weatherConfig)
             .build();

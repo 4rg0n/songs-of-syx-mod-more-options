@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.builder.element;
 
-import com.github.argon.sos.moreoptions.game.ui.GridRow;
+import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import util.gui.table.GScrollRows;
 import java.util.List;
 
 /**
- * Builds a scrollable list out of {@link GridRow}s
+ * Builds a scrollable list out of {@link ColumnRow}s
  */
 @Builder
 @RequiredArgsConstructor

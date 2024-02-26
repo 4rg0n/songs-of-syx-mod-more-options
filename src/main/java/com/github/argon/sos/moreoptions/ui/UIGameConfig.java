@@ -4,6 +4,8 @@ import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.moreoptions.game.api.UninitializedException;
+import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -11,6 +13,7 @@ import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
+import com.github.argon.sos.moreoptions.ui.panel.MetricsPanel;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import init.paths.PATHS;
 import init.sprite.SPRITES;
@@ -23,6 +26,7 @@ import view.interrupter.IDebugPanel;
 import view.ui.top.UIPanelTop;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
@@ -42,6 +46,10 @@ public class UIGameConfig {
     private final MoreOptionsConfigurator configurator;
 
     private final ConfigStore configStore;
+
+    private final MetricExporter metricExporter;
+
+    private final MetricCollector metricCollector;
 
 
     public void inject(Modal<MoreOptionsModal> moreOptionsModal) {
@@ -109,14 +117,18 @@ public class UIGameConfig {
         });
 
         // Cancel & Undo
-        backupMoreOptionsModal.getSection().getCancelButton().clickActionSet(() -> {
+        Button cancelButton = Optional.ofNullable(backupMoreOptionsModal.getSection().getCancelButton())
+            .orElseThrow(() -> new UninitializedException("BackupModal is not initialized."));
+        cancelButton.clickActionSet(() -> {
             undo(backupMoreOptionsModal.getSection());
             configStore.deleteBackupConfig();
             backupMoreOptionsModal.hide();
         });
 
         // Ok
-        backupMoreOptionsModal.getSection().getOkButton().clickActionSet(() -> {
+        Button okButton = Optional.ofNullable(backupMoreOptionsModal.getSection().getOkButton())
+            .orElseThrow(() -> new UninitializedException("BackupModal is not initialized."));
+        okButton.clickActionSet(() -> {
             applyAndSave(backupMoreOptionsModal.getSection());
             moreOptionsModal.getSection().applyConfig(backupMoreOptionsModal.getSection().getConfig());
             configStore.deleteBackupConfig();
@@ -185,34 +197,66 @@ public class UIGameConfig {
         moreOptionsModal.center();
 
         // Cancel & Undo
-        moreOptionsModal.getSection().getCancelButton().clickActionSet(() -> {
+        Button cancelButton = Optional.ofNullable(moreOptionsModal.getSection().getCancelButton())
+            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
+        cancelButton.clickActionSet(() -> {
             undo(moreOptionsModal.getSection());
             moreOptionsModal.hide();
         });
 
         // Apply & Save
-        moreOptionsModal.getSection().getApplyButton().clickActionSet(() -> {
+        Button applyButton = Optional.ofNullable(moreOptionsModal.getSection().getApplyButton())
+            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
+        applyButton.clickActionSet(() -> {
             applyAndSave(moreOptionsModal.getSection());
         });
 
         // Reset UI to default
-        moreOptionsModal.getSection().getResetButton().clickActionSet(() -> {
+        Button resetButton = Optional.ofNullable(moreOptionsModal.getSection().getResetButton())
+            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
+        resetButton.clickActionSet(() -> {
             MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
             moreOptionsModal.getSection().applyConfig(defaultConfig);
         });
 
         // Undo changes
-        moreOptionsModal.getSection().getUndoButton().clickActionSet(() -> undo(moreOptionsModal.getSection()));
+        Button undoButton = Optional.ofNullable(moreOptionsModal.getSection().getUndoButton())
+            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
+        undoButton.clickActionSet(() -> undo(moreOptionsModal.getSection()));
 
         //Ok: Apply & Save & Exit
-        moreOptionsModal.getSection().getOkButton().clickActionSet(() -> {
+        Button okButton = Optional.ofNullable(moreOptionsModal.getSection().getOkButton())
+            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
+        okButton.clickActionSet(() -> {
             applyAndSave(moreOptionsModal.getSection());
             moreOptionsModal.hide();
         });
 
         // opens folder with mod configuration
-        moreOptionsModal.getSection().getFolderButton().clickActionSet(() -> {
+        Button folderButton = Optional.ofNullable(moreOptionsModal.getSection().getFolderButton())
+            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
+        folderButton.clickActionSet(() -> {
             FileManager.openDesctop(PATHS.local().SETTINGS.get().toString());
+        });
+
+        moreOptionsModal.onShow(Modal::refresh);
+
+        MetricsPanel metricsPanel = Optional.ofNullable(moreOptionsModal.getSection().getMetricsPanel())
+            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
+        moreOptionsModal.getSection().getMetricsPanel().onRefresh(panel -> {
+            MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
+                .orElse(configStore.getDefaultConfig());
+            String exportFilePath = metricExporter.getExportFilePath().toString();
+            List<String> keyList = metricCollector.getKeyList();
+            List<String> stats = moreOptionsConfig.getMetrics().getStats();
+
+            log.debug("Refreshing metrics panel");
+            log.trace("Refresh values:\n  exportFilePath: %s\n  keyList: %s\n  stats: %s", exportFilePath, keyList, stats);
+
+            panel.refresh(
+                exportFilePath,
+                keyList,
+                stats);
         });
     }
 
