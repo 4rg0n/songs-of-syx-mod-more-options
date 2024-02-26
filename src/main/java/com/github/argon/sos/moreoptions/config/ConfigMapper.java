@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.util.JsonMapper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
@@ -21,8 +22,12 @@ public class ConfigMapper {
 
     /**
      * Maps old V1 config to the current config structure
+     *
+     * @param path path where the config was loaded from
+     * @param json with config data
+     * @param defaultConfig optional default config to merge
      */
-    public MoreOptionsConfig mapV1(Path path, Json json, MoreOptionsConfig defaultConfig) {
+    public MoreOptionsConfig mapV1(Path path, Json json, @Nullable MoreOptionsConfig defaultConfig) {
         return MoreOptionsConfig.builder()
             .filePath(path)
             .version(MoreOptionsConfig.VERSION)
@@ -80,7 +85,7 @@ public class ConfigMapper {
     /**
      * Maps V2 config to the current config structure
      */
-    public MoreOptionsConfig mapV2(Path path, Json json, MoreOptionsConfig defaultConfig) {
+    public MoreOptionsConfig mapV2(Path path, Json json, @Nullable MoreOptionsConfig defaultConfig) {
         return MoreOptionsConfig.builder()
             .filePath(path)
             .version(MoreOptionsConfig.VERSION)
@@ -151,7 +156,7 @@ public class ConfigMapper {
         return map;
     }
 
-    public MoreOptionsConfig.Range mapRange(Json rangeJson, Integer defaultValue) {
+    public MoreOptionsConfig.Range mapRange(Json rangeJson, @Nullable Integer defaultValue) {
         return MoreOptionsConfig.Range.builder()
             .value((defaultValue != null) ? defaultValue : rangeJson.i("VALUE"))
             .min(rangeJson.i("MIN"))
@@ -174,7 +179,7 @@ public class ConfigMapper {
         return json;
     }
 
-    public JsonE mapRange(MoreOptionsConfig.Range range, Integer defaultValue) {
+    public JsonE mapRange(MoreOptionsConfig.Range range, @Nullable Integer defaultValue) {
         JsonE rangeJson = new JsonE();
         rangeJson.add("VALUE", (defaultValue != null) ? defaultValue : range.getValue());
         rangeJson.add("MIN", range.getMin());

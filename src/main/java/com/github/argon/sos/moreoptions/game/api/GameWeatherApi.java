@@ -3,10 +3,10 @@ package com.github.argon.sos.moreoptions.game.api;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
-import game.time.TIME;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import settlement.main.SETT;
 import settlement.weather.SWEATHER;
 import settlement.weather.WeatherThing;
@@ -24,6 +24,7 @@ public class GameWeatherApi {
 
     public final static String KEY_PREFIX = "weather";
 
+    @Nullable
     private Map<String, WeatherThing> weatherThings;
 
     public Map<String, WeatherThing> getWeatherThings() {

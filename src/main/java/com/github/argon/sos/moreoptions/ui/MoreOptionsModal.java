@@ -13,6 +13,7 @@ import init.paths.ModInfo;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.datatypes.DIR;
@@ -30,6 +31,7 @@ public class MoreOptionsModal extends GuiSection {
 
     @Getter
     private final ConfigStore configStore;
+    @Nullable
     private final ModInfo modInfo;
 
     private EventsPanel eventsPanel;

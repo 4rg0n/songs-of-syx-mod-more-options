@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -34,8 +35,10 @@ public class StringUtil {
         return split[split.length - 1];
     }
 
-    public static String toStringPrimitiveArray(Object arg) {
-        if (arg instanceof int[]) {
+    public static String toStringPrimitiveArray(@Nullable Object arg) {
+        if (arg == null) {
+            return "null";
+        }else if (arg instanceof int[]) {
             return Arrays.toString((int[]) arg);
         } else if (arg instanceof long[]) {
             return Arrays.toString((long[]) arg);
@@ -67,7 +70,7 @@ public class StringUtil {
         return stringArgs;
     }
 
-    public static String stringifyValue(Object arg) {
+    public static String stringifyValue(@Nullable Object arg) {
         if (arg == null) {
             return "null";
         } else if (arg instanceof String) {

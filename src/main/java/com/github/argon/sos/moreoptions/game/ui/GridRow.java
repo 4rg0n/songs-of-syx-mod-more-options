@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class GridRow extends GuiSection {
 
+    @Nullable
     private COLOR color;
     @Getter
     private final List<? extends GuiSection> columns;
