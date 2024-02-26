@@ -1,7 +1,9 @@
 package com.github.argon.sos.moreoptions.ui.builder;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface Translatable {
-    String getKey();
+    @Nullable String getKey();
 
     void setTitle(String title);
 

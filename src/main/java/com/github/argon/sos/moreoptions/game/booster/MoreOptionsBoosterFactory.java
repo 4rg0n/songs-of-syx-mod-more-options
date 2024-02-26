@@ -9,6 +9,7 @@ import game.boosting.Boostable;
 import game.faction.npc.ruler.ROpinions;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class MoreOptionsBoosterFactory {
         return boosters;
     }
 
-    private static MoreOptionsBoosters prepareBooster(Boostable booster, MoreOptionsBoosters presentBooster) {
+    private static MoreOptionsBoosters prepareBooster(Boostable booster, @Nullable MoreOptionsBoosters presentBooster) {
         MoreOptionsBooster boosterMulti;
         if (presentBooster != null && BoosterUtil.alreadyExtended(booster, true)) {
             log.trace("Reuse present multi booster: %s", presentBooster.getMulti().info.name);

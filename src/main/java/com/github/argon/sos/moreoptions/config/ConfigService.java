@@ -7,6 +7,7 @@ import init.paths.PATH;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
@@ -70,7 +71,7 @@ public class ConfigService {
         return jsonService.saveJson(configJson, path, fileName);
     }
 
-    public Optional<MoreOptionsConfig> loadConfig(PATH path, String fileName, MoreOptionsConfig defaultConfig) {
+    public Optional<MoreOptionsConfig> loadConfig(PATH path, String fileName, @Nullable MoreOptionsConfig defaultConfig) {
         if (!path.exists(fileName)) {
             // do not load what's not there
             log.debug("File %s" + File.separator + "%s.txt not present", path.get(), fileName);
@@ -78,21 +79,27 @@ public class ConfigService {
         }
 
         Path filePath = path.get(fileName);
-        return jsonService.loadJson(filePath).map(json -> {
-            MoreOptionsConfig.Meta meta = configMapper.mapMeta(json);
-            int version = meta.getVersion();
-            log.debug("Loaded config v%s", version);
 
-            switch (version) {
-                case 1:
-                    return configMapper.mapV1(filePath, json, defaultConfig);
-                case 2:
-                    return configMapper.mapV2(filePath, json, defaultConfig);
-                default:
-                    log.warn("Unsupported config version v%s found in %s", version, filePath);
-                    return null;
-            }
-        });
+        try {
+            return jsonService.loadJson(filePath).map(json -> {
+                MoreOptionsConfig.Meta meta = configMapper.mapMeta(json);
+                int version = meta.getVersion();
+                log.debug("Loaded config v%s", version);
+
+                switch (version) {
+                    case 1:
+                        return configMapper.mapV1(filePath, json, defaultConfig);
+                    case 2:
+                        return configMapper.mapV2(filePath, json, defaultConfig);
+                    default:
+                        log.warn("Unsupported config version v%s found in %s", version, filePath);
+                        return null;
+                }
+            });
+        } catch (Exception e) {
+            log.error("Could load config. Using default config.", e);
+            return Optional.ofNullable(defaultConfig);
+        }
     }
 
     public Optional<Map<String, Dictionary.Entry>> loadDictionary(PATH path, String fileName) {

@@ -9,6 +9,7 @@ import init.sound.SoundSettlement;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.sets.LIST;
 
 import java.util.HashMap;
@@ -22,8 +23,11 @@ public class GameSoundsApi {
     @Getter(lazy = true)
     private final static GameSoundsApi instance = new GameSoundsApi();
 
+    @Nullable
     private Map<String, SoundSettlement.Sound> settlementSounds;
+    @Nullable
     private Map<String, SoundSettlement.Sound> roomSounds;
+    @Nullable
     private Map<String, SoundAmbience.Ambience> ambienceSounds;
 
     public final static String KEY_PREFIX = "sounds";
