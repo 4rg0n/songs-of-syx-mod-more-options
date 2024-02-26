@@ -181,7 +181,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 
 			backupModal.show();
 		} else {
-			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
+			moreOptionsModal.getSection().setValue(moreOptionsConfig);
 		}
 
 		// FIXME

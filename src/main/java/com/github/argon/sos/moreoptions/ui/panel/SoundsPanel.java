@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the volume of game sound effects
  */
-public class SoundsPanel extends GuiSection implements Valuable<Void> {
+public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Sounds> {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
 
     private final Map<String, Slider> ambienceSoundSliders;
@@ -82,7 +82,8 @@ public class SoundsPanel extends GuiSection implements Valuable<Void> {
                 .build()));
     }
 
-    public MoreOptionsConfig.Sounds getConfig() {
+    @Override
+    public MoreOptionsConfig.Sounds getValue() {
         return MoreOptionsConfig.Sounds.builder()
             .ambience(getSoundsAmbienceConfig())
             .settlement(getSoundsSettlementConfig())
@@ -92,44 +93,27 @@ public class SoundsPanel extends GuiSection implements Valuable<Void> {
 
     public Map<String, MoreOptionsConfig.Range> getSoundsAmbienceConfig() {
         return ambienceSoundSliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, tab -> MoreOptionsConfig.Range.builder()
-                .value(tab.getValue().getValue())
-                .max(tab.getValue().getMax())
-                .min(tab.getValue().getMin())
-                .displayMode(MoreOptionsConfig.Range.DisplayMode
-                    .fromValueDisplay(tab.getValue().getValueDisplay()))
-                .applyMode(MoreOptionsConfig.Range.ApplyMode
-                    .fromValueDisplay(tab.getValue().getValueDisplay()))
-                .build()));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
     }
 
     public Map<String, MoreOptionsConfig.Range> getSoundsSettlementConfig() {
         return settlementSoundSliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, tab -> MoreOptionsConfig.Range.builder()
-                .value(tab.getValue().getValue())
-                .max(tab.getValue().getMax())
-                .min(tab.getValue().getMin())
-                .displayMode(MoreOptionsConfig.Range.DisplayMode
-                    .fromValueDisplay(tab.getValue().getValueDisplay()))
-                .applyMode(MoreOptionsConfig.Range.ApplyMode
-                    .fromValueDisplay(tab.getValue().getValueDisplay()))
-                .build()));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
     }
 
     public Map<String, MoreOptionsConfig.Range> getSoundsRoomConfig() {
         return roomSoundSliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, tab -> MoreOptionsConfig.Range.builder()
-                .value(tab.getValue().getValue())
-                .max(tab.getValue().getMax())
-                .min(tab.getValue().getMin())
-                .displayMode(MoreOptionsConfig.Range.DisplayMode
-                    .fromValueDisplay(tab.getValue().getValueDisplay()))
-                .applyMode(MoreOptionsConfig.Range.ApplyMode
-                    .fromValueDisplay(tab.getValue().getValueDisplay()))
-                .build()));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
     }
 
-    public void applyConfig(MoreOptionsConfig.Sounds sounds) {
+    @Override
+    public void setValue(MoreOptionsConfig.Sounds sounds) {
         log.trace("Applying UI sounds config %s", sounds);
 
         sounds.getAmbience().forEach((key, range) -> {
@@ -155,15 +139,5 @@ public class SoundsPanel extends GuiSection implements Valuable<Void> {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
-    }
-
-    @Override
-    public Void getValue() {
-        return null;
-    }
-
-    @Override
-    public void setValue(Void value) {
-
     }
 }

@@ -165,6 +165,18 @@ public class MoreOptionsConfig {
                 .value(value)
                 .build();
         }
+
+        public static Range fromSlider(Slider slider) {
+            return MoreOptionsConfig.Range.builder()
+                .value(slider.getValue())
+                .max(slider.getMax())
+                .min(slider.getMin())
+                .displayMode(MoreOptionsConfig.Range.DisplayMode
+                    .fromValueDisplay(slider.getValueDisplay()))
+                .applyMode(MoreOptionsConfig.Range.ApplyMode
+                    .fromValueDisplay(slider.getValueDisplay()))
+                .build();
+        }
     }
 
     @Data

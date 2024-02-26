@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class WeatherPanel extends GuiSection implements Valuable<Void> {
+public class WeatherPanel extends GuiSection implements Valuable<Map<String, MoreOptionsConfig.Range>> {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
     @Getter
     private final Map<String, Slider> sliders;
@@ -35,22 +35,16 @@ public class WeatherPanel extends GuiSection implements Valuable<Void> {
         addDownC(0, section);
     }
 
-    public Map<String, MoreOptionsConfig.Range> getConfig() {
+    @Override
+    public Map<String, MoreOptionsConfig.Range> getValue() {
         return sliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsConfig.Range.builder()
-                    .value(tab.getValue().getValue())
-                    .max(tab.getValue().getMax())
-                    .min(tab.getValue().getMin())
-                    .displayMode(MoreOptionsConfig.Range.DisplayMode
-                        .fromValueDisplay(tab.getValue().getValueDisplay()))
-                    .applyMode(MoreOptionsConfig.Range.ApplyMode
-                        .fromValueDisplay(tab.getValue().getValueDisplay()))
-                    .build()));
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
     }
 
-    public void applyConfig(Map<String, MoreOptionsConfig.Range> config) {
+    @Override
+    public void setValue(Map<String, MoreOptionsConfig.Range> config) {
         log.trace("Applying UI weather config %s", config);
 
         config.forEach((key, range) -> {
@@ -60,15 +54,5 @@ public class WeatherPanel extends GuiSection implements Valuable<Void> {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
-    }
-
-    @Override
-    public Void getValue() {
-        return null;
-    }
-
-    @Override
-    public void setValue(Void value) {
-
     }
 }

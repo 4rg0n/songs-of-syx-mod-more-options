@@ -130,14 +130,21 @@ public class UIGameConfig {
             .orElseThrow(() -> new UninitializedException("BackupModal is not initialized."));
         okButton.clickActionSet(() -> {
             applyAndSave(backupMoreOptionsModal.getSection());
-            moreOptionsModal.getSection().applyConfig(backupMoreOptionsModal.getSection().getConfig());
+            MoreOptionsConfig readConfig = backupMoreOptionsModal.getSection().getValue();
+
+            // fallback
+            if (readConfig == null) {
+                readConfig = configStore.getDefaultConfig();
+            }
+
+            moreOptionsModal.getSection().setValue(readConfig);
             configStore.deleteBackupConfig();
             backupMoreOptionsModal.hide();
         });
 
         // Edit Backup
         backupModal.getSection().getEditButton().clickActionSet(() -> {
-            backupMoreOptionsModal.getSection().applyConfig(config);
+            backupMoreOptionsModal.getSection().setValue(config);
             backupModal.hide();
             backupMoreOptionsModal.show();
         });
@@ -146,7 +153,7 @@ public class UIGameConfig {
         backupModal.getPanel().setCloseAction(() -> {
             configStore.deleteBackupConfig();
             MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
-            moreOptionsModal.getSection().applyConfig(defaultConfig);
+            moreOptionsModal.getSection().setValue(defaultConfig);
             configurator.applyConfig(defaultConfig);
             configStore.setCurrentConfig(defaultConfig);
             configStore.saveConfig(defaultConfig);
@@ -157,7 +164,7 @@ public class UIGameConfig {
         backupModal.getSection().getDiscardButton().clickActionSet(() -> {
             configStore.deleteBackupConfig();
             MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
-            moreOptionsModal.getSection().applyConfig(defaultConfig);
+            moreOptionsModal.getSection().setValue(defaultConfig);
             configurator.applyConfig(defaultConfig);
             configStore.setCurrentConfig(defaultConfig);
             configStore.saveConfig(defaultConfig);
@@ -167,7 +174,7 @@ public class UIGameConfig {
         // Apply Backup
         backupModal.getSection().getApplyButton().clickActionSet(() -> {
             configurator.applyConfig(config);
-            moreOptionsModal.getSection().applyConfig(config);
+            moreOptionsModal.getSection().setValue(config);
             configStore.setCurrentConfig(config);
             configStore.saveConfig(config);
             configStore.deleteBackupConfig();
@@ -216,7 +223,7 @@ public class UIGameConfig {
             .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
         resetButton.clickActionSet(() -> {
             MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
-            moreOptionsModal.getSection().applyConfig(defaultConfig);
+            moreOptionsModal.getSection().setValue(defaultConfig);
         });
 
         // Undo changes
@@ -243,7 +250,7 @@ public class UIGameConfig {
 
         MetricsPanel metricsPanel = Optional.ofNullable(moreOptionsModal.getSection().getMetricsPanel())
             .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
-        moreOptionsModal.getSection().getMetricsPanel().onRefresh(panel -> {
+        metricsPanel.onRefresh(panel -> {
             MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
                 .orElse(configStore.getDefaultConfig());
             String exportFilePath = metricExporter.getExportFilePath().toString();
@@ -263,7 +270,13 @@ public class UIGameConfig {
     private void applyAndSave(MoreOptionsModal moreOptionsModal) {
         // only save when changes were made
         if (moreOptionsModal.isDirty()) {
-            MoreOptionsConfig config = moreOptionsModal.getConfig();
+            MoreOptionsConfig config = moreOptionsModal.getValue();
+
+            if (config == null) {
+                log.warn("Could read config from modal. Got null");
+                return;
+            }
+
             configurator.applyConfig(config);
             configStore.setCurrentConfig(config);
             configStore.saveConfig(config);
@@ -271,6 +284,6 @@ public class UIGameConfig {
     }
 
     private void undo(MoreOptionsModal moreOptionsModal) {
-        moreOptionsModal.getConfigStore().getCurrentConfig().ifPresent(moreOptionsModal::applyConfig);
+        moreOptionsModal.getConfigStore().getCurrentConfig().ifPresent(moreOptionsModal::setValue);
     }
 }

@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * Builds a row with buttons and displays the associated ui element when a button is toggled
  * Used for replacing ui elements on button toggle.
  */
-public class Tabulator<K, V, E extends Valuable<V>> extends GuiSection implements Valuable<V>, Resettable, Refreshable<Tabulator<K, V, E>> {
+public class Tabulator<K, V, E extends RENDEROBJ> extends GuiSection implements Valuable<V>, Resettable, Refreshable<Tabulator<K, V, E>> {
 
     private final Map<Toggler.Info<K>, E> tabs;
     private final boolean resetOnToggle;
@@ -99,13 +100,22 @@ public class Tabulator<K, V, E extends Valuable<V>> extends GuiSection implement
     }
 
     @Override
+    @Nullable
     public V getValue() {
-        return activeTab.getValue();
+        if (activeTab instanceof Valuable) {
+            Valuable<V> valuable = (Valuable<V>) activeTab;
+            return valuable.getValue();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void setValue(V value) {
-        activeTab.setValue(value);
+        if (activeTab instanceof Valuable) {
+            Valuable<V> valuable = (Valuable<V>) activeTab;
+            valuable.setValue(value);
+        }
     }
 
     @Override

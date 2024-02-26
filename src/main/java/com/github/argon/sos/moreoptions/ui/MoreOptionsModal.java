@@ -25,17 +25,20 @@ import java.util.List;
  * Will pop up in the middle of the game and pauses the game.
  */
 @RequiredArgsConstructor
-public class MoreOptionsModal extends GuiSection implements Showable<MoreOptionsModal>, Refreshable<MoreOptionsModal> {
+public class MoreOptionsModal extends GuiSection implements Showable<MoreOptionsModal>, Refreshable<MoreOptionsModal>, Valuable<MoreOptionsConfig> {
 
     @Getter
     private final ConfigStore configStore;
     @Nullable
     private final ModInfo modInfo;
 
+    @Nullable
     private EventsPanel eventsPanel;
+    @Nullable
     private  SoundsPanel soundsPanel;
+    @Nullable
     private  WeatherPanel weatherPanel;
-
+    @Nullable
     private  BoostersPanel boostersPanel;
 
     @Getter
@@ -73,7 +76,7 @@ public class MoreOptionsModal extends GuiSection implements Showable<MoreOptions
     private final static int UPDATE_INTERVAL_SECONDS = 1;
 
     @Nullable
-    private Tabulator<String, Void, Valuable<Void>> tabulator;
+    private Tabulator<String, ?, GuiSection> tabulator;
 
     /**
      * Builds the UI with given config
@@ -123,25 +126,27 @@ public class MoreOptionsModal extends GuiSection implements Showable<MoreOptions
         addDownC(20, footer);
     }
 
-    public MoreOptionsConfig getConfig() {
+    @Nullable
+    @Override
+    public MoreOptionsConfig getValue() {
+        if (eventsPanel == null || soundsPanel == null || weatherPanel == null || boostersPanel == null) {
+            return null;
+        }
+
         return MoreOptionsConfig.builder()
-                .events(eventsPanel.getConfig())
-                .sounds(soundsPanel.getConfig())
-                .weather(weatherPanel.getConfig())
-                .boosters(boostersPanel.getConfig())
+                .events(eventsPanel.getValue())
+                .sounds(soundsPanel.getValue())
+                .weather(weatherPanel.getValue())
+                .boosters(boostersPanel.getValue())
                 .build();
     }
 
-
-    public void applyConfig(MoreOptionsConfig config) {
-        eventsPanel.applyConfig(
-            config.getEvents()
-        );
-        soundsPanel.applyConfig(
-            config.getSounds()
-        );
-        weatherPanel.applyConfig(config.getWeather());
-        boostersPanel.applyConfig(config.getBoosters());
+    @Override
+    public void setValue(MoreOptionsConfig config) {
+        if (eventsPanel != null) eventsPanel.setValue(config.getEvents());
+        if (soundsPanel != null) soundsPanel.setValue(config.getSounds());
+        if (weatherPanel != null) weatherPanel.setValue(config.getWeather());
+        if (boostersPanel != null) boostersPanel.setValue(config.getBoosters());
     }
 
     /**
@@ -149,7 +154,7 @@ public class MoreOptionsModal extends GuiSection implements Showable<MoreOptions
      */
     public boolean isDirty() {
         return configStore.getCurrentConfig()
-            .map(currentConfig -> !getConfig().equals(currentConfig))
+            .map(currentConfig -> !getValue().equals(currentConfig))
             // no current config in memory
             .orElse(true);
     }
@@ -221,8 +226,8 @@ public class MoreOptionsModal extends GuiSection implements Showable<MoreOptions
         if (updateTimerSeconds >= UPDATE_INTERVAL_SECONDS) {
             updateTimerSeconds = 0d;
 
-            applyButton.setEnabled(isDirty());
-            undoButton.setEnabled(isDirty());
+            if (applyButton != null) applyButton.setEnabled(isDirty());
+            if (undoButton != null) undoButton.setEnabled(isDirty());
         }
         super.render(r, seconds);
     }
@@ -240,7 +245,7 @@ public class MoreOptionsModal extends GuiSection implements Showable<MoreOptions
     @Override
     public void refresh() {
         refreshAction.accept(this);
-        tabulator.refresh();
+        if (tabulator != null) tabulator.refresh();
     }
 
     @Override

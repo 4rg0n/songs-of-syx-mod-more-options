@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class EventsPanel extends GuiSection implements Valuable<Void> {
+public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Events> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
 
@@ -96,7 +96,8 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
             .build();
     }
 
-    public MoreOptionsConfig.Events getConfig() {
+    @Override
+    public MoreOptionsConfig.Events getValue() {
        return MoreOptionsConfig.Events.builder()
            .settlement(getSettlementEventsConfig())
            .world(getWorldEventsConfig())
@@ -117,18 +118,11 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
     public Map<String, MoreOptionsConfig.Range> getEventsChanceConfig() {
         return eventsChanceSliders.entrySet().stream().collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsConfig.Range.builder()
-                    .value(tab.getValue().getValue())
-                    .max(tab.getValue().getMax())
-                    .min(tab.getValue().getMin())
-                    .displayMode(MoreOptionsConfig.Range.DisplayMode
-                        .fromValueDisplay(tab.getValue().getValueDisplay()))
-                    .applyMode(MoreOptionsConfig.Range.ApplyMode
-                        .fromValueDisplay(tab.getValue().getValueDisplay()))
-                    .build()));
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
     }
 
-    public void applyConfig(MoreOptionsConfig.Events events) {
+    @Override
+    public void setValue(MoreOptionsConfig.Events events) {
         log.trace("Applying UI settlement events config %s", events);
 
         events.getSettlement().forEach((key, value) -> {
@@ -173,15 +167,5 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
         return CheckboxesBuilder.builder()
             .displayHeight(300)
             .translate(settlementCheckboxes).build();
-    }
-
-    @Override
-    public Void getValue() {
-        return null;
-    }
-
-    @Override
-    public void setValue(Void value) {
-
     }
 }

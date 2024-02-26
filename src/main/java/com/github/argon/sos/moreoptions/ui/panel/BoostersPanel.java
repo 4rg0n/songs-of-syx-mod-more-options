@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 /**
  * Contains sliders to influence values of game boosters
  */
-public class BoostersPanel extends GuiSection implements Valuable<Void> {
+public class BoostersPanel extends GuiSection implements Valuable<Map<String, MoreOptionsConfig.Range>> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
     private final Map<String, Tabulator<String, Integer, Slider>> sliders;
@@ -60,25 +60,19 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
 
         GScrollRows gScrollRows = buildResult.getResult();
         sliders = buildResult.getInteractable();
-        addDown(10, gScrollRows.view());
+        addDown(0, gScrollRows.view());
     }
 
-    public Map<String, MoreOptionsConfig.Range> getConfig() {
+    @Override
+    public Map<String, MoreOptionsConfig.Range> getValue() {
         return sliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsConfig.Range.builder()
-                    .value(tab.getValue().getValue())
-                    .max(tab.getValue().getActiveTab().getMax())
-                    .min(tab.getValue().getActiveTab().getMin())
-                    .displayMode(MoreOptionsConfig.Range.DisplayMode
-                        .fromValueDisplay(tab.getValue().getActiveTab().getValueDisplay()))
-                    .applyMode(MoreOptionsConfig.Range.ApplyMode
-                        .fromValueDisplay(tab.getValue().getActiveTab().getValueDisplay()))
-                    .build()));
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue().getActiveTab())));
     }
 
-    public void applyConfig(Map<String, MoreOptionsConfig.Range> config) {
+    @Override
+    public void setValue(Map<String, MoreOptionsConfig.Range> config) {
         log.trace("Applying Booster config %s", config);
 
         config.forEach((key, range) -> {
@@ -128,16 +122,6 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
                 .threshold((int) (0.90 * rangeMulti.getMax()), COLOR.RED2RED)
                 .build())
             .build();
-    }
-
-    @Override
-    public Void getValue() {
-        return null;
-    }
-
-    @Override
-    public void setValue(Void value) {
-
     }
 
     @Data

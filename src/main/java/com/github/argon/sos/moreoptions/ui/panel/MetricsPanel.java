@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class MetricsPanel extends GuiSection implements Valuable<Void>, Refreshable<MetricsPanel> {
+public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Metrics>, Refreshable<MetricsPanel> {
 
     private static final Logger log = Loggers.getLogger(MetricsPanel.class);
     private final Toggler<Boolean> onOffToggle;
@@ -100,7 +100,6 @@ public class MetricsPanel extends GuiSection implements Valuable<Void>, Refresha
         GuiSection exportFilePathSection = exportFilePath("NO_PATH");
         this.exportFilePath = new ClickSwitch(exportFilePathSection);
 
-        // todo update value
         BuildResult<List<GuiSection>, RENDEROBJ> exportFile = LabeledBuilder.builder().translate(
             LabeledBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
@@ -112,9 +111,9 @@ public class MetricsPanel extends GuiSection implements Valuable<Void>, Refresha
                 .element(this.exportFilePath)
                 .build()
         ).build();
+
         GuiSection statsSectionPlaceholder = statsSectionPlaceholder();
         this.statsSection = new ClickSwitch(statsSectionPlaceholder);
-
         this.onOffToggle = onOffToggle.getInteractable();
         this.collectionRate = collectionRate.getInteractable();
         this.exportRate = exportRate.getInteractable();
@@ -138,6 +137,7 @@ public class MetricsPanel extends GuiSection implements Valuable<Void>, Refresha
     }
 
     public void refresh(String exportFilePath, List<String> keyList, List<String> whiteList) {
+        // build stat selection list once
         if (!keyList.isEmpty() && statsCheckboxes.isEmpty()) {
             BuildResult<Table, Map<String, Checkbox>> checkboxes = CheckboxesBuilder.builder()
                 .displayHeight(400)
@@ -176,23 +176,29 @@ public class MetricsPanel extends GuiSection implements Valuable<Void>, Refresha
         return section;
     }
 
-    public MoreOptionsConfig.Metrics getConfig() {
-        return null;
+    @Override
+    public MoreOptionsConfig.Metrics getValue() {
+        return MoreOptionsConfig.Metrics.builder()
+            .collectionRateSeconds(MoreOptionsConfig.Range.fromSlider(collectionRate))
+            .exportRateMinutes(MoreOptionsConfig.Range.fromSlider(exportRate))
+            .stats(getCheckedStats())
+            .enabled(onOffToggle.getValue())
+            .build();
     }
 
-    public void applyConfig(MoreOptionsConfig.Metrics metricsConfig) {
-
+    private List<String> getCheckedStats() {
+        return statsCheckboxes.entrySet().stream()
+            .filter(entry -> {
+                Checkbox checkbox = entry.getValue();
+                return checkbox.selectedIs();
+            })
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
     }
-
 
     @Override
-    public Void getValue() {
-        return null;
-    }
-
-    @Override
-    public void setValue(Void value) {
-
+    public void setValue(MoreOptionsConfig.Metrics metricsConfig) {
+        // todo
     }
 
     @Override
