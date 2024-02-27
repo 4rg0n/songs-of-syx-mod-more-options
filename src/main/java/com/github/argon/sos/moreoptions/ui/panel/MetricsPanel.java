@@ -49,7 +49,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     public MetricsPanel(
         MoreOptionsConfig.Metrics metricsConfig
     ) {
-        // todo dict
         Toggler<Boolean> toggler = new Toggler<>(Lists.of(
             Toggler.Info.<Boolean>builder()
                 .key(true)
@@ -66,7 +65,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         BuildResult<List<GuiSection>, List<Toggler<Boolean>>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(
             LabeledBuilder.Definition.<Toggler<Boolean>>builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
-                    // todo dict
                     .key("ui.moreOptions.metrics.toggle")
                     .description("Enables or disables the collection and export of metric data.")
                     .build())
@@ -74,28 +72,37 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .build()
         ).build();
 
-        BuildResult<List<GuiSection>, Slider> collectionRate = LabeledSliderBuilder.builder()
-            .definition(LabeledSliderBuilder.Definition.builder()
+        this.collectionRate = SliderBuilder.builder().definition(
+            SliderBuilder.Definition
+                .buildFrom(metricsConfig.getCollectionRateSeconds())
+                .maxWidth(200)
+                .build()
+        ).build().getResult();
+
+        BuildResult<List<GuiSection>, List<RENDEROBJ>> collectionRate = LabeledBuilder.builder()
+            .definition(LabeledBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
                     .key("ui.moreOptions.metrics.collection-rate-seconds")
                     .build())
-                .sliderDefinition(SliderBuilder.Definition
-                    .buildFrom(metricsConfig.getCollectionRateSeconds())
-                    .maxWidth(200)
-                    .build())
+                .element(this.collectionRate)
+                .element(new GTextR(UI.FONT().S, "Seconds"))
                 .build())
             .build();
 
-        BuildResult<List<GuiSection>, Slider> exportRate = LabeledSliderBuilder.builder()
-            .definition(LabeledSliderBuilder.Definition.builder()
+        this.exportRate = SliderBuilder.builder().definition(
+            SliderBuilder.Definition
+                .buildFrom(metricsConfig.getExportRateMinutes())
+                .maxWidth(200)
+                .build()
+        ).build().getResult();
+
+        BuildResult<List<GuiSection>, List<RENDEROBJ>> exportRate = LabeledBuilder.builder()
+            .definition(LabeledBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
-                    // todo dict
                     .key("ui.moreOptions.metrics.export-rate-minutes")
                     .build())
-                .sliderDefinition(SliderBuilder.Definition
-                    .buildFrom(metricsConfig.getExportRateMinutes())
-                    .maxWidth(200)
-                    .build())
+                .element(this.exportRate)
+                .element(new GTextR(UI.FONT().S, "Minutes"))
                 .build())
             .build();
 
@@ -119,8 +126,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         GuiSection statsSectionPlaceholder = statsSectionPlaceholder();
         this.statsSection = new UISwitcher(statsSectionPlaceholder, false);
         this.onOffToggle = onOffToggle.getInteractable().get(0);
-        this.collectionRate = collectionRate.getInteractable();
-        this.exportRate = exportRate.getInteractable();
 
         List<ColumnRow> rows = Lists.of(
             onOffToggle.toColumnRow().getResult(),

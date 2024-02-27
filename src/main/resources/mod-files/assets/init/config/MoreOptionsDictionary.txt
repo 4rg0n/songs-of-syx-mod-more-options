@@ -28,11 +28,11 @@ ui.moreOptions.metrics.export-file: {
     DESC: "Name of the CSV file with the current exported metrics.",
     },
 ui.moreOptions.metrics.export-rate-minutes: {
-    TITLE: "Export rate MINUTES",
+    TITLE: "Export rate",
     DESC: "How often data shall be exported as CSV file in MINUTES.",
     },
 ui.moreOptions.metrics.collection-rate-seconds: {
-    TITLE: "Collection rate SECONDS",
+    TITLE: "Collection rate",
     DESC: "How often data shall be pulled from the game in SECONDS.",
     },
 ui.moreOptions.metrics.toggle: {
