@@ -7,6 +7,7 @@ import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 
@@ -44,10 +45,10 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
     public static Builder builder() {
         return new Builder();
     }
-
+    
+    @Setter
     public static class Builder {
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private Definition definition;
 

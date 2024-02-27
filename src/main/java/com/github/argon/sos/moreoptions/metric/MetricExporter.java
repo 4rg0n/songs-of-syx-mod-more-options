@@ -4,7 +4,9 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATHS;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
@@ -18,10 +20,11 @@ public class MetricExporter {
 
     private final static Logger log = Loggers.getLogger(MetricExporter.class);
 
-    public final static Path EXPORT_PATH = PATHS.local().PROFILE.get();
+    public static final Path EXPORT_FOLDER = PATHS.local().PROFILE.get().resolve("exports");
 
     @Getter
-    private Path exportFilePath;
+    @Nullable
+    private Path exportFile;
 
     private final MetricCollector metricCollector;
 
@@ -30,24 +33,44 @@ public class MetricExporter {
     private MetricExporter(MetricCollector metricCollector, CSVWriter csvWriter) {
         this.metricCollector = metricCollector;
         this.csvWriter = csvWriter;
+
+        if (!Files.isDirectory(EXPORT_FOLDER)) {
+            try {
+                Files.createDirectory(EXPORT_FOLDER);
+            } catch (Exception e) {
+                log.error("Could not create metrics export folder %s", EXPORT_FOLDER, e);
+            }
+        }
+
         newExportFile();
     }
 
     public void newExportFile() {
-        exportFilePath = EXPORT_PATH.resolve(Instant.now().getEpochSecond() + "_MetricExport.csv");
-        log.debug("New metric export file path: %s", exportFilePath);
+        exportFile = EXPORT_FOLDER.resolve(Instant.now().getEpochSecond() + "_MetricExport.csv");
+        log.debug("New metric export file path: %s", exportFile);
     }
 
     public boolean export() {
+        if (exportFile == null) {
+            log.warn("No export file name set yet. Can not export.");
+            return false;
+        }
+        List<Metric> metrics;
         try {
-            List<Metric> metrics = metricCollector.flush();
-            log.debug("Exporting %s metrics to %s", metrics.size(), exportFilePath);
-            csvWriter.write(exportFilePath, metrics);
-            return true;
+            metrics = metricCollector.flush();
         } catch (Exception e) {
-            log.warn("Could not export metrics to %s", exportFilePath, e);
+            log.error("Could not not flush buffered metrics", e);
+            return false;
         }
 
-        return false;
+        try {
+            log.debug("Exporting %s metrics to %s", metrics.size(), exportFile);
+            csvWriter.write(exportFile, metrics);
+        } catch (Exception e) {
+            log.error("Could not export metrics to: %s\n%s metrics were lost :(", exportFile, metrics.size(), e);
+            return false;
+        }
+
+        return true;
     }
 }

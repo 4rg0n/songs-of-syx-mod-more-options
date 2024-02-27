@@ -39,8 +39,13 @@ public class ColumnRow extends GuiSection {
     public void init(List<Integer> columnWidths) {
         clear();
 
-        if (columnWidths.size() != columns.size()) {
-            throw new RuntimeException("Amount of columns (" + columns.size() + ") in row does match given column widths " + columnWidths.size());
+        // edge case when there are rows with different column sizes
+        if (columnWidths.size() < columns.size()) {
+            int size = columns.size();
+            // fill rest with their size
+            for (int i = columnWidths.size(); i < size; i++) {
+                columnWidths.add(columns.get(i).body().width());
+            }
         }
 
         for (int i = 0; i < columns.size(); i++) {

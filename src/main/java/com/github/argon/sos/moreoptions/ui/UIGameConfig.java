@@ -25,6 +25,7 @@ import util.gui.misc.GButt;
 import view.interrupter.IDebugPanel;
 import view.ui.top.UIPanelTop;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
@@ -65,22 +66,39 @@ public class UIGameConfig {
         moreOptionsButton.hoverInfoSet(MOD_INFO.name);
         moreOptionsButton.setDim(32, UIPanelTop.HEIGHT);
 
-        // inject button for opening modal into game UI
-        gameApis.uiApi().findUIElementInWorldView(UIPanelTop.class)
-            .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
-            .ifPresent(o -> {
-                log.debug("Injecting button into UIPanelTop#right in settlement view");
-                GuiSection right = (GuiSection) o;
-                right.addRelBody(8, DIR.W, moreOptionsButton);
-            });
+        // inject button into world view
+        try {
+            Object object = gameApis.uiApi().findUIElementInWorldView(UIPanelTop.class)
+                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
+                .orElse(null);
 
-        gameApis.uiApi().findUIElementInSettlementView(UIPanelTop.class)
-            .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
-            .ifPresent(o -> {
-                log.debug("Injecting button into UIPanelTop#right in world view");
-                GuiSection right = (GuiSection) o;
-                right.addRelBody(8, DIR.W, moreOptionsButton);
-            });
+            if (object == null) {
+                throw new IllegalStateException("Could not find UI to inject button into.");
+            }
+
+            log.debug("Injecting button into UIPanelTop#right in world view");
+            GuiSection right = (GuiSection) object;
+            right.addRelBody(8, DIR.W, moreOptionsButton);
+        } catch (Exception e) {
+            log.error("Could not inject %s UI button into world view :(", MOD_INFO.name, e);
+        }
+
+        // inject button into settlement view
+        try {
+            Object object = gameApis.uiApi().findUIElementInSettlementView(UIPanelTop.class)
+                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
+                .orElse(null);
+
+            if (object == null) {
+                throw new IllegalStateException("Could not find UI to inject button into.");
+            }
+
+            log.debug("Injecting button into UIPanelTop#right in world view");
+            GuiSection right = (GuiSection) object;
+            right.addRelBody(8, DIR.W, moreOptionsButton);
+        } catch (Exception e) {
+            log.error("Could not inject %s UI button into settlement view :(", MOD_INFO.name, e);
+        }
     }
 
     /**
@@ -256,7 +274,7 @@ public class UIGameConfig {
         metricsPanel.onRefresh(panel -> {
             MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
                 .orElse(configStore.getDefaultConfig());
-            String exportFilePath = metricExporter.getExportFilePath().toString();
+            Path exportFilePath = metricExporter.getExportFile();
             SortedSet<String> keyList = metricCollector.getKeyList();
             List<String> stats = moreOptionsConfig.getMetrics().getStats();
 
@@ -271,6 +289,20 @@ public class UIGameConfig {
 
         // refresh view after applied config
         metricsPanel.onAfterSetValue((metrics, panel) -> panel.refresh());
+
+        // opens folder with metric export files
+        Button exportFolderButton = metricsPanel.getExportFolderButton();
+        exportFolderButton.clickActionSet(() -> {
+            Path exportFolderPath = metricsPanel.getExportFolderPath();
+
+            if (!exportFolderPath.toFile().exists()) {
+                exportFolderButton.markSuccess(false);
+                log.info("Can not open metrics export folder: %s\nFolder does not exists.", exportFolderPath);
+                return;
+            }
+
+            FileManager.openDesctop(exportFolderPath.toString());
+        });
     }
 
     private void applyAndSave(MoreOptionsModal moreOptionsModal) {

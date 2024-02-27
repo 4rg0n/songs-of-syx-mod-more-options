@@ -4,15 +4,16 @@ import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
-import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,10 +21,10 @@ import java.util.stream.Collectors;
  * @param <E> element next to the label
  */
 @RequiredArgsConstructor
-public class LabeledBuilder<E extends RENDEROBJ> implements UiBuilder<List<GuiSection>, E> {
+public class LabeledBuilder<E extends RENDEROBJ> implements UiBuilder<List<GuiSection>, List<E>> {
     private final Definition<E> definition;
 
-    public BuildResult<List<GuiSection>, E> build() {
+    public BuildResult<List<GuiSection>, List<E>> build() {
         if (definition.getLabelWidth() > 0) {
             definition.getLabelDefinition().setMaxWidth(definition.getLabelWidth());
         }
@@ -33,14 +34,15 @@ public class LabeledBuilder<E extends RENDEROBJ> implements UiBuilder<List<GuiSe
             .build().getResult();
         label.pad(10, 5);
 
-        List<GuiSection> row = Lists.of(label, definition.getElement())
-            .stream()
-            .map(UiUtil::toGuiSection)
-            .collect(Collectors.toList());
+        List<GuiSection> row = new ArrayList<>();
+        row.add(label);
+        row.addAll(definition.getElements().stream()
+                .map(UiUtil::toGuiSection)
+                .collect(Collectors.toList()));
 
-        return BuildResult.<List<GuiSection>, E>builder()
+        return BuildResult.<List<GuiSection>, List<E>>builder()
             .result(row)
-            .interactable(definition.getElement())
+            .interactable(definition.getElements())
             .build();
     }
 
@@ -61,7 +63,7 @@ public class LabeledBuilder<E extends RENDEROBJ> implements UiBuilder<List<GuiSe
             return definition(definition);
         }
 
-        public BuildResult<List<GuiSection>, E> build() {
+        public BuildResult<List<GuiSection>, List<E>> build() {
             assert definition != null : "definition must not be null";
 
             return new LabeledBuilder<>(definition).build();
@@ -74,7 +76,8 @@ public class LabeledBuilder<E extends RENDEROBJ> implements UiBuilder<List<GuiSe
 
         private LabelBuilder.Definition labelDefinition;
 
-        private E element;
+        @Singular
+        private List<E> elements;
 
         @lombok.Builder.Default
         private int labelWidth = 0;
@@ -84,7 +87,7 @@ public class LabeledBuilder<E extends RENDEROBJ> implements UiBuilder<List<GuiSe
             return labelDefinition.getKey();
         }
 
-       @Override
+        @Override
         public boolean isTranslate() {
             return labelDefinition.isTranslate();
         }

@@ -9,7 +9,9 @@ import com.github.argon.sos.moreoptions.ui.builder.element.*;
 import com.github.argon.sos.moreoptions.ui.builder.section.CheckboxesBuilder;
 import com.github.argon.sos.moreoptions.util.Lists;
 import init.sprite.UI.UI;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
@@ -17,6 +19,7 @@ import util.gui.misc.GHeader;
 import util.gui.misc.GText;
 import util.gui.misc.GTextR;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +35,13 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     private final Toggler<Boolean> onOffToggle;
     private final Slider collectionRate;
     private final Slider exportRate;
-    private final UISwitcher exportFilePath;
+    private final UISwitcher exportFilePathView;
     private final UISwitcher statsSection;
     private final Map<String, Checkbox> statsCheckboxes = new HashMap<>();
+    @Getter
+    private final Path exportFolderPath;
+    @Getter
+    private final Button exportFolderButton;
 
     private UIAction<MetricsPanel> refreshAction = o -> {};
     private UIBiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueUIAction = (o1, o2)  -> {};
@@ -56,7 +63,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .build()
         ));
 
-        BuildResult<List<GuiSection>, Toggler<Boolean>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(
+        BuildResult<List<GuiSection>, List<Toggler<Boolean>>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(
             LabeledBuilder.Definition.<Toggler<Boolean>>builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
                     // todo dict
@@ -97,10 +104,15 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                     .build())
                 .build())
             .build();
-        GuiSection exportFilePathSection = exportFilePath("NO_PATH");
 
-        this.exportFilePath = new UISwitcher(exportFilePathSection, false);
-        BuildResult<List<GuiSection>, RENDEROBJ> exportFile = LabeledBuilder.builder().translate(
+        exportFolderPath = metricsConfig.getExportFolder();
+        GuiSection exportFilePathSection = exportFilePath(exportFolderPath.toString(), "NO_EXPORT_FILE");
+
+        this.exportFilePathView = new UISwitcher(exportFilePathSection, false);
+        this.exportFolderButton = new Button("Export Folder");
+        exportFolderButton.hoverInfoSet("Opens the metrics export folder: " + exportFolderPath);
+
+        BuildResult<List<GuiSection>, List<RENDEROBJ>> exportFile = LabeledBuilder.builder().translate(
             LabeledBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
                     // todo dict
@@ -108,13 +120,14 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                     .title("Metric Export")
                     .description("Enables or disables the collection and export of metric data.")
                     .build())
-                .element(this.exportFilePath)
+                .element(this.exportFilePathView)
+                .element(exportFolderButton)
                 .build()
         ).build();
 
         GuiSection statsSectionPlaceholder = statsSectionPlaceholder();
         this.statsSection = new UISwitcher(statsSectionPlaceholder, false);
-        this.onOffToggle = onOffToggle.getInteractable();
+        this.onOffToggle = onOffToggle.getInteractable().get(0);
         this.collectionRate = collectionRate.getInteractable();
         this.exportRate = exportRate.getInteractable();
 
@@ -148,7 +161,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         return section;
     }
 
-    public void refresh(String exportFilePath, SortedSet<String> keyList, List<String> whiteList) {
+    public void refresh(@Nullable Path exportFilePath, SortedSet<String> keyList, List<String> whiteList) {
         // build stat selection list once
         if (!keyList.isEmpty() && statsCheckboxes.isEmpty()) {
             BuildResult<Table, Map<String, Checkbox>> checkboxes = CheckboxesBuilder.builder()
@@ -170,19 +183,25 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
             this.statsSection.set(checkboxes.getResult());
         }
 
-        this.exportFilePath.set(exportFilePath(exportFilePath));
+        if (exportFilePath != null) {
+            this.exportFilePathView.set(exportFilePath(exportFilePath));
+        }
+    }
+
+    private static GuiSection exportFilePath(Path exportFilePath) {
+        return exportFilePath(exportFilePath.toString(), exportFilePath.getFileName().toString());
     }
 
     @NotNull
-    private static GuiSection exportFilePath(String exportFilePath) {
-        int maxWidth = 500;
+    private static GuiSection exportFilePath(@Nullable String exportFilePath, String exportFileName) {
+        int maxWidth = 300;
         int height = UI.FONT().S.height() * 3;
 
-        GTextR text = new GText(UI.FONT().S, exportFilePath)
+        GTextR text = new GText(UI.FONT().S, exportFileName)
             .setMaxWidth(maxWidth)
             .r(DIR.W);
 
-        text.hoverInfoSet(exportFilePath);
+        if (exportFilePath != null) text.hoverInfoSet(exportFilePath);
 
         GuiSection section = new GuiSection();
         section.body().setWidth(maxWidth);

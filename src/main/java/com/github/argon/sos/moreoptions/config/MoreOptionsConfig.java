@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.config;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.log.Level;
+import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -102,6 +103,9 @@ public class MoreOptionsConfig {
 
         @Builder.Default
         private List<String> stats = new ArrayList<>();
+
+        @Builder.Default
+        private Path exportFolder = MetricExporter.EXPORT_FOLDER;
     }
 
     @Data

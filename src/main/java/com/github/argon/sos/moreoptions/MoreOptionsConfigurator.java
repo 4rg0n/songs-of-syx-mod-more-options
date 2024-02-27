@@ -76,7 +76,7 @@ public class MoreOptionsConfigurator {
                     .schedule(metricCollector::buffer,
                         0, metrics.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
                     .schedule(metricExporter::export,
-                        0, metrics.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
+                        metrics.getExportRateMinutes().getValue(), metrics.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
                     .start();
                 metricScheduler.start();
             } else {
