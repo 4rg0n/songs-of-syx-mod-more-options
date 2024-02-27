@@ -114,7 +114,7 @@ public class UIGameConfig {
         IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> MetricScheduler.getInstance().stop());
         IDebugPanel.add(MOD_INFO.name + ":createBackup", configStore::createBackupConfig);
         IDebugPanel.add(MOD_INFO.name + ":log.stats", () -> {
-            log.info("Events Status:\n%s", gameApis.eventsApi().readEventsEnabledStatus()
+            log.info("Events Status: %s", gameApis.eventsApi().readEventsEnabledStatus()
                 .entrySet().stream().map(entry -> entry.getKey() + " enabled: " + entry.getValue() + "\n")
                 .collect(Collectors.joining()));
         });
@@ -279,7 +279,7 @@ public class UIGameConfig {
             List<String> stats = moreOptionsConfig.getMetrics().getStats();
 
             log.debug("Refreshing metrics panel");
-            log.trace("Refresh values:\n  exportFilePath: %s\n  keyList: %s\n  stats: %s", exportFilePath, keyList, stats);
+            log.trace("Refresh values: exportFilePath: %s  keyList: %s  stats: %s", exportFilePath, keyList, stats);
 
             panel.refresh(
                 exportFilePath,

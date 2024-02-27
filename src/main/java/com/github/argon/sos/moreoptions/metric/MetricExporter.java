@@ -67,7 +67,7 @@ public class MetricExporter {
             log.debug("Exporting %s metrics to %s", metrics.size(), exportFile);
             csvWriter.write(exportFile, metrics);
         } catch (Exception e) {
-            log.error("Could not export metrics to: %s\n%s metrics were lost :(", exportFile, metrics.size(), e);
+            log.error("Could not export metrics to: %s. %s metrics were lost :(", exportFile, metrics.size(), e);
             return false;
         }
 

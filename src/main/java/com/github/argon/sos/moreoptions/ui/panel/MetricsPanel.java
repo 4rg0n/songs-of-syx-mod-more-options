@@ -67,8 +67,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
             LabeledBuilder.Definition.<Toggler<Boolean>>builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
                     // todo dict
-                    .key("metrics.ui.toggle")
-                    .title("Metric Export")
+                    .key("ui.moreOptions.metrics.toggle")
                     .description("Enables or disables the collection and export of metric data.")
                     .build())
                 .element(toggler)
@@ -78,10 +77,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         BuildResult<List<GuiSection>, Slider> collectionRate = LabeledSliderBuilder.builder()
             .definition(LabeledSliderBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
-                    // todo dict
-                    .key("metrics.ui.collection-rate-seconds")
-                    .title("Collection rate seconds")
-                    .description("How often data shall be pulled from the game in SECONDS.")
+                    .key("ui.moreOptions.metrics.collection-rate-seconds")
                     .build())
                 .sliderDefinition(SliderBuilder.Definition
                     .buildFrom(metricsConfig.getCollectionRateSeconds())
@@ -94,9 +90,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
             .definition(LabeledSliderBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
                     // todo dict
-                    .key("metrics.ui.export-rate-minutes")
-                    .title("Export rate minutes")
-                    .description("How often data shall be exported as CSV file in MINUTES.")
+                    .key("ui.moreOptions.metrics.export-rate-minutes")
                     .build())
                 .sliderDefinition(SliderBuilder.Definition
                     .buildFrom(metricsConfig.getExportRateMinutes())
@@ -115,10 +109,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         BuildResult<List<GuiSection>, List<RENDEROBJ>> exportFile = LabeledBuilder.builder().translate(
             LabeledBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
-                    // todo dict
-                    .key("metrics.ui.export-file")
-                    .title("Metric Export")
-                    .description("Enables or disables the collection and export of metric data.")
+                    .key("ui.moreOptions.metrics.export-file")
                     .build())
                 .element(this.exportFilePathView)
                 .element(exportFolderButton)
