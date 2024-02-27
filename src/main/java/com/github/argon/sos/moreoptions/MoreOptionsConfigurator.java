@@ -5,6 +5,9 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.metric.MetricCollector;
+import com.github.argon.sos.moreoptions.metric.MetricExporter;
+import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import game.events.EVENTS;
 import init.sound.SoundAmbience;
 import init.sound.SoundSettlement;
@@ -14,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import settlement.weather.WeatherThing;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * For manipulating game classes by given config {@link MoreOptionsConfig}
@@ -23,10 +27,19 @@ public class MoreOptionsConfigurator {
 
     @Getter(lazy = true)
     private final static MoreOptionsConfigurator instance = new MoreOptionsConfigurator(
-        GameApis.getInstance()
+        GameApis.getInstance(),
+        MetricCollector.getInstance(),
+        MetricExporter.getInstance(),
+        MetricScheduler.getInstance()
     );
 
     private final GameApis gameApis;
+
+    private final MetricCollector metricCollector;
+
+    private final MetricExporter metricExporter;
+
+    private final MetricScheduler metricScheduler;
 
     private final static Logger log = Loggers.getLogger(MoreOptionsConfigurator.class);
 
@@ -37,6 +50,8 @@ public class MoreOptionsConfigurator {
      */
     public void applyConfig(MoreOptionsConfig config) {
         log.debug("Apply More Options config to game");
+        log.trace("Config: %s", config);
+
         try {
             applySettlementEventsConfig(config.getEvents().getSettlement());
             applyWorldEventsConfig(config.getEvents().getWorld());
@@ -46,8 +61,33 @@ public class MoreOptionsConfigurator {
             applySoundsRoomConfig(config.getSounds().getRoom());
             applyWeatherConfig(ConfigUtil.extract(config.getWeather()));
             applyBoostersConfig(config.getBoosters());
+            applyMetrics(config.getMetrics());
         } catch (Exception e) {
             log.error("Could not apply config: %s", config, e);
+        }
+    }
+
+    private void applyMetrics(MoreOptionsConfig.Metrics metrics) {
+        // enabled changed?
+        if (metricScheduler.isStarted() != metrics.isEnabled()) {
+            if (metrics.isEnabled()) {
+                metricScheduler.clear();
+                metricScheduler
+                    .schedule(metricCollector::buffer,
+                        0, metrics.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
+                    .schedule(metricExporter::export,
+                        0, metrics.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
+                    .start();
+                metricScheduler.start();
+            } else {
+                metricScheduler.stop();
+            }
+        }
+
+        // whitelist for stats changed?
+        if (!metricCollector.getWhiteList().containsAll(metrics.getStats())) {
+            metricCollector.getKeyList().clear();
+            metricCollector.getKeyList().addAll(metrics.getStats());
         }
     }
 
@@ -56,7 +96,6 @@ public class MoreOptionsConfigurator {
     }
 
     private void applyEventsChanceConfig(Map<String, MoreOptionsConfig.Range> eventsChanceConfig) {
-        log.trace("Apply events chance config: %s", eventsChanceConfig);
         eventsChanceConfig.forEach((key, range) -> {
             Map<String, EVENTS.EventResource> eventsChance = gameApis.eventsApi().getEventsChance();
 
@@ -71,7 +110,6 @@ public class MoreOptionsConfigurator {
     }
 
     private void applySettlementEventsConfig(Map<String, Boolean> eventsConfig) {
-        log.trace("Apply settlement events config: %s", eventsConfig);
         Map<String, EVENTS.EventResource> settlementEvents = gameApis.eventsApi().getSettlementEvents();
 
         eventsConfig.forEach((key, enabled) -> {
@@ -92,7 +130,6 @@ public class MoreOptionsConfigurator {
     }
 
     private void applyWorldEventsConfig(Map<String, Boolean> eventsConfig) {
-        log.trace("Apply world events config: %s", eventsConfig);
         Map<String, EVENTS.EventResource> worldEvents = gameApis.eventsApi().getWorldEvents();
 
         eventsConfig.forEach((key, enabled) -> {
@@ -111,11 +148,10 @@ public class MoreOptionsConfigurator {
         });
     }
 
-    private void applySoundsAmbienceConfig(Map<String, MoreOptionsConfig.Range> soundsAmbienceConfig) {
-        log.trace("Apply ambience sounds config: %s", soundsAmbienceConfig);
+    private void applySoundsAmbienceConfig(Map<String, MoreOptionsConfig.Range> soundsConfig) {
         Map<String, SoundAmbience.Ambience> ambienceSounds = gameApis.soundsApi().getAmbienceSounds();
 
-        soundsAmbienceConfig.forEach((key, range) -> {
+        soundsConfig.forEach((key, range) -> {
             if (ambienceSounds.containsKey(key)) {
                 SoundAmbience.Ambience ambienceSound = ambienceSounds.get(key);
                 gameApis.soundsApi().setSoundGainLimiter(ambienceSound, range.getValue());
@@ -126,11 +162,10 @@ public class MoreOptionsConfigurator {
         });
     }
 
-    private void applySoundsSettlementConfig(Map<String, MoreOptionsConfig.Range> soundsSettlementConfig) {
-        log.trace("Apply settlement sounds config: %s", soundsSettlementConfig);
+    private void applySoundsSettlementConfig(Map<String, MoreOptionsConfig.Range> soundsConfig) {
         Map<String, SoundSettlement.Sound> settlementSounds = gameApis.soundsApi().getSettlementSounds();
 
-        soundsSettlementConfig.forEach((key, range) -> {
+        soundsConfig.forEach((key, range) -> {
             if (settlementSounds.containsKey(key)) {
                 SoundSettlement.Sound settlementSound = settlementSounds.get(key);
                 gameApis.soundsApi().setSoundsGainLimiter(settlementSound, range.getValue());
@@ -141,11 +176,10 @@ public class MoreOptionsConfigurator {
         });
     }
 
-    private void applySoundsRoomConfig(Map<String, MoreOptionsConfig.Range> soundsRoomConfig) {
-        log.trace("Apply room sounds config: %s", soundsRoomConfig);
+    private void applySoundsRoomConfig(Map<String, MoreOptionsConfig.Range> soundsConfig) {
         Map<String, SoundSettlement.Sound> roomSounds = gameApis.soundsApi().getRoomSounds();
 
-        soundsRoomConfig.forEach((key, range) -> {
+        soundsConfig.forEach((key, range) -> {
             if (roomSounds.containsKey(key)) {
                 SoundSettlement.Sound roomeSound = roomSounds.get(key);
                 gameApis.soundsApi().setSoundsGainLimiter(roomeSound, range.getValue());
@@ -157,8 +191,6 @@ public class MoreOptionsConfigurator {
     }
 
     private void applyWeatherConfig(Map<String, Integer> weatherConfig) {
-        log.trace("Apply weather config: %s", weatherConfig);
-
         Map<String, WeatherThing> weatherThings = gameApis.weatherApi().getWeatherThings();
 
         weatherConfig.forEach((key, value) -> {

@@ -44,7 +44,7 @@ public class BoosterService {
         ranges.forEach((key, range) -> {
             getBoosters().ifPresent(boosters ->
                 boosters.computeIfPresent(key, (keyAgain, moreOptionsBoosters) -> {
-                log.debug("Apply booster config for: %s", key);
+                log.trace("Apply booster config for: %s", key);
 
                 switch (range.getApplyMode()) {
                     case MULTI:

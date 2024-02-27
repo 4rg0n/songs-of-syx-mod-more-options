@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,10 +18,16 @@ public class MetricScheduler {
     private final static MetricScheduler instance = new MetricScheduler();
 
     private final static Logger log = Loggers.getLogger(MetricScheduler.class);
-
+    private final Map<Runnable, Trigger> tasks = new HashMap<>();
+    @Nullable
     private ScheduledExecutorService scheduler;
 
-    private final Map<Runnable, Trigger> tasks = new HashMap<>();
+    @Getter
+    private boolean started = false;
+
+    public void clear() {
+        tasks.clear();
+    }
 
     public MetricScheduler start() {
         if (scheduler == null) {
@@ -33,6 +40,7 @@ public class MetricScheduler {
                 scheduler.scheduleAtFixedRate(runnable,
                     trigger.getInitialDelay(), trigger.getPeriod(), trigger.getUnit())
             );
+            started = true;
         } catch (Exception e) {
             log.warn("Could not start metric scheduler", e);
         }
@@ -41,8 +49,13 @@ public class MetricScheduler {
     }
 
     public MetricScheduler stop() {
+        if (scheduler == null) {
+            return this;
+        }
+
         scheduler.shutdownNow();
         scheduler = null;
+        started = false;
 
         log.debug("Stopped scheduling of % metric tasks", tasks.size());
         return this;

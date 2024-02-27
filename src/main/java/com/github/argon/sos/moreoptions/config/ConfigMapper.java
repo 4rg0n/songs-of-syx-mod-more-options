@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.util.JsonMapper;
+import com.github.argon.sos.moreoptions.util.Lists;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -119,6 +121,9 @@ public class ConfigMapper {
 
             .boosters((json.has("BOOSTERS")) ? mapRanges(json.json("BOOSTERS"))
                 : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
+
+            .metrics((json.has("METRICS")) ? mapMetrics(json.json("METRICS"))
+                : (defaultConfig != null) ? defaultConfig.getMetrics() : MoreOptionsConfig.Metrics.builder().build())
             .build();
     }
 
@@ -134,7 +139,36 @@ public class ConfigMapper {
         configJson.add("SOUNDS_ROOM", mapRanges(config.getSounds().getRoom()));
         configJson.add("WEATHER", mapRanges(config.getWeather()));
         configJson.add("BOOSTERS", mapRanges(config.getBoosters()));
+        configJson.add("METRICS", mapMetrics(config.getMetrics()));
         return configJson;
+    }
+
+    public JsonE mapMetrics(MoreOptionsConfig.Metrics metrics) {
+        JsonE metricsJson = new JsonE();
+
+        metricsJson.add("ENABLED", metrics.isEnabled());
+        metricsJson.add("COLLECTION_RATE_SECONDS", mapRange(metrics.getCollectionRateSeconds(), 15));
+        metricsJson.add("EXPORT_RATE_MINUTES", mapRange(metrics.getExportRateMinutes(), 30));
+        metricsJson.add("STATS", Lists.toGameLIST(metrics.getStats()));
+
+        return metricsJson;
+    }
+
+    public MoreOptionsConfig.Metrics mapMetrics(Json json) {
+        MoreOptionsConfig.Metrics defaultMetrics = MoreOptionsConfig.Metrics.builder().build();
+
+        return MoreOptionsConfig.Metrics.builder()
+            .enabled((json.has("ENABLED"))
+                ? json.bool("ENABLED")
+                : defaultMetrics.isEnabled())
+            .collectionRateSeconds((json.has("COLLECTION_RATE_SECONDS"))
+                ? mapRange(json.json("COLLECTION_RATE_SECONDS"), defaultMetrics.getCollectionRateSeconds().getValue())
+                : defaultMetrics.getCollectionRateSeconds())
+            .collectionRateSeconds((json.has("EXPORT_RATE_MINUTES"))
+                ? mapRange(json.json("EXPORT_RATE_MINUTES"), defaultMetrics.getExportRateMinutes().getValue())
+                : defaultMetrics.getExportRateMinutes())
+            .stats((json.has("STATS")) ? Arrays.asList(json.texts("STATS")) : defaultMetrics.getStats())
+            .build();
     }
 
     public MoreOptionsConfig.Meta mapMeta(Json json) {

@@ -31,7 +31,7 @@ public class MetricCollector {
     private final List<String> keyList = new ArrayList<>();
 
     @Getter
-    private final List<String> whiteList = new ArrayList<>();
+    private final Set<String> whiteList = new HashSet<>();
 
     public void buffer() {
         try {
