@@ -56,6 +56,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
                 .build(), multiSlider
         ), DIR.W, 0, false, true);
 
+        tabulator.tab(definition.getActiveKey());
         List<GuiSection> row = Lists.of(
             label,
             tabulator
@@ -99,9 +100,10 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
         private SliderBuilder.Definition sliderMultiDefinition;
         private SliderBuilder.Definition sliderAddDefinition;
 
-
         @lombok.Builder.Default
         private int labelWidth = 0;
+
+        private String activeKey;
 
         @Override
         public String getKey() {

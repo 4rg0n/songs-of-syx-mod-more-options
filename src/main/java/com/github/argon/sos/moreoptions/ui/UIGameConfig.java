@@ -272,13 +272,12 @@ public class UIGameConfig {
 
         // how to refresh ui elements in metrics panel
         metricsPanel.onRefresh(panel -> {
+            log.debug("Refreshing metrics panel");
             MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
                 .orElse(configStore.getDefaultConfig());
             Path exportFilePath = metricExporter.getExportFile();
             SortedSet<String> keyList = metricCollector.getKeyList();
             List<String> stats = moreOptionsConfig.getMetrics().getStats();
-
-            log.debug("Refreshing metrics panel");
             log.trace("Refresh values: exportFilePath: %s  keyList: %s  stats: %s", exportFilePath, keyList, stats);
 
             panel.refresh(
@@ -288,7 +287,10 @@ public class UIGameConfig {
         });
 
         // refresh view after applied config
-        metricsPanel.onAfterSetValue((metrics, panel) -> panel.refresh());
+        metricsPanel.onAfterSetValue((metrics, panel) -> {
+            log.debug("Refresh metrics panel onAfterSetValue");
+            panel.refresh();
+        });
 
         // opens folder with metric export files
         Button exportFolderButton = metricsPanel.getExportFolderButton();

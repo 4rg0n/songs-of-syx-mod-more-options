@@ -44,7 +44,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     private final Button exportFolderButton;
 
     private UIAction<MetricsPanel> refreshAction = o -> {};
-    private UIBiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueUIAction = (o1, o2)  -> {};
+    private UIBiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
 
     public MetricsPanel(
         MoreOptionsConfig.Metrics metricsConfig
@@ -223,7 +223,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         collectionRate.setValue(metricsConfig.getCollectionRateSeconds().getValue());
         exportRate.setValue(metricsConfig.getExportRateMinutes().getValue());
         setCheckedStats(metricsConfig.getStats());
-        afterSetValueUIAction.accept(metricsConfig, this);
+        afterSetValueAction.accept(metricsConfig, this);
     }
 
     private List<String> getCheckedStats() {
@@ -256,6 +256,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
 
     @Override
     public void onAfterSetValue(UIBiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueUIAction) {
-        this.afterSetValueUIAction = afterSetValueUIAction;
+        this.afterSetValueAction = afterSetValueUIAction;
     }
 }

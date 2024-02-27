@@ -42,14 +42,14 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
                     .stream().sorted(Comparator.comparing(entry -> entry.getValue().getLabelDefinition().getTitle()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                             (oldValue, newValue) -> oldValue, LinkedHashMap::new)).forEach((key, definition) -> {
-                        BuildResult<List<GuiSection>, Tabulator<String, Slider, Integer>> buildResult = BoosterSliderBuilder.builder()
-                                .definition(definition)
-                                .build();
-                        rows.add(buildResult.getResult());
-                        elements.put(key, buildResult.getInteractable());
-                        innerList.add(buildResult.getResult());
+                                BuildResult<List<GuiSection>, Tabulator<String, Slider, Integer>> buildResult = BoosterSliderBuilder.builder()
+                                        .definition(definition)
+                                        .build();
 
-                    });
+                                rows.add(buildResult.getResult());
+                                elements.put(key, buildResult.getInteractable());
+                                innerList.add(buildResult.getResult());
+                            });
             mapRows.put(keyDef, innerList);
         }
 

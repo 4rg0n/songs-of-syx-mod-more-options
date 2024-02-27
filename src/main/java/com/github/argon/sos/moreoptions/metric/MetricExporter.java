@@ -47,7 +47,7 @@ public class MetricExporter {
 
     public void newExportFile() {
         exportFile = EXPORT_FOLDER.resolve(Instant.now().getEpochSecond() + "_MetricExport.csv");
-        log.debug("New metric export file path: %s", exportFile);
+        log.debug("New metrics export file: %s", exportFile);
     }
 
     public boolean export() {

@@ -57,7 +57,7 @@ public class MetricScheduler {
         scheduler = null;
         started = false;
 
-        log.debug("Stopped scheduling of % metric tasks", tasks.size());
+        log.debug("Stopped scheduling of %s metric tasks", tasks.size());
         return this;
     }
 

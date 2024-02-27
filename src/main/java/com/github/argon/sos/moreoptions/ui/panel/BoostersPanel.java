@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class BoostersPanel extends GuiSection implements Valuable<Map<String, MoreOptionsConfig.Range>, BoostersPanel> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
-    private final Map<String, Tabulator<String, Slider, Integer>> sliders;
+    private final Map<String, Tabulator<String, Slider, Integer>> slidersWithToggle;
 
     public BoostersPanel(List<Entry> boosterEntries) {
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
@@ -44,6 +44,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
             }
         }
 
+        // build booster sliders with add and perc toggle
         Map<String, Map<String, BoosterSliderBuilder.Definition>> boosterDefinitions = new HashMap<>();
         groupedBoosterEntries.keySet().forEach(cat -> {
             List<Entry> groupedBoostersByCat = groupedBoosterEntries.get(cat);
@@ -58,14 +59,16 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
                 .translate(boosterDefinitions)
                 .build();
 
+
+
         GScrollRows gScrollRows = buildResult.getResult();
-        sliders = buildResult.getInteractable();
+        slidersWithToggle = buildResult.getInteractable();
         addDown(0, gScrollRows.view());
     }
 
     @Override
     public Map<String, MoreOptionsConfig.Range> getValue() {
-        return sliders.entrySet().stream()
+        return slidersWithToggle.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue().getActiveTab())));
@@ -76,8 +79,8 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
         log.trace("Applying Booster config %s", config);
 
         config.forEach((key, range) -> {
-            if (sliders.containsKey(key)) {
-                Tabulator<String, Slider, Integer> tabulator = sliders.get(key);
+            if (slidersWithToggle.containsKey(key)) {
+                Tabulator<String, Slider, Integer> tabulator = slidersWithToggle.get(key);
                 tabulator.reset();
                 tabulator.tab(range.getApplyMode().name().toLowerCase());
                 tabulator.setValue(range.getValue());
@@ -91,15 +94,18 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
     private static BoosterSliderBuilder.Definition buildSliderDefinition(Entry entry) {
         MoreOptionsConfig.Range rangeMulti;
         MoreOptionsConfig.Range rangeAdd;
+        String activeKey;
 
         if (entry.getRange().getApplyMode().equals(MoreOptionsConfig.Range.ApplyMode.MULTI)) {
             rangeMulti = entry.getRange();
             rangeAdd = MoreOptionsScript.getConfigStore()
                 .getDefaults().getBoostersAdd().get(entry.getKey());
+            activeKey = "multi";
         } else {
             rangeMulti = MoreOptionsScript.getConfigStore()
                 .getDefaults().getBoostersMulti().get(entry.getKey());
             rangeAdd = entry.getRange();
+            activeKey = "add";
         }
 
         return BoosterSliderBuilder.Definition.builder()
@@ -121,6 +127,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
                 .threshold((int) (0.75 * rangeMulti.getMax()), COLOR.RED100.shade(0.7d))
                 .threshold((int) (0.90 * rangeMulti.getMax()), COLOR.RED2RED)
                 .build())
+            .activeKey(activeKey)
             .build();
     }
 

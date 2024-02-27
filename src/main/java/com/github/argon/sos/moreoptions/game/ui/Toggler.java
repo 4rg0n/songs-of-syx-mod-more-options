@@ -27,6 +27,8 @@ public class Toggler<K> extends GuiSection implements
 
     private UIAction<K> toggleAction = o -> {};
 
+    private UIAction<K> onClickAction = o -> {};
+
     private UIAction<Toggler<K>> refreshAction = o -> {};
 
     public Toggler(Collection<Info<K>> elements) {
@@ -48,12 +50,13 @@ public class Toggler<K> extends GuiSection implements
                 @Override
                 protected void clickA() {
                     activeButton = this;
+                    onClickAction.accept(info.getKey());
                     toggle(info.getKey());
                 }
 
                 @Override
                 protected void renAction() {
-                    boolean selected = info.equals(activeInfo);
+                    boolean selected = info.getKey().equals(activeInfo.getKey());
 
                     selectedSet(selected);
                 }
@@ -64,6 +67,11 @@ public class Toggler<K> extends GuiSection implements
     }
 
     public void toggle(K key) {
+        // no toggle happened?
+        if (activeInfo.getKey().equals(key)) {
+            return;
+        }
+
         get(key).ifPresent(element -> {
             activeInfo = element;
             toggleAction.accept(key);
@@ -109,8 +117,12 @@ public class Toggler<K> extends GuiSection implements
     }
 
     @Override
-    public void onRefresh(UIAction<Toggler<K>> refreshUIAction) {
-        this.refreshAction = refreshUIAction;
+    public void onRefresh(UIAction<Toggler<K>> refreshAction) {
+        this.refreshAction = refreshAction;
+    }
+
+    public void onClick(UIAction<K> clickAction) {
+        this.onClickAction = clickAction;
     }
 
     @Getter

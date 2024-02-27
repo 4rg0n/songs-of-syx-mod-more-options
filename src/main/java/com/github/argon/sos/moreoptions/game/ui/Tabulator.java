@@ -53,7 +53,7 @@ public class Tabulator<TKey, TElement extends RENDEROBJ, TValue> extends GuiSect
         activeTab = tabs.values().iterator().next();
 
         toggler = new Toggler<>(tabs.keySet());
-        toggler.onToggle(this::tab);
+        toggler.onClick(this::tab);
 
         // guarantee same width
         int maxWidth = UiUtil.getMaxWidth(tabs.values());
@@ -91,13 +91,18 @@ public class Tabulator<TKey, TElement extends RENDEROBJ, TValue> extends GuiSect
         return toggler.getActiveInfo();
     }
 
-    public void tab(TKey key) {
+    public void tab(@Nullable TKey key) {
+        if (key == null) {
+            return;
+        }
+
         tabs.entrySet().stream()
             .filter(element -> element.getKey().getKey().equals(key))
             .findFirst()
             .ifPresent(element -> {
                 if (resetOnToggle) reset();
                 activeTab = element.getValue();
+                toggler.toggle(key);
             });
     }
 
