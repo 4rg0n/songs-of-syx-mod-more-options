@@ -17,7 +17,7 @@ public class BuildResult<T, E> {
 
     private E interactable;
 
-    public BuildResult<ColumnRow, E> toGridRow() {
+    public BuildResult<ColumnRow, E> toColumnRow() {
 
         // check for type List<? extends GuiSection> and build
         if (result instanceof List) {

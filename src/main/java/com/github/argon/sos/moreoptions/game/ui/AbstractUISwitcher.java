@@ -9,7 +9,7 @@ import snake2d.util.gui.clickable.CLICKABLE;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.misc.ACTION;
 
-public abstract class ClickWrapper implements CLICKABLE {
+public abstract class AbstractUISwitcher implements CLICKABLE {
 
     public boolean dirty = false;
     private final Rec body = new Rec() {
@@ -35,22 +35,22 @@ public abstract class ClickWrapper implements CLICKABLE {
 
     private DIR dd = DIR.NW;
 
-    public ClickWrapper(DIMENSION dim, boolean center) {
+    public AbstractUISwitcher(DIMENSION dim, boolean center) {
         body.setDim(dim);
         this.center = center;
     }
 
-    public ClickWrapper(int width, int height, boolean center) {
+    public AbstractUISwitcher(int width, int height, boolean center) {
         body.setDim(width, height);
         this.center = center;
     }
 
-    public ClickWrapper(RENDEROBJ obj, boolean center) {
+    public AbstractUISwitcher(RENDEROBJ obj, boolean center) {
         body.set(obj.body());
         this.center = center;
     }
 
-    public ClickWrapper setD(DIR dd) {
+    public AbstractUISwitcher setD(DIR dd) {
         this.dd = dd;
         return this;
     }

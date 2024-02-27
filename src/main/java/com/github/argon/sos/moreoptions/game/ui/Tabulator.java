@@ -14,20 +14,27 @@ import java.util.stream.Collectors;
 /**
  * Builds a row with buttons and displays the associated ui element when a button is toggled
  * Used for replacing ui elements on button toggle.
+ *
+ * @param <TKey> type of the key to identify and toggle the tab with
+ * @param <TElement> type of the shown element when tab is active
+ * @param <TValue> type of the returned and set value
  */
-public class Tabulator<K, V, E extends RENDEROBJ> extends GuiSection implements Valuable<V>, Resettable, Refreshable<Tabulator<K, V, E>> {
+public class Tabulator<TKey, TElement extends RENDEROBJ, TValue> extends GuiSection implements
+    Valuable<TValue, Tabulator<TKey, TElement, TValue>>,
+    Resettable<Tabulator<TKey, TElement, TValue>>,
+    Refreshable<Tabulator<TKey, TElement, TValue>> {
 
-    private final Map<Toggler.Info<K>, E> tabs;
+    private final Map<Toggler.Info<TKey>, TElement> tabs;
     private final boolean resetOnToggle;
-    private final Toggler<K> toggler;
+    private final Toggler<TKey> toggler;
 
-    private Action<Tabulator<K, V, E>> refreshAction = o -> {};
+    private UIAction<Tabulator<TKey, TElement, TValue>> refreshAction = o -> {};
 
     @Getter
-    private E activeTab;
-    private final ClickWrapper clicker;
+    private TElement activeTab;
+    private final AbstractUISwitcher clicker;
 
-    public Tabulator(Map<Toggler.Info<K>, E> tabs) {
+    public Tabulator(Map<Toggler.Info<TKey>, TElement> tabs) {
         this(tabs, DIR.N, 0, false, false);
     }
 
@@ -38,7 +45,7 @@ public class Tabulator<K, V, E extends RENDEROBJ> extends GuiSection implements 
      * @param center whether elements shall be centered
      * @param resetOnToggle whether elements shall be reset when toggling
      */
-    public Tabulator(Map<Toggler.Info<K>, E> tabs, DIR direction, int margin, boolean center, boolean resetOnToggle) {
+    public Tabulator(Map<Toggler.Info<TKey>, TElement> tabs, DIR direction, int margin, boolean center, boolean resetOnToggle) {
         this.tabs = tabs;
         this.resetOnToggle = resetOnToggle;
 
@@ -52,7 +59,7 @@ public class Tabulator<K, V, E extends RENDEROBJ> extends GuiSection implements 
         int maxWidth = UiUtil.getMaxWidth(tabs.values());
         int maxHeight = UiUtil.getMaxHeight(tabs.values());
 
-        clicker = new ClickWrapper(maxWidth, maxHeight, center) {
+        clicker = new AbstractUISwitcher(maxWidth, maxHeight, center) {
             @Override
             protected RENDEROBJ pget() {
                 return activeTab;
@@ -80,11 +87,11 @@ public class Tabulator<K, V, E extends RENDEROBJ> extends GuiSection implements 
         }
     }
 
-    public Toggler.Info<K> getActiveInfo() {
+    public Toggler.Info<TKey> getActiveInfo() {
         return toggler.getActiveInfo();
     }
 
-    public void tab(K key) {
+    public void tab(TKey key) {
         tabs.entrySet().stream()
             .filter(element -> element.getKey().getKey().equals(key))
             .findFirst()
@@ -101,9 +108,11 @@ public class Tabulator<K, V, E extends RENDEROBJ> extends GuiSection implements 
 
     @Override
     @Nullable
-    public V getValue() {
+    public TValue getValue() {
         if (activeTab instanceof Valuable) {
-            Valuable<V> valuable = (Valuable<V>) activeTab;
+            @SuppressWarnings("unchecked")
+            Valuable<TValue, Tabulator<TKey, TElement, TValue>> valuable
+                = (Valuable<TValue, Tabulator<TKey, TElement, TValue>>) activeTab;
             return valuable.getValue();
         } else {
             return null;
@@ -111,9 +120,11 @@ public class Tabulator<K, V, E extends RENDEROBJ> extends GuiSection implements 
     }
 
     @Override
-    public void setValue(V value) {
+    public void setValue(TValue value) {
         if (activeTab instanceof Valuable) {
-            Valuable<V> valuable = (Valuable<V>) activeTab;
+            @SuppressWarnings("unchecked")
+            Valuable<TValue, Tabulator<TKey, TElement, TValue>> valuable
+                = (Valuable<TValue, Tabulator<TKey, TElement, TValue>>) activeTab;
             valuable.setValue(value);
         }
     }
@@ -140,7 +151,7 @@ public class Tabulator<K, V, E extends RENDEROBJ> extends GuiSection implements 
     }
 
     @Override
-    public void onRefresh(Action<Tabulator<K, V, E>> refreshAction) {
-        this.refreshAction = refreshAction;
+    public void onRefresh(UIAction<Tabulator<TKey, TElement, TValue>> refreshUIAction) {
+        this.refreshAction = refreshUIAction;
     }
 }

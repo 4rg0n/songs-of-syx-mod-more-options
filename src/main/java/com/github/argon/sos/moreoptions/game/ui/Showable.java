@@ -1,7 +1,14 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+/**
+ * Used to show an element on the screen.
+ *
+ * @param <T> type of element passed to the onShow UIAction
+ */
 public interface Showable<T> {
     default void show() {};
 
-     void onShow(Action<T> showAction);
+     default void onShow(UIAction<T> showUIAction) {
+         throw new UnsupportedOperationException("Method is not implemented");
+     }
 }

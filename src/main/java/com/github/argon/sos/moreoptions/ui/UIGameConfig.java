@@ -27,6 +27,7 @@ import view.ui.top.UIPanelTop;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
@@ -250,11 +251,13 @@ public class UIGameConfig {
 
         MetricsPanel metricsPanel = Optional.ofNullable(moreOptionsModal.getSection().getMetricsPanel())
             .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
+
+        // how to refresh ui elements in metrics panel
         metricsPanel.onRefresh(panel -> {
             MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
                 .orElse(configStore.getDefaultConfig());
             String exportFilePath = metricExporter.getExportFilePath().toString();
-            List<String> keyList = metricCollector.getKeyList();
+            SortedSet<String> keyList = metricCollector.getKeyList();
             List<String> stats = moreOptionsConfig.getMetrics().getStats();
 
             log.debug("Refreshing metrics panel");
@@ -265,6 +268,9 @@ public class UIGameConfig {
                 keyList,
                 stats);
         });
+
+        // refresh view after applied config
+        metricsPanel.onAfterSetValue((metrics, panel) -> panel.refresh());
     }
 
     private void applyAndSave(MoreOptionsModal moreOptionsModal) {

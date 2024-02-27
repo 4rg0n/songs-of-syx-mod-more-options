@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * Uses mostly code from {@link GSliderInt} and adds handling for negative values.
  */
-public class Slider extends GuiSection implements Valuable<Integer>, Resettable {
+public class Slider extends GuiSection implements Valuable<Integer, Slider>, Resettable<Slider> {
     private final INT.INTE in;
     private static final int midWidth = 8;
     private static final CharSequence setAmount = "Set amount";

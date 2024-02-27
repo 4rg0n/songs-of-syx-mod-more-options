@@ -88,6 +88,7 @@ public class MoreOptionsConfigurator {
         if (!metricCollector.getWhiteList().containsAll(metrics.getStats())) {
             metricCollector.getKeyList().clear();
             metricCollector.getKeyList().addAll(metrics.getStats());
+            metricExporter.newExportFile();
         }
     }
 

@@ -20,7 +20,7 @@ public class Table extends GuiSection {
     private final int displayHeight;
     private final boolean evenOdd;
     private final boolean evenColumnWidth;
-    private boolean scrollable;
+    private final boolean scrollable;
 
     public Table(
         List<ColumnRow> rows,

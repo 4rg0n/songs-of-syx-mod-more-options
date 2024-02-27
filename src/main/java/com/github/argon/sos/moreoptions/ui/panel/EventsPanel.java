@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Events> {
+public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Events, EventsPanel> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
 
@@ -107,12 +107,12 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfi
 
     public Map<String, Boolean> getSettlementEventsConfig() {
         return settlementEventsCheckboxes.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().selectedIs()));
+            .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 
     public Map<String, Boolean> getWorldEventsConfig() {
         return worldEventsCheckboxes.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().selectedIs()));
+            .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 
     public Map<String, MoreOptionsConfig.Range> getEventsChanceConfig() {

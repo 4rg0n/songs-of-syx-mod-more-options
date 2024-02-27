@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the volume of game sound effects
  */
-public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Sounds> {
+public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Sounds, SoundsPanel> {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
 
     private final Map<String, Slider> ambienceSoundSliders;

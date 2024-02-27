@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class WeatherPanel extends GuiSection implements Valuable<Map<String, MoreOptionsConfig.Range>> {
+public class WeatherPanel extends GuiSection implements Valuable<Map<String, MoreOptionsConfig.Range>, WeatherPanel> {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
     @Getter
     private final Map<String, Slider> sliders;

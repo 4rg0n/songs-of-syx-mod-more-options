@@ -11,6 +11,7 @@ import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
@@ -18,10 +19,10 @@ import snake2d.util.gui.GuiSection;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulator<String, Integer, Slider>> {
+public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulator<String, Slider, Integer>> {
     private final Definition definition;
 
-    public BuildResult<List<GuiSection>, Tabulator<String, Integer, Slider>> build() {
+    public BuildResult<List<GuiSection>, Tabulator<String, Slider, Integer>> build() {
 
         if (definition.getLabelWidth() > 0) {
             definition.getLabelDefinition().setMaxWidth(definition.getLabelWidth());
@@ -42,7 +43,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
             .build().getResult();
         multiSlider.pad(10, 5);
 
-        Tabulator<String, Integer, Slider> tabulator = new Tabulator<>(Maps.of(
+        Tabulator<String, Slider, Integer> tabulator = new Tabulator<>(Maps.of(
             Toggler.Info.<String>builder()
                 .key("add")
                 .title("Add")
@@ -60,7 +61,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
             tabulator
         );
 
-        return BuildResult.<List<GuiSection>, Tabulator<String, Integer, Slider>>builder()
+        return BuildResult.<List<GuiSection>, Tabulator<String, Slider, Integer>>builder()
             .result(row)
             .interactable(tabulator)
             .build();
@@ -70,9 +71,9 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
         return new Builder();
     }
 
+    @Setter
     public static class Builder {
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private Definition definition;
 
@@ -83,7 +84,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
             return definition(definition);
         }
 
-        public BuildResult<List<GuiSection>, Tabulator<String, Integer, Slider>> build() {
+        public BuildResult<List<GuiSection>, Tabulator<String, Slider, Integer>> build() {
             assert definition != null : "definition must not be null";
 
             return new BoosterSliderBuilder(definition).build();

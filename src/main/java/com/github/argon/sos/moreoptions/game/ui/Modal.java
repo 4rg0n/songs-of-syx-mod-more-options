@@ -25,8 +25,8 @@ public class Modal<T extends GuiSection> extends Interrupter implements Showable
 
     protected final GuiSection panelSection;
 
-    private Action<Modal<T>> showAction = o -> {};
-    private Action<Modal<T>> refreshAction = o -> {};
+    private UIAction<Modal<T>> showAction = o -> {};
+    private UIAction<Modal<T>> refreshAction = o -> {};
 
     public Modal(String title, T section) {
         this.section = section;
@@ -94,8 +94,8 @@ public class Modal<T extends GuiSection> extends Interrupter implements Showable
     }
 
     @Override
-    public void onRefresh(Action<Modal<T>> refreshAction) {
-        this.refreshAction = refreshAction;
+    public void onRefresh(UIAction<Modal<T>> refreshUIAction) {
+        this.refreshAction = refreshUIAction;
     }
 
     public void show() {
@@ -109,8 +109,8 @@ public class Modal<T extends GuiSection> extends Interrupter implements Showable
     }
 
     @Override
-    public void onShow(Action<Modal<T>> showAction) {
-        this.showAction = showAction;
+    public void onShow(UIAction<Modal<T>> showUIAction) {
+        this.showAction = showUIAction;
     }
 
     @Override

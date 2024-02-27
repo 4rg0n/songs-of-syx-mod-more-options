@@ -28,7 +28,7 @@ public class MetricCollector {
     private final List<Metric> buffered = Collections.synchronizedList(new ArrayList<>());
 
     @Getter
-    private final List<String> keyList = new ArrayList<>();
+    private final SortedSet<String> keyList = new TreeSet<>();
 
     @Getter
     private final Set<String> whiteList = new HashSet<>();

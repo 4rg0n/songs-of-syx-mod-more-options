@@ -12,7 +12,10 @@ import java.util.Optional;
 /**
  * Builds a row with buttons to toggle
  */
-public class Toggler<K> extends GuiSection implements Valuable<K>, Resettable, Refreshable<Toggler<K>> {
+public class Toggler<K> extends GuiSection implements
+    Valuable<K, Toggler<K>>,
+    Resettable<Toggler<K>>,
+    Refreshable<Toggler<K>> {
 
     private final Collection<Info<K>> elements;
 
@@ -22,9 +25,9 @@ public class Toggler<K> extends GuiSection implements Valuable<K>, Resettable, R
     @Getter
     private Button activeButton;
 
-    private Action<K> toggleAction = o -> {};
+    private UIAction<K> toggleAction = o -> {};
 
-    private Action<Toggler<K>> refreshAction = o -> {};
+    private UIAction<Toggler<K>> refreshAction = o -> {};
 
     public Toggler(Collection<Info<K>> elements) {
         this(elements, 0);
@@ -67,8 +70,8 @@ public class Toggler<K> extends GuiSection implements Valuable<K>, Resettable, R
         });
     }
 
-    public void onToggle(Action<K> action) {
-        toggleAction = action;
+    public void onToggle(UIAction<K> UIAction) {
+        toggleAction = UIAction;
     }
 
     public Optional<Info<K>> get(K key) {
@@ -106,8 +109,8 @@ public class Toggler<K> extends GuiSection implements Valuable<K>, Resettable, R
     }
 
     @Override
-    public void onRefresh(Action<Toggler<K>> refreshAction) {
-        this.refreshAction = refreshAction;
+    public void onRefresh(UIAction<Toggler<K>> refreshUIAction) {
+        this.refreshAction = refreshUIAction;
     }
 
     @Getter

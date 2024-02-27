@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 /**
  * Contains sliders to influence values of game boosters
  */
-public class BoostersPanel extends GuiSection implements Valuable<Map<String, MoreOptionsConfig.Range>> {
+public class BoostersPanel extends GuiSection implements Valuable<Map<String, MoreOptionsConfig.Range>, BoostersPanel> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
-    private final Map<String, Tabulator<String, Integer, Slider>> sliders;
+    private final Map<String, Tabulator<String, Slider, Integer>> sliders;
 
     public BoostersPanel(List<Entry> boosterEntries) {
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
@@ -53,7 +53,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
                     BoostersPanel::buildSliderDefinition)));
         });
 
-        BuildResult<GScrollRows, Map<String, Tabulator<String, Integer, Slider>>> buildResult = BoosterSlidersBuilder.builder()
+        BuildResult<GScrollRows, Map<String, Tabulator<String, Slider, Integer>>> buildResult = BoosterSlidersBuilder.builder()
                 .displayHeight(500)
                 .translate(boosterDefinitions)
                 .build();
@@ -77,7 +77,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
 
         config.forEach((key, range) -> {
             if (sliders.containsKey(key)) {
-                Tabulator<String, Integer, Slider> tabulator = sliders.get(key);
+                Tabulator<String, Slider, Integer> tabulator = sliders.get(key);
                 tabulator.reset();
                 tabulator.tab(range.getApplyMode().name().toLowerCase());
                 tabulator.setValue(range.getValue());
