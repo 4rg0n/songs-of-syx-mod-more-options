@@ -3,22 +3,30 @@ package com.github.argon.sos.moreoptions.ui.panel;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Tabulator;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
-import com.github.argon.sos.moreoptions.ui.builder.element.*;
+import com.github.argon.sos.moreoptions.ui.builder.element.BoosterSliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.section.BoosterSlidersBuilder;
 import game.boosting.BoostableCat;
+import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
-import util.gui.table.GScrollRows;
+import snake2d.util.sprite.text.StringInputSprite;
+import util.gui.misc.GInput;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -54,16 +62,18 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
                     BoostersPanel::buildSliderDefinition)));
         });
 
-        BuildResult<GScrollRows, Map<String, Tabulator<String, Slider, Integer>>> buildResult = BoosterSlidersBuilder.builder()
-                .displayHeight(500)
-                .translate(boosterDefinitions)
-                .build();
+        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
+        BuildResult<Table, Map<String, Tabulator<String, Slider, Integer>>> buildResult = BoosterSlidersBuilder.builder()
+            .displayHeight(600)
+            .search(searchInput)
+            .translate(boosterDefinitions)
+            .build();
 
 
-
-        GScrollRows gScrollRows = buildResult.getResult();
+        Table boosterTable = buildResult.getResult();
         slidersWithToggle = buildResult.getInteractable();
-        addDown(0, gScrollRows.view());
+        addDownC(0, new GInput(searchInput));
+        addDownC(10, boosterTable);
     }
 
     @Override

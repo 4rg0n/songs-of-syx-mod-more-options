@@ -37,7 +37,7 @@ public class SlidersBuilder implements UiBuilder<Table, Map<String, Slider>> {
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                 (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
-        List<List<? extends GuiSection>> rows = new ArrayList<>();
+        List<List<GuiSection>> rows = new ArrayList<>();
         definitions.forEach((key, definition) -> {
             BuildResult<List<GuiSection>, Slider> buildResult = LabeledSliderBuilder.builder()
                 .definition(definition)

@@ -57,7 +57,6 @@ public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>
             rows.add(columnRow);
         });
 
-
         Table table = TableBuilder.builder()
             .evenOdd(true)
             .evenColumnWidth(evenWidth)

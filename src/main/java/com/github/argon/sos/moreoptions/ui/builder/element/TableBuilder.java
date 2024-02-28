@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
+import com.github.argon.sos.moreoptions.util.Lists;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +24,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TableBuilder implements UiBuilder<Table, Table> {
 
+    @Nullable
     private final List<ColumnRow> rows;
+    @Nullable
+    private final Map<String, List<ColumnRow>> rowsCategorized;
     private final int displayHeight;
     private final boolean scrollable;
     private final boolean evenOdd;
@@ -31,7 +36,15 @@ public class TableBuilder implements UiBuilder<Table, Table> {
     private final StringInputSprite search;
 
     public BuildResult<Table, Table> build() {
-        Table table = new Table(rows, displayHeight, scrollable, evenOdd, evenColumnWidth, search);
+        Table table;
+        if (rows != null) {
+            table = new Table(rows, displayHeight, scrollable, evenOdd, evenColumnWidth, search);
+        } else if (rowsCategorized != null) {
+            table = Table.categorized(rowsCategorized, displayHeight, scrollable, evenOdd, evenColumnWidth, search);
+        } else {
+            table = new Table(Lists.of(), displayHeight, scrollable, evenOdd, evenColumnWidth, search);
+        }
+
         return BuildResult.<Table, Table>builder()
             .interactable(table)
             .result(table)
@@ -45,7 +58,11 @@ public class TableBuilder implements UiBuilder<Table, Table> {
     @Setter
     public static class Builder {
 
+        @Accessors(fluent = true)
         private List<ColumnRow> rows;
+
+        @Accessors(fluent = true)
+        private  Map<String, List<ColumnRow>> rowsCategorized;
 
         @Accessors(fluent = true)
         private int displayHeight;
@@ -67,7 +84,7 @@ public class TableBuilder implements UiBuilder<Table, Table> {
             return this;
         }
 
-        public Builder rows(List<List<? extends GuiSection>> rows) {
+        public Builder rows(List<List<GuiSection>> rows) {
             this.rows = rows.stream()
                 .map(ColumnRow::new)
                 .collect(Collectors.toList());
@@ -76,9 +93,9 @@ public class TableBuilder implements UiBuilder<Table, Table> {
         }
 
         public BuildResult<Table, Table> build() {
-            assert rows != null : "rows must not be null";
+            assert rows != null && rowsCategorized != null  : "rows must not be null";
 
-            return new TableBuilder(rows, displayHeight, scrollable, evenOdd, evenColumnWidth, search).build();
+            return new TableBuilder(rows, rowsCategorized, displayHeight, scrollable, evenOdd, evenColumnWidth, search).build();
         }
     }
 }

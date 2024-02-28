@@ -1,16 +1,21 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.ui.builder.element.ScrollableBuilder;
+import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.UiUtil;
+import init.sprite.UI.UI;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
+import util.gui.misc.GHeader;
 import util.gui.table.GScrollRows;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -24,6 +29,28 @@ public class Table extends GuiSection implements Searchable<String, List<String>
     private final boolean evenColumnWidth;
     private final boolean scrollable;
     private final StringInputSprite search;
+
+    public static Table categorized(
+        Map<String, List<ColumnRow>> rowsCategorized,
+        int displayHeight,
+        boolean scrollable,
+        boolean evenOdd,
+        boolean evenColumnWidth,
+        @Nullable StringInputSprite search
+    ) {
+        List<ColumnRow> columnRows = new ArrayList<>();
+
+        rowsCategorized.forEach((categoryTitle, innerRows) -> {
+            GHeader header = new GHeader(categoryTitle, UI.FONT().H2);
+            GuiSection headerSection = UiUtil.toGuiSection(header);
+            headerSection.pad(10);
+            ColumnRow headerRow = new ColumnRow(Lists.of(headerSection));
+            headerRow.setHeader(true);
+            columnRows.add(headerRow);
+            columnRows.addAll(innerRows);
+        });
+        return new Table(columnRows, displayHeight, scrollable, evenOdd, evenColumnWidth, search);
+    }
 
     public Table(
         List<ColumnRow> rows,
@@ -62,7 +89,7 @@ public class Table extends GuiSection implements Searchable<String, List<String>
         // initialize columns width and even-odd background
         rows.forEach(columnRow -> {
             columnRow.init(maxWidths);
-            if (evenOdd && rows.indexOf(columnRow) % 2 == 0) {
+            if (evenOdd && !columnRow.isHeader() && rows.indexOf(columnRow) % 2 == 0) {
                 columnRow.background(COLOR.WHITE15);
             }
         });

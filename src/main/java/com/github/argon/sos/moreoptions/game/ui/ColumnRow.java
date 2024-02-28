@@ -9,6 +9,7 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,19 +20,23 @@ public class ColumnRow extends GuiSection implements Searchable<String, Boolean>
     @Nullable
     private COLOR color;
     @Getter
-    private final List<? extends GuiSection> columns;
+    private final List<GuiSection> columns;
 
     @Nullable
     @Setter
     @Getter
     private String searchTerm;
 
-    public ColumnRow(List<? extends GuiSection> columns) {
+    @Getter
+    @Setter
+    private boolean header = false;
+
+    public ColumnRow(List<GuiSection> columns) {
         this(columns, null);
     }
 
-    public ColumnRow(List<? extends GuiSection> columns, @Nullable String searchTerm) {
-        this.columns = columns;
+    public ColumnRow(List<GuiSection> columns, @Nullable String searchTerm) {
+        this.columns = new ArrayList<>(columns);
         this.searchTerm = searchTerm;
 
         pad(5, 5);
@@ -57,8 +62,19 @@ public class ColumnRow extends GuiSection implements Searchable<String, Boolean>
             for (int i = columnWidths.size(); i < size; i++) {
                 columnWidths.add(columns.get(i).body().width());
             }
+        } else if (columnWidths.size() > columns.size()) {
+            int size = columnWidths.size();
+            for (int i = columns.size(); i < size; i++) {
+                GuiSection dummy = new GuiSection();
+                dummy.body().setWidth(columnWidths.get(i));
+                columns.add(dummy);
+            }
         }
 
+        initColumns(columnWidths);
+    }
+
+    private void initColumns(List<Integer> columnWidths) {
         for (int i = 0; i < columns.size(); i++) {
             GuiSection section = columns.get(i);
             Integer width = columnWidths.get(i);
