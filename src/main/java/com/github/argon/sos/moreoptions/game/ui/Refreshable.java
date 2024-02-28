@@ -1,15 +1,17 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.moreoptions.game.Action;
+
 /**
  * Used to refresh an element and its content.
  *
- * @param <T> type of element passed to the onRefresh UIAction
+ * @param <Element> type of element passed to the onRefresh UIAction
  */
-public interface Refreshable<T> {
+public interface Refreshable<Element> {
 
     default void refresh() {};
 
-    default void onRefresh(UIAction<T> refreshUIAction) {
+    default void onRefresh(Action<Element> refreshAction) {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 }

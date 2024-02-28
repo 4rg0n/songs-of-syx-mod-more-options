@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.game.ui;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
@@ -13,15 +14,25 @@ import java.util.List;
 /**
  * Container, which aligns elements evenly in the row
  */
-public class ColumnRow extends GuiSection {
+public class ColumnRow extends GuiSection implements Searchable<String, Boolean> {
 
     @Nullable
     private COLOR color;
     @Getter
     private final List<? extends GuiSection> columns;
 
+    @Nullable
+    @Setter
+    @Getter
+    private String searchTerm;
+
     public ColumnRow(List<? extends GuiSection> columns) {
+        this(columns, null);
+    }
+
+    public ColumnRow(List<? extends GuiSection> columns, @Nullable String searchTerm) {
         this.columns = columns;
+        this.searchTerm = searchTerm;
 
         pad(5, 5);
     }
@@ -72,5 +83,14 @@ public class ColumnRow extends GuiSection {
     public GuiSection backgroundClear() {
         this.color = COLOR.WHITE50;
         return this;
+    }
+
+    @Override
+    public Boolean search(String s) {
+        if (searchTerm == null) {
+            return true;
+        }
+
+        return searchTerm.toLowerCase().contains(s.toLowerCase());
     }
 }

@@ -1,26 +1,27 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.moreoptions.game.BiAction;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 /**
  * For ui elements where you can get and set values
  *
- * @param <TValue> type of set and returned value
- * @param <TSource> type of source object triggered the setting or getting
+ * @param <Value> type of set and returned value
+ * @param <Element> type of source object triggered the setting or getting
  */
-public interface Valuable<TValue, TSource> extends RENDEROBJ {
-    TValue getValue();
-    void setValue(TValue value);
+public interface Valuable<Value, Element> extends RENDEROBJ {
+    Value getValue();
+    void setValue(Value value);
 
-    default void onGetValue(UIBiAction<TValue, TSource> getValueAction) {
+    default void onGetValue(BiAction<Value, Element> getValueAction) {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 
-    default void onBeforeSetValue(UIBiAction<TValue, TSource> beforeSetValueAction) {
+    default void onBeforeSetValue(BiAction<Value, Element> beforeSetValueAction) {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 
-    default void onAfterSetValue(UIBiAction<TValue, TSource> afterSetValueAction) {
+    default void onAfterSetValue(BiAction<Value, Element> afterSetValueAction) {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 }

@@ -65,7 +65,7 @@ public class LabeledCheckboxBuilder implements UiBuilder<List<GuiSection>, Check
 
     @Data
     @lombok.Builder
-    public static class Definition implements Translatable {
+    public static class Definition implements Translatable<String> {
 
         private LabelBuilder.Definition labelDefinition;
         private CheckboxBuilder.Definition checkboxDefinition;
@@ -76,8 +76,8 @@ public class LabeledCheckboxBuilder implements UiBuilder<List<GuiSection>, Check
         }
 
         @Override
-        public boolean isTranslate() {
-            return labelDefinition.isTranslate();
+        public boolean isTranslatable() {
+            return labelDefinition.isTranslatable();
         }
 
         @Override

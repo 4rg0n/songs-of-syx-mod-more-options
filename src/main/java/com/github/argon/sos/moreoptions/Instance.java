@@ -31,13 +31,14 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 	@Override
 	public void update(double v) {
 		if (!initGameRunning) {
-			script.initGameRunning();
 			initGameRunning = true;
+			script.initGameRunning();
+
 		}
 
 		if (!initGamePresent && !VIEW.inters().load.isActivated()) {
-			script.initGamePresent();
 			initGamePresent = true;
+			script.initGamePresent();
 		}
 
 		script.update(v);
@@ -53,8 +54,8 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 		log.debug("PHASE: load");
 
 		if (newGame) {
-			log.debug("Game just started");
 			newGame = false;
+			log.debug("Game just started");
 		} else {
 			// Pass current config or use default
 			MoreOptionsConfig config = MoreOptionsScript.getConfigStore().getCurrentConfig()

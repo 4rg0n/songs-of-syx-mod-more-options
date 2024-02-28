@@ -2,7 +2,6 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.util.JsonMapper;
-import com.github.argon.sos.moreoptions.util.Lists;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -149,7 +148,7 @@ public class ConfigMapper {
         metricsJson.add("ENABLED", metrics.isEnabled());
         metricsJson.add("COLLECTION_RATE_SECONDS", mapRange(metrics.getCollectionRateSeconds(), 15));
         metricsJson.add("EXPORT_RATE_MINUTES", mapRange(metrics.getExportRateMinutes(), 30));
-        metricsJson.add("STATS", Lists.toGameLIST(metrics.getStats()));
+        metricsJson.addStrings("STATS", metrics.getStats().toArray(new String[]{}));
 
         return metricsJson;
     }
@@ -164,7 +163,7 @@ public class ConfigMapper {
             .collectionRateSeconds((json.has("COLLECTION_RATE_SECONDS"))
                 ? mapRange(json.json("COLLECTION_RATE_SECONDS"), defaultMetrics.getCollectionRateSeconds().getValue())
                 : defaultMetrics.getCollectionRateSeconds())
-            .collectionRateSeconds((json.has("EXPORT_RATE_MINUTES"))
+            .exportRateMinutes((json.has("EXPORT_RATE_MINUTES"))
                 ? mapRange(json.json("EXPORT_RATE_MINUTES"), defaultMetrics.getExportRateMinutes().getValue())
                 : defaultMetrics.getExportRateMinutes())
             .stats((json.has("STATS")) ? Arrays.asList(json.texts("STATS")) : defaultMetrics.getStats())

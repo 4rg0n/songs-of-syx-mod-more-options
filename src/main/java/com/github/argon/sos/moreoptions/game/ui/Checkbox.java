@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.moreoptions.game.Action;
 import snake2d.SPRITE_RENDERER;
 import util.gui.misc.GButt;
 
@@ -8,8 +9,8 @@ import util.gui.misc.GButt;
  */
 public class Checkbox extends GButt.Checkbox implements Valuable<Boolean, Checkbox> {
 
-    private UIAction<Checkbox> clickAction = o -> {};
-    private UIAction<Checkbox> renderObjectAction = o -> {};
+    private Action<Checkbox> clickAction = o -> {};
+    private Action<Checkbox> renderObjectAction = o -> {};
 
     public Checkbox() {
     }
@@ -37,11 +38,11 @@ public class Checkbox extends GButt.Checkbox implements Valuable<Boolean, Checkb
         super.render(r, ds, isActive, isSelected, isHovered);
     }
 
-    public void onClick(UIAction<Checkbox> action) {
+    public void onClick(Action<Checkbox> action) {
         clickAction = action;
     }
 
-    public void onRender(UIAction<Checkbox> action) {
+    public void onRender(Action<Checkbox> action) {
         renderObjectAction = action;
     }
 

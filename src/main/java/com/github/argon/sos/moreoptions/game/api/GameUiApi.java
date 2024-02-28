@@ -7,6 +7,9 @@ import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import snake2d.util.gui.clickable.CLICKABLE;
+import snake2d.util.gui.renderable.RENDEROBJ;
+import view.main.Interrupters;
 import view.main.VIEW;
 import view.sett.SettView;
 import view.world.WorldView;
@@ -69,5 +72,27 @@ public class GameUiApi {
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * Contains UIs like a yes/no prompt or a text input
+     *
+     * @throws GameUiNotAvailableException when ui isn't initialized yet
+     */
+    public Interrupters interrupters() {
+        Interrupters interrupters = VIEW.inters();
+
+        if (interrupters == null) {
+            throw new GameUiNotAvailableException("Games interrupt ui isn't initialized yet.");
+        }
+
+        return interrupters;
+    }
+
+    /**
+     * Will open a popup window near the given button
+     */
+    public void showPopup(RENDEROBJ popup, CLICKABLE button) {
+        interrupters().popup.show(popup, button);
     }
 }

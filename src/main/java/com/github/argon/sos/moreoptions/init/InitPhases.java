@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.game.api;
+package com.github.argon.sos.moreoptions.init;
 
 /**
  * Contains different initialization phases to implement.

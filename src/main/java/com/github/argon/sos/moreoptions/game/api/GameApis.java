@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.api;
 
+import com.github.argon.sos.moreoptions.init.InitPhases;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,25 +19,30 @@ public class GameApis implements InitPhases {
         GameUiApi.getInstance(),
         GameWeatherApi.getInstance(),
         GameBoosterApi.getInstance(),
-        GameModApi.getInstance()
+        GameModApi.getInstance(),
+        GameStatsApi.getInstance()
     );
 
     @Accessors(fluent = true)
-    private final GameEventsApi eventsApi;
+    private final GameEventsApi events;
 
     @Accessors(fluent = true)
-    private final GameSoundsApi soundsApi;
+    private final GameSoundsApi sounds;
 
     @Accessors(fluent = true)
-    private final  GameUiApi uiApi;
+    private final  GameUiApi ui;
 
     @Accessors(fluent = true)
-    private final  GameWeatherApi weatherApi;
+    private final  GameWeatherApi weather;
 
     @Accessors(fluent = true)
-    private final  GameBoosterApi boosterApi;
+    private final  GameBoosterApi booster;
+
     @Accessors(fluent = true)
-    private final GameModApi modApi;
+    private final GameModApi mod;
+
+    @Accessors(fluent = true)
+    private final GameStatsApi stats;
 
     @Override
     public void initGamePresent() {
@@ -55,6 +61,6 @@ public class GameApis implements InitPhases {
 
     @Override
     public void initCreateInstance() {
-        boosterApi().init();
+        booster().init();
     }
 }

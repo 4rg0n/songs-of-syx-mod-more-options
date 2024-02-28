@@ -2,10 +2,7 @@ package com.github.argon.sos.moreoptions.util;
 
 import snake2d.util.sets.LIST;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Lists {
     public static <E> List<E> of() {
@@ -83,5 +80,21 @@ public class Lists {
 
     private static <E> List<E> listFromArray(E[] elements) {
         return Arrays.asList(elements);
+    }
+
+    public static boolean compare(List<String> list, List<String> toCompare) {
+        if (list.size() != toCompare.size()) {
+            return false;
+        }
+
+        return new HashSet<>(list).containsAll(toCompare);
+    }
+
+    public static boolean compare(List<String> list, Set<String> toCompare) {
+        if (list.size() != toCompare.size()) {
+            return false;
+        }
+
+        return toCompare.containsAll(list);
     }
 }

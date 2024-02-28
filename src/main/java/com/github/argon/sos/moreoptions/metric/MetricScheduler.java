@@ -29,9 +29,12 @@ public class MetricScheduler {
         tasks.clear();
     }
 
-    public MetricScheduler start() {
+    public synchronized MetricScheduler start() {
         if (scheduler == null) {
             scheduler = createScheduler(tasks.size());
+        } else {
+            log.debug("Tried to schedule tasks on already running scheduler");
+            return this;
         }
 
         try {
@@ -48,7 +51,7 @@ public class MetricScheduler {
         return this;
     }
 
-    public MetricScheduler stop() {
+    public synchronized MetricScheduler stop() {
         if (scheduler == null) {
             return this;
         }

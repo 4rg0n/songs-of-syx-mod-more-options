@@ -2,14 +2,16 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.ui.panel.*;
+import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
 import game.VERSION;
 import init.paths.ModInfo;
 import init.sprite.UI.UI;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
@@ -17,116 +19,156 @@ import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GText;
 
+import java.nio.file.Path;
 import java.util.List;
 
 
 /**
  * Main window containing all other UI elements.
  * Will pop up in the middle of the game and pauses the game.
+ *
+ * FIXME: Elements in this modal should be final
  */
-@RequiredArgsConstructor
-public class MoreOptionsModal extends GuiSection implements
-    Showable<MoreOptionsModal>,
-    Refreshable<MoreOptionsModal>,
-    Valuable<MoreOptionsConfig, MoreOptionsModal> {
+public class MoreOptionsView extends GuiSection implements
+    Showable<MoreOptionsView>,
+    Refreshable<MoreOptionsView>,
+    Valuable<MoreOptionsConfig, MoreOptionsView> {
 
     @Getter
     private final ConfigStore configStore;
-    @Nullable
-    private final ModInfo modInfo;
 
-    @Nullable
-    private EventsPanel eventsPanel;
-    @Nullable
-    private  SoundsPanel soundsPanel;
-    @Nullable
-    private  WeatherPanel weatherPanel;
-    @Nullable
-    private  BoostersPanel boostersPanel;
+    private final EventsPanel eventsPanel;
+    private final SoundsPanel soundsPanel;
+    private final WeatherPanel weatherPanel;
+    private final BoostersPanel boostersPanel;
+    @Getter
+    private final MetricsPanel metricsPanel;
 
     @Getter
-    @Nullable
-    private MetricsPanel metricsPanel;
-
+    private final Button cancelButton;
     @Getter
-    @Nullable
-    private Button cancelButton;
+    private final Button resetButton;
     @Getter
-    @Nullable
-    private Button resetButton;
-
+    private final Button applyButton;
     @Getter
-    @Nullable
-    private Button applyButton;
-
+    private final Button undoButton;
     @Getter
-    @Nullable
-    private Button undoButton;
-
+    private final Button okButton;
     @Getter
-    @Nullable
-    private Button okButton;
-
+    private final Button folderButton;
     @Getter
-    @Nullable
-    private Button folderButton;
+    private final Button moreButton;
+    @Getter
+    private final Button reloadButton;
+    @Getter
+    private final Button shareButton;
+    @Getter
+    private final ButtonMenu moreButtonMenu;
+    private final Tabulator<String, ?, GuiSection> tabulator;
 
-    private UIAction<MoreOptionsModal> showAction = o -> {};
-
-    private UIAction<MoreOptionsModal> refreshAction = o -> {};
+    private Action<MoreOptionsView> showAction = o -> {};
+    private Action<MoreOptionsView> refreshAction = o -> {};
 
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
 
-    @Nullable
-    private Tabulator<String, ?, GuiSection> tabulator;
-
     /**
      * Builds the UI with given config
      */
-    public void init(MoreOptionsConfig config, List<BoostersPanel.Entry> boosterEntries) {
-        clear();
+    public MoreOptionsView(
+        MoreOptionsConfig config,
+        ConfigStore configStore,
+        List<BoostersPanel.Entry> boosterEntries,
+        List<String> availableStats,
+        Path exportFolder,
+        Path exportFile,
+        @Nullable ModInfo modInfo
+    ) {
+        this.configStore = configStore;
+
         soundsPanel = new SoundsPanel(config.getSounds());
         eventsPanel = new EventsPanel(config.getEvents());
         weatherPanel = new WeatherPanel(config.getWeather());
         boostersPanel = new BoostersPanel(boosterEntries);
-        metricsPanel = new MetricsPanel(config.getMetrics());
+        metricsPanel = new MetricsPanel(config.getMetrics(), availableStats, exportFolder, exportFile);
 
         tabulator = new Tabulator<>(Maps.ofLinked(
-            Toggler.Info.<String>builder()
+            UiInfo.<String>builder()
                 .key("sounds")
                 .title("Sounds")
                 .description("Tune the volume of various sounds.")
                 .build(), soundsPanel,
-            Toggler.Info.<String>builder()
+            UiInfo.<String>builder()
                 .key("events")
                 .title("Events")
                 .description("Toggle and tune events.")
                 .build(), eventsPanel,
-            Toggler.Info.<String>builder()
+            UiInfo.<String>builder()
                 .key("weather")
                 .title("Weather")
                 .description("Influence weather effects.")
                 .build(), weatherPanel,
-            Toggler.Info.<String>builder()
+            UiInfo.<String>builder()
                 .key("boosters")
                 .title("Boosters")
                 .description("Increase or decrease various bonuses.")
                 .build(), boostersPanel,
-            Toggler.Info.<String>builder()
+            UiInfo.<String>builder()
                 .key("metrics")
                 .title("Metrics")
                 .description("Collect and export data about the game.")
                 .build(), metricsPanel
-        ), DIR.S, 30, true, false);
-
+        ), DIR.S, 30, 0, true, false);
         addDownC(0, tabulator);
 
         HorizontalLine horizontalLine = new HorizontalLine(body().width(), 14, 1);
         addDownC(20, horizontalLine);
 
-        GuiSection footer = footer(config.getVersion());
+        GuiSection footer = new GuiSection();
+        this.cancelButton = new Button("Cancel");
+        cancelButton.hoverInfoSet("Close window without applying changes");
+        footer.addRight(0, cancelButton);
+
+        this.undoButton = new Button("Undo");
+        undoButton.hoverInfoSet("Undo made changes");
+        undoButton.setEnabled(false);
+        footer.addRight(10, undoButton);
+
+        this.moreButton = new Button("More");
+        footer.addRight(50, moreButton);
+
+        String modVersion = "NO_VER";
+        if (modInfo != null) {
+            modVersion = modInfo.version;
+        }
+
+        footer.addRight(50, versions(config.getVersion(), modVersion));
+
+        this.applyButton = new Button("Apply", COLOR.WHITE15);
+        applyButton.hoverInfoSet("Apply and save options");
+        applyButton.setEnabled(false);
+        footer.addRight(50, applyButton);
+
+        this.okButton = new Button("OK", COLOR.WHITE15);
+        okButton.hoverInfoSet("Apply and exit");
+        footer.addRight(10, okButton);
         addDownC(20, footer);
+
+        // More Button Menu
+        this.resetButton = new Button("Default");
+        resetButton.hoverInfoSet("Reset to default options");
+        this.reloadButton = new Button("Reload");
+        reloadButton.hoverInfoSet("Reload and reapply config from file");
+        this.shareButton = new Button("Share");
+        shareButton.hoverInfoSet("Copy current config into clipboard");
+        this.folderButton = new Button("Folder");
+        folderButton.hoverInfoSet("Open settings folder with mod config");
+        List<Button> buttons = Lists.of(folderButton, resetButton, reloadButton, shareButton);
+        this.moreButtonMenu = new ButtonMenu(buttons);
+
+        this.moreButton.clickActionSet(() -> {
+            GameUiApi.getInstance().showPopup(this.moreButtonMenu, this.moreButton);
+        });
     }
 
     @Nullable
@@ -175,17 +217,12 @@ public class MoreOptionsModal extends GuiSection implements
             .orElse(true);
     }
 
-   private GuiSection versions(int configVersionNumber) {
+   private GuiSection versions(int configVersionNumber, String modVersionString) {
         COLOR color = COLOR.WHITE50;
         GuiSection versions = new GuiSection();
 
         GText gameVersion = new GText(UI.FONT().S, "Game Version: " + VERSION.VERSION_STRING);
         gameVersion.color(color);
-
-        String modVersionString = "NO_VER";
-        if (modInfo != null) {
-            modVersionString = modInfo.version;
-        }
 
         GText modVersion = new GText(UI.FONT().S, "Mod Version: " + modVersionString);
         modVersion.color(color);
@@ -198,40 +235,6 @@ public class MoreOptionsModal extends GuiSection implements
         versions.addDown(2, configVersion);
 
         return versions;
-    }
-
-    private GuiSection footer(int version) {
-        GuiSection section = new GuiSection();
-
-        this.cancelButton = new Button("Cancel", COLOR.WHITE25);
-        cancelButton.hoverInfoSet("Closes window without applying changes");
-        section.addRight(0, cancelButton);
-
-        this.folderButton = new Button("Folder", COLOR.WHITE25);
-        folderButton.hoverInfoSet("Opens settings folder with mod config");
-        section.addRight(10, folderButton);
-
-        this.resetButton = new Button("Default", COLOR.WHITE25);
-        resetButton.hoverInfoSet("Resets to default options");
-        section.addRight(10, resetButton);
-
-        this.undoButton = new Button("Undo", COLOR.WHITE25);
-        undoButton.hoverInfoSet("Undo made changes");
-        undoButton.setEnabled(false);
-        section.addRight(10, undoButton);
-
-        this.applyButton = new Button("Apply", COLOR.WHITE15);
-        applyButton.hoverInfoSet("Apply and save options");
-        applyButton.setEnabled(false);
-
-        section.addRight(50, versions(version));
-
-        section.addRight(50, applyButton);
-        this.okButton = new Button("OK", COLOR.WHITE15);
-        okButton.hoverInfoSet("Apply and exit");
-        section.addRight(10, okButton);
-
-        return section;
     }
 
     @Override
@@ -254,18 +257,17 @@ public class MoreOptionsModal extends GuiSection implements
     }
 
     @Override
-    public void onShow(UIAction<MoreOptionsModal> showUIAction) {
-        this.showAction = showUIAction;
+    public void onShow(Action<MoreOptionsView> showAction) {
+        this.showAction = showAction;
     }
 
     @Override
     public void refresh() {
         refreshAction.accept(this);
-        if (tabulator != null) tabulator.refresh();
     }
 
     @Override
-    public void onRefresh(UIAction<MoreOptionsModal> refreshUIAction) {
-        this.refreshAction = refreshUIAction;
+    public void onRefresh(Action<MoreOptionsView> refreshAction) {
+        this.refreshAction = refreshAction;
     }
 }

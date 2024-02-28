@@ -209,6 +209,9 @@ public class ConfigStore {
         private final Map<String, Boolean> eventsWorld = eventsWorld();
         @Getter(lazy=true)
         private final Map<String, Boolean> eventsSettlement = eventsSettlement();
+        @Getter(lazy=true)
+        private final MoreOptionsConfig.Metrics metrics = metrics();
+
 
         /**
          * This thing is a little flaky!
@@ -235,13 +238,14 @@ public class ConfigStore {
                 .build();
         }
 
-        private MoreOptionsConfig.Metrics getMetrics() {
-            return MoreOptionsConfig.Metrics.builder().build();
+        private MoreOptionsConfig.Metrics metrics() {
+            return MoreOptionsConfig.Metrics.builder()
+                .build();
         }
 
         private Map<String, MoreOptionsConfig.Range> boostersMulti() {
             //noinspection DataFlowIssue
-            return gameApis.boosterApi().getBoosters().keySet().stream()
+            return gameApis.booster().getBoosters().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
                     .value(100)
                     .min(1)
@@ -253,7 +257,7 @@ public class ConfigStore {
 
         private Map<String, MoreOptionsConfig.Range> boostersAdd() {
             //noinspection DataFlowIssue
-            return gameApis.boosterApi().getBoosters().keySet().stream()
+            return gameApis.booster().getBoosters().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
                     .value(0)
                     .min(0)
@@ -265,7 +269,7 @@ public class ConfigStore {
 
         private Map<String, MoreOptionsConfig.Range> weather() {
             //noinspection DataFlowIssue
-            return gameApis.weatherApi().getWeatherThings().keySet().stream()
+            return gameApis.weather().getWeatherThings().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
                     .value(100)
                     .min(0)
@@ -276,7 +280,7 @@ public class ConfigStore {
 
         private Map<String, MoreOptionsConfig.Range> soundsRoom() {
             //noinspection DataFlowIssue
-            return gameApis.soundsApi().getRoomSounds().keySet().stream()
+            return gameApis.sounds().getRoomSounds().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
                     .value(100)
                     .min(0)
@@ -287,7 +291,7 @@ public class ConfigStore {
 
         private Map<String, MoreOptionsConfig.Range> soundsSettlement() {
             //noinspection DataFlowIssue
-            return gameApis.soundsApi().getSettlementSounds().keySet().stream()
+            return gameApis.sounds().getSettlementSounds().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
                     .value(100)
                     .min(0)
@@ -298,7 +302,7 @@ public class ConfigStore {
 
         private Map<String, MoreOptionsConfig.Range> soundsAmbience() {
             //noinspection DataFlowIssue
-            return gameApis.soundsApi().getAmbienceSounds().keySet().stream()
+            return gameApis.sounds().getAmbienceSounds().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
                     .value(100)
                     .min(0)
@@ -309,7 +313,7 @@ public class ConfigStore {
 
         private Map<String, MoreOptionsConfig.Range> eventsChance() {
             //noinspection DataFlowIssue
-            return gameApis.eventsApi().getEventsChance().keySet().stream()
+            return gameApis.events().getEventsChance().keySet().stream()
                 .collect(Collectors.toMap(key -> key, key -> MoreOptionsConfig.Range.builder()
                     .value(100)
                     .min(0)
@@ -320,13 +324,13 @@ public class ConfigStore {
 
         private Map<String, Boolean> eventsSettlement() {
             //noinspection DataFlowIssue
-            return gameApis.eventsApi().getSettlementEvents().keySet().stream()
+            return gameApis.events().getSettlementEvents().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> true));
         }
 
         private Map<String, Boolean> eventsWorld() {
             //noinspection DataFlowIssue
-            return gameApis.eventsApi().getWorldEvents().keySet().stream()
+            return gameApis.events().getWorldEvents().keySet().stream()
                 .collect(Collectors.toMap(key -> key, o -> true));
         }
     }

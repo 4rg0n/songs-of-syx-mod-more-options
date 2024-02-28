@@ -1,49 +1,52 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
+import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Getter;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.gui.GuiSection;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * Builds a row with buttons to toggle
  */
-public class Toggler<K> extends GuiSection implements
-    Valuable<K, Toggler<K>>,
-    Resettable<Toggler<K>>,
-    Refreshable<Toggler<K>> {
+public class Toggler<Key> extends GuiSection implements
+    Valuable<Key, Toggler<Key>>,
+    Resettable<Toggler<Key>>,
+    Refreshable<Toggler<Key>> {
 
-    private final Collection<Info<K>> elements;
+    private final Collection<UiInfo<Key>> elements;
 
     @Getter
-    private Info<K> activeInfo;
+    private UiInfo<Key> activeInfo;
 
     @Getter
     private Button activeButton;
 
-    private UIAction<K> toggleAction = o -> {};
+    private Action<Key> toggleAction = o -> {};
 
-    private UIAction<K> onClickAction = o -> {};
+    private Action<Key> onClickAction = o -> {};
 
-    private UIAction<Toggler<K>> refreshAction = o -> {};
+    private Action<Toggler<Key>> refreshAction = o -> {};
 
-    public Toggler(Collection<Info<K>> elements) {
-        this(elements, 0);
+    public Toggler(Collection<UiInfo<Key>> elements) {
+        this(elements, 0, false);
     }
 
     /**
      * @param elements list of info elements used for building the buttons
      * @param margin space between buttons
      */
-    public Toggler(Collection<Info<K>> elements, int margin) {
+    public Toggler(Collection<UiInfo<Key>> elements, int margin, boolean sameWidth) {
         this.elements = elements;
 
         // first element in map
         activeInfo = elements.iterator().next();
+        List<Button> buttons = new ArrayList<>();
 
         elements.forEach(info -> {
             Button button = new Button(info.getTitle()) {
@@ -62,11 +65,23 @@ public class Toggler<K> extends GuiSection implements
                 }
             };
             button.hoverInfoSet(info.getDescription());
-            addRight(margin, button);
+            buttons.add(button);
         });
+
+        if (sameWidth) {
+            int maxWidth = UiUtil.getMaxWidth(buttons);
+            buttons.forEach(button -> {
+                button.body().setWidth(maxWidth);
+                addRight(margin, button);
+            });
+        } else {
+            buttons.forEach(button -> {
+                addRight(margin, button);
+            });
+        }
     }
 
-    public void toggle(K key) {
+    public void toggle(Key key) {
         // no toggle happened?
         if (activeInfo.getKey().equals(key)) {
             return;
@@ -78,11 +93,11 @@ public class Toggler<K> extends GuiSection implements
         });
     }
 
-    public void onToggle(UIAction<K> UIAction) {
-        toggleAction = UIAction;
+    public void onToggle(Action<Key> Action) {
+        toggleAction = Action;
     }
 
-    public Optional<Info<K>> get(K key) {
+    public Optional<UiInfo<Key>> get(Key key) {
         return elements.stream()
             .filter(element -> element.getKey().equals(key))
             .findFirst();
@@ -94,12 +109,12 @@ public class Toggler<K> extends GuiSection implements
     }
 
     @Override
-    public K getValue() {
+    public Key getValue() {
         return activeInfo.getKey();
     }
 
     @Override
-    public void setValue(K value) {
+    public void setValue(Key value) {
         toggle(value);
     }
 
@@ -117,22 +132,11 @@ public class Toggler<K> extends GuiSection implements
     }
 
     @Override
-    public void onRefresh(UIAction<Toggler<K>> refreshAction) {
+    public void onRefresh(Action<Toggler<Key>> refreshAction) {
         this.refreshAction = refreshAction;
     }
 
-    public void onClick(UIAction<K> clickAction) {
+    public void onClick(Action<Key> clickAction) {
         this.onClickAction = clickAction;
-    }
-
-    @Getter
-    @Builder
-    @EqualsAndHashCode
-    public static class Info<T> {
-
-        private final T key;
-        private final String title;
-
-        private final String description;
     }
 }

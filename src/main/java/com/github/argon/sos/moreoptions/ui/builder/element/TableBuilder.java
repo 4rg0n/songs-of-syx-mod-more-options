@@ -8,7 +8,9 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.sprite.text.StringInputSprite;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,9 +27,11 @@ public class TableBuilder implements UiBuilder<Table, Table> {
     private final boolean scrollable;
     private final boolean evenOdd;
     private final boolean evenColumnWidth;
+    @Nullable
+    private final StringInputSprite search;
 
     public BuildResult<Table, Table> build() {
-        Table table = new Table(rows, displayHeight, scrollable, evenOdd, evenColumnWidth);
+        Table table = new Table(rows, displayHeight, scrollable, evenOdd, evenColumnWidth, search);
         return BuildResult.<Table, Table>builder()
             .interactable(table)
             .result(table)
@@ -55,6 +59,9 @@ public class TableBuilder implements UiBuilder<Table, Table> {
         @Accessors(fluent = true)
         private boolean evenColumnWidth = false;
 
+        @Accessors(fluent = true)
+        private StringInputSprite search;
+
         public Builder columnRows(List<ColumnRow> rows) {
             this.rows = rows;
             return this;
@@ -71,7 +78,7 @@ public class TableBuilder implements UiBuilder<Table, Table> {
         public BuildResult<Table, Table> build() {
             assert rows != null : "rows must not be null";
 
-            return new TableBuilder(rows, displayHeight, scrollable, evenOdd, evenColumnWidth).build();
+            return new TableBuilder(rows, displayHeight, scrollable, evenOdd, evenColumnWidth, search).build();
         }
     }
 }

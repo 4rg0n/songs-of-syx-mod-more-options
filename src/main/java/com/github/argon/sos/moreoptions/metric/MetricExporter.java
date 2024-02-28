@@ -4,7 +4,6 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATHS;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,8 +22,7 @@ public class MetricExporter {
     public static final Path EXPORT_FOLDER = PATHS.local().PROFILE.get().resolve("exports");
 
     @Getter
-    @Nullable
-    private Path exportFile;
+    private Path exportFile = generateExportFile();
 
     private final MetricCollector metricCollector;
 
@@ -41,26 +39,30 @@ public class MetricExporter {
                 log.error("Could not create metrics export folder %s", EXPORT_FOLDER, e);
             }
         }
-
-        newExportFile();
     }
 
     public void newExportFile() {
-        exportFile = EXPORT_FOLDER.resolve(Instant.now().getEpochSecond() + "_MetricExport.csv");
+        exportFile = generateExportFile();
         log.debug("New metrics export file: %s", exportFile);
     }
 
-    public boolean export() {
-        if (exportFile == null) {
-            log.warn("No export file name set yet. Can not export.");
-            return false;
-        }
+    private Path generateExportFile() {
+        return EXPORT_FOLDER.resolve(Instant.now().getEpochSecond() + "_MetricExport.csv");
+    }
+
+    public boolean export(List<String> statList) {
         List<Metric> metrics;
+
         try {
             metrics = metricCollector.flush();
         } catch (Exception e) {
             log.error("Could not not flush buffered metrics", e);
             return false;
+        }
+
+        if (metrics.isEmpty()) {
+            log.debug("No metrics to export");
+            return true;
         }
 
         try {

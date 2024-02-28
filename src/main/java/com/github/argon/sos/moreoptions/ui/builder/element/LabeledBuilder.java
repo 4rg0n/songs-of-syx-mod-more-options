@@ -72,7 +72,7 @@ public class LabeledBuilder<E extends RENDEROBJ> implements UiBuilder<List<GuiSe
 
     @Data
     @lombok.Builder
-    public static class Definition<E extends RENDEROBJ> implements Translatable {
+    public static class Definition<E extends RENDEROBJ> implements Translatable<String> {
 
         private LabelBuilder.Definition labelDefinition;
 
@@ -88,8 +88,8 @@ public class LabeledBuilder<E extends RENDEROBJ> implements UiBuilder<List<GuiSe
         }
 
         @Override
-        public boolean isTranslate() {
-            return labelDefinition.isTranslate();
+        public boolean isTranslatable() {
+            return labelDefinition.isTranslatable();
         }
 
         @Override

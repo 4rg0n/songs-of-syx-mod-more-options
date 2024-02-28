@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.moreoptions.game.Action;
 import init.C;
 import lombok.Getter;
 import snake2d.MButt;
@@ -14,21 +15,23 @@ import view.main.VIEW;
 /**
  * For displaying a {@link GuiSection} in a modal window.
  *
- * @param <T> ui element to display
+ * @param <Section> ui element to display
  */
-public class Modal<T extends GuiSection> extends Interrupter implements Showable<Modal<T>>, Refreshable<Modal<T>> {
+public class Modal<Section extends GuiSection> extends Interrupter implements
+    Showable<Modal<Section>>,
+    Refreshable<Modal<Section>> {
     @Getter
-    protected final T section;
+    protected final Section section;
 
     @Getter
     protected final GPanel panel;
 
     protected final GuiSection panelSection;
 
-    private UIAction<Modal<T>> showAction = o -> {};
-    private UIAction<Modal<T>> refreshAction = o -> {};
+    private Action<Modal<Section>> showAction = o -> {};
+    private Action<Modal<Section>> refreshAction = o -> {};
 
-    public Modal(String title, T section) {
+    public Modal(String title, Section section) {
         this.section = section;
         this.panel = new GPanel();
         this.panel.setTitle(title);
@@ -88,29 +91,29 @@ public class Modal<T extends GuiSection> extends Interrupter implements Showable
        refreshAction.accept(this);
 
         if (section instanceof Refreshable) {
-            Refreshable<T> refreshable = (Refreshable<T>) section;
+            Refreshable<Section> refreshable = (Refreshable<Section>) section;
             refreshable.refresh();
         }
     }
 
     @Override
-    public void onRefresh(UIAction<Modal<T>> refreshUIAction) {
-        this.refreshAction = refreshUIAction;
+    public void onRefresh(Action<Modal<Section>> refreshAction) {
+        this.refreshAction = refreshAction;
     }
 
     public void show() {
         showAction.accept(this);
 
         if (section instanceof Showable) {
-            Showable<T> showable = (Showable<T>) section;
+            Showable<Section> showable = (Showable<Section>) section;
             showable.show();
         }
         show(VIEW.inters().manager);
     }
 
     @Override
-    public void onShow(UIAction<Modal<T>> showUIAction) {
-        this.showAction = showUIAction;
+    public void onShow(Action<Modal<Section>> showAction) {
+        this.showAction = showAction;
     }
 
     @Override

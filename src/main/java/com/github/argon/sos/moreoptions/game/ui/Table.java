@@ -3,8 +3,10 @@ package com.github.argon.sos.moreoptions.game.ui;
 import com.github.argon.sos.moreoptions.ui.builder.element.ScrollableBuilder;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.table.GScrollRows;
 
 import java.util.Comparator;
@@ -15,25 +17,28 @@ import java.util.stream.Collectors;
  * A table with a scrollbar
  */
 @Getter
-public class Table extends GuiSection {
+public class Table extends GuiSection implements Searchable<String, List<String>> {
     private final List<ColumnRow> rows;
     private final int displayHeight;
     private final boolean evenOdd;
     private final boolean evenColumnWidth;
     private final boolean scrollable;
+    private final StringInputSprite search;
 
     public Table(
         List<ColumnRow> rows,
         int displayHeight,
         boolean scrollable,
         boolean evenOdd,
-        boolean evenColumnWidth
+        boolean evenColumnWidth,
+        @Nullable StringInputSprite search
     ) {
         this.rows = rows;
         this.displayHeight = displayHeight;
         this.scrollable = scrollable;
         this.evenOdd = evenOdd;
         this.evenColumnWidth = evenColumnWidth;
+        this.search = search;
         final List<Integer> maxWidths;
 
         // max width for each column
@@ -67,17 +72,26 @@ public class Table extends GuiSection {
             .sum();
 
         // add scrollbar?
-        if (scrollable || (displayHeight > 0 && currentHeight > displayHeight)) {
+        if (search != null || scrollable || (displayHeight > 0 && currentHeight > displayHeight)) {
             GScrollRows gScrollRows = ScrollableBuilder.builder()
                 .height(displayHeight)
                 .rows(rows)
+                .search(search)
                 .build().getResult();
 
-            add(gScrollRows.view());
+            addDown(0, gScrollRows.view());
         } else {
             for (ColumnRow row : rows) {
                 addDown(0, row);
             }
         }
+    }
+
+    @Override
+    public List<String> search(String term) {
+        return rows.stream()
+            .filter(columnRow -> columnRow.search(term))
+            .map(ColumnRow::getSearchTerm)
+            .collect(Collectors.toList());
     }
 }

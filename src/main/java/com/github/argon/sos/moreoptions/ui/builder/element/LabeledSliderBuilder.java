@@ -68,7 +68,7 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
 
     @Data
     @lombok.Builder
-    public static class Definition implements Translatable {
+    public static class Definition implements Translatable<String> {
 
         private LabelBuilder.Definition labelDefinition;
         private SliderBuilder.Definition sliderDefinition;
@@ -82,8 +82,8 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
         }
 
         @Override
-        public boolean isTranslate() {
-            return labelDefinition.isTranslate();
+        public boolean isTranslatable() {
+            return labelDefinition.isTranslatable();
         }
 
         @Override

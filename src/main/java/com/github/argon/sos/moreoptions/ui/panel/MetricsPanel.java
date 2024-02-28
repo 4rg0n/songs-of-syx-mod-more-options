@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.element.*;
 import com.github.argon.sos.moreoptions.ui.builder.section.CheckboxesBuilder;
@@ -15,7 +15,9 @@ import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
+import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GHeader;
+import util.gui.misc.GInput;
 import util.gui.misc.GText;
 import util.gui.misc.GTextR;
 
@@ -23,44 +25,50 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 /**
  * Contains control elements for enabling and disabling game events.
  */
 public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Metrics, MetricsPanel>, Refreshable<MetricsPanel> {
-    private static final Logger log = Loggers.getLogger(MetricsPanel.class);
 
     private final Toggler<Boolean> onOffToggle;
     private final Slider collectionRate;
     private final Slider exportRate;
     private final UISwitcher exportFilePathView;
     private final UISwitcher statsSection;
+    @Getter
+    private final StringInputSprite searchInput;
     private final Map<String, Checkbox> statsCheckboxes = new HashMap<>();
     @Getter
     private final Path exportFolderPath;
     @Getter
     private final Button exportFolderButton;
+    @Getter
+    private final Toggler<Boolean> searchToggler;
 
-    private UIAction<MetricsPanel> refreshAction = o -> {};
-    private UIBiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
+    private Action<MetricsPanel> refreshAction = o -> {};
+    private BiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
 
     public MetricsPanel(
-        MoreOptionsConfig.Metrics metricsConfig
+        MoreOptionsConfig.Metrics metricsConfig,
+        List<String> availableStats,
+        Path exportFolderPath,
+        Path exportFilePath
     ) {
+        this.exportFolderPath = exportFolderPath;
         Toggler<Boolean> toggler = new Toggler<>(Lists.of(
-            Toggler.Info.<Boolean>builder()
+            UiInfo.<Boolean>builder()
                 .key(true)
                 .title("Started")
                 .description("Click to start the collection and export of metrics")
                 .build(),
-            Toggler.Info.<Boolean>builder()
+            UiInfo.<Boolean>builder()
                 .key(false)
                 .title("Stopped")
                 .description("Click to stop the collection and export of metrics")
                 .build()
-        ));
+        ), 0, true);
 
         BuildResult<List<GuiSection>, List<Toggler<Boolean>>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(
             LabeledBuilder.Definition.<Toggler<Boolean>>builder()
@@ -106,8 +114,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .build())
             .build();
 
-        exportFolderPath = metricsConfig.getExportFolder();
-        GuiSection exportFilePathSection = exportFilePath(exportFolderPath.toString(), "NO_EXPORT_FILE");
+        GuiSection exportFilePathSection = exportFilePath(exportFolderPath.toString(), exportFilePath.getFileName().toString());
 
         this.exportFilePathView = new UISwitcher(exportFilePathSection, false);
         this.exportFolderButton = new Button("Export Folder");
@@ -123,8 +130,44 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .build()
         ).build();
 
-        GuiSection statsSectionPlaceholder = statsSectionPlaceholder();
-        this.statsSection = new UISwitcher(statsSectionPlaceholder, false);
+        // Search Bar
+        GuiSection searchBar = new GuiSection();
+        this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
+        searchBar.addRightC(0, new GInput(searchInput));
+
+        this.searchToggler = new Toggler<>(Lists.of(
+            UiInfo.<Boolean>builder()
+                .key(true)
+                .title("Check")
+                .description("Checks all found stats")
+                .build(),
+            UiInfo.<Boolean>builder()
+                .key(false)
+                .title("Uncheck")
+                .description("Unchecks all found stats")
+                .build()
+        ),0, true);
+        searchBar.addRightC(10, searchToggler);
+
+        BuildResult<Table, Map<String, Checkbox>> checkboxes = CheckboxesBuilder.builder()
+            .displayHeight(400)
+            .search(searchInput)
+            .definitions(availableStats.stream()
+                .collect(Collectors.toMap(
+                    s -> s,
+                    s -> LabeledCheckboxBuilder.Definition.builder()
+                        .labelDefinition(LabelBuilder.Definition.builder()
+                            .font(UI.FONT().S)
+                            .title(s)
+                            .build())
+                        .checkboxDefinition(CheckboxBuilder.Definition.builder()
+                            .enabled(metricsConfig.getStats().isEmpty() || metricsConfig.getStats().contains(s))
+                            .build())
+                        .build())))
+            .build();
+
+        this.statsSection = new UISwitcher(checkboxes.getResult(), true);
+        this.statsCheckboxes.putAll(checkboxes.getInteractable());
         this.onOffToggle = onOffToggle.getInteractable().get(0);
 
         List<ColumnRow> rows = Lists.of(
@@ -134,54 +177,53 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
             exportRate.toColumnRow().getResult()
         );
 
-        Table table = TableBuilder.builder()
+        Table configTable = TableBuilder.builder()
             .evenOdd(true)
             .scrollable(false)
             .columnRows(rows)
             .build()
             .getResult();
 
-        addDown(0, table);
-        addDown(20, new GHeader("Stats to export"));
-        addDown(10, statsSection);
+        addDownC(0, configTable);
+
+        GHeader statsHeader = new GHeader("Game stats to export");
+        statsHeader.hoverInfoSet("These stats will be written into the Export CSV File. " +
+            "If you change any of them a new file will be created.");
+        addDownC(25, statsHeader);
+        addDownC(10, searchBar);
+        addDownC(15, statsSection);
+
+        // Actions
+        searchToggler.onClick(aBoolean -> {
+            List<String> resultList = checkboxes.getResult()
+                .search(searchInput.text().toString());
+            resultList.forEach(result -> statsCheckboxes.get(result).setValue(aBoolean));
+        });
     }
 
-    private GuiSection statsSectionPlaceholder() {
-        GuiSection section = new GuiSection();
-        GTextR text = new GText(UI.FONT().S, "Metric collection hasn't started yet. Come back later ;)")
-            .warnify().r(DIR.W);
-        section.body().setHeight(400);
-        section.body().setWidth(800);
-        section.addC(text, section.body().cX(), section.body().cY());
-
-        return section;
-    }
-
-    public void refresh(@Nullable Path exportFilePath, SortedSet<String> keyList, List<String> whiteList) {
-        // build stat selection list once
-        if (!keyList.isEmpty() && statsCheckboxes.isEmpty()) {
-            BuildResult<Table, Map<String, Checkbox>> checkboxes = CheckboxesBuilder.builder()
-                .displayHeight(400)
-                .definitions(keyList.stream()
-                    .collect(Collectors.toMap(
-                        s -> s,
-                        s -> LabeledCheckboxBuilder.Definition.builder()
-                            .labelDefinition(LabelBuilder.Definition.builder()
-                                .title(s)
-                                .build())
-                            .checkboxDefinition(CheckboxBuilder.Definition.builder()
-                                .enabled(whiteList.isEmpty() || whiteList.contains(s))
-                                .build())
-                            .build())))
-                .build();
-
-            this.statsCheckboxes.putAll(checkboxes.getInteractable());
-            this.statsSection.set(checkboxes.getResult());
-        }
-
+    public void refresh(@Nullable Path exportFilePath) {
         if (exportFilePath != null) {
             this.exportFilePathView.set(exportFilePath(exportFilePath));
         }
+    }
+
+    @Override
+    public MoreOptionsConfig.Metrics getValue() {
+        return MoreOptionsConfig.Metrics.builder()
+            .collectionRateSeconds(MoreOptionsConfig.Range.fromSlider(collectionRate))
+            .exportRateMinutes(MoreOptionsConfig.Range.fromSlider(exportRate))
+            .stats(getCheckedStats())
+            .enabled(onOffToggle.getValue())
+            .build();
+    }
+
+    @Override
+    public void setValue(MoreOptionsConfig.Metrics metricsConfig) {
+        onOffToggle.toggle(metricsConfig.isEnabled());
+        collectionRate.setValue(metricsConfig.getCollectionRateSeconds().getValue());
+        exportRate.setValue(metricsConfig.getExportRateMinutes().getValue());
+        setCheckedStats(metricsConfig.getStats());
+        afterSetValueAction.accept(metricsConfig, this);
     }
 
     private static GuiSection exportFilePath(Path exportFilePath) {
@@ -205,25 +247,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         section.addRightCAbs(0, text);
 
         return section;
-    }
-
-    @Override
-    public MoreOptionsConfig.Metrics getValue() {
-        return MoreOptionsConfig.Metrics.builder()
-            .collectionRateSeconds(MoreOptionsConfig.Range.fromSlider(collectionRate))
-            .exportRateMinutes(MoreOptionsConfig.Range.fromSlider(exportRate))
-            .stats(getCheckedStats())
-            .enabled(onOffToggle.getValue())
-            .build();
-    }
-
-    @Override
-    public void setValue(MoreOptionsConfig.Metrics metricsConfig) {
-        onOffToggle.toggle(metricsConfig.isEnabled());
-        collectionRate.setValue(metricsConfig.getCollectionRateSeconds().getValue());
-        exportRate.setValue(metricsConfig.getExportRateMinutes().getValue());
-        setCheckedStats(metricsConfig.getStats());
-        afterSetValueAction.accept(metricsConfig, this);
     }
 
     private List<String> getCheckedStats() {
@@ -250,12 +273,12 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     }
 
     @Override
-    public void onRefresh(UIAction<MetricsPanel> refreshUIAction) {
-        this.refreshAction = refreshUIAction;
+    public void onRefresh(Action<MetricsPanel> refreshAction) {
+        this.refreshAction = refreshAction;
     }
 
     @Override
-    public void onAfterSetValue(UIBiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueUIAction) {
+    public void onAfterSetValue(BiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueUIAction) {
         this.afterSetValueAction = afterSetValueUIAction;
     }
 }

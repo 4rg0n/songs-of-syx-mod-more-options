@@ -12,7 +12,7 @@ import util.gui.misc.GText;
 /**
  * Used when the player decides to edit the loaded backup config
  */
-public class BackupModal extends GuiSection {
+public class BackupDialog extends GuiSection {
     @Getter
     private Button applyButton;
     @Getter
@@ -20,7 +20,7 @@ public class BackupModal extends GuiSection {
     @Getter
     private Button discardButton;
 
-    public BackupModal() {
+    public BackupDialog() {
         GText fileText = new GText(UI.FONT().M, "Backup file found at: " + ConfigStore.backupConfigPath());
         GText text1 = new GText(UI.FONT().M, "A backup file of your More Options config was loaded. ");
         GText text2 = new GText(UI.FONT().M,"Probably because the game just crashed. What do you want to do with it?");

@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
+import com.github.argon.sos.moreoptions.config.ConfigMapper;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
@@ -14,12 +15,16 @@ import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.MetricsPanel;
+import com.github.argon.sos.moreoptions.util.Clipboard;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
+import init.paths.ModInfo;
 import init.paths.PATHS;
 import init.sprite.SPRITES;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.file.FileManager;
+import snake2d.util.file.JsonE;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GButt;
 import view.interrupter.IDebugPanel;
@@ -28,7 +33,6 @@ import view.ui.top.UIPanelTop;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
@@ -54,7 +58,7 @@ public class UIGameConfig {
     private final MetricCollector metricCollector;
 
 
-    public void inject(Modal<MoreOptionsModal> moreOptionsModal) {
+    public void inject(Modal<MoreOptionsView> moreOptionsModal) {
         log.debug("Injecting button into game ui");
         GButt.ButtPanel moreOptionsButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
             @Override
@@ -68,7 +72,7 @@ public class UIGameConfig {
 
         // inject button into world view
         try {
-            Object object = gameApis.uiApi().findUIElementInWorldView(UIPanelTop.class)
+            Object object = gameApis.ui().findUIElementInWorldView(UIPanelTop.class)
                 .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
                 .orElse(null);
 
@@ -85,7 +89,7 @@ public class UIGameConfig {
 
         // inject button into settlement view
         try {
-            Object object = gameApis.uiApi().findUIElementInSettlementView(UIPanelTop.class)
+            Object object = gameApis.ui().findUIElementInSettlementView(UIPanelTop.class)
                 .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
                 .orElse(null);
 
@@ -93,7 +97,7 @@ public class UIGameConfig {
                 throw new IllegalStateException("Could not find UI to inject button into.");
             }
 
-            log.debug("Injecting button into UIPanelTop#right in world view");
+            log.debug("Injecting button into UIPanelTop#right in settlement view");
             GuiSection right = (GuiSection) object;
             right.addRelBody(8, DIR.W, moreOptionsButton);
         } catch (Exception e) {
@@ -104,30 +108,25 @@ public class UIGameConfig {
     /**
      * Debug commands are executable via the in game debug panel
      */
-    public void initDebug(Modal<MoreOptionsModal> moreOptionsModal, ConfigStore configStore) {
+    public void initDebugActions(Modal<MoreOptionsView> moreOptionsModal, ConfigStore configStore) {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":show", moreOptionsModal::show);
-        IDebugPanel.add(MOD_INFO.name + ":metrics:buffer", () -> MetricCollector.getInstance().buffer());
         IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());
-        IDebugPanel.add(MOD_INFO.name + ":metrics:export", () -> MetricExporter.getInstance().export());
-        IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> MetricScheduler.getInstance().start());
         IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> MetricScheduler.getInstance().stop());
         IDebugPanel.add(MOD_INFO.name + ":createBackup", configStore::createBackupConfig);
         IDebugPanel.add(MOD_INFO.name + ":log.stats", () -> {
-            log.info("Events Status: %s", gameApis.eventsApi().readEventsEnabledStatus()
+            log.info("Events Status: %s", gameApis.events().readEventsEnabledStatus()
                 .entrySet().stream().map(entry -> entry.getKey() + " enabled: " + entry.getValue() + "\n")
                 .collect(Collectors.joining()));
         });
     }
 
-    public void initForBackup(
-        Modal<BackupModal> backupModal,
-        Modal<MoreOptionsModal> backupMoreOptionsModal,
-        Modal<MoreOptionsModal> moreOptionsModal,
-        MoreOptionsConfig config
+    public void initBackupActions(
+        Modal<BackupDialog> backupModal,
+        Modal<MoreOptionsView> backupMoreOptionsModal,
+        Modal<MoreOptionsView> moreOptionsModal,
+        MoreOptionsConfig backupConfig
     ) {
-        init(backupMoreOptionsModal, config);
-
         // Close: More Options modal with backup config
         backupMoreOptionsModal.getPanel().setCloseAction(() -> {
             configStore.deleteBackupConfig();
@@ -140,7 +139,6 @@ public class UIGameConfig {
             .orElseThrow(() -> new UninitializedException("BackupModal is not initialized."));
         cancelButton.clickActionSet(() -> {
             undo(backupMoreOptionsModal.getSection());
-            configStore.deleteBackupConfig();
             backupMoreOptionsModal.hide();
         });
 
@@ -148,7 +146,6 @@ public class UIGameConfig {
         Button okButton = Optional.ofNullable(backupMoreOptionsModal.getSection().getOkButton())
             .orElseThrow(() -> new UninitializedException("BackupModal is not initialized."));
         okButton.clickActionSet(() -> {
-            applyAndSave(backupMoreOptionsModal.getSection());
             MoreOptionsConfig readConfig = backupMoreOptionsModal.getSection().getValue();
 
             // fallback
@@ -163,7 +160,7 @@ public class UIGameConfig {
 
         // Edit Backup
         backupModal.getSection().getEditButton().clickActionSet(() -> {
-            backupMoreOptionsModal.getSection().setValue(config);
+            backupMoreOptionsModal.getSection().setValue(backupConfig);
             backupModal.hide();
             backupMoreOptionsModal.show();
         });
@@ -192,12 +189,105 @@ public class UIGameConfig {
 
         // Apply Backup
         backupModal.getSection().getApplyButton().clickActionSet(() -> {
-            configurator.applyConfig(config);
-            moreOptionsModal.getSection().setValue(config);
-            configStore.setCurrentConfig(config);
-            configStore.saveConfig(config);
+            configurator.applyConfig(backupConfig);
+            moreOptionsModal.getSection().setValue(backupConfig);
+            configStore.setCurrentConfig(backupConfig);
+            configStore.saveConfig(backupConfig);
             configStore.deleteBackupConfig();
             backupModal.hide();
+        });
+    }
+
+    public void initActions(Modal<MoreOptionsView> moreOptionsModal) {
+        MoreOptionsView moreOptionsView = moreOptionsModal.getSection();
+
+        // Cancel & Undo
+        Button cancelButton = moreOptionsView.getCancelButton();
+        cancelButton.clickActionSet(() -> {
+            undo(moreOptionsView);
+            moreOptionsModal.hide();
+        });
+
+        // Apply & Save
+        Button applyButton = moreOptionsView.getApplyButton();
+        applyButton.clickActionSet(() -> {
+            applyAndSave(moreOptionsView);
+        });
+
+        // Undo changes
+        Button undoButton = moreOptionsView.getUndoButton();
+        undoButton.clickActionSet(() -> undo(moreOptionsView));
+
+        // reload and apply config from file
+        Button reloadButton = moreOptionsView.getReloadButton();
+        reloadButton.clickActionSet(() -> {
+            MoreOptionsConfig moreOptionsConfig = configStore.loadConfig().orElse(null);
+
+            if (moreOptionsConfig != null) {
+                moreOptionsView.setValue(moreOptionsConfig);
+                reloadButton.markSuccess(true);
+            } else {
+                reloadButton.markSuccess(false);
+            }
+        });
+
+        // copy config from ui into clipboard
+        Button shareButton = moreOptionsView.getShareButton();
+        shareButton.clickActionSet(() -> {
+            MoreOptionsConfig moreOptionsConfig = moreOptionsView.getValue();
+            try {
+                if (moreOptionsConfig != null) {
+                    JsonE jsonE = ConfigMapper.getInstance().mapConfig(moreOptionsConfig);
+                    shareButton.markSuccess(Clipboard.write(jsonE.toString()));
+                } else {
+                    reloadButton.markSuccess(false);
+                }
+            } catch (Exception e) {
+                reloadButton.markSuccess(false);
+                log.error("Could not copy config to clipboard.", e);
+            }
+        });
+
+
+        // Reset UI to default
+        Button resetButton = moreOptionsView.getResetButton();
+        resetButton.clickActionSet(() -> {
+            MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
+            moreOptionsView.setValue(defaultConfig);
+        });
+
+        //Ok: Apply & Save & Exit
+        Button okButton = moreOptionsView.getOkButton();
+        okButton.clickActionSet(() -> {
+            applyAndSave(moreOptionsView);
+            moreOptionsModal.hide();
+        });
+
+        // opens folder with mod configuration
+        Button folderButton = moreOptionsView.getFolderButton();
+        folderButton.clickActionSet(() -> {
+            FileManager.openDesctop(PATHS.local().SETTINGS.get().toString());
+        });
+
+        MetricsPanel metricsPanel = moreOptionsView.getMetricsPanel();
+
+        // opens folder with metric export files
+        Button exportFolderButton = metricsPanel.getExportFolderButton();
+        exportFolderButton.clickActionSet(() -> {
+            Path exportFolderPath = metricsPanel.getExportFolderPath();
+
+            if (!exportFolderPath.toFile().exists()) {
+                exportFolderButton.markSuccess(false);
+                log.info("Can not open metrics export folder: %s. Folder does not exists.", exportFolderPath);
+                return;
+            }
+
+            FileManager.openDesctop(exportFolderPath.toString());
+        });
+
+        // after config is applied to game
+        configurator.onAfterApplyAction(moreOptionsConfig -> {
+            metricsPanel.refresh(metricExporter.getExportFile());
         });
     }
 
@@ -208,122 +298,63 @@ public class UIGameConfig {
      *
      * @param config used to generate the UI
      */
-    public void init(Modal<MoreOptionsModal> moreOptionsModal, MoreOptionsConfig config) {
-        log.debug("Initialize %s UI", MOD_INFO.name);
+    public Modal<MoreOptionsView> buildModal(String title, MoreOptionsConfig config) {
+        log.debug("Initialize %s UI", title);
 
         List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream()
             .map(entry -> BoostersPanel.Entry.builder()
                 .key(entry.getKey())
                 .range(entry.getValue())
-                .cat(gameApis.boosterApi().getCat(entry.getKey()))
+                .cat(gameApis.booster().getCat(entry.getKey()))
                 .build())
             .collect(Collectors.toList());
 
-        moreOptionsModal.getSection().init(config, boosterEntries);
+        List<String> availableStats = gameApis.stats().getAvailableStatKeys();
+        ModInfo modInfo = gameApis.mod().getCurrentMod().orElse(null);
+        Path exportFolder = MetricExporter.EXPORT_FOLDER;
+        Path exportFile = metricExporter.getExportFile();
+
+        if (config.getMetrics().getStats().isEmpty()) {
+            config.getMetrics().getStats().addAll(availableStats);
+        }
+
+        Modal<MoreOptionsView> moreOptionsModal = new Modal<>(title,
+            new MoreOptionsView(config, configStore, boosterEntries, availableStats, exportFolder, exportFile, modInfo));
         moreOptionsModal.center();
 
-        // Cancel & Undo
-        Button cancelButton = Optional.ofNullable(moreOptionsModal.getSection().getCancelButton())
-            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
-        cancelButton.clickActionSet(() -> {
-            undo(moreOptionsModal.getSection());
-            moreOptionsModal.hide();
-        });
-
-        // Apply & Save
-        Button applyButton = Optional.ofNullable(moreOptionsModal.getSection().getApplyButton())
-            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
-        applyButton.clickActionSet(() -> {
-            applyAndSave(moreOptionsModal.getSection());
-        });
-
-        // Reset UI to default
-        Button resetButton = Optional.ofNullable(moreOptionsModal.getSection().getResetButton())
-            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
-        resetButton.clickActionSet(() -> {
-            MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
-            moreOptionsModal.getSection().setValue(defaultConfig);
-        });
-
-        // Undo changes
-        Button undoButton = Optional.ofNullable(moreOptionsModal.getSection().getUndoButton())
-            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
-        undoButton.clickActionSet(() -> undo(moreOptionsModal.getSection()));
-
-        //Ok: Apply & Save & Exit
-        Button okButton = Optional.ofNullable(moreOptionsModal.getSection().getOkButton())
-            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
-        okButton.clickActionSet(() -> {
-            applyAndSave(moreOptionsModal.getSection());
-            moreOptionsModal.hide();
-        });
-
-        // opens folder with mod configuration
-        Button folderButton = Optional.ofNullable(moreOptionsModal.getSection().getFolderButton())
-            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
-        folderButton.clickActionSet(() -> {
-            FileManager.openDesctop(PATHS.local().SETTINGS.get().toString());
-        });
-
-        moreOptionsModal.onShow(Modal::refresh);
-
-        MetricsPanel metricsPanel = Optional.ofNullable(moreOptionsModal.getSection().getMetricsPanel())
-            .orElseThrow(() -> new UninitializedException("MoreOptionsModal is not initialized."));
-
-        // how to refresh ui elements in metrics panel
-        metricsPanel.onRefresh(panel -> {
-            log.debug("Refreshing metrics panel");
-            MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
-                .orElse(configStore.getDefaultConfig());
-            Path exportFilePath = metricExporter.getExportFile();
-            SortedSet<String> keyList = metricCollector.getKeyList();
-            List<String> stats = moreOptionsConfig.getMetrics().getStats();
-            log.trace("Refresh values: exportFilePath: %s  keyList: %s  stats: %s", exportFilePath, keyList, stats);
-
-            panel.refresh(
-                exportFilePath,
-                keyList,
-                stats);
-        });
-
-        // refresh view after applied config
-        metricsPanel.onAfterSetValue((metrics, panel) -> {
-            log.debug("Refresh metrics panel onAfterSetValue");
-            panel.refresh();
-        });
-
-        // opens folder with metric export files
-        Button exportFolderButton = metricsPanel.getExportFolderButton();
-        exportFolderButton.clickActionSet(() -> {
-            Path exportFolderPath = metricsPanel.getExportFolderPath();
-
-            if (!exportFolderPath.toFile().exists()) {
-                exportFolderButton.markSuccess(false);
-                log.info("Can not open metrics export folder: %s\nFolder does not exists.", exportFolderPath);
-                return;
-            }
-
-            FileManager.openDesctop(exportFolderPath.toString());
-        });
+        initActions(moreOptionsModal);
+        return moreOptionsModal;
     }
 
-    private void applyAndSave(MoreOptionsModal moreOptionsModal) {
+    private @Nullable MoreOptionsConfig apply(MoreOptionsView moreOptionsView) {
         // only save when changes were made
-        if (moreOptionsModal.isDirty()) {
-            MoreOptionsConfig config = moreOptionsModal.getValue();
+        if (moreOptionsView.isDirty()) {
+            MoreOptionsConfig config = moreOptionsView.getValue();
 
             if (config == null) {
                 log.warn("Could read config from modal. Got null");
-                return;
+                return null;
             }
 
             configurator.applyConfig(config);
             configStore.setCurrentConfig(config);
-            configStore.saveConfig(config);
+            return config;
         }
+
+        return null;
     }
 
-    private void undo(MoreOptionsModal moreOptionsModal) {
-        moreOptionsModal.getConfigStore().getCurrentConfig().ifPresent(moreOptionsModal::setValue);
+    private boolean applyAndSave(MoreOptionsView moreOptionsView) {
+        MoreOptionsConfig appliedConfig = apply(moreOptionsView);
+
+        if (appliedConfig != null) {
+            return configStore.saveConfig(appliedConfig);
+        }
+
+        return false;
+    }
+
+    private void undo(MoreOptionsView moreOptionsView) {
+        moreOptionsView.getConfigStore().getCurrentConfig().ifPresent(moreOptionsView::setValue);
     }
 }

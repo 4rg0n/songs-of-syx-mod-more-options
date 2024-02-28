@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.ui.builder.element;
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Tabulator;
-import com.github.argon.sos.moreoptions.game.ui.Toggler;
+import com.github.argon.sos.moreoptions.game.ui.UiInfo;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
@@ -44,17 +44,17 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
         multiSlider.pad(10, 5);
 
         Tabulator<String, Slider, Integer> tabulator = new Tabulator<>(Maps.of(
-            Toggler.Info.<String>builder()
+            UiInfo.<String>builder()
                 .key("add")
                 .title("Add")
                 .description("Adds to the booster value.")
                 .build(), additiveSlider,
-            Toggler.Info.<String>builder()
+            UiInfo.<String>builder()
                 .key("multi")
                 .title("Perc")
                 .description("Regulates the percentage of the booster value. Values under 100% will lower the effect.")
                 .build(), multiSlider
-        ), DIR.W, 0, false, true);
+        ), DIR.W, 0, 0, false, true);
 
         tabulator.tab(definition.getActiveKey());
         List<GuiSection> row = Lists.of(
@@ -94,7 +94,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
 
     @Data
     @lombok.Builder
-    public static class Definition implements Translatable {
+    public static class Definition implements Translatable<String> {
 
         private LabelBuilder.Definition labelDefinition;
         private SliderBuilder.Definition sliderMultiDefinition;
@@ -111,8 +111,8 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
         }
 
         @Override
-        public boolean isTranslate() {
-            return labelDefinition.isTranslate();
+        public boolean isTranslatable() {
+            return labelDefinition.isTranslatable();
         }
 
         @Override
