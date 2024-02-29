@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.builder.element;
 
 import com.github.argon.sos.moreoptions.Dictionary;
+import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Tabulator;
 import com.github.argon.sos.moreoptions.game.ui.UiInfo;
@@ -9,12 +10,17 @@ import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
+import game.boosting.Boostable;
+import init.race.RACES;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.util.datatypes.DIR;
+import snake2d.util.gui.GUI_BOX;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.renderable.RENDEROBJ;
+import util.gui.misc.GText;
 
 import java.util.List;
 
@@ -23,26 +29,48 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
     private final Definition definition;
 
     public BuildResult<List<GuiSection>, Tabulator<String, Slider, Integer>> build() {
-
         if (definition.getLabelWidth() > 0) {
             definition.getLabelDefinition().setMaxWidth(definition.getLabelWidth());
         }
+        Boostable boostable = definition.getBoosters().getAdd().getOrigin();
+        LabelBuilder.Definition labelDefinition = definition.getLabelDefinition();
 
-        GuiSection label = LabelBuilder.builder()
-            .translate(definition.getLabelDefinition())
-            .build().getResult();
+        // Label
+        GText text = new GText(labelDefinition.getFont(), labelDefinition.getTitle());
+        GuiSection label = new GuiSection(){
+            @Override
+            public void hoverInfoGet(GUI_BOX text) {
+                text.title(boostable.name);
+                text.text(boostable.desc);
+                text.NL(8);
+                boostable.hoverDetailed(text, RACES.clP(null, null), null, true);
+            }
+        };
+        label.addRight(0, text);
+        if (labelDefinition.getMaxWidth() > 0) {
+            text.setMaxWidth(labelDefinition.getMaxWidth());
+            label.body().setWidth(labelDefinition.getMaxWidth());
+        }
         label.pad(10, 5);
 
+        // Sliders
         Slider additiveSlider = SliderBuilder.builder()
             .definition(definition.getSliderAddDefinition())
             .build().getResult();
         additiveSlider.pad(10, 5);
-
         Slider multiSlider = SliderBuilder.builder()
             .definition(definition.getSliderMultiDefinition())
             .build().getResult();
         multiSlider.pad(10, 5);
 
+        // Icon
+        GuiSection icon = new GuiSection();
+        if (labelDefinition.getDescription() != null) {
+            icon.hoverInfoSet(labelDefinition.getDescription());
+        }
+        icon.add(new RENDEROBJ.Sprite(boostable.icon));
+
+        // Booster toggle
         Tabulator<String, Slider, Integer> tabulator = new Tabulator<>(Maps.of(
             UiInfo.<String>builder()
                 .key("add")
@@ -59,6 +87,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
         tabulator.tab(definition.getActiveKey());
         List<GuiSection> row = Lists.of(
             label,
+            icon,
             tabulator
         );
 
@@ -104,6 +133,8 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
         private int labelWidth = 0;
 
         private String activeKey;
+
+        private MoreOptionsBoosters boosters;
 
         @Override
         public String getKey() {

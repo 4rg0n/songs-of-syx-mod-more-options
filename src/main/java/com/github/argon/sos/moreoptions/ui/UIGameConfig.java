@@ -305,6 +305,7 @@ public class UIGameConfig {
             .map(entry -> BoostersPanel.Entry.builder()
                 .key(entry.getKey())
                 .range(entry.getValue())
+                .boosters(gameApis.booster().get(entry.getKey()))
                 .cat(gameApis.booster().getCat(entry.getKey()))
                 .build())
             .collect(Collectors.toList());

@@ -27,7 +27,6 @@ public class BoosterSlidersBuilder implements UiBuilder<Table, Map<String, Tabul
     @Nullable
     private final StringInputSprite search;
 
-
     /**
      * Builds a section with a scrollable list of sliders with labels in front of them.
      * Each entry is a slider with its {@link SliderBuilder.Definition}
@@ -47,6 +46,7 @@ public class BoosterSlidersBuilder implements UiBuilder<Table, Map<String, Tabul
                     BuildResult<List<GuiSection>, Tabulator<String, Slider, Integer>> buildResult = BoosterSliderBuilder.builder()
                             .definition(definition)
                             .build();
+
                     ColumnRow columnRow = buildResult.toColumnRow().getResult();
                     columnRow.setSearchTerm(key);
                     elements.put(key, buildResult.getInteractable());

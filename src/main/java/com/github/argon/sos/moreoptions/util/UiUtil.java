@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
+import snake2d.util.sprite.SPRITE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -173,9 +174,16 @@ public class UiUtil {
     public static @Nullable GuiSection toGuiSection(Object renderobj) {
         if (renderobj instanceof RENDEROBJ) {
             return toGuiSection((RENDEROBJ) renderobj);
+        } else if (renderobj instanceof SPRITE) {
+            return toGuiSection((SPRITE) renderobj);
         }
 
         return null;
+    }
+
+    public static GuiSection toGuiSection(SPRITE sprite) {
+        RENDEROBJ.Sprite renderobj = new RENDEROBJ.Sprite(sprite);
+        return toGuiSection(renderobj);
     }
 
     public static GuiSection toGuiSection(RENDEROBJ renderobj) {

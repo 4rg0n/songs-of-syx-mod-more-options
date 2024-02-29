@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Tabulator;
@@ -137,6 +138,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
                 .threshold((int) (0.75 * rangeMulti.getMax()), COLOR.RED100.shade(0.7d))
                 .threshold((int) (0.90 * rangeMulti.getMax()), COLOR.RED2RED)
                 .build())
+            .boosters(entry.getBoosters())
             .activeKey(activeKey)
             .build();
     }
@@ -153,5 +155,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
         //(((^_(((/(((_/
         @Builder.Default
         private BoostableCat cat = null;
+
+        private MoreOptionsBoosters boosters;
     }
 }
