@@ -245,24 +245,13 @@ public class ConfigStore {
         private Map<String, MoreOptionsConfig.Range> boostersAdd() {
             //noinspection DataFlowIssue
             return gameApis.boosterApi().getBoosters().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
-                    .value(0)
-                    .min(0)
-                    .max(10000)
-                    .applyMode(MoreOptionsConfig.Range.ApplyMode.ADD)
-                    .displayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE)
-                    .build()));
+                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.defaultBoosterAdd()));
         }
 
         private Map<String, MoreOptionsConfig.Range> weather() {
             //noinspection DataFlowIssue
             return gameApis.weatherApi().getWeatherThings().keySet().stream()
-                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
-                    .value(100)
-                    .min(0)
-                    .max(100)
-                    .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
-                    .build()));
+                .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.defaultBoosterMulti()));
         }
 
         private Map<String, MoreOptionsConfig.Range> soundsRoom() {

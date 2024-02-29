@@ -5,10 +5,14 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -63,8 +67,9 @@ public class ReflectionUtil {
         }
     }
 
-    public static <T> Optional<T> getDeclaredFieldValue(String fieldName, Object instance) {
+    public static @Nullable  <T> Optional<T> getDeclaredFieldValue(String fieldName, Object instance) {
 
+        //noinspection unchecked
         return getDeclaredField(fieldName, instance.getClass()).map(field ->
             (T) getDeclaredFieldValue(field, instance).orElse(null)
         );
@@ -107,11 +112,11 @@ public class ReflectionUtil {
     }
 
 
-    public static Object invokeMethod(Method method, Object target) {
+    public static @Nullable Object invokeMethod(Method method, Object target) {
         return invokeMethod(method, target, EMPTY_OBJECT_ARRAY);
     }
 
-    public static Object invokeMethod(String methodName, Class<?> target, Object instance,  Object... args) {
+    public static @Nullable Object invokeMethod(String methodName, Class<?> target, Object instance,  Object... args) {
         Method method = null;
         Class<?>[] paramTypes = Arrays.stream(args).map(Object::getClass).toArray(Class[]::new);
 
@@ -124,11 +129,16 @@ public class ReflectionUtil {
         return invokeMethod(method, instance, args);
     }
 
-    public static Object invokeMethodOneArgument(Method method, Object instance, Object arg) {
+    public static @Nullable Object invokeMethodOneArgument(Method method, Object instance, Object arg) {
         return invokeMethod(method, instance, arg);
     }
 
-    public static Object invokeMethod(Method method, Object instance, Object... args) {
+    public static @Nullable Object invokeMethod(@Nullable Method method, Object instance, Object... args) {
+        if (method == null) {
+            log.trace("No method to invoke. Returning null");
+            return null;
+        }
+
         try {
             method.setAccessible(true);
             return method.invoke(instance, args);
@@ -177,7 +187,7 @@ public class ReflectionUtil {
     public static Optional<Class<?>> getGenericClass(Field field) {
         List<Class<?>> classes = getGenericClasses(field);
 
-        if (classes.size() == 0) {
+        if (classes.isEmpty()) {
             return Optional.empty();
         }
 

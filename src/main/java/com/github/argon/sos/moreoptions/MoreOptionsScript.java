@@ -15,6 +15,7 @@ import com.github.argon.sos.moreoptions.ui.UIGameConfig;
 import init.paths.ModInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
 import util.info.INFO;
 
@@ -48,6 +49,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 
 	private Instance instance;
 	private Modal<MoreOptionsModal> moreOptionsModal;
+	@Nullable
 	private ModInfo modInfo;
 
 	public final static Level LOG_LEVEL_DEFAULT = Level.TRACE;
@@ -113,6 +115,9 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 
 			// try to get current config and merge with defaults; or use whole defaults
 			MoreOptionsConfig config = configStore.initConfig();
+
+			this.modInfo = gameApis.modApi().getCurrentMod()
+				.orElse(null);
 
 			// don't apply when there's a backup
 			if (!configStore.getBackupConfig().isPresent()) {
