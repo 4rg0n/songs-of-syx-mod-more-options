@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsDefaults;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
@@ -140,7 +141,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 
 		// config should already be loaded or use default
 		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
-			.orElse(configStore.getDefaultConfig());
+			.orElse(MoreOptionsDefaults.getInstance().getDefaults());
 
 		Modal<MoreOptionsView> moreOptionsModal = uiGameConfig.buildModal(MOD_INFO.name.toString(), moreOptionsConfig);
 		uiGameConfig.initDebugActions(moreOptionsModal, configStore);

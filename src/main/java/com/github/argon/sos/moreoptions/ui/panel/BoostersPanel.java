@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
-import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsDefaults;
 import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
@@ -37,6 +37,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
     private final Map<String, Tabulator<String, Slider, Integer>> slidersWithToggle;
+    private final MoreOptionsDefaults defaults = MoreOptionsDefaults.getInstance();
 
     public BoostersPanel(List<Entry> boosterEntries) {
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
@@ -60,7 +61,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
             boosterDefinitions.put(cat, groupedBoostersByCat.stream()
                 .collect(Collectors.toMap(
                     Entry::getKey,
-                    BoostersPanel::buildSliderDefinition)));
+                    this::buildSliderDefinition)));
         });
 
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
@@ -102,19 +103,17 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
         });
     }
 
-    private static BoosterSliderBuilder.Definition buildSliderDefinition(Entry entry) {
+    private BoosterSliderBuilder.Definition buildSliderDefinition(Entry entry) {
         MoreOptionsConfig.Range rangeMulti;
         MoreOptionsConfig.Range rangeAdd;
         String activeKey;
 
         if (entry.getRange().getApplyMode().equals(MoreOptionsConfig.Range.ApplyMode.MULTI)) {
             rangeMulti = entry.getRange();
-            rangeAdd = MoreOptionsScript.getConfigStore()
-                .getDefaults().getBoostersAdd().get(entry.getKey());
+            rangeAdd = defaults.getBoostersAdd().get(entry.getKey());
             activeKey = "multi";
         } else {
-            rangeMulti = MoreOptionsScript.getConfigStore()
-                .getDefaults().getBoostersMulti().get(entry.getKey());
+            rangeMulti = defaults.getBoostersMulti().get(entry.getKey());
             rangeAdd = entry.getRange();
             activeKey = "add";
         }

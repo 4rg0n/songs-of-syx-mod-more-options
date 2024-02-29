@@ -48,15 +48,10 @@ public class UIGameConfig {
     private final static Logger log = Loggers.getLogger(UIGameConfig.class);
 
     private final GameApis gameApis;
-
     private final MoreOptionsConfigurator configurator;
-
     private final ConfigStore configStore;
-
     private final MetricExporter metricExporter;
-
     private final MetricCollector metricCollector;
-
 
     public void inject(Modal<MoreOptionsView> moreOptionsModal) {
         log.debug("Injecting button into game ui");
@@ -299,7 +294,7 @@ public class UIGameConfig {
      * @param config used to generate the UI
      */
     public Modal<MoreOptionsView> buildModal(String title, MoreOptionsConfig config) {
-        log.debug("Initialize %s UI", title);
+        log.debug("Initialize %s ui", title);
 
         List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream()
             .map(entry -> BoostersPanel.Entry.builder()
@@ -315,6 +310,7 @@ public class UIGameConfig {
         Path exportFolder = MetricExporter.EXPORT_FOLDER;
         Path exportFile = metricExporter.getExportFile();
 
+        // todo this is hacky: make sure when no stats are configured, use availableStats
         if (config.getMetrics().getStats().isEmpty()) {
             config.getMetrics().getStats().addAll(availableStats);
         }

@@ -79,7 +79,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .element(toggler)
                 .build()
         ).build();
-
         this.collectionRate = SliderBuilder.builder().definition(
             SliderBuilder.Definition
                 .buildFrom(metricsConfig.getCollectionRateSeconds())
@@ -169,6 +168,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         this.statsSection = new UISwitcher(checkboxes.getResult(), true);
         this.statsCheckboxes.putAll(checkboxes.getInteractable());
         this.onOffToggle = onOffToggle.getInteractable().get(0);
+        this.onOffToggle.toggle(metricsConfig.isEnabled());
 
         List<ColumnRow> rows = Lists.of(
             onOffToggle.toColumnRow().getResult(),

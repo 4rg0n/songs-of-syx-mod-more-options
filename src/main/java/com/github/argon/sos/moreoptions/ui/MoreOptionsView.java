@@ -134,7 +134,7 @@ public class MoreOptionsView extends GuiSection implements
         undoButton.setEnabled(false);
         footer.addRight(10, undoButton);
 
-        this.moreButton = new Button("More");
+        this.moreButton = new Button("More", COLOR.WHITE15);
         footer.addRight(50, moreButton);
 
         String modVersion = "NO_VER";
@@ -144,12 +144,12 @@ public class MoreOptionsView extends GuiSection implements
 
         footer.addRight(50, versions(config.getVersion(), modVersion));
 
-        this.applyButton = new Button("Apply", COLOR.WHITE15);
+        this.applyButton = new Button("Apply");
         applyButton.hoverInfoSet("Apply and save options");
         applyButton.setEnabled(false);
         footer.addRight(50, applyButton);
 
-        this.okButton = new Button("OK", COLOR.WHITE15);
+        this.okButton = new Button("OK");
         okButton.hoverInfoSet("Apply and exit");
         footer.addRight(10, okButton);
         addDownC(20, footer);
