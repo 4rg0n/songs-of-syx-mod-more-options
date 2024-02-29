@@ -156,6 +156,26 @@ public class MoreOptionsConfig {
             }
         }
 
+        public static Range defaultBoosterAdd() {
+            return Range.builder()
+                .value(0)
+                .min(0)
+                .max(10000)
+                .applyMode(MoreOptionsConfig.Range.ApplyMode.ADD)
+                .displayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE)
+                .build();
+        }
+
+        public static Range defaultBoosterMulti() {
+            return Range.builder()
+                .value(100)
+                .min(1)
+                .max(10000)
+                .applyMode(ApplyMode.MULTI)
+                .displayMode(DisplayMode.PERCENTAGE)
+                .build();
+        }
+
         public Range clone() {
             return Range.builder()
                 .displayMode(displayMode)

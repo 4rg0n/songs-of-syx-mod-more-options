@@ -1,5 +1,8 @@
 package com.github.argon.sos.moreoptions.game.booster;
 
+import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.util.BoosterUtil;
+import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.boosting.BSourceInfo;
 import game.boosting.Boostable;
 import game.boosting.BoosterImp;
@@ -9,6 +12,7 @@ import game.faction.npc.NPCBonus;
 import game.faction.npc.ruler.Royalty;
 import init.race.POP_CL;
 import init.race.Race;
+import lombok.Builder;
 import lombok.Getter;
 import settlement.army.Div;
 import settlement.stats.Induvidual;
@@ -21,14 +25,23 @@ public class MoreOptionsBooster extends BoosterImp {
 
     private double value;
 
-
     private final double initValue;
 
     @Getter
     private final Boostable origin;
 
-    public MoreOptionsBooster(Boostable origin, BSourceInfo bSourceInfo, double value, double from, double to, boolean isMul) {
+    @Builder
+    public MoreOptionsBooster(
+        Boostable origin,
+        BSourceInfo bSourceInfo,
+        double value,
+        double from,
+        double to,
+        boolean isMul
+    ) {
         super(bSourceInfo, from, to, isMul);
+        value = normalize(value);
+
         this.initValue = value;
         this.value = value;
         this.origin = origin;
@@ -39,7 +52,7 @@ public class MoreOptionsBooster extends BoosterImp {
     }
 
     public void set(double value) {
-        this.value = value;
+        this.value = normalize(value);
     }
     @Override
     public double vGet(Region reg) {
@@ -89,6 +102,50 @@ public class MoreOptionsBooster extends BoosterImp {
         }
         else {
             return 0;
+        }
+    }
+
+    private double normalize(double value) {
+
+        double newValue = value;
+
+        // cap value at from, to and zero
+        if (value > to()) {
+            newValue = to();
+        } else if (value < from()) {
+            newValue = from();
+        } else if (value < 0) {
+            newValue = 0;
+        }
+
+        newValue = newValue / (from() + (to() - from()));
+
+        return newValue;
+    }
+
+    public static MoreOptionsBooster fromRange(
+        Boostable origin,
+        BSourceInfo bSourceInfo,
+        MoreOptionsConfig.Range range
+    ) {
+        if (range.getApplyMode().equals(MoreOptionsConfig.Range.ApplyMode.MULTI)) {
+            return MoreOptionsBooster.builder()
+                .bSourceInfo(bSourceInfo)
+                .origin(origin)
+                .from(BoosterUtil.toBoosterValue(range.getMin()))
+                .to(BoosterUtil.toBoosterValue(range.getMax()))
+                .value(MathUtil.toPercentage(range.getValue()))
+                .isMul(true)
+                .build();
+        } else {
+            return MoreOptionsBooster.builder()
+                .bSourceInfo(bSourceInfo)
+                .origin(origin)
+                .from(BoosterUtil.toBoosterValue(range.getMin()))
+                .to(BoosterUtil.toBoosterValue(range.getMax()))
+                .value(BoosterUtil.toBoosterValue(range.getValue()))
+                .isMul(false)
+                .build();
         }
     }
 }

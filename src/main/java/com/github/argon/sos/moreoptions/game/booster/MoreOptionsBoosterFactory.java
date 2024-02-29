@@ -1,12 +1,16 @@
 package com.github.argon.sos.moreoptions.game.booster;
 
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
 import game.boosting.BOOSTABLES;
+import game.boosting.BSourceInfo;
+import game.boosting.BoostSpec;
 import game.boosting.Boostable;
 import game.faction.npc.ruler.ROpinions;
+import init.sprite.SPRITES;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -63,10 +67,7 @@ public class MoreOptionsBoosterFactory {
             log.trace("Reuse present multi booster: %s", presentBooster.getMulti().info.name);
             boosterMulti = presentBooster.getMulti();
         } else {
-             boosterMulti = BoosterUtil.extendAsMultiBooster(booster, MoreOptionsConfig.Range.builder()
-                 .min(1)
-                 .value(100)
-                 .build());
+             boosterMulti = createMoreOptionsBooster(booster, MoreOptionsConfig.Range.defaultBoosterMulti());
         }
 
         MoreOptionsBooster boosterAdd;
@@ -74,14 +75,32 @@ public class MoreOptionsBoosterFactory {
             log.trace("Reuse present add booster: %s", presentBooster.getAdd().info.name);
             boosterAdd = presentBooster.getAdd();
         }  else {
-            boosterAdd = BoosterUtil.extendAsAddBooster(booster, MoreOptionsConfig.Range.builder()
-                .build());
+            boosterAdd = createMoreOptionsBooster(booster, MoreOptionsConfig.Range.defaultBoosterAdd());
         }
 
         return MoreOptionsBoosters.builder()
             .add(boosterAdd)
             .multi(boosterMulti)
             .build();
+    }
+
+    public static MoreOptionsBooster createMoreOptionsBooster(Boostable booster, MoreOptionsConfig.Range range) {
+        String suffix = " Perc";
+
+        if (range.getApplyMode().equals(MoreOptionsConfig.Range.ApplyMode.ADD)) {
+            suffix = " Add";
+        }
+
+        MoreOptionsBooster moreOptionsBooster = MoreOptionsBooster.fromRange(
+            booster,
+            new BSourceInfo(MoreOptionsScript.MOD_INFO.name + suffix, SPRITES.icons().m.cog),
+            range
+        );
+
+        BoostSpec boostSpec = new BoostSpec(moreOptionsBooster, booster, MoreOptionsScript.MOD_INFO.name);
+        booster.addFactor(boostSpec);
+
+        return moreOptionsBooster;
     }
 
     private static String key(String key) {
