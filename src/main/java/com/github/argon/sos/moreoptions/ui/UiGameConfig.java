@@ -383,7 +383,11 @@ public class UiGameConfig {
             // export file changed?
             if (!exportFile.equals(currentExportFile)) {
                 metricsPanel.refresh(exportFile);
-                notificator.notify("New export file: " + exportFile.getFileName());
+
+                // don't notify for initial files
+                if (currentExportFile != null) {
+                    notificator.notify("New export file: " + exportFile.getFileName());
+                }
             }
         });
     }
