@@ -43,6 +43,9 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     @Getter
     private final Path exportFolderPath;
     @Getter
+    @Nullable
+    private Path exportFilePath;
+    @Getter
     private final Button exportFolderButton;
     @Getter
     private final Toggler<Boolean> searchToggler;
@@ -61,12 +64,12 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
             UiInfo.<Boolean>builder()
                 .key(true)
                 .title("Started")
-                .description("Click to start the collection and export of metrics")
+                .description("Toggle and apply to start the collection and export of game metrics")
                 .build(),
             UiInfo.<Boolean>builder()
                 .key(false)
                 .title("Stopped")
-                .description("Click to stop the collection and export of metrics")
+                .description("Toggle and apply to stop the collection and export of game metrics")
                 .build()
         ), 0, true, true);
 
@@ -74,7 +77,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
             LabeledBuilder.Definition.<Toggler<Boolean>>builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
                     .key("ui.moreOptions.metrics.toggle")
-                    .description("Enables or disables the collection and export of metric data.")
                     .build())
                 .element(toggler)
                 .build()
@@ -203,6 +205,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
 
     public void refresh(@Nullable Path exportFilePath) {
         if (exportFilePath != null) {
+            this.exportFilePath = exportFilePath;
             this.exportFilePathView.set(exportFilePath(exportFilePath));
         }
     }

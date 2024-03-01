@@ -377,7 +377,14 @@ public class UiGameConfig {
 
         // after config is applied to game
         configurator.onAfterApplyAction(moreOptionsConfig -> {
-            metricsPanel.refresh(metricExporter.getExportFile());
+            Path exportFile = metricExporter.getExportFile();
+            Path currentExportFile = metricsPanel.getExportFilePath();
+
+            // export file changed?
+            if (!exportFile.equals(currentExportFile)) {
+                metricsPanel.refresh(exportFile);
+                notificator.notify("New export file: " + exportFile.getFileName());
+            }
         });
     }
 

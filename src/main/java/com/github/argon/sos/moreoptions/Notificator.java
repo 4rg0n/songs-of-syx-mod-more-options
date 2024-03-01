@@ -19,6 +19,10 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * For displaying notification messages in a little gui box.
+ * Notifications will be queued and shown in order.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Notificator implements Updateable {
     private final static Logger log = Loggers.getLogger(Notificator.class);
@@ -41,7 +45,7 @@ public class Notificator implements Updateable {
      */
     @Setter
     @Accessors(fluent = true)
-    private int showSecondsPer100Chars = 20;
+    private int showSecondsPer100Chars = 25;
 
     /**
      * No matter how many chars, show at minimum

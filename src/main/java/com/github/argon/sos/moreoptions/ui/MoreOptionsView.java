@@ -145,24 +145,24 @@ public class MoreOptionsView extends GuiSection implements
         footer.addRight(50, versions(config.getVersion(), modVersion));
 
         this.applyButton = new Button("Apply");
-        applyButton.hoverInfoSet("Apply and save options");
+        applyButton.hoverInfoSet("Apply config to game and save to file");
         applyButton.setEnabled(false);
         footer.addRight(50, applyButton);
 
         this.okButton = new Button("OK");
-        okButton.hoverInfoSet("Apply and exit");
+        okButton.hoverInfoSet("Apply config to game, save to file and exit");
         footer.addRight(10, okButton);
         addDownC(20, footer);
 
         // More Button Menu
         this.resetButton = new Button("Default");
-        resetButton.hoverInfoSet("Reset to default options");
+        resetButton.hoverInfoSet("Reset ui to default config");
         this.reloadButton = new Button("Reload");
-        reloadButton.hoverInfoSet("Reload and reapply config from file");
+        reloadButton.hoverInfoSet("Reload and apply config to ui from file");
         this.shareButton = new Button("Share");
-        shareButton.hoverInfoSet("Copy current config into clipboard");
+        shareButton.hoverInfoSet("Copy current config from ui into clipboard");
         this.folderButton = new Button("Folder");
-        folderButton.hoverInfoSet("Open settings folder with mod config");
+        folderButton.hoverInfoSet("Open settings folder with mod config file");
         List<Button> buttons = Lists.of(folderButton, resetButton, reloadButton, shareButton);
         this.moreButtonMenu = ButtonMenu.fromList(buttons);
         this.moreButton.clickActionSet(() -> {
