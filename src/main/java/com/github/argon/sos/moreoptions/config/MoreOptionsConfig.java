@@ -2,21 +2,19 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.json.Json;
+import com.github.argon.sos.moreoptions.json.JsonMapper;
+import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import com.github.argon.sos.moreoptions.log.Level;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @Builder
 @EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsConfig {
 
     public final static int VERSION = 2;
@@ -51,6 +49,7 @@ public class MoreOptionsConfig {
     @Data
     @Builder
     @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Events {
         @Builder.Default
         private Map<String, Boolean> settlement = new HashMap<>();
@@ -65,6 +64,7 @@ public class MoreOptionsConfig {
     @Data
     @Builder
     @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Sounds {
         @Builder.Default
         private Map<String, Range> ambience = new HashMap<>();
@@ -78,6 +78,7 @@ public class MoreOptionsConfig {
     @Data
     @Builder
     @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Metrics {
         @Builder.Default
         private boolean enabled = false;
@@ -100,13 +101,23 @@ public class MoreOptionsConfig {
             .displayMode(Range.DisplayMode.ABSOLUTE)
             .build();
 
-        @Builder.Default
-        private List<String> stats = new ArrayList<>();
+        private List<String> stats;
+
+        public static class MetricsBuilder {
+            private List<String> stats = new ArrayList<>();
+
+            public MetricsBuilder stats(List<String> stats) {
+                stats.sort(String::compareTo);
+                this.stats = stats;
+                return this;
+            }
+        }
     }
 
     @Data
     @Builder
     @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Range {
         @Builder.Default
         private int value = 0;
@@ -202,6 +213,7 @@ public class MoreOptionsConfig {
     @Data
     @Builder
     @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Meta {
         @Builder.Default
         private int version = VERSION;
@@ -212,6 +224,7 @@ public class MoreOptionsConfig {
 
     @Getter
     @Builder
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class BoosterEntry {
         private final String key;
 
@@ -225,4 +238,13 @@ public class MoreOptionsConfig {
        * toggle deposit overlay when building
 
      */
+
+    /**
+     * Only for debugging purposes
+     */
+    public String toJson() {
+        JsonObject jsonElement = (JsonObject) JsonMapper.mapObject(this);
+        Json json = new Json(jsonElement);
+        return json.toString();
+    }
 }

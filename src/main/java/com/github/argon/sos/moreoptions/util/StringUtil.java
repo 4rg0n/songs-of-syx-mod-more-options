@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -123,5 +124,39 @@ public class StringUtil {
 
     public static String capitalize(String text) {
         return text.substring(0, 1).toUpperCase() + text.substring(1);
+    }
+
+    public static @Nullable String unwrap(@Nullable String string, char prefix, char suffix) {
+        if (string == null || string.isEmpty()) {
+            return string;
+        }
+
+        if (string.charAt(0) == prefix && string.charAt(string.length() - 1) == suffix) {
+            string = string.substring(1, string.length() - 2);
+        }
+
+        return string;
+    }
+
+    public static List<String> quote(List<String> strings) {
+        return strings.stream()
+            .map(StringUtil::quote)
+            .collect(Collectors.toList());
+    }
+
+    public static String quote(String string) {
+        return "\"" + string + "\"";
+    }
+
+    public static @Nullable String unquote(@Nullable String string) {
+        return unwrap(string, '"', '"');
+    }
+
+    public static @Nullable String toScreamingSnakeCase(@Nullable String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
+        return text.replaceAll("\\B([A-Z])", "_$1").toUpperCase();
     }
 }
