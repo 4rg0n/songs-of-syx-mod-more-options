@@ -30,6 +30,7 @@ import snake2d.util.file.JsonE;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GButt;
 import view.interrupter.IDebugPanel;
+import view.main.VIEW;
 import view.ui.top.UIPanelTop;
 
 import java.nio.file.Path;
@@ -270,7 +271,9 @@ public class UiGameConfig {
         Button applyButton = moreOptionsView.getApplyButton();
         applyButton.clickActionSet(() -> {
             try {
-                applyAndSave(moreOptionsView);
+                if (!applyAndSave(moreOptionsView)) {
+                    notificator.notifyError("Could not apply config to game.");
+                }
             } catch (Exception e) {
                 notificator.notifyError("Could not apply config to game.", e);
             }
@@ -320,10 +323,9 @@ public class UiGameConfig {
             }
         });
 
-
-        // Reset UI to default
-        Button resetButton = moreOptionsView.getResetButton();
-        resetButton.clickActionSet(() -> {
+        // Apply default config to ui
+        Button defaultButton = moreOptionsView.getDefaultButton();
+        defaultButton.clickActionSet(() -> {
             MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
             try {
                 moreOptionsView.setValue(defaultConfig);
@@ -333,11 +335,35 @@ public class UiGameConfig {
             }
         });
 
+        // Apply default config to ui and game & delete config file
+        Button resetButton = moreOptionsView.getResetButton();
+        resetButton.clickActionSet(() -> {
+            // are you sure message
+            VIEW.inters().yesNo.activate("This will delete your config file and reset the ui and game to default settings.", () -> {
+                MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
+                try {
+                    moreOptionsView.setValue(defaultConfig);
+                    configStore.deleteConfig();
+                    if (applyAndSave(moreOptionsView)) {
+                        notificator.notifySuccess("Default config applied to ui and file deleted.");
+                    } else {
+                        notificator.notifyError("Could not apply config.");
+                    }
+
+                } catch (Exception e) {
+                    notificator.notifyError("Could not reset ui.", e);
+                }
+            }, () -> {}, true);
+        });
+
         //Ok: Apply & Save & Exit
         Button okButton = moreOptionsView.getOkButton();
         okButton.clickActionSet(() -> {
             try {
-                applyAndSave(moreOptionsView);
+                if (!applyAndSave(moreOptionsView)) {
+                    notificator.notifyError("Could not apply config to game.");
+                    return;
+                }
             } catch (Exception e) {
                 notificator.notifyError("Could not apply config to game.", e);
                 return;

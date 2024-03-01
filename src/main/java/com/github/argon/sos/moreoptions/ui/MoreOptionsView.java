@@ -47,7 +47,7 @@ public class MoreOptionsView extends GuiSection implements
     @Getter
     private final Button cancelButton;
     @Getter
-    private final Button resetButton;
+    private final Button defaultButton;
     @Getter
     private final Button applyButton;
     @Getter
@@ -63,8 +63,11 @@ public class MoreOptionsView extends GuiSection implements
     @Getter
     private final Button shareButton;
     @Getter
+    private final Button resetButton;
+    @Getter
     private final ButtonMenu moreButtonMenu;
     private final Tabulator<String, ?, GuiSection> tabulator;
+
 
     private Action<MoreOptionsView> showAction = o -> {};
     private Action<MoreOptionsView> refreshAction = o -> {};
@@ -155,15 +158,17 @@ public class MoreOptionsView extends GuiSection implements
         addDownC(20, footer);
 
         // More Button Menu
-        this.resetButton = new Button("Default");
-        resetButton.hoverInfoSet("Reset ui to default config");
+        this.defaultButton = new Button("Default");
+        defaultButton.hoverInfoSet("Reset ui to default config");
         this.reloadButton = new Button("Reload");
         reloadButton.hoverInfoSet("Reload and apply config to ui from file");
         this.shareButton = new Button("Share");
         shareButton.hoverInfoSet("Copy current config from ui into clipboard");
         this.folderButton = new Button("Folder");
         folderButton.hoverInfoSet("Open settings folder with mod config file");
-        List<Button> buttons = Lists.of(folderButton, resetButton, reloadButton, shareButton);
+        this.resetButton = new Button("Reset");
+        resetButton.hoverInfoSet("Reset ui and game to default config and deletes config file");
+        List<Button> buttons = Lists.of(defaultButton, shareButton, folderButton, reloadButton, resetButton);
         this.moreButtonMenu = ButtonMenu.fromList(buttons);
         this.moreButton.clickActionSet(() -> {
             GameUiApi.getInstance().popup().show(this.moreButtonMenu, this.moreButton);

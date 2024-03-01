@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
+import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATH;
@@ -41,9 +42,10 @@ public class ConfigService {
         }
 
         try {
+            if (log.isLevel(Level.DEBUG)) log.debug("Deleting file: %s", path.get(fileName));
             path.delete(fileName);
         } catch (Exception e) {
-            log.warn("Could not delete file %s", path.get(fileName));
+            if (log.isLevel(Level.WARN)) log.warn("Could not delete file %s", path.get(fileName));
             return false;
         }
 
