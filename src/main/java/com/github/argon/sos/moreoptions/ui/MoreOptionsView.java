@@ -26,8 +26,6 @@ import java.util.List;
 /**
  * Main window containing all other UI elements.
  * Will pop up in the middle of the game and pauses the game.
- *
- * FIXME: Elements in this modal should be final
  */
 public class MoreOptionsView extends GuiSection implements
     Showable<MoreOptionsView>,

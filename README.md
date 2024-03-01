@@ -13,6 +13,7 @@ Adds a menu with more options for the game:
 ![Events](doc/img/events.png)
 ![Weather](doc/img/weather.png)
 ![Boosters](doc/img/boosters.png)
+![Metrics](doc/img/metrics.png)
 ![Backup](doc/img/backup.png)
 
 # Getting started

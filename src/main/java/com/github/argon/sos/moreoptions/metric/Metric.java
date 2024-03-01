@@ -13,6 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Serves as holder for the collected game stats.
+ * Has some information about time.
+ */
 @Getter
 @Builder
 @AllArgsConstructor

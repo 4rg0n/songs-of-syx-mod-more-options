@@ -15,12 +15,22 @@ import snake2d.util.sets.LIST;
 
 import java.util.*;
 
+/**
+ * For collecting game stats.
+ * Used by the {@link MetricCollector} for collecting {@link Metric}
+ */
 @RequiredArgsConstructor
 class StatsCollector {
     private final static Logger log = Loggers.getLogger(StatsCollector.class);
 
+    /**
+     * Reads only stats from given whitelist. An empty list means read all stats.
+     */
     private final Set<String> whitelist;
 
+    /**
+     * Some stats seem broken for some reason
+     */
     private final static List<String> STAT_KEYS_BLACK_LIST = Lists.of(
         "HOME_FURNITURE"
     );

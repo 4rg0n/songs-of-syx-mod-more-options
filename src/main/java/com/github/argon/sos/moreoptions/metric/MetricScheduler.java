@@ -2,9 +2,7 @@ package com.github.argon.sos.moreoptions.metric;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -13,6 +11,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * For scheduling tasks.
+ * Used for collecting and exporting metrics.
+ */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MetricScheduler {
     @Getter(lazy = true)
     private final static MetricScheduler instance = new MetricScheduler();

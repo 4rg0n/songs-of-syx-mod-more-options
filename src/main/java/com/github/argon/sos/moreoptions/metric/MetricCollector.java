@@ -3,12 +3,18 @@ package com.github.argon.sos.moreoptions.metric;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Lists;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import settlement.stats.STATS;
 import settlement.stats.stat.STAT;
 
 import java.util.*;
 
+/**
+ * For collecting game stats as {@link Metric}
+ */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MetricCollector {
 
     @Getter(lazy = true)

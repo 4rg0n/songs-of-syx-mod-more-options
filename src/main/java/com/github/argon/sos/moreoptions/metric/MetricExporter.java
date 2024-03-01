@@ -10,6 +10,9 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * For exporting game stats as {@link Metric} into a CSV file
+ */
 public class MetricExporter {
     @Getter(lazy = true)
     private final static MetricExporter instance = new MetricExporter(
