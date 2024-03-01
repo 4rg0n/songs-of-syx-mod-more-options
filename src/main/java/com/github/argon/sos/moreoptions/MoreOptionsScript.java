@@ -154,7 +154,6 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 		//      * NOTHING
 
 		// TODO
-		//     * Notification, which auto disappears in UI?
 		//     * further testing
 
 		// TODO FUTURE

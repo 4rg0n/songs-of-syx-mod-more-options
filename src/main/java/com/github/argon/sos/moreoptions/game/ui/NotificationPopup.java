@@ -125,7 +125,6 @@ public final class NotificationPopup {
 		@Override
 		public void hide() {
 			if (notification != null) notification.hide();
-			// TODO Auto-generated method stub
 			super.hide();
 		}
 

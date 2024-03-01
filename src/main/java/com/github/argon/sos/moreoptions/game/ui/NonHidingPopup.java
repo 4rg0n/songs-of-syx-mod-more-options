@@ -128,7 +128,6 @@ public final class NonHidingPopup {
 		
 		@Override
 		public void hide() {
-			// TODO Auto-generated method stub
 			super.hide();
 		}
 
