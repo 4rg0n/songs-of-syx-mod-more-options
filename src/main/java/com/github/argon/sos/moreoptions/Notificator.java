@@ -34,15 +34,28 @@ public class Notificator implements Updateable {
     private final COLOR colorSuccess = GCOLOR.UI().goodFlash();
 
     @Nullable
-    private Instant lastShowedAt;
+    private Instant showUntil;
 
+    /**
+     * Seconds per one hundred (100) characters
+     */
     @Setter
     @Accessors(fluent = true)
-    private int showSeconds = 10;
+    private int showSecondsPer100Chars = 20;
 
+    /**
+     * No matter how many chars, show at minimum
+     */
     @Setter
     @Accessors(fluent = true)
-    private int showDelaySeconds = 1;
+    private int showSecondsMin = 5;
+
+    /**
+     * Delay until next notification is displayed
+     */
+    @Setter
+    @Accessors(fluent = true)
+    private int showNextDelaySeconds = 1;
     @Nullable
     private Notification current;
 
@@ -63,7 +76,7 @@ public class Notificator implements Updateable {
         notification.onHide(closedNotification -> {
             queue.remove(closedNotification);
             current = null;
-            lastShowedAt = null;
+            showUntil = null;
         });
 
         queue(notification);
@@ -93,18 +106,16 @@ public class Notificator implements Updateable {
     private void show(Notification notification) {
         log.debug("Show notification");
         current = notification;
-        lastShowedAt = Instant.now();
+        showUntil = Instant.now().plusSeconds(calculateShowSeconds(notification.getText()));
         gameUiApi.notification().show(notification, C.DIM().x2(), C.DIM().y2());
     }
 
     @Override
     public void update(float seconds) {
         // wait until showSeconds for next
-        if (current != null && lastShowedAt != null) {
+        if (current != null) {
             Instant now = Instant.now();
-            Instant showUntil = lastShowedAt.plusSeconds(showSeconds);
-
-            if (now.isAfter(showUntil)) {
+            if (showUntil != null && now.isAfter(showUntil)) {
                 // time elapsed, hide notifications!
                 GameUiApi.getInstance().notification().closeSilent();
                 queue.remove(current);
@@ -118,14 +129,14 @@ public class Notificator implements Updateable {
         }
 
         // wait until showDelaySeconds passed for next
-        if (lastShowedAt != null) {
+        if (showUntil != null) {
             Instant now = Instant.now();
-            Instant delayUntil = lastShowedAt.plusSeconds(showSeconds).plusSeconds(showDelaySeconds);
+            Instant delayUntil = showUntil.plusSeconds(showNextDelaySeconds);
 
             if (now.isBefore(delayUntil)) {
                 return;
             } else {
-                lastShowedAt = null;
+                showUntil = null;
             }
         }
 
@@ -137,5 +148,15 @@ public class Notificator implements Updateable {
     public void close() {
         log.debug("Close notifications");
         GameUiApi.getInstance().notification().close();
+    }
+
+    private int calculateShowSeconds(String text) {
+        int showSeconds = (int) (((double) text.length() / 100) * showSecondsPer100Chars);
+
+        if (showSeconds < showSecondsMin) {
+            return showSecondsMin;
+        }
+
+        return showSeconds;
     }
 }

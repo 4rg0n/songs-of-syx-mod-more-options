@@ -13,6 +13,8 @@ import util.gui.misc.GText;
 @Getter
 public class Notification extends GuiSection implements Hideable<Notification> {
 
+    @Getter
+    private final String text;
     private final String title;
     @Getter
     @Nullable
@@ -31,6 +33,7 @@ public class Notification extends GuiSection implements Hideable<Notification> {
         @Nullable COLOR titleBackground,
         @Nullable COLOR textColor
     ) {
+        this.text = text;
         this.titleBackground = titleBackground;
         body().setWidth(width);
         body().setHeight(height);

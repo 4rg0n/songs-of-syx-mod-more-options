@@ -324,7 +324,7 @@ public class UiGameConfig {
             MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
             try {
                 moreOptionsView.setValue(defaultConfig);
-                notificator.notifySuccess("Default config applied to ui.");
+                notificator.notifySuccess("Default config applied to ui. ");
             } catch (Exception e) {
                 notificator.notifyError("Could not apply default config to ui.", e);
             }
