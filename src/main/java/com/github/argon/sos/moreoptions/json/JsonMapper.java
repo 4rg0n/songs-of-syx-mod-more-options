@@ -14,7 +14,7 @@ import snake2d.util.file.JsonE;
 /**
  * For mapping objects into and from a {@link JsonElement}.
  * Also supports mapping {@link JsonElement} into the games {@link JsonE}.
- * See {@link this#mapJsonE(JsonObject)}
+ * See {@link this#mapJson(JsonObject)}
  */
 public class JsonMapper {
 
@@ -77,6 +77,30 @@ public class JsonMapper {
     }
 
     /**
+     * Maps a {@link JsonObject} to the games {@link JsonE}.
+     *
+     * <pre>{@code
+     *     JsonObject jsonObject = new JsonObject();
+     *     jsonObject.put("1", new JsonLong(1L));
+     *     jsonObject.put("2", new JsonLong(2L));
+     *     jsonObject.put("3", new JsonLong(3L));
+     *     JsonE jsonE = JsonMapper.mapJsonE(jsonObject);
+     * }</pre>
+     *
+     * @param jsonObject to map
+     * @return games json format
+     */
+    public static JsonE mapJson(JsonObject jsonObject) {
+        JsonE json = new JsonE();
+
+        jsonObject.getMap().forEach((key, jsonElement) -> {
+            JsonMapper.mapIntoJsonE(json, key, jsonElement);
+        });
+
+        return json;
+    }
+
+    /**
      * Maps an object to a {@link JsonElement} containing data from the object.
      * <pre>{@code
      *     MyPojo pojo = new MyPojo();
@@ -131,30 +155,6 @@ public class JsonMapper {
                 "Could not map " + typeClass.getTypeName() +
                 " to JsonElement with mapper " + mapper.getClass().getSimpleName(), e);
         }
-    }
-
-    /**
-     * Maps a {@link JsonObject} to the games {@link JsonE}.
-     *
-     * <pre>{@code
-     *     JsonObject jsonObject = new JsonObject();
-     *     jsonObject.put("1", new JsonLong(1L));
-     *     jsonObject.put("2", new JsonLong(2L));
-     *     jsonObject.put("3", new JsonLong(3L));
-     *     JsonE jsonE = JsonMapper.mapJsonE(jsonObject);
-     * }</pre>
-     *
-     * @param jsonObject to map
-     * @return games json format
-     */
-    public static JsonE mapJsonE(JsonObject jsonObject) {
-        JsonE json = new JsonE();
-
-        jsonObject.getMap().forEach((key, jsonElement) -> {
-            JsonMapper.mapIntoJsonE(json, key, jsonElement);
-        });
-
-        return json;
     }
 
     /**

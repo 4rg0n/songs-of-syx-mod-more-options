@@ -56,7 +56,7 @@ public class JsonEArrayMapper implements JsonEMapper<JsonArray> {
         } else if (jsonElement instanceof JsonObject) {
             JsonE[] jsons = elements.stream()
                 .map(JsonObject.class::cast)
-                .map(JsonMapper::mapJsonE).toArray(JsonE[]::new);
+                .map(JsonMapper::mapJson).toArray(JsonE[]::new);
             json.add(key, jsons);
         }
 

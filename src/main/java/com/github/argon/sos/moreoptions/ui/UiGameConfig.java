@@ -407,7 +407,7 @@ public class UiGameConfig {
 
         // todo this is hacky: make sure when no stats are configured, use availableStats
         if (config.getMetrics().getStats().isEmpty()) {
-            config.getMetrics().getStats().addAll(availableStats);
+            config.getMetrics().setStats(availableStats);
         }
 
         Modal<MoreOptionsView> moreOptionsModal = new Modal<>(title,

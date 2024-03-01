@@ -9,7 +9,7 @@ public class JsonEObjectMapper implements JsonEMapper<JsonObject> {
 
     @Override
     public JsonE mapJsonE(JsonE json, String key, JsonObject jsonElement) {
-        json.add(key, JsonMapper.mapJsonE(jsonElement));
+        json.add(key, JsonMapper.mapJson(jsonElement));
 
         return json;
     }

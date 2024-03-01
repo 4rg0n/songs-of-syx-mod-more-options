@@ -107,6 +107,11 @@ public class MoreOptionsConfig {
 
         private List<String> stats;
 
+        public void setStats(List<String> stats) {
+            stats.sort(String::compareTo);
+            this.stats = stats;
+        }
+
         public static class MetricsBuilder {
             private List<String> stats = new ArrayList<>();
 

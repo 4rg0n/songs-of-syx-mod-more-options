@@ -1,0 +1,49 @@
+{
+  "TEST_ARRAY_LONG": [1, 2, 3],
+  "TEST_OBJECT_OBJECT": {
+    "TEST_OBJECT_1": {
+      "TEST_BOOLEAN": false,
+      "TEST_NULL": null,
+      "TEST_LONG": 1,
+      "TEST_DOUBLE": 1.1,
+      "TEST_STRING": "test"
+    },
+    "TEST_OBJECT_2": {
+      "TEST_BOOLEAN": false,
+      "TEST_NULL": null,
+      "TEST_LONG": 1,
+      "TEST_DOUBLE": 1.1,
+      "TEST_STRING": "test"
+    },
+    "TEST_OBJECT_3": {
+      "TEST_BOOLEAN": false,
+      "TEST_NULL": null,
+      "TEST_LONG": 1,
+      "TEST_DOUBLE": 1.1,
+      "TEST_STRING": "test"
+    }
+  },
+  "TEST_ARRAY_NULL": [null, null, null],
+  "TEST_ARRAY_OBJECT": [{
+    "TEST_BOOLEAN": false,
+    "TEST_NULL": null,
+    "TEST_LONG": 1,
+    "TEST_DOUBLE": 1.1,
+    "TEST_STRING": "test"
+  }, {
+    "TEST_BOOLEAN": false,
+    "TEST_NULL": null,
+    "TEST_LONG": 1,
+    "TEST_DOUBLE": 1.1,
+    "TEST_STRING": "test"
+  }, {
+    "TEST_BOOLEAN": false,
+    "TEST_NULL": null,
+    "TEST_LONG": 1,
+    "TEST_DOUBLE": 1.1,
+    "TEST_STRING": "test"
+  }],
+  "TEST_ARRAY_BOOLEAN": [true, false, true],
+  "TEST_ARRAY_DOUBLE": [1.1, 2.2, 3.3],
+  "TEST_ARRAY_STRING": ["test1", "test2", "test3"]
+}

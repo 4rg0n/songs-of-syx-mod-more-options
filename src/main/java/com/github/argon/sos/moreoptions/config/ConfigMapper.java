@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.log.Level;
-import com.github.argon.sos.moreoptions.util.JsonMapper;
+import com.github.argon.sos.moreoptions.util.JsonUtil;
 import org.jetbrains.annotations.Nullable;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -32,13 +32,13 @@ public interface ConfigMapper {
                 : Level.INFO)
 
             .events(MoreOptionsConfig.Events.builder()
-                .world((json.has("EVENTS_WORLD")) ? JsonMapper.mapBoolean(json.json("EVENTS_WORLD"), true)
+                .world((json.has("EVENTS_WORLD")) ? JsonUtil.mapBoolean(json.json("EVENTS_WORLD"), true)
                     : (defaultConfig != null) ? defaultConfig.getEvents().getWorld() : new HashMap<>())
 
-                .settlement((json.has("EVENTS_SETTLEMENT")) ? JsonMapper.mapBoolean(json.json("EVENTS_SETTLEMENT"), true)
+                .settlement((json.has("EVENTS_SETTLEMENT")) ? JsonUtil.mapBoolean(json.json("EVENTS_SETTLEMENT"), true)
                     : (defaultConfig != null) ? defaultConfig.getEvents().getSettlement() : new HashMap<>())
 
-                .chance((json.has("EVENTS_CHANCE")) ? JsonMapper.mapInteger(json.json("EVENTS_CHANCE")).entrySet().stream()
+                .chance((json.has("EVENTS_CHANCE")) ? JsonUtil.mapInteger(json.json("EVENTS_CHANCE")).entrySet().stream()
                     .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getEvents().getChance().get(entry.getKey()) : null)
@@ -46,32 +46,32 @@ public interface ConfigMapper {
                 .build())
 
             .sounds(MoreOptionsConfig.Sounds.builder()
-                .ambience((json.has("SOUNDS_AMBIENCE")) ? JsonMapper.mapInteger(json.json("SOUNDS_AMBIENCE")).entrySet().stream()
+                .ambience((json.has("SOUNDS_AMBIENCE")) ? JsonUtil.mapInteger(json.json("SOUNDS_AMBIENCE")).entrySet().stream()
                     .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSounds().getAmbience().get(entry.getKey()) : null)
                     )) : (defaultConfig != null) ? defaultConfig.getSounds().getAmbience() : new HashMap<>())
 
-                .settlement((json.has("SOUNDS_SETTLEMENT")) ? JsonMapper.mapInteger(json.json("SOUNDS_SETTLEMENT")).entrySet().stream()
+                .settlement((json.has("SOUNDS_SETTLEMENT")) ? JsonUtil.mapInteger(json.json("SOUNDS_SETTLEMENT")).entrySet().stream()
                     .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSounds().getSettlement().get(entry.getKey()) : null)
                     )) : (defaultConfig != null) ? defaultConfig.getSounds().getSettlement() : new HashMap<>())
 
-                .room((json.has("SOUNDS_ROOM")) ? JsonMapper.mapInteger(json.json("SOUNDS_ROOM")).entrySet().stream()
+                .room((json.has("SOUNDS_ROOM")) ? JsonUtil.mapInteger(json.json("SOUNDS_ROOM")).entrySet().stream()
                     .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSounds().getRoom().get(entry.getKey()) : null)
                     )) : (defaultConfig != null) ? defaultConfig.getSounds().getRoom() : new HashMap<>())
                 .build())
 
-            .weather((json.has("WEATHER")) ? JsonMapper.mapInteger(json.json("WEATHER")).entrySet().stream()
+            .weather((json.has("WEATHER")) ? JsonUtil.mapInteger(json.json("WEATHER")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
                     entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getWeather().get(entry.getKey()) : null)
                 )) : (defaultConfig != null) ? defaultConfig.getWeather() : new HashMap<>())
 
-            .boosters((json.has("BOOSTERS")) ? JsonMapper.mapInteger(json.json("BOOSTERS")).entrySet().stream()
+            .boosters((json.has("BOOSTERS")) ? JsonUtil.mapInteger(json.json("BOOSTERS")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
                     entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getBoosters().get(entry.getKey()) : null)
@@ -90,10 +90,10 @@ public interface ConfigMapper {
                 : Level.INFO)
 
             .events(MoreOptionsConfig.Events.builder()
-                .world((json.has("EVENTS_WORLD")) ? JsonMapper.mapBoolean(json.json("EVENTS_WORLD"), true)
+                .world((json.has("EVENTS_WORLD")) ? JsonUtil.mapBoolean(json.json("EVENTS_WORLD"), true)
                     : (defaultConfig != null) ? defaultConfig.getEvents().getWorld() : new HashMap<>())
 
-                .settlement((json.has("EVENTS_SETTLEMENT")) ? JsonMapper.mapBoolean(json.json("EVENTS_SETTLEMENT"), true)
+                .settlement((json.has("EVENTS_SETTLEMENT")) ? JsonUtil.mapBoolean(json.json("EVENTS_SETTLEMENT"), true)
                     : (defaultConfig != null) ? defaultConfig.getEvents().getSettlement() : new HashMap<>())
 
                 .chance((json.has("EVENTS_CHANCE")) ? mapRanges(json.json("EVENTS_CHANCE"))
@@ -126,8 +126,8 @@ public interface ConfigMapper {
         JsonE configJson = new JsonE();
         configJson.add("VERSION", config.getVersion());
         configJson.addString("LOG_LEVEL", config.getLogLevel().getName());
-        configJson.add("EVENTS_SETTLEMENT", JsonMapper.mapBoolean(config.getEvents().getSettlement()));
-        configJson.add("EVENTS_WORLD", JsonMapper.mapBoolean(config.getEvents().getWorld()));
+        configJson.add("EVENTS_SETTLEMENT", JsonUtil.mapBoolean(config.getEvents().getSettlement()));
+        configJson.add("EVENTS_WORLD", JsonUtil.mapBoolean(config.getEvents().getWorld()));
         configJson.add("EVENTS_CHANCE", mapRanges(config.getEvents().getChance()));
         configJson.add("SOUNDS_AMBIENCE", mapRanges(config.getSounds().getAmbience()));
         configJson.add("SOUNDS_SETTLEMENT", mapRanges(config.getSounds().getSettlement()));

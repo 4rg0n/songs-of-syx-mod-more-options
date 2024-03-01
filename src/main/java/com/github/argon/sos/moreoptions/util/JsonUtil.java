@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class JsonMapper {
+public class JsonUtil {
     public static Map<String, Boolean> mapBoolean(Json json, boolean fallback) {
         Map<String, Boolean> map = new HashMap<>();
 
