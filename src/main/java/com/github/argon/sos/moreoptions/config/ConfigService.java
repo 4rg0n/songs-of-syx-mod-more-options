@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import org.mapstruct.factory.Mappers;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
@@ -27,7 +28,7 @@ public class ConfigService {
     @Getter(lazy = true)
     private final static ConfigService instance = new ConfigService(
         JsonService.getInstance(),
-        ConfigMapper.getInstance()
+        Mappers.getMapper(ConfigMapper.class)
     );
 
     private final JsonService jsonService;

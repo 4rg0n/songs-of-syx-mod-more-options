@@ -41,6 +41,16 @@ public class Json {
     @Getter
     private final JsonWriter writer;
 
+    public Json(JsonElement root) {
+        if (!(root instanceof JsonObject)) {
+            throw new IllegalArgumentException("Given element must be of type " + JsonObject.class.getName());
+        }
+
+        this.root = (JsonObject) root;
+        this.writer = new JsonWriter();
+        this.rawJson = "";
+    }
+
     public Json(JsonObject root) {
         this(root, new JsonWriter());
     }

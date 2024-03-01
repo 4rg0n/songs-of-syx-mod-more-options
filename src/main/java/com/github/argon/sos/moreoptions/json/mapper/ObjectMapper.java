@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.json.mapper;
 
 import com.github.argon.sos.moreoptions.json.JsonMapper;
+import com.github.argon.sos.moreoptions.json.annotation.JsonIgnore;
 import com.github.argon.sos.moreoptions.json.annotation.JsonProperty;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
@@ -82,10 +83,16 @@ public class ObjectMapper implements Mapper<JsonObject> {
                 .orElse(null);
 
             if (field == null) {
-                log.debug("No field %s available for setter method %s in %s. Skipping.", fieldName, method.getName(), clazz.getCanonicalName());
+                log.trace("No field %s available for setter method %s in %s. Skipping.", fieldName, method.getName(), clazz.getCanonicalName());
                 continue;
             }
 
+            // ignore field?
+            JsonIgnore ignoreFile = getAnnotation(field, JsonIgnore.class).orElse(null);
+            if (ignoreFile != null) {
+                log.trace("Ignore field %s for setting");
+                continue;
+            }
 
             // read json key from annotation or generate from method name
             String jsonKey = getAnnotation(field, JsonProperty.class)
@@ -125,7 +132,14 @@ public class ObjectMapper implements Mapper<JsonObject> {
                 .orElse(null);
 
             if (field == null) {
-                log.debug("No field %s available for getter method %s in %s. Skipping.", fieldName, method.getName(), clazz.getCanonicalName());
+                log.trace("No field %s available for getter method %s in %s. Skipping.", fieldName, method.getName(), clazz.getCanonicalName());
+                continue;
+            }
+
+            // ignore field?
+            JsonIgnore ignoreFile = getAnnotation(field, JsonIgnore.class).orElse(null);
+            if (ignoreFile != null) {
+                log.trace("Ignore field %s for getting");
                 continue;
             }
 

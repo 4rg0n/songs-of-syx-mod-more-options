@@ -4,12 +4,15 @@ import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.element.JsonObject;
+import com.github.argon.sos.moreoptions.json.annotation.JsonIgnore;
 import com.github.argon.sos.moreoptions.log.Level;
 import lombok.*;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -25,6 +28,7 @@ public class MoreOptionsConfig {
     public final static String FILE_NAME = "MoreOptions";
     public final static String FILE_NAME_BACKUP = FILE_NAME + ".backup";
 
+    @JsonIgnore
     @EqualsAndHashCode.Exclude
     private Path filePath;
 
@@ -243,8 +247,7 @@ public class MoreOptionsConfig {
      * Only for debugging purposes
      */
     public String toJson() {
-        JsonObject jsonElement = (JsonObject) JsonMapper.mapObject(this);
-        Json json = new Json(jsonElement);
+        Json json = new Json(JsonMapper.mapObject(this));
         return json.toString();
     }
 }
