@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * Uses mostly code from {@link GSliderInt} and adds handling for negative values.
  */
-public class Slider extends GuiSection implements Valuable<Integer>, Resettable {
+public class Slider extends GuiSection implements Valuable<Integer, Slider>, Resettable<Slider> {
     private final INT.INTE in;
     private static final int midWidth = 8;
     private static final CharSequence setAmount = "Set amount";
@@ -43,6 +43,9 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     private final double initialDValue;
 
     private final int initialValue;
+
+    @Getter
+    private final ValueDisplay valueDisplay;
 
     /**
      * Makes slider unusable and greyed out
@@ -92,6 +95,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
         this.in = in;
         this.initialValue = in.get();
         this.initialDValue = in.getD();
+        this.valueDisplay = valueDisplay;
         // sort by key
         this.thresholds = thresholds.entrySet()
             .stream().sorted(Map.Entry.comparingByKey())
@@ -228,6 +232,14 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
         }
     };
+
+    public int getMax() {
+        return in.max();
+    }
+
+    public int getMin() {
+        return in.min();
+    }
 
     @Override
     public void render(SPRITE_RENDERER r, float ds) {

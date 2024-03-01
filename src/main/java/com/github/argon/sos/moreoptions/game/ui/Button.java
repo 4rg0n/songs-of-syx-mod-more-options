@@ -8,7 +8,7 @@ import util.gui.misc.GButt;
 
 public class Button extends GButt.ButtPanel {
 
-    private final COLOR color;
+    private COLOR color = COLOR.WHITE35;
 
     private boolean markSuccess = false;
     private boolean markError = false;
@@ -37,7 +37,7 @@ public class Button extends GButt.ButtPanel {
     }
 
     public Button(SPRITE label) {
-        this(label, COLOR.WHITE35);
+        super(label);
     }
 
     public Button(SPRITE label, COLOR color) {
@@ -68,10 +68,12 @@ public class Button extends GButt.ButtPanel {
         if (markError || markSuccess) {
             if (markUpdateTimerSeconds >= MARK_DURATION_SECONDS) {
                 markUpdateTimerSeconds = 0d;
+                markSuccess = false;
+                markError = false;
                 bgClear();
+            } else {
+                markUpdateTimerSeconds += seconds;
             }
-
-            markUpdateTimerSeconds += seconds;
         }
     }
 

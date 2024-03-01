@@ -37,7 +37,7 @@ public class Dictionary {
     /**
      * @return same list, but translated
      */
-    public <T extends Translatable> Collection<T> translate(Collection<T> translatables) {
+    public <T extends Translatable<String>> Collection<T> translate(Collection<T> translatables) {
         translatables.forEach(this::translate);
         return translatables;
     }
@@ -45,10 +45,10 @@ public class Dictionary {
     /**
      * Will look into {@link this#entries} for a match and replace title and description in the given object.
      */
-    public <T extends Translatable> T translate(T translatable) {
+    public <T extends Translatable<String>> T translate(T translatable) {
         String key = translatable.getKey();
 
-        if (key != null && translatable.isTranslate()) {
+        if (key != null && translatable.isTranslatable()) {
             Entry entry = get(key);
 
             translatable.setTitle(entry.getTitle());
@@ -86,6 +86,10 @@ public class Dictionary {
         entries.put(dictEntry.getKey(), dictEntry);
 
         return this;
+    }
+
+    public boolean has(String key) {
+        return entries.containsKey(key);
     }
 
     /**

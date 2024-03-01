@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -19,34 +20,30 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the volume of game sound effects
  */
-public class SoundsPanel extends GuiSection implements Valuable<Void> {
+public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Sounds, SoundsPanel> {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
 
     private final Map<String, Slider> ambienceSoundSliders;
     private final Map<String, Slider> settlementSoundSliders;
     private final Map<String, Slider> roomSoundSliders;
-    public SoundsPanel(
-        Map<String, MoreOptionsConfig.Range> soundsAmbienceConfig,
-        Map<String, MoreOptionsConfig.Range> soundsSettlementConfig,
-        Map<String, MoreOptionsConfig.Range> soundsRoomConfig
-    ) {
-        BuildResult<GuiSection, Map<String, Slider>> ambienceSlidersResult = SlidersBuilder.builder()
+    public SoundsPanel(MoreOptionsConfig.Sounds sounds) {
+        BuildResult<Table, Map<String, Slider>> ambienceSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
-            .definitions(sliders(soundsAmbienceConfig))
+            .definitions(sliders(sounds.getAmbience()))
             .build();
         GuiSection ambienceSoundSection = ambienceSlidersResult.getResult();
         this.ambienceSoundSliders = ambienceSlidersResult.getInteractable();
 
-        BuildResult<GuiSection, Map<String, Slider>> settlementSlidersResult = SlidersBuilder.builder()
+        BuildResult<Table, Map<String, Slider>> settlementSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
-            .definitions(sliders(soundsSettlementConfig))
+            .definitions(sliders(sounds.getSettlement()))
             .build();
         GuiSection settlementSoundSection = settlementSlidersResult.getResult();
         this.settlementSoundSliders = settlementSlidersResult.getInteractable();
 
-        BuildResult<GuiSection, Map<String, Slider>> roomSlidersResult = SlidersBuilder.builder()
+        BuildResult<Table, Map<String, Slider>> roomSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
-            .definitions(sliders(soundsRoomConfig))
+            .definitions(sliders(sounds.getRoom()))
             .build();
         GuiSection roomSoundSection = roomSlidersResult.getResult();
         this.roomSoundSliders = roomSlidersResult.getInteractable();
@@ -78,72 +75,69 @@ public class SoundsPanel extends GuiSection implements Valuable<Void> {
                     .key(config.getKey())
                     .title(config.getKey())
                     .build())
-                .sliderDefinition(SliderBuilder.Definition.builder()
-                    .min(config.getValue().getMin())
-                    .max(config.getValue().getMax())
+                .sliderDefinition(SliderBuilder.Definition.buildFrom(config.getValue())
                     .maxWidth(300)
-                    .valueDisplay(Slider.ValueDisplay.valueOf(config.getValue().getDisplayMode().name()))
                     .build())
                 .labelWidth(200)
                 .build()));
     }
 
-    public Map<String, Integer> getSoundsAmbienceConfig() {
+    @Override
+    public MoreOptionsConfig.Sounds getValue() {
+        return MoreOptionsConfig.Sounds.builder()
+            .ambience(getSoundsAmbienceConfig())
+            .settlement(getSoundsSettlementConfig())
+            .room(getSoundsRoomConfig())
+            .build();
+    }
+
+    public Map<String, MoreOptionsConfig.Range> getSoundsAmbienceConfig() {
         return ambienceSoundSliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
     }
 
-    public Map<String, Integer> getSoundsSettlementConfig() {
+    public Map<String, MoreOptionsConfig.Range> getSoundsSettlementConfig() {
         return settlementSoundSliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
     }
 
-    public Map<String, Integer> getSoundsRoomConfig() {
+    public Map<String, MoreOptionsConfig.Range> getSoundsRoomConfig() {
         return roomSoundSliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
     }
 
-    public void applyConfig(
-        Map<String, Integer> soundsAmbienceConfig,
-        Map<String, Integer> soundsSettlementConfig,
-        Map<String, Integer> soundsRoomConfig
-    ) {
-        log.trace("Applying UI ambience sounds config %s", soundsAmbienceConfig);
-        log.trace("Applying UI settlement sounds config %s", soundsSettlementConfig);
-        log.trace("Applying UI room sounds config %s", soundsRoomConfig);
+    @Override
+    public void setValue(MoreOptionsConfig.Sounds sounds) {
+        log.trace("Applying UI sounds config %s", sounds);
 
-        soundsAmbienceConfig.forEach((key, value) -> {
+        sounds.getAmbience().forEach((key, range) -> {
             if (ambienceSoundSliders.containsKey(key)) {
-                ambienceSoundSliders.get(key).setValue(value);
+                ambienceSoundSliders.get(key).setValue(range.getValue());
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
 
-        soundsSettlementConfig.forEach((key, value) -> {
+        sounds.getSettlement().forEach((key, range) -> {
             if (settlementSoundSliders.containsKey(key)) {
-                settlementSoundSliders.get(key).setValue(value);
+                settlementSoundSliders.get(key).setValue(range.getValue());
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
 
-        soundsRoomConfig.forEach((key, value) -> {
+        sounds.getRoom().forEach((key, range) -> {
             if (roomSoundSliders.containsKey(key)) {
-                roomSoundSliders.get(key).setValue(value);
+                roomSoundSliders.get(key).setValue(range.getValue());
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
-    }
-
-    @Override
-    public Void getValue() {
-        return null;
-    }
-
-    @Override
-    public void setValue(Void value) {
-
     }
 }

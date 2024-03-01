@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.Mapper;
+import com.github.argon.sos.moreoptions.util.Lists;
 import init.paths.ModInfo;
 import init.paths.PATHS;
 import lombok.AccessLevel;
@@ -22,7 +22,7 @@ public class GameModApi {
     private final static GameModApi instance = new GameModApi();
 
     public List<ModInfo> getCurrentMods() {
-        return Mapper.toJavaList(PATHS.currentMods());
+        return Lists.listFromLIST(PATHS.currentMods());
     }
 
     public Path getCurrentModPath() {

@@ -4,6 +4,7 @@ package com.github.argon.sos.moreoptions.game.api;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.booster.BoosterService;
 import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
+import com.github.argon.sos.moreoptions.init.Init;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import game.boosting.BoostableCat;
@@ -52,6 +53,7 @@ public class GameBoosterApi implements Init {
 
     @Override
     public void init() {
+        log.debug("Init game booster api");
         boosterService.reset();
     }
 }

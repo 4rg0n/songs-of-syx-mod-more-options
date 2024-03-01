@@ -4,18 +4,18 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.game.api.InitPhases;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
+import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.init.Initializer;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.BackupModal;
-import com.github.argon.sos.moreoptions.ui.MoreOptionsModal;
-import com.github.argon.sos.moreoptions.ui.UIGameConfig;
-import init.paths.ModInfo;
+import com.github.argon.sos.moreoptions.metric.MetricExporter;
+import com.github.argon.sos.moreoptions.ui.BackupDialog;
+import com.github.argon.sos.moreoptions.ui.MoreOptionsView;
+import com.github.argon.sos.moreoptions.ui.UiGameConfig;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
 import util.info.INFO;
 
@@ -40,17 +40,15 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 	private final MoreOptionsConfigurator configurator = MoreOptionsConfigurator.getInstance();
 	@Getter
 	private final GameApis gameApis = GameApis.getInstance();
+	private final Initializer initializer = Initializer.getInstance();
 
 	@Getter
 	private final Dictionary dictionary = Dictionary.getInstance();
 
 	@Getter
-	private UIGameConfig uiGameConfig;
+	private final UiGameConfig uiGameConfig = UiGameConfig.getInstance();
 
 	private Instance instance;
-	private Modal<MoreOptionsModal> moreOptionsModal;
-	@Nullable
-	private ModInfo modInfo;
 
 	public final static Level LOG_LEVEL_DEFAULT = Level.TRACE;
 
@@ -70,35 +68,25 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 
 	@Override
 	public void initBeforeGameCreated() {
-		gameApis.initBeforeGameCreated();
+		initializer.initBeforeGameCreated();
 
 		// determine log level
 		String logLevelName = System.getenv("MO.LOG_LEVEL");
 		Level level = Optional.ofNullable(logLevelName)
 			.flatMap(Level::fromName)
-			.orElse(configStore.initMetaInfo().getLogLevel());
+			.orElseGet(() -> configStore.getMetaInfo().map(
+				MoreOptionsConfig.Meta::getLogLevel)
+				.orElse(LOG_LEVEL_DEFAULT));
 		Loggers.setLevels(level);
 
 		log.debug("PHASE: initBeforeGameCreated");
 		// custom error handling
 		Errors.setHandler(new MoreOptionsErrorHandler<>(this));
-
-		// load backup config if present
-		configStore.loadBackupConfig().ifPresent(configStore::setBackupConfig);
-		uiGameConfig = new UIGameConfig(
-			gameApis,
-			configurator,
-			configStore
-		);
-
-		// load dictionary entries from file
-		configStore.loadDictionary()
-			.ifPresent(dictionary::addAll);
 	}
 
 	@Override
 	public void initCreateInstance() {
-		gameApis.initCreateInstance();
+		initializer.initCreateInstance();
 	}
 
 
@@ -114,21 +102,10 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 			log.debug("Creating Mod Instance");
 
 			// try to get current config and merge with defaults; or use whole defaults
-			MoreOptionsConfig config = configStore.initConfig();
-
-			this.modInfo = gameApis.modApi().getCurrentMod()
-				.orElse(null);
-
-			// don't apply when there's a backup
-			if (!configStore.getBackupConfig().isPresent()) {
-				configurator.applyConfig(config);
-			}
-			moreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
-				new MoreOptionsModal(configStore, modInfo));
-			uiGameConfig.initDebug(moreOptionsModal, configStore);
+			MoreOptionsConfig config = configStore.getCurrentConfig();
 
 			// add description from game boosters
-			gameApis.boosterApi().getBoosters()
+			gameApis.booster().getBoosters()
 				.values().forEach(moreOptionsBoosters -> dictionary.add(moreOptionsBoosters.getAdd()));
 
 			instance = new Instance(this);
@@ -142,41 +119,44 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 	@Override
 	public void initGameRunning() {
 		log.debug("PHASE: initGameRunning");
-		gameApis.initGameRunning();
+		initializer.initGameRunning();
 	}
 
 	@Override
 	public void initGamePresent() {
 		log.debug("PHASE: initGamePresent");
-		gameApis.initGamePresent();
-
+		initializer.initGamePresent();
 		// config should already be loaded or use default
-		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig()
-			.orElse(configStore.getDefaultConfig());
+		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig();
 
-		uiGameConfig.init(moreOptionsModal, moreOptionsConfig);
+		Modal<MoreOptionsView> moreOptionsModal = uiGameConfig.buildModal(MOD_INFO.name.toString(), moreOptionsConfig);
+		uiGameConfig.initDebugActions(moreOptionsModal, configStore);
 		uiGameConfig.inject(moreOptionsModal);
 
 		Optional<MoreOptionsConfig> backupConfig = configStore.getBackupConfig();
 		// show backup dialog?
 		if (backupConfig.isPresent()) {
 			log.debug("Backup config present at %s", backupConfig.get().getFilePath());
-			Modal<BackupModal> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupModal());
-			Modal<MoreOptionsModal> backupMoreOptionsModal = new Modal<>(MOD_INFO.name.toString(),
-				new MoreOptionsModal(configStore, modInfo));
+			Modal<BackupDialog> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupDialog());
+			Modal<MoreOptionsView> backupMoreOptionsModal = uiGameConfig.buildModal(
+				MOD_INFO.name + " Backup",
+				backupConfig.get());
 
 			configStore.setCurrentConfig(backupConfig.get());
-			uiGameConfig.initForBackup(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
+			uiGameConfig.initBackupActions(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
 
 			backupModal.show();
 		} else {
-			moreOptionsModal.getSection().applyConfig(moreOptionsConfig);
+			configurator.applyConfig(moreOptionsConfig);
 		}
+
+		// FIXME
+		//      * NOTHING
 
 		// TODO
 		//     * further testing
 
-		// TODO
+		// TODO FUTURE
 		//  	is there a better way to streamline the process of adding new ui elements with their data and config?
 		//      * better config mapping? Race Interaction JsonE and ObjectMapper?
 		//      * easier mapping? mapstruct?
@@ -188,28 +168,33 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 
 	@Override
 	public void initGameSaveLoaded(MoreOptionsConfig config) {
+		initializer.initGameSaveLoaded(config);
 		// game will initialize new instances of the cached class references on load
-		gameApis.eventsApi().clearCached();
-		gameApis.soundsApi().clearCached();
-		gameApis.weatherApi().clearCached();
-		gameApis.boosterApi().clearCached();
+		gameApis.events().clearCached();
+		gameApis.sounds().clearCached();
+		gameApis.weather().clearCached();
+		gameApis.booster().clearCached();
 
 		// re-apply config when new game is loaded (only when there's no backup)
 		if (!configStore.getBackupConfig().isPresent()) {
 			log.debug("Reapplying config because of game load.");
 			configurator.applyConfig(config);
 		}
+
+		// start a new export file on load
+		MetricExporter.getInstance().newExportFile();
 	}
 
 	@Override
 	public void update(double seconds) {
-//		log.trace("PHASE: update");
+//		log.trace("PHASE: update %s", seconds);
 	}
 
 	@Override
 	public void crash(Throwable throwable) {
 		log.warn("Game crash detected!");
 		log.debug("", throwable);
+		initializer.crash(throwable);
 
 		try {
 			// backup and delete config file

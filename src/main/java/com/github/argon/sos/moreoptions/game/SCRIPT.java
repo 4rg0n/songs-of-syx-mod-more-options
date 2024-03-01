@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game;
 
-public interface SCRIPT<T> extends script.SCRIPT {
+public interface SCRIPT<Config> extends script.SCRIPT {
     /**
      * Executed when the game is running
      */
@@ -14,7 +14,7 @@ public interface SCRIPT<T> extends script.SCRIPT {
     /**
      * @param config nullable
      */
-    void initGameSaveLoaded(T config);
+    void initGameSaveLoaded(Config config);
 
     void update(double seconds);
 

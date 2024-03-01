@@ -1,12 +1,16 @@
 package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.game.GameUiNotAvailableException;
+import com.github.argon.sos.moreoptions.game.ui.NonHidingPopup;
+import com.github.argon.sos.moreoptions.game.ui.NotificationPopup;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
+import view.main.Interrupters;
 import view.main.VIEW;
 import view.sett.SettView;
 import view.world.WorldView;
@@ -16,13 +20,21 @@ import java.util.Optional;
 /**
  * For hooking into the games UI
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameUiApi {
 
     private final static Logger log = Loggers.getLogger(GameUiApi.class);
 
     @Getter(lazy = true)
     private final static GameUiApi instance = new GameUiApi();
+
+    @Getter
+    @Accessors(fluent = true)
+    private NonHidingPopup popup;
+
+    @Getter
+    @Accessors(fluent = true)
+    private NotificationPopup notification;
 
     /**
      * Contains the settlements ui elements
@@ -69,5 +81,26 @@ public class GameUiApi {
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * Contains UIs like a yes/no prompt or a text input
+     *
+     * @throws GameUiNotAvailableException when ui isn't initialized yet
+     */
+    public Interrupters interrupters() {
+        Interrupters interrupters = VIEW.inters();
+
+        if (interrupters == null) {
+            throw new GameUiNotAvailableException("Games interrupt ui isn't initialized yet.");
+        }
+
+        return interrupters;
+    }
+
+   public void init() {
+        log.debug("Init game ui api");
+        popup = new NonHidingPopup(VIEW.inters().manager);
+        notification = new NotificationPopup(VIEW.inters().manager);
     }
 }

@@ -1,74 +1,69 @@
 package com.github.argon.sos.moreoptions.ui.builder.section;
 
 import com.github.argon.sos.moreoptions.Dictionary;
-import com.github.argon.sos.moreoptions.game.ui.Toggler;
+import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
+import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Table;
+import com.github.argon.sos.moreoptions.game.ui.Tabulator;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.BoosterSliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.TableHeaderBuilder;
-import com.github.argon.sos.moreoptions.util.UiUtil;
+import com.github.argon.sos.moreoptions.ui.builder.element.TableBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.gui.GuiSection;
-import snake2d.util.gui.renderable.RENDEROBJ;
-import util.gui.table.GScrollRows;
+import snake2d.util.sprite.text.StringInputSprite;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String, Toggler<Integer>>> {
+public class BoosterSlidersBuilder implements UiBuilder<Table, Map<String, Tabulator<String, Slider, Integer>>> {
     private final Map<String, Map<String, BoosterSliderBuilder.Definition>> definitions;
     private final int displayHeight;
-
+    @Nullable
+    private final StringInputSprite search;
 
     /**
      * Builds a section with a scrollable list of sliders with labels in front of them.
      * Each entry is a slider with its {@link SliderBuilder.Definition}
      */
-    public BuildResult<GScrollRows, Map<String, Toggler<Integer>>> build() {
-
-        List<RENDEROBJ> renderobjs = new LinkedList<>();
-        Map<String, Toggler<Integer>> elements = new HashMap<>();
-        Map<String, List<List<? extends GuiSection>>> mapRows = new HashMap<>();
-        List<List<? extends GuiSection>> rows = new ArrayList<>();
+    public BuildResult<Table, Map<String, Tabulator<String, Slider, Integer>>> build() {
+        Map<String, Tabulator<String, Slider, Integer>> elements = new HashMap<>();
+        Map<String, List<ColumnRow>> mapRows = new HashMap<>();
 
         for(String keyDef: definitions.keySet()) {
-            List<List<? extends GuiSection>> innerList = new ArrayList<>();
+            List<ColumnRow> innerList = new ArrayList<>();
             definitions.get(keyDef).entrySet()
-                    .stream().sorted(Comparator.comparing(entry -> entry.getValue().getLabelDefinition().getTitle()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                            (oldValue, newValue) -> oldValue, LinkedHashMap::new)).forEach((key, definition) -> {
-                        BuildResult<List<GuiSection>, Toggler<Integer>> buildResult = BoosterSliderBuilder.builder()
-                                .definition(definition)
-                                .build();
-                        rows.add(buildResult.getResult());
-                        elements.put(key, buildResult.getInteractable());
-                        innerList.add(buildResult.getResult());
+                .stream().sorted(Comparator.comparing(entry -> entry.getValue().getLabelDefinition().getTitle()))
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey, Map.Entry::getValue,
+                    (oldValue, newValue) -> oldValue, LinkedHashMap::new))
+                .forEach((key, definition) -> {
+                    BuildResult<List<GuiSection>, Tabulator<String, Slider, Integer>> buildResult = BoosterSliderBuilder.builder()
+                            .definition(definition)
+                            .build();
 
-                    });
+                    ColumnRow columnRow = buildResult.toColumnRow().getResult();
+                    columnRow.setSearchTerm(key);
+                    elements.put(key, buildResult.getInteractable());
+                    innerList.add(columnRow);
+                });
             mapRows.put(keyDef, innerList);
         }
 
-        int widthTotal = UiUtil.getMaxCombinedColumnWidth(rows);
+        Table table = TableBuilder.builder()
+            .rowsCategorized(mapRows)
+            .evenOdd(true)
+            .search(search)
+            .displayHeight(displayHeight)
+            .build().getResult();
 
-        for (String key: definitions.keySet()) {
-            renderobjs.addAll(TableHeaderBuilder.builder()
-                    .evenOdd(true)
-                    .displayHeight(displayHeight)
-                    .rows(rows)
-                    .widthTotal(widthTotal)
-                    .key(key)
-                    .mapRows(mapRows)
-                    .build()
-                    .getResults());
-        }
-
-        GScrollRows gScrollRows = new GScrollRows(renderobjs, this.displayHeight, widthTotal);
-
-        return BuildResult.<GScrollRows, Map<String, Toggler<Integer>>>builder()
-            .result(gScrollRows)
+        return BuildResult.<Table, Map<String, Tabulator<String, Slider, Integer>>>builder()
+            .result(table)
             .interactable(elements)
             .build();
     }
@@ -77,15 +72,17 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
         return new Builder();
     }
 
+    @Setter
     public static class Builder {
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private Map<String, Map<String, BoosterSliderBuilder.Definition>> definitions;
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private int displayHeight = 100;
+
+        @Accessors(fluent = true)
+        private StringInputSprite search;
 
         public Builder translate(Map<String, Map<String, BoosterSliderBuilder.Definition>> definitions) {
             Dictionary dictionary = Dictionary.getInstance();
@@ -96,11 +93,11 @@ public class BoosterSlidersBuilder implements UiBuilder<GScrollRows, Map<String,
 
             return definitions(definitions);
         }
-        public BuildResult<GScrollRows, Map<String, Toggler<Integer>>> build() {
+        public BuildResult<Table, Map<String, Tabulator<String, Slider, Integer>>> build() {
             assert definitions != null : "definitions must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
 
-            return new BoosterSlidersBuilder(definitions, displayHeight).build();
+            return new BoosterSlidersBuilder(definitions, displayHeight, search).build();
         }
     }
 }

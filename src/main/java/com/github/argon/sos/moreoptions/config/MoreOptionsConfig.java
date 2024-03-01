@@ -1,19 +1,23 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.json.Json;
+import com.github.argon.sos.moreoptions.json.JsonMapper;
+import com.github.argon.sos.moreoptions.json.annotation.JsonIgnore;
 import com.github.argon.sos.moreoptions.log.Level;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
 @Builder
 @EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsConfig {
 
     public final static int VERSION = 2;
@@ -24,6 +28,7 @@ public class MoreOptionsConfig {
     public final static String FILE_NAME = "MoreOptions";
     public final static String FILE_NAME_BACKUP = FILE_NAME + ".backup";
 
+    @JsonIgnore
     @EqualsAndHashCode.Exclude
     private Path filePath;
 
@@ -32,30 +37,96 @@ public class MoreOptionsConfig {
 
     @Builder.Default
     private Level logLevel = Level.WARN;
-    @Builder.Default
-    private Map<String, Boolean> eventsSettlement = new HashMap<>();
 
     @Builder.Default
-    private Map<String, Boolean> eventsWorld = new HashMap<>();
+    private Sounds sounds = Sounds.builder().build();
 
     @Builder.Default
-    private Map<String, Range> eventsChance = new HashMap<>();
-
-    @Builder.Default
-    private Map<String, Range> soundsAmbience = new HashMap<>();
-
-    @Builder.Default
-    private Map<String, Range> soundsSettlement = new HashMap<>();
-    @Builder.Default
-    private Map<String, Range> soundsRoom = new HashMap<>();
+    private Events events = Events.builder().build();
     @Builder.Default
     private Map<String, Range> weather = new HashMap<>();
     @Builder.Default
     private Map<String, Range> boosters = new HashMap<>();
+    @Builder.Default
+    private Metrics metrics = Metrics.builder().build();
 
     @Data
     @Builder
     @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Events {
+        @Builder.Default
+        private Map<String, Boolean> settlement = new HashMap<>();
+
+        @Builder.Default
+        private Map<String, Boolean> world = new HashMap<>();
+
+        @Builder.Default
+        private Map<String, Range> chance = new HashMap<>();
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Sounds {
+        @Builder.Default
+        private Map<String, Range> ambience = new HashMap<>();
+
+        @Builder.Default
+        private Map<String, Range> settlement = new HashMap<>();
+        @Builder.Default
+        private Map<String, Range> room = new HashMap<>();
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Metrics {
+        @Builder.Default
+        private boolean enabled = false;
+
+        @Builder.Default
+        private Range collectionRateSeconds = Range.builder()
+            .min(5)
+            .value(15)
+            .max(600)
+            .applyMode(Range.ApplyMode.ADD)
+            .displayMode(Range.DisplayMode.ABSOLUTE)
+            .build();
+
+        @Builder.Default
+        private Range exportRateMinutes= Range.builder()
+            .min(1)
+            .value(30)
+            .max(600)
+            .applyMode(Range.ApplyMode.ADD)
+            .displayMode(Range.DisplayMode.ABSOLUTE)
+            .build();
+
+        private List<String> stats;
+
+        public void setStats(List<String> stats) {
+            stats.sort(String::compareTo);
+            this.stats = stats;
+        }
+
+        public static class MetricsBuilder {
+            private List<String> stats = new ArrayList<>();
+
+            public MetricsBuilder stats(List<String> stats) {
+                stats.sort(String::compareTo);
+                this.stats = stats;
+                return this;
+            }
+        }
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Range {
         @Builder.Default
         private int value = 0;
@@ -75,12 +146,34 @@ public class MoreOptionsConfig {
         public enum DisplayMode {
             NONE,
             ABSOLUTE,
-            PERCENTAGE
+            PERCENTAGE;
+
+            public static DisplayMode fromValueDisplay(Slider.ValueDisplay valueDisplay) {
+                switch (valueDisplay) {
+                    case PERCENTAGE:
+                        return DisplayMode.PERCENTAGE;
+                    case ABSOLUTE:
+                        return DisplayMode.ABSOLUTE;
+                    default:
+                    case NONE:
+                        return DisplayMode.NONE;
+                }
+            }
         }
 
         public enum ApplyMode {
             ADD,
-            MULTI
+            MULTI;
+
+            public static ApplyMode fromValueDisplay(Slider.ValueDisplay valueDisplay) {
+                switch (valueDisplay) {
+                    case ABSOLUTE:
+                        return ApplyMode.ADD;
+                    default:
+                    case NONE:
+                        return ApplyMode.MULTI;
+                }
+            }
         }
 
         public static Range defaultBoosterAdd() {
@@ -106,9 +199,22 @@ public class MoreOptionsConfig {
         public Range clone() {
             return Range.builder()
                 .displayMode(displayMode)
+                .applyMode(applyMode)
                 .max(max)
                 .min(min)
                 .value(value)
+                .build();
+        }
+
+        public static Range fromSlider(Slider slider) {
+            return MoreOptionsConfig.Range.builder()
+                .value(slider.getValue())
+                .max(slider.getMax())
+                .min(slider.getMin())
+                .displayMode(MoreOptionsConfig.Range.DisplayMode
+                    .fromValueDisplay(slider.getValueDisplay()))
+                .applyMode(MoreOptionsConfig.Range.ApplyMode
+                    .fromValueDisplay(slider.getValueDisplay()))
                 .build();
         }
     }
@@ -116,6 +222,7 @@ public class MoreOptionsConfig {
     @Data
     @Builder
     @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Meta {
         @Builder.Default
         private int version = VERSION;
@@ -126,6 +233,7 @@ public class MoreOptionsConfig {
 
     @Getter
     @Builder
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class BoosterEntry {
         private final String key;
 
@@ -139,4 +247,12 @@ public class MoreOptionsConfig {
        * toggle deposit overlay when building
 
      */
+
+    /**
+     * Only for debugging purposes
+     */
+    public String toJson() {
+        Json json = new Json(JsonMapper.mapObject(this));
+        return json.toString();
+    }
 }

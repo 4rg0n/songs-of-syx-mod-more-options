@@ -7,12 +7,11 @@ import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider> {
@@ -24,19 +23,18 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
             definition.getLabelDefinition().setMaxWidth(definition.getLabelWidth());
         }
 
-        GuiSection label = LabelBuilder.builder()
-            .translate(definition.getLabelDefinition())
-            .build().getResult();
-        label.pad(10, 5);
         Slider slider = SliderBuilder.builder()
             .definition(definition.getSliderDefinition())
             .build().getResult();
         slider.pad(10, 5);
 
-        List<GuiSection> row = Stream.of(
-            label,
-            slider
-        ).collect(Collectors.toList());
+        List<GuiSection> row = LabeledBuilder.builder()
+            .translate(LabeledBuilder.Definition.builder()
+                .labelDefinition(definition.getLabelDefinition())
+                .element(slider)
+                .build())
+            .build()
+            .getResult();
 
         return BuildResult.<List<GuiSection>, Slider>builder()
             .result(row)
@@ -47,10 +45,10 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
     public static Builder builder() {
         return new Builder();
     }
-
+    
+    @Setter
     public static class Builder {
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private Definition definition;
 
@@ -70,7 +68,7 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
 
     @Data
     @lombok.Builder
-    public static class Definition implements Translatable {
+    public static class Definition implements Translatable<String> {
 
         private LabelBuilder.Definition labelDefinition;
         private SliderBuilder.Definition sliderDefinition;
@@ -84,8 +82,8 @@ public class LabeledSliderBuilder implements UiBuilder<List<GuiSection>, Slider>
         }
 
         @Override
-        public boolean isTranslate() {
-            return labelDefinition.isTranslate();
+        public boolean isTranslatable() {
+            return labelDefinition.isTranslatable();
         }
 
         @Override

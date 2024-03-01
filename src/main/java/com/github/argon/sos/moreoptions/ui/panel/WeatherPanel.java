@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -16,12 +17,12 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class WeatherPanel extends GuiSection implements Valuable<Void> {
+public class WeatherPanel extends GuiSection implements Valuable<Map<String, MoreOptionsConfig.Range>, WeatherPanel> {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
     @Getter
     private final Map<String, Slider> sliders;
     public WeatherPanel(Map<String, MoreOptionsConfig.Range> weatherConfig) {
-        BuildResult<GuiSection, Map<String, Slider>> slidersBuildResult = SlidersBuilder.builder()
+        BuildResult<Table, Map<String, Slider>> slidersBuildResult = SlidersBuilder.builder()
             .displayHeight(400)
             .defaults(weatherConfig)
             .build();
@@ -34,30 +35,24 @@ public class WeatherPanel extends GuiSection implements Valuable<Void> {
         addDownC(0, section);
     }
 
-    public Map<String, Integer> getConfig() {
+    @Override
+    public Map<String, MoreOptionsConfig.Range> getValue() {
         return sliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
     }
 
-    public void applyConfig(Map<String, Integer> config) {
+    @Override
+    public void setValue(Map<String, MoreOptionsConfig.Range> config) {
         log.trace("Applying UI weather config %s", config);
 
-        config.forEach((key, value) -> {
+        config.forEach((key, range) -> {
             if (sliders.containsKey(key)) {
-                sliders.get(key).setValue(value);
+                sliders.get(key).setValue(range.getValue());
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }
         });
-    }
-
-    @Override
-    public Void getValue() {
-        return null;
-    }
-
-    @Override
-    public void setValue(Void value) {
-
     }
 }

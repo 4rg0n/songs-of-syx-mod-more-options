@@ -1,10 +1,12 @@
 package com.github.argon.sos.moreoptions.log;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class Level {
     @Getter

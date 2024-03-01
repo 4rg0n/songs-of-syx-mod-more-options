@@ -23,6 +23,22 @@ ui.moreOptions.version.mod: {
 ui.moreOptions.version.config: {
     TITLE: "Config Version: {0}",
     },
+ui.moreOptions.metrics.export-file: {
+    TITLE: "Export File",
+    DESC: "Name of the CSV file with the current exported metrics. Everytime the stat export list changes and for every new game session a new export file will be created.",
+    },
+ui.moreOptions.metrics.export-rate-minutes: {
+    TITLE: "Export rate",
+    DESC: "How often metrics shall be exported as CSV file in MINUTES.",
+    },
+ui.moreOptions.metrics.collection-rate-seconds: {
+    TITLE: "Collection rate",
+    DESC: "How often metrics shall be collected from the game in SECONDS.",
+    },
+ui.moreOptions.metrics.toggle: {
+    TITLE: "Metrics Export",
+    DESC: "Enables or disables the collection and export of metrics.",
+    },
 event.settlement.raceWars: {
 	TITLE: "Race Wars",
 	DESC: "A fight between different races in your settlement can break out.",

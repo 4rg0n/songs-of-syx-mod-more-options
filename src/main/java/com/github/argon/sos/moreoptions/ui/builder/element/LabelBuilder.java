@@ -66,7 +66,7 @@ public class LabelBuilder implements UiBuilder<GuiSection, GText> {
 
     @Data
     @lombok.Builder
-    public static class Definition implements Translatable {
+    public static class Definition implements Translatable<String> {
         private String key;
         private String title;
 
@@ -76,7 +76,7 @@ public class LabelBuilder implements UiBuilder<GuiSection, GText> {
         private int maxWidth = 0;
 
         @lombok.Builder.Default
-        private boolean translate = true;
+        private boolean translatable = true;
 
         @lombok.Builder.Default
         private Font font = UI.FONT().H2;

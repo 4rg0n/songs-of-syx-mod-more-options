@@ -1,7 +1,14 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import snake2d.util.gui.renderable.RENDEROBJ;
+import com.github.argon.sos.moreoptions.game.Action;
 
-public interface Resettable extends RENDEROBJ {
-    void reset();
+/**
+ * Used to reset the state of an element
+ */
+public interface Resettable<Element> {
+    default void reset() {};
+
+    default void onReset(Action<Element> resetAction) {
+        throw new UnsupportedOperationException("Method is not implemented");
+    }
 }

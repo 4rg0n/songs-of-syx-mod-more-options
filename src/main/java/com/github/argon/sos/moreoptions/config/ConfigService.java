@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
+import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATH;
@@ -8,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import org.mapstruct.factory.Mappers;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
@@ -27,7 +29,7 @@ public class ConfigService {
     @Getter(lazy = true)
     private final static ConfigService instance = new ConfigService(
         JsonService.getInstance(),
-        ConfigMapper.getInstance()
+        Mappers.getMapper(ConfigMapper.class)
     );
 
     private final JsonService jsonService;
@@ -40,9 +42,10 @@ public class ConfigService {
         }
 
         try {
+            if (log.isLevel(Level.DEBUG)) log.debug("Deleting file: %s", path.get(fileName));
             path.delete(fileName);
         } catch (Exception e) {
-            log.warn("Could not delete file %s", path.get(fileName));
+            if (log.isLevel(Level.WARN)) log.warn("Could not delete file %s", path.get(fileName));
             return false;
         }
 
@@ -97,8 +100,8 @@ public class ConfigService {
                 }
             });
         } catch (Exception e) {
-            log.error("Could load config. Using default config.", e);
-            return Optional.ofNullable(defaultConfig);
+            log.error("Could load config.", e);
+            return Optional.empty();
         }
     }
 
@@ -138,26 +141,5 @@ public class ConfigService {
         });
 
         return jsonService.saveJson(jsonEntries, path, fileName);
-    }
-
-    public MoreOptionsConfig mergeMissing(MoreOptionsConfig target, MoreOptionsConfig source) {
-        target.setEventsChance(mergeMissing(target.getEventsChance(), source.getEventsChance()));
-        target.setEventsSettlement(mergeMissing(target.getEventsSettlement(), source.getEventsSettlement()));
-        target.setEventsWorld(mergeMissing(target.getEventsWorld(), source.getEventsWorld()));
-        target.setSoundsAmbience(mergeMissing(target.getSoundsAmbience(), source.getSoundsAmbience()));
-        target.setSoundsRoom(mergeMissing(target.getSoundsRoom(), source.getSoundsRoom()));
-        target.setSoundsSettlement(mergeMissing(target.getSoundsSettlement(), source.getSoundsSettlement()));
-        target.setWeather(mergeMissing(target.getWeather(), source.getWeather()));
-        target.setBoosters(mergeMissing(target.getBoosters(), source.getBoosters()));
-
-        return target;
-    }
-
-    private <T> Map<String, T> mergeMissing(Map<String, T> target, Map<String, T> source) {
-        source.forEach((key, value) -> {
-            target.computeIfAbsent(key, s -> value);
-        });
-
-        return target;
     }
 }

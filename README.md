@@ -6,6 +6,7 @@ Adds a menu with more options for the game:
 * Toggle certain random events
 * Tune the amount of weather effects like snow
 * Influence bonuses
+* Collect and export game stats into a CSV file
 * Game crash detection and backup mechanism
 
 ![Button](doc/img/button.png)
@@ -13,6 +14,7 @@ Adds a menu with more options for the game:
 ![Events](doc/img/events.png)
 ![Weather](doc/img/weather.png)
 ![Boosters](doc/img/boosters.png)
+![Metrics](doc/img/metrics.png)
 ![Backup](doc/img/backup.png)
 
 # Getting started

@@ -1,8 +1,10 @@
 package com.github.argon.sos.moreoptions.ui.builder.element;
 
+import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
+import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Singular;
@@ -82,5 +84,13 @@ public class SliderBuilder implements UiBuilder<Slider, Slider> {
 
         @lombok.Builder.Default
         private Slider.ValueDisplay valueDisplay = Slider.ValueDisplay.PERCENTAGE;
+
+        public static DefinitionBuilder buildFrom(MoreOptionsConfig.Range range) {
+            return SliderBuilder.Definition.builder()
+                .min(range.getMin())
+                .max(range.getMax())
+                .value(range.getValue())
+                .valueDisplay(UiUtil.fromDisplayMode(range.getDisplayMode()));
+        }
     }
 }

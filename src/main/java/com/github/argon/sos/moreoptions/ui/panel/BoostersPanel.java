@@ -1,33 +1,43 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
-import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsDefaults;
+import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
-import com.github.argon.sos.moreoptions.game.ui.Toggler;
+import com.github.argon.sos.moreoptions.game.ui.Table;
+import com.github.argon.sos.moreoptions.game.ui.Tabulator;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
-import com.github.argon.sos.moreoptions.ui.builder.element.*;
+import com.github.argon.sos.moreoptions.ui.builder.element.BoosterSliderBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
+import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.section.BoosterSlidersBuilder;
 import game.boosting.BoostableCat;
+import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
-import util.gui.table.GScrollRows;
+import snake2d.util.sprite.text.StringInputSprite;
+import util.gui.misc.GInput;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Contains sliders to influence values of game boosters
  */
-public class BoostersPanel extends GuiSection implements Valuable<Void> {
+public class BoostersPanel extends GuiSection implements Valuable<Map<String, MoreOptionsConfig.Range>, BoostersPanel> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
-    private final Map<String, Toggler<Integer>> sliders;
+    private final Map<String, Tabulator<String, Slider, Integer>> slidersWithToggle;
+    private final MoreOptionsDefaults defaults = MoreOptionsDefaults.getInstance();
 
     public BoostersPanel(List<Entry> boosterEntries) {
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
@@ -44,48 +54,48 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
             }
         }
 
+        // build booster sliders with add and perc toggle
         Map<String, Map<String, BoosterSliderBuilder.Definition>> boosterDefinitions = new HashMap<>();
         groupedBoosterEntries.keySet().forEach(cat -> {
             List<Entry> groupedBoostersByCat = groupedBoosterEntries.get(cat);
             boosterDefinitions.put(cat, groupedBoostersByCat.stream()
                 .collect(Collectors.toMap(
                     Entry::getKey,
-                    BoostersPanel::buildSliderDefinition)));
+                    this::buildSliderDefinition)));
         });
 
-        BuildResult<GScrollRows, Map<String, Toggler<Integer>>> buildResult = BoosterSlidersBuilder.builder()
-                .displayHeight(500)
-                .translate(boosterDefinitions)
-                .build();
+        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
+        BuildResult<Table, Map<String, Tabulator<String, Slider, Integer>>> buildResult = BoosterSlidersBuilder.builder()
+            .displayHeight(600)
+            .search(searchInput)
+            .translate(boosterDefinitions)
+            .build();
 
-        GScrollRows gScrollRows = buildResult.getResult();
-        sliders = buildResult.getInteractable();
-        addDown(10, gScrollRows.view());
+
+        Table boosterTable = buildResult.getResult();
+        slidersWithToggle = buildResult.getInteractable();
+        addDownC(0, new GInput(searchInput));
+        addDownC(10, boosterTable);
     }
 
-    public Map<String, MoreOptionsConfig.Range> getConfig() {
-        return sliders.entrySet().stream()
+    @Override
+    public Map<String, MoreOptionsConfig.Range> getValue() {
+        return slidersWithToggle.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                entry -> {
-                    Toggler<Integer> toggler = entry.getValue();
-                    return MoreOptionsConfig.Range.builder()
-                        .value(toggler.getValue())
-                        .applyMode(MoreOptionsConfig.Range.ApplyMode.valueOf(
-                            toggler.getActiveInfo().getKey().toUpperCase()))
-                        .build();
-                }));
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue().getActiveTab())));
     }
 
-    public void applyConfig(Map<String, MoreOptionsConfig.Range> config) {
+    @Override
+    public void setValue(Map<String, MoreOptionsConfig.Range> config) {
         log.trace("Applying Booster config %s", config);
 
         config.forEach((key, range) -> {
-            if (sliders.containsKey(key)) {
-                Toggler<Integer> toggler = sliders.get(key);
-                toggler.reset();
-                toggler.toggle(range.getApplyMode().name().toLowerCase());
-                toggler.setValue(range.getValue());
+            if (slidersWithToggle.containsKey(key)) {
+                Tabulator<String, Slider, Integer> tabulator = slidersWithToggle.get(key);
+                tabulator.reset();
+                tabulator.tab(range.getApplyMode().name().toLowerCase());
+                tabulator.setValue(range.getValue());
 
             } else {
                 log.warn("No slider with key %s found in UI", key);
@@ -93,18 +103,19 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
         });
     }
 
-    private static BoosterSliderBuilder.Definition buildSliderDefinition(Entry entry) {
+    private BoosterSliderBuilder.Definition buildSliderDefinition(Entry entry) {
         MoreOptionsConfig.Range rangeMulti;
         MoreOptionsConfig.Range rangeAdd;
+        String activeKey;
 
         if (entry.getRange().getApplyMode().equals(MoreOptionsConfig.Range.ApplyMode.MULTI)) {
             rangeMulti = entry.getRange();
-            rangeAdd = MoreOptionsScript.getConfigStore()
-                .getDefaults().getBoostersAdd().get(entry.getKey());
+            rangeAdd = defaults.getBoostersAdd().get(entry.getKey());
+            activeKey = "multi";
         } else {
-            rangeMulti = MoreOptionsScript.getConfigStore()
-                .getDefaults().getBoostersMulti().get(entry.getKey());
+            rangeMulti = defaults.getBoostersMulti().get(entry.getKey());
             rangeAdd = entry.getRange();
+            activeKey = "add";
         }
 
         return BoosterSliderBuilder.Definition.builder()
@@ -112,39 +123,23 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
                 .key(entry.getKey())
                 .title(entry.getKey())
                 .build())
-            .sliderAddDefinition(SliderBuilder.Definition.builder()
+            .sliderAddDefinition(SliderBuilder.Definition.buildFrom(rangeAdd)
                 .maxWidth(300)
-                .min(rangeAdd.getMin())
-                .max(rangeAdd.getMax())
-                .value(rangeAdd.getValue())
-                .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
                 .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))
                 .threshold((int) (0.50 * rangeAdd.getMax()), COLOR.ORANGE100.shade(0.7d))
                 .threshold((int) (0.75 * rangeAdd.getMax()), COLOR.RED100.shade(0.7d))
                 .threshold((int) (0.90 * rangeAdd.getMax()), COLOR.RED2RED)
                 .build())
-            .sliderMultiDefinition(SliderBuilder.Definition.builder()
+            .sliderMultiDefinition(SliderBuilder.Definition.buildFrom(rangeMulti)
                 .maxWidth(300)
-                .min(rangeMulti.getMin())
-                .max(rangeMulti.getMax())
-                .value(rangeMulti.getValue())
-                .valueDisplay(Slider.ValueDisplay.PERCENTAGE)
                 .threshold((int) (0.10 * rangeMulti.getMax()), COLOR.YELLOW100.shade(0.7d))
                 .threshold((int) (0.50 * rangeMulti.getMax()), COLOR.ORANGE100.shade(0.7d))
                 .threshold((int) (0.75 * rangeMulti.getMax()), COLOR.RED100.shade(0.7d))
                 .threshold((int) (0.90 * rangeMulti.getMax()), COLOR.RED2RED)
                 .build())
+            .boosters(entry.getBoosters())
+            .activeKey(activeKey)
             .build();
-    }
-
-    @Override
-    public Void getValue() {
-        return null;
-    }
-
-    @Override
-    public void setValue(Void value) {
-
     }
 
     @Data
@@ -159,5 +154,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Void> {
         //(((^_(((/(((_/
         @Builder.Default
         private BoostableCat cat = null;
+
+        private MoreOptionsBoosters boosters;
     }
 }

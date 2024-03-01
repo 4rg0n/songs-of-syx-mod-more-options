@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class EventsPanel extends GuiSection implements Valuable<Void> {
+public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Events, EventsPanel> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
 
@@ -29,16 +29,12 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
     private final Map<String, Checkbox> worldEventsCheckboxes = new HashMap<>();
     private final Map<String, Slider> eventsChanceSliders;
 
-    public EventsPanel(
-        Map<String, Boolean> settlementEventsConfig,
-        Map<String, Boolean> worldEventsConfig,
-        Map<String, MoreOptionsConfig.Range> eventsChanceConfig
-    ) {
-        BuildResult<GuiSection, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(settlementEventsConfig);
+    public EventsPanel(MoreOptionsConfig.Events events) {
+        BuildResult<Table, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(events.getSettlement());
         GuiSection settlement = settlementCheckboxesResult.getResult();
         settlementEventsCheckboxes.putAll(settlementCheckboxesResult.getInteractable());
 
-        BuildResult<GuiSection, Map<String, Checkbox>> worldCheckboxesResult = checkboxes(worldEventsConfig);
+        BuildResult<Table, Map<String, Checkbox>> worldCheckboxesResult = checkboxes(events.getWorld());
         GuiSection world = worldCheckboxesResult.getResult();
         worldEventsCheckboxes.putAll(worldCheckboxesResult.getInteractable());
 
@@ -60,7 +56,7 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
         checkBoxSection.addRight(0, worldSection);
         addDownC(0, checkBoxSection);
 
-        BuildResult<GuiSection, Map<String, Slider>> buildResult = sliders(eventsChanceConfig);
+        BuildResult<Table, Map<String, Slider>> buildResult = sliders(events.getChance());
         GuiSection sliders = buildResult.getResult();
         eventsChanceSliders = buildResult.getInteractable();
 
@@ -75,7 +71,7 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
         addDownC(10, eventsChanceSection);
     }
 
-    private BuildResult<GuiSection, Map<String, Slider>> sliders(
+    private BuildResult<Table, Map<String, Slider>> sliders(
         Map<String, MoreOptionsConfig.Range> eventsChanceConfig
     ) {
         Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
@@ -85,11 +81,8 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
                     .key(config.getKey())
                     .title(config.getKey())
                     .build())
-                .sliderDefinition(SliderBuilder.Definition.builder()
+                .sliderDefinition(SliderBuilder.Definition.buildFrom(config.getValue())
                     .maxWidth(300)
-                    .min(config.getValue().getMin())
-                    .max(config.getValue().getMax())
-                    .valueDisplay(Slider.ValueDisplay.valueOf(config.getValue().getDisplayMode().name()))
                     .build())
                 .build()));
 
@@ -100,31 +93,36 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
             .build();
     }
 
+    @Override
+    public MoreOptionsConfig.Events getValue() {
+       return MoreOptionsConfig.Events.builder()
+           .settlement(getSettlementEventsConfig())
+           .world(getWorldEventsConfig())
+           .chance(getEventsChanceConfig())
+           .build();
+    }
+
     public Map<String, Boolean> getSettlementEventsConfig() {
         return settlementEventsCheckboxes.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().selectedIs()));
+            .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 
     public Map<String, Boolean> getWorldEventsConfig() {
         return worldEventsCheckboxes.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().selectedIs()));
+            .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 
-    public Map<String, Integer> getEventsChanceConfig() {
-        return eventsChanceSliders.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, slider -> slider.getValue().getValue()));
+    public Map<String, MoreOptionsConfig.Range> getEventsChanceConfig() {
+        return eventsChanceSliders.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
     }
 
-    public void applyConfig(
-        Map<String, Boolean> settlementEventsConfig,
-        Map<String, Boolean> worldEventsConfig,
-        Map<String, Integer> eventsChanceConfig
-    ) {
-        log.trace("Applying UI settlement events config %s", settlementEventsConfig);
-        log.trace("Applying UI world events config %s", worldEventsConfig);
-        log.trace("Applying UI events chance config %s", eventsChanceConfig);
+    @Override
+    public void setValue(MoreOptionsConfig.Events events) {
+        log.trace("Applying UI settlement events config %s", events);
 
-        settlementEventsConfig.forEach((key, value) -> {
+        events.getSettlement().forEach((key, value) -> {
             if (settlementEventsCheckboxes.containsKey(key)) {
                 settlementEventsCheckboxes.get(key).selectedSet(value);
             } else {
@@ -132,7 +130,7 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
             }
         });
 
-        worldEventsConfig.forEach((key, value) -> {
+        events.getWorld().forEach((key, value) -> {
             if (worldEventsCheckboxes.containsKey(key)) {
                 worldEventsCheckboxes.get(key).selectedSet(value);
             } else {
@@ -140,9 +138,9 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
             }
         });
 
-        eventsChanceConfig.forEach((key, value) -> {
+        events.getChance().forEach((key, range) -> {
             if (eventsChanceSliders.containsKey(key)) {
-                eventsChanceSliders.get(key).setValue(value);
+                eventsChanceSliders.get(key).setValue(range.getValue());
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }
@@ -150,7 +148,7 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
     }
 
 
-    private BuildResult<GuiSection, Map<String, Checkbox>> checkboxes(Map<String, Boolean> eventConfig) {
+    private BuildResult<Table, Map<String, Checkbox>> checkboxes(Map<String, Boolean> eventConfig) {
         Map<String, LabeledCheckboxBuilder.Definition> settlementCheckboxes = eventConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             config -> LabeledCheckboxBuilder.Definition.builder()
@@ -166,15 +164,5 @@ public class EventsPanel extends GuiSection implements Valuable<Void> {
         return CheckboxesBuilder.builder()
             .displayHeight(300)
             .translate(settlementCheckboxes).build();
-    }
-
-    @Override
-    public Void getValue() {
-        return null;
-    }
-
-    @Override
-    public void setValue(Void value) {
-
     }
 }
