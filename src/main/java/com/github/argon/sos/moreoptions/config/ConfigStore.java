@@ -1,6 +1,8 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
+import com.github.argon.sos.moreoptions.game.api.UninitializedException;
+import com.github.argon.sos.moreoptions.init.InitPhases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATH;
@@ -14,13 +16,14 @@ import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ConfigStore {
+public class ConfigStore implements InitPhases {
     private final static Logger log = Loggers.getLogger(ConfigStore.class);
 
     @Getter(lazy = true)
     private final static ConfigStore instance = new ConfigStore(
         ConfigService.getInstance(),
-        MoreOptionsDefaults.getInstance()
+        MoreOptionsDefaults.getInstance(),
+        Dictionary.getInstance()
     );
 
     private final static PATH SAVE_PATH = PATHS.local().SETTINGS;
@@ -30,21 +33,22 @@ public class ConfigStore {
     @Getter
     private final MoreOptionsDefaults defaults;
 
+    @Getter
+    private final Dictionary dictionary;
+
     private MoreOptionsConfig currentConfig;
 
     private MoreOptionsConfig.Meta metaInfo;
     private MoreOptionsConfig backupConfig;
 
-    public MoreOptionsConfig initConfig() {
-        MoreOptionsConfig defaultConfig = this.defaults.getDefaults();
-        MoreOptionsConfig config = getCurrentConfig()
-            .orElseGet(() -> loadConfig(defaultConfig)
-                .orElseGet(() -> {
-                    log.info("No config file loaded. Using default.");
-                    log.trace("Default: %s", this.defaults);
-                    return defaultConfig;
-                }));
-        setCurrentConfig(config);
+    @Override
+    public void initCreateInstance() {
+        MoreOptionsConfig defaultConfig = getDefaultConfig();
+        // load config from file if present; merge missing fields with defaults
+        MoreOptionsConfig config = loadConfig(defaultConfig).orElse(defaultConfig);
+        if (currentConfig == null) {
+            setCurrentConfig(config);
+        }
 
         // detect version change in config
         getMetaInfo().ifPresent(meta -> {
@@ -61,16 +65,18 @@ public class ConfigStore {
                 log.warn("Detected config version decrease from %s to %s. This shouldn't happen...", metaVersion, configVersion);
             }
         });
-
-        return config;
     }
 
-    public MoreOptionsConfig.Meta initMetaInfo() {
+    @Override
+    public void initBeforeGameCreated() {
         MoreOptionsConfig.Meta meta = loadMeta()
             .orElse(MoreOptionsConfig.Meta.builder().build());
         setMetaInfo(meta);
 
-        return meta;
+        // load backup config from file if present
+        loadBackupConfig().ifPresent(this::setBackupConfig);
+        // load dictionary entries from file if present
+        loadDictionary().ifPresent(dictionary::addAll);
     }
 
     /**
@@ -91,8 +97,9 @@ public class ConfigStore {
         this.backupConfig = backupConfig;
     }
 
-    public Optional<MoreOptionsConfig> getCurrentConfig() {
-        return Optional.ofNullable(currentConfig);
+    public MoreOptionsConfig getCurrentConfig() {
+        return Optional.ofNullable(currentConfig)
+            .orElseThrow(() -> new UninitializedException("ConfigStore wasn't correctly initialized"));
     }
 
     public Optional<MoreOptionsConfig.Meta> getMetaInfo() {
@@ -127,7 +134,7 @@ public class ConfigStore {
     }
 
     public boolean createBackupConfig() {
-        return getCurrentConfig().map(this::createBackupConfig).orElse(false);
+        return createBackupConfig(getCurrentConfig());
     }
 
     public boolean createBackupConfig(MoreOptionsConfig config) {
@@ -169,10 +176,9 @@ public class ConfigStore {
         return configService.saveDictionary(entries, PATHS.INIT().getFolder("config"), Dictionary.FILE_NAME);
     }
 
-    public MoreOptionsConfig mergeMissing(MoreOptionsConfig target, MoreOptionsConfig source) {
-        return configService.mergeMissing(target, source);
-    }
-
+    /**
+     * Accessing defaults before the "game instance created" phase can cause problems.
+     */
     public MoreOptionsConfig getDefaultConfig() {
         return defaults.getDefaults();
     }

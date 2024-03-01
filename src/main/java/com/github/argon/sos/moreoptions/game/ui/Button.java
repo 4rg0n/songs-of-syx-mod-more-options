@@ -68,10 +68,12 @@ public class Button extends GButt.ButtPanel {
         if (markError || markSuccess) {
             if (markUpdateTimerSeconds >= MARK_DURATION_SECONDS) {
                 markUpdateTimerSeconds = 0d;
+                markSuccess = false;
+                markError = false;
                 bgClear();
+            } else {
+                markUpdateTimerSeconds += seconds;
             }
-
-            markUpdateTimerSeconds += seconds;
         }
     }
 

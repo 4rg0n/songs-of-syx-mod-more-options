@@ -68,7 +68,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .title("Stopped")
                 .description("Click to stop the collection and export of metrics")
                 .build()
-        ), 0, true);
+        ), 0, true, true);
 
         BuildResult<List<GuiSection>, List<Toggler<Boolean>>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(
             LabeledBuilder.Definition.<Toggler<Boolean>>builder()
@@ -145,7 +145,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .title("Uncheck")
                 .description("Unchecks all found stats")
                 .build()
-        ),0, true);
+        ),0, true, false);
         searchBar.addRightC(10, searchToggler);
 
         BuildResult<Table, Map<String, Checkbox>> checkboxes = CheckboxesBuilder.builder()

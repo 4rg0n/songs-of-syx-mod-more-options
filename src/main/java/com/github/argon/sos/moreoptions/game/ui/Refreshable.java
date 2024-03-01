@@ -5,7 +5,7 @@ import com.github.argon.sos.moreoptions.game.Action;
 /**
  * Used to refresh an element and its content.
  *
- * @param <Element> type of element passed to the onRefresh UIAction
+ * @param <Element> type of element passed to the onRefresh Action
  */
 public interface Refreshable<Element> {
 

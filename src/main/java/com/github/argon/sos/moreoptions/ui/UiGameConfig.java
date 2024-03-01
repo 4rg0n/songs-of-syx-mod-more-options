@@ -1,11 +1,11 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
+import com.github.argon.sos.moreoptions.Notificator;
 import com.github.argon.sos.moreoptions.config.ConfigMapper;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.game.api.UninitializedException;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -20,6 +20,7 @@ import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import init.paths.ModInfo;
 import init.paths.PATHS;
 import init.sprite.SPRITES;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.DIR;
@@ -32,7 +33,6 @@ import view.ui.top.UIPanelTop;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
@@ -43,15 +43,26 @@ import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
  * For setting up the UI.
  */
 @RequiredArgsConstructor
-public class UIGameConfig {
+public class UiGameConfig {
 
-    private final static Logger log = Loggers.getLogger(UIGameConfig.class);
+    @Getter(lazy = true)
+    private final static UiGameConfig instance = new UiGameConfig(
+        GameApis.getInstance(),
+        MoreOptionsConfigurator.getInstance(),
+        ConfigStore.getInstance(),
+        MetricExporter.getInstance(),
+        MetricCollector.getInstance(),
+        Notificator.getInstance()
+    );
+
+    private final static Logger log = Loggers.getLogger(UiGameConfig.class);
 
     private final GameApis gameApis;
     private final MoreOptionsConfigurator configurator;
     private final ConfigStore configStore;
     private final MetricExporter metricExporter;
     private final MetricCollector metricCollector;
+    private final Notificator notificator;
 
     public void inject(Modal<MoreOptionsView> moreOptionsModal) {
         log.debug("Injecting button into game ui");
@@ -117,112 +128,170 @@ public class UIGameConfig {
     }
 
     public void initBackupActions(
-        Modal<BackupDialog> backupModal,
+        Modal<BackupDialog> backupDialog,
         Modal<MoreOptionsView> backupMoreOptionsModal,
         Modal<MoreOptionsView> moreOptionsModal,
         MoreOptionsConfig backupConfig
     ) {
         // Close: More Options modal with backup config
         backupMoreOptionsModal.getPanel().setCloseAction(() -> {
-            configStore.deleteBackupConfig();
+            try {
+                configStore.deleteBackupConfig();
+            } catch (Exception e) {
+                log.error("Could not delete backup config", e);
+            }
+
             backupMoreOptionsModal.hide();
-            backupModal.show();
+            backupDialog.show();
         });
 
+        MoreOptionsView moreOptionsView = backupMoreOptionsModal.getSection();
+
         // Cancel & Undo
-        Button cancelButton = Optional.ofNullable(backupMoreOptionsModal.getSection().getCancelButton())
-            .orElseThrow(() -> new UninitializedException("BackupModal is not initialized."));
+        Button cancelButton = moreOptionsView.getCancelButton();
         cancelButton.clickActionSet(() -> {
-            undo(backupMoreOptionsModal.getSection());
+            try {
+                undo(moreOptionsView);
+            } catch (Exception e) {
+                notificator.notifyError("Could not undo changes.", e);
+                return;
+            }
+
             backupMoreOptionsModal.hide();
         });
 
         // Ok
-        Button okButton = Optional.ofNullable(backupMoreOptionsModal.getSection().getOkButton())
-            .orElseThrow(() -> new UninitializedException("BackupModal is not initialized."));
+        Button okButton = moreOptionsView.getOkButton();
         okButton.clickActionSet(() -> {
-            MoreOptionsConfig readConfig = backupMoreOptionsModal.getSection().getValue();
+            MoreOptionsConfig readConfig = moreOptionsView.getValue();
 
             // fallback
             if (readConfig == null) {
                 readConfig = configStore.getDefaultConfig();
             }
 
-            moreOptionsModal.getSection().setValue(readConfig);
-            configStore.deleteBackupConfig();
+            try {
+                moreOptionsModal.getSection().setValue(readConfig);
+                configStore.deleteBackupConfig();
+            } catch (Exception e) {
+                notificator.notifyError("Could not apply backup config to " + MOD_INFO.name + " ui.", e);
+                return;
+            }
+
             backupMoreOptionsModal.hide();
         });
 
         // Edit Backup
-        backupModal.getSection().getEditButton().clickActionSet(() -> {
-            backupMoreOptionsModal.getSection().setValue(backupConfig);
-            backupModal.hide();
+        backupDialog.getSection().getEditButton().clickActionSet(() -> {
+            backupDialog.hide();
+
+            try {
+                moreOptionsView.setValue(backupConfig);
+            } catch (Exception e) {
+                log.error("Could not apply backup config for editing", e);
+                return;
+            }
+
             backupMoreOptionsModal.show();
         });
 
-        // Close: Backup Modal
-        backupModal.getPanel().setCloseAction(() -> {
-            configStore.deleteBackupConfig();
-            MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
-            moreOptionsModal.getSection().setValue(defaultConfig);
-            configurator.applyConfig(defaultConfig);
-            configStore.setCurrentConfig(defaultConfig);
-            configStore.saveConfig(defaultConfig);
-            backupModal.hide();
+        // Close: Backup Dialog
+        backupDialog.getPanel().setCloseAction(() -> {
+            try {
+                configStore.deleteBackupConfig();
+                MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
+                moreOptionsModal.getSection().setValue(defaultConfig);
+                configurator.applyConfig(defaultConfig);
+                configStore.setCurrentConfig(defaultConfig);
+                configStore.saveConfig(defaultConfig);
+            } catch (Exception e) {
+                log.error("Could not apply default config via backup dialog", e);
+            }
+
+            backupDialog.hide();
         });
 
         // Discard Backup
-        backupModal.getSection().getDiscardButton().clickActionSet(() -> {
-            configStore.deleteBackupConfig();
-            MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
-            moreOptionsModal.getSection().setValue(defaultConfig);
-            configurator.applyConfig(defaultConfig);
-            configStore.setCurrentConfig(defaultConfig);
-            configStore.saveConfig(defaultConfig);
-            backupModal.hide();
+        backupDialog.getSection().getDiscardButton().clickActionSet(() -> {
+            try {
+                configStore.deleteBackupConfig();
+                MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
+                moreOptionsModal.getSection().setValue(defaultConfig);
+                configurator.applyConfig(defaultConfig);
+                configStore.setCurrentConfig(defaultConfig);
+                configStore.saveConfig(defaultConfig);
+            } catch (Exception e) {
+                log.error("Could not discard backup config", e);
+            }
+
+            backupDialog.hide();
         });
 
         // Apply Backup
-        backupModal.getSection().getApplyButton().clickActionSet(() -> {
-            configurator.applyConfig(backupConfig);
-            moreOptionsModal.getSection().setValue(backupConfig);
-            configStore.setCurrentConfig(backupConfig);
-            configStore.saveConfig(backupConfig);
-            configStore.deleteBackupConfig();
-            backupModal.hide();
+        backupDialog.getSection().getApplyButton().clickActionSet(() -> {
+            try {
+                configurator.applyConfig(backupConfig);
+                moreOptionsModal.getSection().setValue(backupConfig);
+                configStore.setCurrentConfig(backupConfig);
+                configStore.saveConfig(backupConfig);
+                configStore.deleteBackupConfig();
+            } catch (Exception e) {
+                log.error("Could not apply backup config", e);
+            }
+
+            backupDialog.hide();
         });
     }
 
     public void initActions(Modal<MoreOptionsView> moreOptionsModal) {
         MoreOptionsView moreOptionsView = moreOptionsModal.getSection();
 
+        // update Notificator queue when More Options Modal is rendered
+        moreOptionsModal.onRender((modal, seconds) -> notificator.update(seconds));
+        moreOptionsModal.onHide(modal -> notificator.close());
+
         // Cancel & Undo
         Button cancelButton = moreOptionsView.getCancelButton();
         cancelButton.clickActionSet(() -> {
-            undo(moreOptionsView);
+            try {
+                undo(moreOptionsView);
+            } catch (Exception e) {
+                notificator.notifyError("Could not undo changes.", e);
+                return;
+            }
+
             moreOptionsModal.hide();
         });
 
         // Apply & Save
         Button applyButton = moreOptionsView.getApplyButton();
         applyButton.clickActionSet(() -> {
-            applyAndSave(moreOptionsView);
+            try {
+                applyAndSave(moreOptionsView);
+            } catch (Exception e) {
+                notificator.notifyError("Could not apply config to game.", e);
+            }
         });
 
         // Undo changes
         Button undoButton = moreOptionsView.getUndoButton();
-        undoButton.clickActionSet(() -> undo(moreOptionsView));
+        undoButton.clickActionSet(() -> {
+            try {
+                undo(moreOptionsView);
+            } catch (Exception e) {
+                notificator.notifyError("Could not undo changes.", e);
+            }
+        });
 
         // reload and apply config from file
         Button reloadButton = moreOptionsView.getReloadButton();
         reloadButton.clickActionSet(() -> {
             MoreOptionsConfig moreOptionsConfig = configStore.loadConfig().orElse(null);
-
             if (moreOptionsConfig != null) {
                 moreOptionsView.setValue(moreOptionsConfig);
-                reloadButton.markSuccess(true);
+                notificator.notifySuccess("Config reloaded into ui.");
             } else {
-                reloadButton.markSuccess(false);
+                notificator.notifyError("Could not reload config from file.");
             }
         });
 
@@ -233,13 +302,18 @@ public class UIGameConfig {
             try {
                 if (moreOptionsConfig != null) {
                     JsonE jsonE = ConfigMapper.getInstance().mapConfig(moreOptionsConfig);
-                    shareButton.markSuccess(Clipboard.write(jsonE.toString()));
+                    boolean written = Clipboard.write(jsonE.toString());
+
+                    if (written) {
+                        notificator.notifySuccess("Config copied to clipboard.");
+                    } else {
+                        notificator.notifyError("Could not copy config to clipboard.");
+                    }
                 } else {
-                    reloadButton.markSuccess(false);
+                    notificator.notifyError("Could not load config from file.");
                 }
             } catch (Exception e) {
-                reloadButton.markSuccess(false);
-                log.error("Could not copy config to clipboard.", e);
+                notificator.notifyError("Could not copy config to clipboard.", e);
             }
         });
 
@@ -248,20 +322,35 @@ public class UIGameConfig {
         Button resetButton = moreOptionsView.getResetButton();
         resetButton.clickActionSet(() -> {
             MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
-            moreOptionsView.setValue(defaultConfig);
+            try {
+                moreOptionsView.setValue(defaultConfig);
+                notificator.notifySuccess("Default config applied to ui.");
+            } catch (Exception e) {
+                notificator.notifyError("Could not apply default config to ui.", e);
+            }
         });
 
         //Ok: Apply & Save & Exit
         Button okButton = moreOptionsView.getOkButton();
         okButton.clickActionSet(() -> {
-            applyAndSave(moreOptionsView);
+            try {
+                applyAndSave(moreOptionsView);
+            } catch (Exception e) {
+                notificator.notifyError("Could not apply config to game.", e);
+                return;
+            }
+
             moreOptionsModal.hide();
         });
 
         // opens folder with mod configuration
         Button folderButton = moreOptionsView.getFolderButton();
         folderButton.clickActionSet(() -> {
-            FileManager.openDesctop(PATHS.local().SETTINGS.get().toString());
+            try {
+                FileManager.openDesctop(PATHS.local().SETTINGS.get().toString());
+            } catch (Exception e) {
+                notificator.notifyError("Could not open config folder.", e);
+            }
         });
 
         MetricsPanel metricsPanel = moreOptionsView.getMetricsPanel();
@@ -272,12 +361,15 @@ public class UIGameConfig {
             Path exportFolderPath = metricsPanel.getExportFolderPath();
 
             if (!exportFolderPath.toFile().exists()) {
-                exportFolderButton.markSuccess(false);
-                log.info("Can not open metrics export folder: %s. Folder does not exists.", exportFolderPath);
+                notificator.notifyError("Metrics export folder does not exists.");
                 return;
             }
 
-            FileManager.openDesctop(exportFolderPath.toString());
+            try {
+                FileManager.openDesctop(exportFolderPath.toString());
+            } catch (Exception e) {
+                notificator.notifyError("Could not open metrics export folder.", e);
+            }
         });
 
         // after config is applied to game
@@ -333,6 +425,16 @@ public class UIGameConfig {
                 return null;
             }
 
+            // notify when metric collection status changes
+            MoreOptionsConfig currentConfig = configStore.getCurrentConfig();
+            if (currentConfig.getMetrics().isEnabled() != config.getMetrics().isEnabled()) {
+                if (config.getMetrics().isEnabled()) {
+                    notificator.notify("Starting metric collection and export");
+                } else {
+                    notificator.notify("Stopping metric collection and export");
+                }
+            }
+
             configurator.applyConfig(config);
             configStore.setCurrentConfig(config);
             return config;
@@ -352,6 +454,7 @@ public class UIGameConfig {
     }
 
     private void undo(MoreOptionsView moreOptionsView) {
-        moreOptionsView.getConfigStore().getCurrentConfig().ifPresent(moreOptionsView::setValue);
+        MoreOptionsConfig currentConfig = moreOptionsView.getConfigStore().getCurrentConfig();
+        moreOptionsView.setValue(currentConfig);
     }
 }

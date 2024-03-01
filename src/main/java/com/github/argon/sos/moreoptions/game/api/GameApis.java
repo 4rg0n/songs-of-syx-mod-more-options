@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.api;
 
+import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
 import com.github.argon.sos.moreoptions.init.InitPhases;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -7,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * Contains all game apis for accessing its functionality
+ * For accessing vanilla game classes and features.
+ * Contains all game apis for accessing its functionality.
  */
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -45,13 +47,11 @@ public class GameApis implements InitPhases {
     private final GameStatsApi stats;
 
     @Override
-    public void initGamePresent() {
-
-    }
+    public void initGamePresent() {}
 
     @Override
     public void initGameRunning() {
-
+        ui().init();
     }
 
     @Override
@@ -62,5 +62,10 @@ public class GameApis implements InitPhases {
     @Override
     public void initCreateInstance() {
         booster().init();
+    }
+
+    @Override
+    public void initGameSaveLoaded(MoreOptionsConfig config) {
+
     }
 }

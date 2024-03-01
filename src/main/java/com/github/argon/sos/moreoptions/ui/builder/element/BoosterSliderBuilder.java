@@ -71,7 +71,7 @@ public class BoosterSliderBuilder implements UiBuilder<List<GuiSection>, Tabulat
         icon.add(new RENDEROBJ.Sprite(boostable.icon));
 
         // Booster toggle
-        Tabulator<String, Slider, Integer> tabulator = new Tabulator<>(Maps.of(
+        Tabulator<String, Slider, Integer> tabulator = new Tabulator<>(Maps.ofLinked(
             UiInfo.<String>builder()
                 .key("add")
                 .title("Add")

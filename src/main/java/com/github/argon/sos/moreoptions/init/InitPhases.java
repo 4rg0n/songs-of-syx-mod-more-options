@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.init;
 
+import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+
 /**
  * Contains different initialization phases to implement.
  * Some game elements are unavailable until a certain phase.
@@ -8,20 +10,35 @@ public interface InitPhases {
     /**
      * When the game UI is loaded
      */
-    void initGamePresent();
+    default void initGamePresent() {
+        throw new UnsupportedOperationException("Method is not implemented");
+    }
 
     /**
      * When the game starts the update() process
      */
-    void initGameRunning();
+    default void initGameRunning() {
+        throw new UnsupportedOperationException("Method is not implemented");
+    }
 
     /**
      * Before a game is loaded
      */
-    void initBeforeGameCreated();
+    default void initBeforeGameCreated() {
+        throw new UnsupportedOperationException("Method is not implemented");
+    }
 
     /**
      * When the mod instance is created
      */
-    void initCreateInstance();
+    default void initCreateInstance() {
+        throw new UnsupportedOperationException("Method is not implemented");
+    }
+
+    /**
+     * When the game loaded a save game
+     */
+    default void initGameSaveLoaded(MoreOptionsConfig config) {
+        throw new UnsupportedOperationException("Method is not implemented");
+    }
 }

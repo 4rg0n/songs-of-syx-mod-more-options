@@ -81,11 +81,8 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfi
                     .key(config.getKey())
                     .title(config.getKey())
                     .build())
-                .sliderDefinition(SliderBuilder.Definition.builder()
+                .sliderDefinition(SliderBuilder.Definition.buildFrom(config.getValue())
                     .maxWidth(300)
-                    .min(config.getValue().getMin())
-                    .max(config.getValue().getMax())
-                    .valueDisplay(Slider.ValueDisplay.valueOf(config.getValue().getDisplayMode().name()))
                     .build())
                 .build()));
 

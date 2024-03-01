@@ -1,14 +1,15 @@
 package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.game.GameUiNotAvailableException;
+import com.github.argon.sos.moreoptions.game.ui.NonHidingPopup;
+import com.github.argon.sos.moreoptions.game.ui.NotificationPopup;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import snake2d.util.gui.clickable.CLICKABLE;
-import snake2d.util.gui.renderable.RENDEROBJ;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 import view.main.Interrupters;
 import view.main.VIEW;
 import view.sett.SettView;
@@ -19,13 +20,21 @@ import java.util.Optional;
 /**
  * For hooking into the games UI
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameUiApi {
 
     private final static Logger log = Loggers.getLogger(GameUiApi.class);
 
     @Getter(lazy = true)
     private final static GameUiApi instance = new GameUiApi();
+
+    @Getter
+    @Accessors(fluent = true)
+    private NonHidingPopup popup;
+
+    @Getter
+    @Accessors(fluent = true)
+    private NotificationPopup notification;
 
     /**
      * Contains the settlements ui elements
@@ -89,10 +98,9 @@ public class GameUiApi {
         return interrupters;
     }
 
-    /**
-     * Will open a popup window near the given button
-     */
-    public void showPopup(RENDEROBJ popup, CLICKABLE button) {
-        interrupters().popup.show(popup, button);
+   public void init() {
+        log.debug("Init game ui api");
+        popup = new NonHidingPopup(VIEW.inters().manager);
+        notification = new NotificationPopup(VIEW.inters().manager);
     }
 }

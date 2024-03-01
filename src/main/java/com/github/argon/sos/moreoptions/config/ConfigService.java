@@ -97,8 +97,8 @@ public class ConfigService {
                 }
             });
         } catch (Exception e) {
-            log.error("Could load config. Using default config.", e);
-            return Optional.ofNullable(defaultConfig);
+            log.error("Could load config.", e);
+            return Optional.empty();
         }
     }
 
@@ -138,26 +138,5 @@ public class ConfigService {
         });
 
         return jsonService.saveJson(jsonEntries, path, fileName);
-    }
-
-    public MoreOptionsConfig mergeMissing(MoreOptionsConfig target, MoreOptionsConfig source) {
-        target.getEvents().setChance(mergeMissing(target.getEvents().getChance(), source.getEvents().getChance()));
-        target.getEvents().setSettlement(mergeMissing(target.getEvents().getSettlement(), source.getEvents().getSettlement()));
-        target.getEvents().setWorld(mergeMissing(target.getEvents().getWorld(), source.getEvents().getWorld()));
-        target.getSounds().setAmbience(mergeMissing(target.getSounds().getAmbience(), source.getSounds().getAmbience()));
-        target.getSounds().setRoom(mergeMissing(target.getSounds().getRoom(), source.getSounds().getRoom()));
-        target.getSounds().setSettlement(mergeMissing(target.getSounds().getSettlement(), source.getSounds().getSettlement()));
-        target.setWeather(mergeMissing(target.getWeather(), source.getWeather()));
-        target.setBoosters(mergeMissing(target.getBoosters(), source.getBoosters()));
-
-        return target;
-    }
-
-    private <T> Map<String, T> mergeMissing(Map<String, T> target, Map<String, T> source) {
-        source.forEach((key, value) -> {
-            target.computeIfAbsent(key, s -> value);
-        });
-
-        return target;
     }
 }

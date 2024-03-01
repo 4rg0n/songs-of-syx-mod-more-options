@@ -164,10 +164,9 @@ public class MoreOptionsView extends GuiSection implements
         this.folderButton = new Button("Folder");
         folderButton.hoverInfoSet("Open settings folder with mod config");
         List<Button> buttons = Lists.of(folderButton, resetButton, reloadButton, shareButton);
-        this.moreButtonMenu = new ButtonMenu(buttons);
-
+        this.moreButtonMenu = ButtonMenu.fromList(buttons);
         this.moreButton.clickActionSet(() -> {
-            GameUiApi.getInstance().showPopup(this.moreButtonMenu, this.moreButton);
+            GameUiApi.getInstance().popup().show(this.moreButtonMenu, this.moreButton);
         });
     }
 
@@ -211,10 +210,7 @@ public class MoreOptionsView extends GuiSection implements
             return false;
         }
 
-        return configStore.getCurrentConfig()
-            .map(currentConfig -> !config.equals(currentConfig))
-            // no current config in memory
-            .orElse(true);
+        return !configStore.getCurrentConfig().equals(config);
     }
 
    private GuiSection versions(int configVersionNumber, String modVersionString) {

@@ -53,6 +53,7 @@ public class GameBoosterApi implements Init {
 
     @Override
     public void init() {
+        log.debug("Init game booster api");
         boosterService.reset();
     }
 }

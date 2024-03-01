@@ -8,6 +8,12 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Provides {@link MoreOptionsConfig} with default settings
+ * Accessing defaults before the "game instance created" phase can cause problems:
+ * Some config is generated from data provided by the {@link GameApis}.
+ * These access classes of the game, which might not have been initialized yet.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsDefaults {
     @Getter(lazy = true)

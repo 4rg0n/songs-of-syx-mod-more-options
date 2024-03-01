@@ -6,7 +6,7 @@
 
     <groupId>com.argon.sos</groupId>
     <artifactId>songs-of-syx-mod-more-options</artifactId>
-    <version>1.4.1</version>
+    <version>1.5.0</version>
 
     <profiles>
         <profile>

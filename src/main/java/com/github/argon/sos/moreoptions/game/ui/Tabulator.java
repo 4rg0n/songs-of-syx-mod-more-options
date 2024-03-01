@@ -53,7 +53,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
         // first element in map
         activeTab = tabs.values().iterator().next();
 
-        toggler = new Toggler<>(tabs.keySet(), marginToggler, false);
+        toggler = new Toggler<>(tabs.keySet(), marginToggler, false, true);
         toggler.onClick(this::tab);
 
         // guarantee same width
