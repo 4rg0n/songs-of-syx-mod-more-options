@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameModApi {
     private final static Logger log = Loggers.getLogger(GameModApi.class);
