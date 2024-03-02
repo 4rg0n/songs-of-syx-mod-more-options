@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.config.MoreOptionsDefaults;
 import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Contains sliders to influence values of game boosters
  */
-public class BoostersPanel extends GuiSection implements Valuable<Map<String, MoreOptionsConfig.Range>, BoostersPanel> {
+public class BoostersPanel extends GuiSection implements Valuable<Map<String, MoreOptionsV2Config.Range>, BoostersPanel> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
     private final Map<String, Tabulator<String, Slider, Integer>> slidersWithToggle;
@@ -79,15 +79,15 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
     }
 
     @Override
-    public Map<String, MoreOptionsConfig.Range> getValue() {
+    public Map<String, MoreOptionsV2Config.Range> getValue() {
         return slidersWithToggle.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue().getActiveTab())));
+                tab -> MoreOptionsV2Config.Range.fromSlider(tab.getValue().getActiveTab())));
     }
 
     @Override
-    public void setValue(Map<String, MoreOptionsConfig.Range> config) {
+    public void setValue(Map<String, MoreOptionsV2Config.Range> config) {
         log.trace("Applying Booster config %s", config);
 
         config.forEach((key, range) -> {
@@ -104,11 +104,11 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
     }
 
     private BoosterSliderBuilder.Definition buildSliderDefinition(Entry entry) {
-        MoreOptionsConfig.Range rangeMulti;
-        MoreOptionsConfig.Range rangeAdd;
+        MoreOptionsV2Config.Range rangeMulti;
+        MoreOptionsV2Config.Range rangeAdd;
         String activeKey;
 
-        if (entry.getRange().getApplyMode().equals(MoreOptionsConfig.Range.ApplyMode.MULTI)) {
+        if (entry.getRange().getApplyMode().equals(MoreOptionsV2Config.Range.ApplyMode.MULTI)) {
             rangeMulti = entry.getRange();
             rangeAdd = defaults.getBoostersAdd().get(entry.getKey());
             activeKey = "multi";
@@ -145,7 +145,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
     @Data
     @Builder
     public static class Entry {
-        private MoreOptionsConfig.Range range;
+        private MoreOptionsV2Config.Range range;
         private String key;
 
         //  |\__/,|   (`\

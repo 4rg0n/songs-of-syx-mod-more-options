@@ -18,7 +18,7 @@ import java.util.Map;
 @Builder
 @EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MoreOptionsConfig {
+public class MoreOptionsV2Config {
 
     public final static int VERSION = 2;
 
@@ -181,8 +181,8 @@ public class MoreOptionsConfig {
                 .value(0)
                 .min(0)
                 .max(10000)
-                .applyMode(MoreOptionsConfig.Range.ApplyMode.ADD)
-                .displayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE)
+                .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
                 .build();
         }
 
@@ -207,13 +207,13 @@ public class MoreOptionsConfig {
         }
 
         public static Range fromSlider(Slider slider) {
-            return MoreOptionsConfig.Range.builder()
+            return MoreOptionsV2Config.Range.builder()
                 .value(slider.getValue())
                 .max(slider.getMax())
                 .min(slider.getMin())
-                .displayMode(MoreOptionsConfig.Range.DisplayMode
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode
                     .fromValueDisplay(slider.getValueDisplay()))
-                .applyMode(MoreOptionsConfig.Range.ApplyMode
+                .applyMode(MoreOptionsV2Config.Range.ApplyMode
                     .fromValueDisplay(slider.getValueDisplay()))
                 .build();
         }

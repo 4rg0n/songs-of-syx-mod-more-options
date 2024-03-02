@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.game.booster;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
@@ -67,7 +67,7 @@ public class MoreOptionsBoosterFactory {
             log.trace("Reuse present multi booster: %s", presentBooster.getMulti().info.name);
             boosterMulti = presentBooster.getMulti();
         } else {
-             boosterMulti = createMoreOptionsBooster(booster, MoreOptionsConfig.Range.defaultBoosterMulti());
+             boosterMulti = createMoreOptionsBooster(booster, MoreOptionsV2Config.Range.defaultBoosterMulti());
         }
 
         MoreOptionsBooster boosterAdd;
@@ -75,7 +75,7 @@ public class MoreOptionsBoosterFactory {
             log.trace("Reuse present add booster: %s", presentBooster.getAdd().info.name);
             boosterAdd = presentBooster.getAdd();
         }  else {
-            boosterAdd = createMoreOptionsBooster(booster, MoreOptionsConfig.Range.defaultBoosterAdd());
+            boosterAdd = createMoreOptionsBooster(booster, MoreOptionsV2Config.Range.defaultBoosterAdd());
         }
 
         return MoreOptionsBoosters.builder()
@@ -84,10 +84,10 @@ public class MoreOptionsBoosterFactory {
             .build();
     }
 
-    public static MoreOptionsBooster createMoreOptionsBooster(Boostable booster, MoreOptionsConfig.Range range) {
+    public static MoreOptionsBooster createMoreOptionsBooster(Boostable booster, MoreOptionsV2Config.Range range) {
         String suffix = " Perc";
 
-        if (range.getApplyMode().equals(MoreOptionsConfig.Range.ApplyMode.ADD)) {
+        if (range.getApplyMode().equals(MoreOptionsV2Config.Range.ApplyMode.ADD)) {
             suffix = " Add";
         }
 

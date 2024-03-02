@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Metrics, MetricsPanel>, Refreshable<MetricsPanel> {
+public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Metrics, MetricsPanel>, Refreshable<MetricsPanel> {
 
     private final Toggler<Boolean> onOffToggle;
     private final Slider collectionRate;
@@ -51,10 +51,10 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     private final Toggler<Boolean> searchToggler;
 
     private Action<MetricsPanel> refreshAction = o -> {};
-    private BiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
+    private BiAction<MoreOptionsV2Config.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
 
     public MetricsPanel(
-        MoreOptionsConfig.Metrics metricsConfig,
+        MoreOptionsV2Config.Metrics metricsConfig,
         List<String> availableStats,
         Path exportFolderPath,
         Path exportFilePath
@@ -214,17 +214,17 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     }
 
     @Override
-    public MoreOptionsConfig.Metrics getValue() {
-        return MoreOptionsConfig.Metrics.builder()
-            .collectionRateSeconds(MoreOptionsConfig.Range.fromSlider(collectionRate))
-            .exportRateMinutes(MoreOptionsConfig.Range.fromSlider(exportRate))
+    public MoreOptionsV2Config.Metrics getValue() {
+        return MoreOptionsV2Config.Metrics.builder()
+            .collectionRateSeconds(MoreOptionsV2Config.Range.fromSlider(collectionRate))
+            .exportRateMinutes(MoreOptionsV2Config.Range.fromSlider(exportRate))
             .stats(getCheckedStats())
             .enabled(onOffToggle.getValue())
             .build();
     }
 
     @Override
-    public void setValue(MoreOptionsConfig.Metrics metricsConfig) {
+    public void setValue(MoreOptionsV2Config.Metrics metricsConfig) {
         onOffToggle.toggle(metricsConfig.isEnabled());
         collectionRate.setValue(metricsConfig.getCollectionRateSeconds().getValue());
         exportRate.setValue(metricsConfig.getExportRateMinutes().getValue());
@@ -284,7 +284,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     }
 
     @Override
-    public void onAfterSetValue(BiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueUIAction) {
+    public void onAfterSetValue(BiAction<MoreOptionsV2Config.Metrics, MetricsPanel> afterSetValueUIAction) {
         this.afterSetValueAction = afterSetValueUIAction;
     }
 }

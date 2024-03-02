@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.init.InitPhases;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -65,7 +65,7 @@ public class GameApis implements InitPhases {
     }
 
     @Override
-    public void initGameSaveLoaded(MoreOptionsConfig config) {
+    public void initGameSaveLoaded(MoreOptionsV2Config config) {
 
     }
 }

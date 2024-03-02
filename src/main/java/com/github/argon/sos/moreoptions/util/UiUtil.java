@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.util;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import lombok.AccessLevel;
@@ -18,7 +18,7 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiUtil {
 
-    public static Slider.ValueDisplay fromDisplayMode(MoreOptionsConfig.Range.DisplayMode displayMode) {
+    public static Slider.ValueDisplay fromDisplayMode(MoreOptionsV2Config.Range.DisplayMode displayMode) {
             switch (displayMode) {
                 case PERCENTAGE:
                     return Slider.ValueDisplay.PERCENTAGE;

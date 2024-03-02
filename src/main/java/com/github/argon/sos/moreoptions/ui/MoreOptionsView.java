@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.*;
@@ -30,7 +30,7 @@ import java.util.List;
 public class MoreOptionsView extends GuiSection implements
     Showable<MoreOptionsView>,
     Refreshable<MoreOptionsView>,
-    Valuable<MoreOptionsConfig, MoreOptionsView> {
+    Valuable<MoreOptionsV2Config, MoreOptionsView> {
 
     @Getter
     private final ConfigStore configStore;
@@ -77,7 +77,7 @@ public class MoreOptionsView extends GuiSection implements
      * Builds the UI with given config
      */
     public MoreOptionsView(
-        MoreOptionsConfig config,
+        MoreOptionsV2Config config,
         ConfigStore configStore,
         List<BoostersPanel.Entry> boosterEntries,
         List<String> availableStats,
@@ -175,7 +175,7 @@ public class MoreOptionsView extends GuiSection implements
 
     @Nullable
     @Override
-    public MoreOptionsConfig getValue() {
+    public MoreOptionsV2Config getValue() {
         if (eventsPanel == null
             || soundsPanel == null
             || weatherPanel == null
@@ -185,7 +185,7 @@ public class MoreOptionsView extends GuiSection implements
             return null;
         }
 
-        return MoreOptionsConfig.builder()
+        return MoreOptionsV2Config.builder()
                 .events(eventsPanel.getValue())
                 .sounds(soundsPanel.getValue())
                 .weather(weatherPanel.getValue())
@@ -195,7 +195,7 @@ public class MoreOptionsView extends GuiSection implements
     }
 
     @Override
-    public void setValue(MoreOptionsConfig config) {
+    public void setValue(MoreOptionsV2Config config) {
         if (eventsPanel != null) eventsPanel.setValue(config.getEvents());
         if (soundsPanel != null) soundsPanel.setValue(config.getSounds());
         if (weatherPanel != null) weatherPanel.setValue(config.getWeather());
@@ -207,7 +207,7 @@ public class MoreOptionsView extends GuiSection implements
      * @return whether panel configuration is different from {@link ConfigStore#getCurrentConfig()} ()}
      */
     public boolean isDirty() {
-        MoreOptionsConfig config = getValue();
+        MoreOptionsV2Config config = getValue();
 
         if (config == null) {
             return false;

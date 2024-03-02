@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.booster;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
@@ -38,11 +38,11 @@ public class BoosterService {
         return Optional.ofNullable(boosterCategories);
     }
 
-    public void setBoosterValues(MoreOptionsConfig config) {
+    public void setBoosterValues(MoreOptionsV2Config config) {
        setBoosterValues(config.getBoosters());
     }
 
-    public void setBoosterValues(Map<String, MoreOptionsConfig.Range> ranges) {
+    public void setBoosterValues(Map<String, MoreOptionsV2Config.Range> ranges) {
         ranges.forEach((key, range) -> {
             getBoosters().ifPresent(boosters ->
                 boosters.computeIfPresent(key, (keyAgain, moreOptionsBoosters) -> {
@@ -66,7 +66,7 @@ public class BoosterService {
         });
     }
 
-    public void reset(MoreOptionsConfig config) {
+    public void reset(MoreOptionsV2Config config) {
         reset();
         setBoosterValues(config);
     }

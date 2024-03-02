@@ -24,14 +24,14 @@ public interface ConfigMapper {
      * @param json with config data
      * @param defaultConfig optional default config to merge
      */
-    default MoreOptionsConfig mapV1(Path path, Json json, @Nullable MoreOptionsConfig defaultConfig) {
-        return MoreOptionsConfig.builder()
+    default MoreOptionsV2Config mapV1(Path path, Json json, @Nullable MoreOptionsV2Config defaultConfig) {
+        return MoreOptionsV2Config.builder()
             .filePath(path)
-            .version(MoreOptionsConfig.VERSION)
+            .version(MoreOptionsV2Config.VERSION)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
 
-            .events(MoreOptionsConfig.Events.builder()
+            .events(MoreOptionsV2Config.Events.builder()
                 .world((json.has("EVENTS_WORLD")) ? JsonUtil.mapBoolean(json.json("EVENTS_WORLD"), true)
                     : (defaultConfig != null) ? defaultConfig.getEvents().getWorld() : new HashMap<>())
 
@@ -45,7 +45,7 @@ public interface ConfigMapper {
                     )) : (defaultConfig != null) ? defaultConfig.getEvents().getChance() : new HashMap<>())
                 .build())
 
-            .sounds(MoreOptionsConfig.Sounds.builder()
+            .sounds(MoreOptionsV2Config.Sounds.builder()
                 .ambience((json.has("SOUNDS_AMBIENCE")) ? JsonUtil.mapInteger(json.json("SOUNDS_AMBIENCE")).entrySet().stream()
                     .collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -82,14 +82,14 @@ public interface ConfigMapper {
     /**
      * Maps V2 config to the current config structure
      */
-    default MoreOptionsConfig mapV2(Path path, Json json, @Nullable MoreOptionsConfig defaultConfig) {
-        return MoreOptionsConfig.builder()
+    default MoreOptionsV2Config mapV2(Path path, Json json, @Nullable MoreOptionsV2Config defaultConfig) {
+        return MoreOptionsV2Config.builder()
             .filePath(path)
-            .version(MoreOptionsConfig.VERSION)
+            .version(MoreOptionsV2Config.VERSION)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
 
-            .events(MoreOptionsConfig.Events.builder()
+            .events(MoreOptionsV2Config.Events.builder()
                 .world((json.has("EVENTS_WORLD")) ? JsonUtil.mapBoolean(json.json("EVENTS_WORLD"), true)
                     : (defaultConfig != null) ? defaultConfig.getEvents().getWorld() : new HashMap<>())
 
@@ -100,7 +100,7 @@ public interface ConfigMapper {
                     : (defaultConfig != null) ? defaultConfig.getEvents().getChance() : new HashMap<>())
                 .build())
 
-            .sounds(MoreOptionsConfig.Sounds.builder()
+            .sounds(MoreOptionsV2Config.Sounds.builder()
                 .ambience((json.has("SOUNDS_AMBIENCE")) ? mapRanges(json.json("SOUNDS_AMBIENCE"))
                     : (defaultConfig != null) ? defaultConfig.getSounds().getAmbience() : new HashMap<>())
 
@@ -118,11 +118,11 @@ public interface ConfigMapper {
                 : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
 
             .metrics((json.has("METRICS")) ? mapMetrics(json.json("METRICS"))
-                : (defaultConfig != null) ? defaultConfig.getMetrics() : MoreOptionsConfig.Metrics.builder().build())
+                : (defaultConfig != null) ? defaultConfig.getMetrics() : MoreOptionsV2Config.Metrics.builder().build())
             .build();
     }
 
-    default JsonE mapConfig(MoreOptionsConfig config) {
+    default JsonE mapConfig(MoreOptionsV2Config config) {
         JsonE configJson = new JsonE();
         configJson.add("VERSION", config.getVersion());
         configJson.addString("LOG_LEVEL", config.getLogLevel().getName());
@@ -138,7 +138,7 @@ public interface ConfigMapper {
         return configJson;
     }
 
-    default JsonE mapMetrics(MoreOptionsConfig.Metrics metrics) {
+    default JsonE mapMetrics(MoreOptionsV2Config.Metrics metrics) {
         JsonE metricsJson = new JsonE();
 
         metricsJson.add("ENABLED", metrics.isEnabled());
@@ -149,10 +149,10 @@ public interface ConfigMapper {
         return metricsJson;
     }
 
-    default MoreOptionsConfig.Metrics mapMetrics(Json json) {
-        MoreOptionsConfig.Metrics defaultMetrics = MoreOptionsConfig.Metrics.builder().build();
+    default MoreOptionsV2Config.Metrics mapMetrics(Json json) {
+        MoreOptionsV2Config.Metrics defaultMetrics = MoreOptionsV2Config.Metrics.builder().build();
 
-        return MoreOptionsConfig.Metrics.builder()
+        return MoreOptionsV2Config.Metrics.builder()
             .enabled((json.has("ENABLED"))
                 ? json.bool("ENABLED")
                 : defaultMetrics.isEnabled())
@@ -166,38 +166,38 @@ public interface ConfigMapper {
             .build();
     }
 
-    default MoreOptionsConfig.Meta mapMeta(Json json) {
-        return MoreOptionsConfig.Meta.builder()
+    default MoreOptionsV2Config.Meta mapMeta(Json json) {
+        return MoreOptionsV2Config.Meta.builder()
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO) : Level.INFO)
-            .version((json.has("VERSION")) ? json.i("VERSION") : MoreOptionsConfig.VERSION)
+            .version((json.has("VERSION")) ? json.i("VERSION") : MoreOptionsV2Config.VERSION)
             .build();
     }
 
-    default Map<String, MoreOptionsConfig.Range> mapRanges(Json json) {
-        Map<String, MoreOptionsConfig.Range> map = new HashMap<>();
+    default Map<String, MoreOptionsV2Config.Range> mapRanges(Json json) {
+        Map<String, MoreOptionsV2Config.Range> map = new HashMap<>();
 
         for (String key : json.keys()) {
             Json rangeJson = json.json(key);
-            MoreOptionsConfig.Range range = mapRange(rangeJson, null);
+            MoreOptionsV2Config.Range range = mapRange(rangeJson, null);
             map.put(key, range);
         }
 
         return map;
     }
 
-    default MoreOptionsConfig.Range mapRange(Json rangeJson, @Nullable Integer defaultValue) {
-        return MoreOptionsConfig.Range.builder()
+    default MoreOptionsV2Config.Range mapRange(Json rangeJson, @Nullable Integer defaultValue) {
+        return MoreOptionsV2Config.Range.builder()
             .value((defaultValue != null) ? defaultValue : rangeJson.i("VALUE"))
             .min(rangeJson.i("MIN"))
             .max(rangeJson.i("MAX"))
-            .applyMode(MoreOptionsConfig.Range.ApplyMode
+            .applyMode(MoreOptionsV2Config.Range.ApplyMode
                 .valueOf(rangeJson.text("APPLY_MODE")))
-            .displayMode(MoreOptionsConfig.Range.DisplayMode
+            .displayMode(MoreOptionsV2Config.Range.DisplayMode
                 .valueOf(rangeJson.text("DISPLAY_MODE")))
             .build();
     }
 
-     default JsonE mapRanges(Map<String, MoreOptionsConfig.Range> ranges) {
+     default JsonE mapRanges(Map<String, MoreOptionsV2Config.Range> ranges) {
         JsonE json = new JsonE();
 
         ranges.forEach((key, range) -> {
@@ -208,7 +208,7 @@ public interface ConfigMapper {
         return json;
     }
 
-    default JsonE mapRange(MoreOptionsConfig.Range range, @Nullable Integer defaultValue) {
+    default JsonE mapRange(MoreOptionsV2Config.Range range, @Nullable Integer defaultValue) {
         JsonE rangeJson = new JsonE();
         rangeJson.add("VALUE", (defaultValue != null) ? defaultValue : range.getValue());
         rangeJson.add("MIN", range.getMin());
@@ -219,5 +219,5 @@ public interface ConfigMapper {
         return rangeJson;
     }
 
-    void update(@MappingTarget MoreOptionsConfig target, MoreOptionsConfig source);
+    void update(@MappingTarget MoreOptionsV2Config target, MoreOptionsV2Config source);
 }

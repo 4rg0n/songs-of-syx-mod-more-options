@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the volume of game sound effects
  */
-public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Sounds, SoundsPanel> {
+public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Sounds, SoundsPanel> {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
 
     private final Map<String, Slider> ambienceSoundSliders;
     private final Map<String, Slider> settlementSoundSliders;
     private final Map<String, Slider> roomSoundSliders;
-    public SoundsPanel(MoreOptionsConfig.Sounds sounds) {
+    public SoundsPanel(MoreOptionsV2Config.Sounds sounds) {
         BuildResult<Table, Map<String, Slider>> ambienceSlidersResult = SlidersBuilder.builder()
             .displayHeight(150)
             .definitions(sliders(sounds.getAmbience()))
@@ -67,7 +67,7 @@ public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsConfi
         addDownC(0, section);
     }
 
-    private Map<String, LabeledSliderBuilder.Definition> sliders(Map<String, MoreOptionsConfig.Range> slidersConfig) {
+    private Map<String, LabeledSliderBuilder.Definition> sliders(Map<String, MoreOptionsV2Config.Range> slidersConfig) {
         return slidersConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             config -> LabeledSliderBuilder.Definition.builder()
@@ -83,37 +83,37 @@ public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsConfi
     }
 
     @Override
-    public MoreOptionsConfig.Sounds getValue() {
-        return MoreOptionsConfig.Sounds.builder()
+    public MoreOptionsV2Config.Sounds getValue() {
+        return MoreOptionsV2Config.Sounds.builder()
             .ambience(getSoundsAmbienceConfig())
             .settlement(getSoundsSettlementConfig())
             .room(getSoundsRoomConfig())
             .build();
     }
 
-    public Map<String, MoreOptionsConfig.Range> getSoundsAmbienceConfig() {
+    public Map<String, MoreOptionsV2Config.Range> getSoundsAmbienceConfig() {
         return ambienceSoundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
+                tab -> MoreOptionsV2Config.Range.fromSlider(tab.getValue())));
     }
 
-    public Map<String, MoreOptionsConfig.Range> getSoundsSettlementConfig() {
+    public Map<String, MoreOptionsV2Config.Range> getSoundsSettlementConfig() {
         return settlementSoundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
+                tab -> MoreOptionsV2Config.Range.fromSlider(tab.getValue())));
     }
 
-    public Map<String, MoreOptionsConfig.Range> getSoundsRoomConfig() {
+    public Map<String, MoreOptionsV2Config.Range> getSoundsRoomConfig() {
         return roomSoundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
+                tab -> MoreOptionsV2Config.Range.fromSlider(tab.getValue())));
     }
 
     @Override
-    public void setValue(MoreOptionsConfig.Sounds sounds) {
+    public void setValue(MoreOptionsV2Config.Sounds sounds) {
         log.trace("Applying UI sounds config %s", sounds);
 
         sounds.getAmbience().forEach((key, range) -> {

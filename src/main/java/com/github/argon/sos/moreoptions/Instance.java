@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +57,7 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 			log.debug("Game just started");
 		} else {
 			// Pass current config
-			MoreOptionsConfig config = MoreOptionsScript.getConfigStore().getCurrentConfig();
+			MoreOptionsV2Config config = MoreOptionsScript.getConfigStore().getCurrentConfig();
 			script.initGameSaveLoaded(config);
 		}
 	}

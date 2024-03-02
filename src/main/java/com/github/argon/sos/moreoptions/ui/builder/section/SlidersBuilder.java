@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.builder.section;
 
 import com.github.argon.sos.moreoptions.Dictionary;
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
@@ -76,7 +76,7 @@ public class SlidersBuilder implements UiBuilder<Table, Map<String, Slider>> {
         private int displayHeight = 100;
 
 
-        public Builder defaults(Map<String, MoreOptionsConfig.Range> sliderConfigs) {
+        public Builder defaults(Map<String, MoreOptionsV2Config.Range> sliderConfigs) {
             Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = sliderConfigs.entrySet().stream().collect(Collectors.toMap(
                 Map.Entry::getKey,
                 config -> LabeledSliderBuilder.Definition.builder()

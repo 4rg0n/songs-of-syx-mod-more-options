@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * For saving and loading {@link MoreOptionsConfig} as json
+ * For saving and loading {@link MoreOptionsV2Config} as json
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigService {
@@ -52,20 +52,20 @@ public class ConfigService {
         return true;
     }
 
-    public Optional<MoreOptionsConfig.Meta> loadMeta(PATH path, String fileName) {
+    public Optional<MoreOptionsV2Config.Meta> loadMeta(PATH path, String fileName) {
         return jsonService.loadJson(path, fileName)
             .map(configMapper::mapMeta);
     }
 
-    public Optional<MoreOptionsConfig> loadConfig(PATH path, String fileName) {
+    public Optional<MoreOptionsV2Config> loadConfig(PATH path, String fileName) {
         return loadConfig(path, fileName, null);
     }
 
-    public Optional<MoreOptionsConfig> loadConfig(String fileName, PATH path, MoreOptionsConfig defaultConfig) {
+    public Optional<MoreOptionsV2Config> loadConfig(String fileName, PATH path, MoreOptionsV2Config defaultConfig) {
         return loadConfig(path, fileName, defaultConfig);
     }
 
-    public boolean saveConfig(PATH path, String fileName, MoreOptionsConfig config) {
+    public boolean saveConfig(PATH path, String fileName, MoreOptionsV2Config config) {
         log.debug("Saving configuration v%s into %s", config.getVersion(), path.get().toString());
         log.trace("CONFIG: %s", config);
 
@@ -74,7 +74,7 @@ public class ConfigService {
         return jsonService.saveJson(configJson, path, fileName);
     }
 
-    public Optional<MoreOptionsConfig> loadConfig(PATH path, String fileName, @Nullable MoreOptionsConfig defaultConfig) {
+    public Optional<MoreOptionsV2Config> loadConfig(PATH path, String fileName, @Nullable MoreOptionsV2Config defaultConfig) {
         if (!path.exists(fileName)) {
             // do not load what's not there
             log.debug("File %s" + File.separator + "%s.txt not present", path.get(), fileName);
@@ -85,7 +85,7 @@ public class ConfigService {
 
         try {
             return jsonService.loadJson(filePath).map(json -> {
-                MoreOptionsConfig.Meta meta = configMapper.mapMeta(json);
+                MoreOptionsV2Config.Meta meta = configMapper.mapMeta(json);
                 int version = meta.getVersion();
                 log.debug("Loaded config v%s", version);
 

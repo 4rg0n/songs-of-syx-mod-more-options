@@ -1,7 +1,7 @@
 
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.booster.BoosterService;
 import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.init.Init;
@@ -47,7 +47,7 @@ public class GameBoosterApi implements Init {
             .orElseThrow(UninitializedException::new);
     }
 
-    public void setBoosters(Map<String, MoreOptionsConfig.Range> ranges) {
+    public void setBoosters(Map<String, MoreOptionsV2Config.Range> ranges) {
         boosterService.setBoosterValues(ranges);
     }
 

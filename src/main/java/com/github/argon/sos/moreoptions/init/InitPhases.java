@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.init;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 
 /**
  * Contains different initialization phases to implement.
@@ -38,7 +38,7 @@ public interface InitPhases {
     /**
      * When the game loaded a save game
      */
-    default void initGameSaveLoaded(MoreOptionsConfig config) {
+    default void initGameSaveLoaded(MoreOptionsV2Config config) {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 }

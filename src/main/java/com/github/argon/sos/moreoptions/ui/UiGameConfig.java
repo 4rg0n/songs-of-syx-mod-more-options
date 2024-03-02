@@ -4,7 +4,7 @@ import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.Notificator;
 import com.github.argon.sos.moreoptions.config.ConfigMapper;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 
 /**
- * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsConfig}.
+ * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsV2Config}.
  * So when a new entry is added, a new UI element like e.g. an additional slider will also be visible.
  * For setting up the UI.
  */
@@ -135,7 +135,7 @@ public class UiGameConfig {
         Modal<BackupDialog> backupDialog,
         Modal<MoreOptionsView> backupMoreOptionsModal,
         Modal<MoreOptionsView> moreOptionsModal,
-        MoreOptionsConfig backupConfig
+        MoreOptionsV2Config backupConfig
     ) {
         // Close: More Options modal with backup config
         backupMoreOptionsModal.getPanel().setCloseAction(() -> {
@@ -167,7 +167,7 @@ public class UiGameConfig {
         // Ok
         Button okButton = moreOptionsView.getOkButton();
         okButton.clickActionSet(() -> {
-            MoreOptionsConfig readConfig = moreOptionsView.getValue();
+            MoreOptionsV2Config readConfig = moreOptionsView.getValue();
 
             // fallback
             if (readConfig == null) {
@@ -203,7 +203,7 @@ public class UiGameConfig {
         backupDialog.getPanel().setCloseAction(() -> {
             try {
                 configStore.deleteBackupConfig();
-                MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
+                MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
                 moreOptionsModal.getSection().setValue(defaultConfig);
                 configurator.applyConfig(defaultConfig);
                 configStore.setCurrentConfig(defaultConfig);
@@ -219,7 +219,7 @@ public class UiGameConfig {
         backupDialog.getSection().getDiscardButton().clickActionSet(() -> {
             try {
                 configStore.deleteBackupConfig();
-                MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
+                MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
                 moreOptionsModal.getSection().setValue(defaultConfig);
                 configurator.applyConfig(defaultConfig);
                 configStore.setCurrentConfig(defaultConfig);
@@ -292,7 +292,7 @@ public class UiGameConfig {
         // reload and apply config from file
         Button reloadButton = moreOptionsView.getReloadButton();
         reloadButton.clickActionSet(() -> {
-            MoreOptionsConfig moreOptionsConfig = configStore.loadConfig().orElse(null);
+            MoreOptionsV2Config moreOptionsConfig = configStore.loadConfig().orElse(null);
             if (moreOptionsConfig != null) {
                 moreOptionsView.setValue(moreOptionsConfig);
                 notificator.notifySuccess("Config reloaded into ui.");
@@ -304,7 +304,7 @@ public class UiGameConfig {
         // copy config from ui into clipboard
         Button shareButton = moreOptionsView.getShareButton();
         shareButton.clickActionSet(() -> {
-            MoreOptionsConfig moreOptionsConfig = moreOptionsView.getValue();
+            MoreOptionsV2Config moreOptionsConfig = moreOptionsView.getValue();
             try {
                 if (moreOptionsConfig != null) {
                     JsonE jsonE = configMapper.mapConfig(moreOptionsConfig);
@@ -326,7 +326,7 @@ public class UiGameConfig {
         // Apply default config to ui
         Button defaultButton = moreOptionsView.getDefaultButton();
         defaultButton.clickActionSet(() -> {
-            MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
+            MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
             try {
                 moreOptionsView.setValue(defaultConfig);
                 notificator.notifySuccess("Default config applied to ui. ");
@@ -340,7 +340,7 @@ public class UiGameConfig {
         resetButton.clickActionSet(() -> {
             // are you sure message
             VIEW.inters().yesNo.activate("This will delete your config file and reset the ui and game to default settings.", () -> {
-                MoreOptionsConfig defaultConfig = configStore.getDefaultConfig();
+                MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
                 try {
                     moreOptionsView.setValue(defaultConfig);
                     configStore.deleteConfig();
@@ -425,7 +425,7 @@ public class UiGameConfig {
      *
      * @param config used to generate the UI
      */
-    public Modal<MoreOptionsView> buildModal(String title, MoreOptionsConfig config) {
+    public Modal<MoreOptionsView> buildModal(String title, MoreOptionsV2Config config) {
         log.debug("Initialize %s ui", title);
 
         List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream()
@@ -455,10 +455,10 @@ public class UiGameConfig {
         return moreOptionsModal;
     }
 
-    private @Nullable MoreOptionsConfig apply(MoreOptionsView moreOptionsView) {
+    private @Nullable MoreOptionsV2Config apply(MoreOptionsView moreOptionsView) {
         // only save when changes were made
         if (moreOptionsView.isDirty()) {
-            MoreOptionsConfig config = moreOptionsView.getValue();
+            MoreOptionsV2Config config = moreOptionsView.getValue();
 
             if (config == null) {
                 log.warn("Could read config from modal. Got null");
@@ -466,7 +466,7 @@ public class UiGameConfig {
             }
 
             // notify when metric collection status changes
-            MoreOptionsConfig currentConfig = configStore.getCurrentConfig();
+            MoreOptionsV2Config currentConfig = configStore.getCurrentConfig();
             if (currentConfig.getMetrics().isEnabled() != config.getMetrics().isEnabled()) {
                 if (config.getMetrics().isEnabled()) {
                     notificator.notify("Starting metric collection and export");
@@ -484,7 +484,7 @@ public class UiGameConfig {
     }
 
     private boolean applyAndSave(MoreOptionsView moreOptionsView) {
-        MoreOptionsConfig appliedConfig = apply(moreOptionsView);
+        MoreOptionsV2Config appliedConfig = apply(moreOptionsView);
 
         if (appliedConfig != null) {
             return configStore.saveConfig(appliedConfig);
@@ -494,7 +494,7 @@ public class UiGameConfig {
     }
 
     private void undo(MoreOptionsView moreOptionsView) {
-        MoreOptionsConfig currentConfig = moreOptionsView.getConfigStore().getCurrentConfig();
+        MoreOptionsV2Config currentConfig = moreOptionsView.getConfigStore().getCurrentConfig();
         moreOptionsView.setValue(currentConfig);
     }
 }

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Provides {@link MoreOptionsConfig} with default settings
+ * Provides {@link MoreOptionsV2Config} with default settings
  * Accessing defaults before the "game instance created" phase can cause problems:
  * Some config is generated from data provided by the {@link GameApis}.
  * These access classes of the game, which might not have been initialized yet.
@@ -24,27 +24,27 @@ public class MoreOptionsDefaults {
     private final GameApis gameApis;
 
     @Getter(lazy = true)
-    private final Map<String, MoreOptionsConfig.Range> boostersMulti = boostersMulti();
+    private final Map<String, MoreOptionsV2Config.Range> boostersMulti = boostersMulti();
     @Getter(lazy = true)
-    private final Map<String, MoreOptionsConfig.Range> boostersAdd = boostersAdd();
+    private final Map<String, MoreOptionsV2Config.Range> boostersAdd = boostersAdd();
     @Getter(lazy = true)
-    private final Map<String, MoreOptionsConfig.Range> weather = weather();
+    private final Map<String, MoreOptionsV2Config.Range> weather = weather();
     @Getter(lazy = true)
-    private final Map<String, MoreOptionsConfig.Range> soundsRoom = soundsRoom();
+    private final Map<String, MoreOptionsV2Config.Range> soundsRoom = soundsRoom();
     @Getter(lazy = true)
-    private final Map<String, MoreOptionsConfig.Range> soundsAmbience = soundsAmbience();
+    private final Map<String, MoreOptionsV2Config.Range> soundsAmbience = soundsAmbience();
     @Getter(lazy = true)
-    private final Map<String, MoreOptionsConfig.Range> soundsSettlement = soundsSettlement();
+    private final Map<String, MoreOptionsV2Config.Range> soundsSettlement = soundsSettlement();
     @Getter(lazy = true)
-    private final Map<String, MoreOptionsConfig.Range> eventsChance = eventsChance();
+    private final Map<String, MoreOptionsV2Config.Range> eventsChance = eventsChance();
     @Getter(lazy = true)
     private final Map<String, Boolean> eventsWorld = eventsWorld();
     @Getter(lazy = true)
     private final Map<String, Boolean> eventsSettlement = eventsSettlement();
     @Getter(lazy = true)
-    private final MoreOptionsConfig.Metrics metrics = metrics();
+    private final MoreOptionsV2Config.Metrics metrics = metrics();
     @Getter(lazy = true)
-    private final MoreOptionsConfig defaults = newDefaults();
+    private final MoreOptionsV2Config defaults = newDefaults();
 
 
     /**
@@ -53,15 +53,15 @@ public class MoreOptionsDefaults {
      * When called too early, some game classes might not be available yet
      * and the method could fail or deliver en empty result.
      */
-    private MoreOptionsConfig newDefaults() {
-        return MoreOptionsConfig.builder()
+    private MoreOptionsV2Config newDefaults() {
+        return MoreOptionsV2Config.builder()
             .filePath(ConfigStore.configPath())
-            .events(MoreOptionsConfig.Events.builder()
+            .events(MoreOptionsV2Config.Events.builder()
                 .world(getEventsWorld())
                 .settlement(getEventsSettlement())
                 .chance(getEventsChance())
                 .build())
-            .sounds(MoreOptionsConfig.Sounds.builder()
+            .sounds(MoreOptionsV2Config.Sounds.builder()
                 .ambience(getSoundsAmbience())
                 .settlement(getSoundsSettlement())
                 .room(getSoundsRoom())
@@ -72,87 +72,87 @@ public class MoreOptionsDefaults {
             .build();
     }
 
-    private MoreOptionsConfig.Metrics metrics() {
-        return MoreOptionsConfig.Metrics.builder()
+    private MoreOptionsV2Config.Metrics metrics() {
+        return MoreOptionsV2Config.Metrics.builder()
             .build();
     }
 
-    private Map<String, MoreOptionsConfig.Range> boostersMulti() {
+    private Map<String, MoreOptionsV2Config.Range> boostersMulti() {
         //noinspection DataFlowIssue
         return gameApis.booster().getBoosters().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+            .collect(Collectors.toMap(key -> key, o -> MoreOptionsV2Config.Range.builder()
                 .value(100)
                 .min(1)
                 .max(10000)
-                .applyMode(MoreOptionsConfig.Range.ApplyMode.MULTI)
-                .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                .applyMode(MoreOptionsV2Config.Range.ApplyMode.MULTI)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
                 .build()));
     }
 
-    private Map<String, MoreOptionsConfig.Range> boostersAdd() {
+    private Map<String, MoreOptionsV2Config.Range> boostersAdd() {
         //noinspection DataFlowIssue
         return gameApis.booster().getBoosters().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+            .collect(Collectors.toMap(key -> key, o -> MoreOptionsV2Config.Range.builder()
                 .value(0)
                 .min(0)
                 .max(10000)
-                .applyMode(MoreOptionsConfig.Range.ApplyMode.ADD)
-                .displayMode(MoreOptionsConfig.Range.DisplayMode.ABSOLUTE)
+                .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
                 .build()));
     }
 
-    private Map<String, MoreOptionsConfig.Range> weather() {
+    private Map<String, MoreOptionsV2Config.Range> weather() {
         //noinspection DataFlowIssue
         return gameApis.weather().getWeatherThings().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+            .collect(Collectors.toMap(key -> key, o -> MoreOptionsV2Config.Range.builder()
                 .value(100)
                 .min(0)
                 .max(100)
-                .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
                 .build()));
     }
 
-    private Map<String, MoreOptionsConfig.Range> soundsRoom() {
+    private Map<String, MoreOptionsV2Config.Range> soundsRoom() {
         //noinspection DataFlowIssue
         return gameApis.sounds().getRoomSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+            .collect(Collectors.toMap(key -> key, o -> MoreOptionsV2Config.Range.builder()
                 .value(100)
                 .min(0)
                 .max(100)
-                .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
                 .build()));
     }
 
-    private Map<String, MoreOptionsConfig.Range> soundsSettlement() {
+    private Map<String, MoreOptionsV2Config.Range> soundsSettlement() {
         //noinspection DataFlowIssue
         return gameApis.sounds().getSettlementSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+            .collect(Collectors.toMap(key -> key, o -> MoreOptionsV2Config.Range.builder()
                 .value(100)
                 .min(0)
                 .max(100)
-                .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
                 .build()));
     }
 
-    private Map<String, MoreOptionsConfig.Range> soundsAmbience() {
+    private Map<String, MoreOptionsV2Config.Range> soundsAmbience() {
         //noinspection DataFlowIssue
         return gameApis.sounds().getAmbienceSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> MoreOptionsConfig.Range.builder()
+            .collect(Collectors.toMap(key -> key, o -> MoreOptionsV2Config.Range.builder()
                 .value(100)
                 .min(0)
                 .max(100)
-                .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
                 .build()));
     }
 
-    private Map<String, MoreOptionsConfig.Range> eventsChance() {
+    private Map<String, MoreOptionsV2Config.Range> eventsChance() {
         //noinspection DataFlowIssue
         return gameApis.events().getEventsChance().keySet().stream()
-            .collect(Collectors.toMap(key -> key, key -> MoreOptionsConfig.Range.builder()
+            .collect(Collectors.toMap(key -> key, key -> MoreOptionsV2Config.Range.builder()
                 .value(100)
                 .min(0)
                 .max(10000)
-                .displayMode(MoreOptionsConfig.Range.DisplayMode.PERCENTAGE)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
                 .build()));
     }
 

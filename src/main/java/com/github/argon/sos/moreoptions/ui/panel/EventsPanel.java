@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Events, EventsPanel> {
+public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Events, EventsPanel> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
 
@@ -29,7 +29,7 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfi
     private final Map<String, Checkbox> worldEventsCheckboxes = new HashMap<>();
     private final Map<String, Slider> eventsChanceSliders;
 
-    public EventsPanel(MoreOptionsConfig.Events events) {
+    public EventsPanel(MoreOptionsV2Config.Events events) {
         BuildResult<Table, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(events.getSettlement());
         GuiSection settlement = settlementCheckboxesResult.getResult();
         settlementEventsCheckboxes.putAll(settlementCheckboxesResult.getInteractable());
@@ -72,7 +72,7 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfi
     }
 
     private BuildResult<Table, Map<String, Slider>> sliders(
-        Map<String, MoreOptionsConfig.Range> eventsChanceConfig
+        Map<String, MoreOptionsV2Config.Range> eventsChanceConfig
     ) {
         Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
@@ -94,8 +94,8 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfi
     }
 
     @Override
-    public MoreOptionsConfig.Events getValue() {
-       return MoreOptionsConfig.Events.builder()
+    public MoreOptionsV2Config.Events getValue() {
+       return MoreOptionsV2Config.Events.builder()
            .settlement(getSettlementEventsConfig())
            .world(getWorldEventsConfig())
            .chance(getEventsChanceConfig())
@@ -112,14 +112,14 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsConfi
             .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 
-    public Map<String, MoreOptionsConfig.Range> getEventsChanceConfig() {
+    public Map<String, MoreOptionsV2Config.Range> getEventsChanceConfig() {
         return eventsChanceSliders.entrySet().stream().collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsConfig.Range.fromSlider(tab.getValue())));
+                tab -> MoreOptionsV2Config.Range.fromSlider(tab.getValue())));
     }
 
     @Override
-    public void setValue(MoreOptionsConfig.Events events) {
+    public void setValue(MoreOptionsV2Config.Events events) {
         log.trace("Applying UI settlement events config %s", events);
 
         events.getSettlement().forEach((key, value) -> {

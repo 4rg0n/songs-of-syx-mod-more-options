@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
@@ -28,7 +28,7 @@ import java.util.Optional;
  */
 @NoArgsConstructor
 @SuppressWarnings("unused") // used by the game via reflection
-public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitPhases {
+public final class MoreOptionsScript implements SCRIPT<MoreOptionsV2Config>, InitPhases {
 
 	private final static Logger log = Loggers.getLogger(MoreOptionsScript.class);
 
@@ -75,7 +75,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 		Level level = Optional.ofNullable(logLevelName)
 			.flatMap(Level::fromName)
 			.orElseGet(() -> configStore.getMetaInfo().map(
-				MoreOptionsConfig.Meta::getLogLevel)
+				MoreOptionsV2Config.Meta::getLogLevel)
 				.orElse(LOG_LEVEL_DEFAULT));
 		Loggers.setLevels(level);
 
@@ -102,7 +102,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 			log.debug("Creating Mod Instance");
 
 			// try to get current config and merge with defaults; or use whole defaults
-			MoreOptionsConfig config = configStore.getCurrentConfig();
+			MoreOptionsV2Config config = configStore.getCurrentConfig();
 
 			// add description from game boosters
 			gameApis.booster().getBoosters()
@@ -127,13 +127,13 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 		log.debug("PHASE: initGamePresent");
 		initializer.initGamePresent();
 		// config should already be loaded or use default
-		MoreOptionsConfig moreOptionsConfig = configStore.getCurrentConfig();
+		MoreOptionsV2Config moreOptionsConfig = configStore.getCurrentConfig();
 
 		Modal<MoreOptionsView> moreOptionsModal = uiGameConfig.buildModal(MOD_INFO.name.toString(), moreOptionsConfig);
 		uiGameConfig.initDebugActions(moreOptionsModal, configStore);
 		uiGameConfig.inject(moreOptionsModal);
 
-		Optional<MoreOptionsConfig> backupConfig = configStore.getBackupConfig();
+		Optional<MoreOptionsV2Config> backupConfig = configStore.getBackupConfig();
 		// show backup dialog?
 		if (backupConfig.isPresent()) {
 			log.debug("Backup config present at %s", backupConfig.get().getFilePath());
@@ -167,7 +167,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsConfig>, InitP
 	}
 
 	@Override
-	public void initGameSaveLoaded(MoreOptionsConfig config) {
+	public void initGameSaveLoaded(MoreOptionsV2Config config) {
 		initializer.initGameSaveLoaded(config);
 		// game will initialize new instances of the cached class references on load
 		gameApis.events().clearCached();

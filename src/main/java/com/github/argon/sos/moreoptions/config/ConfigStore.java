@@ -36,16 +36,16 @@ public class ConfigStore implements InitPhases {
     @Getter
     private final Dictionary dictionary;
 
-    private MoreOptionsConfig currentConfig;
+    private MoreOptionsV2Config currentConfig;
 
-    private MoreOptionsConfig.Meta metaInfo;
-    private MoreOptionsConfig backupConfig;
+    private MoreOptionsV2Config.Meta metaInfo;
+    private MoreOptionsV2Config backupConfig;
 
     @Override
     public void initCreateInstance() {
-        MoreOptionsConfig defaultConfig = getDefaultConfig();
+        MoreOptionsV2Config defaultConfig = getDefaultConfig();
         // load config from file if present; merge missing fields with defaults
-        MoreOptionsConfig config = loadConfig(defaultConfig).orElse(defaultConfig);
+        MoreOptionsV2Config config = loadConfig(defaultConfig).orElse(defaultConfig);
         if (currentConfig == null) {
             setCurrentConfig(config);
         }
@@ -69,8 +69,8 @@ public class ConfigStore implements InitPhases {
 
     @Override
     public void initBeforeGameCreated() {
-        MoreOptionsConfig.Meta meta = loadMeta()
-            .orElse(MoreOptionsConfig.Meta.builder().build());
+        MoreOptionsV2Config.Meta meta = loadMeta()
+            .orElse(MoreOptionsV2Config.Meta.builder().build());
         setMetaInfo(meta);
 
         // load backup config from file if present
@@ -82,71 +82,71 @@ public class ConfigStore implements InitPhases {
     /**
      * Used by the mod as current configuration to apply and use
      */
-    public void setCurrentConfig(MoreOptionsConfig currentConfig) {
+    public void setCurrentConfig(MoreOptionsV2Config currentConfig) {
         log.trace("Set %s.currentConfig to %s", ConfigStore.class.getSimpleName(), currentConfig);
         this.currentConfig = currentConfig;
     }
 
-    public void setMetaInfo(MoreOptionsConfig.Meta metaInfo) {
+    public void setMetaInfo(MoreOptionsV2Config.Meta metaInfo) {
         log.trace("Set %s.metaInfo to %s", ConfigStore.class.getSimpleName(), metaInfo);
         this.metaInfo = metaInfo;
     }
 
-    public void setBackupConfig(MoreOptionsConfig backupConfig) {
+    public void setBackupConfig(MoreOptionsV2Config backupConfig) {
         log.trace("Set %s.backupConfig to %s", ConfigStore.class.getSimpleName(), backupConfig);
         this.backupConfig = backupConfig;
     }
 
-    public MoreOptionsConfig getCurrentConfig() {
+    public MoreOptionsV2Config getCurrentConfig() {
         return Optional.ofNullable(currentConfig)
             .orElseThrow(() -> new UninitializedException("ConfigStore wasn't correctly initialized"));
     }
 
-    public Optional<MoreOptionsConfig.Meta> getMetaInfo() {
+    public Optional<MoreOptionsV2Config.Meta> getMetaInfo() {
         return Optional.ofNullable(metaInfo);
     }
 
-    public Optional<MoreOptionsConfig> getBackupConfig() {
+    public Optional<MoreOptionsV2Config> getBackupConfig() {
         return Optional.ofNullable(backupConfig);
     }
 
     /**
      * @return configuration loaded from file
      */
-    public Optional<MoreOptionsConfig> loadConfig() {
-        return configService.loadConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME, null);
+    public Optional<MoreOptionsV2Config> loadConfig() {
+        return configService.loadConfig(SAVE_PATH, MoreOptionsV2Config.FILE_NAME, null);
     }
 
-    public Optional<MoreOptionsConfig.Meta> loadMeta() {
-        return configService.loadMeta(SAVE_PATH, MoreOptionsConfig.FILE_NAME);
+    public Optional<MoreOptionsV2Config.Meta> loadMeta() {
+        return configService.loadMeta(SAVE_PATH, MoreOptionsV2Config.FILE_NAME);
     }
 
     public boolean deleteConfig() {
-        return configService.delete(SAVE_PATH, MoreOptionsConfig.FILE_NAME);
+        return configService.delete(SAVE_PATH, MoreOptionsV2Config.FILE_NAME);
     }
 
-    public Optional<MoreOptionsConfig> loadBackupConfig() {
-        return configService.loadConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME_BACKUP);
+    public Optional<MoreOptionsV2Config> loadBackupConfig() {
+        return configService.loadConfig(SAVE_PATH, MoreOptionsV2Config.FILE_NAME_BACKUP);
     }
 
     public boolean deleteBackupConfig() {
-        return configService.delete(SAVE_PATH, MoreOptionsConfig.FILE_NAME_BACKUP);
+        return configService.delete(SAVE_PATH, MoreOptionsV2Config.FILE_NAME_BACKUP);
     }
 
     public boolean createBackupConfig() {
         return createBackupConfig(getCurrentConfig());
     }
 
-    public boolean createBackupConfig(MoreOptionsConfig config) {
+    public boolean createBackupConfig(MoreOptionsV2Config config) {
         log.debug("Creating backup config file: %s", backupConfigPath());
-        return configService.saveConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME_BACKUP, config);
+        return configService.saveConfig(SAVE_PATH, MoreOptionsV2Config.FILE_NAME_BACKUP, config);
     }
 
     /**
      * @return configuration loaded from file with merged defaults
      */
-    public Optional<MoreOptionsConfig> loadConfig(MoreOptionsConfig defaultConfig) {
-        return configService.loadConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME, defaultConfig);
+    public Optional<MoreOptionsV2Config> loadConfig(MoreOptionsV2Config defaultConfig) {
+        return configService.loadConfig(SAVE_PATH, MoreOptionsV2Config.FILE_NAME, defaultConfig);
     }
 
     /**
@@ -154,18 +154,18 @@ public class ConfigStore implements InitPhases {
      *
      * @return whether saving was successful
      */
-    public boolean saveConfig(MoreOptionsConfig config) {
-       return configService.saveConfig(SAVE_PATH, MoreOptionsConfig.FILE_NAME, config);
+    public boolean saveConfig(MoreOptionsV2Config config) {
+       return configService.saveConfig(SAVE_PATH, MoreOptionsV2Config.FILE_NAME, config);
     }
 
     public static Path configPath() {
         return SAVE_PATH.get()
-            .resolve(MoreOptionsConfig.FILE_NAME + ".txt");
+            .resolve(MoreOptionsV2Config.FILE_NAME + ".txt");
     }
 
     public static Path backupConfigPath() {
         return SAVE_PATH.get()
-            .resolve(MoreOptionsConfig.FILE_NAME_BACKUP + ".txt");
+            .resolve(MoreOptionsV2Config.FILE_NAME_BACKUP + ".txt");
     }
 
     public Optional<Map<String, Dictionary.Entry>> loadDictionary() {
@@ -179,7 +179,7 @@ public class ConfigStore implements InitPhases {
     /**
      * Accessing defaults before the "game instance created" phase can cause problems.
      */
-    public MoreOptionsConfig getDefaultConfig() {
+    public MoreOptionsV2Config getDefaultConfig() {
         return defaults.getDefaults();
     }
 }

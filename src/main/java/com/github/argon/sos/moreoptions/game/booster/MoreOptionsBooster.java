@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.booster;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.boosting.BSourceInfo;
@@ -126,9 +126,9 @@ public class MoreOptionsBooster extends BoosterImp {
     public static MoreOptionsBooster fromRange(
         Boostable origin,
         BSourceInfo bSourceInfo,
-        MoreOptionsConfig.Range range
+        MoreOptionsV2Config.Range range
     ) {
-        if (range.getApplyMode().equals(MoreOptionsConfig.Range.ApplyMode.MULTI)) {
+        if (range.getApplyMode().equals(MoreOptionsV2Config.Range.ApplyMode.MULTI)) {
             return MoreOptionsBooster.builder()
                 .bSourceInfo(bSourceInfo)
                 .origin(origin)

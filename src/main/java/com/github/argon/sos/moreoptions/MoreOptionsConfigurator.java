@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.config.ConfigUtil;
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * For manipulating game classes by given config {@link MoreOptionsConfig}
+ * For manipulating game classes by given config {@link MoreOptionsV2Config}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsConfigurator {
@@ -47,9 +47,9 @@ public class MoreOptionsConfigurator {
 
     private Set<String> lastMetricStats = new HashSet<>();
 
-    private Action<MoreOptionsConfig> afterApplyAction = o -> {};
+    private Action<MoreOptionsV2Config> afterApplyAction = o -> {};
 
-    public void onAfterApplyAction(Action<MoreOptionsConfig> afterApplyAction) {
+    public void onAfterApplyAction(Action<MoreOptionsV2Config> afterApplyAction) {
         this.afterApplyAction = afterApplyAction;
     }
 
@@ -58,7 +58,7 @@ public class MoreOptionsConfigurator {
      *
      * @param config to apply
      */
-    public void applyConfig(MoreOptionsConfig config) {
+    public void applyConfig(MoreOptionsV2Config config) {
         log.debug("Apply More Options config to game");
         log.trace("Config: %s", config);
 
@@ -78,7 +78,7 @@ public class MoreOptionsConfigurator {
         }
     }
 
-    private void applyMetrics(MoreOptionsConfig.Metrics metrics) {
+    private void applyMetrics(MoreOptionsV2Config.Metrics metrics) {
         List<String> metricStats = metrics.getStats();
 
         // use new file when exported stats change
@@ -122,11 +122,11 @@ public class MoreOptionsConfigurator {
         }
     }
 
-    private void applyBoostersConfig(Map<String, MoreOptionsConfig.Range> rangeMap) {
+    private void applyBoostersConfig(Map<String, MoreOptionsV2Config.Range> rangeMap) {
         gameApis.booster().setBoosters(rangeMap);
     }
 
-    private void applyEventsChanceConfig(Map<String, MoreOptionsConfig.Range> eventsChanceConfig) {
+    private void applyEventsChanceConfig(Map<String, MoreOptionsV2Config.Range> eventsChanceConfig) {
         eventsChanceConfig.forEach((key, range) -> {
             Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChance();
 
@@ -179,7 +179,7 @@ public class MoreOptionsConfigurator {
         });
     }
 
-    private void applySoundsAmbienceConfig(Map<String, MoreOptionsConfig.Range> soundsConfig) {
+    private void applySoundsAmbienceConfig(Map<String, MoreOptionsV2Config.Range> soundsConfig) {
         Map<String, SoundAmbience.Ambience> ambienceSounds = gameApis.sounds().getAmbienceSounds();
 
         soundsConfig.forEach((key, range) -> {
@@ -193,7 +193,7 @@ public class MoreOptionsConfigurator {
         });
     }
 
-    private void applySoundsSettlementConfig(Map<String, MoreOptionsConfig.Range> soundsConfig) {
+    private void applySoundsSettlementConfig(Map<String, MoreOptionsV2Config.Range> soundsConfig) {
         Map<String, SoundSettlement.Sound> settlementSounds = gameApis.sounds().getSettlementSounds();
 
         soundsConfig.forEach((key, range) -> {
@@ -207,7 +207,7 @@ public class MoreOptionsConfigurator {
         });
     }
 
-    private void applySoundsRoomConfig(Map<String, MoreOptionsConfig.Range> soundsConfig) {
+    private void applySoundsRoomConfig(Map<String, MoreOptionsV2Config.Range> soundsConfig) {
         Map<String, SoundSettlement.Sound> roomSounds = gameApis.sounds().getRoomSounds();
 
         soundsConfig.forEach((key, range) -> {

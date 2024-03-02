@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.init;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -49,7 +49,7 @@ public class Initializer implements InitPhases {
     }
 
     @Override
-    public void initGameSaveLoaded(MoreOptionsConfig config) {
+    public void initGameSaveLoaded(MoreOptionsV2Config config) {
         gameApis.initGameSaveLoaded(config);
     }
 
