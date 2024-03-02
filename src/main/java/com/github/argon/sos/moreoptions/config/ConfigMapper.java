@@ -3,8 +3,6 @@ package com.github.argon.sos.moreoptions.config;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.util.JsonUtil;
 import org.jetbrains.annotations.Nullable;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
@@ -14,17 +12,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Mapper
-public interface ConfigMapper {
+public class ConfigMapper {
 
     /**
      * Maps old V1 config to the current config structure
      *
      * @param path path where the config was loaded from
      * @param json with config data
-     * @param defaultConfig optional default config to merge
+     * @param defaultConfig optional public static config to merge
      */
-    default MoreOptionsConfig mapV1(Path path, Json json, @Nullable MoreOptionsConfig defaultConfig) {
+    public static MoreOptionsConfig mapV1(Path path, Json json, @Nullable MoreOptionsConfig defaultConfig) {
         return MoreOptionsConfig.builder()
             .filePath(path)
             .version(MoreOptionsConfig.VERSION)
@@ -82,7 +79,7 @@ public interface ConfigMapper {
     /**
      * Maps V2 config to the current config structure
      */
-    default MoreOptionsConfig mapV2(Path path, Json json, @Nullable MoreOptionsConfig defaultConfig) {
+    public static MoreOptionsConfig mapV2(Path path, Json json, @Nullable MoreOptionsConfig defaultConfig) {
         return MoreOptionsConfig.builder()
             .filePath(path)
             .version(MoreOptionsConfig.VERSION)
@@ -122,7 +119,7 @@ public interface ConfigMapper {
             .build();
     }
 
-    default JsonE mapConfig(MoreOptionsConfig config) {
+    public static JsonE mapConfig(MoreOptionsConfig config) {
         JsonE configJson = new JsonE();
         configJson.add("VERSION", config.getVersion());
         configJson.addString("LOG_LEVEL", config.getLogLevel().getName());
@@ -138,7 +135,7 @@ public interface ConfigMapper {
         return configJson;
     }
 
-    default JsonE mapMetrics(MoreOptionsConfig.Metrics metrics) {
+    public static JsonE mapMetrics(MoreOptionsConfig.Metrics metrics) {
         JsonE metricsJson = new JsonE();
 
         metricsJson.add("ENABLED", metrics.isEnabled());
@@ -149,7 +146,7 @@ public interface ConfigMapper {
         return metricsJson;
     }
 
-    default MoreOptionsConfig.Metrics mapMetrics(Json json) {
+    public static MoreOptionsConfig.Metrics mapMetrics(Json json) {
         MoreOptionsConfig.Metrics defaultMetrics = MoreOptionsConfig.Metrics.builder().build();
 
         return MoreOptionsConfig.Metrics.builder()
@@ -166,14 +163,14 @@ public interface ConfigMapper {
             .build();
     }
 
-    default MoreOptionsConfig.Meta mapMeta(Json json) {
+    public static MoreOptionsConfig.Meta mapMeta(Json json) {
         return MoreOptionsConfig.Meta.builder()
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO) : Level.INFO)
             .version((json.has("VERSION")) ? json.i("VERSION") : MoreOptionsConfig.VERSION)
             .build();
     }
 
-    default Map<String, MoreOptionsConfig.Range> mapRanges(Json json) {
+    public static Map<String, MoreOptionsConfig.Range> mapRanges(Json json) {
         Map<String, MoreOptionsConfig.Range> map = new HashMap<>();
 
         for (String key : json.keys()) {
@@ -185,7 +182,7 @@ public interface ConfigMapper {
         return map;
     }
 
-    default MoreOptionsConfig.Range mapRange(Json rangeJson, @Nullable Integer defaultValue) {
+    public static MoreOptionsConfig.Range mapRange(Json rangeJson, @Nullable Integer defaultValue) {
         return MoreOptionsConfig.Range.builder()
             .value((defaultValue != null) ? defaultValue : rangeJson.i("VALUE"))
             .min(rangeJson.i("MIN"))
@@ -197,7 +194,7 @@ public interface ConfigMapper {
             .build();
     }
 
-     default JsonE mapRanges(Map<String, MoreOptionsConfig.Range> ranges) {
+     public static JsonE mapRanges(Map<String, MoreOptionsConfig.Range> ranges) {
         JsonE json = new JsonE();
 
         ranges.forEach((key, range) -> {
@@ -208,7 +205,7 @@ public interface ConfigMapper {
         return json;
     }
 
-    default JsonE mapRange(MoreOptionsConfig.Range range, @Nullable Integer defaultValue) {
+    public static JsonE mapRange(MoreOptionsConfig.Range range, @Nullable Integer defaultValue) {
         JsonE rangeJson = new JsonE();
         rangeJson.add("VALUE", (defaultValue != null) ? defaultValue : range.getValue());
         rangeJson.add("MIN", range.getMin());
@@ -218,6 +215,4 @@ public interface ConfigMapper {
 
         return rangeJson;
     }
-
-    void update(@MappingTarget MoreOptionsConfig target, MoreOptionsConfig source);
 }

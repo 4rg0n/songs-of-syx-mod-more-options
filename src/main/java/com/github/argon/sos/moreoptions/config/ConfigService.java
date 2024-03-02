@@ -9,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
-import org.mapstruct.factory.Mappers;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
@@ -28,13 +27,10 @@ public class ConfigService {
 
     @Getter(lazy = true)
     private final static ConfigService instance = new ConfigService(
-        JsonService.getInstance(),
-        Mappers.getMapper(ConfigMapper.class)
+        JsonService.getInstance()
     );
 
     private final JsonService jsonService;
-
-    private final ConfigMapper configMapper;
 
     public boolean delete(PATH path, String fileName) {
         if (!path.exists(fileName)) {
@@ -54,7 +50,7 @@ public class ConfigService {
 
     public Optional<MoreOptionsConfig.Meta> loadMeta(PATH path, String fileName) {
         return jsonService.loadJson(path, fileName)
-            .map(configMapper::mapMeta);
+            .map(ConfigMapper::mapMeta);
     }
 
     public Optional<MoreOptionsConfig> loadConfig(PATH path, String fileName) {
@@ -69,7 +65,7 @@ public class ConfigService {
         log.debug("Saving configuration v%s into %s", config.getVersion(), path.get().toString());
         log.trace("CONFIG: %s", config);
 
-        JsonE configJson = configMapper.mapConfig(config);
+        JsonE configJson = ConfigMapper.mapConfig(config);
 
         return jsonService.saveJson(configJson, path, fileName);
     }
@@ -85,15 +81,15 @@ public class ConfigService {
 
         try {
             return jsonService.loadJson(filePath).map(json -> {
-                MoreOptionsConfig.Meta meta = configMapper.mapMeta(json);
+                MoreOptionsConfig.Meta meta = ConfigMapper.mapMeta(json);
                 int version = meta.getVersion();
                 log.debug("Loaded config v%s", version);
 
                 switch (version) {
                     case 1:
-                        return configMapper.mapV1(filePath, json, defaultConfig);
+                        return ConfigMapper.mapV1(filePath, json, defaultConfig);
                     case 2:
-                        return configMapper.mapV2(filePath, json, defaultConfig);
+                        return ConfigMapper.mapV2(filePath, json, defaultConfig);
                     default:
                         log.warn("Unsupported config version v%s found in %s", version, filePath);
                         return null;
