@@ -398,6 +398,28 @@ public class UiGameConfig {
             }
         });
 
+        // copy config from ui into clipboard
+        Button copyExportFileButton = metricsPanel.getCopyExportFileButton();
+        copyExportFileButton.clickActionSet(() -> {
+            Path exportFilePath = metricsPanel.getExportFilePath();
+
+            try {
+                if (exportFilePath != null) {
+                    boolean written = Clipboard.write(exportFilePath.toString());
+
+                    if (written) {
+                        notificator.notifySuccess(exportFilePath + " copied to clipboard.");
+                    } else {
+                        notificator.notifyError("Could not copy export file path to clipboard.");
+                    }
+                } else {
+                    notificator.notifyError("There is no export file path to copy.");
+                }
+            } catch (Exception e) {
+                notificator.notifyError("Could not copy export file path to clipboard.", e);
+            }
+        });
+
         // after config is applied to game
         configurator.onAfterApplyAction(moreOptionsConfig -> {
             Path exportFile = metricExporter.getExportFile();
