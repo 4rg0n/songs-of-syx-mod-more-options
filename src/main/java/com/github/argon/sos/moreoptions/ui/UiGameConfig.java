@@ -24,7 +24,6 @@ import init.sprite.SPRITES;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
-import org.mapstruct.factory.Mappers;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.file.FileManager;
 import snake2d.util.file.JsonE;
@@ -55,9 +54,7 @@ public class UiGameConfig {
         ConfigStore.getInstance(),
         MetricExporter.getInstance(),
         MetricCollector.getInstance(),
-        Notificator.getInstance(),
-        Mappers.getMapper(ConfigMapper.class),
-        Mappers.getMapper(UiMapper.class)
+        Notificator.getInstance()
     );
 
     private final static Logger log = Loggers.getLogger(UiGameConfig.class);
@@ -68,8 +65,6 @@ public class UiGameConfig {
     private final MetricExporter metricExporter;
     private final MetricCollector metricCollector;
     private final Notificator notificator;
-    private final ConfigMapper configMapper;
-    private final UiMapper uiMapper;
 
     public void inject(Modal<MoreOptionsPanel> moreOptionsModal) {
         log.debug("Injecting button into game ui");
@@ -310,7 +305,7 @@ public class UiGameConfig {
             MoreOptionsV2Config moreOptionsConfig = moreOptionsPanel.getValue();
             try {
                 if (moreOptionsConfig != null) {
-                    JsonE jsonE = configMapper.mapConfig(moreOptionsConfig);
+                    JsonE jsonE = ConfigMapper.mapConfig(moreOptionsConfig);
                     boolean written = Clipboard.write(jsonE.toString());
 
                     if (written) {
