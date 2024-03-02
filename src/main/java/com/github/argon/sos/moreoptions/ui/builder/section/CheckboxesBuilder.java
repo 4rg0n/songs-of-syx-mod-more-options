@@ -26,6 +26,8 @@ public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>
 
     private final boolean evenWidth;
 
+    private final boolean highlightColumns;
+
     @Nullable
     private final StringInputSprite search;
 
@@ -48,9 +50,10 @@ public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>
                 .build()
                 .toColumnRow();
             ColumnRow columnRow = buildResult.getResult();
+            columnRow.highlight(highlightColumns);
 
             if (search != null) {
-                columnRow.setSearchTerm(key);
+                columnRow.searchTerm(key);
             }
 
             elements.put(key, buildResult.getInteractable());
@@ -89,6 +92,9 @@ public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>
         private boolean evenWidth = false;
 
         @Accessors(fluent = true)
+        private boolean highlightColumns = false;
+
+        @Accessors(fluent = true)
         private StringInputSprite search;
 
         public CheckboxesBuilder.Builder translate(Map<String, LabeledCheckboxBuilder.Definition> definitions) {
@@ -102,7 +108,7 @@ public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>
             assert definitions != null : "definitions must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
 
-            return new CheckboxesBuilder(definitions, displayHeight, evenWidth, search).build();
+            return new CheckboxesBuilder(definitions, displayHeight, evenWidth, highlightColumns, search).build();
         }
     }
 }

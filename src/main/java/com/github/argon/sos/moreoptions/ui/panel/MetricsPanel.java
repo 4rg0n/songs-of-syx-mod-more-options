@@ -60,6 +60,8 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         Path exportFilePath
     ) {
         this.exportFolderPath = exportFolderPath;
+
+        // Started / Stopped toggle
         Toggler<Boolean> toggler = new Toggler<>(Lists.of(
             UiInfo.<Boolean>builder()
                 .key(true)
@@ -72,7 +74,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .description("Toggle and apply to stop the collection and export of game metrics")
                 .build()
         ), 0, true, true);
-
         BuildResult<List<GuiSection>, List<Toggler<Boolean>>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(
             LabeledBuilder.Definition.<Toggler<Boolean>>builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
@@ -81,13 +82,14 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .element(toggler)
                 .build()
         ).build();
+
+        // Collection rate slider
         this.collectionRate = SliderBuilder.builder().definition(
             SliderBuilder.Definition
                 .buildFrom(metricsConfig.getCollectionRateSeconds())
                 .maxWidth(200)
                 .build()
         ).build().getResult();
-
         BuildResult<List<GuiSection>, List<RENDEROBJ>> collectionRate = LabeledBuilder.builder()
             .definition(LabeledBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
@@ -98,13 +100,13 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .build())
             .build();
 
+        // Export rate slider
         this.exportRate = SliderBuilder.builder().definition(
             SliderBuilder.Definition
                 .buildFrom(metricsConfig.getExportRateMinutes())
                 .maxWidth(200)
                 .build()
         ).build().getResult();
-
         BuildResult<List<GuiSection>, List<RENDEROBJ>> exportRate = LabeledBuilder.builder()
             .definition(LabeledBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
@@ -117,10 +119,10 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
 
         GuiSection exportFilePathSection = exportFilePath(exportFolderPath.toString(), exportFilePath.getFileName().toString());
 
+        // Export file path with folder button
         this.exportFilePathView = new UISwitcher(exportFilePathSection, false);
         this.exportFolderButton = new Button("Export Folder");
         exportFolderButton.hoverInfoSet("Opens the metrics export folder: " + exportFolderPath);
-
         BuildResult<List<GuiSection>, List<RENDEROBJ>> exportFile = LabeledBuilder.builder().translate(
             LabeledBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
@@ -131,11 +133,10 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                 .build()
         ).build();
 
-        // Search Bar
+        // Search Bar with uncheck and check buttons
         GuiSection searchBar = new GuiSection();
         this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
         searchBar.addRightC(0, new GInput(searchInput));
-
         this.searchToggler = new Toggler<>(Lists.of(
             UiInfo.<Boolean>builder()
                 .key(true)
@@ -150,9 +151,11 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         ),0, true, false);
         searchBar.addRightC(10, searchToggler);
 
-        BuildResult<Table, Map<String, Checkbox>> checkboxes = CheckboxesBuilder.builder()
+        // Export stats section
+        BuildResult<Table, Map<String, Checkbox>> exportStats = CheckboxesBuilder.builder()
             .displayHeight(400)
             .search(searchInput)
+            .highlightColumns(true)
             .definitions(availableStats.stream()
                 .collect(Collectors.toMap(
                     s -> s,
@@ -167,8 +170,8 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
                         .build())))
             .build();
 
-        this.statsSection = new UISwitcher(checkboxes.getResult(), true);
-        this.statsCheckboxes.putAll(checkboxes.getInteractable());
+        this.statsSection = new UISwitcher(exportStats.getResult(), true);
+        this.statsCheckboxes.putAll(exportStats.getInteractable());
         this.onOffToggle = onOffToggle.getInteractable().get(0);
         this.onOffToggle.toggle(metricsConfig.isEnabled());
 
@@ -197,7 +200,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
 
         // Actions
         searchToggler.onClick(aBoolean -> {
-            List<String> resultList = checkboxes.getResult()
+            List<String> resultList = exportStats.getResult()
                 .search(searchInput.text().toString());
             resultList.forEach(result -> statsCheckboxes.get(result).setValue(aBoolean));
         });

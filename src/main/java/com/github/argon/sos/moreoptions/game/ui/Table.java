@@ -45,7 +45,7 @@ public class Table extends GuiSection implements Searchable<String, List<String>
             GuiSection headerSection = UiUtil.toGuiSection(header);
             headerSection.pad(10);
             ColumnRow headerRow = new ColumnRow(Lists.of(headerSection));
-            headerRow.setHeader(true);
+            headerRow.isHeader(true);
             columnRows.add(headerRow);
             columnRows.addAll(innerRows);
         });
@@ -90,7 +90,7 @@ public class Table extends GuiSection implements Searchable<String, List<String>
         rows.forEach(columnRow -> {
             columnRow.init(maxWidths);
             if (evenOdd && !columnRow.isHeader() && rows.indexOf(columnRow) % 2 == 0) {
-                columnRow.background(COLOR.WHITE15);
+                columnRow.backgroundColor(COLOR.WHITE15);
             }
         });
 
@@ -118,7 +118,7 @@ public class Table extends GuiSection implements Searchable<String, List<String>
     public List<String> search(String term) {
         return rows.stream()
             .filter(columnRow -> columnRow.search(term))
-            .map(ColumnRow::getSearchTerm)
+            .map(ColumnRow::searchTerm)
             .collect(Collectors.toList());
     }
 }

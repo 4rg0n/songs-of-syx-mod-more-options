@@ -48,7 +48,8 @@ public class BoosterSlidersBuilder implements UiBuilder<Table, Map<String, Tabul
                             .build();
 
                     ColumnRow columnRow = buildResult.toColumnRow().getResult();
-                    columnRow.setSearchTerm(key);
+                    columnRow.searchTerm(key);
+                    columnRow.highlight(true);
                     elements.put(key, buildResult.getInteractable());
                     innerList.add(columnRow);
                 });
