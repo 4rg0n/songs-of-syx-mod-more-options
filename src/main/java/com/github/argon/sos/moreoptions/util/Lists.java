@@ -137,17 +137,18 @@ public class Lists {
     }
 
     public static <T> List<T> listFromLIST(LIST<T> gameLIST) {
-        List<T> races = new ArrayList<>();
+        List<T> list = new ArrayList<>();
 
-        for (T race : gameLIST) {
-            races.add(race);
+        for (int i = 0; i < gameLIST.size(); i++) {
+            T element = gameLIST.get(i);
+            list.add(element);
         }
 
-        return races;
+        return list;
     }
 
-    public static <T> LIST<T> toGameLIST(List<T> gameLIST) {
-        return new snake2d.util.sets.ArrayList<T>(gameLIST);
+    public static <T> LIST<T> toGameLIST(List<T> list) {
+        return new snake2d.util.sets.ArrayList<T>(list);
     }
 
     private static <E> List<E> listFromArray(E[] elements) {
