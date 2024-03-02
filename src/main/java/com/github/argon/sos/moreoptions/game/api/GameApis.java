@@ -23,7 +23,8 @@ public class GameApis implements InitPhases {
         GameBoosterApi.getInstance(),
         GameModApi.getInstance(),
         GameStatsApi.getInstance(),
-        GameRaceApi.getInstance()
+        GameRaceApi.getInstance(),
+        GameSaveApi.getInstance()
     );
 
     @Accessors(fluent = true)
@@ -48,14 +49,17 @@ public class GameApis implements InitPhases {
     private final GameStatsApi stats;
 
     @Accessors(fluent = true)
-    private final GameRaceApi races;
+    private final GameRaceApi race;
+
+    @Accessors(fluent = true)
+    private final GameSaveApi save;
 
     @Override
     public void initGamePresent() {}
 
     @Override
     public void initGameRunning() {
-        ui().init();
+        ui().initGameRunning();
     }
 
     @Override
@@ -65,12 +69,12 @@ public class GameApis implements InitPhases {
 
     @Override
     public void initCreateInstance() {
-        booster().init();
-        races().init();
+        booster().initCreateInstance();
+        race().initCreateInstance();
     }
 
     @Override
     public void initGameSaveLoaded(MoreOptionsV2Config config) {
-
+        save().initGameSaveLoaded(config);
     }
 }

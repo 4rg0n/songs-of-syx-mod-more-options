@@ -58,7 +58,7 @@ public class ConfigMerger {
         }
     }
 
-    private static void merge(MoreOptionsV2Config.Races target, MoreOptionsV2Config.Races source) {
+    private static void merge(MoreOptionsV2Config.RacesConfig target, MoreOptionsV2Config.RacesConfig source) {
         if (target.getLikings() == null) {
             target.setLikings(source.getLikings());
         } else {

@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,12 +17,10 @@ public class ConfigMapper {
     /**
      * Maps old V1 config to the current config structure
      *
-     * @param path path where the config was loaded from
      * @param json with config data
      */
-    public static MoreOptionsV2Config mapV1(Path path, Json json) {
+    public static MoreOptionsV2Config mapV1(Json json) {
         return MoreOptionsV2Config.builder()
-            .filePath(path)
             .version(MoreOptionsV2Config.VERSION)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
@@ -75,9 +72,8 @@ public class ConfigMapper {
     /**
      * Maps V2 config to the current config structure
      */
-    public static MoreOptionsV2Config mapV2(Path path, Json json) {
+    public static MoreOptionsV2Config mapV2(Json json) {
         return MoreOptionsV2Config.builder()
-            .filePath(path)
             .version(MoreOptionsV2Config.VERSION)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)

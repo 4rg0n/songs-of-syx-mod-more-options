@@ -22,11 +22,11 @@ public class UiMapper {
 
     private final GameApis gameApis = GameApis.getInstance();
 
-    public Map<String, List<RacesPanel.Entry>> mapToRacePanelEntries(List<MoreOptionsV2Config.Races.Liking> raceLikings) {
+    public Map<String, List<RacesPanel.Entry>> mapToRacePanelEntries(List<MoreOptionsV2Config.RacesConfig.Liking> raceLikings) {
         Map<String, List<RacesPanel.Entry>> entries = new HashMap<>();
 
         for (int i = 0; i < raceLikings.size(); i++) {
-            MoreOptionsV2Config.Races.Liking raceLiking = raceLikings.get(i);
+            MoreOptionsV2Config.RacesConfig.Liking raceLiking = raceLikings.get(i);
             RacesPanel.Entry entry = mapToRacePanelEntry(raceLiking);
             String raceKey = entry.getRace().info.name.toString();
             entries.putIfAbsent(raceKey, new ArrayList<>());
@@ -36,9 +36,9 @@ public class UiMapper {
         return entries;
     }
 
-    public RacesPanel.Entry mapToRacePanelEntry(MoreOptionsV2Config.Races.Liking liking) {
-        Race race = gameApis.races().getRace(liking.getRace()).orElse(null);
-        Race otherRace = gameApis.races().getRace(liking.getOtherRace()).orElse(null);
+    public RacesPanel.Entry mapToRacePanelEntry(MoreOptionsV2Config.RacesConfig.Liking liking) {
+        Race race = gameApis.race().getRace(liking.getRace()).orElse(null);
+        Race otherRace = gameApis.race().getRace(liking.getOtherRace()).orElse(null);
 
         return RacesPanel.Entry.builder()
             .raceKey(liking.getRace())

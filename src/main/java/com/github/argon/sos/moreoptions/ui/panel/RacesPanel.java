@@ -13,11 +13,14 @@ import com.github.argon.sos.moreoptions.ui.builder.element.TableBuilder;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import init.race.Race;
+import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.sprite.text.StringInputSprite;
+import util.gui.misc.GInput;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * TODO
  */
-public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Races, RacesPanel> {
+public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Config.RacesConfig, RacesPanel> {
     private static final Logger log = Loggers.getLogger(RacesPanel.class);
     public RacesPanel(Map<String, List<Entry>> raceEntries) {
 
@@ -52,36 +55,36 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
                 Slider sliderResultResult = likingsSliderResult.getResult();
                 List<GuiSection> columns = Lists.of(raceIcon, sliderResultResult, otherRaceIcon);
 
-                ColumnRow columnRow = ColumnRow.builder()
+                return ColumnRow.builder()
                     .columns(columns)
                     .searchTerm(race.info.name + "~" + otherRace.info.name)
                     .highlight(true)
                     .columns(columns)
                     .build();
-
-                return columnRow;
             }).collect(Collectors.toList())));
 
-        // todo sortable table?
+        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
         BuildResult<Table, Table> raceLikingsTable = TableBuilder.builder()
             .evenOdd(true)
             .scrollable(true)
+            .search(searchInput)
             .rowPadding(3)
             .rowsCategorized(rowMap)
             .displayHeight(600)
             .build();
 
-        addDownC(0, raceLikingsTable.getResult());
+        addDownC(0, new GInput(searchInput));
+        addDownC(10, raceLikingsTable.getResult());
     }
 
     @Override
-    public MoreOptionsV2Config.Races getValue() {
+    public MoreOptionsV2Config.RacesConfig getValue() {
         // todo
         return null;
     }
 
     @Override
-    public void setValue(MoreOptionsV2Config.Races config) {
+    public void setValue(MoreOptionsV2Config.RacesConfig config) {
         // todo
     }
 

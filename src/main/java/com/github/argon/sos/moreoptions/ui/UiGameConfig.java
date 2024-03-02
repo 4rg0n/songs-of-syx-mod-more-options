@@ -35,6 +35,7 @@ import view.ui.top.UIPanelTop;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
@@ -54,7 +55,8 @@ public class UiGameConfig {
         ConfigStore.getInstance(),
         MetricExporter.getInstance(),
         MetricCollector.getInstance(),
-        Notificator.getInstance()
+        Notificator.getInstance(),
+        UiMapper.getInstance()
     );
 
     private final static Logger log = Loggers.getLogger(UiGameConfig.class);
@@ -65,6 +67,7 @@ public class UiGameConfig {
     private final MetricExporter metricExporter;
     private final MetricCollector metricCollector;
     private final Notificator notificator;
+    private final UiMapper uiMapper;
 
     public void inject(Modal<MoreOptionsPanel> moreOptionsModal) {
         log.debug("Injecting button into game ui");
@@ -449,7 +452,7 @@ public class UiGameConfig {
         log.debug("Initialize %s ui", title);
 
         List<BoostersPanel.Entry> boosterEntries = uiMapper.mapToBoosterPanelEntries(config.getBoosters());
-        List<RacesPanel.Entry> raceEntries = uiMapper.mapToRacePanelEntries(config.getRaces().getLikings());
+        Map<String, List<RacesPanel.Entry>> raceEntries = uiMapper.mapToRacePanelEntries(config.getRaces().getLikings());
 
         List<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod().orElse(null);

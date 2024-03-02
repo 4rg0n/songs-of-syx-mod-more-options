@@ -4,11 +4,9 @@ import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.annotation.JsonIgnore;
 import com.github.argon.sos.moreoptions.log.Level;
 import lombok.*;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,15 +20,6 @@ public class MoreOptionsV2Config {
 
     public final static int VERSION = 2;
 
-    /**
-     * Name of the config file
-     */
-    public final static String FILE_NAME = "MoreOptions";
-    public final static String FILE_NAME_BACKUP = FILE_NAME + ".backup";
-
-    @JsonIgnore
-    @EqualsAndHashCode.Exclude
-    private Path filePath;
     @Builder.Default
     private int version = VERSION;
     @Builder.Default
@@ -47,7 +36,7 @@ public class MoreOptionsV2Config {
     @Builder.Default
     private Metrics metrics = Metrics.builder().build();
     @Builder.Default
-    private Races races = Races.builder().build();
+    private RacesConfig races = RacesConfig.builder().build();
 
     @Data
     @Builder
@@ -56,10 +45,8 @@ public class MoreOptionsV2Config {
     public static class Events {
         @Builder.Default
         private Map<String, Boolean> settlement = new HashMap<>();
-
         @Builder.Default
         private Map<String, Boolean> world = new HashMap<>();
-
         @Builder.Default
         private Map<String, Range> chance = new HashMap<>();
     }
@@ -81,41 +68,15 @@ public class MoreOptionsV2Config {
     @Builder
     @EqualsAndHashCode
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Races {
-
-        @Builder.Default
-        private List<Liking> likings = new ArrayList<>();
-
-        @Data
-        @Builder
-        @EqualsAndHashCode
-        @AllArgsConstructor(access = AccessLevel.PRIVATE)
-        public static class Liking {
-            private String race;
-            private String otherRace;
-
-            @Builder.Default
-            private Range range = ConfigDefaults.raceLiking();
-        }
-    }
-
-    @Data
-    @Builder
-    @EqualsAndHashCode
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Metrics {
         @Builder.Default
         private boolean enabled = false;
-
         @Builder.Default
         private Range collectionRateSeconds = ConfigDefaults.metricCollectionRate();
-
         @Builder.Default
         private Range exportRateMinutes= ConfigDefaults.metricExportRate();
-
         @Builder.Default
         private List<String> stats = new ArrayList<>();
-
     }
 
     @Data
@@ -125,16 +86,12 @@ public class MoreOptionsV2Config {
     public static class Range {
         @Builder.Default
         private int value = 0;
-
         @Builder.Default
         private int min = 0;
-
         @Builder.Default
         private int max = 10000;
-
         @Builder.Default
         private ApplyMode applyMode = ApplyMode.MULTI;
-
         @Builder.Default
         private DisplayMode displayMode = DisplayMode.PERCENTAGE;
 
@@ -201,7 +158,6 @@ public class MoreOptionsV2Config {
     public static class Meta {
         @Builder.Default
         private int version = VERSION;
-
         @Builder.Default
         private Level logLevel = MoreOptionsScript.LOG_LEVEL_DEFAULT;
     }
@@ -211,9 +167,7 @@ public class MoreOptionsV2Config {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class BoosterEntry {
         private final String key;
-
         private final Range add;
-
         private final Range multi;
     }
 
@@ -222,6 +176,26 @@ public class MoreOptionsV2Config {
        * toggle deposit overlay when building
 
      */
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class RacesConfig {
+        @Builder.Default
+        private List<Liking> likings = new ArrayList<>();
+
+        @Data
+        @Builder
+        @EqualsAndHashCode
+        @AllArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class Liking {
+            private String race;
+            private String otherRace;
+            @Builder.Default
+            private Range range = ConfigDefaults.raceLiking();
+        }
+    }
 
     /**
      * Only for debugging purposes

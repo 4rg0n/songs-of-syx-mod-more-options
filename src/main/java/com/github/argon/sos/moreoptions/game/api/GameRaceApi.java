@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.game.api;
 
 
+import com.github.argon.sos.moreoptions.init.InitPhases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.race.RaceService;
@@ -22,14 +23,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameRaceApi {
+public class GameRaceApi implements InitPhases {
     private final static Logger log = Loggers.getLogger(GameRaceApi.class);
+
+    @Getter(lazy = true)
+    private final static GameRaceApi instance = new GameRaceApi();
     private static List<RaceService.RaceLiking> vanillaLikings;
 
     private final Map<String, Integer> raceIndexMap = new HashMap<>();
 
-    @Getter(lazy = true)
-    private final static GameRaceApi instance = new GameRaceApi();
+
 
     public void increaseHappiness(Race race, double inc) {
         increaseStanding(STANDINGS.CITIZEN().happiness, race, inc);
@@ -68,7 +71,7 @@ public class GameRaceApi {
         }
     }
 
-    public void init() {
+    public void initCreateInstance() {
         // initialize all game races
         for (Race race : getAll()) {
             raceIndexMap.put(race.key, race.index);

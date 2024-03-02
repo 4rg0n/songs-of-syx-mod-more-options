@@ -150,9 +150,9 @@ public class ConfigDefaults {
         metrics.setStats(availableStats);
 
         // Races
-        List<Race> racesAll = gameApis.races().getAll();
+        List<Race> racesAll = gameApis.race().getAll();
         List<Race> otherRacesAll = new ArrayList<>(racesAll);
-        List<MoreOptionsV2Config.Races.Liking> raceLikings = new ArrayList<>();
+        List<MoreOptionsV2Config.RacesConfig.Liking> raceLikings = new ArrayList<>();
         for (Race race : racesAll) {
             for (Race otherRace : otherRacesAll) {
                 double racePref = race.pref().race(otherRace);
@@ -161,14 +161,14 @@ public class ConfigDefaults {
                 MoreOptionsV2Config.Range range = raceLiking();
                 range.setValue(value);
 
-                raceLikings.add(MoreOptionsV2Config.Races.Liking.builder()
+                raceLikings.add(MoreOptionsV2Config.RacesConfig.Liking.builder()
                     .race(race.key)
                     .otherRace(otherRace.key)
                     .range(range)
                     .build());
             }
         }
-        MoreOptionsV2Config.Races races = MoreOptionsV2Config.Races.builder()
+        MoreOptionsV2Config.RacesConfig races = MoreOptionsV2Config.RacesConfig.builder()
             .likings(raceLikings)
             .build();
 

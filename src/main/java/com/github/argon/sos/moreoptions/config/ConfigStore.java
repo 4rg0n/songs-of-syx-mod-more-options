@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
-import com.github.argon.sos.moreoptions.game.api.UninitializedException;
+import com.github.argon.sos.moreoptions.init.UninitializedException;
 import com.github.argon.sos.moreoptions.init.InitPhases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -17,6 +17,11 @@ import java.util.Optional;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigStore implements InitPhases {
+    /**
+     * Name of the config file
+     */
+    public final static String MORE_OPTIONS_FILE_NAME = "MoreOptions";
+    public final static String MORE_OPTIONS_FILE_NAME_BACKUP = MORE_OPTIONS_FILE_NAME + ".backup";
     private final static Logger log = Loggers.getLogger(ConfigStore.class);
 
     @Getter(lazy = true)
@@ -130,23 +135,23 @@ public class ConfigStore implements InitPhases {
      * @return configuration loaded from file
      */
     public Optional<MoreOptionsV2Config> loadConfig() {
-        return configService.loadConfig(SAVE_PATH, MoreOptionsV2Config.FILE_NAME, null);
+        return configService.loadConfig(SAVE_PATH, MORE_OPTIONS_FILE_NAME, null);
     }
 
     public Optional<MoreOptionsV2Config.Meta> loadMeta() {
-        return configService.loadMeta(SAVE_PATH, MoreOptionsV2Config.FILE_NAME);
+        return configService.loadMeta(SAVE_PATH, MORE_OPTIONS_FILE_NAME);
     }
 
     public boolean deleteConfig() {
-        return configService.delete(SAVE_PATH, MoreOptionsV2Config.FILE_NAME);
+        return configService.delete(SAVE_PATH, MORE_OPTIONS_FILE_NAME);
     }
 
     public Optional<MoreOptionsV2Config> loadBackupConfig() {
-        return configService.loadConfig(SAVE_PATH, MoreOptionsV2Config.FILE_NAME_BACKUP);
+        return configService.loadConfig(SAVE_PATH, MORE_OPTIONS_FILE_NAME_BACKUP);
     }
 
     public boolean deleteBackupConfig() {
-        return configService.delete(SAVE_PATH, MoreOptionsV2Config.FILE_NAME_BACKUP);
+        return configService.delete(SAVE_PATH, MORE_OPTIONS_FILE_NAME_BACKUP);
     }
 
     public boolean createBackupConfig() {
@@ -155,14 +160,14 @@ public class ConfigStore implements InitPhases {
 
     public boolean createBackupConfig(MoreOptionsV2Config config) {
         log.debug("Creating backup config file: %s", backupConfigPath());
-        return configService.saveConfig(SAVE_PATH, MoreOptionsV2Config.FILE_NAME_BACKUP, config);
+        return configService.saveConfig(SAVE_PATH, MORE_OPTIONS_FILE_NAME_BACKUP, config);
     }
 
     /**
      * @return configuration loaded from file with merged defaults
      */
     public Optional<MoreOptionsV2Config> loadConfig(MoreOptionsV2Config defaultConfig) {
-        return configService.loadConfig(SAVE_PATH, MoreOptionsV2Config.FILE_NAME, defaultConfig);
+        return configService.loadConfig(SAVE_PATH, MORE_OPTIONS_FILE_NAME, defaultConfig);
     }
 
     /**
@@ -171,17 +176,17 @@ public class ConfigStore implements InitPhases {
      * @return whether saving was successful
      */
     public boolean saveConfig(MoreOptionsV2Config config) {
-       return configService.saveConfig(SAVE_PATH, MoreOptionsV2Config.FILE_NAME, config);
+       return configService.saveConfig(SAVE_PATH, MORE_OPTIONS_FILE_NAME, config);
     }
 
     public static Path configPath() {
         return SAVE_PATH.get()
-            .resolve(MoreOptionsV2Config.FILE_NAME + ".txt");
+            .resolve(MORE_OPTIONS_FILE_NAME + ".txt");
     }
 
     public static Path backupConfigPath() {
         return SAVE_PATH.get()
-            .resolve(MoreOptionsV2Config.FILE_NAME_BACKUP + ".txt");
+            .resolve(MORE_OPTIONS_FILE_NAME_BACKUP + ".txt");
     }
 
     public Optional<Map<String, Dictionary.Entry>> loadDictionary() {

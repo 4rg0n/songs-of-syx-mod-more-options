@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.game.api;
 import com.github.argon.sos.moreoptions.game.GameUiNotAvailableException;
 import com.github.argon.sos.moreoptions.game.ui.NonHidingPopup;
 import com.github.argon.sos.moreoptions.game.ui.NotificationPopup;
+import com.github.argon.sos.moreoptions.init.InitPhases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
@@ -21,7 +22,7 @@ import java.util.Optional;
  * For hooking into the games UI
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameUiApi {
+public class GameUiApi implements InitPhases {
 
     private final static Logger log = Loggers.getLogger(GameUiApi.class);
 
@@ -98,7 +99,8 @@ public class GameUiApi {
         return interrupters;
     }
 
-   public void init() {
+    @Override
+   public void initGameRunning() {
         log.debug("Init game ui api");
         popup = new NonHidingPopup(VIEW.inters().manager);
         notification = new NotificationPopup(VIEW.inters().manager);

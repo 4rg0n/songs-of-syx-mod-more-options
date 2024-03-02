@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.game.api;
+package com.github.argon.sos.moreoptions.init;
 
 public class UninitializedException extends RuntimeException {
     public UninitializedException() {

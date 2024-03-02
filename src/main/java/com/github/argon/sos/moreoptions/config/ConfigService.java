@@ -86,13 +86,12 @@ public class ConfigService {
                 log.debug("Loaded config v%s", version);
 
                 MoreOptionsV2Config config;
-
                 switch (version) {
                     case 1:
-                        config = ConfigMapper.mapV1(filePath, json);
+                        config = ConfigMapper.mapV1(json);
                         break;
                     case 2:
-                        config = ConfigMapper.mapV2(filePath, json);
+                        config = ConfigMapper.mapV2(json);
                         break;
                     default:
                         log.warn("Unsupported config version v%s found in %s", version, filePath);
