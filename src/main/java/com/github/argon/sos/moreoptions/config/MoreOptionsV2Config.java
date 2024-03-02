@@ -49,6 +49,8 @@ public class MoreOptionsV2Config {
     private Map<String, Range> boosters = new HashMap<>();
     @Builder.Default
     private Metrics metrics = Metrics.builder().build();
+    @Builder.Default
+    private Races races = Races.builder().build();
 
     @Data
     @Builder
@@ -83,6 +85,34 @@ public class MoreOptionsV2Config {
     @Builder
     @EqualsAndHashCode
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Races {
+
+        @Builder.Default
+        private List<Liking> likings = new ArrayList<>();
+
+        @Data
+        @Builder
+        @EqualsAndHashCode
+        @AllArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class Liking {
+            private String race;
+            private String otherRace;
+
+            @Builder.Default
+            private Range range = Range.builder()
+                .max(-100)
+                .max(100)
+                .value(0)
+                .displayMode(Range.DisplayMode.ABSOLUTE)
+                .applyMode(Range.ApplyMode.ADD)
+                .build();
+        }
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Metrics {
         @Builder.Default
         private boolean enabled = false;
@@ -105,22 +135,9 @@ public class MoreOptionsV2Config {
             .displayMode(Range.DisplayMode.ABSOLUTE)
             .build();
 
-        private List<String> stats;
+        @Builder.Default
+        private List<String> stats = new ArrayList<>();
 
-        public void setStats(List<String> stats) {
-            stats.sort(String::compareTo);
-            this.stats = stats;
-        }
-
-        public static class MetricsBuilder {
-            private List<String> stats = new ArrayList<>();
-
-            public MetricsBuilder stats(List<String> stats) {
-                stats.sort(String::compareTo);
-                this.stats = stats;
-                return this;
-            }
-        }
     }
 
     @Data
@@ -174,26 +191,6 @@ public class MoreOptionsV2Config {
                         return ApplyMode.MULTI;
                 }
             }
-        }
-
-        public static Range defaultBoosterAdd() {
-            return Range.builder()
-                .value(0)
-                .min(0)
-                .max(10000)
-                .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
-                .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
-                .build();
-        }
-
-        public static Range defaultBoosterMulti() {
-            return Range.builder()
-                .value(100)
-                .min(1)
-                .max(10000)
-                .applyMode(ApplyMode.MULTI)
-                .displayMode(DisplayMode.PERCENTAGE)
-                .build();
         }
 
         public Range clone() {

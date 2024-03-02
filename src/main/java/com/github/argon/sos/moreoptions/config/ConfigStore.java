@@ -22,8 +22,8 @@ public class ConfigStore implements InitPhases {
     @Getter(lazy = true)
     private final static ConfigStore instance = new ConfigStore(
         ConfigService.getInstance(),
-        MoreOptionsDefaults.getInstance(),
-        Dictionary.getInstance()
+        Dictionary.getInstance(),
+        ConfigDefaults.getInstance()
     );
 
     private final static PATH SAVE_PATH = PATHS.local().SETTINGS;
@@ -31,19 +31,30 @@ public class ConfigStore implements InitPhases {
     private final ConfigService configService;
 
     @Getter
-    private final MoreOptionsDefaults defaults;
-
-    @Getter
     private final Dictionary dictionary;
 
-    private MoreOptionsV2Config currentConfig;
+    private final ConfigDefaults configDefaults;
 
     private MoreOptionsV2Config.Meta metaInfo;
+    private MoreOptionsV2Config currentConfig;
     private MoreOptionsV2Config backupConfig;
+    private MoreOptionsV2Config defaultConfig;
+
+    @Override
+    public void initBeforeGameCreated() {
+        MoreOptionsV2Config.Meta meta = loadMeta()
+            .orElse(MoreOptionsV2Config.Meta.builder().build());
+        setMetaInfo(meta);
+
+        // load backup config from file if present
+        loadBackupConfig().ifPresent(this::setBackupConfig);
+        // load dictionary entries from file if present
+        loadDictionary().ifPresent(dictionary::addAll);
+    }
 
     @Override
     public void initCreateInstance() {
-        MoreOptionsV2Config defaultConfig = getDefaultConfig();
+        defaultConfig = configDefaults.newDefaultConfig();
         // load config from file if present; merge missing fields with defaults
         MoreOptionsV2Config config = loadConfig(defaultConfig).orElse(defaultConfig);
         if (currentConfig == null) {
@@ -67,38 +78,43 @@ public class ConfigStore implements InitPhases {
         });
     }
 
-    @Override
-    public void initBeforeGameCreated() {
-        MoreOptionsV2Config.Meta meta = loadMeta()
-            .orElse(MoreOptionsV2Config.Meta.builder().build());
-        setMetaInfo(meta);
-
-        // load backup config from file if present
-        loadBackupConfig().ifPresent(this::setBackupConfig);
-        // load dictionary entries from file if present
-        loadDictionary().ifPresent(dictionary::addAll);
-    }
-
     /**
      * Used by the mod as current configuration to apply and use
      */
     public void setCurrentConfig(MoreOptionsV2Config currentConfig) {
-        log.trace("Set %s.currentConfig to %s", ConfigStore.class.getSimpleName(), currentConfig);
+        log.debug("Setting Current Config");
+        log.trace("Config: %s", currentConfig);
         this.currentConfig = currentConfig;
     }
 
     public void setMetaInfo(MoreOptionsV2Config.Meta metaInfo) {
-        log.trace("Set %s.metaInfo to %s", ConfigStore.class.getSimpleName(), metaInfo);
+        log.debug("Setting Meta Info");
+        log.trace("Info: %s", metaInfo);
         this.metaInfo = metaInfo;
     }
 
     public void setBackupConfig(MoreOptionsV2Config backupConfig) {
-        log.trace("Set %s.backupConfig to %s", ConfigStore.class.getSimpleName(), backupConfig);
+        log.debug("Setting Backup Config");
+        log.trace("Config: %s", backupConfig);
         this.backupConfig = backupConfig;
     }
 
     public MoreOptionsV2Config getCurrentConfig() {
         return Optional.ofNullable(currentConfig)
+            .orElseThrow(() -> new UninitializedException("ConfigStore wasn't correctly initialized"));
+    }
+
+    public void setDefaultConfig(MoreOptionsV2Config defaultConfig) {
+        log.debug("Setting Default Config");
+        log.trace("Config: %s", defaultConfig);
+        this.defaultConfig = defaultConfig;
+    }
+
+    /**
+     * Accessing defaults before the "game instance created" phase can cause problems.
+     */
+    public MoreOptionsV2Config getDefaultConfig() {
+        return Optional.ofNullable(defaultConfig)
             .orElseThrow(() -> new UninitializedException("ConfigStore wasn't correctly initialized"));
     }
 
@@ -174,12 +190,5 @@ public class ConfigStore implements InitPhases {
 
     public boolean saveDictionary(Map<String, Dictionary.Entry> entries) {
         return configService.saveDictionary(entries, PATHS.INIT().getFolder("config"), Dictionary.FILE_NAME);
-    }
-
-    /**
-     * Accessing defaults before the "game instance created" phase can cause problems.
-     */
-    public MoreOptionsV2Config getDefaultConfig() {
-        return defaults.getDefaults();
     }
 }

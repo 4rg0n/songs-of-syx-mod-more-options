@@ -27,10 +27,10 @@ import java.util.List;
  * Main window containing all other UI elements.
  * Will pop up in the middle of the game and pauses the game.
  */
-public class MoreOptionsView extends GuiSection implements
-    Showable<MoreOptionsView>,
-    Refreshable<MoreOptionsView>,
-    Valuable<MoreOptionsV2Config, MoreOptionsView> {
+public class MoreOptionsPanel extends GuiSection implements
+    Showable<MoreOptionsPanel>,
+    Refreshable<MoreOptionsPanel>,
+    Valuable<MoreOptionsV2Config, MoreOptionsPanel> {
 
     @Getter
     private final ConfigStore configStore;
@@ -41,6 +41,7 @@ public class MoreOptionsView extends GuiSection implements
     private final BoostersPanel boostersPanel;
     @Getter
     private final MetricsPanel metricsPanel;
+    private final RacesPanel racesPanel;
 
     @Getter
     private final Button cancelButton;
@@ -66,9 +67,8 @@ public class MoreOptionsView extends GuiSection implements
     private final ButtonMenu moreButtonMenu;
     private final Tabulator<String, ?, GuiSection> tabulator;
 
-
-    private Action<MoreOptionsView> showAction = o -> {};
-    private Action<MoreOptionsView> refreshAction = o -> {};
+    private Action<MoreOptionsPanel> showAction = o -> {};
+    private Action<MoreOptionsPanel> refreshAction = o -> {};
 
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
@@ -76,10 +76,11 @@ public class MoreOptionsView extends GuiSection implements
     /**
      * Builds the UI with given config
      */
-    public MoreOptionsView(
+    public MoreOptionsPanel(
         MoreOptionsV2Config config,
         ConfigStore configStore,
         List<BoostersPanel.Entry> boosterEntries,
+        List<RacesPanel.Entry> raceEntries,
         List<String> availableStats,
         Path exportFolder,
         Path exportFile,
@@ -92,6 +93,7 @@ public class MoreOptionsView extends GuiSection implements
         weatherPanel = new WeatherPanel(config.getWeather());
         boostersPanel = new BoostersPanel(boosterEntries);
         metricsPanel = new MetricsPanel(config.getMetrics(), availableStats, exportFolder, exportFile);
+        racesPanel = new RacesPanel(raceEntries);
 
         tabulator = new Tabulator<>(Maps.ofLinked(
             UiInfo.<String>builder()
@@ -119,6 +121,11 @@ public class MoreOptionsView extends GuiSection implements
                 .title("Metrics")
                 .description("Collect and export data about the game.")
                 .build(), metricsPanel
+            ,UiInfo.<String>builder()
+                .key("races")
+                .title("Races")
+                .description("TODO")
+                .build(), racesPanel
         ), DIR.S, 30, 0, true, false);
         addDownC(0, tabulator);
 
@@ -256,7 +263,7 @@ public class MoreOptionsView extends GuiSection implements
     }
 
     @Override
-    public void onShow(Action<MoreOptionsView> showAction) {
+    public void onShow(Action<MoreOptionsPanel> showAction) {
         this.showAction = showAction;
     }
 
@@ -266,7 +273,7 @@ public class MoreOptionsView extends GuiSection implements
     }
 
     @Override
-    public void onRefresh(Action<MoreOptionsView> refreshAction) {
+    public void onRefresh(Action<MoreOptionsPanel> refreshAction) {
         this.refreshAction = refreshAction;
     }
 }

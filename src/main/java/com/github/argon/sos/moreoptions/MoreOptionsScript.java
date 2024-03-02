@@ -12,7 +12,7 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
-import com.github.argon.sos.moreoptions.ui.MoreOptionsView;
+import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.UiGameConfig;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -129,7 +129,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsV2Config>, Ini
 		// config should already be loaded or use default
 		MoreOptionsV2Config moreOptionsConfig = configStore.getCurrentConfig();
 
-		Modal<MoreOptionsView> moreOptionsModal = uiGameConfig.buildModal(MOD_INFO.name.toString(), moreOptionsConfig);
+		Modal<MoreOptionsPanel> moreOptionsModal = uiGameConfig.buildModal(MOD_INFO.name.toString(), moreOptionsConfig);
 		uiGameConfig.initDebugActions(moreOptionsModal, configStore);
 		uiGameConfig.inject(moreOptionsModal);
 
@@ -138,7 +138,7 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsV2Config>, Ini
 		if (backupConfig.isPresent()) {
 			log.debug("Backup config present at %s", backupConfig.get().getFilePath());
 			Modal<BackupDialog> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupDialog());
-			Modal<MoreOptionsView> backupMoreOptionsModal = uiGameConfig.buildModal(
+			Modal<MoreOptionsPanel> backupMoreOptionsModal = uiGameConfig.buildModal(
 				MOD_INFO.name + " Backup",
 				backupConfig.get());
 

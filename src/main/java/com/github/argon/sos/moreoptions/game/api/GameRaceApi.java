@@ -8,7 +8,9 @@ import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import init.race.RACES;
 import init.race.Race;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import settlement.entity.humanoid.HCLASS;
 import settlement.stats.STATS;
 import settlement.stats.standing.STANDINGS;
@@ -19,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameRaceApi {
     private final static Logger log = Loggers.getLogger(GameRaceApi.class);
     private static List<RaceService.RaceLiking> vanillaLikings;
@@ -27,12 +30,6 @@ public class GameRaceApi {
 
     @Getter(lazy = true)
     private final static GameRaceApi instance = new GameRaceApi();
-
-    private GameRaceApi() {
-        for (Race race : getAll()) {
-            raceIndexMap.put(race.key, race.index);
-        }
-    }
 
     public void increaseHappiness(Race race, double inc) {
         increaseStanding(STANDINGS.CITIZEN().happiness, race, inc);
@@ -71,10 +68,13 @@ public class GameRaceApi {
         }
     }
 
-    /**
-     * For storing the game's default likings between races in memory
-     */
-    public void initVanillaLikings() {
+    public void init() {
+        // initialize all game races
+        for (Race race : getAll()) {
+            raceIndexMap.put(race.key, race.index);
+        }
+
+        // initialize vanilla race likings
         if (vanillaLikings == null) {
             vanillaLikings = getAllLikings();
         }

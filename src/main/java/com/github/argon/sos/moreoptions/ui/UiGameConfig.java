@@ -15,6 +15,7 @@ import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.MetricsPanel;
+import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import init.paths.ModInfo;
@@ -55,7 +56,8 @@ public class UiGameConfig {
         MetricExporter.getInstance(),
         MetricCollector.getInstance(),
         Notificator.getInstance(),
-        Mappers.getMapper(ConfigMapper.class)
+        Mappers.getMapper(ConfigMapper.class),
+        Mappers.getMapper(UiMapper.class)
     );
 
     private final static Logger log = Loggers.getLogger(UiGameConfig.class);
@@ -67,8 +69,9 @@ public class UiGameConfig {
     private final MetricCollector metricCollector;
     private final Notificator notificator;
     private final ConfigMapper configMapper;
+    private final UiMapper uiMapper;
 
-    public void inject(Modal<MoreOptionsView> moreOptionsModal) {
+    public void inject(Modal<MoreOptionsPanel> moreOptionsModal) {
         log.debug("Injecting button into game ui");
         GButt.ButtPanel moreOptionsButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
             @Override
@@ -118,7 +121,7 @@ public class UiGameConfig {
     /**
      * Debug commands are executable via the in game debug panel
      */
-    public void initDebugActions(Modal<MoreOptionsView> moreOptionsModal, ConfigStore configStore) {
+    public void initDebugActions(Modal<MoreOptionsPanel> moreOptionsModal, ConfigStore configStore) {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":show", moreOptionsModal::show);
         IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());
@@ -133,8 +136,8 @@ public class UiGameConfig {
 
     public void initBackupActions(
         Modal<BackupDialog> backupDialog,
-        Modal<MoreOptionsView> backupMoreOptionsModal,
-        Modal<MoreOptionsView> moreOptionsModal,
+        Modal<MoreOptionsPanel> backupMoreOptionsModal,
+        Modal<MoreOptionsPanel> moreOptionsModal,
         MoreOptionsV2Config backupConfig
     ) {
         // Close: More Options modal with backup config
@@ -149,13 +152,13 @@ public class UiGameConfig {
             backupDialog.show();
         });
 
-        MoreOptionsView moreOptionsView = backupMoreOptionsModal.getSection();
+        MoreOptionsPanel moreOptionsPanel = backupMoreOptionsModal.getSection();
 
         // Cancel & Undo
-        Button cancelButton = moreOptionsView.getCancelButton();
+        Button cancelButton = moreOptionsPanel.getCancelButton();
         cancelButton.clickActionSet(() -> {
             try {
-                undo(moreOptionsView);
+                undo(moreOptionsPanel);
             } catch (Exception e) {
                 notificator.notifyError("Could not undo changes.", e);
                 return;
@@ -165,9 +168,9 @@ public class UiGameConfig {
         });
 
         // Ok
-        Button okButton = moreOptionsView.getOkButton();
+        Button okButton = moreOptionsPanel.getOkButton();
         okButton.clickActionSet(() -> {
-            MoreOptionsV2Config readConfig = moreOptionsView.getValue();
+            MoreOptionsV2Config readConfig = moreOptionsPanel.getValue();
 
             // fallback
             if (readConfig == null) {
@@ -190,7 +193,7 @@ public class UiGameConfig {
             backupDialog.hide();
 
             try {
-                moreOptionsView.setValue(backupConfig);
+                moreOptionsPanel.setValue(backupConfig);
             } catch (Exception e) {
                 log.error("Could not apply backup config for editing", e);
                 return;
@@ -247,18 +250,18 @@ public class UiGameConfig {
         });
     }
 
-    public void initActions(Modal<MoreOptionsView> moreOptionsModal) {
-        MoreOptionsView moreOptionsView = moreOptionsModal.getSection();
+    public void initActions(Modal<MoreOptionsPanel> moreOptionsModal) {
+        MoreOptionsPanel moreOptionsPanel = moreOptionsModal.getSection();
 
         // update Notificator queue when More Options Modal is rendered
         moreOptionsModal.onRender((modal, seconds) -> notificator.update(seconds));
         moreOptionsModal.onHide(modal -> notificator.close());
 
         // Cancel & Undo
-        Button cancelButton = moreOptionsView.getCancelButton();
+        Button cancelButton = moreOptionsPanel.getCancelButton();
         cancelButton.clickActionSet(() -> {
             try {
-                undo(moreOptionsView);
+                undo(moreOptionsPanel);
             } catch (Exception e) {
                 notificator.notifyError("Could not undo changes.", e);
                 return;
@@ -268,10 +271,10 @@ public class UiGameConfig {
         });
 
         // Apply & Save
-        Button applyButton = moreOptionsView.getApplyButton();
+        Button applyButton = moreOptionsPanel.getApplyButton();
         applyButton.clickActionSet(() -> {
             try {
-                if (!applyAndSave(moreOptionsView)) {
+                if (!applyAndSave(moreOptionsPanel)) {
                     notificator.notifyError("Could not apply config to game.");
                 }
             } catch (Exception e) {
@@ -280,21 +283,21 @@ public class UiGameConfig {
         });
 
         // Undo changes
-        Button undoButton = moreOptionsView.getUndoButton();
+        Button undoButton = moreOptionsPanel.getUndoButton();
         undoButton.clickActionSet(() -> {
             try {
-                undo(moreOptionsView);
+                undo(moreOptionsPanel);
             } catch (Exception e) {
                 notificator.notifyError("Could not undo changes.", e);
             }
         });
 
         // reload and apply config from file
-        Button reloadButton = moreOptionsView.getReloadButton();
+        Button reloadButton = moreOptionsPanel.getReloadButton();
         reloadButton.clickActionSet(() -> {
             MoreOptionsV2Config moreOptionsConfig = configStore.loadConfig().orElse(null);
             if (moreOptionsConfig != null) {
-                moreOptionsView.setValue(moreOptionsConfig);
+                moreOptionsPanel.setValue(moreOptionsConfig);
                 notificator.notifySuccess("Config reloaded into ui.");
             } else {
                 notificator.notifyError("Could not reload config from file.");
@@ -302,9 +305,9 @@ public class UiGameConfig {
         });
 
         // copy config from ui into clipboard
-        Button shareButton = moreOptionsView.getShareButton();
+        Button shareButton = moreOptionsPanel.getShareButton();
         shareButton.clickActionSet(() -> {
-            MoreOptionsV2Config moreOptionsConfig = moreOptionsView.getValue();
+            MoreOptionsV2Config moreOptionsConfig = moreOptionsPanel.getValue();
             try {
                 if (moreOptionsConfig != null) {
                     JsonE jsonE = configMapper.mapConfig(moreOptionsConfig);
@@ -324,11 +327,11 @@ public class UiGameConfig {
         });
 
         // Apply default config to ui
-        Button defaultButton = moreOptionsView.getDefaultButton();
+        Button defaultButton = moreOptionsPanel.getDefaultButton();
         defaultButton.clickActionSet(() -> {
             MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
             try {
-                moreOptionsView.setValue(defaultConfig);
+                moreOptionsPanel.setValue(defaultConfig);
                 notificator.notifySuccess("Default config applied to ui. ");
             } catch (Exception e) {
                 notificator.notifyError("Could not apply default config to ui.", e);
@@ -336,15 +339,15 @@ public class UiGameConfig {
         });
 
         // Apply default config to ui and game & delete config file
-        Button resetButton = moreOptionsView.getResetButton();
+        Button resetButton = moreOptionsPanel.getResetButton();
         resetButton.clickActionSet(() -> {
             // are you sure message
             VIEW.inters().yesNo.activate("This will delete your config file and reset the ui and game to default settings.", () -> {
                 MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
                 try {
-                    moreOptionsView.setValue(defaultConfig);
+                    moreOptionsPanel.setValue(defaultConfig);
                     configStore.deleteConfig();
-                    if (applyAndSave(moreOptionsView)) {
+                    if (applyAndSave(moreOptionsPanel)) {
                         notificator.notifySuccess("Default config applied to ui and file deleted.");
                     } else {
                         notificator.notifyError("Could not apply config.");
@@ -357,10 +360,10 @@ public class UiGameConfig {
         });
 
         //Ok: Apply & Save & Exit
-        Button okButton = moreOptionsView.getOkButton();
+        Button okButton = moreOptionsPanel.getOkButton();
         okButton.clickActionSet(() -> {
             try {
-                if (!applyAndSave(moreOptionsView)) {
+                if (!applyAndSave(moreOptionsPanel)) {
                     notificator.notifyError("Could not apply config to game.");
                     return;
                 }
@@ -373,7 +376,7 @@ public class UiGameConfig {
         });
 
         // opens folder with mod configuration
-        Button folderButton = moreOptionsView.getFolderButton();
+        Button folderButton = moreOptionsPanel.getFolderButton();
         folderButton.clickActionSet(() -> {
             try {
                 FileManager.openDesctop(PATHS.local().SETTINGS.get().toString());
@@ -382,7 +385,7 @@ public class UiGameConfig {
             }
         });
 
-        MetricsPanel metricsPanel = moreOptionsView.getMetricsPanel();
+        MetricsPanel metricsPanel = moreOptionsPanel.getMetricsPanel();
 
         // opens folder with metric export files
         Button exportFolderButton = metricsPanel.getExportFolderButton();
@@ -425,40 +428,37 @@ public class UiGameConfig {
      *
      * @param config used to generate the UI
      */
-    public Modal<MoreOptionsView> buildModal(String title, MoreOptionsV2Config config) {
+    public Modal<MoreOptionsPanel> buildModal(String title, MoreOptionsV2Config config) {
         log.debug("Initialize %s ui", title);
 
-        List<BoostersPanel.Entry> boosterEntries = config.getBoosters().entrySet().stream()
-            .map(entry -> BoostersPanel.Entry.builder()
-                .key(entry.getKey())
-                .range(entry.getValue())
-                .boosters(gameApis.booster().get(entry.getKey()))
-                .cat(gameApis.booster().getCat(entry.getKey()))
-                .build())
-            .collect(Collectors.toList());
+        List<BoostersPanel.Entry> boosterEntries = uiMapper.mapToBoosterPanelEntries(config.getBoosters());
+        List<RacesPanel.Entry> raceEntries = uiMapper.mapToRacePanelEntries(config.getRaces().getLikings());
 
         List<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod().orElse(null);
         Path exportFolder = MetricExporter.EXPORT_FOLDER;
         Path exportFile = metricExporter.getExportFile();
 
-        // todo this is hacky: make sure when no stats are configured, use availableStats
-        if (config.getMetrics().getStats().isEmpty()) {
-            config.getMetrics().setStats(availableStats);
-        }
-
-        Modal<MoreOptionsView> moreOptionsModal = new Modal<>(title,
-            new MoreOptionsView(config, configStore, boosterEntries, availableStats, exportFolder, exportFile, modInfo));
+        Modal<MoreOptionsPanel> moreOptionsModal = new Modal<>(title, new MoreOptionsPanel(
+            config,
+            configStore,
+            boosterEntries,
+            raceEntries,
+            availableStats,
+            exportFolder,
+            exportFile,
+            modInfo
+        ));
         moreOptionsModal.center();
 
         initActions(moreOptionsModal);
         return moreOptionsModal;
     }
 
-    private @Nullable MoreOptionsV2Config apply(MoreOptionsView moreOptionsView) {
+    private @Nullable MoreOptionsV2Config apply(MoreOptionsPanel moreOptionsPanel) {
         // only save when changes were made
-        if (moreOptionsView.isDirty()) {
-            MoreOptionsV2Config config = moreOptionsView.getValue();
+        if (moreOptionsPanel.isDirty()) {
+            MoreOptionsV2Config config = moreOptionsPanel.getValue();
 
             if (config == null) {
                 log.warn("Could read config from modal. Got null");
@@ -483,8 +483,8 @@ public class UiGameConfig {
         return null;
     }
 
-    private boolean applyAndSave(MoreOptionsView moreOptionsView) {
-        MoreOptionsV2Config appliedConfig = apply(moreOptionsView);
+    private boolean applyAndSave(MoreOptionsPanel moreOptionsPanel) {
+        MoreOptionsV2Config appliedConfig = apply(moreOptionsPanel);
 
         if (appliedConfig != null) {
             return configStore.saveConfig(appliedConfig);
@@ -493,8 +493,8 @@ public class UiGameConfig {
         return false;
     }
 
-    private void undo(MoreOptionsView moreOptionsView) {
-        MoreOptionsV2Config currentConfig = moreOptionsView.getConfigStore().getCurrentConfig();
-        moreOptionsView.setValue(currentConfig);
+    private void undo(MoreOptionsPanel moreOptionsPanel) {
+        MoreOptionsV2Config currentConfig = moreOptionsPanel.getConfigStore().getCurrentConfig();
+        moreOptionsPanel.setValue(currentConfig);
     }
 }

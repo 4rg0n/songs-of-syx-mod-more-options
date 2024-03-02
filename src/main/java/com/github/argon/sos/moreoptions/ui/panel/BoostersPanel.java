@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
-import com.github.argon.sos.moreoptions.config.MoreOptionsDefaults;
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
@@ -18,6 +18,7 @@ import game.boosting.BoostableCat;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
@@ -37,7 +38,6 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     @Getter
     private final Map<String, Tabulator<String, Slider, Integer>> slidersWithToggle;
-    private final MoreOptionsDefaults defaults = MoreOptionsDefaults.getInstance();
 
     public BoostersPanel(List<Entry> boosterEntries) {
         Map<String, List<Entry>> groupedBoosterEntries = new HashMap<>();
@@ -110,10 +110,10 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
 
         if (entry.getRange().getApplyMode().equals(MoreOptionsV2Config.Range.ApplyMode.MULTI)) {
             rangeMulti = entry.getRange();
-            rangeAdd = defaults.getBoostersAdd().get(entry.getKey());
+            rangeAdd = ConfigDefaults.boosterAdd();
             activeKey = "multi";
         } else {
-            rangeMulti = defaults.getBoostersMulti().get(entry.getKey());
+            rangeMulti = ConfigDefaults.boosterMulti();
             rangeAdd = entry.getRange();
             activeKey = "add";
         }
@@ -123,14 +123,14 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
                 .key(entry.getKey())
                 .title(entry.getKey())
                 .build())
-            .sliderAddDefinition(SliderBuilder.Definition.buildFrom(rangeAdd)
+            .sliderAddDefinition(SliderBuilder.Definition.fromRange(rangeAdd)
                 .maxWidth(300)
                 .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))
                 .threshold((int) (0.50 * rangeAdd.getMax()), COLOR.ORANGE100.shade(0.7d))
                 .threshold((int) (0.75 * rangeAdd.getMax()), COLOR.RED100.shade(0.7d))
                 .threshold((int) (0.90 * rangeAdd.getMax()), COLOR.RED2RED)
                 .build())
-            .sliderMultiDefinition(SliderBuilder.Definition.buildFrom(rangeMulti)
+            .sliderMultiDefinition(SliderBuilder.Definition.fromRange(rangeMulti)
                 .maxWidth(300)
                 .threshold((int) (0.10 * rangeMulti.getMax()), COLOR.YELLOW100.shade(0.7d))
                 .threshold((int) (0.50 * rangeMulti.getMax()), COLOR.ORANGE100.shade(0.7d))
@@ -144,6 +144,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
 
     @Data
     @Builder
+    @EqualsAndHashCode
     public static class Entry {
         private MoreOptionsV2Config.Range range;
         private String key;

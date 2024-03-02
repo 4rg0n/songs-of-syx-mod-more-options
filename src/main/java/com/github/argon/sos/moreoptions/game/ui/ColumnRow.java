@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.UiUtil;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -50,6 +51,7 @@ public class ColumnRow extends GuiSection implements Searchable<String, Boolean>
         this(columns, null, false);
     }
 
+    @Builder
     public ColumnRow(List<GuiSection> columns, @Nullable String searchTerm, boolean highlight) {
         this.columns = new ArrayList<>(columns);
         this.searchTerm = searchTerm;

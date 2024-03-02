@@ -13,18 +13,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Initializer implements InitPhases {
 
+    private final static Logger log = Loggers.getLogger(Initializer.class);
+
     @Getter(lazy = true)
     private final static Initializer instance = new Initializer(
         GameApis.getInstance(),
         ConfigStore.getInstance(),
         MetricScheduler.getInstance()
     );
-
     private final GameApis gameApis;
     private final ConfigStore configStore;
     private final MetricScheduler metricScheduler;
 
-    private final static Logger log = Loggers.getLogger(Initializer.class);
+
 
     @Override
     public void initGamePresent() {

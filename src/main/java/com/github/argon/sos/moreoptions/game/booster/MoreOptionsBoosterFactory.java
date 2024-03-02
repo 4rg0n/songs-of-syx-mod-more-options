@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.game.booster;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -67,7 +68,7 @@ public class MoreOptionsBoosterFactory {
             log.trace("Reuse present multi booster: %s", presentBooster.getMulti().info.name);
             boosterMulti = presentBooster.getMulti();
         } else {
-             boosterMulti = createMoreOptionsBooster(booster, MoreOptionsV2Config.Range.defaultBoosterMulti());
+             boosterMulti = createMoreOptionsBooster(booster, ConfigDefaults.boosterMulti());
         }
 
         MoreOptionsBooster boosterAdd;
@@ -75,7 +76,7 @@ public class MoreOptionsBoosterFactory {
             log.trace("Reuse present add booster: %s", presentBooster.getAdd().info.name);
             boosterAdd = presentBooster.getAdd();
         }  else {
-            boosterAdd = createMoreOptionsBooster(booster, MoreOptionsV2Config.Range.defaultBoosterAdd());
+            boosterAdd = createMoreOptionsBooster(booster, ConfigDefaults.boosterAdd());
         }
 
         return MoreOptionsBoosters.builder()

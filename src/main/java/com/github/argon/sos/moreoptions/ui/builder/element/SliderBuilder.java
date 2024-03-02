@@ -85,7 +85,7 @@ public class SliderBuilder implements UiBuilder<Slider, Slider> {
         @lombok.Builder.Default
         private Slider.ValueDisplay valueDisplay = Slider.ValueDisplay.PERCENTAGE;
 
-        public static DefinitionBuilder buildFrom(MoreOptionsV2Config.Range range) {
+        public static DefinitionBuilder fromRange(MoreOptionsV2Config.Range range) {
             return SliderBuilder.Definition.builder()
                 .min(range.getMin())
                 .max(range.getMax())

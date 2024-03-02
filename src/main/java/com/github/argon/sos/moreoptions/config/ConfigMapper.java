@@ -9,9 +9,7 @@ import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Mapper
@@ -25,24 +23,23 @@ public interface ConfigMapper {
      * @param defaultConfig optional default config to merge
      */
     default MoreOptionsV2Config mapV1(Path path, Json json, @Nullable MoreOptionsV2Config defaultConfig) {
-        return MoreOptionsV2Config.builder()
+        MoreOptionsV2Config config = MoreOptionsV2Config.builder()
             .filePath(path)
             .version(MoreOptionsV2Config.VERSION)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
 
             .events(MoreOptionsV2Config.Events.builder()
-                .world((json.has("EVENTS_WORLD")) ? JsonUtil.mapBoolean(json.json("EVENTS_WORLD"), true)
-                    : (defaultConfig != null) ? defaultConfig.getEvents().getWorld() : new HashMap<>())
+                .world((json.has("EVENTS_WORLD")) ? JsonUtil.mapBoolean(json.json("EVENTS_WORLD"), true) : new HashMap<>())
 
                 .settlement((json.has("EVENTS_SETTLEMENT")) ? JsonUtil.mapBoolean(json.json("EVENTS_SETTLEMENT"), true)
-                    : (defaultConfig != null) ? defaultConfig.getEvents().getSettlement() : new HashMap<>())
+                    : new HashMap<>())
 
                 .chance((json.has("EVENTS_CHANCE")) ? JsonUtil.mapInteger(json.json("EVENTS_CHANCE")).entrySet().stream()
                     .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getEvents().getChance().get(entry.getKey()) : null)
-                    )) : (defaultConfig != null) ? defaultConfig.getEvents().getChance() : new HashMap<>())
+                    )) : new HashMap<>())
                 .build())
 
             .sounds(MoreOptionsV2Config.Sounds.builder()
@@ -50,33 +47,40 @@ public interface ConfigMapper {
                     .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSounds().getAmbience().get(entry.getKey()) : null)
-                    )) : (defaultConfig != null) ? defaultConfig.getSounds().getAmbience() : new HashMap<>())
+                    )) : new HashMap<>())
 
                 .settlement((json.has("SOUNDS_SETTLEMENT")) ? JsonUtil.mapInteger(json.json("SOUNDS_SETTLEMENT")).entrySet().stream()
                     .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSounds().getSettlement().get(entry.getKey()) : null)
-                    )) : (defaultConfig != null) ? defaultConfig.getSounds().getSettlement() : new HashMap<>())
+                    )) : new HashMap<>())
 
                 .room((json.has("SOUNDS_ROOM")) ? JsonUtil.mapInteger(json.json("SOUNDS_ROOM")).entrySet().stream()
                     .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getSounds().getRoom().get(entry.getKey()) : null)
-                    )) : (defaultConfig != null) ? defaultConfig.getSounds().getRoom() : new HashMap<>())
+                    )) : new HashMap<>())
                 .build())
 
             .weather((json.has("WEATHER")) ? JsonUtil.mapInteger(json.json("WEATHER")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
                     entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getWeather().get(entry.getKey()) : null)
-                )) : (defaultConfig != null) ? defaultConfig.getWeather() : new HashMap<>())
+                )) : new HashMap<>())
 
             .boosters((json.has("BOOSTERS")) ? JsonUtil.mapInteger(json.json("BOOSTERS")).entrySet().stream()
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
                     entry -> ConfigUtil.mergeIntegerIntoNewRange(entry.getValue(), (defaultConfig != null) ? defaultConfig.getBoosters().get(entry.getKey()) : null)
-                )) : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
+                )) : new HashMap<>())
             .build();
+
+
+        if (defaultConfig != null) {
+            update(config, defaultConfig);
+        }
+
+        return config;
     }
 
     /**
@@ -117,7 +121,7 @@ public interface ConfigMapper {
             .boosters((json.has("BOOSTERS")) ? mapRanges(json.json("BOOSTERS"))
                 : (defaultConfig != null) ? defaultConfig.getBoosters() : new HashMap<>())
 
-            .metrics((json.has("METRICS")) ? mapMetrics(json.json("METRICS"))
+            .metrics((json.has("METRICS")) ? mapMetrics(json.json("METRICS"), defaultConfig.getMetrics())
                 : (defaultConfig != null) ? defaultConfig.getMetrics() : MoreOptionsV2Config.Metrics.builder().build())
             .build();
     }
@@ -149,9 +153,9 @@ public interface ConfigMapper {
         return metricsJson;
     }
 
-    default MoreOptionsV2Config.Metrics mapMetrics(Json json) {
-        MoreOptionsV2Config.Metrics defaultMetrics = MoreOptionsV2Config.Metrics.builder().build();
-
+    default MoreOptionsV2Config.Metrics mapMetrics(Json json, @Nullable MoreOptionsV2Config.Metrics defaultMetrics) {
+        List<String> stats = (json.has("STATS")) ? Arrays.asList(json.texts("STATS")) : defaultMetrics.getStats();
+        Collections.sort(stats);
         return MoreOptionsV2Config.Metrics.builder()
             .enabled((json.has("ENABLED"))
                 ? json.bool("ENABLED")
@@ -162,7 +166,7 @@ public interface ConfigMapper {
             .exportRateMinutes((json.has("EXPORT_RATE_MINUTES"))
                 ? mapRange(json.json("EXPORT_RATE_MINUTES"), defaultMetrics.getExportRateMinutes().getValue())
                 : defaultMetrics.getExportRateMinutes())
-            .stats((json.has("STATS")) ? Arrays.asList(json.texts("STATS")) : defaultMetrics.getStats())
+            .stats(stats)
             .build();
     }
 

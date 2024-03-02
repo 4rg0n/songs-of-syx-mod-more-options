@@ -86,7 +86,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         // Collection rate slider
         this.collectionRate = SliderBuilder.builder().definition(
             SliderBuilder.Definition
-                .buildFrom(metricsConfig.getCollectionRateSeconds())
+                .fromRange(metricsConfig.getCollectionRateSeconds())
                 .maxWidth(200)
                 .build()
         ).build().getResult();
@@ -103,7 +103,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         // Export rate slider
         this.exportRate = SliderBuilder.builder().definition(
             SliderBuilder.Definition
-                .buildFrom(metricsConfig.getExportRateMinutes())
+                .fromRange(metricsConfig.getExportRateMinutes())
                 .maxWidth(200)
                 .build()
         ).build().getResult();

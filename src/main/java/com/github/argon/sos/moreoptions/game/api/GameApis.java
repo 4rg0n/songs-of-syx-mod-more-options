@@ -22,7 +22,8 @@ public class GameApis implements InitPhases {
         GameWeatherApi.getInstance(),
         GameBoosterApi.getInstance(),
         GameModApi.getInstance(),
-        GameStatsApi.getInstance()
+        GameStatsApi.getInstance(),
+        GameRaceApi.getInstance()
     );
 
     @Accessors(fluent = true)
@@ -46,6 +47,9 @@ public class GameApis implements InitPhases {
     @Accessors(fluent = true)
     private final GameStatsApi stats;
 
+    @Accessors(fluent = true)
+    private final GameRaceApi races;
+
     @Override
     public void initGamePresent() {}
 
@@ -62,6 +66,7 @@ public class GameApis implements InitPhases {
     @Override
     public void initCreateInstance() {
         booster().init();
+        races().init();
     }
 
     @Override
