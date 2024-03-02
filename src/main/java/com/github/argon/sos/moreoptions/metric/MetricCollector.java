@@ -3,6 +3,8 @@ package com.github.argon.sos.moreoptions.metric;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Lists;
+import game.GAME;
+import game.values.GCOUNTS;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -48,18 +50,24 @@ public class MetricCollector {
 
     public Map<String, Object> collectStats(List<String> whitelist) {
         final Map<String, Object> stats = new HashMap<>();
-        StatsCollector statsCollector = new StatsCollector(new HashSet<>(whitelist));
+        StatsExtractor statsExtractor = new StatsExtractor(new HashSet<>(whitelist));
 
-        for (STAT stat : STATS.all()) {
-            stats.putAll(statsCollector.getRaceStats(stat));
-            stats.putAll(statsCollector.getStat(stat));
+        for (int i = 0; i < STATS.all().size(); i++) {
+            STAT stat = STATS.all().get(i);
+            stats.putAll(statsExtractor.getRaceStats(stat));
+            stats.putAll(statsExtractor.getStat(stat));
         }
 
-        stats.putAll(statsCollector.getStat(STATS.POP().key, STATS.POP().POP));
-        stats.putAll(statsCollector.getRaceStats(STATS.POP().key, STATS.POP().POP));
+        stats.putAll(statsExtractor.getStat(STATS.POP().key, STATS.POP().POP));
+        stats.putAll(statsExtractor.getRaceStats(STATS.POP().key, STATS.POP().POP));
 
-        stats.putAll(statsCollector.getReligionStats(STATS.RELIGION().ALL));
-        stats.putAll(statsCollector.getReligionRaceStats(STATS.RELIGION().ALL));
+        stats.putAll(statsExtractor.getReligionStats(STATS.RELIGION().ALL));
+        stats.putAll(statsExtractor.getReligionRaceStats(STATS.RELIGION().ALL));
+
+        for (int i = 0; i < GAME.count().ALL.size(); i++) {
+            GCOUNTS.SAccumilator accumulator = GAME.count().ALL.get(i);
+            stats.put(accumulator.key, accumulator.current());
+        }
 
         return stats;
     }

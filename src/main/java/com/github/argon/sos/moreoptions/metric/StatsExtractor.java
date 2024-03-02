@@ -20,8 +20,8 @@ import java.util.*;
  * Used by the {@link MetricCollector} for collecting {@link Metric}
  */
 @RequiredArgsConstructor
-class StatsCollector {
-    private final static Logger log = Loggers.getLogger(StatsCollector.class);
+class StatsExtractor {
+    private final static Logger log = Loggers.getLogger(StatsExtractor.class);
 
     /**
      * Reads only stats from given whitelist. An empty list means read all stats.
