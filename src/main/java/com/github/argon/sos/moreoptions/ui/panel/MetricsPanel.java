@@ -43,6 +43,8 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
     @Getter
     private final Path exportFolderPath;
     @Getter
+    private final Button copyExportFileButton;
+    @Getter
     @Nullable
     private Path exportFilePath;
     @Getter
@@ -66,12 +68,12 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
             UiInfo.<Boolean>builder()
                 .key(true)
                 .title("Started")
-                .description("Toggle and apply to start the collection and export of game metrics")
+                .description("Toggle and apply to start the collection and export of game metrics.")
                 .build(),
             UiInfo.<Boolean>builder()
                 .key(false)
                 .title("Stopped")
-                .description("Toggle and apply to stop the collection and export of game metrics")
+                .description("Toggle and apply to stop the collection and export of game metrics.")
                 .build()
         ), 0, true, true);
         BuildResult<List<GuiSection>, List<Toggler<Boolean>>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(
@@ -121,15 +123,22 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
 
         // Export file path with folder button
         this.exportFilePathView = new UISwitcher(exportFilePathSection, false);
-        this.exportFolderButton = new Button("Export Folder");
+        this.exportFolderButton = new Button("Folder");
         exportFolderButton.hoverInfoSet("Opens the metrics export folder: " + exportFolderPath);
+        this.copyExportFileButton = new Button("Copy");
+        copyExportFileButton.hoverInfoSet("Copies export file path to clipboard.");
+
+        GuiSection exportButtons = new GuiSection();
+        exportButtons.addRightC(0, exportFolderButton);
+        exportButtons.addRightC(0, copyExportFileButton);
+
         BuildResult<List<GuiSection>, List<RENDEROBJ>> exportFile = LabeledBuilder.builder().translate(
             LabeledBuilder.Definition.builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
                     .key("ui.moreOptions.metrics.export-file")
                     .build())
                 .element(this.exportFilePathView)
-                .element(exportFolderButton)
+                .element(exportButtons)
                 .build()
         ).build();
 
