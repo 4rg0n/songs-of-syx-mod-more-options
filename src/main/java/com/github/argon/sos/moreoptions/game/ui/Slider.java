@@ -264,7 +264,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
             Integer threshold = entry.getKey();
             COLOR color = entry.getValue();
 
-            if (threshold <= getValue()) {
+            if (threshold < getValue()) {
                 color.render(r, x1, x1+width, y1, y2);
                 return;
             }
@@ -278,7 +278,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
             Integer threshold = entry.getKey();
             COLOR color = entry.getValue();
 
-            if (threshold >= getValue()) {
+            if (threshold > getValue()) {
                 color.shade(0.66d).render(r, x1, x1+width, y1, y2);
                 return;
             }

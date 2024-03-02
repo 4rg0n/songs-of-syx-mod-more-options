@@ -29,6 +29,7 @@ public class TableBuilder implements UiBuilder<Table, Table> {
     @Nullable
     private final Map<String, List<ColumnRow>> rowsCategorized;
     private final int displayHeight;
+    private final int rowPadding;
     private final boolean scrollable;
     private final boolean evenOdd;
     private final boolean evenColumnWidth;
@@ -38,11 +39,11 @@ public class TableBuilder implements UiBuilder<Table, Table> {
     public BuildResult<Table, Table> build() {
         Table table;
         if (rows != null) {
-            table = new Table(rows, displayHeight, scrollable, evenOdd, evenColumnWidth, search);
+            table = new Table(rows, displayHeight, rowPadding, scrollable, evenOdd, evenColumnWidth, search);
         } else if (rowsCategorized != null) {
-            table = Table.categorized(rowsCategorized, displayHeight, scrollable, evenOdd, evenColumnWidth, search);
+            table = Table.categorized(rowsCategorized, displayHeight, rowPadding, scrollable, evenOdd, evenColumnWidth, search);
         } else {
-            table = new Table(Lists.of(), displayHeight, scrollable, evenOdd, evenColumnWidth, search);
+            table = new Table(Lists.of(), displayHeight, rowPadding, scrollable, evenOdd, evenColumnWidth, search);
         }
 
         return BuildResult.<Table, Table>builder()
@@ -66,6 +67,9 @@ public class TableBuilder implements UiBuilder<Table, Table> {
 
         @Accessors(fluent = true)
         private int displayHeight;
+
+        @Accessors(fluent = true)
+        private int rowPadding;
 
         @Accessors(fluent = true)
         private boolean scrollable = false;
@@ -95,7 +99,7 @@ public class TableBuilder implements UiBuilder<Table, Table> {
         public BuildResult<Table, Table> build() {
             assert rows != null && rowsCategorized != null  : "rows must not be null";
 
-            return new TableBuilder(rows, rowsCategorized, displayHeight, scrollable, evenOdd, evenColumnWidth, search).build();
+            return new TableBuilder(rows, rowsCategorized, displayHeight, rowPadding, scrollable, evenOdd, evenColumnWidth, search).build();
         }
     }
 }

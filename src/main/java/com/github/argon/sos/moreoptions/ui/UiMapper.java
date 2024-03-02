@@ -5,41 +5,62 @@ import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
 import init.race.Race;
-import org.jetbrains.annotations.NotNull;
-import org.mapstruct.Mapper;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Mapper
-public abstract class UiMapper {
+@RequiredArgsConstructor
+public class UiMapper {
+
+    @Getter(lazy = true)
+    private final static UiMapper instance = new UiMapper();
+
     private final GameApis gameApis = GameApis.getInstance();
 
-    public List<RacesPanel.Entry> mapToRacePanelEntries(List<MoreOptionsV2Config.Races.Liking> raceLikings) {
-        return raceLikings.stream().map(liking -> {
-            Race race = gameApis.races().getRace(liking.getRace()).orElse(null);
-            Race otherRace = gameApis.races().getRace(liking.getOtherRace()).orElse(null);
+    public Map<String, List<RacesPanel.Entry>> mapToRacePanelEntries(List<MoreOptionsV2Config.Races.Liking> raceLikings) {
+        Map<String, List<RacesPanel.Entry>> entries = new HashMap<>();
 
-            return RacesPanel.Entry.builder()
-                .raceKey(liking.getRace())
-                .otherRaceKey(liking.getOtherRace())
-                .race(race)
-                .otherRace(otherRace)
-                .range(liking.getRange())
-                .build();
-        }).collect(Collectors.toList());
+        for (int i = 0; i < raceLikings.size(); i++) {
+            MoreOptionsV2Config.Races.Liking raceLiking = raceLikings.get(i);
+            RacesPanel.Entry entry = mapToRacePanelEntry(raceLiking);
+            String raceKey = entry.getRace().info.name.toString();
+            entries.putIfAbsent(raceKey, new ArrayList<>());
+            entries.get(raceKey).add(entry);
+        }
+
+        return entries;
     }
 
-    @NotNull
+    public RacesPanel.Entry mapToRacePanelEntry(MoreOptionsV2Config.Races.Liking liking) {
+        Race race = gameApis.races().getRace(liking.getRace()).orElse(null);
+        Race otherRace = gameApis.races().getRace(liking.getOtherRace()).orElse(null);
+
+        return RacesPanel.Entry.builder()
+            .raceKey(liking.getRace())
+            .otherRaceKey(liking.getOtherRace())
+            .race(race)
+            .otherRace(otherRace)
+            .range(liking.getRange())
+            .build();
+    }
+
     public List<BoostersPanel.Entry> mapToBoosterPanelEntries(Map<String, MoreOptionsV2Config.Range> boosterRanges) {
         return boosterRanges.entrySet().stream()
-            .map(entry -> BoostersPanel.Entry.builder()
-                .key(entry.getKey())
-                .range(entry.getValue())
-                .boosters(gameApis.booster().get(entry.getKey()))
-                .cat(gameApis.booster().getCat(entry.getKey()))
-                .build())
+            .map(entry ->mapToBoosterPanelEntry(entry.getKey(), entry.getValue()))
             .collect(Collectors.toList());
+    }
+
+    public BoostersPanel.Entry mapToBoosterPanelEntry(String key, MoreOptionsV2Config.Range boosterRange) {
+        return BoostersPanel.Entry.builder()
+                .key(key)
+                .range(boosterRange)
+                .boosters(gameApis.booster().get(key))
+                .cat(gameApis.booster().getCat(key))
+                .build();
     }
 }

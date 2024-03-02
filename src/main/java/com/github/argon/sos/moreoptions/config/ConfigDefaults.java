@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.util.MathUtil;
 import init.race.Race;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -51,6 +52,36 @@ public class ConfigDefaults {
 
     public static MoreOptionsV2Config.Metrics metrics() {
         return MoreOptionsV2Config.Metrics.builder().build();
+    }
+
+    public static MoreOptionsV2Config.Range raceLiking() {
+        return MoreOptionsV2Config.Range.builder()
+            .min(0)
+            .max(100)
+            .value(0)
+            .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
+            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
+            .build();
+    }
+
+    public static MoreOptionsV2Config.Range metricCollectionRate() {
+        return MoreOptionsV2Config.Range.builder()
+            .min(5)
+            .value(15)
+            .max(600)
+            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
+            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
+            .build();
+    }
+
+    public static MoreOptionsV2Config.Range metricExportRate() {
+        return MoreOptionsV2Config.Range.builder()
+            .min(5)
+            .value(15)
+            .max(600)
+            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
+            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
+            .build();
     }
 
     public static MoreOptionsV2Config.Range weather() {
@@ -124,9 +155,16 @@ public class ConfigDefaults {
         List<MoreOptionsV2Config.Races.Liking> raceLikings = new ArrayList<>();
         for (Race race : racesAll) {
             for (Race otherRace : otherRacesAll) {
+                double racePref = race.pref().race(otherRace);
+                int value = MathUtil.fromPercentage(racePref);
+
+                MoreOptionsV2Config.Range range = raceLiking();
+                range.setValue(value);
+
                 raceLikings.add(MoreOptionsV2Config.Races.Liking.builder()
                     .race(race.key)
                     .otherRace(otherRace.key)
+                    .range(range)
                     .build());
             }
         }

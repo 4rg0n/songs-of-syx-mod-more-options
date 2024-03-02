@@ -61,9 +61,14 @@ public class UiUtil {
         List<Integer> columnWidths = new ArrayList<>();
 
         for (ColumnRow columnRow : columnRows) {
+            if (columnRow.isHeader()) {
+                // skip header rows
+                continue;
+            }
+
             for (int i = 0; i < columnRow.getColumns().size(); i++) {
-                GuiSection section = columnRow.getColumns().get(i);
-                int width = section.body().width();
+                GuiSection column = columnRow.getColumns().get(i);
+                int width = column.body().width();
 
                 if (columnWidths.size() <= i) {
                     columnWidths.add(width);

@@ -31,16 +31,13 @@ public class MoreOptionsV2Config {
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     private Path filePath;
-
     @Builder.Default
     private int version = VERSION;
-
     @Builder.Default
     private Level logLevel = Level.WARN;
 
     @Builder.Default
     private Sounds sounds = Sounds.builder().build();
-
     @Builder.Default
     private Events events = Events.builder().build();
     @Builder.Default
@@ -74,7 +71,6 @@ public class MoreOptionsV2Config {
     public static class Sounds {
         @Builder.Default
         private Map<String, Range> ambience = new HashMap<>();
-
         @Builder.Default
         private Map<String, Range> settlement = new HashMap<>();
         @Builder.Default
@@ -99,13 +95,7 @@ public class MoreOptionsV2Config {
             private String otherRace;
 
             @Builder.Default
-            private Range range = Range.builder()
-                .max(-100)
-                .max(100)
-                .value(0)
-                .displayMode(Range.DisplayMode.ABSOLUTE)
-                .applyMode(Range.ApplyMode.ADD)
-                .build();
+            private Range range = ConfigDefaults.raceLiking();
         }
     }
 
@@ -118,22 +108,10 @@ public class MoreOptionsV2Config {
         private boolean enabled = false;
 
         @Builder.Default
-        private Range collectionRateSeconds = Range.builder()
-            .min(5)
-            .value(15)
-            .max(600)
-            .applyMode(Range.ApplyMode.ADD)
-            .displayMode(Range.DisplayMode.ABSOLUTE)
-            .build();
+        private Range collectionRateSeconds = ConfigDefaults.metricCollectionRate();
 
         @Builder.Default
-        private Range exportRateMinutes= Range.builder()
-            .min(1)
-            .value(30)
-            .max(600)
-            .applyMode(Range.ApplyMode.ADD)
-            .displayMode(Range.DisplayMode.ABSOLUTE)
-            .build();
+        private Range exportRateMinutes= ConfigDefaults.metricExportRate();
 
         @Builder.Default
         private List<String> stats = new ArrayList<>();

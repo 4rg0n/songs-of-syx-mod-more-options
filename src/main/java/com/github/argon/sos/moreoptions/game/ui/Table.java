@@ -33,6 +33,7 @@ public class Table extends GuiSection implements Searchable<String, List<String>
     public static Table categorized(
         Map<String, List<ColumnRow>> rowsCategorized,
         int displayHeight,
+        int rowPadding,
         boolean scrollable,
         boolean evenOdd,
         boolean evenColumnWidth,
@@ -49,12 +50,13 @@ public class Table extends GuiSection implements Searchable<String, List<String>
             columnRows.add(headerRow);
             columnRows.addAll(innerRows);
         });
-        return new Table(columnRows, displayHeight, scrollable, evenOdd, evenColumnWidth, search);
+        return new Table(columnRows, displayHeight, rowPadding, scrollable, evenOdd, evenColumnWidth, search);
     }
 
     public Table(
         List<ColumnRow> rows,
         int displayHeight,
+        int rowPadding,
         boolean scrollable,
         boolean evenOdd,
         boolean evenColumnWidth,
@@ -89,6 +91,7 @@ public class Table extends GuiSection implements Searchable<String, List<String>
         // initialize columns width and even-odd background
         rows.forEach(columnRow -> {
             columnRow.init(maxWidths);
+            columnRow.pad(rowPadding);
             if (evenOdd && !columnRow.isHeader() && rows.indexOf(columnRow) % 2 == 0) {
                 columnRow.backgroundColor(COLOR.WHITE15);
             }

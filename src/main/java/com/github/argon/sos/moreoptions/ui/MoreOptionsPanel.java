@@ -21,6 +21,7 @@ import util.gui.misc.GText;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -80,7 +81,7 @@ public class MoreOptionsPanel extends GuiSection implements
         MoreOptionsV2Config config,
         ConfigStore configStore,
         List<BoostersPanel.Entry> boosterEntries,
-        List<RacesPanel.Entry> raceEntries,
+        Map<String, List<RacesPanel.Entry>> raceEntries,
         List<String> availableStats,
         Path exportFolder,
         Path exportFile,

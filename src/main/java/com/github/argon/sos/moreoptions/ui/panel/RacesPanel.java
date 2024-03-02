@@ -16,9 +16,11 @@ import init.race.Race;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -26,36 +28,46 @@ import java.util.stream.Collectors;
  */
 public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Races, RacesPanel> {
     private static final Logger log = Loggers.getLogger(RacesPanel.class);
-    public RacesPanel(List<Entry> raceEntries) {
+    public RacesPanel(Map<String, List<Entry>> raceEntries) {
 
-        // todo sort?
-        List<ColumnRow> rows = raceEntries.stream().map(entry -> {
-            Race race = entry.getRace();
-            Race otherRace = entry.getOtherRace();
+        Map<String, List<ColumnRow>> rowMap = raceEntries.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+            mapEntry -> mapEntry.getValue().stream().map(entry -> {
+                Race race = entry.getRace();
+                Race otherRace = entry.getOtherRace();
+                MoreOptionsV2Config.Range range = entry.getRange();
 
-            GuiSection raceIcon = UiUtil.toGuiSection(race.appearance().icon);
-            GuiSection otherRaceIcon = UiUtil.toGuiSection(otherRace.appearance().icon);
-            // todo register sliders
-            BuildResult<Slider, Slider> likingsSliderResult = SliderBuilder.builder().definition(SliderBuilder.Definition
-                .fromRange(entry.getRange())
-                .maxWidth(300)
-                .build()
-            ).build();
+                GuiSection raceIcon = UiUtil.toGuiSection(race.appearance().icon);
+                GuiSection otherRaceIcon = UiUtil.toGuiSection(otherRace.appearance().icon);
+                // todo register sliders
+                BuildResult<Slider, Slider> likingsSliderResult = SliderBuilder.builder().definition(SliderBuilder.Definition
+                    .fromRange(range)
+                    .maxWidth(300)
+                    .threshold(0, COLOR.RED100.shade(0.5d))
+                    .threshold((int) (0.25 * range.getMax()), COLOR.YELLOW100.shade(0.5d))
+                    .threshold((int) (0.50 * range.getMax()), COLOR.ORANGE100.shade(0.5d))
+                    .threshold((int) (0.75 * range.getMax()), COLOR.GREEN100.shade(0.5d))
+                    .build()
+                ).build();
 
-            List<GuiSection> columns = Lists.of(raceIcon, likingsSliderResult.getResult(), otherRaceIcon);
+                Slider sliderResultResult = likingsSliderResult.getResult();
+                List<GuiSection> columns = Lists.of(raceIcon, sliderResultResult, otherRaceIcon);
 
-            return ColumnRow.builder()
-                .columns(columns)
-                .searchTerm(race.info.name + "~" + otherRace.info.name)
-                .highlight(true)
-                .columns(columns)
-                .build();
-        }).collect(Collectors.toList());
+                ColumnRow columnRow = ColumnRow.builder()
+                    .columns(columns)
+                    .searchTerm(race.info.name + "~" + otherRace.info.name)
+                    .highlight(true)
+                    .columns(columns)
+                    .build();
 
+                return columnRow;
+            }).collect(Collectors.toList())));
+
+        // todo sortable table?
         BuildResult<Table, Table> raceLikingsTable = TableBuilder.builder()
             .evenOdd(true)
             .scrollable(true)
-            .columnRows(rows)
+            .rowPadding(3)
+            .rowsCategorized(rowMap)
             .displayHeight(600)
             .build();
 
@@ -64,12 +76,13 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
 
     @Override
     public MoreOptionsV2Config.Races getValue() {
+        // todo
         return null;
     }
 
     @Override
     public void setValue(MoreOptionsV2Config.Races config) {
-
+        // todo
     }
 
     @Data
