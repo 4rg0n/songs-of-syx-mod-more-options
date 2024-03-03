@@ -8,7 +8,6 @@ import init.paths.PATH;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
@@ -53,16 +52,8 @@ public class ConfigService {
             .map(ConfigMapper::mapMeta);
     }
 
-    public Optional<MoreOptionsV2Config> loadConfig(PATH path, String fileName) {
-        return loadConfig(path, fileName, null);
-    }
-
-    public Optional<MoreOptionsV2Config> loadConfig(String fileName, PATH path, MoreOptionsV2Config defaultConfig) {
-        return loadConfig(path, fileName, defaultConfig);
-    }
-
     public boolean saveConfig(PATH path, String fileName, MoreOptionsV2Config config) {
-        log.debug("Saving configuration v%s into %s", config.getVersion(), path.get().toString());
+        log.debug("Saving more options config v%s into %s", config.getVersion(), path.get().toString());
         log.trace("CONFIG: %s", config);
 
         JsonE configJson = ConfigMapper.mapConfig(config);
@@ -70,7 +61,26 @@ public class ConfigService {
         return jsonService.saveJson(configJson, path, fileName);
     }
 
-    public Optional<MoreOptionsV2Config> loadConfig(PATH path, String fileName, @Nullable MoreOptionsV2Config defaultConfig) {
+    public boolean saveConfig(Path path, MoreOptionsV2Config.RacesConfig config) {
+        log.debug("Saving race config into %s", path.toString());
+        log.trace("CONFIG: %s", config);
+
+        JsonE configJson = ConfigMapper.mapRacesConfig(config);
+
+        return jsonService.saveJson(configJson, path);
+    }
+
+    public Optional<MoreOptionsV2Config.RacesConfig> loadConfig(Path path) {
+        try {
+            return jsonService.loadJson(path)
+                .map(ConfigMapper::mapRacesConfig);
+        } catch (Exception e) {
+            log.error("Could load config: %s", path, e);
+            return Optional.empty();
+        }
+    }
+
+    public Optional<MoreOptionsV2Config> loadConfig(PATH path, String fileName) {
         if (!path.exists(fileName)) {
             // do not load what's not there
             log.debug("File %s" + File.separator + "%s.txt not present", path.get(), fileName);
@@ -98,11 +108,10 @@ public class ConfigService {
                         return null;
                 }
 
-                if (defaultConfig != null) ConfigMerger.merge(config, defaultConfig);
                 return config;
             });
         } catch (Exception e) {
-            log.error("Could load config.", e);
+            log.error("Could load config: %s", filePath, e);
             return Optional.empty();
         }
     }

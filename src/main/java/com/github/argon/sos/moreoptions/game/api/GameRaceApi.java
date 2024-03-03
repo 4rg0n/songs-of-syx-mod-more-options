@@ -4,12 +4,12 @@ package com.github.argon.sos.moreoptions.game.api;
 import com.github.argon.sos.moreoptions.init.InitPhases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.race.RaceService;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import init.race.RACES;
 import init.race.Race;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import settlement.entity.humanoid.HCLASS;
@@ -28,11 +28,20 @@ public class GameRaceApi implements InitPhases {
 
     @Getter(lazy = true)
     private final static GameRaceApi instance = new GameRaceApi();
-    private static List<RaceService.RaceLiking> vanillaLikings;
-
+    private static List<RaceLiking> vanillaLikings;
     private final Map<String, Integer> raceIndexMap = new HashMap<>();
 
-
+    // todo is there a better way to find these?
+    private final List<String> vanillaRaces = Lists.of(
+        "ARGONOSH",
+        "CANTOR",
+        "CRETONIAN",
+        "DONDORIAN",
+        "GARTHIMI",
+        "HUMAN",
+        "Q_AMEVIA",
+        "TILAPI"
+    );
 
     public void increaseHappiness(Race race, double inc) {
         increaseStanding(STANDINGS.CITIZEN().happiness, race, inc);
@@ -79,19 +88,51 @@ public class GameRaceApi implements InitPhases {
 
         // initialize vanilla race likings
         if (vanillaLikings == null) {
+            // todo do I need to clear and reload this on game save reload?
             vanillaLikings = getAllLikings();
         }
     }
 
-    public List<RaceService.RaceLiking> getVanillaLikings() {
+    /**
+     * Sets the liking between two races
+     */
+    public void setLiking(String raceKey, String otherRaceKey, double liking) {
+        getRace(raceKey)
+            .ifPresent(race -> getRace(otherRaceKey)
+                .ifPresent(otherRace -> setLiking(race, otherRace, liking)));
+    }
+
+    /**
+     * @return whether race is a vanilla or modded
+     */
+    public boolean isCustom(String key) {
+        return !vanillaRaces.contains(key);
+    }
+
+    public List<Race> getVanillaRaces() {
+        return getAll().stream()
+            .filter(race -> vanillaRaces.contains(race.key))
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * @return list of custom modded races
+     */
+    public List<Race> getCustomRaces() {
+        return GameRaceApi.getInstance().getAll().stream()
+            .filter(race -> !vanillaRaces.contains(race.key))
+            .collect(Collectors.toList());
+    }
+
+    public List<RaceLiking> getVanillaLikings() {
         return vanillaLikings;
     }
 
     /**
      * @return flat list of likings of each race to another race
      */
-    public List<RaceService.RaceLiking> getAllLikings() {
-        List<RaceService.RaceLiking> likings = new ArrayList<>();
+    public List<RaceLiking> getAllLikings() {
+        List<RaceLiking> likings = new ArrayList<>();
 
         for (Race race : getAll()) {
             for (Race otherRace : getAll()) {
@@ -100,7 +141,7 @@ public class GameRaceApi implements InitPhases {
                 }
 
                 double liking = getLiking(race, otherRace);
-                likings.add(RaceService.RaceLiking.builder()
+                likings.add(RaceLiking.builder()
                         .race(race.key)
                         .otherRace(otherRace.key)
                         .liking(liking)
@@ -203,5 +244,15 @@ public class GameRaceApi implements InitPhases {
        return getAll().stream()
            .filter(this::isCitizen)
            .collect(Collectors.toList());
+    }
+
+    @Getter
+    @Builder
+    @RequiredArgsConstructor
+    public static class RaceLiking {
+        private final String race;
+        private final String otherRace;
+
+        private final double liking;
     }
 }

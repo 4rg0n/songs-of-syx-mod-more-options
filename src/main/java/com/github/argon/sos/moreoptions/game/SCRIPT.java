@@ -9,7 +9,7 @@ public interface SCRIPT<Config> extends script.SCRIPT {
     /**
      * Executed right after the game UI is present
      */
-    void initGamePresent();
+    void initGameUiPresent();
 
     /**
      * @param config nullable

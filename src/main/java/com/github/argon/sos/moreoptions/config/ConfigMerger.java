@@ -5,13 +5,20 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.Metrics;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.Range;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 
+import static com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.*;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigMerger {
-    public static void merge(MoreOptionsV2Config target, MoreOptionsV2Config source) {
+    public static void merge(MoreOptionsV2Config target, @Nullable MoreOptionsV2Config source) {
+        if (source == null) {
+            return;
+        }
+
         // intentionally ignore updating of VERSION and filePath
         target.setLogLevel(source.getLogLevel());
 
@@ -58,7 +65,11 @@ public class ConfigMerger {
         }
     }
 
-    private static void merge(MoreOptionsV2Config.RacesConfig target, MoreOptionsV2Config.RacesConfig source) {
+    public static void merge(RacesConfig target, @Nullable RacesConfig source) {
+        if (source == null) {
+            return;
+        }
+
         if (target.getLikings() == null) {
             target.setLikings(source.getLikings());
         } else {
@@ -66,7 +77,11 @@ public class ConfigMerger {
         }
     }
 
-    public static void merge(Metrics target, Metrics source) {
+    public static void merge(Metrics target, @Nullable Metrics source) {
+        if (source == null) {
+            return;
+        }
+
         target.setEnabled(source.isEnabled());
 
         if (target.getCollectionRateSeconds() == null) {
@@ -87,7 +102,12 @@ public class ConfigMerger {
             merge(target.getStats(), source.getStats());
         }
     }
-    public static void merge(MoreOptionsV2Config.Events target, MoreOptionsV2Config.Events source) {
+
+    public static void merge(Events target, @Nullable Events source) {
+        if (source == null) {
+            return;
+        }
+
         if (target.getChance() == null) {
             target.setChance(source.getChance());
         } else {
@@ -107,7 +127,11 @@ public class ConfigMerger {
         }
     }
 
-    public static void merge(MoreOptionsV2Config.Sounds target, MoreOptionsV2Config.Sounds source) {
+    public static void merge(Sounds target, @Nullable Sounds source) {
+        if (source == null) {
+            return;
+        }
+
         if (target.getRoom() == null) {
             target.setRoom(source.getRoom());
         } else {
@@ -127,7 +151,11 @@ public class ConfigMerger {
         }
     }
 
-    public static void merge(Range target, Range source) {
+    public static void merge(Range target, @Nullable Range source) {
+        if (source == null) {
+            return;
+        }
+
         target.setValue(source.getValue());
         target.setMin(source.getMin());
         target.setMax(source.getMax());
@@ -135,12 +163,20 @@ public class ConfigMerger {
         target.setDisplayMode(source.getDisplayMode());
     }
 
-    public static <T> void merge(List<T> target, List<T> source) {
+    public static <T> void merge(List<T> target, @Nullable List<T> source) {
+        if (source == null) {
+            return;
+        }
+
         target.clear();
         target.addAll(source);
     }
 
-    public static <K, V> void merge(Map<K, V> target, Map<K, V> source) {
+    public static <K, V> void merge(Map<K, V> target, @Nullable Map<K, V> source) {
+        if (source == null) {
+            return;
+        }
+
         // replace or update target entries with source entries
         target.forEach((key, value) -> {
             if (source.containsKey(key)) {

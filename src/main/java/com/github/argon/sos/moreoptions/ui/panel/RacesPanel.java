@@ -22,6 +22,7 @@ import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GInput;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,6 +32,11 @@ import java.util.stream.Collectors;
  */
 public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Config.RacesConfig, RacesPanel> {
     private static final Logger log = Loggers.getLogger(RacesPanel.class);
+
+    private final Map<String, Slider> likingsSliders = new HashMap<>();
+
+    private final static String RACE_KEY_SEPARATOR = "~";
+
     public RacesPanel(Map<String, List<Entry>> raceEntries) {
 
         Map<String, List<ColumnRow>> rowMap = raceEntries.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
@@ -41,7 +47,6 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
 
                 GuiSection raceIcon = UiUtil.toGuiSection(race.appearance().icon);
                 GuiSection otherRaceIcon = UiUtil.toGuiSection(otherRace.appearance().icon);
-                // todo register sliders
                 BuildResult<Slider, Slider> likingsSliderResult = SliderBuilder.builder().definition(SliderBuilder.Definition
                     .fromRange(range)
                     .maxWidth(300)
@@ -52,12 +57,13 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
                     .build()
                 ).build();
 
-                Slider sliderResultResult = likingsSliderResult.getResult();
-                List<GuiSection> columns = Lists.of(raceIcon, sliderResultResult, otherRaceIcon);
+                Slider slider = likingsSliderResult.getResult();
+                likingsSliders.put(key(race, otherRace), slider);
+                List<GuiSection> columns = Lists.of(raceIcon, slider, otherRaceIcon);
 
                 return ColumnRow.builder()
                     .columns(columns)
-                    .searchTerm(race.info.name + "~" + otherRace.info.name)
+                    .searchTerm(term(race, otherRace))
                     .highlight(true)
                     .columns(columns)
                     .build();
@@ -79,13 +85,45 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
 
     @Override
     public MoreOptionsV2Config.RacesConfig getValue() {
-        // todo
-        return null;
+        List<MoreOptionsV2Config.RacesConfig.Liking> likings = likingsSliders.entrySet().stream().map(entry -> {
+            String[] split = entry.getKey().split(RACE_KEY_SEPARATOR);
+            String race = split[0];
+            String otherRace = split[1];
+
+            return MoreOptionsV2Config.RacesConfig.Liking.builder()
+                .race(race)
+                .otherRace(otherRace)
+                .range(MoreOptionsV2Config.Range.fromSlider(entry.getValue()))
+                .build();
+        }).collect(Collectors.toList());
+
+        return MoreOptionsV2Config.RacesConfig.builder()
+            .likings(likings)
+            .build();
     }
 
     @Override
     public void setValue(MoreOptionsV2Config.RacesConfig config) {
-        // todo
+        config.getLikings().forEach(liking -> {
+            String key = key(liking);
+            Slider slider = likingsSliders.get(key);
+
+            if (slider != null) {
+                slider.setValue(liking.getRange().getValue());
+            }
+        });
+    }
+
+    private String key(MoreOptionsV2Config.RacesConfig.Liking liking) {
+        return liking.getRace() + RACE_KEY_SEPARATOR + liking.getOtherRace();
+    }
+
+    private String key(Race race, Race otherRace) {
+        return race.key + RACE_KEY_SEPARATOR + otherRace.key;
+    }
+
+    private String term(Race race, Race otherRace) {
+        return race.info.name + RACE_KEY_SEPARATOR + otherRace.info.name;
     }
 
     @Data

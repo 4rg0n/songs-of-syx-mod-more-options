@@ -1,6 +1,5 @@
 package com.github.argon.sos.moreoptions;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +9,7 @@ import snake2d.util.file.FilePutter;
 import view.main.VIEW;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * Represents one instance of the "script".
@@ -37,7 +37,7 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 
 		if (!initGamePresent && !VIEW.inters().load.isActivated()) {
 			initGamePresent = true;
-			script.initGamePresent();
+			script.initGameUiPresent();
 		}
 
 		script.update(v);
@@ -45,20 +45,19 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 
 	@Override
 	public void save(FilePutter filePutter) {
-		log.debug("PHASE: save");
+		script.initGameSaved(filePutter.getPath());
 	}
 
 	@Override
 	public void load(FileGetter fileGetter) throws IOException {
-		log.debug("PHASE: load");
+		script.initGameSaveLoaded(Paths.get(fileGetter.getPath()));
 
 		if (newGame) {
 			newGame = false;
 			log.debug("Game just started");
+			script.initNewGameSession();
 		} else {
-			// Pass current config
-			MoreOptionsV2Config config = MoreOptionsScript.getConfigStore().getCurrentConfig();
-			script.initGameSaveLoaded(config);
+			script.initGameSaveReloaded();
 		}
 	}
 

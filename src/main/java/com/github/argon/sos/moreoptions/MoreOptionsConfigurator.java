@@ -10,6 +10,7 @@ import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.events.EVENTS;
 import init.sound.SoundAmbience;
 import init.sound.SoundSettlement;
@@ -71,14 +72,23 @@ public class MoreOptionsConfigurator {
             applySoundsRoomConfig(config.getSounds().getRoom());
             applyWeatherConfig(ConfigUtil.extract(config.getWeather()));
             applyBoostersConfig(config.getBoosters());
-            applyMetrics(config.getMetrics());
+            applyMetricsConfig(config.getMetrics());
+            applyRacesConfig(config.getRaces());
             afterApplyAction.accept(config);
         } catch (Exception e) {
             log.error("Could not apply config: %s", config, e);
         }
     }
 
-    private void applyMetrics(MoreOptionsV2Config.Metrics metrics) {
+    private void applyRacesConfig(MoreOptionsV2Config.RacesConfig races) {
+        races.getLikings().forEach(liking -> gameApis.race().setLiking(
+            liking.getRace(),
+            liking.getOtherRace(),
+            MathUtil.toPercentage(liking.getRange().getValue())));
+
+    }
+
+    private void applyMetricsConfig(MoreOptionsV2Config.Metrics metrics) {
         List<String> metricStats = metrics.getStats();
 
         // use new file when exported stats change

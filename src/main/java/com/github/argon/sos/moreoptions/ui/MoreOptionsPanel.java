@@ -66,7 +66,6 @@ public class MoreOptionsPanel extends GuiSection implements
     private final Button resetButton;
     @Getter
     private final ButtonMenu moreButtonMenu;
-    private final Tabulator<String, ?, GuiSection> tabulator;
 
     private Action<MoreOptionsPanel> showAction = o -> {};
     private Action<MoreOptionsPanel> refreshAction = o -> {};
@@ -96,7 +95,7 @@ public class MoreOptionsPanel extends GuiSection implements
         metricsPanel = new MetricsPanel(config.getMetrics(), availableStats, exportFolder, exportFile);
         racesPanel = new RacesPanel(raceEntries);
 
-        tabulator = new Tabulator<>(Maps.ofLinked(
+        Tabulator<String, ?, GuiSection> tabulator = new Tabulator<>(Maps.ofLinked(
             UiInfo.<String>builder()
                 .key("sounds")
                 .title("Sounds")
@@ -122,7 +121,7 @@ public class MoreOptionsPanel extends GuiSection implements
                 .title("Metrics")
                 .description("Collect and export data about the game.")
                 .build(), metricsPanel
-            ,UiInfo.<String>builder()
+            , UiInfo.<String>builder()
                 .key("races")
                 .title("Races")
                 .description("TODO")
@@ -184,31 +183,24 @@ public class MoreOptionsPanel extends GuiSection implements
     @Nullable
     @Override
     public MoreOptionsV2Config getValue() {
-        if (eventsPanel == null
-            || soundsPanel == null
-            || weatherPanel == null
-            || boostersPanel == null
-            || metricsPanel == null
-        ) {
-            return null;
-        }
-
         return MoreOptionsV2Config.builder()
                 .events(eventsPanel.getValue())
                 .sounds(soundsPanel.getValue())
                 .weather(weatherPanel.getValue())
                 .boosters(boostersPanel.getValue())
                 .metrics(metricsPanel.getValue())
+                .races(racesPanel.getValue())
                 .build();
     }
 
     @Override
     public void setValue(MoreOptionsV2Config config) {
-        if (eventsPanel != null) eventsPanel.setValue(config.getEvents());
-        if (soundsPanel != null) soundsPanel.setValue(config.getSounds());
-        if (weatherPanel != null) weatherPanel.setValue(config.getWeather());
-        if (boostersPanel != null) boostersPanel.setValue(config.getBoosters());
-        if (metricsPanel != null) metricsPanel.setValue(config.getMetrics());
+        eventsPanel.setValue(config.getEvents());
+        soundsPanel.setValue(config.getSounds());
+        weatherPanel.setValue(config.getWeather());
+        boostersPanel.setValue(config.getBoosters());
+        metricsPanel.setValue(config.getMetrics());
+        racesPanel.setValue(config.getRaces());
     }
 
     /**

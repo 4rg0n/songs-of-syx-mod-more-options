@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.init;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import java.nio.file.Path;
 
 /**
  * Contains different initialization phases to implement.
@@ -10,7 +10,7 @@ public interface InitPhases {
     /**
      * When the game UI is loaded
      */
-    default void initGamePresent() {
+    default void initGameUiPresent() {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 
@@ -38,7 +38,29 @@ public interface InitPhases {
     /**
      * When the game loaded a save game
      */
-    default void initGameSaveLoaded(MoreOptionsV2Config config) {
+    default void initGameSaveLoaded(Path saveFilePath) {
+        throw new UnsupportedOperationException("Method is not implemented");
+    }
+
+    /**
+     * When the game saves
+     */
+    default void initGameSaved(Path saveFilePath) {
+        throw new UnsupportedOperationException("Method is not implemented");
+    }
+
+    /**
+     * When a new game session is started (not when a player starts a fresh new game)
+     * This will not fire when the player loads from an existing game into another one.
+     */
+    default void initNewGameSession() {
+        throw new UnsupportedOperationException("Method is not implemented");
+    }
+
+    /**
+     * When the player loads into game while already playing another one
+     */
+    default void initGameSaveReloaded() {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 }

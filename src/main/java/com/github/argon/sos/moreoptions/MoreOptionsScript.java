@@ -10,7 +10,6 @@ import com.github.argon.sos.moreoptions.init.Initializer;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.UiGameConfig;
@@ -19,6 +18,7 @@ import lombok.NoArgsConstructor;
 import snake2d.Errors;
 import util.info.INFO;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 
@@ -28,7 +28,7 @@ import java.util.Optional;
  */
 @NoArgsConstructor
 @SuppressWarnings("unused") // used by the game via reflection
-public final class MoreOptionsScript implements SCRIPT<MoreOptionsV2Config>, InitPhases {
+public final class MoreOptionsScript implements SCRIPT<Path>, InitPhases {
 
 	private final static Logger log = Loggers.getLogger(MoreOptionsScript.class);
 
@@ -79,7 +79,6 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsV2Config>, Ini
 				.orElse(LOG_LEVEL_DEFAULT));
 		Loggers.setLevels(level);
 
-		log.debug("PHASE: initBeforeGameCreated");
 		// custom error handling
 		Errors.setHandler(new MoreOptionsErrorHandler<>(this));
 	}
@@ -96,7 +95,6 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsV2Config>, Ini
 	 */
 	@Override
 	public SCRIPT_INSTANCE createInstance() {
-		log.debug("PHASE: createInstance");
 		if (instance == null) {
 			initCreateInstance();
 			log.debug("Creating Mod Instance");
@@ -118,14 +116,12 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsV2Config>, Ini
 
 	@Override
 	public void initGameRunning() {
-		log.debug("PHASE: initGameRunning");
 		initializer.initGameRunning();
 	}
 
 	@Override
-	public void initGamePresent() {
-		log.debug("PHASE: initGamePresent");
-		initializer.initGamePresent();
+	public void initGameUiPresent() {
+		initializer.initGameUiPresent();
 		// config should already be loaded or use default
 		MoreOptionsV2Config moreOptionsConfig = configStore.getCurrentConfig();
 
@@ -166,33 +162,33 @@ public final class MoreOptionsScript implements SCRIPT<MoreOptionsV2Config>, Ini
 	}
 
 	@Override
-	public void initGameSaveLoaded(MoreOptionsV2Config config) {
-		initializer.initGameSaveLoaded(config);
-		// game will initialize new instances of the cached class references on load
-		gameApis.events().clearCached();
-		gameApis.sounds().clearCached();
-		gameApis.weather().clearCached();
-		gameApis.booster().clearCached();
+	public void initGameSaveLoaded(Path saveFilePath) {
+		initializer.initGameSaveLoaded(saveFilePath);
+	}
 
-		// re-apply config when new game is loaded (only when there's no backup)
-		if (!configStore.getBackupConfig().isPresent()) {
-			log.debug("Reapplying config because of game load.");
-			configurator.applyConfig(config);
-		}
+	@Override
+	public void initGameSaved(Path saveFilePath) {
+		initializer.initGameSaved(saveFilePath);
+	}
 
-		// start a new export file on load
-		MetricExporter.getInstance().newExportFile();
+	@Override
+	public void initNewGameSession() {
+		initializer.initNewGameSession();
+	}
+
+	@Override
+	public void initGameSaveReloaded() {
+		initializer.initGameSaveReloaded();
 	}
 
 	@Override
 	public void update(double seconds) {
-//		log.trace("PHASE: update %s", seconds);
 	}
 
 	@Override
 	public void crash(Throwable throwable) {
 		log.warn("Game crash detected!");
-		log.debug("", throwable);
+		log.info("", throwable);
 		initializer.crash(throwable);
 
 		try {

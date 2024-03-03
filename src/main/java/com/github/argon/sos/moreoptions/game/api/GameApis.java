@@ -1,11 +1,12 @@
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.init.InitPhases;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+
+import java.nio.file.Path;
 
 /**
  * For accessing vanilla game classes and features.
@@ -54,8 +55,16 @@ public class GameApis implements InitPhases {
     @Accessors(fluent = true)
     private final GameSaveApi save;
 
+    public void clear() {
+        // game will initialize new instances of the cached class references on load
+        events().clearCached();
+        sounds().clearCached();
+        weather().clearCached();
+        booster().clearCached();
+    }
+
     @Override
-    public void initGamePresent() {}
+    public void initGameUiPresent() {}
 
     @Override
     public void initGameRunning() {
@@ -74,7 +83,20 @@ public class GameApis implements InitPhases {
     }
 
     @Override
-    public void initGameSaveLoaded(MoreOptionsV2Config config) {
-        save().initGameSaveLoaded(config);
+    public void initNewGameSession() {
+    }
+
+    @Override
+    public void initGameSaved(Path saveFilePath) {
+        save().initGameSaved(saveFilePath);
+    }
+
+    @Override
+    public void initGameSaveLoaded(Path saveFilePath) {
+        save().initGameSaveLoaded(saveFilePath);
+    }
+
+    @Override
+    public void initGameSaveReloaded() {
     }
 }

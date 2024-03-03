@@ -1,8 +1,10 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
-import com.github.argon.sos.moreoptions.init.UninitializedException;
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.game.api.GameSaveApi;
 import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.init.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATH;
@@ -10,43 +12,60 @@ import init.paths.PATHS;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigStore implements InitPhases {
-    /**
-     * Name of the config file
-     */
-    public final static String MORE_OPTIONS_FILE_NAME = "MoreOptions";
-    public final static String MORE_OPTIONS_FILE_NAME_BACKUP = MORE_OPTIONS_FILE_NAME + ".backup";
     private final static Logger log = Loggers.getLogger(ConfigStore.class);
 
     @Getter(lazy = true)
     private final static ConfigStore instance = new ConfigStore(
         ConfigService.getInstance(),
         Dictionary.getInstance(),
-        ConfigDefaults.getInstance()
+        ConfigDefaults.getInstance(),
+        GameSaveApi.getInstance()
     );
 
-    private final static PATH SAVE_PATH = PATHS.local().SETTINGS;
+    /**
+     * Name of the config file
+     */
+    public final static String RACES_CONFIG_FILE_PREFIX = ".RacesConfig";
+    public final static String MORE_OPTIONS_FILE_NAME = "MoreOptions";
+    public final static String MORE_OPTIONS_FILE_NAME_BACKUP = MORE_OPTIONS_FILE_NAME + ".backup";
+    private final static PATH MORE_OPTIONS_CONFIG_PATH = PATHS.local().SETTINGS;
+    private final static Path RACES_CONFIG_PATH = PATHS.local().PROFILE.get()
+        .resolve(MoreOptionsScript.MOD_INFO.name + "/races");
 
     private final ConfigService configService;
-
     @Getter
     private final Dictionary dictionary;
-
     private final ConfigDefaults configDefaults;
+    private final GameSaveApi saveApi;
 
+    @Nullable
     private MoreOptionsV2Config.Meta metaInfo;
+    @Nullable
     private MoreOptionsV2Config currentConfig;
+    @Nullable
     private MoreOptionsV2Config backupConfig;
+    @Nullable
     private MoreOptionsV2Config defaultConfig;
 
     @Override
     public void initBeforeGameCreated() {
+        if (!Files.isDirectory(RACES_CONFIG_PATH)) {
+            try {
+                Files.createDirectories(RACES_CONFIG_PATH);
+            } catch (Exception e) {
+                log.error("Could not create races config folder %s", RACES_CONFIG_PATH, e);
+            }
+        }
+
         MoreOptionsV2Config.Meta meta = loadMeta()
             .orElse(MoreOptionsV2Config.Meta.builder().build());
         setMetaInfo(meta);
@@ -59,9 +78,9 @@ public class ConfigStore implements InitPhases {
 
     @Override
     public void initCreateInstance() {
-        defaultConfig = configDefaults.newDefaultConfig();
+        setDefaultConfig(configDefaults.newDefaultConfig());
         // load config from file if present; merge missing fields with defaults
-        MoreOptionsV2Config config = loadConfig(defaultConfig).orElse(defaultConfig);
+        MoreOptionsV2Config config = loadConfig().orElse(defaultConfig);
         if (currentConfig == null) {
             setCurrentConfig(config);
         }
@@ -131,27 +150,41 @@ public class ConfigStore implements InitPhases {
         return Optional.ofNullable(backupConfig);
     }
 
-    /**
-     * @return configuration loaded from file
-     */
-    public Optional<MoreOptionsV2Config> loadConfig() {
-        return configService.loadConfig(SAVE_PATH, MORE_OPTIONS_FILE_NAME, null);
-    }
-
     public Optional<MoreOptionsV2Config.Meta> loadMeta() {
-        return configService.loadMeta(SAVE_PATH, MORE_OPTIONS_FILE_NAME);
+        return configService.loadMeta(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME);
     }
 
     public boolean deleteConfig() {
-        return configService.delete(SAVE_PATH, MORE_OPTIONS_FILE_NAME);
+        return configService.delete(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME);
     }
 
     public Optional<MoreOptionsV2Config> loadBackupConfig() {
-        return configService.loadConfig(SAVE_PATH, MORE_OPTIONS_FILE_NAME_BACKUP);
+        return loadConfig(MORE_OPTIONS_FILE_NAME_BACKUP);
+    }
+
+    /**
+     * @return configuration loaded from file with merged defaults
+     */
+    public Optional<MoreOptionsV2Config> loadConfig() {
+        return loadConfig(MORE_OPTIONS_FILE_NAME);
+    }
+
+    private Optional<MoreOptionsV2Config> loadConfig(String fileName) {
+        return configService.loadConfig(MORE_OPTIONS_CONFIG_PATH, fileName)
+            .map(config -> {
+                // load races config additionally
+                configService.loadConfig(racesConfigPath())
+                    .ifPresent(config::setRaces);
+
+                return config;
+            }).map(config -> {
+                ConfigMerger.merge(config, defaultConfig);
+                return config;
+            });
     }
 
     public boolean deleteBackupConfig() {
-        return configService.delete(SAVE_PATH, MORE_OPTIONS_FILE_NAME_BACKUP);
+        return configService.delete(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME_BACKUP);
     }
 
     public boolean createBackupConfig() {
@@ -160,15 +193,10 @@ public class ConfigStore implements InitPhases {
 
     public boolean createBackupConfig(MoreOptionsV2Config config) {
         log.debug("Creating backup config file: %s", backupConfigPath());
-        return configService.saveConfig(SAVE_PATH, MORE_OPTIONS_FILE_NAME_BACKUP, config);
+        return configService.saveConfig(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME_BACKUP, config);
     }
 
-    /**
-     * @return configuration loaded from file with merged defaults
-     */
-    public Optional<MoreOptionsV2Config> loadConfig(MoreOptionsV2Config defaultConfig) {
-        return configService.loadConfig(SAVE_PATH, MORE_OPTIONS_FILE_NAME, defaultConfig);
-    }
+
 
     /**
      * Saves config into file
@@ -176,17 +204,23 @@ public class ConfigStore implements InitPhases {
      * @return whether saving was successful
      */
     public boolean saveConfig(MoreOptionsV2Config config) {
-       return configService.saveConfig(SAVE_PATH, MORE_OPTIONS_FILE_NAME, config);
+       return configService.saveConfig(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME, config)
+           && configService.saveConfig(racesConfigPath(), config.getRaces());
     }
 
     public static Path configPath() {
-        return SAVE_PATH.get()
+        return MORE_OPTIONS_CONFIG_PATH.get()
             .resolve(MORE_OPTIONS_FILE_NAME + ".txt");
     }
 
     public static Path backupConfigPath() {
-        return SAVE_PATH.get()
+        return MORE_OPTIONS_CONFIG_PATH.get()
             .resolve(MORE_OPTIONS_FILE_NAME_BACKUP + ".txt");
+    }
+
+    public Path racesConfigPath() {
+        String saveStamp = saveApi.getSaveStamp();
+        return RACES_CONFIG_PATH.resolve(saveStamp + RACES_CONFIG_FILE_PREFIX + ".txt");
     }
 
     public Optional<Map<String, Dictionary.Entry>> loadDictionary() {

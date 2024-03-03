@@ -45,24 +45,31 @@ public class JsonService {
     }
 
     public boolean saveJson(JsonE json, PATH savePath, String fileName) {
+        // file exists?
+        Path path;
+        if (!savePath.exists(fileName)) {
+            path = savePath.create(fileName);
+            log.debug("Created new json file %s", path);
+        } else {
+            path = savePath.get(fileName);
+        }
+
+        saveJson(json, path);
+        return false;
+    }
+
+    public boolean saveJson(JsonE json, Path savePath) {
         try {
             // file exists?
             Path path;
-            if (!savePath.exists(fileName)) {
-                path = savePath.create(fileName);
-                log.debug("Created new json file %s", path);
-            } else {
-                path = savePath.get(fileName);
-            }
-
-            boolean success = json.save(path);
-            log.debug("Saving to %s was successful? %s", path, success);
+            boolean success = json.save(savePath);
+            log.debug("Saving to %s was successful? %s", savePath, success);
 
             return success;
         } catch (Errors.DataError e) {
-            log.warn("Could not save json file %s into %s", fileName, savePath.get(), e);
+            log.warn("Could not save json file %s into %s", savePath, e);
         } catch (Exception e) {
-            log.error("Could not save json file %s into %s", fileName, savePath.get(), e);
+            log.error("Could not save json file %s into %s", savePath, e);
         }
 
         return false;
