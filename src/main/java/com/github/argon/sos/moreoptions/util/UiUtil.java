@@ -10,10 +10,8 @@ import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.SPRITE;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiUtil {
@@ -44,9 +42,9 @@ public class UiUtil {
         return maxWidth;
     }
 
-    public static int getMaxColumnWidth(Collection<ColumnRow> columnRows) {
+    public static <T> int getMaxColumnWidth(Collection<ColumnRow<T>> columnRows) {
         int maxWidth = 0;
-        for (ColumnRow columnRow : columnRows) {
+        for (ColumnRow<T> columnRow : columnRows) {
             int sectionWidth = getMaxWidth(columnRow.getColumns());
 
             if (sectionWidth > maxWidth) {
@@ -57,10 +55,10 @@ public class UiUtil {
         return maxWidth;
     }
 
-    public static List<Integer> getMaxColumnWidths(Collection<ColumnRow> columnRows) {
+    public static <Value> List<Integer> getMaxColumnWidths(Collection<ColumnRow<Value>> columnRows) {
         List<Integer> columnWidths = new ArrayList<>();
 
-        for (ColumnRow columnRow : columnRows) {
+        for (ColumnRow<?> columnRow : columnRows) {
             if (columnRow.isHeader()) {
                 // skip header rows
                 continue;
@@ -149,9 +147,9 @@ public class UiUtil {
         return maxColumnWidths;
     }
 
-    public static int getMaxColumnHeight(Collection<ColumnRow> columnRows) {
+    public static <T> int getMaxColumnHeight(Collection<ColumnRow<T>> columnRows) {
         int maxHeight = 0;
-        for (ColumnRow columnRow : columnRows) {
+        for (ColumnRow<T> columnRow : columnRows) {
             int sectionHeight = getMaxHeight(columnRow.getColumns());
 
             if (sectionHeight > maxHeight) {
@@ -200,5 +198,11 @@ public class UiUtil {
 
             return section;
         }
+    }
+
+    public static List<Integer> getWidths(Collection<? extends RENDEROBJ> renderobjs) {
+        return renderobjs.stream()
+            .map(value -> value.body().width())
+            .collect(Collectors.toList());
     }
 }

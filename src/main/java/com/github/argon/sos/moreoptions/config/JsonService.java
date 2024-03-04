@@ -27,7 +27,7 @@ public class JsonService {
         log.debug("Loading json file %s from %s", fileName, path.get());
         if (!path.exists(fileName)) {
             // do not load what's not there
-            log.debug("File %s" + File.separator + "%s.txt not present", path.get(), fileName);
+            log.debug("File %s" + File.separator + "%s.txt does not exist", path.get(), fileName);
             return Optional.empty();
         }
 
@@ -36,6 +36,12 @@ public class JsonService {
     }
 
     public Optional<Json> loadJson(Path path) {
+        if (!path.toFile().exists()) {
+            // do not load what's not there
+            log.debug("File %s does not exist", path);
+            return Optional.empty();
+        }
+
         try {
             return Optional.of(new Json(path));
         }  catch (Exception e) {
@@ -54,14 +60,11 @@ public class JsonService {
             path = savePath.get(fileName);
         }
 
-        saveJson(json, path);
-        return false;
+        return saveJson(json, path);
     }
 
     public boolean saveJson(JsonE json, Path savePath) {
         try {
-            // file exists?
-            Path path;
             boolean success = json.save(savePath);
             log.debug("Saving to %s was successful? %s", savePath, success);
 

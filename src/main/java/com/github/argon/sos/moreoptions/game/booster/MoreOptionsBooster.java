@@ -19,7 +19,7 @@ import settlement.stats.Induvidual;
 import world.regions.Region;
 
 /**
- * Used for extending and therefore boosting game boosters
+ * Can be added to a vanilla game booster to influence its value
  */
 public class MoreOptionsBooster extends BoosterImp {
 

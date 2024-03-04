@@ -70,7 +70,7 @@ public class MoreOptionsConfigurator {
             applySoundsAmbienceConfig(config.getSounds().getAmbience());
             applySoundsSettlementConfig(config.getSounds().getSettlement());
             applySoundsRoomConfig(config.getSounds().getRoom());
-            applyWeatherConfig(ConfigUtil.extract(config.getWeather()));
+            applyWeatherConfig(ConfigUtil.extractValues(config.getWeather()));
             applyBoostersConfig(config.getBoosters());
             applyMetricsConfig(config.getMetrics());
             applyRacesConfig(config.getRaces());

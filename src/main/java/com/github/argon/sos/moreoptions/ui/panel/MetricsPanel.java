@@ -75,7 +75,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
                 .title("Stopped")
                 .description("Toggle and apply to stop the collection and export of game metrics.")
                 .build()
-        ), 0, true, true);
+        ), 0, true, true, true);
         BuildResult<List<GuiSection>, List<Toggler<Boolean>>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(
             LabeledBuilder.Definition.<Toggler<Boolean>>builder()
                 .labelDefinition(LabelBuilder.Definition.builder()
@@ -123,10 +123,8 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
 
         // Export file path with folder button
         this.exportFilePathView = new UISwitcher(exportFilePathSection, false);
-        this.exportFolderButton = new Button("Folder");
-        exportFolderButton.hoverInfoSet("Opens the metrics export folder: " + exportFolderPath);
-        this.copyExportFileButton = new Button("Copy");
-        copyExportFileButton.hoverInfoSet("Copies export file path to clipboard.");
+        this.exportFolderButton = new Button("Folder", "Opens the metrics export folder: " + exportFolderPath);
+        this.copyExportFileButton = new Button("Copy", "Copies export file path to clipboard.");
 
         GuiSection exportButtons = new GuiSection();
         exportButtons.addRightC(0, exportFolderButton);
@@ -157,11 +155,11 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
                 .title("Uncheck")
                 .description("Unchecks all found stats")
                 .build()
-        ),0, true, false);
+        ),0, true, true, false);
         searchBar.addRightC(10, searchToggler);
 
         // Export stats section
-        BuildResult<Table, Map<String, Checkbox>> exportStats = CheckboxesBuilder.builder()
+        BuildResult<Table<Boolean>, Map<String, Checkbox>> exportStats = CheckboxesBuilder.builder()
             .displayHeight(400)
             .search(searchInput)
             .highlightColumns(true)
@@ -184,19 +182,18 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         this.onOffToggle = onOffToggle.getInteractable().get(0);
         this.onOffToggle.toggle(metricsConfig.isEnabled());
 
-        List<ColumnRow> rows = Lists.of(
-            onOffToggle.toColumnRow().getResult(),
-            exportFile.toColumnRow().getResult(),
-            collectionRate.toColumnRow().getResult(),
-            exportRate.toColumnRow().getResult()
+        List<ColumnRow<Void>> rows = Lists.of(
+            onOffToggle.<Void>toColumnRow().getResult(),
+            exportFile.<Void>toColumnRow().getResult(),
+            collectionRate.<Void>toColumnRow().getResult(),
+            exportRate.<Void>toColumnRow().getResult()
         );
 
-        Table configTable = TableBuilder.builder()
+        Table<Void> configTable = Table.<Void>builder()
             .evenOdd(true)
             .scrollable(false)
-            .columnRows(rows)
-            .build()
-            .getResult();
+            .rows(rows)
+            .build();
 
         addDownC(0, configTable);
 
@@ -208,7 +205,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         addDownC(15, statsSection);
 
         // Actions
-        searchToggler.onClick(aBoolean -> {
+        searchToggler.clickAction(aBoolean -> {
             List<String> resultList = exportStats.getResult()
                 .search(searchInput.text().toString());
             resultList.forEach(result -> statsCheckboxes.get(result).setValue(aBoolean));
@@ -288,12 +285,12 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
     }
 
     @Override
-    public void onRefresh(Action<MetricsPanel> refreshAction) {
+    public void refreshAction(Action<MetricsPanel> refreshAction) {
         this.refreshAction = refreshAction;
     }
 
     @Override
-    public void onAfterSetValue(BiAction<MoreOptionsV2Config.Metrics, MetricsPanel> afterSetValueUIAction) {
-        this.afterSetValueAction = afterSetValueUIAction;
+    public void afterValueSetAction(BiAction<MoreOptionsV2Config.Metrics, MetricsPanel> afterValueSetAction) {
+        this.afterSetValueAction = afterValueSetAction;
     }
 }

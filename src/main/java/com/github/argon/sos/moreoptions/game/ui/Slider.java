@@ -194,14 +194,14 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
                 value = new GStat() {
                     @Override
                     public void update(GText text) {
-                        TextFormatUtil.perc(text, in.get() / 100d);
+                        TextFormatUtil.percentage(text, in.get() / 100d);
                     }
                 };
             } else {
                 value = new GStat() {
                     @Override
                     public void update(GText text) {
-                        TextFormatUtil.iBig(text, in.get());
+                        GFORMAT.iBig(text, in.get());
                     }
                 };
             }

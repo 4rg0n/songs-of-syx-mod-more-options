@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
+import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import util.colors.GCOLOR;
 
@@ -77,7 +78,7 @@ public class Notificator implements Updateable {
             .height(150)
             .build();
 
-        notification.onHide(closedNotification -> {
+        notification.hideAction(closedNotification -> {
             queue.remove(closedNotification);
             current = null;
             showUntil = null;
@@ -114,6 +115,12 @@ public class Notificator implements Updateable {
         gameUiApi.notification().show(notification, C.DIM().x2(), C.DIM().y2());
     }
 
+    /**
+     * Has to be called from the outside by a looping game process like
+     * {@link snake2d.util.gui.renderable.RENDEROBJ#render(SPRITE_RENDERER, float)}
+     *
+     * Controls the showing and hiding of {@link Notification}s.
+     */
     @Override
     public void update(float seconds) {
         // wait until showSeconds for next

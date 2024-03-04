@@ -6,13 +6,19 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.boosting.BoostableCat;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * For accessing the games Booster mechanics with custom {@link MoreOptionsBooster}s.
+ */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoosterService {
 
     private final static Logger log = Loggers.getLogger(BoosterService.class);

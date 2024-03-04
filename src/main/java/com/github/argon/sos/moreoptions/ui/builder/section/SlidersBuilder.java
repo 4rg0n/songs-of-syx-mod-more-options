@@ -9,7 +9,6 @@ import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.LabeledSliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.TableBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -49,12 +48,11 @@ public class SlidersBuilder implements UiBuilder<Table, Map<String, Slider>> {
             rows.add(buildResult.getResult());
         });
 
-        Table table = TableBuilder.builder()
+        Table<Integer> table = Table.<Integer>builder()
             .evenOdd(true)
             .displayHeight(displayHeight)
-            .rows(rows)
-            .build()
-            .getResult();
+            .rowsWithColumns(rows)
+            .build();
 
         return BuildResult.<Table, Map<String, Slider>>builder()
             .result(table)

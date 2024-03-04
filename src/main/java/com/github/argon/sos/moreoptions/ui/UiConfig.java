@@ -2,25 +2,29 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.Notificator;
-import com.github.argon.sos.moreoptions.config.ConfigMapper;
+import com.github.argon.sos.moreoptions.config.JsonConfigMapper;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
+import com.github.argon.sos.moreoptions.game.ui.Window;
+import com.github.argon.sos.moreoptions.json.Json;
+import com.github.argon.sos.moreoptions.json.JsonMapper;
+import com.github.argon.sos.moreoptions.json.JsonWriter;
+import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
-import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.MetricsPanel;
+import com.github.argon.sos.moreoptions.ui.panel.RacesConfigSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
-import init.paths.ModInfo;
-import init.paths.PATHS;
 import init.sprite.SPRITES;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -34,8 +38,6 @@ import view.main.VIEW;
 import view.ui.top.UIPanelTop;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
@@ -45,29 +47,27 @@ import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
  * So when a new entry is added, a new UI element like e.g. an additional slider will also be visible.
  * For setting up the UI.
  */
-@RequiredArgsConstructor
-public class UiGameConfig {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class UiConfig {
 
     @Getter(lazy = true)
-    private final static UiGameConfig instance = new UiGameConfig(
+    private final static UiConfig instance = new UiConfig(
         GameApis.getInstance(),
         MoreOptionsConfigurator.getInstance(),
         ConfigStore.getInstance(),
         MetricExporter.getInstance(),
-        MetricCollector.getInstance(),
-        Notificator.getInstance(),
-        UiMapper.getInstance()
+        UiFactory.getInstance(),
+        Notificator.getInstance()
     );
 
-    private final static Logger log = Loggers.getLogger(UiGameConfig.class);
+    private final static Logger log = Loggers.getLogger(UiConfig.class);
 
     private final GameApis gameApis;
     private final MoreOptionsConfigurator configurator;
     private final ConfigStore configStore;
     private final MetricExporter metricExporter;
-    private final MetricCollector metricCollector;
+    private final UiFactory uiFactory;
     private final Notificator notificator;
-    private final UiMapper uiMapper;
 
     public void inject(Modal<MoreOptionsPanel> moreOptionsModal) {
         log.debug("Injecting button into game ui");
@@ -130,6 +130,284 @@ public class UiGameConfig {
                 .entrySet().stream().map(entry -> entry.getKey() + " enabled: " + entry.getValue() + "\n")
                 .collect(Collectors.joining()));
         });
+    }
+
+    public void initActions(Modal<MoreOptionsPanel> moreOptionsModal) {
+        MoreOptionsPanel moreOptionsPanel = moreOptionsModal.getSection();
+        initActions(moreOptionsModal, moreOptionsPanel);
+
+        // METRICS
+        MetricsPanel metricsPanel = moreOptionsPanel.getMetricsPanel();
+        initActions(metricsPanel);
+
+        // RACES
+        RacesPanel racesPanel = moreOptionsPanel.getRacesPanel();
+        initActions(racesPanel);
+
+        // after config is applied to game
+        configurator.onAfterApplyAction(moreOptionsConfig -> {
+            Path exportFile = metricExporter.getExportFile();
+            Path currentExportFile = metricsPanel.getExportFilePath();
+
+            // export file changed?
+            if (!exportFile.equals(currentExportFile)) {
+                metricsPanel.refresh(exportFile);
+
+                // don't notify for initial files
+                if (currentExportFile != null) {
+                    notificator.notify("New export file: " + exportFile.getFileName());
+                }
+            }
+        });
+    }
+
+    public void initActions(Modal<MoreOptionsPanel> moreOptionsModal, MoreOptionsPanel moreOptionsPanel) {
+        // update Notificator queue when More Options Modal is rendered
+        moreOptionsModal.renderAction((modal, seconds) -> notificator.update(seconds));
+        moreOptionsModal.hideAction(modal -> notificator.close());
+
+        // Cancel & Undo
+        moreOptionsPanel.getCancelButton().clickActionSet(() -> {
+            try {
+                undo(moreOptionsPanel);
+            } catch (Exception e) {
+                notificator.notifyError("Could not undo changes.", e);
+                return;
+            }
+
+            moreOptionsModal.hide();
+        });
+
+        // Apply & Save
+        moreOptionsPanel.getApplyButton().clickActionSet(() -> {
+            try {
+                if (!applyAndSave(moreOptionsPanel)) {
+                    notificator.notifyError("Could not apply config to game.");
+                }
+            } catch (Exception e) {
+                notificator.notifyError("Could not apply config to game.", e);
+            }
+        });
+
+        // Undo changes
+        moreOptionsPanel.getUndoButton().clickActionSet(() -> {
+            try {
+                undo(moreOptionsPanel);
+            } catch (Exception e) {
+                notificator.notifyError("Could not undo changes.", e);
+            }
+        });
+
+        // reload and apply config from file
+        moreOptionsPanel.getReloadButton().clickActionSet(() -> {
+            MoreOptionsV2Config moreOptionsConfig = configStore.loadConfig().orElse(null);
+            if (moreOptionsConfig != null) {
+                moreOptionsPanel.setValue(moreOptionsConfig);
+                notificator.notifySuccess("Config reloaded into ui.");
+            } else {
+                notificator.notifyError("Could not reload config from file.");
+            }
+        });
+
+        // copy config from ui into clipboard
+        moreOptionsPanel.getShareButton().clickActionSet(() -> {
+            MoreOptionsV2Config moreOptionsConfig = moreOptionsPanel.getValue();
+            try {
+                if (moreOptionsConfig != null) {
+                    JsonE jsonE = JsonConfigMapper.mapConfig(moreOptionsConfig);
+                    boolean written = Clipboard.write(jsonE.toString());
+
+                    if (written) {
+                        notificator.notifySuccess("Config copied to clipboard.");
+                    } else {
+                        notificator.notifyError("Could not copy config to clipboard.");
+                    }
+                } else {
+                    notificator.notifyError("Could not load config from file.");
+                }
+            } catch (Exception e) {
+                notificator.notifyError("Could not copy config to clipboard.", e);
+            }
+        });
+
+        // Apply default config to ui
+        moreOptionsPanel.getDefaultButton().clickActionSet(() -> {
+            MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
+            try {
+                moreOptionsPanel.setValue(defaultConfig);
+                notificator.notifySuccess("Default config applied to ui. ");
+            } catch (Exception e) {
+                notificator.notifyError("Could not apply default config to ui.", e);
+            }
+        });
+
+        // Apply default config to ui and game & delete config file
+        moreOptionsPanel.getResetButton().clickActionSet(() -> {
+            // are you sure message
+            VIEW.inters().yesNo.activate("This will delete your config file and reset the ui and game to default settings.", () -> {
+                MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
+                try {
+                    moreOptionsPanel.setValue(defaultConfig);
+                    configStore.deleteConfig();
+                    if (applyAndSave(moreOptionsPanel)) {
+                        notificator.notifySuccess("Default config applied to ui and file deleted.");
+                    } else {
+                        notificator.notifyError("Could not apply config.");
+                    }
+
+                } catch (Exception e) {
+                    notificator.notifyError("Could not reset ui.", e);
+                }
+            }, () -> {}, true);
+        });
+
+        //Ok: Apply & Save & Exit
+        moreOptionsPanel.getOkButton().clickActionSet(() -> {
+            try {
+                applyAndSave(moreOptionsPanel);
+            } catch (Exception e) {
+               log.error("Could not apply config to game.", e);
+            }
+
+            moreOptionsModal.hide();
+        });
+
+        // opens folder with mod configuration
+        moreOptionsPanel.getFolderButton().clickActionSet(() -> {
+            try {
+                FileManager.openDesctop(ConfigStore.MORE_OPTIONS_CONFIG_PATH.get().toString());
+            } catch (Exception e) {
+                notificator.notifyError("Could not open config folder: " + ConfigStore.MORE_OPTIONS_CONFIG_PATH, e);
+            }
+        });
+    }
+
+    public void initActions(MetricsPanel metricsPanel) {
+        // opens folder with metric export files
+        metricsPanel.getExportFolderButton().clickActionSet(() -> {
+            Path exportFolderPath = metricsPanel.getExportFolderPath();
+            if (!exportFolderPath.toFile().exists()) {
+                notificator.notifyError("Metrics export folder does not exists: " + exportFolderPath);
+                return;
+            }
+
+            try {
+                FileManager.openDesctop(exportFolderPath.toString());
+            } catch (Exception e) {
+                notificator.notifyError("Could not open metrics export folder: " + exportFolderPath, e);
+            }
+        });
+
+        // copy export file name into clipboard
+        metricsPanel.getCopyExportFileButton().clickActionSet(() -> {
+            Path exportFilePath = metricsPanel.getExportFilePath();
+
+            try {
+                if (exportFilePath != null) {
+                    boolean written = Clipboard.write(exportFilePath.toString());
+
+                    if (written) {
+                        notificator.notifySuccess(exportFilePath + " copied to clipboard.");
+                    } else {
+                        notificator.notifyError("Could not copy export file path to clipboard.");
+                    }
+                } else {
+                    notificator.notifyError("There is no export file path to copy.");
+                }
+            } catch (Exception e) {
+                notificator.notifyError("Could not copy export file path to clipboard.", e);
+            }
+        });
+    }
+
+    public void initActions(RacesPanel racesPanel) {
+        // Open current race config file
+        racesPanel.getFileButton().clickActionSet(() -> {
+            Path path = configStore.racesConfigPath();
+            if (!path.toFile().exists()) {
+                notificator.notify("Race config file does not exist: " + path);
+                return;
+            }
+
+            try {
+                FileManager.openDesctop(path.toString());
+            } catch (Exception e) {
+                notificator.notifyError("Could not open races config file: " + path, e);
+            }
+        });
+
+        // Open folder with race config files
+        racesPanel.getFolderButton().clickActionSet(() -> {
+            if (!ConfigStore.RACES_CONFIG_PATH.toFile().exists()) {
+                notificator.notifyError("Race config folder does not exist: " +  ConfigStore.RACES_CONFIG_PATH);
+                return;
+            }
+
+            try {
+                FileManager.openDesctop(ConfigStore.RACES_CONFIG_PATH.toString());
+            } catch (Exception e) {
+                notificator.notifyError("Could not open races config folder: " + ConfigStore.RACES_CONFIG_PATH, e);
+            }
+        });
+
+        // Export current race config from ui into clipboard
+        racesPanel.getExportButton().clickActionSet(() -> {
+            try {
+                MoreOptionsV2Config.RacesConfig racesConfig = racesPanel.getValue();
+                JsonElement jsonElement = JsonMapper.mapObject(racesConfig);
+                Json json = new Json(jsonElement, JsonWriter.getJsonE());
+
+                if (Clipboard.write(json.toString())) {
+                    notificator.notifySuccess("Race config copied to clipboard.");
+                } else {
+                    notificator.notifyError("Could not copy races config to clipboard.");
+                }
+            } catch (Exception e) {
+                notificator.notifyError("Could not copy races config to clipboard.", e);
+            }
+        });
+
+        // Import race config from clipboard into ui
+        racesPanel.getImportButton().clickActionSet(() -> {
+            try {
+                Clipboard.read().ifPresent(s -> {
+                    Json json = new Json(s, JsonWriter.getJsonE());
+                    MoreOptionsV2Config.RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), MoreOptionsV2Config.RacesConfig.class);
+
+                    racesPanel.setValue(racesConfig);
+                    notificator.notifySuccess("Race config imported from clipboard.");
+                });
+            } catch (Exception e) {
+                notificator.notifyError("Could not import races config to clipboard.", e);
+            }
+        });
+
+        // Opens selection of race config files to load
+        racesPanel.getLoadButton().clickActionSet(() -> {
+            Window<RacesConfigSelectionPanel> racesConfigsSelection = uiFactory.buildRacesConfigSelection("Select a file");
+            // load from race config file on doubleclick
+            racesConfigsSelection.getSection().getRacesConfigTable().doubleClickAction(row -> {
+                try {
+                    RacesConfigSelectionPanel.Entry entry = row.getValue();
+                    Path configPath = entry.getConfigPath();
+                    MoreOptionsV2Config.RacesConfig racesConfig = configStore.loadRaceConfig(configPath).orElse(null);
+
+                    if (racesConfig != null) {
+                        racesPanel.setValue(racesConfig);
+                        notificator.notifySuccess("Races config loaded and applied to ui.");
+                        racesConfigsSelection.hide();
+                    } else {
+                        notificator.notifyError("Could not load races config.");
+                    }
+                } catch (Exception e) {
+                    notificator.notifyError("Could not load races config.", e);
+                }
+            });
+
+            racesConfigsSelection.show();
+        });
+
+
     }
 
     public void initBackupActions(
@@ -246,233 +524,6 @@ public class UiGameConfig {
 
             backupDialog.hide();
         });
-    }
-
-    public void initActions(Modal<MoreOptionsPanel> moreOptionsModal) {
-        MoreOptionsPanel moreOptionsPanel = moreOptionsModal.getSection();
-
-        // update Notificator queue when More Options Modal is rendered
-        moreOptionsModal.onRender((modal, seconds) -> notificator.update(seconds));
-        moreOptionsModal.onHide(modal -> notificator.close());
-
-        // Cancel & Undo
-        Button cancelButton = moreOptionsPanel.getCancelButton();
-        cancelButton.clickActionSet(() -> {
-            try {
-                undo(moreOptionsPanel);
-            } catch (Exception e) {
-                notificator.notifyError("Could not undo changes.", e);
-                return;
-            }
-
-            moreOptionsModal.hide();
-        });
-
-        // Apply & Save
-        Button applyButton = moreOptionsPanel.getApplyButton();
-        applyButton.clickActionSet(() -> {
-            try {
-                if (!applyAndSave(moreOptionsPanel)) {
-                    notificator.notifyError("Could not apply config to game.");
-                }
-            } catch (Exception e) {
-                notificator.notifyError("Could not apply config to game.", e);
-            }
-        });
-
-        // Undo changes
-        Button undoButton = moreOptionsPanel.getUndoButton();
-        undoButton.clickActionSet(() -> {
-            try {
-                undo(moreOptionsPanel);
-            } catch (Exception e) {
-                notificator.notifyError("Could not undo changes.", e);
-            }
-        });
-
-        // reload and apply config from file
-        Button reloadButton = moreOptionsPanel.getReloadButton();
-        reloadButton.clickActionSet(() -> {
-            MoreOptionsV2Config moreOptionsConfig = configStore.loadConfig().orElse(null);
-            if (moreOptionsConfig != null) {
-                moreOptionsPanel.setValue(moreOptionsConfig);
-                notificator.notifySuccess("Config reloaded into ui.");
-            } else {
-                notificator.notifyError("Could not reload config from file.");
-            }
-        });
-
-        // copy config from ui into clipboard
-        Button shareButton = moreOptionsPanel.getShareButton();
-        shareButton.clickActionSet(() -> {
-            MoreOptionsV2Config moreOptionsConfig = moreOptionsPanel.getValue();
-            try {
-                if (moreOptionsConfig != null) {
-                    JsonE jsonE = ConfigMapper.mapConfig(moreOptionsConfig);
-                    boolean written = Clipboard.write(jsonE.toString());
-
-                    if (written) {
-                        notificator.notifySuccess("Config copied to clipboard.");
-                    } else {
-                        notificator.notifyError("Could not copy config to clipboard.");
-                    }
-                } else {
-                    notificator.notifyError("Could not load config from file.");
-                }
-            } catch (Exception e) {
-                notificator.notifyError("Could not copy config to clipboard.", e);
-            }
-        });
-
-        // Apply default config to ui
-        Button defaultButton = moreOptionsPanel.getDefaultButton();
-        defaultButton.clickActionSet(() -> {
-            MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
-            try {
-                moreOptionsPanel.setValue(defaultConfig);
-                notificator.notifySuccess("Default config applied to ui. ");
-            } catch (Exception e) {
-                notificator.notifyError("Could not apply default config to ui.", e);
-            }
-        });
-
-        // Apply default config to ui and game & delete config file
-        Button resetButton = moreOptionsPanel.getResetButton();
-        resetButton.clickActionSet(() -> {
-            // are you sure message
-            VIEW.inters().yesNo.activate("This will delete your config file and reset the ui and game to default settings.", () -> {
-                MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
-                try {
-                    moreOptionsPanel.setValue(defaultConfig);
-                    configStore.deleteConfig();
-                    if (applyAndSave(moreOptionsPanel)) {
-                        notificator.notifySuccess("Default config applied to ui and file deleted.");
-                    } else {
-                        notificator.notifyError("Could not apply config.");
-                    }
-
-                } catch (Exception e) {
-                    notificator.notifyError("Could not reset ui.", e);
-                }
-            }, () -> {}, true);
-        });
-
-        //Ok: Apply & Save & Exit
-        Button okButton = moreOptionsPanel.getOkButton();
-        okButton.clickActionSet(() -> {
-            try {
-                if (!applyAndSave(moreOptionsPanel)) {
-                    notificator.notifyError("Could not apply config to game.");
-                    return;
-                }
-            } catch (Exception e) {
-                notificator.notifyError("Could not apply config to game.", e);
-                return;
-            }
-
-            moreOptionsModal.hide();
-        });
-
-        // opens folder with mod configuration
-        Button folderButton = moreOptionsPanel.getFolderButton();
-        folderButton.clickActionSet(() -> {
-            try {
-                FileManager.openDesctop(PATHS.local().SETTINGS.get().toString());
-            } catch (Exception e) {
-                notificator.notifyError("Could not open config folder.", e);
-            }
-        });
-
-        MetricsPanel metricsPanel = moreOptionsPanel.getMetricsPanel();
-
-        // opens folder with metric export files
-        Button exportFolderButton = metricsPanel.getExportFolderButton();
-        exportFolderButton.clickActionSet(() -> {
-            Path exportFolderPath = metricsPanel.getExportFolderPath();
-
-            if (!exportFolderPath.toFile().exists()) {
-                notificator.notifyError("Metrics export folder does not exists.");
-                return;
-            }
-
-            try {
-                FileManager.openDesctop(exportFolderPath.toString());
-            } catch (Exception e) {
-                notificator.notifyError("Could not open metrics export folder.", e);
-            }
-        });
-
-        // copy config from ui into clipboard
-        Button copyExportFileButton = metricsPanel.getCopyExportFileButton();
-        copyExportFileButton.clickActionSet(() -> {
-            Path exportFilePath = metricsPanel.getExportFilePath();
-
-            try {
-                if (exportFilePath != null) {
-                    boolean written = Clipboard.write(exportFilePath.toString());
-
-                    if (written) {
-                        notificator.notifySuccess(exportFilePath + " copied to clipboard.");
-                    } else {
-                        notificator.notifyError("Could not copy export file path to clipboard.");
-                    }
-                } else {
-                    notificator.notifyError("There is no export file path to copy.");
-                }
-            } catch (Exception e) {
-                notificator.notifyError("Could not copy export file path to clipboard.", e);
-            }
-        });
-
-        // after config is applied to game
-        configurator.onAfterApplyAction(moreOptionsConfig -> {
-            Path exportFile = metricExporter.getExportFile();
-            Path currentExportFile = metricsPanel.getExportFilePath();
-
-            // export file changed?
-            if (!exportFile.equals(currentExportFile)) {
-                metricsPanel.refresh(exportFile);
-
-                // don't notify for initial files
-                if (currentExportFile != null) {
-                    notificator.notify("New export file: " + exportFile.getFileName());
-                }
-            }
-        });
-    }
-
-
-    /**
-     * Generates UI with available config.
-     * Adds config modal buttons functionality.
-     *
-     * @param config used to generate the UI
-     */
-    public Modal<MoreOptionsPanel> buildModal(String title, MoreOptionsV2Config config) {
-        log.debug("Initialize %s ui", title);
-
-        List<BoostersPanel.Entry> boosterEntries = uiMapper.mapToBoosterPanelEntries(config.getBoosters());
-        Map<String, List<RacesPanel.Entry>> raceEntries = uiMapper.mapToRacePanelEntries(config.getRaces().getLikings());
-
-        List<String> availableStats = gameApis.stats().getAvailableStatKeys();
-        ModInfo modInfo = gameApis.mod().getCurrentMod().orElse(null);
-        Path exportFolder = MetricExporter.EXPORT_FOLDER;
-        Path exportFile = metricExporter.getExportFile();
-
-        Modal<MoreOptionsPanel> moreOptionsModal = new Modal<>(title, new MoreOptionsPanel(
-            config,
-            configStore,
-            boosterEntries,
-            raceEntries,
-            availableStats,
-            exportFolder,
-            exportFile,
-            modInfo
-        ));
-        moreOptionsModal.center();
-
-        initActions(moreOptionsModal);
-        return moreOptionsModal;
     }
 
     private @Nullable MoreOptionsV2Config apply(MoreOptionsPanel moreOptionsPanel) {

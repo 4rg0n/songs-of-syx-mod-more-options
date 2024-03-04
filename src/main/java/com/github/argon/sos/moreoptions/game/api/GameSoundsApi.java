@@ -15,6 +15,9 @@ import snake2d.util.sets.LIST;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Access to the games sound effects
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameSoundsApi {
 

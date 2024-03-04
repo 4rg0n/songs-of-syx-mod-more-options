@@ -13,6 +13,9 @@ import util.gui.misc.GBox;
 import view.interrupter.InterManager;
 import view.interrupter.Interrupter;
 
+/**
+ * Used for showing {@link Notification}s as popup on the screen
+ */
 public final class NotificationPopup {
 	
 	private final GuiSection displayContainer = new GuiSection();

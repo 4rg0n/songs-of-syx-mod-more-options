@@ -15,6 +15,7 @@ import java.util.Map;
 @Data
 @Builder
 @EqualsAndHashCode
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsV2Config {
 
@@ -54,6 +55,7 @@ public class MoreOptionsV2Config {
     @Data
     @Builder
     @EqualsAndHashCode
+    @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Sounds {
         @Builder.Default
@@ -67,6 +69,7 @@ public class MoreOptionsV2Config {
     @Data
     @Builder
     @EqualsAndHashCode
+    @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Metrics {
         @Builder.Default
@@ -82,6 +85,7 @@ public class MoreOptionsV2Config {
     @Data
     @Builder
     @EqualsAndHashCode
+    @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Range {
         @Builder.Default
@@ -154,6 +158,7 @@ public class MoreOptionsV2Config {
     @Data
     @Builder
     @EqualsAndHashCode
+    @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Meta {
         @Builder.Default
@@ -164,11 +169,12 @@ public class MoreOptionsV2Config {
 
     @Getter
     @Builder
+    @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class BoosterEntry {
-        private final String key;
-        private final Range add;
-        private final Range multi;
+        private String key;
+        private Range add;
+        private Range multi;
     }
 
     /* TODO
@@ -180,6 +186,7 @@ public class MoreOptionsV2Config {
     @Data
     @Builder
     @EqualsAndHashCode
+    @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class RacesConfig {
         @Builder.Default
@@ -188,6 +195,7 @@ public class MoreOptionsV2Config {
         @Data
         @Builder
         @EqualsAndHashCode
+        @NoArgsConstructor
         @AllArgsConstructor(access = AccessLevel.PRIVATE)
         public static class Liking {
             private String race;

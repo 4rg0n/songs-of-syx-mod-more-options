@@ -13,6 +13,12 @@ import lombok.RequiredArgsConstructor;
 
 import java.nio.file.Path;
 
+/**
+ * Summarizes initialization processes for different classes in different phases
+ * Some resources of the game are only available after a certain phase.
+ *
+ * Is initially called by the {@link com.github.argon.sos.moreoptions.MoreOptionsScript}
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Initializer implements InitPhases {
 
@@ -63,12 +69,14 @@ public class Initializer implements InitPhases {
     public void initGameSaveLoaded(Path saveFilePath) {
         log.debug("PHASE: initGameSaveLoaded");
         gameApis.initGameSaveLoaded(saveFilePath);
+        configStore.initGameSaveLoaded(saveFilePath);
     }
 
     @Override
     public void initGameSaved(Path saveFilePath) {
         log.debug("PHASE: initGameSaved");
         gameApis.initGameSaved(saveFilePath);
+        configStore.initGameSaved(saveFilePath);
     }
 
     @Override

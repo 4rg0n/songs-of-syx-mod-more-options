@@ -49,23 +49,22 @@ public class ConfigService {
 
     public Optional<MoreOptionsV2Config.Meta> loadMeta(PATH path, String fileName) {
         return jsonService.loadJson(path, fileName)
-            .map(ConfigMapper::mapMeta);
+            .map(JsonConfigMapper::mapMeta);
     }
 
     public boolean saveConfig(PATH path, String fileName, MoreOptionsV2Config config) {
-        log.debug("Saving more options config v%s into %s", config.getVersion(), path.get().toString());
+        log.debug("Saving more options config v%s", config.getVersion());
         log.trace("CONFIG: %s", config);
 
-        JsonE configJson = ConfigMapper.mapConfig(config);
+        JsonE configJson = JsonConfigMapper.mapConfig(config);
 
         return jsonService.saveJson(configJson, path, fileName);
     }
 
     public boolean saveConfig(Path path, MoreOptionsV2Config.RacesConfig config) {
-        log.debug("Saving race config into %s", path.toString());
         log.trace("CONFIG: %s", config);
 
-        JsonE configJson = ConfigMapper.mapRacesConfig(config);
+        JsonE configJson = JsonConfigMapper.mapRacesConfig(config);
 
         return jsonService.saveJson(configJson, path);
     }
@@ -73,7 +72,7 @@ public class ConfigService {
     public Optional<MoreOptionsV2Config.RacesConfig> loadConfig(Path path) {
         try {
             return jsonService.loadJson(path)
-                .map(ConfigMapper::mapRacesConfig);
+                .map(JsonConfigMapper::mapRacesConfig);
         } catch (Exception e) {
             log.error("Could load config: %s", path, e);
             return Optional.empty();
@@ -91,17 +90,17 @@ public class ConfigService {
 
         try {
             return jsonService.loadJson(filePath).map(json -> {
-                MoreOptionsV2Config.Meta meta = ConfigMapper.mapMeta(json);
+                MoreOptionsV2Config.Meta meta = JsonConfigMapper.mapMeta(json);
                 int version = meta.getVersion();
                 log.debug("Loaded config v%s", version);
 
                 MoreOptionsV2Config config;
                 switch (version) {
                     case 1:
-                        config = ConfigMapper.mapV1(json);
+                        config = JsonConfigMapper.mapV1(json);
                         break;
                     case 2:
-                        config = ConfigMapper.mapV2(json);
+                        config = JsonConfigMapper.mapV2(json);
                         break;
                     default:
                         log.warn("Unsupported config version v%s found in %s", version, filePath);

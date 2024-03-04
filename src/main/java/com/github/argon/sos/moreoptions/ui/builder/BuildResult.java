@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder
-public class BuildResult<T, E> {
+public class BuildResult<Result, Element> {
 
-    private T result;
+    private Result result;
 
-    private E interactable;
+    private Element interactable;
 
-    public BuildResult<ColumnRow, E> toColumnRow() {
+    public <Value> BuildResult<ColumnRow<Value>, Element> toColumnRow() {
 
         // check for type List<? extends GuiSection> and build
         if (result instanceof List) {
@@ -31,10 +31,10 @@ public class BuildResult<T, E> {
                 throw new IllegalArgumentException("No viable ui elements to put into grid row found in result list.");
             }
 
-            ColumnRow columnRow = new ColumnRow(columns);
+            ColumnRow<Value> columnRow = new ColumnRow<>(columns);
             columnRow.init();
 
-            return BuildResult.<ColumnRow, E>builder()
+            return BuildResult.<ColumnRow<Value>, Element>builder()
                 .result(columnRow)
                 .interactable(interactable)
                 .build();

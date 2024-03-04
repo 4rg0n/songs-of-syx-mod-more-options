@@ -7,12 +7,17 @@ import init.error.ErrorHandler;
 import lombok.RequiredArgsConstructor;
 import snake2d.Errors;
 
+/**
+ * For custom handling game crashes
+ *
+ * @param <Script> type of the mod script
+ */
 @RequiredArgsConstructor
-public class MoreOptionsErrorHandler<T extends SCRIPT<?>> extends ErrorHandler {
+public class MoreOptionsErrorHandler<Script extends SCRIPT> extends ErrorHandler {
 
     private final static Logger log = Loggers.getLogger(MoreOptionsErrorHandler.class);
 
-    private final T script;
+    private final Script script;
 
     @Override
     public void handle(Throwable throwable, String dump) {

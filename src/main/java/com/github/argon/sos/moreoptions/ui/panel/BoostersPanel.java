@@ -65,14 +65,14 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
         });
 
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
-        BuildResult<Table, Map<String, Tabulator<String, Slider, Integer>>> buildResult = BoosterSlidersBuilder.builder()
+        BuildResult<Table<Integer>, Map<String, Tabulator<String, Slider, Integer>>> buildResult = BoosterSlidersBuilder.builder()
             .displayHeight(600)
             .search(searchInput)
             .translate(boosterDefinitions)
             .build();
 
 
-        Table boosterTable = buildResult.getResult();
+        Table<Integer> boosterTable = buildResult.getResult();
         slidersWithToggle = buildResult.getInteractable();
         addDownC(0, new GInput(searchInput));
         addDownC(10, boosterTable);

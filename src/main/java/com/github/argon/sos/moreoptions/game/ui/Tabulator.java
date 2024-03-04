@@ -3,12 +3,15 @@ package com.github.argon.sos.moreoptions.game.ui;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -29,6 +32,8 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
     private final boolean resetOnToggle;
     private final Toggler<Key> toggler;
 
+    @Setter
+    @Accessors(fluent = true, chain = false)
     private Action<Tabulator<Key, Element, Value>> refreshAction = o -> {};
 
     @Getter
@@ -53,8 +58,8 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
         // first element in map
         activeTab = tabs.values().iterator().next();
 
-        toggler = new Toggler<>(tabs.keySet(), marginToggler, false, true);
-        toggler.onClick(this::tab);
+        toggler = new Toggler<>(new ArrayList<>(tabs.keySet()), marginToggler, false, true, true);
+        toggler.clickAction(this::tab);
 
         // guarantee same width
         int maxWidth = UiUtil.getMaxWidth(tabs.values());
@@ -98,7 +103,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
         }
 
         tabs.entrySet().stream()
-            .filter(element -> element.getKey().getKey().equals(key))
+            .filter(element -> key.equals(element.getKey().getKey()))
             .findFirst()
             .ifPresent(element -> {
                 if (resetOnToggle) reset();
@@ -154,10 +159,5 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
             .map(Refreshable.class::cast)
             .collect(Collectors.toList())
             .forEach(Refreshable::refresh);
-    }
-
-    @Override
-    public void onRefresh(Action<Tabulator<Key, Element, Value>> refreshAction) {
-        this.refreshAction = refreshAction;
     }
 }

@@ -36,12 +36,16 @@ public class MoreOptionsPanel extends GuiSection implements
     @Getter
     private final ConfigStore configStore;
 
+    @Getter
     private final EventsPanel eventsPanel;
     private final SoundsPanel soundsPanel;
+    @Getter
     private final WeatherPanel weatherPanel;
+    @Getter
     private final BoostersPanel boostersPanel;
     @Getter
     private final MetricsPanel metricsPanel;
+    @Getter
     private final RacesPanel racesPanel;
 
     @Getter
@@ -65,7 +69,7 @@ public class MoreOptionsPanel extends GuiSection implements
     @Getter
     private final Button resetButton;
     @Getter
-    private final ButtonMenu moreButtonMenu;
+    private final ButtonMenu<String> moreButtonMenu;
 
     private Action<MoreOptionsPanel> showAction = o -> {};
     private Action<MoreOptionsPanel> refreshAction = o -> {};
@@ -133,16 +137,14 @@ public class MoreOptionsPanel extends GuiSection implements
         addDownC(20, horizontalLine);
 
         GuiSection footer = new GuiSection();
-        this.cancelButton = new Button("Cancel");
-        cancelButton.hoverInfoSet("Close window without applying changes");
+        this.cancelButton = new Button("Cancel", "Close window without applying changes");
         footer.addRight(0, cancelButton);
 
-        this.undoButton = new Button("Undo");
-        undoButton.hoverInfoSet("Undo made changes");
-        undoButton.setEnabled(false);
+        this.undoButton = new Button("Undo", "Undo made changes");
+        undoButton.activeSet(false);
         footer.addRight(10, undoButton);
 
-        this.moreButton = new Button("More", COLOR.WHITE15);
+        this.moreButton = new Button("More", COLOR.WHITE15, "Even more!");
         footer.addRight(50, moreButton);
 
         String modVersion = "NO_VER";
@@ -152,29 +154,22 @@ public class MoreOptionsPanel extends GuiSection implements
 
         footer.addRight(50, versions(config.getVersion(), modVersion));
 
-        this.applyButton = new Button("Apply");
-        applyButton.hoverInfoSet("Apply config to game and save to file");
-        applyButton.setEnabled(false);
+        this.applyButton = new Button("Apply", "Apply config to game and save to file");
+        applyButton.activeSet(false);
         footer.addRight(50, applyButton);
 
-        this.okButton = new Button("OK");
-        okButton.hoverInfoSet("Apply config to game, save to file and exit");
+        this.okButton = new Button("OK", "Apply config to game, save to file and exit");
         footer.addRight(10, okButton);
         addDownC(20, footer);
 
         // More Button Menu
-        this.defaultButton = new Button("Default");
-        defaultButton.hoverInfoSet("Reset ui to default config");
-        this.reloadButton = new Button("Reload");
-        reloadButton.hoverInfoSet("Reload and apply config to ui from file");
-        this.shareButton = new Button("Share");
-        shareButton.hoverInfoSet("Copy current config from ui into clipboard");
-        this.folderButton = new Button("Folder");
-        folderButton.hoverInfoSet("Open settings folder with mod config file");
-        this.resetButton = new Button("Reset");
-        resetButton.hoverInfoSet("Reset ui and game to default config and deletes config file");
+        this.defaultButton = new Button("Default", "Reset ui to default config");
+        this.reloadButton = new Button("Reload", "Reload and apply config to ui from file");
+        this.shareButton = new Button("Share", "Copy current config from ui into clipboard");
+        this.folderButton = new Button("Folder", "Open settings folder with mod config file");
+        this.resetButton = new Button("Reset", "Reset ui and game to default config and deletes config file");
         List<Button> buttons = Lists.of(defaultButton, shareButton, folderButton, reloadButton, resetButton);
-        this.moreButtonMenu = ButtonMenu.fromList(buttons);
+        this.moreButtonMenu = ButtonMenu.ButtonMenuBuilder.fromList(buttons);
         this.moreButton.clickActionSet(() -> {
             GameUiApi.getInstance().popup().show(this.moreButtonMenu, this.moreButton);
         });
@@ -244,8 +239,8 @@ public class MoreOptionsPanel extends GuiSection implements
         if (updateTimerSeconds >= UPDATE_INTERVAL_SECONDS) {
             updateTimerSeconds = 0d;
 
-            if (applyButton != null) applyButton.setEnabled(isDirty());
-            if (undoButton != null) undoButton.setEnabled(isDirty());
+            if (applyButton != null) applyButton.activeSet(isDirty());
+            if (undoButton != null) undoButton.activeSet(isDirty());
         }
         super.render(r, seconds);
     }
@@ -256,7 +251,7 @@ public class MoreOptionsPanel extends GuiSection implements
     }
 
     @Override
-    public void onShow(Action<MoreOptionsPanel> showAction) {
+    public void showAction(Action<MoreOptionsPanel> showAction) {
         this.showAction = showAction;
     }
 
@@ -266,7 +261,7 @@ public class MoreOptionsPanel extends GuiSection implements
     }
 
     @Override
-    public void onRefresh(Action<MoreOptionsPanel> refreshAction) {
+    public void refreshAction(Action<MoreOptionsPanel> refreshAction) {
         this.refreshAction = refreshAction;
     }
 }

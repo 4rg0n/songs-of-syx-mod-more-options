@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
+/**
+ * Access to the mods custom {@link MoreOptionsBoosters}
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameBoosterApi implements InitPhases {
 

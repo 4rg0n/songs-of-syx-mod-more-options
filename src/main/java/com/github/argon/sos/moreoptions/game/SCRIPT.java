@@ -1,20 +1,9 @@
 package com.github.argon.sos.moreoptions.game;
 
-public interface SCRIPT<Config> extends script.SCRIPT {
-    /**
-     * Executed when the game is running
-     */
-    void initGameRunning();
-
-    /**
-     * Executed right after the game UI is present
-     */
-    void initGameUiPresent();
-
-    /**
-     * @param config nullable
-     */
-    void initGameSaveLoaded(Config config);
+/**
+ * Extends the game {@link script.SCRIPT} interface
+ */
+public interface SCRIPT extends script.SCRIPT {
 
     void update(double seconds);
 

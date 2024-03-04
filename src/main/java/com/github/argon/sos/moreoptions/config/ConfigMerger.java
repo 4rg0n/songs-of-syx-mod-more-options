@@ -73,7 +73,7 @@ public class ConfigMerger {
         if (target.getLikings() == null) {
             target.setLikings(source.getLikings());
         } else {
-            merge(target.getLikings(), source.getLikings());
+            target.setLikings(replace(target.getLikings(), source.getLikings()));
         }
     }
 
@@ -99,7 +99,7 @@ public class ConfigMerger {
         if (target.getStats() == null) {
             target.setStats(source.getStats());
         } else {
-            merge(target.getStats(), source.getStats());
+            target.setStats(replace(target.getStats(), source.getStats()));
         }
     }
 
@@ -163,13 +163,12 @@ public class ConfigMerger {
         target.setDisplayMode(source.getDisplayMode());
     }
 
-    public static <T> void merge(List<T> target, @Nullable List<T> source) {
+    public static <T> List<T> replace(List<T> target, @Nullable List<T> source) {
         if (source == null) {
-            return;
+            return target;
         }
 
-        target.clear();
-        target.addAll(source);
+        return source;
     }
 
     public static <K, V> void merge(Map<K, V> target, @Nullable Map<K, V> source) {

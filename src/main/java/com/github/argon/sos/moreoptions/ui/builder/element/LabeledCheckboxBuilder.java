@@ -7,6 +7,7 @@ import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 
@@ -43,9 +44,9 @@ public class LabeledCheckboxBuilder implements UiBuilder<List<GuiSection>, Check
         return new Builder();
     }
 
+    @Setter
     public static class Builder {
 
-        @lombok.Setter
         @Accessors(fluent = true)
         private Definition definition;
 

@@ -75,9 +75,10 @@ public class MetricExporter implements InitPhases {
     public void initBeforeGameCreated() {
         if (!Files.isDirectory(EXPORT_FOLDER)) {
             try {
+                log.debug("Create metrics export folder at %s", EXPORT_FOLDER);
                 Files.createDirectories(EXPORT_FOLDER);
             } catch (Exception e) {
-                log.error("Could not create metrics export folder %s", EXPORT_FOLDER, e);
+                log.error("Could not create metrics export folder at %s", EXPORT_FOLDER, e);
             }
         }
     }

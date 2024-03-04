@@ -30,11 +30,11 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
     private final Map<String, Slider> eventsChanceSliders;
 
     public EventsPanel(MoreOptionsV2Config.Events events) {
-        BuildResult<Table, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(events.getSettlement());
+        BuildResult<Table<Boolean>, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(events.getSettlement());
         GuiSection settlement = settlementCheckboxesResult.getResult();
         settlementEventsCheckboxes.putAll(settlementCheckboxesResult.getInteractable());
 
-        BuildResult<Table, Map<String, Checkbox>> worldCheckboxesResult = checkboxes(events.getWorld());
+        BuildResult<Table<Boolean>, Map<String, Checkbox>> worldCheckboxesResult = checkboxes(events.getWorld());
         GuiSection world = worldCheckboxesResult.getResult();
         worldEventsCheckboxes.putAll(worldCheckboxesResult.getInteractable());
 
@@ -148,7 +148,7 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
     }
 
 
-    private BuildResult<Table, Map<String, Checkbox>> checkboxes(Map<String, Boolean> eventConfig) {
+    private BuildResult<Table<Boolean>, Map<String, Checkbox>> checkboxes(Map<String, Boolean> eventConfig) {
         Map<String, LabeledCheckboxBuilder.Definition> settlementCheckboxes = eventConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             config -> LabeledCheckboxBuilder.Definition.builder()

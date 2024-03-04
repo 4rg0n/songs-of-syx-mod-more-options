@@ -7,17 +7,24 @@ import com.github.argon.sos.moreoptions.init.InitPhases;
 import com.github.argon.sos.moreoptions.init.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.util.Lists;
 import init.paths.PATH;
 import init.paths.PATHS;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigStore implements InitPhases {
@@ -37,8 +44,8 @@ public class ConfigStore implements InitPhases {
     public final static String RACES_CONFIG_FILE_PREFIX = ".RacesConfig";
     public final static String MORE_OPTIONS_FILE_NAME = "MoreOptions";
     public final static String MORE_OPTIONS_FILE_NAME_BACKUP = MORE_OPTIONS_FILE_NAME + ".backup";
-    private final static PATH MORE_OPTIONS_CONFIG_PATH = PATHS.local().SETTINGS;
-    private final static Path RACES_CONFIG_PATH = PATHS.local().PROFILE.get()
+    public final static PATH MORE_OPTIONS_CONFIG_PATH = PATHS.local().SETTINGS;
+    public final static Path RACES_CONFIG_PATH = PATHS.local().PROFILE.get()
         .resolve(MoreOptionsScript.MOD_INFO.name + "/races");
 
     private final ConfigService configService;
@@ -60,9 +67,10 @@ public class ConfigStore implements InitPhases {
     public void initBeforeGameCreated() {
         if (!Files.isDirectory(RACES_CONFIG_PATH)) {
             try {
+                log.debug("Create race configs folder at %s", RACES_CONFIG_PATH);
                 Files.createDirectories(RACES_CONFIG_PATH);
             } catch (Exception e) {
-                log.error("Could not create races config folder %s", RACES_CONFIG_PATH, e);
+                log.error("Could not create races config folder at %s", RACES_CONFIG_PATH, e);
             }
         }
 
@@ -100,6 +108,26 @@ public class ConfigStore implements InitPhases {
                 log.warn("Detected config version decrease from %s to %s. This shouldn't happen...", metaVersion, configVersion);
             }
         });
+    }
+
+    @Override
+    public void initGameSaved(Path saveFilePath) {
+        // each save gets it race likings config associated
+        configService.saveConfig(racesConfigPath(), getCurrentConfig().getRaces());
+    }
+
+    @Override
+    public void initGameSaveLoaded(Path saveFilePath) {
+        Path path = racesConfigPath();
+
+        if (path == null) {
+            return;
+        }
+
+        // todo need to apply to ui?
+        // load races config additionally
+        configService.loadConfig(path)
+            .ifPresent(getCurrentConfig()::setRaces);
     }
 
     /**
@@ -169,18 +197,48 @@ public class ConfigStore implements InitPhases {
         return loadConfig(MORE_OPTIONS_FILE_NAME);
     }
 
+    public Optional<MoreOptionsV2Config.RacesConfig> loadRaceConfig(Path path) {
+        return configService.loadConfig(path);
+    }
+
     private Optional<MoreOptionsV2Config> loadConfig(String fileName) {
         return configService.loadConfig(MORE_OPTIONS_CONFIG_PATH, fileName)
             .map(config -> {
-                // load races config additionally
-                configService.loadConfig(racesConfigPath())
-                    .ifPresent(config::setRaces);
-
-                return config;
-            }).map(config -> {
                 ConfigMerger.merge(config, defaultConfig);
                 return config;
             });
+    }
+
+    public List<RaceConfigMeta> loadRacesConfigMetas() {
+
+        try (Stream<Path> stream = Files.list(RACES_CONFIG_PATH)) {
+            List<RaceConfigMeta> metas = stream
+                .filter(path -> path.getFileName().toString().endsWith(".txt"))
+                .map(this::loadRaceConfigMeta)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+            log.debug("Loaded %s race configs meta from files in folder %s", metas.size(), RACES_CONFIG_PATH);
+            return metas;
+        } catch (IOException e) {
+            log.error("Could not load race configs from files in folder %s", RACES_CONFIG_PATH, e);
+            return Lists.of();
+        }
+    }
+
+    @Nullable
+    public RaceConfigMeta loadRaceConfigMeta(Path path) {
+        log.trace("Loading race configs meta from file %s", path);
+        try {
+            BasicFileAttributes fileAttributes = Files.getFileAttributeView(path, BasicFileAttributeView.class).readAttributes();
+            return RaceConfigMeta.builder()
+                .fromFileAttributes(path, fileAttributes)
+                .build();
+        } catch (Exception e) {
+            log.error("Could not load race config meta from file %s", path, e);
+        }
+
+        return null;
     }
 
     public boolean deleteBackupConfig() {
@@ -204,8 +262,8 @@ public class ConfigStore implements InitPhases {
      * @return whether saving was successful
      */
     public boolean saveConfig(MoreOptionsV2Config config) {
-       return configService.saveConfig(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME, config)
-           && configService.saveConfig(racesConfigPath(), config.getRaces());
+       return (configService.saveConfig(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME, config)
+           && configService.saveConfig(racesConfigPath(), config.getRaces()));
     }
 
     public static Path configPath() {
@@ -229,5 +287,25 @@ public class ConfigStore implements InitPhases {
 
     public boolean saveDictionary(Map<String, Dictionary.Entry> entries) {
         return configService.saveDictionary(entries, PATHS.INIT().getFolder("config"), Dictionary.FILE_NAME);
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class RaceConfigMeta {
+        private Path configPath;
+        private Instant creationTime;
+        private Instant updateTime;
+
+        public static class RaceConfigMetaBuilder {
+            public RaceConfigMetaBuilder fromFileAttributes(Path path, BasicFileAttributes fileAttributes) {
+                return RaceConfigMeta.builder()
+                    .configPath(path)
+                    .updateTime(fileAttributes.lastModifiedTime().toInstant())
+                    .creationTime(fileAttributes.creationTime().toInstant());
+            }
+        }
     }
 }

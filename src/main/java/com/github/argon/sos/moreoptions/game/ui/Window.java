@@ -16,7 +16,8 @@ import view.interrupter.Interrupter;
 import view.main.VIEW;
 
 /**
- * For displaying a {@link GuiSection} in a modal window.
+ * For displaying a {@link GuiSection} in a floating window.
+ * Background interactions are disabled.
  *
  * @param <Section> ui element to display
  */
@@ -42,10 +43,17 @@ public class Window<Section extends GuiSection> extends Interrupter implements
 
     private boolean hide = false;
 
+    @Setter
+    @Accessors(fluent = true, chain = false)
     protected Action<Window<Section>> showAction = o -> {};
+    @Setter
+    @Accessors(fluent = true, chain = false)
     protected Action<Window<Section>> hideAction = o -> {};
+    @Setter
+    @Accessors(fluent = true, chain = false)
     protected Action<Window<Section>> refreshAction = o -> {};
-
+    @Setter
+    @Accessors(fluent = true, chain = false)
     protected BiAction<Window<Section>, Float> renderAction = (o1, o2) -> {};
 
     public Window(String title, Section section) {
@@ -91,7 +99,7 @@ public class Window<Section extends GuiSection> extends Interrupter implements
     @Override
     protected boolean hover(COORDINATE coordinate, boolean b) {
         panelSection.hover(coordinate);
-        return false;
+        return true; // disable background interactions
     }
 
     @Override
@@ -127,11 +135,6 @@ public class Window<Section extends GuiSection> extends Interrupter implements
        refreshAction.accept(this);
     }
 
-    @Override
-    public void onRefresh(Action<Window<Section>> refreshAction) {
-        this.refreshAction = refreshAction;
-    }
-
     public void show() {
         hide = false;
         show(VIEW.inters().manager);
@@ -139,22 +142,8 @@ public class Window<Section extends GuiSection> extends Interrupter implements
     }
 
     @Override
-    public void onShow(Action<Window<Section>> showAction) {
-        this.showAction = showAction;
-    }
-
-    @Override
     protected boolean update(float v) {
         return false;
     }
 
-    @Override
-    public void onRender(BiAction<Window<Section>, Float> renderAction) {
-        this.renderAction = renderAction;
-    }
-
-    @Override
-    public void onHide(Action<Window<Section>> hideAction) {
-        this.hideAction = hideAction;
-    }
 }

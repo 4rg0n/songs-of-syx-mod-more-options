@@ -24,6 +24,10 @@ public class GameStatsApi {
     private List<String> availableStatKeys;
 
     private final MetricCollector metricCollector;
+
+    /**
+     * For providing a default whitelist of stats to collect
+     */
     public List<String> getAvailableStatKeys() {
         if (availableStatKeys == null) {
             availableStatKeys = new ArrayList<>(metricCollector.collectStats().keySet());

@@ -3,6 +3,8 @@ package com.github.argon.sos.moreoptions.game.ui;
 import com.github.argon.sos.moreoptions.game.BiAction;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
+import java.util.function.Supplier;
+
 /**
  * For ui elements where you can get and set values
  *
@@ -13,15 +15,19 @@ public interface Valuable<Value, Element> extends RENDEROBJ {
     Value getValue();
     void setValue(Value value);
 
-    default void onGetValue(BiAction<Value, Element> getValueAction) {
+    default void valueGetAction(BiAction<Value, Element> valueGetAction) {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 
-    default void onBeforeSetValue(BiAction<Value, Element> beforeSetValueAction) {
+    default void beforeValueSetAction(BiAction<Value, Element> beforeValueSetAction) {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 
-    default void onAfterSetValue(BiAction<Value, Element> afterSetValueAction) {
+    default void afterValueSetAction(BiAction<Value, Element> afterValueSetAction) {
+        throw new UnsupportedOperationException("Method is not implemented");
+    }
+
+    default void valueSupplier(Supplier<Value> valueSupplier) {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 }

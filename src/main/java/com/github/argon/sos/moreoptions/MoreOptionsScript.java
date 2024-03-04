@@ -12,7 +12,8 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
-import com.github.argon.sos.moreoptions.ui.UiGameConfig;
+import com.github.argon.sos.moreoptions.ui.UiConfig;
+import com.github.argon.sos.moreoptions.ui.UiFactory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import snake2d.Errors;
@@ -28,7 +29,7 @@ import java.util.Optional;
  */
 @NoArgsConstructor
 @SuppressWarnings("unused") // used by the game via reflection
-public final class MoreOptionsScript implements SCRIPT<Path>, InitPhases {
+public final class MoreOptionsScript implements SCRIPT, InitPhases {
 
 	private final static Logger log = Loggers.getLogger(MoreOptionsScript.class);
 
@@ -46,7 +47,8 @@ public final class MoreOptionsScript implements SCRIPT<Path>, InitPhases {
 	private final Dictionary dictionary = Dictionary.getInstance();
 
 	@Getter
-	private final UiGameConfig uiGameConfig = UiGameConfig.getInstance();
+	private final UiConfig uiConfig = UiConfig.getInstance();
+	private final UiFactory uiFactory = UiFactory.getInstance();
 
 	private Instance instance;
 
@@ -125,21 +127,22 @@ public final class MoreOptionsScript implements SCRIPT<Path>, InitPhases {
 		// config should already be loaded or use default
 		MoreOptionsV2Config moreOptionsConfig = configStore.getCurrentConfig();
 
-		Modal<MoreOptionsPanel> moreOptionsModal = uiGameConfig.buildModal(MOD_INFO.name.toString(), moreOptionsConfig);
-		uiGameConfig.initDebugActions(moreOptionsModal, configStore);
-		uiGameConfig.inject(moreOptionsModal);
+		Modal<MoreOptionsPanel> moreOptionsModal = uiFactory.buildMoreOptionsModal(MOD_INFO.name.toString(), moreOptionsConfig);
+		uiConfig.initActions(moreOptionsModal);
+		uiConfig.initDebugActions(moreOptionsModal, configStore);
+		uiConfig.inject(moreOptionsModal);
 
 		Optional<MoreOptionsV2Config> backupConfig = configStore.getBackupConfig();
 		// show backup dialog?
 		if (backupConfig.isPresent()) {
 			Modal<BackupDialog> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupDialog());
-			Modal<MoreOptionsPanel> backupMoreOptionsModal = uiGameConfig.buildModal(
+			Modal<MoreOptionsPanel> backupMoreOptionsModal = uiFactory.buildMoreOptionsModal(
 				MOD_INFO.name + " Backup",
 				backupConfig.get());
 
 			configStore.setCurrentConfig(backupConfig.get());
-			uiGameConfig.initBackupActions(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
-
+			uiConfig.initActions(backupMoreOptionsModal);
+			uiConfig.initBackupActions(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
 			backupModal.show();
 		} else {
 			configurator.applyConfig(moreOptionsConfig);

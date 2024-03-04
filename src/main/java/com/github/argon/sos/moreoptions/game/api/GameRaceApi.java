@@ -22,6 +22,9 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Access to the games races
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameRaceApi implements InitPhases {
     private final static Logger log = Loggers.getLogger(GameRaceApi.class);
@@ -31,6 +34,9 @@ public class GameRaceApi implements InitPhases {
     private static List<RaceLiking> vanillaLikings;
     private final Map<String, Integer> raceIndexMap = new HashMap<>();
 
+    /**
+     * List of vanilla game races
+     */
     // todo is there a better way to find these?
     private final List<String> vanillaRaces = Lists.of(
         "ARGONOSH",
@@ -59,6 +65,13 @@ public class GameRaceApi implements InitPhases {
         increaseStanding(STANDINGS.CITIZEN().loyalty, race, inc);
     }
 
+    /**
+     * Standings influence the races Expectations, Fulfillment, Happiness and Loyalty
+     *
+     * @param standing which of the 4 standings to influence
+     * @param race which race
+     * @param inc amount to increase
+     */
     private void increaseStanding(StandingCitizen.CitizenThing standing, Race race, double inc) {
         double current = standing.getD(race);
         double newStanding = current + inc;

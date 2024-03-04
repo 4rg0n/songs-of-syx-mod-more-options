@@ -7,7 +7,6 @@ import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.LabeledCheckboxBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.TableBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>> {
+public class CheckboxesBuilder implements UiBuilder<Table<Boolean>, Map<String, Checkbox>> {
 
     private final Map<String, LabeledCheckboxBuilder.Definition> definitions;
 
@@ -34,7 +33,7 @@ public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>
     /**
      * Builds a section with a list of checkboxes with titles according to the given {@link LabeledCheckboxBuilder.Definition}s
      */
-    public BuildResult<Table, Map<String, Checkbox>> build() {
+    public BuildResult<Table<Boolean>, Map<String, Checkbox>> build() {
         Map<String, Checkbox> elements = new HashMap<>();
         
         // map and order entries by dictionary title
@@ -43,14 +42,14 @@ public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                 (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
-        List<ColumnRow> rows = new ArrayList<>();
+        List<ColumnRow<Boolean>> rows = new ArrayList<>();
         definitions.forEach((key, definition) -> {
-            BuildResult<ColumnRow, Checkbox> buildResult = LabeledCheckboxBuilder.builder()
+            BuildResult<ColumnRow<Boolean>, Checkbox> buildResult = LabeledCheckboxBuilder.builder()
                 .definition(definition)
                 .build()
                 .toColumnRow();
-            ColumnRow columnRow = buildResult.getResult();
-            columnRow.highlight(highlightColumns);
+            ColumnRow<Boolean> columnRow = buildResult.getResult();
+            columnRow.highlightable(highlightColumns);
 
             if (search != null) {
                 columnRow.searchTerm(key);
@@ -60,16 +59,15 @@ public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>
             rows.add(columnRow);
         });
 
-        Table table = TableBuilder.builder()
+        Table<Boolean> table = Table.<Boolean>builder()
             .evenOdd(true)
             .evenColumnWidth(evenWidth)
             .displayHeight(displayHeight)
             .search(search)
-            .columnRows(rows)
-            .build()
-            .getResult();
+            .rows(rows)
+            .build();
 
-        return BuildResult.<Table, Map<String, Checkbox>>builder()
+        return BuildResult.<Table<Boolean>, Map<String, Checkbox>>builder()
             .result(table)
             .interactable(elements)
             .build();
@@ -104,7 +102,7 @@ public class CheckboxesBuilder implements UiBuilder<Table, Map<String, Checkbox>
             return definitions(definitions);
         }
 
-        public BuildResult<Table, Map<String, Checkbox>> build() {
+        public BuildResult<Table<Boolean>, Map<String, Checkbox>> build() {
             assert definitions != null : "definitions must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
 

@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 import static com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.*;
 
 /**
- * TODO outsource map into logic?
+ * For mapping the game {@link Json} and {@link JsonE} into {@link MoreOptionsV2Config} and back
  */
-public class ConfigMapper {
+public class JsonConfigMapper {
 
     /**
      * Maps old V1 config to the current config structure
@@ -174,7 +174,7 @@ public class ConfigMapper {
         JsonE json = new JsonE();
         json.addString("RACE", liking.getRace());
         json.addString("OTHER_RACE", liking.getOtherRace());
-        json.add("RANGE", mapRange(liking.getRange(), 0));
+        json.add("RANGE", mapRange(liking.getRange(), null));
 
         return json;
     }
@@ -201,7 +201,7 @@ public class ConfigMapper {
         return RacesConfig.Liking.builder()
             .race(json.has("RACE") ? json.text("RACE") : null)
             .otherRace(json.has("OTHER_RACE") ? json.text("OTHER_RACE") : null)
-            .range(json.has("RANGE") ? mapRange(json.json("RANGE"), 0) : null)
+            .range(json.has("RANGE") ? mapRange(json.json("RANGE"), null) : null)
             .build();
     }
 
@@ -224,9 +224,9 @@ public class ConfigMapper {
         return map;
     }
 
-    public static Range mapRange(Json rangeJson, @Nullable Integer defaultValue) {
+    public static Range mapRange(Json rangeJson, @Nullable Integer overwriteValue) {
         return Range.builder()
-            .value((defaultValue != null) ? defaultValue : rangeJson.i("VALUE"))
+            .value((overwriteValue != null) ? overwriteValue : rangeJson.i("VALUE"))
             .min(rangeJson.i("MIN"))
             .max(rangeJson.i("MAX"))
             .applyMode(Range.ApplyMode
@@ -247,9 +247,9 @@ public class ConfigMapper {
         return json;
     }
 
-    public static JsonE mapRange(Range range, @Nullable Integer defaultValue) {
+    public static JsonE mapRange(Range range, @Nullable Integer overwriteValue) {
         JsonE json = new JsonE();
-        json.add("VALUE", (defaultValue != null) ? defaultValue : range.getValue());
+        json.add("VALUE", (overwriteValue != null) ? overwriteValue : range.getValue());
         json.add("MIN", range.getMin());
         json.add("MAX", range.getMax());
         json.addString("APPLY_MODE", range.getApplyMode().toString());

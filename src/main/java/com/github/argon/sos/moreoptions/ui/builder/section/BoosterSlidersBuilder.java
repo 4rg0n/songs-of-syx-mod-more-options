@@ -9,7 +9,6 @@ import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.UiBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.BoosterSliderBuilder;
 import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.TableBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -21,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class BoosterSlidersBuilder implements UiBuilder<Table, Map<String, Tabulator<String, Slider, Integer>>> {
+public class BoosterSlidersBuilder implements UiBuilder<Table<Integer>, Map<String, Tabulator<String, Slider, Integer>>> {
     private final Map<String, Map<String, BoosterSliderBuilder.Definition>> definitions;
     private final int displayHeight;
     @Nullable
@@ -31,12 +30,12 @@ public class BoosterSlidersBuilder implements UiBuilder<Table, Map<String, Tabul
      * Builds a section with a scrollable list of sliders with labels in front of them.
      * Each entry is a slider with its {@link SliderBuilder.Definition}
      */
-    public BuildResult<Table, Map<String, Tabulator<String, Slider, Integer>>> build() {
+    public BuildResult<Table<Integer>, Map<String, Tabulator<String, Slider, Integer>>> build() {
         Map<String, Tabulator<String, Slider, Integer>> elements = new HashMap<>();
-        Map<String, List<ColumnRow>> mapRows = new HashMap<>();
+        Map<String, List<ColumnRow<Integer>>> mapRows = new HashMap<>();
 
         for(String keyDef: definitions.keySet()) {
-            List<ColumnRow> innerList = new ArrayList<>();
+            List<ColumnRow<Integer>> innerList = new ArrayList<>();
             definitions.get(keyDef).entrySet()
                 .stream().sorted(Comparator.comparing(entry -> entry.getValue().getLabelDefinition().getTitle()))
                 .collect(Collectors.toMap(
@@ -47,23 +46,23 @@ public class BoosterSlidersBuilder implements UiBuilder<Table, Map<String, Tabul
                             .definition(definition)
                             .build();
 
-                    ColumnRow columnRow = buildResult.toColumnRow().getResult();
+                    ColumnRow<Integer> columnRow = buildResult.<Integer>toColumnRow().getResult();
                     columnRow.searchTerm(key);
-                    columnRow.highlight(true);
+                    columnRow.highlightable(true);
                     elements.put(key, buildResult.getInteractable());
                     innerList.add(columnRow);
                 });
             mapRows.put(keyDef, innerList);
         }
 
-        Table table = TableBuilder.builder()
+        Table<Integer> table = Table.<Integer>builder()
             .rowsCategorized(mapRows)
             .evenOdd(true)
             .search(search)
             .displayHeight(displayHeight)
-            .build().getResult();
+            .build();
 
-        return BuildResult.<Table, Map<String, Tabulator<String, Slider, Integer>>>builder()
+        return BuildResult.<Table<Integer>, Map<String, Tabulator<String, Slider, Integer>>>builder()
             .result(table)
             .interactable(elements)
             .build();
@@ -94,7 +93,7 @@ public class BoosterSlidersBuilder implements UiBuilder<Table, Map<String, Tabul
 
             return definitions(definitions);
         }
-        public BuildResult<Table, Map<String, Tabulator<String, Slider, Integer>>> build() {
+        public BuildResult<Table<Integer>, Map<String, Tabulator<String, Slider, Integer>>> build() {
             assert definitions != null : "definitions must not be null";
             assert displayHeight > 0 : "displayHeight must be greater than 0";
 

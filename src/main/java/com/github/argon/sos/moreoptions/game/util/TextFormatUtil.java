@@ -5,17 +5,18 @@ import lombok.NoArgsConstructor;
 import snake2d.util.color.ColorImp;
 import util.colors.GCOLOR;
 import util.gui.misc.GText;
-import util.info.GFORMAT;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TextFormatUtil {
 
-    public static GText perc(GText text, double f) {
-        return perc(text, f, 0);
+    public static GText percentage(GText text, double f) {
+        return percentage(text, f, 0);
     }
 
-
-    public static GText perc(GText text, double f, int decimals) {
+    /**
+     * @return text displayed as positive or negative percent
+     */
+    public static GText percentage(GText text, double f, int decimals) {
         if (!Double.isFinite(f)) {
             text.add('-').add('-').add('-');
             text.color(GCOLOR.T().INACTIVE);
@@ -37,9 +38,5 @@ public class TextFormatUtil {
         text.add('%');
 
         return text;
-    }
-
-    public static GText iBig(GText text, long i) {
-        return GFORMAT.iBig(text, i);
     }
 }
