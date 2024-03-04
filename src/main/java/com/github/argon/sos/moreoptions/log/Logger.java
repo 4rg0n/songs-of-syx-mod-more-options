@@ -11,6 +11,10 @@ import java.util.Arrays;
 
 import static com.github.argon.sos.moreoptions.util.StringUtil.*;
 
+/**
+ * For printing messages with different log {@link Level}s to the system output
+ */
+@Getter
 public class Logger {
 
     public static final String PREFIX_MOD = "MO";
@@ -18,14 +22,10 @@ public class Logger {
     private final static String LOG_MSG_FORMAT = "[%s|%s]%s[%s] %s";
     private final static int NAME_DISPLAY_MAX_LENGTH = 32;
 
-    @Getter
     private final String name;
-    @Getter
     private final String shortName;
-    @Getter
     private final String displayName;
 
-    @Getter
     @Setter
     private Level level;
 

@@ -9,6 +9,8 @@ import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.game.ui.Window;
+import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.init.UninitializedException;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.JsonWriter;
@@ -38,6 +40,7 @@ import view.main.VIEW;
 import view.ui.top.UIPanelTop;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
@@ -48,7 +51,7 @@ import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
  * For setting up the UI.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class UiConfig {
+public class UiConfig implements InitPhases {
 
     @Getter(lazy = true)
     private final static UiConfig instance = new UiConfig(
@@ -68,6 +71,44 @@ public class UiConfig {
     private final MetricExporter metricExporter;
     private final UiFactory uiFactory;
     private final Notificator notificator;
+
+    @Getter
+    @Nullable
+    private Modal<MoreOptionsPanel> moreOptionsModal;
+    @Getter
+    @Nullable
+    private Modal<MoreOptionsPanel> backupMoreOptionsModal;
+    @Getter
+    @Nullable
+    private Modal<BackupDialog> backupDialog;
+
+    public Modal<MoreOptionsPanel> getMoreOptionsModal() {
+        if (moreOptionsModal == null) throw new UninitializedException();
+        return moreOptionsModal;
+    }
+
+    @Override
+    public void initGameUiPresent() {
+        MoreOptionsV2Config moreOptionsConfig = configStore.getCurrentConfig();
+
+        moreOptionsModal = uiFactory.buildMoreOptionsModal(MOD_INFO.name.toString(), moreOptionsConfig);
+        initActions(moreOptionsModal);
+        initDebugActions(moreOptionsModal, configStore);
+        inject(moreOptionsModal);
+        Optional<MoreOptionsV2Config> backupConfig = configStore.getBackupConfig();
+
+        if (backupConfig.isPresent()) {
+            backupDialog = new Modal<>(MOD_INFO.name.toString(), new BackupDialog());
+            backupMoreOptionsModal = uiFactory.buildMoreOptionsModal(
+                MOD_INFO.name + " Backup",
+                backupConfig.get());
+
+            configStore.setCurrentConfig(backupConfig.get());
+            initActions(backupMoreOptionsModal);
+            initBackupActions(backupDialog, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
+            backupDialog.show();
+        }
+    }
 
     public void inject(Modal<MoreOptionsPanel> moreOptionsModal) {
         log.debug("Injecting button into game ui");

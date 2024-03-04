@@ -7,6 +7,7 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
+import com.github.argon.sos.moreoptions.ui.UiConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,18 +31,21 @@ public class Initializer implements InitPhases {
         ConfigStore.getInstance(),
         MetricScheduler.getInstance(),
         MetricExporter.getInstance(),
-        MoreOptionsConfigurator.getInstance()
+        MoreOptionsConfigurator.getInstance(),
+        UiConfig.getInstance()
     );
     private final GameApis gameApis;
     private final ConfigStore configStore;
     private final MetricScheduler metricScheduler;
     private final MetricExporter metricExporter;
     private final MoreOptionsConfigurator configurator;
+    private final UiConfig uiConfig;
 
     @Override
     public void initGameUiPresent() {
-        log.debug("PHASE: initGamePresent");
+        log.debug("PHASE: initGameUiPresent");
         gameApis.initGameUiPresent();
+        uiConfig.initGameUiPresent();
     }
 
     @Override

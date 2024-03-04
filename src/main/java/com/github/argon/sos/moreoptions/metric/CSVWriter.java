@@ -49,6 +49,7 @@ public class CSVWriter {
 
         File file = path.toFile();
 
+        // build CSV header if needed
         if (needsHeader(file)) {
             List<String> headers = new ArrayList<>();
             headers.addAll(headersMetric);

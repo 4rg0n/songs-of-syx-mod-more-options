@@ -13,7 +13,7 @@ class JsonTest {
 
     @Test
     void parse_JsonEAndProduceJsonE() throws IOException {
-        String jsonString = resourceService.readResource("json/JsonE.txt");
+        String jsonString = resourceService.readResource("json/JsonE.txt").orElse("");
         Json json = new Json(jsonString, JsonWriter.getJsonE());
 
         String parsedJsonString = json.toString();
@@ -23,8 +23,8 @@ class JsonTest {
 
     @Test
     void parse_JsonEAndProduceJson() throws IOException {
-        String jsonEString = resourceService.readResource("json/JsonE.txt");
-        String jsonString = resourceService.readResource("json/Json.txt");
+        String jsonEString = resourceService.readResource("json/JsonE.txt").orElse("");
+        String jsonString = resourceService.readResource("json/Json.txt").orElse("");
         Json json = new Json(jsonEString, new JsonWriter(true, true, false, true));
 
         String parsedJsonString = json.toString();

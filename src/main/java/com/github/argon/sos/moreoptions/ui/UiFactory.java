@@ -49,7 +49,7 @@ public class UiFactory {
      * @param config used to generate the UI
      */
     public Modal<MoreOptionsPanel> buildMoreOptionsModal(String title, MoreOptionsV2Config config) {
-        log.debug("Build %s ui", title);
+        log.debug("Building '%s' ui", title);
 
         List<BoostersPanel.Entry> boosterEntries = uiMapper.mapToBoosterPanelEntries(config.getBoosters());
         Map<String, List<RacesPanel.Entry>> raceEntries = uiMapper.mapToRacePanelEntries(config.getRaces().getLikings());
@@ -75,7 +75,7 @@ public class UiFactory {
     }
 
     public Window<RacesConfigSelectionPanel> buildRacesConfigSelection(String title) {
-        log.debug("Build %s ui", title);
+        log.debug("Building '%s' ui", title);
         RacesConfigSelectionPanel.Entry current = null;
 
         // prepare entries

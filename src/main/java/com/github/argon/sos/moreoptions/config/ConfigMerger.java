@@ -12,6 +12,10 @@ import java.util.Map;
 
 import static com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.*;
 
+/**
+ * Can merge two {@link MoreOptionsV2Config}s while one serves as target and the other source of the data.
+ * Will fill empty fields. Used for e.g. merging default configs into loaded configs.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigMerger {
     public static void merge(MoreOptionsV2Config target, @Nullable MoreOptionsV2Config source) {

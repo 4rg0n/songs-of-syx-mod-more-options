@@ -209,6 +209,9 @@ public class ConfigStore implements InitPhases {
             });
     }
 
+    /**
+     * For getting some basic information from the race config files without parsing them
+     */
     public List<RaceConfigMeta> loadRacesConfigMetas() {
 
         try (Stream<Path> stream = Files.list(RACES_CONFIG_PATH)) {
@@ -218,7 +221,7 @@ public class ConfigStore implements InitPhases {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-            log.debug("Loaded %s race configs meta from files in folder %s", metas.size(), RACES_CONFIG_PATH);
+            log.debug("Loaded race configs meta from %s files in folder %s", metas.size(), RACES_CONFIG_PATH);
             return metas;
         } catch (IOException e) {
             log.error("Could not load race configs from files in folder %s", RACES_CONFIG_PATH, e);
@@ -251,7 +254,20 @@ public class ConfigStore implements InitPhases {
 
     public boolean createBackupConfig(MoreOptionsV2Config config) {
         log.debug("Creating backup config file: %s", backupConfigPath());
-        return configService.saveConfig(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME_BACKUP, config);
+        if (configService.saveConfig(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME_BACKUP, config)) {
+            log.info("Backup config file successfully created at: %s",
+                ConfigStore.backupConfigPath());
+
+            // only delete original when backup config was created successfully
+            if (deleteConfig()) {
+                log.info("Deleted possible faulty config file at: %s",
+                    ConfigStore.configPath());
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

@@ -472,7 +472,7 @@ class JsonMapperTest {
         complexJsonObject.put("TEST_ARRAY_NULL", jsonNullArray);
 
         JsonE jsonE = JsonMapper.mapJson(complexJsonObject);
-        String expectedJsonE = ResourceService.getInstance().readResource("json/JsonE.txt");
+        String expectedJsonE = ResourceService.getInstance().readResource("json/JsonE.txt").orElse("");
 
         // compare without whitespaces
         assertThat(jsonE.toString().replaceAll("\\s+",""))

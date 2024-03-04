@@ -14,7 +14,9 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;
 
-
+/**
+ * For saving the data in the games json format
+ */
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonService {

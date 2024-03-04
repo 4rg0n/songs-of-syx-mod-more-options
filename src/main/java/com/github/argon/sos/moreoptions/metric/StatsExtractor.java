@@ -35,6 +35,9 @@ class StatsExtractor {
         "HOME_FURNITURE"
     );
 
+    /**
+     * For checking whether a game stat shall be collected or not
+     */
     public boolean isWhitelisted(String key) {
         // no whitelist = accept all
         if (whitelist.isEmpty()) {

@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * TODO
+ * Provides default configuration partially gathered from the game.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigDefaults {
@@ -26,7 +26,6 @@ public class ConfigDefaults {
     private final static ConfigDefaults instance = new ConfigDefaults(
         GameApis.getInstance()
     );
-
 
     private final GameApis gameApis;
 
@@ -60,7 +59,7 @@ public class ConfigDefaults {
             .max(100)
             .value(0)
             .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
+            .applyMode(MoreOptionsV2Config.Range.ApplyMode.MULTI)
             .build();
     }
 
@@ -112,6 +111,7 @@ public class ConfigDefaults {
     }
 
     public MoreOptionsV2Config newDefaultConfig() {
+        log.debug("Creating new default config");
         // Boosters
         Map<String, MoreOptionsV2Config.Range> multiBoosters = gameApis.booster().getBoosters().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.boosterMulti()));
@@ -172,7 +172,7 @@ public class ConfigDefaults {
             .likings(raceLikings)
             .build();
 
-        return MoreOptionsV2Config.builder()
+        MoreOptionsV2Config defaultConfig = MoreOptionsV2Config.builder()
             .events(MoreOptionsV2Config.Events.builder()
                 .world(worldEvents)
                 .settlement(settlementEvents)
@@ -188,5 +188,8 @@ public class ConfigDefaults {
             .metrics(metrics)
             .races(races)
             .build();
+
+        log.trace("Default config: %s", defaultConfig);
+        return defaultConfig;
     }
 }

@@ -11,7 +11,6 @@ import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
-import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
 import lombok.Getter;
@@ -36,7 +35,7 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 	public final static INFO MOD_INFO = new INFO("More Options", "Adds more options to the game :)");
 
 	@Getter
-	private final static ConfigStore configStore = ConfigStore.getInstance();
+	private final ConfigStore configStore = ConfigStore.getInstance();
 	@Getter
 	private final MoreOptionsConfigurator configurator = MoreOptionsConfigurator.getInstance();
 	@Getter
@@ -124,28 +123,14 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 	@Override
 	public void initGameUiPresent() {
 		initializer.initGameUiPresent();
-		// config should already be loaded or use default
-		MoreOptionsV2Config moreOptionsConfig = configStore.getCurrentConfig();
 
-		Modal<MoreOptionsPanel> moreOptionsModal = uiFactory.buildMoreOptionsModal(MOD_INFO.name.toString(), moreOptionsConfig);
-		uiConfig.initActions(moreOptionsModal);
-		uiConfig.initDebugActions(moreOptionsModal, configStore);
-		uiConfig.inject(moreOptionsModal);
-
-		Optional<MoreOptionsV2Config> backupConfig = configStore.getBackupConfig();
+		Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
 		// show backup dialog?
-		if (backupConfig.isPresent()) {
-			Modal<BackupDialog> backupModal = new Modal<>(MOD_INFO.name.toString(), new BackupDialog());
-			Modal<MoreOptionsPanel> backupMoreOptionsModal = uiFactory.buildMoreOptionsModal(
-				MOD_INFO.name + " Backup",
-				backupConfig.get());
-
-			configStore.setCurrentConfig(backupConfig.get());
-			uiConfig.initActions(backupMoreOptionsModal);
-			uiConfig.initBackupActions(backupModal, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
-			backupModal.show();
+		if (backupDialog != null) {
+			backupDialog.show();
 		} else {
-			configurator.applyConfig(moreOptionsConfig);
+			// apply loaded config
+			configurator.applyConfig(configStore.getCurrentConfig());
 		}
 
 		// FIXME
@@ -196,15 +181,8 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 
 		try {
 			// backup and delete config file
-			if (configStore.createBackupConfig()) {
-				log.warn("Backup config file successfully created at: %s",
-					ConfigStore.backupConfigPath());
-
-				// only delete original when backup config was created successfully
-				if (configStore.deleteConfig()) {
-					log.warn("Deleted possible faulty config file at: %s",
-						ConfigStore.configPath());
-				}
+			if (!configStore.createBackupConfig()) {
+				log.warn("Could not create backup config for game crash");
 			}
 		} catch (Exception e) {
 			log.error("Something bad happened while trying to handle game crash", e);
