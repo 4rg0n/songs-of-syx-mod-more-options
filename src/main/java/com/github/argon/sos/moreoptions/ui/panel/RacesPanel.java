@@ -25,6 +25,7 @@ import util.gui.misc.GText;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -130,7 +131,7 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
 
     @Override
     public MoreOptionsV2Config.RacesConfig getValue() {
-        List<MoreOptionsV2Config.RacesConfig.Liking> likings = likingsSliders.entrySet().stream().map(entry -> {
+        Set<MoreOptionsV2Config.RacesConfig.Liking> likings = likingsSliders.entrySet().stream().map(entry -> {
             String[] split = entry.getKey().split(RACE_SEPARATOR);
             String race = split[0];
             String otherRace = split[1];
@@ -140,7 +141,7 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
                 .otherRace(otherRace)
                 .range(MoreOptionsV2Config.Range.fromSlider(entry.getValue()))
                 .build();
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
 
         return MoreOptionsV2Config.RacesConfig.builder()
             .likings(likings)

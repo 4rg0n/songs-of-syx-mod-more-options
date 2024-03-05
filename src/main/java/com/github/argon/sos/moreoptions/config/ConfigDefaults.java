@@ -9,9 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -65,13 +63,13 @@ public class ConfigDefaults {
 
         // Metrics
         MoreOptionsV2Config.Metrics metrics = ConfigDefaults.metrics();
-        List<String> availableStats = gameApis.stats().getAvailableStatKeys();
+        Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         metrics.setStats(availableStats);
 
         // Races
         List<Race> racesAll = gameApis.race().getAll();
         List<Race> otherRacesAll = new ArrayList<>(racesAll);
-        List<MoreOptionsV2Config.RacesConfig.Liking> raceLikings = new ArrayList<>();
+        Set<MoreOptionsV2Config.RacesConfig.Liking> raceLikings = new HashSet<>();
         for (Race race : racesAll) {
             for (Race otherRace : otherRacesAll) {
                 double racePref = race.pref().race(otherRace);

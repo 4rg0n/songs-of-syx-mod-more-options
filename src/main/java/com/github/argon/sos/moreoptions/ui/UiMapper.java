@@ -8,10 +8,7 @@ import init.race.Race;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -22,11 +19,10 @@ public class UiMapper {
 
     private final GameApis gameApis = GameApis.getInstance();
 
-    public Map<String, List<RacesPanel.Entry>> mapToRacePanelEntries(List<MoreOptionsV2Config.RacesConfig.Liking> raceLikings) {
+    public Map<String, List<RacesPanel.Entry>> mapToRacePanelEntries(Set<MoreOptionsV2Config.RacesConfig.Liking> raceLikings) {
         Map<String, List<RacesPanel.Entry>> entries = new HashMap<>();
 
-        for (int i = 0; i < raceLikings.size(); i++) {
-            MoreOptionsV2Config.RacesConfig.Liking raceLiking = raceLikings.get(i);
+        for (MoreOptionsV2Config.RacesConfig.Liking raceLiking : raceLikings) {
             RacesPanel.Entry entry = mapToRacePanelEntry(raceLiking);
             String raceKey = entry.getRace().info.name.toString();
             entries.putIfAbsent(raceKey, new ArrayList<>());

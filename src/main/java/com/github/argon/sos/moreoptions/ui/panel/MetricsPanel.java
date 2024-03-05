@@ -8,6 +8,7 @@ import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.element.*;
 import com.github.argon.sos.moreoptions.ui.builder.section.CheckboxesBuilder;
 import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.moreoptions.util.Sets;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -22,9 +23,7 @@ import util.gui.misc.GText;
 import util.gui.misc.GTextR;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +56,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
 
     public MetricsPanel(
         MoreOptionsV2Config.Metrics metricsConfig,
-        List<String> availableStats,
+        Set<String> availableStats,
         Path exportFolderPath,
         Path exportFilePath
     ) {
@@ -159,11 +158,12 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         searchBar.addRightC(10, searchToggler);
 
         // Export stats section
+        SortedSet<String> sortedAvailableStats = Sets.sort(availableStats);
         BuildResult<Table<Boolean>, Map<String, Checkbox>> exportStats = CheckboxesBuilder.builder()
             .displayHeight(400)
             .search(searchInput)
             .highlightColumns(true)
-            .definitions(availableStats.stream()
+            .definitions(sortedAvailableStats.stream()
                 .collect(Collectors.toMap(
                     s -> s,
                     s -> LabeledCheckboxBuilder.Definition.builder()
@@ -261,17 +261,17 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         return section;
     }
 
-    private List<String> getCheckedStats() {
+    private Set<String> getCheckedStats() {
         return statsCheckboxes.entrySet().stream()
             .filter(entry -> {
                 Checkbox checkbox = entry.getValue();
                 return checkbox.getValue();
             })
             .map(Map.Entry::getKey)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
 
-    private void setCheckedStats(List<String> stats) {
+    private void setCheckedStats(Set<String> stats) {
         if (stats.isEmpty()) { // enable all when empty stats
             statsCheckboxes.values().forEach(checkbox -> checkbox.setValue(true));
         } else { // enable only when in stats

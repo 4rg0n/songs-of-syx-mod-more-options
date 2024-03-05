@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.util.JsonUtil;
+import com.github.argon.sos.moreoptions.util.Sets;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
@@ -134,8 +135,7 @@ public class JsonConfigMapper {
 
     public static Metrics mapMetrics(Json json) {
         Metrics defaultMetrics = ConfigDefaults.metrics();
-        List<String> stats = (json.has("STATS")) ? Arrays.asList(json.texts("STATS")) : defaultMetrics.getStats();
-        Collections.sort(stats);
+        Set<String> stats = (json.has("STATS")) ? Sets.of(json.texts("STATS")) : defaultMetrics.getStats();
 
         return Metrics.builder()
             .enabled((json.has("ENABLED"))
@@ -159,12 +159,13 @@ public class JsonConfigMapper {
         return json;
     }
 
-    public static JsonE[] mapRaceLikings(List<RacesConfig.Liking> likings) {
+    public static JsonE[] mapRaceLikings(Set<RacesConfig.Liking> likings) {
         JsonE[] jsons = new JsonE[likings.size()];
 
-        for (int i = 0, likingsSize = likings.size(); i < likingsSize; i++) {
-            RacesConfig.Liking liking = likings.get(i);
+        int i = 0;
+        for (RacesConfig.Liking liking : likings) {
             jsons[i] = mapRaceLiking(liking);
+            i++;
         }
 
         return jsons;
@@ -183,12 +184,12 @@ public class JsonConfigMapper {
         return RacesConfig.builder()
             .likings((json.has("LIKINGS"))
                 ? mapRaceLikings(json.jsons("LIKINGS"))
-                : new ArrayList<>())
+                : new HashSet<>())
             .build();
     }
 
-    public static List<RacesConfig.Liking> mapRaceLikings(Json[] jsons) {
-        List<RacesConfig.Liking> likings = new ArrayList<>();
+    public static Set<RacesConfig.Liking> mapRaceLikings(Json[] jsons) {
+        Set<RacesConfig.Liking> likings = new HashSet<>();
 
         for (Json json : jsons) {
             likings.add(mapRaceLiking(json));

@@ -9,7 +9,6 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
-import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.events.EVENTS;
 import init.sound.SoundAmbience;
@@ -19,7 +18,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import settlement.weather.WeatherThing;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -89,10 +91,10 @@ public class MoreOptionsConfigurator {
     }
 
     private void applyMetricsConfig(MoreOptionsV2Config.Metrics metrics) {
-        List<String> metricStats = metrics.getStats();
+        Set<String> metricStats = metrics.getStats();
 
         // use new file when exported stats change
-        if (!Lists.compare(metricStats, lastMetricStats)) {
+        if (!metricStats.containsAll(lastMetricStats)) {
             log.debug("New metric export stat list with %s stats", metricStats.size());
             log.trace("Stats: %s", metricStats);
             metricExporter.newExportFile();
@@ -107,7 +109,7 @@ public class MoreOptionsConfigurator {
             metricScheduler
                 .schedule(() -> metricCollector.buffer(metricStats),
                     metrics.getCollectionRateSeconds().getValue(), metrics.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
-                .schedule(() -> metricExporter.export(metricStats),
+                .schedule(metricExporter::export,
                     metrics.getExportRateMinutes().getValue(), metrics.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
                 .start();
             return;
@@ -126,7 +128,7 @@ public class MoreOptionsConfigurator {
             metricScheduler
                 .schedule(() -> metricCollector.buffer(metricStats),
                     metrics.getCollectionRateSeconds().getValue(), metrics.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
-                .schedule(() -> metricExporter.export(metricStats),
+                .schedule(metricExporter::export,
                     metrics.getExportRateMinutes().getValue(), metrics.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
                 .start();
         }

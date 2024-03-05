@@ -7,9 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameStatsApi {
@@ -21,17 +19,16 @@ public class GameStatsApi {
         MetricCollector.getInstance()
     );
 
-    private List<String> availableStatKeys;
+    private Set<String> availableStatKeys;
 
     private final MetricCollector metricCollector;
 
     /**
      * For providing a default whitelist of stats to collect
      */
-    public List<String> getAvailableStatKeys() {
+    public Set<String> getAvailableStatKeys() {
         if (availableStatKeys == null) {
-            availableStatKeys = new ArrayList<>(metricCollector.collectStats().keySet());
-            Collections.sort(availableStatKeys);
+            availableStatKeys = metricCollector.collectStats().keySet();
 
             log.debug("Collected %s available stat keys", availableStatKeys.size());
         }

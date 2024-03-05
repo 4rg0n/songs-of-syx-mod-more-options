@@ -45,7 +45,7 @@ public class MetricExporter implements InitPhases {
         return EXPORT_FOLDER.resolve(Instant.now().getEpochSecond() + "_MetricExport.csv");
     }
 
-    public boolean export(List<String> statList) {
+    public boolean export() {
         List<Metric> metrics;
 
         try {

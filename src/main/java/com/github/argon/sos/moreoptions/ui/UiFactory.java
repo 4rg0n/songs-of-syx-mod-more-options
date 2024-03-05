@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -51,7 +52,7 @@ public class UiFactory {
         List<BoostersPanel.Entry> boosterEntries = uiMapper.mapToBoosterPanelEntries(config.getBoosters());
         Map<String, List<RacesPanel.Entry>> raceEntries = uiMapper.mapToRacePanelEntries(config.getRaces().getLikings());
 
-        List<String> availableStats = gameApis.stats().getAvailableStatKeys();
+        Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod().orElse(null);
         Path exportFolder = MetricExporter.EXPORT_FOLDER;
         Path exportFile = metricExporter.getExportFile();

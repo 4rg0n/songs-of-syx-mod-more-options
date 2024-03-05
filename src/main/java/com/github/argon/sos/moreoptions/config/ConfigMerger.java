@@ -1,14 +1,13 @@
 package com.github.argon.sos.moreoptions.config;
 
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.Metrics;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.Range;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.*;
 
@@ -168,6 +167,14 @@ public class ConfigMerger {
     }
 
     public static <T> List<T> replace(List<T> target, @Nullable List<T> source) {
+        if (source == null) {
+            return target;
+        }
+
+        return source;
+    }
+
+    public static <T> Set<T> replace(Set<T> target, @Nullable Set<T> source) {
         if (source == null) {
             return target;
         }
