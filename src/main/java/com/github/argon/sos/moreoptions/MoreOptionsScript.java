@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
+import com.github.argon.sos.moreoptions.i18n.Dictionary;
 import com.github.argon.sos.moreoptions.init.InitPhases;
 import com.github.argon.sos.moreoptions.init.Initializer;
 import com.github.argon.sos.moreoptions.log.Level;
@@ -106,7 +107,6 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 	public void initGameUiPresent() {
 		// initialize ui stuff
 		initializer.initGameUiPresent();
-
 		Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
 		// show backup dialog?
 		if (backupDialog != null) {

@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.builder.element;
 
-import com.github.argon.sos.moreoptions.Dictionary;
+import com.github.argon.sos.moreoptions.i18n.Dictionary;
 import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Tabulator;

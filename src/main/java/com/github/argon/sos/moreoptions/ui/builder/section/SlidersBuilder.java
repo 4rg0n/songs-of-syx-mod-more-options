@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.builder.section;
 
-import com.github.argon.sos.moreoptions.Dictionary;
+import com.github.argon.sos.moreoptions.i18n.Dictionary;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;

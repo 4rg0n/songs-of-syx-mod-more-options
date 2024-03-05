@@ -67,11 +67,27 @@ public class ReflectionUtil {
         }
     }
 
-    public static @Nullable  <T> Optional<T> getDeclaredFieldValue(String fieldName, Object instance) {
+    public static <T> Optional<T> getDeclaredFieldValue(String fieldName, Object instance) {
 
         //noinspection unchecked
         return getDeclaredField(fieldName, instance.getClass()).map(field ->
             (T) getDeclaredFieldValue(field, instance).orElse(null)
+        );
+    }
+
+    public static <T> Optional<T> getDeclaredFieldValue(String fieldName, Class<?> clazz) {
+
+        return getDeclaredField(fieldName, clazz).map(field -> {
+                field.setAccessible(true);
+                try {
+                    //noinspection unchecked
+                    return (T) field.get(null);
+                } catch (Exception e) {
+                    log.error("Can not access field %s in %s.",
+                        field.getName(), clazz.getSimpleName(), e);
+                    return null;
+                }
+            }
         );
     }
 

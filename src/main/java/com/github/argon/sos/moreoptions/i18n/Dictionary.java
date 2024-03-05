@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions;
+package com.github.argon.sos.moreoptions.i18n;
 
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBooster;

@@ -29,10 +29,10 @@ import java.util.Set;
  * Main window containing all other UI elements.
  * Will pop up in the middle of the game and pauses the game.
  */
-public class MoreOptionsPanel extends GuiSection implements
-    Showable<MoreOptionsPanel>,
-    Refreshable<MoreOptionsPanel>,
-    Valuable<MoreOptionsV2Config, MoreOptionsPanel> {
+public class MoreOptions extends GuiSection implements
+    Showable<MoreOptions>,
+    Refreshable<MoreOptions>,
+    Valuable<MoreOptionsV2Config, MoreOptions> {
 
     @Getter
     private final ConfigStore configStore;
@@ -72,8 +72,8 @@ public class MoreOptionsPanel extends GuiSection implements
     @Getter
     private final ButtonMenu<String> moreButtonMenu;
 
-    private Action<MoreOptionsPanel> showAction = o -> {};
-    private Action<MoreOptionsPanel> refreshAction = o -> {};
+    private Action<MoreOptions> showAction = o -> {};
+    private Action<MoreOptions> refreshAction = o -> {};
 
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
@@ -81,7 +81,7 @@ public class MoreOptionsPanel extends GuiSection implements
     /**
      * Builds the UI with given config
      */
-    public MoreOptionsPanel(
+    public MoreOptions(
         MoreOptionsV2Config config,
         ConfigStore configStore,
         List<BoostersPanel.Entry> boosterEntries,
@@ -252,7 +252,7 @@ public class MoreOptionsPanel extends GuiSection implements
     }
 
     @Override
-    public void showAction(Action<MoreOptionsPanel> showAction) {
+    public void showAction(Action<MoreOptions> showAction) {
         this.showAction = showAction;
     }
 
@@ -262,7 +262,7 @@ public class MoreOptionsPanel extends GuiSection implements
     }
 
     @Override
-    public void refreshAction(Action<MoreOptionsPanel> refreshAction) {
+    public void refreshAction(Action<MoreOptions> refreshAction) {
         this.refreshAction = refreshAction;
     }
 }

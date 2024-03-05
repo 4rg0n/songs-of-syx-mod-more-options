@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
 import com.github.argon.sos.moreoptions.ui.builder.element.*;
 import com.github.argon.sos.moreoptions.ui.builder.section.CheckboxesBuilder;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
  * Contains control elements for enabling and disabling game events.
  */
 public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Metrics, MetricsPanel>, Refreshable<MetricsPanel> {
+
+    private final static I18n i18n = I18n.get(MetricsPanel.class);
 
     private final Toggler<Boolean> onOffToggle;
     private final Slider collectionRate;
@@ -66,13 +69,13 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         Toggler<Boolean> toggler = new Toggler<>(Lists.of(
             UiInfo.<Boolean>builder()
                 .key(true)
-                .title("Started")
-                .description("Toggle and apply to start the collection and export of game metrics.")
+                .title(i18n.n("toggle.start"))
+                .description(i18n.d("toggle.start"))
                 .build(),
             UiInfo.<Boolean>builder()
                 .key(false)
-                .title("Stopped")
-                .description("Toggle and apply to stop the collection and export of game metrics.")
+                .title(i18n.n("toggle.stop"))
+                .description(i18n.d("toggle.stop"))
                 .build()
         ), 0, true, true, true);
         BuildResult<List<GuiSection>, List<Toggler<Boolean>>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(

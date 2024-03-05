@@ -46,7 +46,7 @@ public class UiFactory {
     /**
      * Generates More Options ui via available config
      */
-    public Modal<MoreOptionsPanel> buildMoreOptionsModal(String title, MoreOptionsV2Config config) {
+    public Modal<MoreOptions> buildMoreOptionsModal(String title, MoreOptionsV2Config config) {
         log.debug("Building '%s' ui", title);
 
         List<BoostersPanel.Entry> boosterEntries = uiMapper.mapToBoosterPanelEntries(config.getBoosters());
@@ -57,7 +57,7 @@ public class UiFactory {
         Path exportFolder = MetricExporter.EXPORT_FOLDER;
         Path exportFile = metricExporter.getExportFile();
 
-        Modal<MoreOptionsPanel> moreOptionsModal = new Modal<>(title, new MoreOptionsPanel(
+        Modal<MoreOptions> moreOptionsModal = new Modal<>(title, new MoreOptions(
             config,
             configStore,
             boosterEntries,

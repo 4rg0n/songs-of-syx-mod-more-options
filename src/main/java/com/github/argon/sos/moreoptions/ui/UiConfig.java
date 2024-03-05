@@ -95,10 +95,10 @@ public class UiConfig implements InitPhases {
 
     @Getter
     @Nullable
-    private Modal<MoreOptionsPanel> moreOptionsModal;
+    private Modal<MoreOptions> moreOptionsModal;
     @Getter
     @Nullable
-    private Modal<MoreOptionsPanel> backupMoreOptionsModal;
+    private Modal<MoreOptions> backupMoreOptionsModal;
     @Getter
     @Nullable
     private Modal<BackupDialog> backupDialog;
@@ -127,7 +127,7 @@ public class UiConfig implements InitPhases {
         }
     }
 
-    public void inject(Modal<MoreOptionsPanel> moreOptionsModal) {
+    public void inject(Modal<MoreOptions> moreOptionsModal) {
         log.debug("Injecting button into game ui");
         GButt.ButtPanel moreOptionsButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
             @Override
@@ -177,7 +177,7 @@ public class UiConfig implements InitPhases {
     /**
      * Debug commands are executable via the in game debug panel
      */
-    public void initDebugActions(Modal<MoreOptionsPanel> moreOptionsModal, ConfigStore configStore) {
+    public void initDebugActions(Modal<MoreOptions> moreOptionsModal, ConfigStore configStore) {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":show", moreOptionsModal::show);
         IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());
@@ -190,8 +190,8 @@ public class UiConfig implements InitPhases {
         });
     }
 
-    public void initActions(Modal<MoreOptionsPanel> moreOptionsModal) {
-        MoreOptionsPanel moreOptionsPanel = moreOptionsModal.getSection();
+    public void initActions(Modal<MoreOptions> moreOptionsModal) {
+        MoreOptions moreOptionsPanel = moreOptionsModal.getSection();
         initActions(moreOptionsModal, moreOptionsPanel);
 
         // METRICS
@@ -219,7 +219,7 @@ public class UiConfig implements InitPhases {
         });
     }
 
-    public void initActions(Modal<MoreOptionsPanel> moreOptionsModal, MoreOptionsPanel moreOptionsPanel) {
+    public void initActions(Modal<MoreOptions> moreOptionsModal, MoreOptions moreOptionsPanel) {
         // update Notificator queue when More Options Modal is rendered
         moreOptionsModal.renderAction((modal, seconds) -> notificator.update(seconds));
         moreOptionsModal.hideAction(modal -> notificator.close());
@@ -470,8 +470,8 @@ public class UiConfig implements InitPhases {
 
     public void initBackupActions(
         Modal<BackupDialog> backupDialog,
-        Modal<MoreOptionsPanel> backupMoreOptionsModal,
-        Modal<MoreOptionsPanel> moreOptionsModal,
+        Modal<MoreOptions> backupMoreOptionsModal,
+        Modal<MoreOptions> moreOptionsModal,
         MoreOptionsV2Config backupConfig
     ) {
         // Close: More Options modal with backup config
@@ -486,7 +486,7 @@ public class UiConfig implements InitPhases {
             backupDialog.show();
         });
 
-        MoreOptionsPanel moreOptionsPanel = backupMoreOptionsModal.getSection();
+        MoreOptions moreOptionsPanel = backupMoreOptionsModal.getSection();
 
         // Cancel & Undo
         Button cancelButton = moreOptionsPanel.getCancelButton();
@@ -584,7 +584,7 @@ public class UiConfig implements InitPhases {
         });
     }
 
-    private @Nullable MoreOptionsV2Config apply(MoreOptionsPanel moreOptionsPanel) {
+    private @Nullable MoreOptionsV2Config apply(MoreOptions moreOptionsPanel) {
         // only save when changes were made
         if (moreOptionsPanel.isDirty()) {
             MoreOptionsV2Config config = moreOptionsPanel.getValue();
@@ -612,7 +612,7 @@ public class UiConfig implements InitPhases {
         return null;
     }
 
-    private boolean applyAndSave(MoreOptionsPanel moreOptionsPanel) {
+    private boolean applyAndSave(MoreOptions moreOptionsPanel) {
         MoreOptionsV2Config appliedConfig = apply(moreOptionsPanel);
 
         if (appliedConfig != null) {
@@ -622,7 +622,7 @@ public class UiConfig implements InitPhases {
         return false;
     }
 
-    private void undo(MoreOptionsPanel moreOptionsPanel) {
+    private void undo(MoreOptions moreOptionsPanel) {
         MoreOptionsV2Config currentConfig = moreOptionsPanel.getConfigStore().getCurrentConfig();
         moreOptionsPanel.setValue(currentConfig);
     }

@@ -25,7 +25,8 @@ public class GameApis implements InitPhases {
         GameModApi.getInstance(),
         GameStatsApi.getInstance(),
         GameRaceApi.getInstance(),
-        GameSaveApi.getInstance()
+        GameSaveApi.getInstance(),
+        GameLangApi.getInstance()
     );
 
     @Accessors(fluent = true)
@@ -54,6 +55,9 @@ public class GameApis implements InitPhases {
 
     @Accessors(fluent = true)
     private final GameSaveApi save;
+
+    @Accessors(fluent = true)
+    private final GameLangApi lang;
 
     public void clear() {
         // game will initialize new instances of the cached class references on load

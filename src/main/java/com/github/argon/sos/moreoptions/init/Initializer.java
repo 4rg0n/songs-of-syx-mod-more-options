@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.init;
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.moreoptions.i18n.I18nMessages;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
@@ -32,7 +33,8 @@ public class Initializer implements InitPhases {
         MetricScheduler.getInstance(),
         MetricExporter.getInstance(),
         MoreOptionsConfigurator.getInstance(),
-        UiConfig.getInstance()
+        UiConfig.getInstance(),
+        I18nMessages.getInstance()
     );
     private final GameApis gameApis;
     private final ConfigStore configStore;
@@ -40,6 +42,7 @@ public class Initializer implements InitPhases {
     private final MetricExporter metricExporter;
     private final MoreOptionsConfigurator configurator;
     private final UiConfig uiConfig;
+    private final I18nMessages i18nMessages;
 
     @Override
     public void initGameUiPresent() {
@@ -60,6 +63,7 @@ public class Initializer implements InitPhases {
         gameApis.initBeforeGameCreated();
         configStore.initBeforeGameCreated();
         metricExporter.initBeforeGameCreated();
+        i18nMessages.initBeforeGameCreated();
     }
 
     @Override
