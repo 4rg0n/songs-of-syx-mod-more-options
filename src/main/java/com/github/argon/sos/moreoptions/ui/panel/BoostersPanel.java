@@ -66,7 +66,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
 
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
         BuildResult<Table<Integer>, Map<String, Tabulator<String, Slider, Integer>>> buildResult = BoosterSlidersBuilder.builder()
-            .displayHeight(600)
+            .displayHeight(500)
             .search(searchInput)
             .translate(boosterDefinitions)
             .build();

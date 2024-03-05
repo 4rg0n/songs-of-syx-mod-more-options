@@ -160,7 +160,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         // Export stats section
         SortedSet<String> sortedAvailableStats = Sets.sort(availableStats);
         BuildResult<Table<Boolean>, Map<String, Checkbox>> exportStats = CheckboxesBuilder.builder()
-            .displayHeight(400)
+            .displayHeight(300)
             .search(searchInput)
             .highlightColumns(true)
             .definitions(sortedAvailableStats.stream()
@@ -193,6 +193,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
             .evenOdd(true)
             .scrollable(false)
             .rows(rows)
+            .displayHeight(200)
             .build();
 
         addDownC(0, configTable);
@@ -200,7 +201,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         GHeader statsHeader = new GHeader("Game stats to export");
         statsHeader.hoverInfoSet("These stats will be written into the Export CSV File. " +
             "If you change any of them a new file will be created.");
-        addDownC(25, statsHeader);
+        addDownC(15, statsHeader);
         addDownC(10, searchBar);
         addDownC(15, statsSection);
 

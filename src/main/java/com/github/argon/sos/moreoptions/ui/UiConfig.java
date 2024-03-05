@@ -436,7 +436,7 @@ public class UiConfig implements InitPhases {
                     notificator.notifySuccess("Race config imported from clipboard.");
                 });
             } catch (Exception e) {
-                notificator.notifyError("Could not import races config to clipboard.", e);
+                notificator.notifyError("Could not import races config to clipboard.");
             }
         });
 

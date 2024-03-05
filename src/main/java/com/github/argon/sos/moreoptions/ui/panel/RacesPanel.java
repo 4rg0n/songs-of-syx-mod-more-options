@@ -18,7 +18,6 @@ import lombok.Getter;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
-import util.gui.misc.GHeader;
 import util.gui.misc.GInput;
 import util.gui.misc.GText;
 
@@ -93,7 +92,7 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
             .search(searchInput)
             .rowPadding(3)
             .rowsCategorized(raceLikingsRowMap)
-            .displayHeight(500)
+            .displayHeight(400)
             .build();
 
         // menu with buttons
@@ -115,18 +114,17 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
             .build();
 
         // header with info text
-        GHeader raceLikingsHeader = new GHeader("Race likings");
-        GText infoText = new GText(UI.FONT().S, "Races config is bound to the save game. " +
+        GuiSection searchBar = new GuiSection();
+        GText raceLikingsHeader = new GText(UI.FONT().H2,"Race likings");
+        searchBar.addRightC(0, raceLikingsHeader);
+        searchBar.addRightC(20, new GInput(searchInput));
+        searchBar.hoverInfoSet("Races config is bound to the save game. " +
             "A new game will start with vanilla game settings. " +
-            "You can load settings from other saves though.").color(COLOR.WHITE35);
-        infoText.setMaxWidth(500);
+            "You can load settings from other saves though.");
 
-        addDownC(10, buttonMenu);
-        addDownC(20, new HorizontalLine(body().width(), 1, 1));
-        addDownC(20, raceLikingsHeader);
-        addDownC(10, infoText);
-        addDownC(10, new GInput(searchInput));
-        addDownC(10, raceLikingsTable);
+        addDownC(20, buttonMenu);
+        addDownC(20, searchBar);
+        addDownC(20, raceLikingsTable);
     }
 
     @Override
