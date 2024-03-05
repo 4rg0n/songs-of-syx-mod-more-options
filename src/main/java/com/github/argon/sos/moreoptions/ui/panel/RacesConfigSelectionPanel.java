@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Spacer;
 import com.github.argon.sos.moreoptions.game.ui.Table;
+import com.github.argon.sos.moreoptions.ui.UiConfig;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
 import com.github.argon.sos.moreoptions.util.UiUtil;
@@ -25,14 +26,9 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static java.time.temporal.ChronoField.*;
 
 /**
  * For selecting a races config file from another save game.
@@ -41,20 +37,6 @@ public class RacesConfigSelectionPanel extends GuiSection {
 
     @Getter
     private final Table<Entry> racesConfigTable;
-
-    public static final DateTimeFormatter TIME_FORMAT;
-    static {
-        TIME_FORMAT = new DateTimeFormatterBuilder()
-            .append(DateTimeFormatter.ISO_LOCAL_DATE)
-            .appendLiteral(' ')
-            .appendValue(HOUR_OF_DAY, 2)
-            .appendLiteral(':')
-            .appendValue(MINUTE_OF_HOUR, 2)
-            .optionalStart()
-            .appendLiteral(':')
-            .appendValue(SECOND_OF_MINUTE, 2)
-            .toFormatter(Locale.getDefault());
-    }
 
     public RacesConfigSelectionPanel(List<Entry> raceConfigEntries, @Nullable Entry currentConfig) {
         // show modal with "empty" message
@@ -86,12 +68,12 @@ public class RacesConfigSelectionPanel extends GuiSection {
             saveFileGui.pad(5);
 
             // race config creation date
-            String creationDate = LocalDateTime.ofInstant(entry.getCreationDate(), ZoneOffset.UTC).format(TIME_FORMAT);
+            String creationDate = LocalDateTime.ofInstant(entry.getCreationDate(), ZoneOffset.UTC).format(UiConfig.TIME_FORMAT);
             GuiSection creationDateGui = UiUtil.toGuiSection(new GText(UI.FONT().S, creationDate));
             creationDateGui.pad(5);
 
             // race config update date
-            String updateDate = LocalDateTime.ofInstant(entry.getCreationDate(), ZoneOffset.UTC).format(TIME_FORMAT);
+            String updateDate = LocalDateTime.ofInstant(entry.getCreationDate(), ZoneOffset.UTC).format(UiConfig.TIME_FORMAT);
             GuiSection updateDateGui = UiUtil.toGuiSection(new GText(UI.FONT().S, updateDate).lablifySub());
             creationDateGui.pad(5);
 

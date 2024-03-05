@@ -1,9 +1,12 @@
 package com.github.argon.sos.moreoptions.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import snake2d.util.sets.LIST;
 
 import java.util.*;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Lists {
     public static <E> List<E> of() {
         return Collections.emptyList();

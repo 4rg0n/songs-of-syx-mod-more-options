@@ -12,8 +12,6 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
-import com.github.argon.sos.moreoptions.ui.UiFactory;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import snake2d.Errors;
 import util.info.INFO;
@@ -34,20 +32,12 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 
 	public final static INFO MOD_INFO = new INFO("More Options", "Adds more options to the game :)");
 
-	@Getter
 	private final ConfigStore configStore = ConfigStore.getInstance();
-	@Getter
 	private final MoreOptionsConfigurator configurator = MoreOptionsConfigurator.getInstance();
-	@Getter
 	private final GameApis gameApis = GameApis.getInstance();
 	private final Initializer initializer = Initializer.getInstance();
-
-	@Getter
 	private final Dictionary dictionary = Dictionary.getInstance();
-
-	@Getter
 	private final UiConfig uiConfig = UiConfig.getInstance();
-	private final UiFactory uiFactory = UiFactory.getInstance();
 
 	private Instance instance;
 
@@ -71,7 +61,7 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 	public void initBeforeGameCreated() {
 		initializer.initBeforeGameCreated();
 
-		// determine log level
+		// determine and set log level
 		String logLevelName = System.getenv("MO.LOG_LEVEL");
 		Level level = Optional.ofNullable(logLevelName)
 			.flatMap(Level::fromName)
@@ -99,14 +89,6 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 		if (instance == null) {
 			initCreateInstance();
 			log.debug("Creating Mod Instance");
-
-			// try to get current config and merge with defaults; or use whole defaults
-			MoreOptionsV2Config config = configStore.getCurrentConfig();
-
-			// add description from game boosters
-			gameApis.booster().getBoosters()
-				.values().forEach(moreOptionsBoosters -> dictionary.add(moreOptionsBoosters.getAdd()));
-
 			instance = new Instance(this);
 		}
 
@@ -122,6 +104,7 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 
 	@Override
 	public void initGameUiPresent() {
+		// initialize ui stuff
 		initializer.initGameUiPresent();
 
 		Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();

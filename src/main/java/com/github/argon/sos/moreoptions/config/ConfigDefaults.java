@@ -29,87 +29,6 @@ public class ConfigDefaults {
 
     private final GameApis gameApis;
 
-    public static MoreOptionsV2Config.Range boosterAdd() {
-        return MoreOptionsV2Config.Range.builder()
-            .value(0)
-            .min(0)
-            .max(10000)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
-            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
-            .build();
-    }
-
-    public static MoreOptionsV2Config.Range boosterMulti() {
-        return MoreOptionsV2Config.Range.builder()
-            .value(100)
-            .min(1)
-            .max(10000)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.MULTI)
-            .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
-            .build();
-    }
-
-    public static MoreOptionsV2Config.Metrics metrics() {
-        return MoreOptionsV2Config.Metrics.builder().build();
-    }
-
-    public static MoreOptionsV2Config.Range raceLiking() {
-        return MoreOptionsV2Config.Range.builder()
-            .min(0)
-            .max(100)
-            .value(0)
-            .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.MULTI)
-            .build();
-    }
-
-    public static MoreOptionsV2Config.Range metricCollectionRate() {
-        return MoreOptionsV2Config.Range.builder()
-            .min(5)
-            .value(15)
-            .max(600)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
-            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
-            .build();
-    }
-
-    public static MoreOptionsV2Config.Range metricExportRate() {
-        return MoreOptionsV2Config.Range.builder()
-            .min(5)
-            .value(15)
-            .max(600)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
-            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
-            .build();
-    }
-
-    public static MoreOptionsV2Config.Range weather() {
-        return MoreOptionsV2Config.Range.builder()
-                .value(100)
-                .min(0)
-                .max(100)
-                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
-                .build();
-    }
-
-    public static MoreOptionsV2Config.Range sound() {
-        return MoreOptionsV2Config.Range.builder()
-                .value(100)
-                .min(0)
-                .max(100)
-                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
-                .build();
-    }
-
-    public static MoreOptionsV2Config.Range eventChance() {
-        return MoreOptionsV2Config.Range.builder()
-                .value(100)
-                .min(0)
-                .max(10000)
-                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
-                .build();
-    }
-
     public MoreOptionsV2Config newDefaultConfig() {
         log.debug("Creating new default config");
         // Boosters
@@ -191,5 +110,86 @@ public class ConfigDefaults {
 
         log.trace("Default config: %s", defaultConfig);
         return defaultConfig;
+    }
+
+    public static MoreOptionsV2Config.Range boosterAdd() {
+        return MoreOptionsV2Config.Range.builder()
+            .value(0)
+            .min(0)
+            .max(10000)
+            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
+            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
+            .build();
+    }
+
+    public static MoreOptionsV2Config.Range boosterMulti() {
+        return MoreOptionsV2Config.Range.builder()
+            .value(100)
+            .min(1)
+            .max(10000)
+            .applyMode(MoreOptionsV2Config.Range.ApplyMode.MULTI)
+            .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
+            .build();
+    }
+
+    public static MoreOptionsV2Config.Metrics metrics() {
+        return MoreOptionsV2Config.Metrics.builder().build();
+    }
+
+    public static MoreOptionsV2Config.Range raceLiking() {
+        return MoreOptionsV2Config.Range.builder()
+            .min(0)
+            .max(100)
+            .value(0)
+            .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
+            .applyMode(MoreOptionsV2Config.Range.ApplyMode.MULTI)
+            .build();
+    }
+
+    public static MoreOptionsV2Config.Range metricCollectionRate() {
+        return MoreOptionsV2Config.Range.builder()
+            .min(5)
+            .value(15)
+            .max(600)
+            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
+            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
+            .build();
+    }
+
+    public static MoreOptionsV2Config.Range metricExportRate() {
+        return MoreOptionsV2Config.Range.builder()
+            .min(5)
+            .value(15)
+            .max(600)
+            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
+            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
+            .build();
+    }
+
+    public static MoreOptionsV2Config.Range weather() {
+        return MoreOptionsV2Config.Range.builder()
+                .value(100)
+                .min(0)
+                .max(100)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
+                .build();
+    }
+
+    public static MoreOptionsV2Config.Range sound() {
+        return MoreOptionsV2Config.Range.builder()
+                .value(100)
+                .min(0)
+                .max(100)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
+                .build();
+    }
+
+    public static MoreOptionsV2Config.Range eventChance() {
+        return MoreOptionsV2Config.Range.builder()
+                .value(100)
+                .min(0)
+                .max(10000)
+                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
+                .build();
     }
 }

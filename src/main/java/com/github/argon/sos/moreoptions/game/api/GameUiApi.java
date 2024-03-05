@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.game.GameUiNotAvailableException;
 import com.github.argon.sos.moreoptions.game.ui.NonHidingPopup;
 import com.github.argon.sos.moreoptions.game.ui.NotificationPopup;
 import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.init.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
@@ -40,13 +40,13 @@ public class GameUiApi implements InitPhases {
     /**
      * Contains the settlements ui elements
      *
-     * @throws GameUiNotAvailableException when ui isn't initialized yet
+     * @throws UninitializedException when ui isn't initialized yet
      */
     public SettView settlement() {
         SettView settView = VIEW.s();
 
         if (settView == null) {
-            throw new GameUiNotAvailableException("Games settlement ui isn't initialized yet.");
+            throw new UninitializedException("Games settlement ui isn't initialized yet.");
         }
 
         return settView;
@@ -56,7 +56,7 @@ public class GameUiApi implements InitPhases {
         WorldView worldView = VIEW.world();
 
         if (worldView == null) {
-            throw new GameUiNotAvailableException("Games world ui isn't initialized yet.");
+            throw new UninitializedException("Games world ui isn't initialized yet.");
         }
 
         return worldView;
@@ -87,13 +87,13 @@ public class GameUiApi implements InitPhases {
     /**
      * Contains UIs like a yes/no prompt or a text input
      *
-     * @throws GameUiNotAvailableException when ui isn't initialized yet
+     * @throws UninitializedException when ui isn't initialized yet
      */
     public Interrupters interrupters() {
         Interrupters interrupters = VIEW.inters();
 
         if (interrupters == null) {
-            throw new GameUiNotAvailableException("Games interrupt ui isn't initialized yet.");
+            throw new UninitializedException("Games interrupt ui isn't initialized yet.");
         }
 
         return interrupters;

@@ -28,6 +28,9 @@ public class UiUtil {
             }
     }
 
+    /**
+     * @return width of widest ui element in list
+     */
     public static int getMaxWidth(Collection<? extends RENDEROBJ> renderobjs) {
         int maxWidth = 0;
 
@@ -42,6 +45,9 @@ public class UiUtil {
         return maxWidth;
     }
 
+    /**
+     * @return width of widest ui element in a column row
+     */
     public static <T> int getMaxColumnWidth(Collection<ColumnRow<T>> columnRows) {
         int maxWidth = 0;
         for (ColumnRow<T> columnRow : columnRows) {
@@ -55,6 +61,9 @@ public class UiUtil {
         return maxWidth;
     }
 
+    /**
+     * @return list of widths of the widest column in each row
+     */
     public static <Value> List<Integer> getMaxColumnWidths(Collection<ColumnRow<Value>> columnRows) {
         List<Integer> columnWidths = new ArrayList<>();
 

@@ -9,6 +9,9 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.Optional;
 
+/**
+ * For reading and writing to the OS clipboard
+ */
 public class Clipboard {
 
     private final static Logger log = Loggers.getLogger(Clipboard.class);

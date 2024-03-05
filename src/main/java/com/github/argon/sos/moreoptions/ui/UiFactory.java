@@ -43,10 +43,7 @@ public class UiFactory {
     private final UiMapper uiMapper;
 
     /**
-     * Generates UI with available config.
-     * Adds config modal buttons functionality.
-     *
-     * @param config used to generate the UI
+     * Generates More Options ui via available config
      */
     public Modal<MoreOptionsPanel> buildMoreOptionsModal(String title, MoreOptionsV2Config config) {
         log.debug("Building '%s' ui", title);
@@ -74,6 +71,9 @@ public class UiFactory {
         return moreOptionsModal;
     }
 
+    /**
+     * Generates race config selection window
+     */
     public Window<RacesConfigSelectionPanel> buildRacesConfigSelection(String title) {
         log.debug("Building '%s' ui", title);
         RacesConfigSelectionPanel.Entry current = null;
@@ -90,10 +90,14 @@ public class UiFactory {
                 .updateDate(configMeta.getUpdateTime())
                 .saveFile(saveFile)
                 .build();
-
             SaveFile currentFile = gameApis.save().getCurrentFile();
 
-            if (saveFile != null && currentFile != null && saveFile.fullName.equals(currentFile.fullName)) {
+            // is the file the currently active one?
+            if (current == null && (
+                saveFile != null &&
+                currentFile != null &&
+                saveFile.fullName.equals(currentFile.fullName)
+            )) {
                 current = entry;
             }
 

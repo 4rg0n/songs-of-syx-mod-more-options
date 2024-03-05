@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.Dictionary;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
-import com.github.argon.sos.moreoptions.game.api.GameSaveApi;
+import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.init.InitPhases;
 import com.github.argon.sos.moreoptions.init.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -26,6 +26,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Handles loading and saving of {@link MoreOptionsV2Config} data and also {@link Dictionary} data
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigStore implements InitPhases {
     private final static Logger log = Loggers.getLogger(ConfigStore.class);
@@ -35,7 +38,7 @@ public class ConfigStore implements InitPhases {
         ConfigService.getInstance(),
         Dictionary.getInstance(),
         ConfigDefaults.getInstance(),
-        GameSaveApi.getInstance()
+        GameApis.getInstance()
     );
 
     /**
@@ -52,7 +55,7 @@ public class ConfigStore implements InitPhases {
     @Getter
     private final Dictionary dictionary;
     private final ConfigDefaults configDefaults;
-    private final GameSaveApi saveApi;
+    private final GameApis gameApis;
 
     @Nullable
     private MoreOptionsV2Config.Meta metaInfo;
@@ -92,6 +95,10 @@ public class ConfigStore implements InitPhases {
         if (currentConfig == null) {
             setCurrentConfig(config);
         }
+
+        // add description from game boosters
+        gameApis.booster().getBoosters()
+            .values().forEach(moreOptionsBoosters -> dictionary.add(moreOptionsBoosters.getAdd()));
 
         // detect version change in config
         getMetaInfo().ifPresent(meta -> {
@@ -293,7 +300,7 @@ public class ConfigStore implements InitPhases {
     }
 
     public Path racesConfigPath() {
-        String saveStamp = saveApi.getSaveStamp();
+        String saveStamp = gameApis.save().getSaveStamp();
         return RACES_CONFIG_PATH.resolve(saveStamp + RACES_CONFIG_FILE_PREFIX + ".txt");
     }
 

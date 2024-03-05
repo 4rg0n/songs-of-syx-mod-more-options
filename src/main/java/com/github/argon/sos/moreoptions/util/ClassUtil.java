@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.util;
 
+import org.jetbrains.annotations.Nullable;
+
 public class ClassUtil {
     public static boolean instanceOf(Object object, Class<?> clazz) {
         return instanceOf(object.getClass(), clazz);
@@ -9,11 +11,7 @@ public class ClassUtil {
         return instanceOf(object.getClass(), otherObject.getClass());
     }
 
-    /**
-     * @param clazz nullable
-     * @param otherClazz nullable
-     */
-    public static boolean instanceOf(Class<?> clazz, Class<?> otherClazz) {
+    public static boolean instanceOf(@Nullable Class<?> clazz, @Nullable Class<?> otherClazz) {
         if (clazz == null && otherClazz == null) {
             return true;
         }

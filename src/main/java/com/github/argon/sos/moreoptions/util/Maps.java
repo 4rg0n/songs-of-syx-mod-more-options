@@ -1,10 +1,14 @@
 package com.github.argon.sos.moreoptions.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Maps {
     public static <K, V> Map<K, V> of() {
         return Collections.emptyMap();

@@ -178,8 +178,10 @@ public class MoreOptionsV2Config {
                 switch (valueDisplay) {
                     case ABSOLUTE:
                         return ApplyMode.ADD;
-                    default: // todo this is flaky ValueDisplay.PERCENTAGE will always map to MULTI
+
+                    case PERCENTAGE:  // todo this is flaky ValueDisplay.PERCENTAGE will always map to MULTI
                     case NONE:
+                    default:
                         return ApplyMode.MULTI;
                 }
             }

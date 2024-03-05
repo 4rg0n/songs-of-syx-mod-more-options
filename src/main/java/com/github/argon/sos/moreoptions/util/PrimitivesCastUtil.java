@@ -3,11 +3,14 @@ package com.github.argon.sos.moreoptions.util;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PrimitivesCastUtil {
 
     private final static Logger log = Loggers.getLogger(PrimitivesCastUtil.class);
