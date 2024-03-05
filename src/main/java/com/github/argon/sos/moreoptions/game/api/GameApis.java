@@ -60,6 +60,7 @@ public class GameApis implements InitPhases {
     private final GameLangApi lang;
 
     public void clear() {
+        // todo need to verify again...
         // game will initialize new instances of the cached class references on load
         events().clearCached();
         sounds().clearCached();
