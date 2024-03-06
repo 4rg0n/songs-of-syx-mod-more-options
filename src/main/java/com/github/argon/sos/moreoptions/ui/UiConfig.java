@@ -20,7 +20,7 @@ import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.ui.panel.MetricsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.RacesConfigSelectionPanel;
+import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
@@ -442,11 +442,11 @@ public class UiConfig implements InitPhases {
 
         // Opens selection of race config files to load
         racesPanel.getLoadButton().clickActionSet(() -> {
-            Window<RacesConfigSelectionPanel> racesConfigsSelection = uiFactory.buildRacesConfigSelection("Select a file");
+            Window<RacesSelectionPanel> racesConfigsSelection = uiFactory.buildRacesConfigSelection("Select a file");
             // load from race config file on doubleclick
             racesConfigsSelection.getSection().getRacesConfigTable().doubleClickAction(row -> {
                 try {
-                    RacesConfigSelectionPanel.Entry entry = row.getValue();
+                    RacesSelectionPanel.Entry entry = row.getValue();
                     Path configPath = entry.getConfigPath();
                     MoreOptionsV2Config.RacesConfig racesConfig = configStore.loadRaceConfig(configPath).orElse(null);
 

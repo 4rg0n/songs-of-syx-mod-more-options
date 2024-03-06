@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Spacer;
 import com.github.argon.sos.moreoptions.game.ui.Table;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
@@ -33,18 +34,20 @@ import java.util.stream.Collectors;
 /**
  * For selecting a races config file from another save game.
  */
-public class RacesConfigSelectionPanel extends GuiSection {
+public class RacesSelectionPanel extends GuiSection {
+
+    private final static I18n i18n = I18n.get(RacesSelectionPanel.class);
 
     @Getter
     private final Table<Entry> racesConfigTable;
 
-    public RacesConfigSelectionPanel(List<Entry> raceConfigEntries, @Nullable Entry currentConfig) {
+    public RacesSelectionPanel(List<Entry> raceConfigEntries, @Nullable Entry currentConfig) {
         // show modal with "empty" message
         if (raceConfigEntries.isEmpty()) {
             racesConfigTable = Table.<Entry>builder()
                 .rows(Lists.of())
                 .build();
-            addDownC(0, new GText(UI.FONT().H2, "Nothing there to load :("));
+            addDownC(0, new GText(UI.FONT().H2, i18n.d("nothing")));
             return;
         }
 
@@ -82,7 +85,7 @@ public class RacesConfigSelectionPanel extends GuiSection {
             GuiSection activeMarker;
             if (currentConfig != null && currentConfig.getConfigPath().equals(entry.getConfigPath())) {
                 activeMarker = UiUtil.toGuiSection(activeMarkerIcon);
-                activeMarker.hoverInfoSet("Currently active races config.");
+                activeMarker.hoverInfoSet(i18n.d("marker.active"));
             } else {
                 activeMarker = UiUtil.toGuiSection(new Spacer(
                     activeMarkerIcon.width(),
@@ -95,24 +98,23 @@ public class RacesConfigSelectionPanel extends GuiSection {
                 .columns(columns)
                 .searchTerm(fileName)
                 .highlightable(true)
-                .columns(columns)
                 .build();
             row.setValue(entry);
-
+            row.hoverInfoSet(i18n.d("text.select"));
             return row;
         }).collect(Collectors.toList());
 
         // header for table columns
         Map<String, Button> header = Maps.ofLinked(
-            "name", new Button("Config File", "Name of the races config file.").bg(COLOR.WHITE15),
-            "save", new Button("Save", "Name of the game save.").bg(COLOR.WHITE15),
-            "active", new Button("Active", "Whether this is the active loaded races config.").bg(COLOR.WHITE15),
-            "created", new Button("Created", "Creation date of races config.").bg(COLOR.WHITE15),
-            "updated", new Button("Updated", "Last updated date of races config.").bg(COLOR.WHITE15)
+            "file", new Button(i18n.n("table.file"), i18n.d("table.file")).bg(COLOR.WHITE15),
+            "save", new Button(i18n.n("table.save"), i18n.d("table.save")).bg(COLOR.WHITE15),
+            "active", new Button(i18n.n("table.active"), i18n.d("table.active")).bg(COLOR.WHITE15),
+            "created", new Button(i18n.n("table.created"), i18n.d("table.created")).bg(COLOR.WHITE15),
+            "updated", new Button(i18n.n("table.updated"), i18n.d("table.updated")).bg(COLOR.WHITE15)
         );
 
         // race config table and search
-        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
+        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.n("search.input"));
         racesConfigTable = Table.<Entry>builder()
             .evenOdd(true)
             .scrollable(true)
@@ -125,7 +127,6 @@ public class RacesConfigSelectionPanel extends GuiSection {
             .build();
 
         addDownC(0, new GInput(searchInput));
-        addDownC(10, new GText(UI.FONT().S, "Doubleclick to load a races config from file.").color(COLOR.WHITE35));
         addDownC(10, racesConfigTable);
     }
 

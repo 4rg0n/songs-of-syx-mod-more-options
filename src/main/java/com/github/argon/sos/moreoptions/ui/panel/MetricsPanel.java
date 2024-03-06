@@ -5,9 +5,6 @@ import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
-import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
-import com.github.argon.sos.moreoptions.ui.builder.element.*;
-import com.github.argon.sos.moreoptions.ui.builder.section.CheckboxesBuilder;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Sets;
 import init.sprite.UI.UI;
@@ -16,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
-import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GHeader;
 import util.gui.misc.GInput;
@@ -78,118 +74,115 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
                 .description(i18n.d("toggle.stop"))
                 .build()
         ), 0, true, true, true);
-        BuildResult<List<GuiSection>, List<Toggler<Boolean>>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(
-            LabeledBuilder.Definition.<Toggler<Boolean>>builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key("ui.moreOptions.metrics.toggle")
-                    .build())
-                .element(toggler)
-                .build()
-        ).build();
+        ColumnRow<Void> onOffToggleRow = ColumnRow.<Void>builder()
+            .column(Label.builder()
+                .name(i18n.n("toggle.label"))
+                .description(i18n.d("toggle.label"))
+                .build())
+            .column(toggler)
+            .build();
 
         // Collection rate slider
-        this.collectionRate = SliderBuilder.builder().definition(
-            SliderBuilder.Definition
-                .fromRange(metricsConfig.getCollectionRateSeconds())
-                .maxWidth(200)
-                .build()
-        ).build().getResult();
-        BuildResult<List<GuiSection>, List<RENDEROBJ>> collectionRate = LabeledBuilder.builder()
-            .definition(LabeledBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key("ui.moreOptions.metrics.collection-rate-seconds")
-                    .build())
-                .element(this.collectionRate)
-                .element(new GTextR(UI.FONT().S, "Seconds"))
+        this.collectionRate = Slider.SliderBuilder
+            .fromRange(metricsConfig.getCollectionRateSeconds())
+            .input(true)
+            .width(200)
+            .build();
+        ColumnRow<Void> collectionRateRow = ColumnRow.<Void>builder()
+            .column(Label.builder()
+                .name(i18n.n("collectionRate.label"))
+                .description(i18n.d("collectionRate.label"))
                 .build())
+            .column(collectionRate)
+            .column(new GTextR(UI.FONT().S, "Seconds"))
             .build();
 
         // Export rate slider
-        this.exportRate = SliderBuilder.builder().definition(
-            SliderBuilder.Definition
-                .fromRange(metricsConfig.getExportRateMinutes())
-                .maxWidth(200)
-                .build()
-        ).build().getResult();
-        BuildResult<List<GuiSection>, List<RENDEROBJ>> exportRate = LabeledBuilder.builder()
-            .definition(LabeledBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key("ui.moreOptions.metrics.export-rate-minutes")
-                    .build())
-                .element(this.exportRate)
-                .element(new GTextR(UI.FONT().S, "Minutes"))
-                .build())
+        this.exportRate = Slider.SliderBuilder
+            .fromRange(metricsConfig.getExportRateMinutes())
+            .input(true)
+            .width(200)
             .build();
+        ColumnRow<Void> exportRateRow = ColumnRow.<Void>builder()
+            .column(Label.builder()
+                .name(i18n.n("exportRate.label"))
+                .description(i18n.d("exportRate.label"))
+                .build())
+            .column(exportRate)
+            .column(new GTextR(UI.FONT().S, "Minutes"))
+            .build();
+
 
         GuiSection exportFilePathSection = exportFilePath(exportFolderPath.toString(), exportFilePath.getFileName().toString());
 
         // Export file path with folder button
         this.exportFilePathView = new UISwitcher(exportFilePathSection, false);
-        this.exportFolderButton = new Button("Folder", "Opens the metrics export folder: " + exportFolderPath);
-        this.copyExportFileButton = new Button("Copy", "Copies export file path to clipboard.");
+        this.exportFolderButton = new Button(i18n.n("button.folder"), i18n.d("button.folder", exportFolderPath));
+        this.copyExportFileButton = new Button(i18n.n("button.copy"), i18n.d("button.copy"));
 
         GuiSection exportButtons = new GuiSection();
         exportButtons.addRightC(0, exportFolderButton);
         exportButtons.addRightC(0, copyExportFileButton);
 
-        BuildResult<List<GuiSection>, List<RENDEROBJ>> exportFile = LabeledBuilder.builder().translate(
-            LabeledBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key("ui.moreOptions.metrics.export-file")
-                    .build())
-                .element(this.exportFilePathView)
-                .element(exportButtons)
-                .build()
-        ).build();
+        ColumnRow<Void> exportFileRow = ColumnRow.<Void>builder()
+            .column(Label.builder()
+                .name(i18n.n("exportFile.label"))
+                .description(i18n.d("exportFile.label"))
+                .build())
+            .column(exportFilePathView)
+            .column(exportButtons)
+            .build();
 
         // Search Bar with uncheck and check buttons
         GuiSection searchBar = new GuiSection();
-        this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
+        this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.n("search.input"));
         searchBar.addRightC(0, new GInput(searchInput));
         this.searchToggler = new Toggler<>(Lists.of(
             UiInfo.<Boolean>builder()
                 .key(true)
-                .title("Check")
-                .description("Checks all found stats")
+                .title(i18n.n("search.check"))
+                .description(i18n.d("search.check"))
                 .build(),
             UiInfo.<Boolean>builder()
                 .key(false)
-                .title("Uncheck")
-                .description("Unchecks all found stats")
+                .title(i18n.n("search.uncheck"))
+                .description(i18n.d("search.uncheck"))
                 .build()
         ),0, true, true, false);
         searchBar.addRightC(10, searchToggler);
 
         // Export stats section
         SortedSet<String> sortedAvailableStats = Sets.sort(availableStats);
-        BuildResult<Table<Boolean>, Map<String, Checkbox>> exportStats = CheckboxesBuilder.builder()
+        List<ColumnRow<Boolean>> statRows = sortedAvailableStats.stream().map(statName -> {
+            Checkbox checkbox = new Checkbox(metricsConfig.getStats().isEmpty() || metricsConfig.getStats().contains(statName));
+
+            this.statsCheckboxes.put(statName, checkbox);
+            return ColumnRow.<Boolean>builder()
+                .searchTerm(statName)
+                .column(Label.builder()
+                    .font(UI.FONT().S)
+                    .name(statName)
+                    .build())
+                .column(checkbox)
+                .build();
+        }).collect(Collectors.toList());
+
+        Table<Boolean> exportStats = Table.<Boolean>builder()
+            .evenOdd(true)
             .displayHeight(300)
             .search(searchInput)
-            .highlightColumns(true)
-            .definitions(sortedAvailableStats.stream()
-                .collect(Collectors.toMap(
-                    s -> s,
-                    s -> LabeledCheckboxBuilder.Definition.builder()
-                        .labelDefinition(LabelBuilder.Definition.builder()
-                            .font(UI.FONT().S)
-                            .title(s)
-                            .build())
-                        .checkboxDefinition(CheckboxBuilder.Definition.builder()
-                            .enabled(metricsConfig.getStats().isEmpty() || metricsConfig.getStats().contains(s))
-                            .build())
-                        .build())))
+            .rows(statRows)
             .build();
 
-        this.statsSection = new UISwitcher(exportStats.getResult(), true);
-        this.statsCheckboxes.putAll(exportStats.getInteractable());
-        this.onOffToggle = onOffToggle.getInteractable().get(0);
+        this.statsSection = new UISwitcher(exportStats, true);
+        this.onOffToggle = toggler;
         this.onOffToggle.toggle(metricsConfig.isEnabled());
 
         List<ColumnRow<Void>> rows = Lists.of(
-            onOffToggle.<Void>toColumnRow().getResult(),
-            exportFile.<Void>toColumnRow().getResult(),
-            collectionRate.<Void>toColumnRow().getResult(),
-            exportRate.<Void>toColumnRow().getResult()
+            onOffToggleRow,
+            exportFileRow,
+            collectionRateRow,
+            exportRateRow
         );
 
         Table<Void> configTable = Table.<Void>builder()
@@ -199,18 +192,17 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
             .displayHeight(200)
             .build();
 
-        addDownC(0, configTable);
+        GHeader statsHeader = new GHeader(i18n.n("stats.header"));
+        statsHeader.hoverInfoSet(i18n.d("stats.header"));
 
-        GHeader statsHeader = new GHeader("Game stats to export");
-        statsHeader.hoverInfoSet("These stats will be written into the Export CSV File. " +
-            "If you change any of them a new file will be created.");
+        addDownC(0, configTable);
         addDownC(15, statsHeader);
         addDownC(10, searchBar);
         addDownC(15, statsSection);
 
         // Actions
         searchToggler.clickAction(aBoolean -> {
-            List<String> resultList = exportStats.getResult()
+            List<String> resultList = exportStats
                 .search(searchInput.text().toString());
             resultList.forEach(result -> statsCheckboxes.get(result).setValue(aBoolean));
         });

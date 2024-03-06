@@ -210,7 +210,9 @@ public class Table<Value> extends GuiSection implements
                 GHeader header = new GHeader(categoryTitle, UI.FONT().H2);
                 GuiSection headerSection = UiUtil.toGuiSection(header);
                 headerSection.pad(10);
-                ColumnRow<Value> headerRow = new ColumnRow<>(Lists.of(headerSection));
+                ColumnRow<Value> headerRow = ColumnRow.<Value>builder()
+                    .columns(Lists.of(headerSection))
+                    .build();
                 headerRow.isHeader(true);
                 columnRows.add(headerRow);
                 columnRows.addAll(innerRows);
@@ -222,7 +224,11 @@ public class Table<Value> extends GuiSection implements
 
         public TableBuilder<Value> rowsWithColumns(List<List<GuiSection>> rows) {
             this.rows = rows.stream()
-                .map(ColumnRow<Value>::new)
+                .map((List<GuiSection> row) -> {
+                    return ColumnRow.<Value>builder()
+                        .columns(row)
+                        .build();
+                })
                 .collect(Collectors.toList());
 
             return this;

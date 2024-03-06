@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.util;
 
+import com.github.argon.sos.moreoptions.log.Logger;
+import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -7,10 +9,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StringUtil {
+
+    private final static Logger log = Loggers.getLogger(StringUtil.class);
 
     public static String toString(Object[] objects) {
         return Arrays.toString(objects);
@@ -158,5 +164,55 @@ public class StringUtil {
         }
 
         return text.replaceAll("\\B([A-Z])", "_$1").toUpperCase();
+    }
+
+    /**
+     * Replaces tokens like {0} {1} etc. in a string with the given argument on that place
+     */
+    public static String replaceTokens(String template, Object... args) {
+        // nothing to replace with?
+        if (args.length == 0) {
+            return template;
+        }
+
+        // nothing to replace?
+        if (!template.contains("{")) {
+            return template;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0, argsLength = args.length; i < argsLength; i++) {
+            stringBuilder.append(i);
+            if (i != argsLength - 1) {
+                stringBuilder.append("|");
+            }
+        }
+
+        String patternString = stringBuilder.toString();
+        Pattern pattern = Pattern.compile("\\{(" + patternString + ")}");
+        Matcher matcher = pattern.matcher(template);
+        StringBuffer stringBuffer = new StringBuffer();
+
+        try {
+            while(matcher.find()) {
+                int argsIndex = Integer.parseInt(matcher.group(1));
+
+                // no arg for this index / token?
+                if (argsIndex > args.length - 1) {
+                    continue;
+                }
+
+                String value = stringifyValue(args[argsIndex]);
+                matcher.appendReplacement(stringBuffer, value);
+            }
+            matcher.appendTail(stringBuffer);
+
+            return stringBuffer.toString();
+        } catch (Exception e) {
+            log.debug("Could not replace tokens in: %s", template);
+            log.trace("", e);
+        }
+
+        return template;
     }
 }

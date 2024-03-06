@@ -2,10 +2,9 @@ package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
-import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
 import com.github.argon.sos.moreoptions.util.UiUtil;
@@ -33,6 +32,8 @@ import java.util.stream.Collectors;
 public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Config.RacesConfig, RacesPanel> {
     private static final Logger log = Loggers.getLogger(RacesPanel.class);
 
+    private final static I18n i18n = I18n.get(RacesPanel.class);
+
     private final Map<String, Slider> likingsSliders = new HashMap<>();
     private final static String RACE_SEPARATOR = "~";
 
@@ -49,7 +50,8 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
 
     public RacesPanel(Map<String, List<Entry>> raceEntries) {
         // Race Likings rows for table
-        Map<String, List<ColumnRow<Integer>>> raceLikingsRowMap = raceEntries.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+        Map<String, List<ColumnRow<Integer>>> raceLikingsRowMap = raceEntries.entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey,
             mapEntry -> mapEntry.getValue().stream().map(entry -> {
                 Race race = entry.getRace();
                 Race otherRace = entry.getOtherRace();
@@ -62,22 +64,21 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
                 otherRaceIcon.hoverInfoSet(otherRace.info.name);
 
                 // Likings Slider
-                BuildResult<Slider, Slider> likingsSliderResult = SliderBuilder.builder().definition(SliderBuilder.Definition
+                Slider likingsSlider = Slider.SliderBuilder
                     .fromRange(range)
-                    .maxWidth(300)
+                    .width(300)
+                    .input(true)
+                    .lockScroll(true)
                     .threshold(0, COLOR.RED100.shade(0.5d))
                     .threshold((int) (0.25 * range.getMax()), COLOR.YELLOW100.shade(0.5d))
                     .threshold((int) (0.50 * range.getMax()), COLOR.ORANGE100.shade(0.5d))
                     .threshold((int) (0.75 * range.getMax()), COLOR.GREEN100.shade(0.5d))
-                    .build()
-                ).build();
+                    .build();
 
-                Slider slider = likingsSliderResult.getResult();
-                likingsSliders.put(key(race, otherRace), slider);
-                List<GuiSection> columns = Lists.of(raceIcon, slider, otherRaceIcon);
+                likingsSliders.put(key(race, otherRace), likingsSlider);
+                List<GuiSection> columns = Lists.of(raceIcon, likingsSlider, otherRaceIcon);
 
                 return ColumnRow.<Integer>builder()
-                    .columns(columns)
                     .searchTerm(term(race, otherRace))
                     .highlightable(true)
                     .columns(columns)
@@ -85,22 +86,22 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
             }).collect(Collectors.toList())));
 
         // Race Likings table with search
-        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
+        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.n("search.input"));
         Table<Integer> raceLikingsTable = Table.<Integer>builder()
             .evenOdd(true)
             .scrollable(true)
             .search(searchInput)
-            .rowPadding(3)
+            .rowPadding(5)
             .rowsCategorized(raceLikingsRowMap)
             .displayHeight(400)
             .build();
 
         // menu with buttons
-        this.folderButton = new Button("Folder", "Opens the folder containing the races configs.");
-        this.fileButton = new Button("File", "Opens the current used race config file.");
-        this.loadButton = new Button("Load", "Load races config from another save game.");
-        this.exportButton = new Button("Export", "Copy current races config from ui into clipboard.");
-        this.importButton = new Button("Import", "Applies races config from clipboard to ui.");
+        this.folderButton = new Button(i18n.n("button.folder"), i18n.d("button.folder"));
+        this.fileButton = new Button(i18n.n("button.file"), i18n.d("button.file"));
+        this.loadButton = new Button(i18n.n("button.load"), i18n.d("button.load"));
+        this.exportButton = new Button(i18n.n("button.export"), i18n.d("button.export"));
+        this.importButton = new Button(i18n.n("button.import"), i18n.d("button.import"));
         ButtonMenu<String> buttonMenu = ButtonMenu.<String>builder()
             .buttons(Maps.ofLinked(
                 "load", loadButton,
@@ -115,12 +116,10 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
 
         // header with info text
         GuiSection searchBar = new GuiSection();
-        GText raceLikingsHeader = new GText(UI.FONT().H2,"Race likings");
+        GText raceLikingsHeader = new GText(UI.FONT().H2, i18n.n("search.header"));
         searchBar.addRightC(0, raceLikingsHeader);
         searchBar.addRightC(20, new GInput(searchInput));
-        searchBar.hoverInfoSet("Races config is bound to the save game. " +
-            "A new game will start with vanilla game settings. " +
-            "You can load settings from other saves though.");
+        searchBar.hoverInfoSet(i18n.d("search.header"));
 
         addDownC(20, buttonMenu);
         addDownC(20, searchBar);

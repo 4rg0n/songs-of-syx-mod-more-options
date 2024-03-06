@@ -10,7 +10,7 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.RacesConfigSelectionPanel;
+import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
 import init.paths.ModInfo;
 import lombok.AccessLevel;
@@ -75,17 +75,17 @@ public class UiFactory {
     /**
      * Generates race config selection window
      */
-    public Window<RacesConfigSelectionPanel> buildRacesConfigSelection(String title) {
+    public Window<RacesSelectionPanel> buildRacesConfigSelection(String title) {
         log.debug("Building '%s' ui", title);
-        RacesConfigSelectionPanel.Entry current = null;
+        RacesSelectionPanel.Entry current = null;
 
         // prepare entries
-        List<RacesConfigSelectionPanel.Entry> racesConfigs = new ArrayList<>();
+        List<RacesSelectionPanel.Entry> racesConfigs = new ArrayList<>();
         List<ConfigStore.RaceConfigMeta> raceConfigMetas = configStore.loadRacesConfigMetas();
         for (ConfigStore.RaceConfigMeta configMeta : raceConfigMetas) {
             SaveFile saveFile = gameApis.save().findByPathContains(configMeta.getConfigPath()).orElse(null);
 
-            RacesConfigSelectionPanel.Entry entry = RacesConfigSelectionPanel.Entry.builder()
+            RacesSelectionPanel.Entry entry = RacesSelectionPanel.Entry.builder()
                 .configPath(configMeta.getConfigPath())
                 .creationDate(configMeta.getCreationTime())
                 .updateDate(configMeta.getUpdateTime())
@@ -105,7 +105,7 @@ public class UiFactory {
             racesConfigs.add(entry);
         }
 
-        Window<RacesConfigSelectionPanel> window = new Window<>(title, new RacesConfigSelectionPanel(racesConfigs, current));
+        Window<RacesSelectionPanel> window = new Window<>(title, new RacesSelectionPanel(racesConfigs, current));
         window.center();
 
         return window;

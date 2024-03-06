@@ -12,6 +12,7 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.function.Supplier;
  * Container, which aligns elements evenly in the row.
  * Used by the {@link Table} element.
  */
+@Builder
 public class ColumnRow<Value> extends GuiSection implements
     Searchable<String, Boolean>,
     Valuable<Value, ColumnRow<Value>> {
@@ -31,10 +33,12 @@ public class ColumnRow<Value> extends GuiSection implements
     private COLOR backgroundColor;
 
     @Setter
+    @Builder.Default
     @Accessors(fluent = true)
     private COLOR hoverColor = COLOR.WHITE35;
 
     @Setter
+    @Builder.Default
     @Accessors(fluent = true)
     private COLOR selectionColor = COLOR.BLUEISH;
 
@@ -48,18 +52,21 @@ public class ColumnRow<Value> extends GuiSection implements
     private String searchTerm;
 
     @Setter
+    @Builder.Default
     @Accessors(fluent = true)
-    private boolean highlightable;
+    private boolean highlightable = false;
 
     @Getter
     @Setter
+    @Builder.Default
     @Accessors(fluent = true)
-    private boolean isHeader;
+    private boolean isHeader = false;
 
     @Getter
     @Setter
+    @Builder.Default
     @Accessors(fluent = true)
-    private boolean selectable;
+    private boolean selectable = false;
 
     private float doubleClickTimer = 0;
 
@@ -78,23 +85,9 @@ public class ColumnRow<Value> extends GuiSection implements
     private Action<ColumnRow<Value>> doubleClickAction;
 
     @Setter
+    @Builder.Default
     @Accessors(fluent = true, chain = false)
     private Action<ColumnRow<Value>> clickAction = o -> {};
-
-
-    public ColumnRow(List<GuiSection> columns) {
-        this(columns, null, false, false);
-    }
-
-    @Builder
-    public ColumnRow(List<GuiSection> columns, @Nullable String searchTerm, boolean highlightable, boolean selectable) {
-        this.columns = new ArrayList<>(columns);
-        this.searchTerm = searchTerm;
-        this.highlightable = highlightable;
-        this.selectable = selectable;
-
-        pad(5, 5);
-    }
 
     public void init() {
         List<Integer> maxWidths = UiUtil.getMaxColumnWidths(Lists.of(columns));
@@ -215,5 +208,20 @@ public class ColumnRow<Value> extends GuiSection implements
     public ColumnRow<Value> selectedToggle() {
         isSelected = !isSelected;
         return this;
+    }
+
+    public static class ColumnRowBuilder<Value> {
+
+        private List<GuiSection> columns = new ArrayList<>();
+
+        public ColumnRowBuilder<Value> columns(List<? extends RENDEROBJ> columns) {
+            columns.forEach(this::column);
+            return this;
+        }
+
+        public ColumnRowBuilder<Value> column(RENDEROBJ column) {
+            columns.add(UiUtil.toGuiSection(column));
+            return this;
+        }
     }
 }

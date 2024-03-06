@@ -12,9 +12,6 @@ public class Checkbox extends GButt.Checkbox implements Valuable<Boolean, Checkb
     private Action<Checkbox> clickAction = o -> {};
     private Action<Checkbox> renderObjectAction = o -> {};
 
-    public Checkbox() {
-    }
-
     public Checkbox(boolean selected) {
         selectedSet(selected);
     }

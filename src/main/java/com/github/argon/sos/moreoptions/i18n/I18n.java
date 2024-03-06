@@ -67,8 +67,7 @@ public class I18n {
 
         try {
             String messageText = messages.getString(messageKey);
-            // todo need positional tokens instead of %s thingies?
-            return String.format(messageText, StringUtil.stringifyValues(args));
+            return StringUtil.replaceTokens(messageText, args);
         } catch (Exception e) {
             log.warn("Could not translate message for key '%s': %s", messageKey, e.getMessage());
             log.trace("", e);

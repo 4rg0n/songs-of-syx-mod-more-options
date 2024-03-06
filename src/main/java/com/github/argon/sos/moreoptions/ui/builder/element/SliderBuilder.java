@@ -31,11 +31,16 @@ public class SliderBuilder implements UiBuilder<Slider, Slider> {
 
         INT.IntImp sliderValue = new INT.IntImp(min, max);
         sliderValue.set(definition.getValue());
-        Slider slider = new Slider(sliderValue, sliderWidth,
-            definition.isInput(),
-            definition.isLockScroll(),
-            definition.getValueDisplay(),
-            definition.getThresholds());
+        Slider slider = Slider.builder()
+            .min(min)
+            .max(max)
+            .value(definition.getValue())
+            .width(sliderWidth)
+            .input(definition.isInput())
+            .lockScroll(definition.isLockScroll())
+            .valueDisplay(definition.getValueDisplay())
+            .thresholds(definition.getThresholds())
+            .build();
 
         return BuildResult.<Slider, Slider>builder()
             .result(slider)

@@ -31,7 +31,9 @@ public class BuildResult<Result, Element> {
                 throw new IllegalArgumentException("No viable ui elements to put into grid row found in result list.");
             }
 
-            ColumnRow<Value> columnRow = new ColumnRow<>(columns);
+            ColumnRow<Value> columnRow = ColumnRow.<Value>builder()
+                .columns(columns)
+                .build();
             columnRow.init();
 
             return BuildResult.<ColumnRow<Value>, Element>builder()
