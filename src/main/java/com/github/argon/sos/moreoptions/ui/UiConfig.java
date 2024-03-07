@@ -10,7 +10,7 @@ import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.i18n.I18n;
-import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.JsonWriter;
@@ -56,7 +56,7 @@ import static java.time.temporal.ChronoField.*;
  * For setting up the UI.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class UiConfig implements InitPhases {
+public class UiConfig implements Phases {
 
     @Getter(lazy = true)
     private final static UiConfig instance = new UiConfig(
@@ -216,7 +216,7 @@ public class UiConfig implements InitPhases {
 
                 // don't notify for initial files
                 if (currentExportFile != null) {
-                    notificator.notify("New export file: " + exportFile.getFileName());
+                    notificator.notify(i18n.t("notification.metrics.file.new", exportFile.getFileName()));
                 }
             }
         });
@@ -232,7 +232,7 @@ public class UiConfig implements InitPhases {
             try {
                 undo(moreOptionsPanel);
             } catch (Exception e) {
-                notificator.notifyError("Could not undo changes.", e);
+                notificator.notifyError(i18n.t("notification.config.not.undo"), e);
                 return;
             }
 
@@ -243,10 +243,10 @@ public class UiConfig implements InitPhases {
         moreOptionsPanel.getApplyButton().clickActionSet(() -> {
             try {
                 if (!applyAndSave(moreOptionsPanel)) {
-                    notificator.notifyError("Could not apply config to game.");
+                    notificator.notifyError(i18n.t("notification.config.not.apply"));
                 }
             } catch (Exception e) {
-                notificator.notifyError("Could not apply config to game.", e);
+                notificator.notifyError(i18n.t("notification.config.not.apply"), e);
             }
         });
 
@@ -255,7 +255,7 @@ public class UiConfig implements InitPhases {
             try {
                 undo(moreOptionsPanel);
             } catch (Exception e) {
-                notificator.notifyError("Could not undo changes.", e);
+                notificator.notifyError(i18n.t("notification.config.not.undo"), e);
             }
         });
 
@@ -264,9 +264,9 @@ public class UiConfig implements InitPhases {
             MoreOptionsV2Config moreOptionsConfig = configStore.loadConfig().orElse(null);
             if (moreOptionsConfig != null) {
                 moreOptionsPanel.setValue(moreOptionsConfig);
-                notificator.notifySuccess("Config reloaded into ui.");
+                notificator.notifySuccess(i18n.t("notification.config.reload"));
             } else {
-                notificator.notifyError("Could not reload config from file.");
+                notificator.notifyError(i18n.t("notification.config.not.reload"));
             }
         });
 
@@ -279,15 +279,15 @@ public class UiConfig implements InitPhases {
                     boolean written = Clipboard.write(jsonE.toString());
 
                     if (written) {
-                        notificator.notifySuccess("Config copied to clipboard.");
+                        notificator.notifySuccess(i18n.t("notification.config.copy"));
                     } else {
-                        notificator.notifyError("Could not copy config to clipboard.");
+                        notificator.notifyError(i18n.t("notification.config.not.copy"));
                     }
                 } else {
-                    notificator.notifyError("Could not load config from file.");
+                    notificator.notifyError(i18n.t("notification.config.not.copy"));
                 }
             } catch (Exception e) {
-                notificator.notifyError("Could not copy config to clipboard.", e);
+                notificator.notifyError(i18n.t("notification.config.not.copy"), e);
             }
         });
 
@@ -296,9 +296,9 @@ public class UiConfig implements InitPhases {
             MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
             try {
                 moreOptionsPanel.setValue(defaultConfig);
-                notificator.notifySuccess("Default config applied to ui.");
+                notificator.notifySuccess(i18n.t("notification.config.default.apply"));
             } catch (Exception e) {
-                notificator.notifyError("Could not apply default config to ui.", e);
+                notificator.notifyError(i18n.t("notification.config.default.not.apply"), e);
             }
         });
 
@@ -311,13 +311,13 @@ public class UiConfig implements InitPhases {
                     moreOptionsPanel.setValue(defaultConfig);
                     configStore.deleteConfig();
                     if (applyAndSave(moreOptionsPanel)) {
-                        notificator.notifySuccess("Default config applied to ui and file deleted.");
+                        notificator.notifySuccess(i18n.t("notification.config.reset"));
                     } else {
-                        notificator.notifyError("Could not apply config.");
+                        notificator.notifyError(i18n.t("notification.config.not.reset"));
                     }
 
                 } catch (Exception e) {
-                    notificator.notifyError("Could not reset ui.", e);
+                    notificator.notifyError(i18n.t("notification.config.not.reset"), e);
                 }
             }, () -> {}, true);
         });
@@ -338,7 +338,7 @@ public class UiConfig implements InitPhases {
             try {
                 FileManager.openDesctop(ConfigStore.MORE_OPTIONS_CONFIG_PATH.get().toString());
             } catch (Exception e) {
-                notificator.notifyError("Could not open config folder: " + ConfigStore.MORE_OPTIONS_CONFIG_PATH, e);
+                notificator.notifyError(i18n.t("notification.config.folder.not.open", ConfigStore.MORE_OPTIONS_CONFIG_PATH), e);
             }
         });
     }
@@ -348,14 +348,14 @@ public class UiConfig implements InitPhases {
         metricsPanel.getExportFolderButton().clickActionSet(() -> {
             Path exportFolderPath = metricsPanel.getExportFolderPath();
             if (!exportFolderPath.toFile().exists()) {
-                notificator.notifyError("Metrics export folder does not exists: " + exportFolderPath);
+                notificator.notifyError(i18n.t("notification.metrics.folder.not.exists", exportFolderPath));
                 return;
             }
 
             try {
                 FileManager.openDesctop(exportFolderPath.toString());
             } catch (Exception e) {
-                notificator.notifyError("Could not open metrics export folder: " + exportFolderPath, e);
+                notificator.notifyError(i18n.t("notification.metrics.folder.not.open", exportFolderPath), e);
             }
         });
 
@@ -368,15 +368,15 @@ public class UiConfig implements InitPhases {
                     boolean written = Clipboard.write(exportFilePath.toString());
 
                     if (written) {
-                        notificator.notifySuccess(exportFilePath + " copied to clipboard.");
+                        notificator.notifySuccess(i18n.t("notification.metrics.file.path.copy", exportFilePath));
                     } else {
-                        notificator.notifyError("Could not copy export file path to clipboard.");
+                        notificator.notifyError(i18n.t("notification.metrics.file.path.not.copy"));
                     }
                 } else {
-                    notificator.notifyError("There is no export file path to copy.");
+                    notificator.notifyError(i18n.t("notification.metrics.file.path.not.copy"));
                 }
             } catch (Exception e) {
-                notificator.notifyError("Could not copy export file path to clipboard.", e);
+                notificator.notifyError(i18n.t("notification.metrics.file.path.not.copy"), e);
             }
         });
     }
@@ -386,28 +386,28 @@ public class UiConfig implements InitPhases {
         racesPanel.getFileButton().clickActionSet(() -> {
             Path path = configStore.racesConfigPath();
             if (!path.toFile().exists()) {
-                notificator.notify("Race config file does not exist: " + path);
+                notificator.notify(i18n.t("notification.races.file.not.exists", path));
                 return;
             }
 
             try {
                 FileManager.openDesctop(path.toString());
             } catch (Exception e) {
-                notificator.notifyError("Could not open races config file: " + path, e);
+                notificator.notifyError(i18n.t("notification.races.file.not.open", path), e);
             }
         });
 
         // Open folder with race config files
         racesPanel.getFolderButton().clickActionSet(() -> {
             if (!ConfigStore.RACES_CONFIG_PATH.toFile().exists()) {
-                notificator.notifyError("Race config folder does not exist: " +  ConfigStore.RACES_CONFIG_PATH);
+                notificator.notifyError(i18n.t("notification.races.folder.not.exists", ConfigStore.RACES_CONFIG_PATH));
                 return;
             }
 
             try {
                 FileManager.openDesctop(ConfigStore.RACES_CONFIG_PATH.toString());
             } catch (Exception e) {
-                notificator.notifyError("Could not open races config folder: " + ConfigStore.RACES_CONFIG_PATH, e);
+                notificator.notifyError(i18n.t("notification.races.folder.not.open", ConfigStore.RACES_CONFIG_PATH), e);
             }
         });
 
@@ -419,12 +419,12 @@ public class UiConfig implements InitPhases {
                 Json json = new Json(jsonElement, JsonWriter.getJsonE());
 
                 if (Clipboard.write(json.toString())) {
-                    notificator.notifySuccess("Race config copied to clipboard.");
+                    notificator.notifySuccess(i18n.t("notification.races.config.copy"));
                 } else {
-                    notificator.notifyError("Could not copy races config to clipboard.");
+                    notificator.notifyError(i18n.t("notification.races.config.not.copy"));
                 }
             } catch (Exception e) {
-                notificator.notifyError("Could not copy races config to clipboard.", e);
+                notificator.notifyError(i18n.t("notification.races.config.not.copy"), e);
             }
         });
 
@@ -436,10 +436,10 @@ public class UiConfig implements InitPhases {
                     MoreOptionsV2Config.RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), MoreOptionsV2Config.RacesConfig.class);
 
                     racesPanel.setValue(racesConfig);
-                    notificator.notifySuccess("Race config imported from clipboard.");
+                    notificator.notifySuccess(i18n.t("notification.races.config.import"));
                 });
             } catch (Exception e) {
-                notificator.notifyError("Could not import races config to clipboard.");
+                notificator.notifyError(i18n.t("notification.races.config.not.import"));
             }
         });
 
@@ -455,13 +455,13 @@ public class UiConfig implements InitPhases {
 
                     if (racesConfig != null) {
                         racesPanel.setValue(racesConfig);
-                        notificator.notifySuccess("Races config loaded and applied to ui.");
+                        notificator.notifySuccess(i18n.t("notification.races.config.load"));
                         racesConfigsSelection.hide();
                     } else {
-                        notificator.notifyError("Could not load races config.");
+                        notificator.notifyError(i18n.t("notification.races.config.not.load"));
                     }
                 } catch (Exception e) {
-                    notificator.notifyError("Could not load races config.", e);
+                    notificator.notifyError(i18n.t("notification.races.config.not.load"), e);
                 }
             });
 
@@ -497,7 +497,7 @@ public class UiConfig implements InitPhases {
             try {
                 undo(moreOptionsPanel);
             } catch (Exception e) {
-                notificator.notifyError("Could not undo changes.", e);
+                notificator.notifyError(i18n.t("notification.config.not.undo"), e);
                 return;
             }
 
@@ -518,7 +518,7 @@ public class UiConfig implements InitPhases {
                 moreOptionsModal.getSection().setValue(readConfig);
                 configStore.deleteBackupConfig();
             } catch (Exception e) {
-                notificator.notifyError("Could not apply backup config to " + MOD_INFO.name + " ui.", e);
+                notificator.notifyError(i18n.t("notification.backup.config.not.apply", MOD_INFO.name), e);
                 return;
             }
 
@@ -601,9 +601,9 @@ public class UiConfig implements InitPhases {
             MoreOptionsV2Config currentConfig = configStore.getCurrentConfig();
             if (currentConfig.getMetrics().isEnabled() != config.getMetrics().isEnabled()) {
                 if (config.getMetrics().isEnabled()) {
-                    notificator.notify("Starting metric collection and export");
+                    notificator.notify(i18n.t("notification.metrics.start"));
                 } else {
-                    notificator.notify("Stopping metric collection and export");
+                    notificator.notify(i18n.t("notification.metrics.stop"));
                 }
             }
 

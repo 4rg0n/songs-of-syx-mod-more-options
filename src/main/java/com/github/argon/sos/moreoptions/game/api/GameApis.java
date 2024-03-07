@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.nio.file.Path;
  */
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameApis implements InitPhases {
+public class GameApis implements Phases {
     @Getter(lazy = true)
     private final static GameApis instance = new GameApis(
         GameEventsApi.getInstance(),
@@ -92,17 +92,25 @@ public class GameApis implements InitPhases {
     }
 
     @Override
-    public void initGameSaved(Path saveFilePath) {
-        save().initGameSaved(saveFilePath);
+    public void onGameSaved(Path saveFilePath) {
+        save().onGameSaved(saveFilePath);
     }
 
     @Override
-    public void initGameSaveLoaded(Path saveFilePath) {
-        save().initGameSaveLoaded(saveFilePath);
+    public void onGameSaveLoaded(Path saveFilePath) {
+        save().onGameSaveLoaded(saveFilePath);
     }
 
     @Override
-    public void initGameSaveReloaded() {
+    public void onGameSaveReloaded() {
         clear();
+    }
+
+    @Override
+    public void onGameUpdate(double seconds) {
+    }
+
+    @Override
+    public void onCrash(Throwable e) {
     }
 }

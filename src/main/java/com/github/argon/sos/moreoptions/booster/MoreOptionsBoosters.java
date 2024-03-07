@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.game.booster;
+package com.github.argon.sos.moreoptions.booster;
 
 import lombok.Builder;
 import lombok.Getter;

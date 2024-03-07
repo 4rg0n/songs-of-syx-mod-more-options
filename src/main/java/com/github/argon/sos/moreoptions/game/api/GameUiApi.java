@@ -2,8 +2,8 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.game.ui.NonHidingPopup;
 import com.github.argon.sos.moreoptions.game.ui.NotificationPopup;
-import com.github.argon.sos.moreoptions.init.InitPhases;
-import com.github.argon.sos.moreoptions.init.UninitializedException;
+import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
@@ -22,7 +22,7 @@ import java.util.Optional;
  * For hooking into the games UI
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameUiApi implements InitPhases {
+public class GameUiApi implements Phases {
 
     private final static Logger log = Loggers.getLogger(GameUiApi.class);
 

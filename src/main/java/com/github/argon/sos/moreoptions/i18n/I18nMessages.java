@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.i18n;
 
 import com.github.argon.sos.moreoptions.game.api.GameLangApi;
-import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.AccessLevel;
@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class I18nMessages implements InitPhases {
+public class I18nMessages implements Phases {
 
     @Getter(lazy = true)
     private final static I18nMessages instance = new I18nMessages(

@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.metric;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
-import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATHS;
@@ -18,7 +18,7 @@ import java.util.List;
  * For exporting game stats as {@link Metric} into a CSV file
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class MetricExporter implements InitPhases {
+public class MetricExporter implements Phases {
     @Getter(lazy = true)
     private final static MetricExporter instance = new MetricExporter(
         MetricCollector.getInstance(),
@@ -84,7 +84,7 @@ public class MetricExporter implements InitPhases {
     }
 
     @Override
-    public void initGameSaveReloaded() {
+    public void onGameSaveReloaded() {
         // start a new export file on load
         newExportFile();
     }

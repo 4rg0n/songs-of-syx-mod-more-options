@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.init;
+package com.github.argon.sos.moreoptions.phase;
 
 public class UninitializedException extends RuntimeException {
     public UninitializedException() {

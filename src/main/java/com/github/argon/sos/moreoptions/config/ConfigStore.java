@@ -2,8 +2,8 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.init.InitPhases;
-import com.github.argon.sos.moreoptions.init.UninitializedException;
+import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Lists;
@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * Handles loading and saving of {@link MoreOptionsV2Config}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ConfigStore implements InitPhases {
+public class ConfigStore implements Phases {
     private final static Logger log = Loggers.getLogger(ConfigStore.class);
 
     @Getter(lazy = true)
@@ -107,13 +107,13 @@ public class ConfigStore implements InitPhases {
     }
 
     @Override
-    public void initGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath) {
         // each save gets it race likings config associated
         configService.saveConfig(racesConfigPath(), getCurrentConfig().getRaces());
     }
 
     @Override
-    public void initGameSaveLoaded(Path saveFilePath) {
+    public void onGameSaveLoaded(Path saveFilePath) {
         Path path = racesConfigPath();
 
         if (path == null) {
@@ -124,6 +124,13 @@ public class ConfigStore implements InitPhases {
         // load races config additionally
         configService.loadConfig(path)
             .ifPresent(getCurrentConfig()::setRaces);
+    }
+
+    @Override
+    public void onCrash(Throwable e) {
+        if (!createBackupConfig()) {
+            log.warn("Could not create backup config for game crash");
+        }
     }
 
     /**

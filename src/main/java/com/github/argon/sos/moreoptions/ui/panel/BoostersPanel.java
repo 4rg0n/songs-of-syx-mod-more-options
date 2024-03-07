@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
-import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
+import com.github.argon.sos.moreoptions.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;

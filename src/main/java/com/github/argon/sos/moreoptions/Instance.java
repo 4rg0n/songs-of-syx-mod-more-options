@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.RequiredArgsConstructor;
@@ -26,38 +27,38 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 
 	private boolean newGameSession = true;
 
-	private final MoreOptionsScript script;
+	private final Phases phases;
 
 	@Override
 	public void update(double v) {
 		if (!initGameRunning) {
 			initGameRunning = true;
-			script.initGameUpdating();
+			phases.initGameUpdating();
 		}
 
 		if (!initGamePresent && !VIEW.inters().load.isActivated()) {
 			initGamePresent = true;
-			script.initGameUiPresent();
+			phases.initGameUiPresent();
 		}
 
-		script.update(v);
+		phases.onGameUpdate(v);
 	}
 
 	@Override
 	public void save(FilePutter filePutter) {
-		script.initGameSaved(filePutter.getPath());
+		phases.onGameSaved(filePutter.getPath());
 	}
 
 	@Override
 	public void load(FileGetter fileGetter) throws IOException {
-		script.initGameSaveLoaded(Paths.get(fileGetter.getPath()));
+		phases.onGameSaveLoaded(Paths.get(fileGetter.getPath()));
 
 		if (newGameSession) {
 			newGameSession = false;
 			log.debug("Game just started");
-			script.initNewGameSession();
+			phases.initNewGameSession();
 		} else {
-			script.initGameSaveReloaded();
+			phases.onGameSaveReloaded();
 		}
 	}
 

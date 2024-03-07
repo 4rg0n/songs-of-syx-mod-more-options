@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.AccessLevel;
@@ -18,7 +18,7 @@ import java.util.Optional;
  * For interacting with the games save files and features
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameSaveApi implements InitPhases {
+public class GameSaveApi implements Phases {
 
     private final static Logger log = Loggers.getLogger(GameSaveApi.class);
 
@@ -55,13 +55,13 @@ public class GameSaveApi implements InitPhases {
     }
 
     @Override
-    public void initGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath) {
         // update save info on game save
         setCurrent(saveFilePath);
     }
 
     @Override
-    public void initGameSaveLoaded(Path saveFilePath) {
+    public void onGameSaveLoaded(Path saveFilePath) {
         // update save info on game loaded
         setCurrent(saveFilePath);
     }

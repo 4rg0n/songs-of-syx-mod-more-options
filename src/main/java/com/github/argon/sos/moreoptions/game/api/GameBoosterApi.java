@@ -2,10 +2,10 @@
 package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
-import com.github.argon.sos.moreoptions.game.booster.BoosterService;
-import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
-import com.github.argon.sos.moreoptions.init.InitPhases;
-import com.github.argon.sos.moreoptions.init.UninitializedException;
+import com.github.argon.sos.moreoptions.booster.BoosterService;
+import com.github.argon.sos.moreoptions.booster.MoreOptionsBoosters;
+import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import game.boosting.BoostableCat;
@@ -19,11 +19,9 @@ import java.util.Map;
  * Access to the mods custom {@link MoreOptionsBoosters}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameBoosterApi implements InitPhases {
+public class GameBoosterApi implements Phases {
 
     private final static Logger log = Loggers.getLogger(GameBoosterApi.class);
-
-    public final static String KEY_PREFIX = "booster";
 
     @Getter(lazy = true)
     private final static GameBoosterApi instance = new GameBoosterApi(

@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.game.api;
 
 
-import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Lists;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * Access to the games races
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameRaceApi implements InitPhases {
+public class GameRaceApi implements Phases {
     private final static Logger log = Loggers.getLogger(GameRaceApi.class);
 
     @Getter(lazy = true)

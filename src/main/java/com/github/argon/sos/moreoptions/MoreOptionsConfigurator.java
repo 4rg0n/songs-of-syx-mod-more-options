@@ -1,9 +1,11 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricCollector;
@@ -28,14 +30,15 @@ import java.util.concurrent.TimeUnit;
  * For manipulating game classes by given config {@link MoreOptionsV2Config}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class MoreOptionsConfigurator {
+public class MoreOptionsConfigurator implements Phases {
 
     @Getter(lazy = true)
     private final static MoreOptionsConfigurator instance = new MoreOptionsConfigurator(
         GameApis.getInstance(),
         MetricCollector.getInstance(),
         MetricExporter.getInstance(),
-        MetricScheduler.getInstance()
+        MetricScheduler.getInstance(),
+        ConfigStore.getInstance()
     );
 
     private final static Logger log = Loggers.getLogger(MoreOptionsConfigurator.class);
@@ -48,12 +51,22 @@ public class MoreOptionsConfigurator {
 
     private final MetricScheduler metricScheduler;
 
+    private final ConfigStore configStore;
+
     private Set<String> lastMetricStats = new HashSet<>();
 
     private Action<MoreOptionsV2Config> afterApplyAction = o -> {};
 
     public void onAfterApplyAction(Action<MoreOptionsV2Config> afterApplyAction) {
         this.afterApplyAction = afterApplyAction;
+    }
+
+    @Override
+    public void onGameSaveReloaded() {
+        if (!configStore.getBackupConfig().isPresent()) {
+            log.debug("Reapplying config because of game load.");
+            applyConfig(configStore.getCurrentConfig());
+        }
     }
 
     /**

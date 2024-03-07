@@ -1,0 +1,14 @@
+package com.github.argon.sos.moreoptions.phase;
+
+public enum Phase {
+    INIT_BEFORE_GAME_CREATED,
+    INIT_MOD_CREATE_INSTANCE,
+    ON_GAME_SAVE_LOADED,
+    ON_GAME_SAVE_RELOADED,
+    INIT_NEW_GAME_SESSION,
+    INIT_GAME_UPDATING,
+    ON_GAME_UPDATE,
+    INIT_GAME_UI_PRESENT,
+    ON_GAME_SAVED,
+    ON_CRASH
+}
