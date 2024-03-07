@@ -27,6 +27,8 @@ public class MoreOptionsBooster extends BoosterImp {
 
     private final double initValue;
 
+    private final double noValue;
+
     @Getter
     private final Boostable origin;
 
@@ -41,6 +43,13 @@ public class MoreOptionsBooster extends BoosterImp {
     ) {
         super(bSourceInfo, from, to, isMul);
         value = normalize(value);
+
+        if (isMul) {
+            // will result in multiplying by 1
+            this.noValue = 0.1D;
+        } else {
+            this.noValue = 0.0D;
+        }
 
         this.initValue = value;
         this.value = value;
@@ -73,7 +82,7 @@ public class MoreOptionsBooster extends BoosterImp {
     public double vGet(POP_CL reg) {
         if (reg.cl != null && !reg.cl.player)
         {
-            return 0;
+            return noValue;
         }
         else {
             return value;
@@ -92,7 +101,7 @@ public class MoreOptionsBooster extends BoosterImp {
 
     @Override
     public double vGet(NPCBonus bonus) {
-        return 0;
+        return noValue;
     }
 
     @Override
@@ -101,7 +110,7 @@ public class MoreOptionsBooster extends BoosterImp {
             return value;
         }
         else {
-            return 0;
+            return noValue;
         }
     }
 
