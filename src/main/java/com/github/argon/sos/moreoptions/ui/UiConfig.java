@@ -9,6 +9,7 @@ import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.game.ui.Window;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.init.InitPhases;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
@@ -22,6 +23,7 @@ import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.ui.panel.MetricsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
+import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import init.sprite.SPRITES;
@@ -66,6 +68,7 @@ public class UiConfig implements InitPhases {
         Notificator.getInstance()
     );
 
+    private static final I18n i18n = I18n.get(WeatherPanel.class);
     private final static Logger log = Loggers.getLogger(UiConfig.class);
 
     /**
@@ -95,10 +98,10 @@ public class UiConfig implements InitPhases {
 
     @Getter
     @Nullable
-    private Modal<MoreOptions> moreOptionsModal;
+    private Modal<MoreOptionsPanel> moreOptionsModal;
     @Getter
     @Nullable
-    private Modal<MoreOptions> backupMoreOptionsModal;
+    private Modal<MoreOptionsPanel> backupMoreOptionsModal;
     @Getter
     @Nullable
     private Modal<BackupDialog> backupDialog;
@@ -127,7 +130,7 @@ public class UiConfig implements InitPhases {
         }
     }
 
-    public void inject(Modal<MoreOptions> moreOptionsModal) {
+    public void inject(Modal<MoreOptionsPanel> moreOptionsModal) {
         log.debug("Injecting button into game ui");
         GButt.ButtPanel moreOptionsButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
             @Override
@@ -177,7 +180,7 @@ public class UiConfig implements InitPhases {
     /**
      * Debug commands are executable via the in game debug panel
      */
-    public void initDebugActions(Modal<MoreOptions> moreOptionsModal, ConfigStore configStore) {
+    public void initDebugActions(Modal<MoreOptionsPanel> moreOptionsModal, ConfigStore configStore) {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":show", moreOptionsModal::show);
         IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());
@@ -190,8 +193,8 @@ public class UiConfig implements InitPhases {
         });
     }
 
-    public void initActions(Modal<MoreOptions> moreOptionsModal) {
-        MoreOptions moreOptionsPanel = moreOptionsModal.getSection();
+    public void initActions(Modal<MoreOptionsPanel> moreOptionsModal) {
+        MoreOptionsPanel moreOptionsPanel = moreOptionsModal.getSection();
         initActions(moreOptionsModal, moreOptionsPanel);
 
         // METRICS
@@ -219,7 +222,7 @@ public class UiConfig implements InitPhases {
         });
     }
 
-    public void initActions(Modal<MoreOptions> moreOptionsModal, MoreOptions moreOptionsPanel) {
+    public void initActions(Modal<MoreOptionsPanel> moreOptionsModal, MoreOptionsPanel moreOptionsPanel) {
         // update Notificator queue when More Options Modal is rendered
         moreOptionsModal.renderAction((modal, seconds) -> notificator.update(seconds));
         moreOptionsModal.hideAction(modal -> notificator.close());
@@ -293,7 +296,7 @@ public class UiConfig implements InitPhases {
             MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
             try {
                 moreOptionsPanel.setValue(defaultConfig);
-                notificator.notifySuccess("Default config applied to ui. ");
+                notificator.notifySuccess("Default config applied to ui.");
             } catch (Exception e) {
                 notificator.notifyError("Could not apply default config to ui.", e);
             }
@@ -302,7 +305,7 @@ public class UiConfig implements InitPhases {
         // Apply default config to ui and game & delete config file
         moreOptionsPanel.getResetButton().clickActionSet(() -> {
             // are you sure message
-            VIEW.inters().yesNo.activate("This will delete your config file and reset the ui and game to default settings.", () -> {
+            VIEW.inters().yesNo.activate(i18n.t("MoreOptionsPanel.text.yesNo.reset"), () -> {
                 MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
                 try {
                     moreOptionsPanel.setValue(defaultConfig);
@@ -470,8 +473,8 @@ public class UiConfig implements InitPhases {
 
     public void initBackupActions(
         Modal<BackupDialog> backupDialog,
-        Modal<MoreOptions> backupMoreOptionsModal,
-        Modal<MoreOptions> moreOptionsModal,
+        Modal<MoreOptionsPanel> backupMoreOptionsModal,
+        Modal<MoreOptionsPanel> moreOptionsModal,
         MoreOptionsV2Config backupConfig
     ) {
         // Close: More Options modal with backup config
@@ -486,7 +489,7 @@ public class UiConfig implements InitPhases {
             backupDialog.show();
         });
 
-        MoreOptions moreOptionsPanel = backupMoreOptionsModal.getSection();
+        MoreOptionsPanel moreOptionsPanel = backupMoreOptionsModal.getSection();
 
         // Cancel & Undo
         Button cancelButton = moreOptionsPanel.getCancelButton();
@@ -584,7 +587,7 @@ public class UiConfig implements InitPhases {
         });
     }
 
-    private @Nullable MoreOptionsV2Config apply(MoreOptions moreOptionsPanel) {
+    private @Nullable MoreOptionsV2Config apply(MoreOptionsPanel moreOptionsPanel) {
         // only save when changes were made
         if (moreOptionsPanel.isDirty()) {
             MoreOptionsV2Config config = moreOptionsPanel.getValue();
@@ -612,7 +615,7 @@ public class UiConfig implements InitPhases {
         return null;
     }
 
-    private boolean applyAndSave(MoreOptions moreOptionsPanel) {
+    private boolean applyAndSave(MoreOptionsPanel moreOptionsPanel) {
         MoreOptionsV2Config appliedConfig = apply(moreOptionsPanel);
 
         if (appliedConfig != null) {
@@ -622,8 +625,8 @@ public class UiConfig implements InitPhases {
         return false;
     }
 
-    private void undo(MoreOptions moreOptionsPanel) {
-        MoreOptionsV2Config currentConfig = moreOptionsPanel.getConfigStore().getCurrentConfig();
+    private void undo(MoreOptionsPanel moreOptionsPanel) {
+        MoreOptionsV2Config currentConfig = configStore.getCurrentConfig();
         moreOptionsPanel.setValue(currentConfig);
     }
 }

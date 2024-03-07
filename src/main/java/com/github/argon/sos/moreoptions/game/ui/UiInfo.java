@@ -1,7 +1,5 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.i18n.Dictionary;
-import com.github.argon.sos.moreoptions.ui.builder.Translatable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,20 +10,10 @@ import lombok.Data;
 @Builder
 @Data
 @AllArgsConstructor
-public class UiInfo<Key> implements Translatable<Key> {
+public class UiInfo<Key> {
     private final Key key;
 
     private String title;
 
     private String description;
-
-    private final boolean translatable;
-
-    public static UiInfo<String> fromDictionary(Dictionary.Entry entry) {
-        return UiInfo.<String>builder()
-            .key(entry.getKey())
-            .description(entry.getDescription())
-            .title(entry.getTitle())
-            .build();
-    }
 }

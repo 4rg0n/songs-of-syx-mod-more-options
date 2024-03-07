@@ -15,7 +15,6 @@ public class Modal<Section extends GuiSection> extends Window<Section> {
         center();
     }
 
-
     @Override
     protected boolean render(Renderer renderer, float v) {
         super.render(renderer, v);

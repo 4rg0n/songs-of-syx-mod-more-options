@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.panel.*;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
@@ -29,16 +30,17 @@ import java.util.Set;
  * Main window containing all other UI elements.
  * Will pop up in the middle of the game and pauses the game.
  */
-public class MoreOptions extends GuiSection implements
-    Showable<MoreOptions>,
-    Refreshable<MoreOptions>,
-    Valuable<MoreOptionsV2Config, MoreOptions> {
+public class MoreOptionsPanel extends GuiSection implements
+    Showable<MoreOptionsPanel>,
+    Refreshable<MoreOptionsPanel>,
+    Valuable<MoreOptionsV2Config, MoreOptionsPanel> {
 
-    @Getter
+    private static final I18n i18n = I18n.get(WeatherPanel.class);
+
     private final ConfigStore configStore;
-
     @Getter
     private final EventsPanel eventsPanel;
+    @Getter
     private final SoundsPanel soundsPanel;
     @Getter
     private final WeatherPanel weatherPanel;
@@ -72,8 +74,8 @@ public class MoreOptions extends GuiSection implements
     @Getter
     private final ButtonMenu<String> moreButtonMenu;
 
-    private Action<MoreOptions> showAction = o -> {};
-    private Action<MoreOptions> refreshAction = o -> {};
+    private Action<MoreOptionsPanel> showAction = o -> {};
+    private Action<MoreOptionsPanel> refreshAction = o -> {};
 
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
@@ -81,7 +83,7 @@ public class MoreOptions extends GuiSection implements
     /**
      * Builds the UI with given config
      */
-    public MoreOptions(
+    public MoreOptionsPanel(
         MoreOptionsV2Config config,
         ConfigStore configStore,
         List<BoostersPanel.Entry> boosterEntries,
@@ -103,33 +105,33 @@ public class MoreOptions extends GuiSection implements
         Tabulator<String, ?, GuiSection> tabulator = new Tabulator<>(Maps.ofLinked(
             UiInfo.<String>builder()
                 .key("sounds")
-                .title("Sounds")
-                .description("Tune the volume of various sounds.")
+                .title(i18n.t("MoreOptionsPanel.tab.sounds.name"))
+                .description(i18n.t("MoreOptionsPanel.tab.sounds.desc"))
                 .build(), soundsPanel,
             UiInfo.<String>builder()
                 .key("events")
-                .title("Events")
-                .description("Toggle and tune events.")
+                .title(i18n.t("MoreOptionsPanel.tab.events.name"))
+                .description(i18n.t("MoreOptionsPanel.tab.events.desc"))
                 .build(), eventsPanel,
             UiInfo.<String>builder()
                 .key("weather")
-                .title("Weather")
-                .description("Influence weather effects.")
+                .title(i18n.t("MoreOptionsPanel.tab.weather.name"))
+                .description(i18n.t("MoreOptionsPanel.tab.weather.desc"))
                 .build(), weatherPanel,
             UiInfo.<String>builder()
                 .key("boosters")
-                .title("Boosters")
-                .description("Increase or decrease various bonuses.")
+                .title(i18n.t("MoreOptionsPanel.tab.boosters.name"))
+                .description(i18n.t("MoreOptionsPanel.tab.boosters.desc"))
                 .build(), boostersPanel,
             UiInfo.<String>builder()
                 .key("metrics")
-                .title("Metrics")
-                .description("Collect and export data about the game.")
+                .title(i18n.t("MoreOptionsPanel.tab.metrics.name"))
+                .description(i18n.t("MoreOptionsPanel.tab.metrics.desc"))
                 .build(), metricsPanel
             , UiInfo.<String>builder()
                 .key("races")
-                .title("Races")
-                .description("TODO")
+                .title(i18n.t("MoreOptionsPanel.tab.races.name"))
+                .description(i18n.t("MoreOptionsPanel.tab.races.desc"))
                 .build(), racesPanel
         ), DIR.S, 30, 0, true, false);
         addDownC(0, tabulator);
@@ -138,14 +140,21 @@ public class MoreOptions extends GuiSection implements
         addDownC(20, horizontalLine);
 
         GuiSection footer = new GuiSection();
-        this.cancelButton = new Button("Cancel", "Close window without applying changes");
+        this.cancelButton = new Button(
+            i18n.t("MoreOptionsPanel.button.cancel.name"),
+            i18n.t("MoreOptionsPanel.button.cancel.desc"));
         footer.addRight(0, cancelButton);
 
-        this.undoButton = new Button("Undo", "Undo made changes");
+        this.undoButton = new Button(
+            i18n.t("MoreOptionsPanel.button.undo.name"),
+            i18n.t("MoreOptionsPanel.button.undo.desc"));
         undoButton.activeSet(false);
         footer.addRight(10, undoButton);
 
-        this.moreButton = new Button("More", COLOR.WHITE15, "Even more!");
+        this.moreButton = new Button(
+            i18n.t("MoreOptionsPanel.button.more.name"),
+            COLOR.WHITE15,
+            i18n.t("MoreOptionsPanel.button.more.desc"));
         footer.addRight(50, moreButton);
 
         String modVersion = "NO_VER";
@@ -155,20 +164,31 @@ public class MoreOptions extends GuiSection implements
 
         footer.addRight(50, versions(config.getVersion(), modVersion));
 
-        this.applyButton = new Button("Apply", "Apply config to game and save to file");
+        this.applyButton = new Button(i18n.t("MoreOptionsPanel.button.apply.name"), i18n.t("MoreOptionsPanel.button.apply.desc"));
         applyButton.activeSet(false);
         footer.addRight(50, applyButton);
 
-        this.okButton = new Button("OK", "Apply config to game, save to file and exit");
+        this.okButton = new Button(i18n.t("MoreOptionsPanel.button.ok.name"), i18n.t("MoreOptionsPanel.button.ok.desc"));
         footer.addRight(10, okButton);
         addDownC(20, footer);
 
         // More Button Menu
-        this.defaultButton = new Button("Default", "Reset ui to default config");
-        this.reloadButton = new Button("Reload", "Reload and apply config to ui from file");
-        this.shareButton = new Button("Share", "Copy current config from ui into clipboard");
-        this.folderButton = new Button("Folder", "Open settings folder with mod config file");
-        this.resetButton = new Button("Reset", "Reset ui and game to default config and deletes config file");
+        this.defaultButton = new Button(
+            i18n.t("MoreOptionsPanel.button.default.name"),
+            i18n.t("MoreOptionsPanel.button.default.desc"));
+        this.reloadButton = new Button(
+            i18n.t("MoreOptionsPanel.button.reload.name"),
+            i18n.t("MoreOptionsPanel.button.reload.desc"));
+        this.shareButton = new Button(
+            i18n.t("MoreOptionsPanel.button.share.name"),
+            i18n.t("MoreOptionsPanel.button.share.desc"));
+        this.folderButton = new Button(
+            i18n.t("MoreOptionsPanel.button.folder.name"),
+            i18n.t("MoreOptionsPanel.button.folder.desc"));
+        this.resetButton = new Button(
+            i18n.t("MoreOptionsPanel.button.reset.name"),
+            i18n.t("MoreOptionsPanel.button.reset.desc"));
+
         List<Button> buttons = Lists.of(defaultButton, shareButton, folderButton, reloadButton, resetButton);
         this.moreButtonMenu = ButtonMenu.ButtonMenuBuilder.fromList(buttons);
         this.moreButton.clickActionSet(() -> {
@@ -252,7 +272,7 @@ public class MoreOptions extends GuiSection implements
     }
 
     @Override
-    public void showAction(Action<MoreOptions> showAction) {
+    public void showAction(Action<MoreOptionsPanel> showAction) {
         this.showAction = showAction;
     }
 
@@ -262,7 +282,7 @@ public class MoreOptions extends GuiSection implements
     }
 
     @Override
-    public void refreshAction(Action<MoreOptions> refreshAction) {
+    public void refreshAction(Action<MoreOptionsPanel> refreshAction) {
         this.refreshAction = refreshAction;
     }
 }

@@ -5,7 +5,6 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.SCRIPT;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
-import com.github.argon.sos.moreoptions.i18n.Dictionary;
 import com.github.argon.sos.moreoptions.init.InitPhases;
 import com.github.argon.sos.moreoptions.init.Initializer;
 import com.github.argon.sos.moreoptions.log.Level;
@@ -37,7 +36,6 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 	private final MoreOptionsConfigurator configurator = MoreOptionsConfigurator.getInstance();
 	private final GameApis gameApis = GameApis.getInstance();
 	private final Initializer initializer = Initializer.getInstance();
-	private final Dictionary dictionary = Dictionary.getInstance();
 	private final UiConfig uiConfig = UiConfig.getInstance();
 
 	private Instance instance;
@@ -76,8 +74,8 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 	}
 
 	@Override
-	public void initCreateInstance() {
-		initializer.initCreateInstance();
+	public void initModCreateInstance() {
+		initializer.initModCreateInstance();
 	}
 
 
@@ -88,7 +86,7 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 	@Override
 	public SCRIPT_INSTANCE createInstance() {
 		if (instance == null) {
-			initCreateInstance();
+			initModCreateInstance();
 			log.debug("Creating Mod Instance");
 			instance = new Instance(this);
 		}
@@ -99,8 +97,8 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 	}
 
 	@Override
-	public void initGameRunning() {
-		initializer.initGameRunning();
+	public void initGameUpdating() {
+		initializer.initGameUpdating();
 	}
 
 	@Override
@@ -150,6 +148,11 @@ public final class MoreOptionsScript implements SCRIPT, InitPhases {
 	@Override
 	public void initGameSaveReloaded() {
 		initializer.initGameSaveReloaded();
+		// re-apply config when new game is loaded (only when there's no backup)
+		if (!configStore.getBackupConfig().isPresent()) {
+			log.debug("Reapplying config because of game load.");
+			configurator.applyConfig(configStore.getCurrentConfig());
+		}
 	}
 
 	@Override

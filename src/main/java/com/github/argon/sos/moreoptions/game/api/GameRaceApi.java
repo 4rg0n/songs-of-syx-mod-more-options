@@ -93,7 +93,7 @@ public class GameRaceApi implements InitPhases {
         }
     }
 
-    public void initCreateInstance() {
+    public void initModCreateInstance() {
         // initialize all game races
         for (Race race : getAll()) {
             raceIndexMap.put(race.key, race.index);

@@ -1,6 +1,5 @@
 package com.github.argon.sos.moreoptions.config;
 
-import com.github.argon.sos.moreoptions.i18n.Dictionary;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.init.InitPhases;
@@ -20,14 +19,13 @@ import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Handles loading and saving of {@link MoreOptionsV2Config} data and also {@link Dictionary} data
+ * Handles loading and saving of {@link MoreOptionsV2Config}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigStore implements InitPhases {
@@ -36,7 +34,6 @@ public class ConfigStore implements InitPhases {
     @Getter(lazy = true)
     private final static ConfigStore instance = new ConfigStore(
         ConfigService.getInstance(),
-        Dictionary.getInstance(),
         ConfigDefaults.getInstance(),
         GameApis.getInstance()
     );
@@ -52,8 +49,6 @@ public class ConfigStore implements InitPhases {
         .resolve(MoreOptionsScript.MOD_INFO.name + "/races");
 
     private final ConfigService configService;
-    @Getter
-    private final Dictionary dictionary;
     private final ConfigDefaults configDefaults;
     private final GameApis gameApis;
 
@@ -83,22 +78,16 @@ public class ConfigStore implements InitPhases {
 
         // load backup config from file if present
         loadBackupConfig().ifPresent(this::setBackupConfig);
-        // load dictionary entries from file if present
-        loadDictionary().ifPresent(dictionary::addAll);
     }
 
     @Override
-    public void initCreateInstance() {
+    public void initModCreateInstance() {
         setDefaultConfig(configDefaults.newDefaultConfig());
         // load config from file if present; merge missing fields with defaults
         MoreOptionsV2Config config = loadConfig().orElse(defaultConfig);
         if (currentConfig == null) {
             setCurrentConfig(config);
         }
-
-        // add description from game boosters
-        gameApis.booster().getBoosters()
-            .values().forEach(moreOptionsBoosters -> dictionary.add(moreOptionsBoosters.getAdd()));
 
         // detect version change in config
         getMetaInfo().ifPresent(meta -> {
@@ -302,14 +291,6 @@ public class ConfigStore implements InitPhases {
     public Path racesConfigPath() {
         String saveStamp = gameApis.save().getSaveStamp();
         return RACES_CONFIG_PATH.resolve(saveStamp + RACES_CONFIG_FILE_PREFIX + ".txt");
-    }
-
-    public Optional<Map<String, Dictionary.Entry>> loadDictionary() {
-        return configService.loadDictionary(PATHS.INIT().getFolder("config"), Dictionary.FILE_NAME);
-    }
-
-    public boolean saveDictionary(Map<String, Dictionary.Entry> entries) {
-        return configService.saveDictionary(entries, PATHS.INIT().getFolder("config"), Dictionary.FILE_NAME);
     }
 
     @Data

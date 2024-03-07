@@ -100,7 +100,7 @@ public class GameUiApi implements InitPhases {
     }
 
     @Override
-   public void initGameRunning() {
+   public void initGameUpdating() {
         log.debug("Init game ui api");
         popup = new NonHidingPopup(VIEW.inters().manager);
         notification = new NotificationPopup(VIEW.inters().manager);

@@ -86,7 +86,7 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
             }).collect(Collectors.toList())));
 
         // Race Likings table with search
-        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.n("search.input"));
+        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("RacesPanel.search.input.name"));
         Table<Integer> raceLikingsTable = Table.<Integer>builder()
             .evenOdd(true)
             .scrollable(true)
@@ -97,11 +97,11 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
             .build();
 
         // menu with buttons
-        this.folderButton = new Button(i18n.n("button.folder"), i18n.d("button.folder"));
-        this.fileButton = new Button(i18n.n("button.file"), i18n.d("button.file"));
-        this.loadButton = new Button(i18n.n("button.load"), i18n.d("button.load"));
-        this.exportButton = new Button(i18n.n("button.export"), i18n.d("button.export"));
-        this.importButton = new Button(i18n.n("button.import"), i18n.d("button.import"));
+        this.folderButton = new Button(i18n.t("RacesPanel.button.folder.name"), i18n.t("RacesPanel.button.folder.desc"));
+        this.fileButton = new Button(i18n.t("RacesPanel.button.file.name"), i18n.t("RacesPanel.button.file.desc"));
+        this.loadButton = new Button(i18n.t("RacesPanel.button.load.name"), i18n.t("RacesPanel.button.load.desc"));
+        this.exportButton = new Button(i18n.t("RacesPanel.button.export.name"), i18n.t("RacesPanel.button.export.desc"));
+        this.importButton = new Button(i18n.t("RacesPanel.button.import.name"), i18n.t("RacesPanel.button.import.desc"));
         ButtonMenu<String> buttonMenu = ButtonMenu.<String>builder()
             .buttons(Maps.ofLinked(
                 "load", loadButton,
@@ -116,10 +116,10 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
 
         // header with info text
         GuiSection searchBar = new GuiSection();
-        GText raceLikingsHeader = new GText(UI.FONT().H2, i18n.n("search.header"));
+        GText raceLikingsHeader = new GText(UI.FONT().H2, i18n.t("RacesPanel.search.header.name"));
         searchBar.addRightC(0, raceLikingsHeader);
         searchBar.addRightC(20, new GInput(searchInput));
-        searchBar.hoverInfoSet(i18n.d("search.header"));
+        searchBar.hoverInfoSet(i18n.t("RacesPanel.search.header.desc"));
 
         addDownC(20, buttonMenu);
         addDownC(20, searchBar);

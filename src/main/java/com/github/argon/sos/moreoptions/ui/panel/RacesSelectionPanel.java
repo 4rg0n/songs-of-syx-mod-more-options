@@ -47,7 +47,7 @@ public class RacesSelectionPanel extends GuiSection {
             racesConfigTable = Table.<Entry>builder()
                 .rows(Lists.of())
                 .build();
-            addDownC(0, new GText(UI.FONT().H2, i18n.d("nothing")));
+            addDownC(0, new GText(UI.FONT().H2, i18n.t("RacesSelectionPanel.nothing.desc")));
             return;
         }
 
@@ -85,7 +85,7 @@ public class RacesSelectionPanel extends GuiSection {
             GuiSection activeMarker;
             if (currentConfig != null && currentConfig.getConfigPath().equals(entry.getConfigPath())) {
                 activeMarker = UiUtil.toGuiSection(activeMarkerIcon);
-                activeMarker.hoverInfoSet(i18n.d("marker.active"));
+                activeMarker.hoverInfoSet(i18n.t("RacesSelectionPanel.marker.active.desc"));
             } else {
                 activeMarker = UiUtil.toGuiSection(new Spacer(
                     activeMarkerIcon.width(),
@@ -100,21 +100,21 @@ public class RacesSelectionPanel extends GuiSection {
                 .highlightable(true)
                 .build();
             row.setValue(entry);
-            row.hoverInfoSet(i18n.d("text.select"));
+            row.hoverInfoSet(i18n.t("RacesSelectionPanel.text.select.name"));
             return row;
         }).collect(Collectors.toList());
 
         // header for table columns
         Map<String, Button> header = Maps.ofLinked(
-            "file", new Button(i18n.n("table.file"), i18n.d("table.file")).bg(COLOR.WHITE15),
-            "save", new Button(i18n.n("table.save"), i18n.d("table.save")).bg(COLOR.WHITE15),
-            "active", new Button(i18n.n("table.active"), i18n.d("table.active")).bg(COLOR.WHITE15),
-            "created", new Button(i18n.n("table.created"), i18n.d("table.created")).bg(COLOR.WHITE15),
-            "updated", new Button(i18n.n("table.updated"), i18n.d("table.updated")).bg(COLOR.WHITE15)
+            "file", new Button(i18n.t("RacesSelectionPanel.table.file.name"), i18n.t("RacesSelectionPanel.table.file.desc")).bg(COLOR.WHITE15),
+            "save", new Button(i18n.t("RacesSelectionPanel.table.save.name"), i18n.t("RacesSelectionPanel.table.save.desc")).bg(COLOR.WHITE15),
+            "active", new Button(i18n.t("RacesSelectionPanel.table.active.name"), i18n.t("RacesSelectionPanel.table.active.desc")).bg(COLOR.WHITE15),
+            "created", new Button(i18n.t("RacesSelectionPanel.table.created.name"), i18n.t("RacesSelectionPanel.table.created.desc")).bg(COLOR.WHITE15),
+            "updated", new Button(i18n.t("RacesSelectionPanel.table.updated.name"), i18n.t("RacesSelectionPanel.table.updated.desc")).bg(COLOR.WHITE15)
         );
 
         // race config table and search
-        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.n("search.input"));
+        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("RacesSelectionPanel.search.input.name"));
         racesConfigTable = Table.<Entry>builder()
             .evenOdd(true)
             .scrollable(true)

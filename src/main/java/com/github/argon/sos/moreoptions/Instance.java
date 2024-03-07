@@ -24,7 +24,7 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 
 	private boolean initGamePresent = false;
 
-	private boolean newGame = true;
+	private boolean newGameSession = true;
 
 	private final MoreOptionsScript script;
 
@@ -32,7 +32,7 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 	public void update(double v) {
 		if (!initGameRunning) {
 			initGameRunning = true;
-			script.initGameRunning();
+			script.initGameUpdating();
 		}
 
 		if (!initGamePresent && !VIEW.inters().load.isActivated()) {
@@ -52,8 +52,8 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 	public void load(FileGetter fileGetter) throws IOException {
 		script.initGameSaveLoaded(Paths.get(fileGetter.getPath()));
 
-		if (newGame) {
-			newGame = false;
+		if (newGameSession) {
+			newGameSession = false;
 			log.debug("Game just started");
 			script.initNewGameSession();
 		} else {

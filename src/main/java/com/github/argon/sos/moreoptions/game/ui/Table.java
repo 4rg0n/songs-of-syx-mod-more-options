@@ -1,7 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.Action;
-import com.github.argon.sos.moreoptions.ui.builder.element.ScrollableBuilder;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import init.sprite.UI.UI;
@@ -12,7 +11,6 @@ import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GHeader;
-import util.gui.table.GScrollRows;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -151,13 +149,14 @@ public class Table<Value> extends GuiSection implements
             .mapToInt(value -> value.body().height())
             .sum();
         if (search != null || scrollable || (displayHeight > 0 && currentHeight > displayHeight)) {
-            GScrollRows gScrollRows = ScrollableBuilder.builder()
+            ScrollRows scrollRows = ScrollRows.builder()
                 .height(displayHeight)
                 .rows(rows)
+                .slide(true)
                 .search(search)
-                .build().getResult();
+                .build();
 
-            addDown(0, gScrollRows.view());
+            addDown(0, scrollRows.view());
         } else {
             for (ColumnRow<Value> row : rows) {
                 addDown(0, row);

@@ -82,4 +82,10 @@ public class MetricExporter implements InitPhases {
             }
         }
     }
+
+    @Override
+    public void initGameSaveReloaded() {
+        // start a new export file on load
+        newExportFile();
+    }
 }

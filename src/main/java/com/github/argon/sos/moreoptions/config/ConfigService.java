@@ -1,6 +1,5 @@
 package com.github.argon.sos.moreoptions.config;
 
-import com.github.argon.sos.moreoptions.i18n.Dictionary;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -8,13 +7,10 @@ import init.paths.PATH;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -113,43 +109,5 @@ public class ConfigService {
             log.error("Could load config: %s", filePath, e);
             return Optional.empty();
         }
-    }
-
-    public Optional<Map<String, Dictionary.Entry>> loadDictionary(PATH path, String fileName) {
-        return jsonService.loadJson(path, fileName).map(json -> {
-            HashMap<String, Dictionary.Entry> dictEntries = new HashMap<>();
-
-            json.keys().forEach(key -> {
-                Json jsonDictEntry = json.json(key);
-
-                String title = jsonDictEntry.text("TITLE", key);
-                String description = jsonDictEntry.text("DESC", null);
-
-                dictEntries.put(key, Dictionary.Entry.builder()
-                    .key(key)
-                    .title(title)
-                    .description(description)
-                    .build());
-            });
-
-            return dictEntries;
-        });
-    }
-
-    public boolean saveDictionary(Map<String, Dictionary.Entry> entries, PATH path, String fileName) {
-        JsonE jsonEntries = new JsonE();
-
-        entries.forEach((key, entry) -> {
-            JsonE jsonDictEntry = new JsonE();
-            jsonDictEntry.addString("TITLE", entry.getTitle());
-
-            if (entry.getDescription() != null) {
-                jsonDictEntry.addString("DESC", entry.getDescription());
-            }
-
-            jsonEntries.add(key, jsonDictEntry);
-        });
-
-        return jsonService.saveJson(jsonEntries, path, fileName);
     }
 }

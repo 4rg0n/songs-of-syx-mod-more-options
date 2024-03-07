@@ -2,17 +2,15 @@ package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
-import com.github.argon.sos.moreoptions.ui.builder.element.*;
-import com.github.argon.sos.moreoptions.ui.builder.section.CheckboxesBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.section.SlidersBuilder;
+import com.github.argon.sos.moreoptions.ui.UiMapper;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,33 +20,39 @@ import java.util.stream.Collectors;
 public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Events, EventsPanel> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
+    private final static I18n i18n = I18n.get(EventsPanel.class);
 
     @Getter
-    private final Map<String, Checkbox> settlementEventsCheckboxes = new HashMap<>();
+    private final Map<String, Checkbox> settlementEventsCheckboxes;
 
-    private final Map<String, Checkbox> worldEventsCheckboxes = new HashMap<>();
+    private final Map<String, Checkbox> worldEventsCheckboxes;
     private final Map<String, Slider> eventsChanceSliders;
 
     public EventsPanel(MoreOptionsV2Config.Events events) {
-        BuildResult<Table<Boolean>, Map<String, Checkbox>> settlementCheckboxesResult = checkboxes(events.getSettlement());
-        GuiSection settlement = settlementCheckboxesResult.getResult();
-        settlementEventsCheckboxes.putAll(settlementCheckboxesResult.getInteractable());
+        this.settlementEventsCheckboxes = UiMapper.toCheckboxes(events.getSettlement());
+        this.worldEventsCheckboxes = UiMapper.toCheckboxes(events.getWorld());
 
-        BuildResult<Table<Boolean>, Map<String, Checkbox>> worldCheckboxesResult = checkboxes(events.getWorld());
-        GuiSection world = worldCheckboxesResult.getResult();
-        worldEventsCheckboxes.putAll(worldCheckboxesResult.getInteractable());
+        Table<Integer> settlementTable = Table.<Integer>builder()
+            .rows(UiMapper.toLabeledColumnRows(settlementEventsCheckboxes, i18n))
+            .displayHeight(400)
+            .build();
+
+        Table<Integer> worldTable = Table.<Integer>builder()
+            .rows(UiMapper.toLabeledColumnRows(worldEventsCheckboxes, i18n))
+            .displayHeight(400)
+            .build();
 
         GuiSection settlementSection = new GuiSection();
-        GHeader settlementHeader = new GHeader("Settlement");
-        settlementHeader.hoverInfoSet("Events occurring in your settlement.");
+        GHeader settlementHeader = new GHeader(i18n.t("EventsPanel.header.settlement.name"));
+        settlementHeader.hoverInfoSet(i18n.t("EventsPanel.header.settlement.desc"));
         settlementSection.addDown(0, settlementHeader);
-        settlementSection.addDown(10, settlement);
+        settlementSection.addDown(10, settlementTable);
 
         GuiSection worldSection = new GuiSection();
-        GHeader worldHeader = new GHeader("World");
-        settlementHeader.hoverInfoSet("Events occurring in the world.");
+        GHeader worldHeader = new GHeader(i18n.t("EventsPanel.header.world.name"));
+        settlementHeader.hoverInfoSet(i18n.t("EventsPanel.header.world.desc"));
         worldSection.addDown(0, worldHeader);
-        worldSection.addDown(10, world);
+        worldSection.addDown(10, worldTable);
 
         GuiSection checkBoxSection = new GuiSection();
         checkBoxSection.addRight(0, settlementSection);
@@ -56,41 +60,21 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
         checkBoxSection.addRight(0, worldSection);
         addDownC(0, checkBoxSection);
 
-        BuildResult<Table, Map<String, Slider>> buildResult = sliders(events.getChance());
-        GuiSection sliders = buildResult.getResult();
-        eventsChanceSliders = buildResult.getInteractable();
+        this.eventsChanceSliders = UiMapper.toSliders(events.getChance());
+        List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(eventsChanceSliders, i18n);
+        Table<Integer> chanceTable = Table.<Integer>builder()
+            .rows(rows)
+            .build();
 
         GuiSection eventsChanceSection = new GuiSection();
-        GHeader eventChancesHeader = new GHeader("Event Chances");
-        eventChancesHeader.hoverInfoSet("How often an event occurs. Will be multiplied.");
+        GHeader eventChancesHeader = new GHeader(i18n.t("EventsPanel.header.chance.name"));
+        eventChancesHeader.hoverInfoSet(i18n.t("EventsPanel.header.chance.desc"));
         eventsChanceSection.addDown(0, eventChancesHeader);
-        eventsChanceSection.addDown(5, sliders);
+        eventsChanceSection.addDown(5, chanceTable);
 
         HorizontalLine horizontalLine = new HorizontalLine(eventsChanceSection.body().width(), 14, 1);
         addDownC(10, horizontalLine);
         addDownC(10, eventsChanceSection);
-    }
-
-    private BuildResult<Table, Map<String, Slider>> sliders(
-        Map<String, MoreOptionsV2Config.Range> eventsChanceConfig
-    ) {
-        Map<String, LabeledSliderBuilder.Definition> sliderDefinitions = eventsChanceConfig.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            config -> LabeledSliderBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key(config.getKey())
-                    .title(config.getKey())
-                    .build())
-                .sliderDefinition(SliderBuilder.Definition.fromRange(config.getValue())
-                    .maxWidth(300)
-                    .build())
-                .build()));
-
-
-        return SlidersBuilder.builder()
-            .displayHeight(150)
-            .definitions(sliderDefinitions)
-            .build();
     }
 
     @Override
@@ -145,24 +129,5 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
                 log.warn("No slider with key %s found in UI", key);
             }
         });
-    }
-
-
-    private BuildResult<Table<Boolean>, Map<String, Checkbox>> checkboxes(Map<String, Boolean> eventConfig) {
-        Map<String, LabeledCheckboxBuilder.Definition> settlementCheckboxes = eventConfig.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            config -> LabeledCheckboxBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key(config.getKey())
-                    .title(config.getKey())
-                    .build()
-                )
-                .checkboxDefinition(CheckboxBuilder.Definition.builder().build())
-                .build()));
-
-
-        return CheckboxesBuilder.builder()
-            .displayHeight(300)
-            .translate(settlementCheckboxes).build();
     }
 }

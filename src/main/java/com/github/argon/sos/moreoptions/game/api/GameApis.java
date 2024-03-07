@@ -72,8 +72,8 @@ public class GameApis implements InitPhases {
     public void initGameUiPresent() {}
 
     @Override
-    public void initGameRunning() {
-        ui().initGameRunning();
+    public void initGameUpdating() {
+        ui().initGameUpdating();
     }
 
     @Override
@@ -82,9 +82,9 @@ public class GameApis implements InitPhases {
     }
 
     @Override
-    public void initCreateInstance() {
-        booster().initCreateInstance();
-        race().initCreateInstance();
+    public void initModCreateInstance() {
+        booster().initModCreateInstance();
+        race().initModCreateInstance();
     }
 
     @Override
@@ -103,5 +103,6 @@ public class GameApis implements InitPhases {
 
     @Override
     public void initGameSaveReloaded() {
+        clear();
     }
 }

@@ -65,19 +65,19 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         Toggler<Boolean> toggler = new Toggler<>(Lists.of(
             UiInfo.<Boolean>builder()
                 .key(true)
-                .title(i18n.n("toggle.start"))
-                .description(i18n.d("toggle.start"))
+                .title(i18n.t("MetricsPanel.toggle.start.name"))
+                .description(i18n.t("MetricsPanel.toggle.start.desc"))
                 .build(),
             UiInfo.<Boolean>builder()
                 .key(false)
-                .title(i18n.n("toggle.stop"))
-                .description(i18n.d("toggle.stop"))
+                .title(i18n.t("MetricsPanel.toggle.stop.name"))
+                .description(i18n.t("MetricsPanel.toggle.stop.desc"))
                 .build()
         ), 0, true, true, true);
         ColumnRow<Void> onOffToggleRow = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.n("toggle.label"))
-                .description(i18n.d("toggle.label"))
+                .name(i18n.t("MetricsPanel.toggle.label.name"))
+                .description(i18n.t("MetricsPanel.toggle.label.desc"))
                 .build())
             .column(toggler)
             .build();
@@ -90,11 +90,11 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
             .build();
         ColumnRow<Void> collectionRateRow = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.n("collectionRate.label"))
-                .description(i18n.d("collectionRate.label"))
+                .name(i18n.t("MetricsPanel.collectionRate.label.name"))
+                .description(i18n.t("MetricsPanel.collectionRate.label.desc"))
                 .build())
             .column(collectionRate)
-            .column(new GTextR(UI.FONT().S, "Seconds"))
+            .column(new GTextR(UI.FONT().S, i18n.t("MetricsPanel.text.seconds")))
             .build();
 
         // Export rate slider
@@ -105,11 +105,11 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
             .build();
         ColumnRow<Void> exportRateRow = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.n("exportRate.label"))
-                .description(i18n.d("exportRate.label"))
+                .name(i18n.t("MetricsPanel.exportRate.label.name"))
+                .description(i18n.t("MetricsPanel.exportRate.label.desc"))
                 .build())
             .column(exportRate)
-            .column(new GTextR(UI.FONT().S, "Minutes"))
+            .column(new GTextR(UI.FONT().S, i18n.t("MetricsPanel.text.minutes")))
             .build();
 
 
@@ -117,8 +117,8 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
 
         // Export file path with folder button
         this.exportFilePathView = new UISwitcher(exportFilePathSection, false);
-        this.exportFolderButton = new Button(i18n.n("button.folder"), i18n.d("button.folder", exportFolderPath));
-        this.copyExportFileButton = new Button(i18n.n("button.copy"), i18n.d("button.copy"));
+        this.exportFolderButton = new Button(i18n.t("MetricsPanel.button.folder.name"), i18n.t("MetricsPanel.button.folder.desc", exportFolderPath));
+        this.copyExportFileButton = new Button(i18n.t("MetricsPanel.button.copy.name"), i18n.t("MetricsPanel.button.copy.desc"));
 
         GuiSection exportButtons = new GuiSection();
         exportButtons.addRightC(0, exportFolderButton);
@@ -126,8 +126,8 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
 
         ColumnRow<Void> exportFileRow = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.n("exportFile.label"))
-                .description(i18n.d("exportFile.label"))
+                .name(i18n.t("MetricsPanel.exportFile.label.name"))
+                .description(i18n.t("MetricsPanel.exportFile.label.desc"))
                 .build())
             .column(exportFilePathView)
             .column(exportButtons)
@@ -135,18 +135,18 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
 
         // Search Bar with uncheck and check buttons
         GuiSection searchBar = new GuiSection();
-        this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.n("search.input"));
+        this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("MetricsPanel.search.input.name"));
         searchBar.addRightC(0, new GInput(searchInput));
         this.searchToggler = new Toggler<>(Lists.of(
             UiInfo.<Boolean>builder()
                 .key(true)
-                .title(i18n.n("search.check"))
-                .description(i18n.d("search.check"))
+                .title(i18n.t("MetricsPanel.search.check.name"))
+                .description(i18n.t("MetricsPanel.search.check.desc"))
                 .build(),
             UiInfo.<Boolean>builder()
                 .key(false)
-                .title(i18n.n("search.uncheck"))
-                .description(i18n.d("search.uncheck"))
+                .title(i18n.t("MetricsPanel.search.uncheck.name"))
+                .description(i18n.t("MetricsPanel.search.uncheck.desc"))
                 .build()
         ),0, true, true, false);
         searchBar.addRightC(10, searchToggler);
@@ -192,8 +192,8 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
             .displayHeight(200)
             .build();
 
-        GHeader statsHeader = new GHeader(i18n.n("stats.header"));
-        statsHeader.hoverInfoSet(i18n.d("stats.header"));
+        GHeader statsHeader = new GHeader(i18n.t("MetricsPanel.stats.header.name"));
+        statsHeader.hoverInfoSet(i18n.t("MetricsPanel.stats.header.desc"));
 
         addDownC(0, configTable);
         addDownC(15, statsHeader);

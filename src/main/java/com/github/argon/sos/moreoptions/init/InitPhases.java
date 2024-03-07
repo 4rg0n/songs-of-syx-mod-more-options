@@ -17,7 +17,7 @@ public interface InitPhases {
     /**
      * When the game starts the update() process
      */
-    default void initGameRunning() {
+    default void initGameUpdating() {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 
@@ -31,7 +31,7 @@ public interface InitPhases {
     /**
      * When the mod instance is created
      */
-    default void initCreateInstance() {
+    default void initModCreateInstance() {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 

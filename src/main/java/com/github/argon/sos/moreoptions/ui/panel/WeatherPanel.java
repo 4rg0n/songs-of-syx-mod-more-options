@@ -1,16 +1,18 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
-import com.github.argon.sos.moreoptions.ui.builder.section.SlidersBuilder;
+import com.github.argon.sos.moreoptions.ui.UiMapper;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -19,20 +21,20 @@ import java.util.stream.Collectors;
  */
 public class WeatherPanel extends GuiSection implements Valuable<Map<String, MoreOptionsV2Config.Range>, WeatherPanel> {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
+    private static final I18n i18n = I18n.get(WeatherPanel.class);
+
     @Getter
     private final Map<String, Slider> sliders;
     public WeatherPanel(Map<String, MoreOptionsV2Config.Range> weatherConfig) {
-        BuildResult<Table, Map<String, Slider>> slidersBuildResult = SlidersBuilder.builder()
+        this.sliders = UiMapper.toSliders(weatherConfig);
+        List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(sliders, i18n);
+        Table<Integer> weatherTable = Table.<Integer>builder()
+            .rows(rows)
             .displayHeight(400)
-            .defaults(weatherConfig)
+            .rowPadding(5)
             .build();
 
-        GuiSection sliderSection = slidersBuildResult.getResult();
-        sliders = slidersBuildResult.getInteractable();
-
-        GuiSection section = new GuiSection();
-        section.addDown(0, sliderSection);
-        addDownC(0, section);
+        addDownC(0, weatherTable);
     }
 
     @Override

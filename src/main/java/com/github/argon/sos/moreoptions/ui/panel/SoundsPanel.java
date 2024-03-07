@@ -4,13 +4,10 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
-import com.github.argon.sos.moreoptions.ui.builder.element.LabelBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.LabeledSliderBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.element.SliderBuilder;
-import com.github.argon.sos.moreoptions.ui.builder.section.SlidersBuilder;
+import com.github.argon.sos.moreoptions.ui.UiMapper;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
 
@@ -22,64 +19,49 @@ import java.util.stream.Collectors;
  */
 public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Sounds, SoundsPanel> {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
+    private final static I18n i18n = I18n.get(SoundsPanel.class);
 
     private final Map<String, Slider> ambienceSoundSliders;
     private final Map<String, Slider> settlementSoundSliders;
     private final Map<String, Slider> roomSoundSliders;
     public SoundsPanel(MoreOptionsV2Config.Sounds sounds) {
-        BuildResult<Table, Map<String, Slider>> ambienceSlidersResult = SlidersBuilder.builder()
+
+        this.ambienceSoundSliders = UiMapper.toSliders(sounds.getAmbience());
+        this.settlementSoundSliders = UiMapper.toSliders(sounds.getSettlement());
+        this.roomSoundSliders = UiMapper.toSliders(sounds.getRoom());
+
+        Table<Integer> ambienceSoundsTable = Table.<Integer>builder()
+            .rows(UiMapper.toLabeledColumnRows(ambienceSoundSliders, i18n))
+            .rowPadding(5)
             .displayHeight(150)
-            .definitions(sliders(sounds.getAmbience()))
             .build();
-        GuiSection ambienceSoundSection = ambienceSlidersResult.getResult();
-        this.ambienceSoundSliders = ambienceSlidersResult.getInteractable();
 
-        BuildResult<Table, Map<String, Slider>> settlementSlidersResult = SlidersBuilder.builder()
+        Table<Integer> settlementSoundsTable = Table.<Integer>builder()
+            .rows(UiMapper.toLabeledColumnRows(settlementSoundSliders, i18n))
+            .rowPadding(5)
             .displayHeight(150)
-            .definitions(sliders(sounds.getSettlement()))
             .build();
-        GuiSection settlementSoundSection = settlementSlidersResult.getResult();
-        this.settlementSoundSliders = settlementSlidersResult.getInteractable();
 
-        BuildResult<Table, Map<String, Slider>> roomSlidersResult = SlidersBuilder.builder()
+        Table<Integer> roomSoundsTable = Table.<Integer>builder()
+            .rows(UiMapper.toLabeledColumnRows(roomSoundSliders, i18n))
+            .rowPadding(5)
             .displayHeight(150)
-            .definitions(sliders(sounds.getRoom()))
             .build();
-        GuiSection roomSoundSection = roomSlidersResult.getResult();
-        this.roomSoundSliders = roomSlidersResult.getInteractable();
 
-        GuiSection section = new GuiSection();
-        GHeader ambienceSoundsHeader = new GHeader("Ambience Sounds");
-        ambienceSoundsHeader.hoverInfoSet("Ambience Sounds playing in your settlement");
-        section.addDown(0, ambienceSoundsHeader);
-        section.addDown(5, ambienceSoundSection);
+        GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsPanel.header.ambienceSounds.name"));
+        ambienceSoundsHeader.hoverInfoSet(i18n.d("SoundsPanel.header.ambienceSounds.desc"));
+        addDown(0, ambienceSoundsHeader);
+        addDown(5, ambienceSoundsTable);
 
-        GHeader settlementSoundsHeader = new GHeader("Settlement Sounds");
-        settlementSoundsHeader.hoverInfoSet("Sounds playing in your settlement");
-        section.addDown(10, settlementSoundsHeader);
-        section.addDown(5, settlementSoundSection);
+        GHeader settlementSoundsHeader = new GHeader(i18n.t("SoundsPanel.header.settlementSounds.name"));
+        settlementSoundsHeader.hoverInfoSet(i18n.d("SoundsPanel.header.settlementSounds.desc"));
+        addDown(10, settlementSoundsHeader);
+        addDown(5, settlementSoundsTable);
 
-        GHeader roomSoundsHeader = new GHeader("Room Sounds");
-        roomSoundsHeader.hoverInfoSet("Sounds playing from buildings in your settlement");
-        section.addDown(10, roomSoundsHeader);
-        section.addDown(5, roomSoundSection);
-
-        addDownC(0, section);
-    }
-
-    private Map<String, LabeledSliderBuilder.Definition> sliders(Map<String, MoreOptionsV2Config.Range> slidersConfig) {
-        return slidersConfig.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            config -> LabeledSliderBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key(config.getKey())
-                    .title(config.getKey())
-                    .build())
-                .sliderDefinition(SliderBuilder.Definition.fromRange(config.getValue())
-                    .maxWidth(300)
-                    .build())
-                .labelWidth(200)
-                .build()));
+        GHeader roomSoundsHeader = new GHeader(i18n.t("SoundsPanel.header.roomSounds.name"));
+        roomSoundsHeader.hoverInfoSet(i18n.d("SoundsPanel.header.roomSounds.desc"));
+        addDown(10, roomSoundsHeader);
+        addDown(5, roomSoundsTable);
     }
 
     @Override

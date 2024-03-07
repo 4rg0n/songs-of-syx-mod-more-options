@@ -46,18 +46,18 @@ public class UiFactory {
     /**
      * Generates More Options ui via available config
      */
-    public Modal<MoreOptions> buildMoreOptionsModal(String title, MoreOptionsV2Config config) {
+    public Modal<MoreOptionsPanel> buildMoreOptionsModal(String title, MoreOptionsV2Config config) {
         log.debug("Building '%s' ui", title);
 
-        List<BoostersPanel.Entry> boosterEntries = uiMapper.mapToBoosterPanelEntries(config.getBoosters());
-        Map<String, List<RacesPanel.Entry>> raceEntries = uiMapper.mapToRacePanelEntries(config.getRaces().getLikings());
+        List<BoostersPanel.Entry> boosterEntries = uiMapper.toBoosterPanelEntries(config.getBoosters());
+        Map<String, List<RacesPanel.Entry>> raceEntries = uiMapper.toRacePanelEntries(config.getRaces().getLikings());
 
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod().orElse(null);
         Path exportFolder = MetricExporter.EXPORT_FOLDER;
         Path exportFile = metricExporter.getExportFile();
 
-        Modal<MoreOptions> moreOptionsModal = new Modal<>(title, new MoreOptions(
+        Modal<MoreOptionsPanel> moreOptionsModal = new Modal<>(title, new MoreOptionsPanel(
             config,
             configStore,
             boosterEntries,

@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.util.ClassUtil;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -210,9 +212,40 @@ public class ColumnRow<Value> extends GuiSection implements
         return this;
     }
 
+    /**
+     * @param index of column
+     * @param clazz to cast to
+     * @return found column cast to given class or null if there's no element at this index
+     * @param <Element> type of the element in column
+     *
+     * @throws ClassCastException when the element could not be cast to given class
+     */
+    @Nullable
+    public <Element> Element getColumnAs(int index, Class<Element> clazz) {
+        // nothing there to get?
+        if (index > columns.size() - 1) {
+            return null;
+        }
+
+        //noinspection unchecked
+        return (Element) clazz;
+    }
+
+    /**
+     * @param clazz of element
+     * @return found element
+     * @param <Element> type of element you are looking for
+     */
+    public <Element> Optional<Element> findInColumns(Class<Element> clazz) {
+        return columns.stream()
+            .filter(column -> ClassUtil.instanceOf(column, clazz))
+            .map(clazz::cast)
+            .findFirst();
+    }
+
     public static class ColumnRowBuilder<Value> {
 
-        private List<GuiSection> columns = new ArrayList<>();
+        private final List<GuiSection> columns = new ArrayList<>();
 
         public ColumnRowBuilder<Value> columns(List<? extends RENDEROBJ> columns) {
             columns.forEach(this::column);
