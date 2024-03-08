@@ -57,7 +57,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         phaseManager.initBeforeGameCreated();
     }
 
-    public Level initLogLevel() {
+    protected Level initLogLevel() {
         return LOG_LEVEL_DEFAULT;
     }
 
@@ -66,11 +66,6 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         phaseManager.initModCreateInstance();
     }
 
-
-    /**
-     * BUG!: Method will be executed TWICE by the game
-     * (will be fixed in v65 =))
-     */
     @Override
     public SCRIPT_INSTANCE createInstance() {
         if (instance == null) {

@@ -10,7 +10,7 @@ import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.i18n.I18n;
-import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.i18n.I18nMessages;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.JsonWriter;
@@ -20,9 +20,12 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
+import com.github.argon.sos.moreoptions.phase.Phase;
+import com.github.argon.sos.moreoptions.phase.PhaseManager;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.ui.panel.MetricsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
+import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
@@ -107,13 +110,17 @@ public class UiConfig implements Phases {
     private Modal<BackupDialog> backupDialog;
 
     @Override
+    public void initBeforeGameCreated() {
+        initDebugActions();
+    }
+
+    @Override
     public void initGameUiPresent() {
         MoreOptionsV2Config moreOptionsConfig = configStore.getCurrentConfig();
 
         // create More Options ui
         moreOptionsModal = uiFactory.buildMoreOptionsModal(MOD_INFO.name.toString(), moreOptionsConfig);
         initActions(moreOptionsModal);
-        initDebugActions(moreOptionsModal, configStore);
         inject(moreOptionsModal);
         Optional<MoreOptionsV2Config> backupConfig = configStore.getBackupConfig();
 
@@ -121,7 +128,7 @@ public class UiConfig implements Phases {
         if (backupConfig.isPresent()) {
             backupDialog = new Modal<>(MOD_INFO.name.toString(), new BackupDialog());
             backupMoreOptionsModal = uiFactory.buildMoreOptionsModal(
-                MOD_INFO.name + " Backup",
+                MOD_INFO.name + " " + i18n.t("MoreOptionsPanel.backup.title.suffix"),
                 backupConfig.get());
 
             configStore.setCurrentConfig(backupConfig.get());
@@ -180,13 +187,16 @@ public class UiConfig implements Phases {
     /**
      * Debug commands are executable via the in game debug panel
      */
-    public void initDebugActions(Modal<MoreOptionsPanel> moreOptionsModal, ConfigStore configStore) {
+    public void initDebugActions() {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
-        IDebugPanel.add(MOD_INFO.name + ":show", moreOptionsModal::show);
+        IDebugPanel.add(MOD_INFO.name + ":phases:" + Phase.ON_GAME_SAVE_LOADED  , () -> PhaseManager.getInstance().onGameSaveReloaded());
         IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());
         IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> MetricScheduler.getInstance().stop());
-        IDebugPanel.add(MOD_INFO.name + ":createBackup", configStore::createBackupConfig);
-        IDebugPanel.add(MOD_INFO.name + ":log.stats", () -> {
+        IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> MetricScheduler.getInstance().start());
+        IDebugPanel.add(MOD_INFO.name + ":config:backup", ConfigStore.getInstance()::createBackupConfig);
+        IDebugPanel.add(MOD_INFO.name + ":config:delete", ConfigStore.getInstance()::deleteConfig);
+        IDebugPanel.add(MOD_INFO.name + ":i18n:load", I18nMessages.getInstance()::loadMessages);
+        IDebugPanel.add(MOD_INFO.name + ":log:stats", () -> {
             log.info("Events Status: %s", gameApis.events().readEventsEnabledStatus()
                 .entrySet().stream().map(entry -> entry.getKey() + " enabled: " + entry.getValue() + "\n")
                 .collect(Collectors.joining()));

@@ -44,10 +44,14 @@ public class I18nMessages implements Phases {
         }
     }
 
+    public void loadMessages() {
+        this.locale = gameLangApi.getCurrent();
+        log.debug("loading localization messages for: %s", locale);
+        this.messages = loadMessages(locale);
+    }
+
     @Override
     public void initBeforeGameCreated() {
-        this.locale = gameLangApi.getCurrent();
-        log.debug("Initializing localization messages for: %s", locale);
-        this.messages = loadMessages(locale);
+        loadMessages();
     }
 }

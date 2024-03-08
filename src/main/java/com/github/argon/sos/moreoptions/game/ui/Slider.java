@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.util.TextFormatUtil;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.util.UiUtil;
 import init.D;
 import init.sprite.SPRITES;
@@ -39,11 +40,11 @@ import java.util.stream.Collectors;
  */
 public class Slider extends GuiSection implements Valuable<Integer, Slider>, Resettable<Slider> {
 
+    private static final I18n i18n = I18n.get(Slider.class);
+
     private static final int midWidth = 8;
-    // todo translation
-    private static final CharSequence setAmount = "Set amount";
-    // todo translation
-    private static final CharSequence setAmountD = "Set amount {0}-{1}";
+    private final CharSequence setAmount;
+    private final CharSequence setAmountD;
 
     private final INT.INTE in;
 
@@ -99,6 +100,10 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
         this.initialValue = in.get();
         this.initialDValue = in.getD();
         this.valueDisplay = valueDisplay;
+
+        this.setAmount = i18n.t("Slider.amount.set");
+        this.setAmountD = i18n.t("Slider.amount.range.set");
+
         int sliderWidth = (Math.abs(min) + Math.abs(max)) * 2;
         int sliderHeight = 24;
 
