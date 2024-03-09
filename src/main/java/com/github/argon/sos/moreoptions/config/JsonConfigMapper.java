@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.log.Level;
-import com.github.argon.sos.moreoptions.util.JsonUtil;
+import com.github.argon.sos.moreoptions.game.util.JsonUtil;
 import com.github.argon.sos.moreoptions.util.Sets;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;

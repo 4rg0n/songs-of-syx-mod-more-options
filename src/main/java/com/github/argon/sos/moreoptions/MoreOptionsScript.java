@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.game.AbstractScript;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.i18n.I18nMessages;
 import com.github.argon.sos.moreoptions.phase.PhaseManager;
@@ -76,18 +77,6 @@ public final class MoreOptionsScript extends AbstractScript {
 			configurator.applyConfig(configStore.getCurrentConfig());
 		}
 
-		// FIXME
-		//      * NOTHING
-
-		// TODO
-		//     * further testing
-
-		// TODO FUTURE
-		//  	is there a better way to streamline the process of adding new ui elements with their data and config?
-		//      * better config mapping? Race Interaction JsonE and ObjectMapper?
-		//      * easier mapping? mapstruct?
-
-		// TODO add a MoreOptionsViewModel inbetween?
 		// TODO experimental
 //		gameApis.weatherApi().lockDayCycle(1, true);
 	}

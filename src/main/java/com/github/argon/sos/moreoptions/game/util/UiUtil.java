@@ -1,8 +1,6 @@
-package com.github.argon.sos.moreoptions.util;
+package com.github.argon.sos.moreoptions.game.util;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -10,23 +8,14 @@ import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.SPRITE;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiUtil {
-
-    public static Slider.ValueDisplay fromDisplayMode(MoreOptionsV2Config.Range.DisplayMode displayMode) {
-            switch (displayMode) {
-                case PERCENTAGE:
-                    return Slider.ValueDisplay.PERCENTAGE;
-                case ABSOLUTE:
-                    return Slider.ValueDisplay.ABSOLUTE;
-                default:
-                case NONE:
-                    return Slider.ValueDisplay.NONE;
-            }
-    }
 
     /**
      * @return width of widest ui element in list

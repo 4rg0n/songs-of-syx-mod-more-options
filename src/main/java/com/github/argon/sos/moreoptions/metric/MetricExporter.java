@@ -22,7 +22,7 @@ public class MetricExporter implements Phases {
     @Getter(lazy = true)
     private final static MetricExporter instance = new MetricExporter(
         MetricCollector.getInstance(),
-        CSVWriter.getInstance()
+        MetricCsvWriter.getInstance()
     );
 
     private final static Logger log = Loggers.getLogger(MetricExporter.class);
@@ -34,7 +34,7 @@ public class MetricExporter implements Phases {
     private Path exportFile = generateExportFile();
 
     private final MetricCollector metricCollector;
-    private final CSVWriter csvWriter;
+    private final MetricCsvWriter metricCsvWriter;
 
     public void newExportFile() {
         exportFile = generateExportFile();
@@ -62,7 +62,7 @@ public class MetricExporter implements Phases {
 
         try {
             log.debug("Exporting %s metrics to %s", metrics.size(), exportFile);
-            csvWriter.write(exportFile, metrics);
+            metricCsvWriter.write(exportFile, metrics);
         } catch (Exception e) {
             log.error("Could not export metrics to: %s. %s metrics were lost :(", exportFile, metrics.size(), e);
             return false;

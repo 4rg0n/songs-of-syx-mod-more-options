@@ -9,7 +9,7 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.util.Maps;
-import com.github.argon.sos.moreoptions.util.UiUtil;
+import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import game.boosting.Boostable;
 import game.boosting.BoostableCat;
 import init.race.RACES;

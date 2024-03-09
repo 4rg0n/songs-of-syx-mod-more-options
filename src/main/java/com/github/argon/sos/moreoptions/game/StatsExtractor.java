@@ -1,7 +1,9 @@
-package com.github.argon.sos.moreoptions.metric;
+package com.github.argon.sos.moreoptions.game;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.metric.Metric;
+import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
 import init.race.RACES;
@@ -20,7 +22,7 @@ import java.util.*;
  * Used by the {@link MetricCollector} for collecting {@link Metric}
  */
 @RequiredArgsConstructor
-class StatsExtractor {
+public class StatsExtractor {
     private final static Logger log = Loggers.getLogger(StatsExtractor.class);
 
     /**

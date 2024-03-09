@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions;
+package com.github.argon.sos.moreoptions.game;
 
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -21,9 +21,9 @@ import java.nio.file.Paths;
  * todo add game state object: containing flags from here; save info; mod info;... (how refresh state? o.o)
  */
 @RequiredArgsConstructor
-final class Instance implements SCRIPT.SCRIPT_INSTANCE {
+public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 
-	private final static Logger log = Loggers.getLogger(Instance.class);
+	private final static Logger log = Loggers.getLogger(ScriptInstance.class);
 
 	private boolean initGameRunning = false;
 	private boolean initGamePresent = false;

@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.util;
+package com.github.argon.sos.moreoptions.game.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

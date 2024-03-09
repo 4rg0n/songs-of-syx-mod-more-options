@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.Action;
-import com.github.argon.sos.moreoptions.util.UiUtil;
+import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

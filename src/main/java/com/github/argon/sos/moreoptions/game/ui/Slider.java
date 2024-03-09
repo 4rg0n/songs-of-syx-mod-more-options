@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.game.ui;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.util.TextFormatUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
-import com.github.argon.sos.moreoptions.util.UiUtil;
+import com.github.argon.sos.moreoptions.ui.UiMapper;
 import init.D;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
@@ -472,7 +472,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
                 .min(range.getMin())
                 .max(range.getMax())
                 .value(range.getValue())
-                .valueDisplay(UiUtil.fromDisplayMode(range.getDisplayMode()));
+                .valueDisplay(UiMapper.toValueDisplay(range.getDisplayMode()));
         }
 
         public SliderBuilder thresholds(Map<Integer, COLOR> thresholds) {

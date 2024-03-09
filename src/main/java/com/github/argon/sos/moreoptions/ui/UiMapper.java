@@ -117,4 +117,16 @@ public class UiMapper {
             Map.Entry::getKey,
             entry -> new Checkbox(entry.getValue())));
     }
+
+    public static Slider.ValueDisplay toValueDisplay(MoreOptionsV2Config.Range.DisplayMode displayMode) {
+        switch (displayMode) {
+            case PERCENTAGE:
+                return Slider.ValueDisplay.PERCENTAGE;
+            case ABSOLUTE:
+                return Slider.ValueDisplay.ABSOLUTE;
+            default:
+            case NONE:
+                return Slider.ValueDisplay.NONE;
+        }
+    }
 }

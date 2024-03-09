@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
  * Writes data in CSV format into a file
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class CSVWriter {
+public class MetricCsvWriter {
 
     @Getter(lazy = true)
-    private final static CSVWriter instance = new CSVWriter();
+    private final static MetricCsvWriter instance = new MetricCsvWriter();
 
-    private final static Logger log = Loggers.getLogger(CSVWriter.class);
+    private final static Logger log = Loggers.getLogger(MetricCsvWriter.class);
 
     @Setter
     private String delimiter = ";";

@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.util.Lists;
-import com.github.argon.sos.moreoptions.util.UiUtil;
+import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;

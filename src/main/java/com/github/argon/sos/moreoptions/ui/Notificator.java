@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions;
+package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.Notification;

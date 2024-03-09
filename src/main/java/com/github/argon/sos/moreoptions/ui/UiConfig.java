@@ -1,7 +1,6 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
-import com.github.argon.sos.moreoptions.Notificator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.JsonConfigMapper;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
@@ -114,6 +113,9 @@ public class UiConfig implements Phases {
         initDebugActions();
     }
 
+    /**
+     * Prepare ui elements
+     */
     @Override
     public void initGameUiPresent() {
         MoreOptionsV2Config moreOptionsConfig = configStore.getCurrentConfig();

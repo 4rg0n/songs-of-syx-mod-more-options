@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.metric;
 
+import com.github.argon.sos.moreoptions.game.StatsExtractor;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import game.GAME;

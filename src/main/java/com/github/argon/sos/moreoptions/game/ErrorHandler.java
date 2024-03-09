@@ -1,9 +1,8 @@
-package com.github.argon.sos.moreoptions;
+package com.github.argon.sos.moreoptions.game;
 
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import init.error.ErrorHandler;
 import lombok.RequiredArgsConstructor;
 import snake2d.Errors;
 
@@ -13,9 +12,9 @@ import snake2d.Errors;
  * @param <Script> type of the mod script
  */
 @RequiredArgsConstructor
-public class CustomErrorHandler<Script extends Phases> extends ErrorHandler {
+public class ErrorHandler<Script extends Phases> extends init.error.ErrorHandler {
 
-    private final static Logger log = Loggers.getLogger(CustomErrorHandler.class);
+    private final static Logger log = Loggers.getLogger(ErrorHandler.class);
 
     private final Script script;
 

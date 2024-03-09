@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions;
+package com.github.argon.sos.moreoptions.game;
 
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Level;
@@ -30,7 +30,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     private final PhaseManager phaseManager = PhaseManager.getInstance();
 
     @Nullable
-    private Instance instance;
+    private ScriptInstance scriptInstance;
 
     @Override
     public abstract CharSequence name();
@@ -44,7 +44,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     @Override
     public void initBeforeGameCreated() {
         // custom error handling
-        Errors.setHandler(new CustomErrorHandler<>(this));
+        Errors.setHandler(new ErrorHandler<>(this));
 
         // set log level
         Level level = determineLogLevel();
@@ -72,15 +72,15 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
 
     @Override
     public SCRIPT_INSTANCE createInstance() {
-        if (instance == null) {
+        if (scriptInstance == null) {
             initModCreateInstance();
             log.debug("Creating Instance");
-            instance = new Instance(this);
+            scriptInstance = new ScriptInstance(this);
         }
 
         // or else the init methods won't be called again when a save game is loaded
-        instance.reset();
-        return instance;
+        scriptInstance.reset();
+        return scriptInstance;
     }
 
     @Override
