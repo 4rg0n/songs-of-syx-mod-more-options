@@ -28,7 +28,7 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsBoosterFactory {
 
-    private final static Logger log = Loggers.getLogger(BoosterService.class);
+    private final static Logger log = Loggers.getLogger(MoreOptionsBoosterFactory.class);
 
     public final static String KEY_PREFIX = "booster";
 

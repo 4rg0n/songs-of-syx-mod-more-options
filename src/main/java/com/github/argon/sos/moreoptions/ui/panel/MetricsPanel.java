@@ -169,7 +169,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
 
         Table<Boolean> exportStats = Table.<Boolean>builder()
             .evenOdd(true)
-            .displayHeight(300)
+            .displayHeight(250)
             .search(searchInput)
             .rows(statRows)
             .build();

@@ -6,8 +6,7 @@
 
     <groupId>com.argon.sos</groupId>
     <artifactId>songs-of-syx-mod-more-options</artifactId>
-    <!-- todo config break?! -->
-    <version>2.0.0</version>
+    <version>1.6.0</version>
 
     <profiles>
         <profile>

@@ -46,7 +46,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
             entry -> entry.getValue().stream()
                 .map(boosterEntry -> {
                     Tabulator<String, Slider, Integer> slider = toSliderWithToggle(boosterEntry);
-                    slidersWithToggle.put(entry.getKey(), slider);
+                    slidersWithToggle.put(boosterEntry.getKey(), slider);
                     return toColumnRow(boosterEntry, slider);
                 })
                 .collect(Collectors.toList())
@@ -57,7 +57,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
             .rowsCategorized(collect)
             .evenOdd(true)
             .search(searchInput)
-            .displayHeight(500)
+            .displayHeight(450)
             .build();
 
         addDownC(0, new GInput(searchInput));

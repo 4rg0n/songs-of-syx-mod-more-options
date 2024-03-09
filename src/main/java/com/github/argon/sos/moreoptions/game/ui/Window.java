@@ -2,6 +2,8 @@ package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.BiAction;
+import com.github.argon.sos.moreoptions.log.Logger;
+import com.github.argon.sos.moreoptions.log.Loggers;
 import init.C;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +29,8 @@ public class Window<Section extends GuiSection> extends Interrupter implements
     Refreshable<Window<Section>>,
     Renderable<Window<Section>>
 {
+    private final static Logger log = Loggers.getLogger(Window.class);
+
     @Getter
     protected final Section section;
 
@@ -69,6 +73,11 @@ public class Window<Section extends GuiSection> extends Interrupter implements
 
         panelSection.body().setDim(section.body());
         panel.body().setDim(section.body());
+
+        log.debug("'%s' dimensions: %sx%s", title,
+            section.body().width(),
+            section.body().height()
+        );
     }
 
     /**

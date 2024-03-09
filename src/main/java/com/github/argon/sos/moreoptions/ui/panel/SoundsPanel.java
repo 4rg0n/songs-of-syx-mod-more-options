@@ -33,19 +33,19 @@ public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
         Table<Integer> ambienceSoundsTable = Table.<Integer>builder()
             .rows(UiMapper.toLabeledColumnRows(ambienceSoundSliders, i18n))
             .rowPadding(5)
-            .displayHeight(150)
+            .displayHeight(120)
             .build();
 
         Table<Integer> settlementSoundsTable = Table.<Integer>builder()
             .rows(UiMapper.toLabeledColumnRows(settlementSoundSliders, i18n))
             .rowPadding(5)
-            .displayHeight(150)
+            .displayHeight(120)
             .build();
 
         Table<Integer> roomSoundsTable = Table.<Integer>builder()
             .rows(UiMapper.toLabeledColumnRows(roomSoundSliders, i18n))
             .rowPadding(5)
-            .displayHeight(150)
+            .displayHeight(120)
             .build();
 
         GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsPanel.header.ambienceSounds.name"));

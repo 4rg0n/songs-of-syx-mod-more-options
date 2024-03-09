@@ -196,7 +196,6 @@ public class MoreOptionsPanel extends GuiSection implements
         });
     }
 
-    @Nullable
     @Override
     public MoreOptionsV2Config getValue() {
         return MoreOptionsV2Config.builder()
@@ -229,7 +228,8 @@ public class MoreOptionsPanel extends GuiSection implements
             return false;
         }
 
-        return !configStore.getCurrentConfig().equals(config);
+        MoreOptionsV2Config currentConfig = configStore.getCurrentConfig();
+        return !currentConfig.equals(config);
     }
 
    private GuiSection versions(int configVersionNumber, String modVersionString) {

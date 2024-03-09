@@ -121,7 +121,7 @@ public class RacesSelectionPanel extends GuiSection {
             .search(searchInput)
             .rows(rows)
             .selectable(true)
-            .displayHeight(600)
+            .displayHeight(500)
             .headerButtons(header)
             .rowPadding(5)
             .build();

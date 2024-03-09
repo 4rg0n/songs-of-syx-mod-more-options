@@ -35,13 +35,13 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
         Table<Integer> settlementTable = Table.<Integer>builder()
             .rows(UiMapper.toLabeledColumnRows(settlementEventsCheckboxes, i18n))
             .rowPadding(5)
-            .displayHeight(400)
+            .displayHeight(300)
             .build();
 
         Table<Integer> worldTable = Table.<Integer>builder()
             .rows(UiMapper.toLabeledColumnRows(worldEventsCheckboxes, i18n))
             .rowPadding(5)
-            .displayHeight(400)
+            .displayHeight(300)
             .build();
 
         GuiSection settlementSection = new GuiSection();
