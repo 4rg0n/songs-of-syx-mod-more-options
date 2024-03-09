@@ -15,6 +15,10 @@ import java.nio.file.Paths;
 /**
  * Represents one instance of the "script".
  * See {@link SCRIPT.SCRIPT_INSTANCE} for some documentation
+ *
+ * Some calls for the {@link com.github.argon.sos.moreoptions.phase.PhaseManager} originate from here.
+ *
+ * todo add game state object: containing flags from here; save info; mod info;... (how refresh state? o.o)
  */
 @RequiredArgsConstructor
 final class Instance implements SCRIPT.SCRIPT_INSTANCE {
@@ -22,43 +26,41 @@ final class Instance implements SCRIPT.SCRIPT_INSTANCE {
 	private final static Logger log = Loggers.getLogger(Instance.class);
 
 	private boolean initGameRunning = false;
-
 	private boolean initGamePresent = false;
-
 	private boolean newGameSession = true;
 
-	private final Phases phases;
+	private final Phases scriptPhases;
 
 	@Override
 	public void update(double v) {
 		if (!initGameRunning) {
 			initGameRunning = true;
-			phases.initGameUpdating();
+			scriptPhases.initGameUpdating();
 		}
 
 		if (!initGamePresent && !VIEW.inters().load.isActivated()) {
 			initGamePresent = true;
-			phases.initGameUiPresent();
+			scriptPhases.initGameUiPresent();
 		}
 
-		phases.onGameUpdate(v);
+		scriptPhases.onGameUpdate(v);
 	}
 
 	@Override
 	public void save(FilePutter filePutter) {
-		phases.onGameSaved(filePutter.getPath());
+		scriptPhases.onGameSaved(filePutter.getPath());
 	}
 
 	@Override
 	public void load(FileGetter fileGetter) throws IOException {
-		phases.onGameSaveLoaded(Paths.get(fileGetter.getPath()));
+		scriptPhases.onGameSaveLoaded(Paths.get(fileGetter.getPath()));
 
 		if (newGameSession) {
 			newGameSession = false;
 			log.debug("Game just started");
-			phases.initNewGameSession();
+			scriptPhases.initNewGameSession();
 		} else {
-			phases.onGameSaveReloaded();
+			scriptPhases.onGameSaveReloaded();
 		}
 	}
 

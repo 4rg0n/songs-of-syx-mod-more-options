@@ -56,7 +56,7 @@ import static java.time.temporal.ChronoField.*;
 /**
  * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsV2Config}.
  * So when a new entry is added, a new UI element like e.g. an additional slider will also be visible.
- * For setting up the UI.
+ * For setting up the UI and adding functionality to buttons.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiConfig implements Phases {
@@ -195,7 +195,7 @@ public class UiConfig implements Phases {
         IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> MetricScheduler.getInstance().start());
         IDebugPanel.add(MOD_INFO.name + ":config:backup", ConfigStore.getInstance()::createBackupConfig);
         IDebugPanel.add(MOD_INFO.name + ":config:delete", ConfigStore.getInstance()::deleteConfig);
-        IDebugPanel.add(MOD_INFO.name + ":i18n:load", I18nMessages.getInstance()::loadMessages);
+        IDebugPanel.add(MOD_INFO.name + ":i18n:load", I18nMessages.getInstance()::loadWithCurrentGameLocale);
         IDebugPanel.add(MOD_INFO.name + ":log:stats", () -> {
             log.info("Events Status: %s", gameApis.events().readEventsEnabledStatus()
                 .entrySet().stream().map(entry -> entry.getKey() + " enabled: " + entry.getValue() + "\n")

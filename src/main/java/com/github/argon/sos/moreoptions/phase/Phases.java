@@ -5,6 +5,9 @@ import java.nio.file.Path;
 /**
  * Contains different game phases to implement.
  * Some game elements are unavailable until a certain phase.
+ *
+ * Classes implementing a certain init method can be registered
+ * via the {@link PhaseManager#register(Phase, Phases)} method.
  */
 public interface Phases {
     /**

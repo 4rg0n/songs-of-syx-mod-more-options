@@ -13,7 +13,10 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-
+/**
+ * Loads and provides access to localized messages.
+ * Message .properties files are located in the "resources" folder.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class I18nMessages implements Phases {
 
@@ -35,7 +38,11 @@ public class I18nMessages implements Phases {
 
     private final static Locale LOCALE_FALLBACK = GameLangApi.DEFAULT_LOCALE;
 
-    public static ResourceBundle loadMessages(Locale locale) {
+    /**
+     * @param locale to load messages from
+     * @return messages with given local or default english
+     */
+    public static ResourceBundle load(Locale locale) {
         try {
             return ResourceBundle.getBundle("messages", locale);
         } catch (MissingResourceException e) {
@@ -44,14 +51,17 @@ public class I18nMessages implements Phases {
         }
     }
 
-    public void loadMessages() {
+    /**
+     * Uses current game language to load messages
+     */
+    public void loadWithCurrentGameLocale() {
         this.locale = gameLangApi.getCurrent();
-        log.debug("loading localization messages for: %s", locale);
-        this.messages = loadMessages(locale);
+        log.debug("loading messages for locale: %s", locale);
+        this.messages = load(locale);
     }
 
     @Override
     public void initBeforeGameCreated() {
-        loadMessages();
+        loadWithCurrentGameLocale();
     }
 }

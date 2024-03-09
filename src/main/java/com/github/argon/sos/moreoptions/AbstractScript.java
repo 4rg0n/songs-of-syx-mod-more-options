@@ -1,22 +1,27 @@
 package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.phase.PhaseManager;
-import com.github.argon.sos.moreoptions.phase.Phase;
-import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.phase.Phase;
+import com.github.argon.sos.moreoptions.phase.PhaseManager;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
 
 import java.nio.file.Path;
 import java.util.Optional;
 
+/**
+ * Abstracts some basic mechanics.
+ */
 public abstract class AbstractScript implements script.SCRIPT, Phases {
 
     private final static Logger log = Loggers.getLogger(AbstractScript.class);
     public final static Level LOG_LEVEL_DEFAULT = Level.TRACE;
+
+    public final static String LOG_LEVEL_ENV_NAME = "MOD.LOG_LEVEL";
 
     static {
         Loggers.setLevels(LOG_LEVEL_DEFAULT);
@@ -35,16 +40,14 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
 
     protected abstract void registerPhases(PhaseManager phaseManager);
 
+
     @Override
     public void initBeforeGameCreated() {
         // custom error handling
         Errors.setHandler(new CustomErrorHandler<>(this));
 
-        // determine and set log level
-        String logLevelName = System.getenv("MOD.LOG_LEVEL");
-        Level level = Optional.ofNullable(logLevelName)
-            .flatMap(Level::fromName)
-            .orElseGet(this::initLogLevel);
+        // set log level
+        Level level = determineLogLevel();
         Loggers.setLevels(level);
 
         // initialize game apis first
@@ -53,6 +56,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
             phaseManager.register(phase, gameApis);
         }
 
+        // call to register phases
         registerPhases(phaseManager);
         phaseManager.initBeforeGameCreated();
     }
@@ -124,5 +128,17 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         } catch (Exception e) {
             log.error("Something bad happened while trying to handle game crash", e);
         }
+    }
+
+    /**
+     * Read log {@link Level} from environment variable {@link AbstractScript#LOG_LEVEL_ENV_NAME} first.
+     * Then try to fetch from {@link AbstractScript#initLogLevel()}
+     */
+    private Level determineLogLevel() {
+        // determine and set log level
+        String logLevelName = System.getenv(LOG_LEVEL_ENV_NAME);
+        return Optional.ofNullable(logLevelName)
+            .flatMap(Level::fromName)
+            .orElseGet(this::initLogLevel);
     }
 }

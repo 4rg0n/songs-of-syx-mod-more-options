@@ -11,10 +11,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Summarizes initialization processes for different classes in different phases
- * Some resources of the game are only available after a certain phase.
+ * Contains classes implementing the {@link Phases}, which can be registered
+ * via {@link PhaseManager#register(Phase, Phases)} into a certain {@link Phase}.
  *
- * Is initially called by the {@link com.github.argon.sos.moreoptions.MoreOptionsScript}
+ * The manager will call the classes in order they were added into the phase,
+ * when the game executes a certain phase.
+ *
+ * This is useful when some classes rely on game resources, which are only available after a certain phase.
+ * E.g. injecting ui elements into already present game elements is only possible when the game ui was loaded.
+ *
+ * See {@link Phases} for a more detailed description of the phases.
  */
 public class PhaseManager implements Phases {
 

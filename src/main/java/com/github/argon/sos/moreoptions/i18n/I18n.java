@@ -9,12 +9,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * Access to translated messages.
+ * Will look for messages by a given key. See: {@link I18nMessages}
+ */
 public class I18n {
     private final static Logger log = Loggers.getLogger(I18n.class);
     private final static Map<String, I18n> i18ns = new HashMap<>();
 
     private final I18nMessages i18nMessages;
 
+    /**
+     * Used for adding a prefix to the translation key
+     * e.g. when the class is RacesPanel.class, the prefix will be "RacesPanel".
+     * Methods starting with "p" will use the prefix for their message key generation.
+     */
     private final String prefix;
 
     public I18n(Class<?> clazz, I18nMessages i18nMessages) {
@@ -22,10 +31,10 @@ public class I18n {
         this.prefix = prefix(clazz);
     }
 
-    public static String prefix(Class<?> clazz) {
-        return clazz.getSimpleName();
-    }
-
+    /**
+     * @param clazz will be used for prefix
+     * @return built translation class
+     */
     public static I18n get(Class<?> clazz) {
         if (!i18ns.containsKey(clazz.getName())) {
             i18ns.put(clazz.getName(), new I18n(clazz, I18nMessages.getInstance()));
@@ -90,10 +99,16 @@ public class I18n {
         return translate(prefix + "." + key +  ".name", args);
     }
 
+    /**
+     * @return found translation for key or the key itself
+     */
     public String t(String key, Object... args) {
         return translate(key, args);
     }
 
+    /**
+     * @return found translation for key or null
+     */
     @Nullable
     public String tn(String key, Object... args) {
         return translateNullable(key, args);
@@ -131,5 +146,12 @@ public class I18n {
         }
 
         return null;
+    }
+
+    /**
+     * @return simple class name
+     */
+    private static String prefix(Class<?> clazz) {
+        return clazz.getSimpleName();
     }
 }

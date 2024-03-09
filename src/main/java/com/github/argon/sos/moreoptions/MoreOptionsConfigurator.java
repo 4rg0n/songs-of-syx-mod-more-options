@@ -63,6 +63,7 @@ public class MoreOptionsConfigurator implements Phases {
 
     @Override
     public void onGameSaveReloaded() {
+        // only apply when there's no backup present
         if (!configStore.getBackupConfig().isPresent()) {
             log.debug("Reapplying config because of game load.");
             applyConfig(configStore.getCurrentConfig());
