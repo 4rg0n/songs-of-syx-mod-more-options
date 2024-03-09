@@ -1,11 +1,12 @@
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
-import com.github.argon.sos.moreoptions.init.InitPhases;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+
+import java.nio.file.Path;
 
 /**
  * For accessing vanilla game classes and features.
@@ -13,7 +14,7 @@ import lombok.experimental.Accessors;
  */
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameApis implements InitPhases {
+public class GameApis implements Phases {
     @Getter(lazy = true)
     private final static GameApis instance = new GameApis(
         GameEventsApi.getInstance(),
@@ -22,7 +23,10 @@ public class GameApis implements InitPhases {
         GameWeatherApi.getInstance(),
         GameBoosterApi.getInstance(),
         GameModApi.getInstance(),
-        GameStatsApi.getInstance()
+        GameStatsApi.getInstance(),
+        GameRaceApi.getInstance(),
+        GameSaveApi.getInstance(),
+        GameLangApi.getInstance()
     );
 
     @Accessors(fluent = true)
@@ -46,12 +50,30 @@ public class GameApis implements InitPhases {
     @Accessors(fluent = true)
     private final GameStatsApi stats;
 
-    @Override
-    public void initGamePresent() {}
+    @Accessors(fluent = true)
+    private final GameRaceApi race;
+
+    @Accessors(fluent = true)
+    private final GameSaveApi save;
+
+    @Accessors(fluent = true)
+    private final GameLangApi lang;
+
+    public void clear() {
+        // todo need to verify again...
+        // game will initialize new instances of the cached class references on load
+        events().clearCached();
+        sounds().clearCached();
+        weather().clearCached();
+        booster().clearCached();
+    }
 
     @Override
-    public void initGameRunning() {
-        ui().init();
+    public void initGameUiPresent() {}
+
+    @Override
+    public void initGameUpdating() {
+        ui().initGameUpdating();
     }
 
     @Override
@@ -60,12 +82,35 @@ public class GameApis implements InitPhases {
     }
 
     @Override
-    public void initCreateInstance() {
-        booster().init();
+    public void initModCreateInstance() {
+        booster().initModCreateInstance();
+        race().initModCreateInstance();
     }
 
     @Override
-    public void initGameSaveLoaded(MoreOptionsConfig config) {
+    public void initNewGameSession() {
+    }
 
+    @Override
+    public void onGameSaved(Path saveFilePath) {
+        save().onGameSaved(saveFilePath);
+    }
+
+    @Override
+    public void onGameSaveLoaded(Path saveFilePath) {
+        save().onGameSaveLoaded(saveFilePath);
+    }
+
+    @Override
+    public void onGameSaveReloaded() {
+        clear();
+    }
+
+    @Override
+    public void onGameUpdate(double seconds) {
+    }
+
+    @Override
+    public void onCrash(Throwable e) {
     }
 }

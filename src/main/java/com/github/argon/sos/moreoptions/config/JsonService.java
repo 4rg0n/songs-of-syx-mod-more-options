@@ -14,7 +14,9 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;
 
-
+/**
+ * For saving the data in the games json format
+ */
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonService {
@@ -27,7 +29,7 @@ public class JsonService {
         log.debug("Loading json file %s from %s", fileName, path.get());
         if (!path.exists(fileName)) {
             // do not load what's not there
-            log.debug("File %s" + File.separator + "%s.txt not present", path.get(), fileName);
+            log.debug("File %s" + File.separator + "%s.txt does not exist", path.get(), fileName);
             return Optional.empty();
         }
 
@@ -36,6 +38,12 @@ public class JsonService {
     }
 
     public Optional<Json> loadJson(Path path) {
+        if (!path.toFile().exists()) {
+            // do not load what's not there
+            log.debug("File %s does not exist", path);
+            return Optional.empty();
+        }
+
         try {
             return Optional.of(new Json(path));
         }  catch (Exception e) {
@@ -45,24 +53,28 @@ public class JsonService {
     }
 
     public boolean saveJson(JsonE json, PATH savePath, String fileName) {
-        try {
-            // file exists?
-            Path path;
-            if (!savePath.exists(fileName)) {
-                path = savePath.create(fileName);
-                log.debug("Created new json file %s", path);
-            } else {
-                path = savePath.get(fileName);
-            }
+        // file exists?
+        Path path;
+        if (!savePath.exists(fileName)) {
+            path = savePath.create(fileName);
+            log.debug("Created new json file %s", path);
+        } else {
+            path = savePath.get(fileName);
+        }
 
-            boolean success = json.save(path);
-            log.debug("Saving to %s was successful? %s", path, success);
+        return saveJson(json, path);
+    }
+
+    public boolean saveJson(JsonE json, Path savePath) {
+        try {
+            boolean success = json.save(savePath);
+            log.debug("Saving to %s was successful? %s", savePath, success);
 
             return success;
         } catch (Errors.DataError e) {
-            log.warn("Could not save json file %s into %s", fileName, savePath.get(), e);
+            log.warn("Could not save json file %s into %s", savePath, e);
         } catch (Exception e) {
-            log.error("Could not save json file %s into %s", fileName, savePath.get(), e);
+            log.error("Could not save json file %s into %s", savePath, e);
         }
 
         return false;

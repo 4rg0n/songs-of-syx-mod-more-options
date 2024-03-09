@@ -6,17 +6,18 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
+/**
+ * Levels describing the severity of a log message
+ */
+@Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class Level {
-    @Getter
     private final String name;
-
-    @Getter
     private final int value;
+
     public static final Level CRIT = new Level("CRIT",1000);
     public static final Level ERROR = new Level("ERROR",900);
-
     public static final Level WARN = new Level("WARN", 800);
     public static final Level INFO = new Level("INFO", 700);
     public static final Level DEBUG = new Level("DEBUG", 600);

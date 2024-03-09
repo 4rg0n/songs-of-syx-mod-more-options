@@ -11,7 +11,7 @@ public interface Refreshable<Element> {
 
     default void refresh() {};
 
-    default void onRefresh(Action<Element> refreshAction) {
+    default void refreshAction(Action<Element> refreshAction) {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 }

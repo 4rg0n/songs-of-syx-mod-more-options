@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.metric;
 
+import com.github.argon.sos.moreoptions.game.StatsExtractor;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.Lists;
 import game.GAME;
 import game.values.GCOUNTS;
 import lombok.AccessLevel;
@@ -26,7 +26,7 @@ public class MetricCollector {
 
     private final List<Metric> buffered = Collections.synchronizedList(new ArrayList<>());
 
-    public void buffer(List<String> whitelist) {
+    public void buffer(Set<String> whitelist) {
         try {
             buffered.add(collect(whitelist));
         } catch (Exception e) {
@@ -45,10 +45,10 @@ public class MetricCollector {
     }
 
     public Map<String, Object> collectStats() {
-        return collectStats(Lists.of());
+        return collectStats(Collections.emptySet());
     }
 
-    public Map<String, Object> collectStats(List<String> whitelist) {
+    public Map<String, Object> collectStats(Set<String> whitelist) {
         final Map<String, Object> stats = new HashMap<>();
         StatsExtractor statsExtractor = new StatsExtractor(new HashSet<>(whitelist));
 
@@ -72,7 +72,7 @@ public class MetricCollector {
         return stats;
     }
 
-    public Metric collect(List<String> whitelist) {
+    public Metric collect(Set<String> whitelist) {
         Map<String, Object> stats = collectStats(whitelist);
         log.debug("Collected %s game stats", stats.size());
         log.trace("Stats: %s", stats);

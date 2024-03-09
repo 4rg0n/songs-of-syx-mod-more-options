@@ -13,7 +13,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * Access to the games mod information
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameModApi {
     private final static Logger log = Loggers.getLogger(GameModApi.class);

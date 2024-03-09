@@ -14,6 +14,10 @@ import view.interrupter.InterManager;
 import view.interrupter.Interrupter;
 import view.main.VIEW;
 
+/**
+ * Used for showing any kind of ui as popup on the screen.
+ * Will not close other popups when shown.
+ */
 public final class NonHidingPopup {
 	
 	private final GuiSection s = new GuiSection();

@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.metric;
 
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.*;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * Used for collecting and exporting metrics.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class MetricScheduler {
+public class MetricScheduler implements Phases {
     @Getter(lazy = true)
     private final static MetricScheduler instance = new MetricScheduler();
 
@@ -75,6 +76,12 @@ public class MetricScheduler {
             .build());
 
         return this;
+    }
+
+    @Override
+    public void onCrash(Throwable e) {
+        log.info("Stopping metric scheduler because of game crash");
+        stop();
     }
 
     private ScheduledExecutorService createScheduler(int poolSize) {

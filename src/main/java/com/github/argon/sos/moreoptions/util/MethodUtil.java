@@ -1,7 +1,11 @@
 package com.github.argon.sos.moreoptions.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.lang.reflect.Method;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MethodUtil {
     public static boolean isGetterMethod(Method method) {
         // don't call methods with params

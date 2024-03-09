@@ -14,7 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+/**
+ * Access to the games events like raids
+ */
 public class GameEventsApi {
 
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
@@ -27,7 +29,6 @@ public class GameEventsApi {
 
     @Getter(lazy = true)
     private final static GameEventsApi instance = new GameEventsApi();
-
 
     public void clearCached() {
         settlementEvents = null;

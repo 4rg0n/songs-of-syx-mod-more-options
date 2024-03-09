@@ -1,8 +1,12 @@
 package com.github.argon.sos.moreoptions.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TypeUtil {
     public static Class<?> getRawType(Type type) {
         if (type instanceof ParameterizedType) {

@@ -1,8 +1,11 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
+import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.sprite.SPRITE;
 import util.gui.misc.GButt;
 
@@ -13,27 +16,30 @@ public class Button extends GButt.ButtPanel {
     private boolean markSuccess = false;
     private boolean markError = false;
 
-    @Getter
-    private boolean enabled = true;
-
     private double markUpdateTimerSeconds = 0d;
-
     private final static int MARK_DURATION_SECONDS = 1;
 
+    @Setter
+    @Accessors(fluent = true)
+    private boolean clickable = true;
+
+    @Setter
+    @Accessors(fluent = true)
+    private boolean hoverable = true;
 
     public Button(CharSequence label) {
-        this(label, COLOR.WHITE35);
+        this(label, COLOR.WHITE35, null);
     }
 
-    public Button(CharSequence label, COLOR color) {
+    public Button(CharSequence label, CharSequence description) {
+        this(label, COLOR.WHITE35, description);
+    }
+
+    public Button(CharSequence label, COLOR color, @Nullable CharSequence description) {
         super(label);
         this.color = color;
         bg(color);
-    }
-
-    public void setEnabled(boolean enabled) {
-        activeSet(enabled);
-        this.enabled = enabled;
+        hoverInfoSet(description);
     }
 
     public Button(SPRITE label) {
@@ -46,7 +52,7 @@ public class Button extends GButt.ButtPanel {
         bg(color);
     }
 
-    public ButtPanel markApplied(boolean applied) {
+    public Button markApplied(boolean applied) {
         if (applied) {
             bgClear();
         } else {
@@ -57,8 +63,20 @@ public class Button extends GButt.ButtPanel {
     }
 
     @Override
+    public boolean click() {
+        if (!clickable) return false;
+        return super.click();
+    }
+
+    @Override
+    public boolean hover(COORDINATE mCoo) {
+        if (!hoverable) return false;
+        return super.hover(mCoo);
+    }
+
+    @Override
     protected void render(SPRITE_RENDERER r, float seconds, boolean isActive, boolean isSelected, boolean isHovered) {
-        if (!isEnabled()) {
+        if (!activeIs()) {
             super.render(r, seconds, false, false, false);
         } else {
             super.render(r, seconds, isActive, isSelected, isHovered);
@@ -80,7 +98,7 @@ public class Button extends GButt.ButtPanel {
     /**
      * Let the button blink red or green for ~1 second
      */
-    public ButtPanel markSuccess(boolean success) {
+    public Button markSuccess(boolean success) {
         if (success) {
             bg(COLOR.GREEN40);
             markSuccess = true;
@@ -93,8 +111,14 @@ public class Button extends GButt.ButtPanel {
     }
 
     @Override
-    public ButtPanel bgClear() {
-        bg(color);
+    public Button bgClear() {
+        super.bg(color);
+        return this;
+    }
+
+    @Override
+    public Button bg(COLOR c) {
+        super.bg(c);
         return this;
     }
 }

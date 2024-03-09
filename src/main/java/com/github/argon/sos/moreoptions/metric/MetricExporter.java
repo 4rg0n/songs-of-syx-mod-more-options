@@ -1,9 +1,13 @@
 package com.github.argon.sos.moreoptions.metric;
 
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.paths.PATHS;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,36 +17,24 @@ import java.util.List;
 /**
  * For exporting game stats as {@link Metric} into a CSV file
  */
-public class MetricExporter {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class MetricExporter implements Phases {
     @Getter(lazy = true)
     private final static MetricExporter instance = new MetricExporter(
         MetricCollector.getInstance(),
-        CSVWriter.getInstance()
+        MetricCsvWriter.getInstance()
     );
 
     private final static Logger log = Loggers.getLogger(MetricExporter.class);
 
-    public static final Path EXPORT_FOLDER = PATHS.local().PROFILE.get().resolve("exports");
+    public static final Path EXPORT_FOLDER = PATHS.local().PROFILE.get()
+        .resolve(MoreOptionsScript.MOD_INFO.name + "/exports");
 
     @Getter
     private Path exportFile = generateExportFile();
 
     private final MetricCollector metricCollector;
-
-    private final CSVWriter csvWriter;
-
-    private MetricExporter(MetricCollector metricCollector, CSVWriter csvWriter) {
-        this.metricCollector = metricCollector;
-        this.csvWriter = csvWriter;
-
-        if (!Files.isDirectory(EXPORT_FOLDER)) {
-            try {
-                Files.createDirectory(EXPORT_FOLDER);
-            } catch (Exception e) {
-                log.error("Could not create metrics export folder %s", EXPORT_FOLDER, e);
-            }
-        }
-    }
+    private final MetricCsvWriter metricCsvWriter;
 
     public void newExportFile() {
         exportFile = generateExportFile();
@@ -53,7 +45,7 @@ public class MetricExporter {
         return EXPORT_FOLDER.resolve(Instant.now().getEpochSecond() + "_MetricExport.csv");
     }
 
-    public boolean export(List<String> statList) {
+    public boolean export() {
         List<Metric> metrics;
 
         try {
@@ -70,12 +62,30 @@ public class MetricExporter {
 
         try {
             log.debug("Exporting %s metrics to %s", metrics.size(), exportFile);
-            csvWriter.write(exportFile, metrics);
+            metricCsvWriter.write(exportFile, metrics);
         } catch (Exception e) {
             log.error("Could not export metrics to: %s. %s metrics were lost :(", exportFile, metrics.size(), e);
             return false;
         }
 
         return true;
+    }
+
+    @Override
+    public void initBeforeGameCreated() {
+        if (!Files.isDirectory(EXPORT_FOLDER)) {
+            try {
+                log.debug("Create metrics export folder at %s", EXPORT_FOLDER);
+                Files.createDirectories(EXPORT_FOLDER);
+            } catch (Exception e) {
+                log.error("Could not create metrics export folder at %s", EXPORT_FOLDER, e);
+            }
+        }
+    }
+
+    @Override
+    public void onGameSaveReloaded() {
+        // start a new export file on load
+        newExportFile();
     }
 }

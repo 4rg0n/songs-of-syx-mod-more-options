@@ -1,20 +1,18 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
-import com.github.argon.sos.moreoptions.ui.builder.BuildResult;
-import com.github.argon.sos.moreoptions.ui.builder.element.*;
-import com.github.argon.sos.moreoptions.ui.builder.section.CheckboxesBuilder;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.moreoptions.util.Sets;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
-import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GHeader;
 import util.gui.misc.GInput;
@@ -22,15 +20,15 @@ import util.gui.misc.GText;
 import util.gui.misc.GTextR;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConfig.Metrics, MetricsPanel>, Refreshable<MetricsPanel> {
+public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Metrics, MetricsPanel>, Refreshable<MetricsPanel> {
+
+    private final static I18n i18n = I18n.get(MetricsPanel.class);
 
     private final Toggler<Boolean> onOffToggle;
     private final Slider collectionRate;
@@ -53,11 +51,11 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     private final Toggler<Boolean> searchToggler;
 
     private Action<MetricsPanel> refreshAction = o -> {};
-    private BiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
+    private BiAction<MoreOptionsV2Config.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
 
     public MetricsPanel(
-        MoreOptionsConfig.Metrics metricsConfig,
-        List<String> availableStats,
+        MoreOptionsV2Config.Metrics metricsConfig,
+        Set<String> availableStats,
         Path exportFolderPath,
         Path exportFilePath
     ) {
@@ -67,149 +65,144 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         Toggler<Boolean> toggler = new Toggler<>(Lists.of(
             UiInfo.<Boolean>builder()
                 .key(true)
-                .title("Started")
-                .description("Toggle and apply to start the collection and export of game metrics.")
+                .title(i18n.t("MetricsPanel.toggle.start.name"))
+                .description(i18n.t("MetricsPanel.toggle.start.desc"))
                 .build(),
             UiInfo.<Boolean>builder()
                 .key(false)
-                .title("Stopped")
-                .description("Toggle and apply to stop the collection and export of game metrics.")
+                .title(i18n.t("MetricsPanel.toggle.stop.name"))
+                .description(i18n.t("MetricsPanel.toggle.stop.desc"))
                 .build()
-        ), 0, true, true);
-        BuildResult<List<GuiSection>, List<Toggler<Boolean>>> onOffToggle = LabeledBuilder.<Toggler<Boolean>>builder().translate(
-            LabeledBuilder.Definition.<Toggler<Boolean>>builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key("ui.moreOptions.metrics.toggle")
-                    .build())
-                .element(toggler)
-                .build()
-        ).build();
+        ), 0, true, true, true);
+        ColumnRow<Void> onOffToggleRow = ColumnRow.<Void>builder()
+            .column(Label.builder()
+                .name(i18n.t("MetricsPanel.toggle.label.name"))
+                .description(i18n.t("MetricsPanel.toggle.label.desc"))
+                .build())
+            .column(toggler)
+            .build();
 
         // Collection rate slider
-        this.collectionRate = SliderBuilder.builder().definition(
-            SliderBuilder.Definition
-                .buildFrom(metricsConfig.getCollectionRateSeconds())
-                .maxWidth(200)
-                .build()
-        ).build().getResult();
-        BuildResult<List<GuiSection>, List<RENDEROBJ>> collectionRate = LabeledBuilder.builder()
-            .definition(LabeledBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key("ui.moreOptions.metrics.collection-rate-seconds")
-                    .build())
-                .element(this.collectionRate)
-                .element(new GTextR(UI.FONT().S, "Seconds"))
+        this.collectionRate = Slider.SliderBuilder
+            .fromRange(metricsConfig.getCollectionRateSeconds())
+            .input(true)
+            .width(200)
+            .build();
+        ColumnRow<Void> collectionRateRow = ColumnRow.<Void>builder()
+            .column(Label.builder()
+                .name(i18n.t("MetricsPanel.collectionRate.label.name"))
+                .description(i18n.t("MetricsPanel.collectionRate.label.desc"))
                 .build())
+            .column(collectionRate)
+            .column(new GTextR(UI.FONT().S, i18n.t("MetricsPanel.text.seconds")))
             .build();
 
         // Export rate slider
-        this.exportRate = SliderBuilder.builder().definition(
-            SliderBuilder.Definition
-                .buildFrom(metricsConfig.getExportRateMinutes())
-                .maxWidth(200)
-                .build()
-        ).build().getResult();
-        BuildResult<List<GuiSection>, List<RENDEROBJ>> exportRate = LabeledBuilder.builder()
-            .definition(LabeledBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key("ui.moreOptions.metrics.export-rate-minutes")
-                    .build())
-                .element(this.exportRate)
-                .element(new GTextR(UI.FONT().S, "Minutes"))
-                .build())
+        this.exportRate = Slider.SliderBuilder
+            .fromRange(metricsConfig.getExportRateMinutes())
+            .input(true)
+            .width(200)
             .build();
+        ColumnRow<Void> exportRateRow = ColumnRow.<Void>builder()
+            .column(Label.builder()
+                .name(i18n.t("MetricsPanel.exportRate.label.name"))
+                .description(i18n.t("MetricsPanel.exportRate.label.desc"))
+                .build())
+            .column(exportRate)
+            .column(new GTextR(UI.FONT().S, i18n.t("MetricsPanel.text.minutes")))
+            .build();
+
 
         GuiSection exportFilePathSection = exportFilePath(exportFolderPath.toString(), exportFilePath.getFileName().toString());
 
         // Export file path with folder button
         this.exportFilePathView = new UISwitcher(exportFilePathSection, false);
-        this.exportFolderButton = new Button("Folder");
-        exportFolderButton.hoverInfoSet("Opens the metrics export folder: " + exportFolderPath);
-        this.copyExportFileButton = new Button("Copy");
-        copyExportFileButton.hoverInfoSet("Copies export file path to clipboard.");
+        this.exportFolderButton = new Button(i18n.t("MetricsPanel.button.folder.name"), i18n.t("MetricsPanel.button.folder.desc", exportFolderPath));
+        this.copyExportFileButton = new Button(i18n.t("MetricsPanel.button.copy.name"), i18n.t("MetricsPanel.button.copy.desc"));
 
         GuiSection exportButtons = new GuiSection();
         exportButtons.addRightC(0, exportFolderButton);
         exportButtons.addRightC(0, copyExportFileButton);
 
-        BuildResult<List<GuiSection>, List<RENDEROBJ>> exportFile = LabeledBuilder.builder().translate(
-            LabeledBuilder.Definition.builder()
-                .labelDefinition(LabelBuilder.Definition.builder()
-                    .key("ui.moreOptions.metrics.export-file")
-                    .build())
-                .element(this.exportFilePathView)
-                .element(exportButtons)
-                .build()
-        ).build();
+        ColumnRow<Void> exportFileRow = ColumnRow.<Void>builder()
+            .column(Label.builder()
+                .name(i18n.t("MetricsPanel.exportFile.label.name"))
+                .description(i18n.t("MetricsPanel.exportFile.label.desc"))
+                .build())
+            .column(exportFilePathView)
+            .column(exportButtons)
+            .build();
 
         // Search Bar with uncheck and check buttons
         GuiSection searchBar = new GuiSection();
-        this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
+        this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("MetricsPanel.search.input.name"));
         searchBar.addRightC(0, new GInput(searchInput));
         this.searchToggler = new Toggler<>(Lists.of(
             UiInfo.<Boolean>builder()
                 .key(true)
-                .title("Check")
-                .description("Checks all found stats")
+                .title(i18n.t("MetricsPanel.search.check.name"))
+                .description(i18n.t("MetricsPanel.search.check.desc"))
                 .build(),
             UiInfo.<Boolean>builder()
                 .key(false)
-                .title("Uncheck")
-                .description("Unchecks all found stats")
+                .title(i18n.t("MetricsPanel.search.uncheck.name"))
+                .description(i18n.t("MetricsPanel.search.uncheck.desc"))
                 .build()
-        ),0, true, false);
+        ),0, true, true, false);
         searchBar.addRightC(10, searchToggler);
 
         // Export stats section
-        BuildResult<Table, Map<String, Checkbox>> exportStats = CheckboxesBuilder.builder()
-            .displayHeight(400)
+        SortedSet<String> sortedAvailableStats = Sets.sort(availableStats);
+        List<ColumnRow<Boolean>> statRows = sortedAvailableStats.stream().map(statName -> {
+            Checkbox checkbox = new Checkbox(metricsConfig.getStats().isEmpty() || metricsConfig.getStats().contains(statName));
+
+            this.statsCheckboxes.put(statName, checkbox);
+            return ColumnRow.<Boolean>builder()
+                .searchTerm(statName)
+                .column(Label.builder()
+                    .font(UI.FONT().S)
+                    .name(statName)
+                    .build())
+                .column(checkbox)
+                .build();
+        }).collect(Collectors.toList());
+
+        Table<Boolean> exportStats = Table.<Boolean>builder()
+            .evenOdd(true)
+            .displayHeight(250)
             .search(searchInput)
-            .highlightColumns(true)
-            .definitions(availableStats.stream()
-                .collect(Collectors.toMap(
-                    s -> s,
-                    s -> LabeledCheckboxBuilder.Definition.builder()
-                        .labelDefinition(LabelBuilder.Definition.builder()
-                            .font(UI.FONT().S)
-                            .title(s)
-                            .build())
-                        .checkboxDefinition(CheckboxBuilder.Definition.builder()
-                            .enabled(metricsConfig.getStats().isEmpty() || metricsConfig.getStats().contains(s))
-                            .build())
-                        .build())))
+            .rows(statRows)
             .build();
 
-        this.statsSection = new UISwitcher(exportStats.getResult(), true);
-        this.statsCheckboxes.putAll(exportStats.getInteractable());
-        this.onOffToggle = onOffToggle.getInteractable().get(0);
+        this.statsSection = new UISwitcher(exportStats, true);
+        this.onOffToggle = toggler;
         this.onOffToggle.toggle(metricsConfig.isEnabled());
 
-        List<ColumnRow> rows = Lists.of(
-            onOffToggle.toColumnRow().getResult(),
-            exportFile.toColumnRow().getResult(),
-            collectionRate.toColumnRow().getResult(),
-            exportRate.toColumnRow().getResult()
+        List<ColumnRow<Void>> rows = Lists.of(
+            onOffToggleRow,
+            exportFileRow,
+            collectionRateRow,
+            exportRateRow
         );
 
-        Table configTable = TableBuilder.builder()
+        Table<Void> configTable = Table.<Void>builder()
             .evenOdd(true)
             .scrollable(false)
-            .columnRows(rows)
-            .build()
-            .getResult();
+            .rows(rows)
+            .displayHeight(200)
+            .build();
+
+        GHeader statsHeader = new GHeader(i18n.t("MetricsPanel.stats.header.name"));
+        statsHeader.hoverInfoSet(i18n.t("MetricsPanel.stats.header.desc"));
 
         addDownC(0, configTable);
-
-        GHeader statsHeader = new GHeader("Game stats to export");
-        statsHeader.hoverInfoSet("These stats will be written into the Export CSV File. " +
-            "If you change any of them a new file will be created.");
-        addDownC(25, statsHeader);
+        addDownC(15, statsHeader);
         addDownC(10, searchBar);
         addDownC(15, statsSection);
 
         // Actions
-        searchToggler.onClick(aBoolean -> {
-            List<String> resultList = exportStats.getResult()
+        searchToggler.clickAction(aBoolean -> {
+            List<String> resultList = exportStats
                 .search(searchInput.text().toString());
             resultList.forEach(result -> statsCheckboxes.get(result).setValue(aBoolean));
         });
@@ -223,17 +216,17 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     }
 
     @Override
-    public MoreOptionsConfig.Metrics getValue() {
-        return MoreOptionsConfig.Metrics.builder()
-            .collectionRateSeconds(MoreOptionsConfig.Range.fromSlider(collectionRate))
-            .exportRateMinutes(MoreOptionsConfig.Range.fromSlider(exportRate))
+    public MoreOptionsV2Config.Metrics getValue() {
+        return MoreOptionsV2Config.Metrics.builder()
+            .collectionRateSeconds(MoreOptionsV2Config.Range.fromSlider(collectionRate))
+            .exportRateMinutes(MoreOptionsV2Config.Range.fromSlider(exportRate))
             .stats(getCheckedStats())
             .enabled(onOffToggle.getValue())
             .build();
     }
 
     @Override
-    public void setValue(MoreOptionsConfig.Metrics metricsConfig) {
+    public void setValue(MoreOptionsV2Config.Metrics metricsConfig) {
         onOffToggle.toggle(metricsConfig.isEnabled());
         collectionRate.setValue(metricsConfig.getCollectionRateSeconds().getValue());
         exportRate.setValue(metricsConfig.getExportRateMinutes().getValue());
@@ -264,17 +257,17 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
         return section;
     }
 
-    private List<String> getCheckedStats() {
+    private Set<String> getCheckedStats() {
         return statsCheckboxes.entrySet().stream()
             .filter(entry -> {
                 Checkbox checkbox = entry.getValue();
                 return checkbox.getValue();
             })
             .map(Map.Entry::getKey)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
 
-    private void setCheckedStats(List<String> stats) {
+    private void setCheckedStats(Set<String> stats) {
         if (stats.isEmpty()) { // enable all when empty stats
             statsCheckboxes.values().forEach(checkbox -> checkbox.setValue(true));
         } else { // enable only when in stats
@@ -288,12 +281,12 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsConf
     }
 
     @Override
-    public void onRefresh(Action<MetricsPanel> refreshAction) {
+    public void refreshAction(Action<MetricsPanel> refreshAction) {
         this.refreshAction = refreshAction;
     }
 
     @Override
-    public void onAfterSetValue(BiAction<MoreOptionsConfig.Metrics, MetricsPanel> afterSetValueUIAction) {
-        this.afterSetValueAction = afterSetValueUIAction;
+    public void afterValueSetAction(BiAction<MoreOptionsV2Config.Metrics, MetricsPanel> afterValueSetAction) {
+        this.afterSetValueAction = afterValueSetAction;
     }
 }

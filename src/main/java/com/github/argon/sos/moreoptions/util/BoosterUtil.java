@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoosterUtil {
 
-
+    /**
+     * Checks whether a game booster already contains a "More Options" booster
+     */
     public static boolean alreadyExtended(Boostable booster, boolean isMul) {
         if (isMul) {
             for (BoostSpec mul : booster.muls()) {
@@ -28,7 +30,17 @@ public class BoosterUtil {
         return false;
     }
 
+    /**
+     * A value of 0.001 means 1 in the games boosters
+     */
     public static double toBoosterValue(int value) {
-        return (double) value / 1000;
+        return toBoosterValue((double) value);
+    }
+
+    /**
+     * A value of 0.001 means 1.0 in the games boosters
+     */
+    public static double toBoosterValue(double value) {
+        return value / 1000;
     }
 }

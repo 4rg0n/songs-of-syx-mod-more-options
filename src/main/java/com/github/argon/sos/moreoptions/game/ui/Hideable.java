@@ -10,7 +10,7 @@ import com.github.argon.sos.moreoptions.game.Action;
 public interface Hideable<Element> {
     default void hide() {};
 
-     default void onHide(Action<Element> hideAction) {
+     default void hideAction(Action<Element> hideAction) {
          throw new UnsupportedOperationException("Method is not implemented");
      }
 }

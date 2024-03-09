@@ -1,8 +1,9 @@
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.game.GameUiNotAvailableException;
 import com.github.argon.sos.moreoptions.game.ui.NonHidingPopup;
 import com.github.argon.sos.moreoptions.game.ui.NotificationPopup;
+import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
@@ -21,7 +22,7 @@ import java.util.Optional;
  * For hooking into the games UI
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameUiApi {
+public class GameUiApi implements Phases {
 
     private final static Logger log = Loggers.getLogger(GameUiApi.class);
 
@@ -39,13 +40,13 @@ public class GameUiApi {
     /**
      * Contains the settlements ui elements
      *
-     * @throws GameUiNotAvailableException when ui isn't initialized yet
+     * @throws UninitializedException when ui isn't initialized yet
      */
     public SettView settlement() {
         SettView settView = VIEW.s();
 
         if (settView == null) {
-            throw new GameUiNotAvailableException("Games settlement ui isn't initialized yet.");
+            throw new UninitializedException("Games settlement ui isn't initialized yet.");
         }
 
         return settView;
@@ -55,7 +56,7 @@ public class GameUiApi {
         WorldView worldView = VIEW.world();
 
         if (worldView == null) {
-            throw new GameUiNotAvailableException("Games world ui isn't initialized yet.");
+            throw new UninitializedException("Games world ui isn't initialized yet.");
         }
 
         return worldView;
@@ -86,19 +87,20 @@ public class GameUiApi {
     /**
      * Contains UIs like a yes/no prompt or a text input
      *
-     * @throws GameUiNotAvailableException when ui isn't initialized yet
+     * @throws UninitializedException when ui isn't initialized yet
      */
     public Interrupters interrupters() {
         Interrupters interrupters = VIEW.inters();
 
         if (interrupters == null) {
-            throw new GameUiNotAvailableException("Games interrupt ui isn't initialized yet.");
+            throw new UninitializedException("Games interrupt ui isn't initialized yet.");
         }
 
         return interrupters;
     }
 
-   public void init() {
+    @Override
+   public void initGameUpdating() {
         log.debug("Init game ui api");
         popup = new NonHidingPopup(VIEW.inters().manager);
         notification = new NotificationPopup(VIEW.inters().manager);

@@ -1,10 +1,11 @@
 
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsConfig;
-import com.github.argon.sos.moreoptions.game.booster.BoosterService;
-import com.github.argon.sos.moreoptions.game.booster.MoreOptionsBoosters;
-import com.github.argon.sos.moreoptions.init.Init;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.booster.BoosterService;
+import com.github.argon.sos.moreoptions.booster.MoreOptionsBoosters;
+import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import game.boosting.BoostableCat;
@@ -14,12 +15,13 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
+/**
+ * Access to the mods custom {@link MoreOptionsBoosters}
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameBoosterApi implements Init {
+public class GameBoosterApi implements Phases {
 
     private final static Logger log = Loggers.getLogger(GameBoosterApi.class);
-
-    public final static String KEY_PREFIX = "booster";
 
     @Getter(lazy = true)
     private final static GameBoosterApi instance = new GameBoosterApi(
@@ -47,12 +49,12 @@ public class GameBoosterApi implements Init {
             .orElseThrow(UninitializedException::new);
     }
 
-    public void setBoosters(Map<String, MoreOptionsConfig.Range> ranges) {
+    public void setBoosters(Map<String, MoreOptionsV2Config.Range> ranges) {
         boosterService.setBoosterValues(ranges);
     }
 
     @Override
-    public void init() {
+    public void initModCreateInstance() {
         log.debug("Init game booster api");
         boosterService.reset();
     }

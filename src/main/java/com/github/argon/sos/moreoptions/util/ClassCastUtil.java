@@ -1,5 +1,8 @@
 package com.github.argon.sos.moreoptions.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.temporal.Temporal;
@@ -7,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClassCastUtil {
     public static Long toLong(int integer) {
         return (long) integer;

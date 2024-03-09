@@ -1,8 +1,10 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.Action;
-import com.github.argon.sos.moreoptions.util.UiUtil;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
@@ -11,7 +13,9 @@ import snake2d.util.gui.GuiSection;
 import java.util.*;
 
 /**
- * Builds a row with buttons to toggle / click
+ * Builds a row or pillar with buttons to toggle / click.
+ * When a button is clicked it will be marked "active".
+ * Only one button can be active.
  */
 public class Toggler<Key> extends GuiSection implements
     Valuable<Key, Toggler<Key>>,
@@ -24,16 +28,23 @@ public class Toggler<Key> extends GuiSection implements
     private UiInfo<Key> activeInfo;
 
     @Getter
+    @Nullable
     private Button activeButton;
 
+    @Setter
+    @Accessors(fluent = true, chain = false)
     private Action<Key> toggleAction = o -> {};
 
-    private Action<Key> onClickAction = o -> {};
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private Action<Key> clickAction = o -> {};
 
+    @Setter
+    @Accessors(fluent = true, chain = false)
     private Action<Toggler<Key>> refreshAction = o -> {};
 
-    public Toggler(Collection<UiInfo<Key>> elements) {
-        this(elements, 0, false, true);
+    public Toggler(List<UiInfo<Key>> elements) {
+        this(elements, 0, true, true, true);
     }
 
     /**
@@ -42,61 +53,60 @@ public class Toggler<Key> extends GuiSection implements
      * @param sameWidth whether all buttons will get the widest with of them all
      * @param highlight whether the selected button shall be highlighted
      */
-    public Toggler(Collection<UiInfo<Key>> elements, int margin, boolean sameWidth, boolean highlight) {
+    @Builder
+    public Toggler(List<UiInfo<Key>> elements, int margin, boolean sameWidth, boolean horizontal, boolean highlight) {
         this.elements = elements;
 
         // first element in map
         activeInfo = elements.iterator().next();
-        List<Button> buttons = new ArrayList<>();
+        Map<Key, Button> buttons = new LinkedHashMap<>(); // preserve order
 
         for (UiInfo<Key> info : elements) {
             Button button = buildButton(highlight, info);
-            buttons.add(button);
+            buttons.put(info.getKey(), button);
         }
 
-        if (sameWidth) {
-            int maxWidth = UiUtil.getMaxWidth(buttons);
-            buttons.forEach(button -> {
-                button.body().setWidth(maxWidth);
-                addRight(margin, button);
-            });
-        } else {
-            buttons.forEach(button -> {
-                addRight(margin, button);
-            });
-        }
+        ButtonMenu<Key> keyButtonMenu = ButtonMenu.<Key>builder()
+            .buttons(buttons)
+            .margin(margin)
+            .sameWidth(sameWidth)
+            .horizontal(horizontal)
+            .build();
+
+        add(keyButtonMenu);
     }
 
     @NotNull
     private Button buildButton(boolean highlight, UiInfo<Key> info) {
         Button button;
         if (highlight) {
-            button = new Button(info.getTitle()) {
+            button = new Button(info.getTitle(), info.getDescription()) {
                 @Override
                 protected void clickA() {
                     activeButton = this;
-                    onClickAction.accept(info.getKey());
+                    Toggler.this.clickAction.accept(info.getKey());
                     toggle(info.getKey());
                 }
 
                 @Override
                 protected void renAction() {
-                    boolean selected = info.getKey().equals(activeInfo.getKey());
+                    boolean selected = false;
+                    if (info.getKey() != null) {
+                        selected = info.getKey().equals(activeInfo.getKey());
+                    }
                     selectedSet(selected);
                 }
             };
         } else {
-            button = new Button(info.getTitle()) {
+            button = new Button(info.getTitle(), info.getDescription()) {
                 @Override
                 protected void clickA() {
                     activeButton = this;
-                    onClickAction.accept(info.getKey());
+                    Toggler.this.clickAction.accept(info.getKey());
                     toggle(info.getKey());
                 }
             };
         }
-
-        button.hoverInfoSet(info.getDescription());
         return button;
     }
 
@@ -106,7 +116,7 @@ public class Toggler<Key> extends GuiSection implements
         }
 
         // no toggle happened?
-        if (activeInfo.getKey().equals(key)) {
+        if (key.equals(activeInfo.getKey())) {
             return;
         }
 
@@ -122,7 +132,7 @@ public class Toggler<Key> extends GuiSection implements
 
     public Optional<UiInfo<Key>> get(Key key) {
         return elements.stream()
-            .filter(element -> element.getKey().equals(key))
+            .filter(element -> key.equals(element.getKey()))
             .findFirst();
     }
 
@@ -152,14 +162,5 @@ public class Toggler<Key> extends GuiSection implements
     @Override
     public void refresh() {
         refreshAction.accept(this);
-    }
-
-    @Override
-    public void onRefresh(Action<Toggler<Key>> refreshAction) {
-        this.refreshAction = refreshAction;
-    }
-
-    public void onClick(Action<Key> clickAction) {
-        this.onClickAction = clickAction;
     }
 }

@@ -1,10 +1,14 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.util.TextFormatUtil;
+import com.github.argon.sos.moreoptions.i18n.I18n;
+import com.github.argon.sos.moreoptions.ui.UiMapper;
 import init.D;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
 import init.sprite.UI.UI;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import snake2d.MButt;
@@ -26,7 +30,6 @@ import util.gui.slider.GSliderInt;
 import util.info.GFORMAT;
 import view.main.VIEW;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -36,10 +39,15 @@ import java.util.stream.Collectors;
  * Uses mostly code from {@link GSliderInt} and adds handling for negative values.
  */
 public class Slider extends GuiSection implements Valuable<Integer, Slider>, Resettable<Slider> {
-    private final INT.INTE in;
+
+    private static final I18n i18n = I18n.get(Slider.class);
+
     private static final int midWidth = 8;
-    private static final CharSequence setAmount = "Set amount";
-    private static final CharSequence setAmountD = "Set amount {0}-{1}";
+    private final CharSequence setAmount;
+    private final CharSequence setAmountD;
+
+    private final INT.INTE in;
+
     private final double initialDValue;
 
     private final int initialValue;
@@ -60,7 +68,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
     @Setter
     private boolean lockScroll = false;
 
-    private final TreeMap<Integer, COLOR> thresholds;
+    private TreeMap<Integer, COLOR> thresholds;
 
     static {
         D.ts(GSliderInt.class);
@@ -75,43 +83,58 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
         in.set(value);
     }
 
-    public Slider(INT.INTE in, int width, boolean input){
-        this(in, width, 24, input, false, ValueDisplay.NONE, Collections.emptyMap());
-    }
-
-    public Slider(INT.INTE in, int width, boolean input, ValueDisplay valueDisplay){
-        this(in, width, 24, input, false, valueDisplay, Collections.emptyMap());
-    }
-
-    public Slider(INT.INTE in, int width, boolean input, boolean lockScroll, ValueDisplay valueDisplay){
-        this(in, width, 24, input, lockScroll, valueDisplay, Collections.emptyMap());
-    }
-
-    public Slider(INT.INTE in, int width, boolean input, boolean lockScroll, ValueDisplay valueDisplay, Map<Integer, COLOR> thresholds){
-        this(in, width, 24, input, lockScroll, valueDisplay, thresholds);
-    }
-
-    public Slider(INT.INTE in, int width, int height, boolean input, boolean lockScroll, ValueDisplay valueDisplay, Map<Integer, COLOR> thresholds){
-        this.in = in;
+    @Builder
+    public Slider(
+        int min,
+        int max,
+        int value,
+        int width,
+        int height,
+        boolean input,
+        boolean lockScroll,
+        ValueDisplay valueDisplay,
+        Map<Integer, COLOR> thresholds
+    ){
+        this.in = new INT.IntImp(min, max);
+        this.in.set(value);
         this.initialValue = in.get();
         this.initialDValue = in.getD();
         this.valueDisplay = valueDisplay;
-        // sort by key
-        this.thresholds = thresholds.entrySet()
-            .stream().sorted(Map.Entry.comparingByKey())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                (oldValue, newValue) -> oldValue, TreeMap::new));
+
+        this.setAmount = i18n.t("Slider.amount.set");
+        this.setAmountD = i18n.t("Slider.amount.range.set");
+
+        int sliderWidth = (Math.abs(min) + Math.abs(max)) * 2;
+        int sliderHeight = 24;
+
+        if (width > 0) {
+            sliderWidth = width;
+        }
+
+        if (height > 0) {
+            sliderHeight = height;
+        }
+
+        if (thresholds != null) {
+            // sort by key
+            this.thresholds = thresholds.entrySet()
+                .stream().sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                    (oldValue, newValue) -> oldValue, TreeMap::new));
+        } else {
+            this.thresholds = new TreeMap<>();
+        }
 
         setLockScroll(lockScroll);
 
         if (input) {
-            width -= (Icon.S+2)*3;
+            sliderWidth -= (Icon.S+2)*3;
         }
 
-        width -= 4;
+        sliderWidth -= 4;
 
-        if (width < 0)
-            width = 0;
+        if (sliderWidth < 0)
+            sliderWidth = 0;
 
         if (input) {
             addRightC(0, new GButt.ButtPanel(SPRITES.icons().s.minifier) {
@@ -140,7 +163,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
 
         }
 
-        addRightC(4, new Mid(width, height));
+        addRightC(4, new Mid(sliderWidth, sliderHeight));
 
         if (input) {
             addRightC(4, new GButt.ButtPanel(SPRITES.icons().s.magnifier) {
@@ -182,26 +205,26 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
 
         if (valueDisplay != ValueDisplay.NONE) {
             GuiSection section = new GuiSection();
-            int max = Math.max(Math.abs(in.min()), Math.abs(in.max()));
-            String maxString = Integer.toString(max);
+            int maxValue = Math.max(Math.abs(in.min()), Math.abs(in.max()));
+            String maxString = Integer.toString(maxValue);
             if (in.min() < 0) {
                 maxString = "-" + maxString;
             }
 
-            GStat value;
+            GStat valueText;
             if (valueDisplay == ValueDisplay.PERCENTAGE) {
                 maxString = maxString + "%";
-                value = new GStat() {
+                valueText = new GStat() {
                     @Override
                     public void update(GText text) {
-                        TextFormatUtil.perc(text, in.get() / 100d);
+                        TextFormatUtil.percentage(text, in.get() / 100d);
                     }
                 };
             } else {
-                value = new GStat() {
+                valueText = new GStat() {
                     @Override
                     public void update(GText text) {
-                        TextFormatUtil.iBig(text, in.get());
+                        GFORMAT.iBig(text, in.get());
                     }
                 };
             }
@@ -212,7 +235,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
             body().setWidth(valueWidth);
             section.body().setHeight(body().height());
 
-            section.addCentredX(value, 0);
+            section.addCentredX(valueText, 0);
             addRight(5, section);
         }
     }
@@ -264,7 +287,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
             Integer threshold = entry.getKey();
             COLOR color = entry.getValue();
 
-            if (threshold <= getValue()) {
+            if (threshold < getValue()) {
                 color.render(r, x1, x1+width, y1, y2);
                 return;
             }
@@ -278,7 +301,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
             Integer threshold = entry.getKey();
             COLOR color = entry.getValue();
 
-            if (threshold >= getValue()) {
+            if (threshold > getValue()) {
                 color.shade(0.66d).render(r, x1, x1+width, y1, y2);
                 return;
             }
@@ -438,5 +461,28 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
         NONE,
         ABSOLUTE,
         PERCENTAGE
+    }
+
+    public static class SliderBuilder {
+
+        private Map<Integer, COLOR> thresholds = new TreeMap<>();
+
+        public static SliderBuilder fromRange(MoreOptionsV2Config.Range range) {
+            return Slider.builder()
+                .min(range.getMin())
+                .max(range.getMax())
+                .value(range.getValue())
+                .valueDisplay(UiMapper.toValueDisplay(range.getDisplayMode()));
+        }
+
+        public SliderBuilder thresholds(Map<Integer, COLOR> thresholds) {
+            this.thresholds = thresholds;
+            return this;
+        }
+
+        public SliderBuilder threshold(Integer percent, COLOR color) {
+            thresholds.put(percent, color);
+            return this;
+        }
     }
 }

@@ -12,4 +12,8 @@ public class MathUtil {
     public static double toPercentage(double value) {
         return value / 100;
     }
+
+    public static int fromPercentage(double percentage) {
+        return (int) (percentage * 100);
+    }
 }

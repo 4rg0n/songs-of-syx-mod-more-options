@@ -34,12 +34,16 @@ public class ResourceService {
         });
     }
 
-    public String readResource(String path) throws IOException {
+
+    public Optional<String> readResource(String path) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
 
         try (InputStream inputStream = classLoader.getResourceAsStream(path)) {
-            //noinspection DataFlowIssue
-            return readFromInputStream(inputStream);
+            if (inputStream == null) {
+                return Optional.empty();
+            }
+
+            return Optional.of(readFromInputStream(inputStream));
         }
     }
 
