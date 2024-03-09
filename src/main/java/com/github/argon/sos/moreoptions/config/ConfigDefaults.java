@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 public class ConfigDefaults {
 
     private final static Logger log = Loggers.getLogger(ConfigDefaults.class);
+
+    public final static Level CONFIG_DEFAULT_LOG_LEVEL = Level.INFO;
 
     @Getter(lazy = true)
     private final static ConfigDefaults instance = new ConfigDefaults(

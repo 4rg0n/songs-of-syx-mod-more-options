@@ -15,7 +15,7 @@ public interface Phases {
      * Before a game is loaded
      */
     default void initBeforeGameCreated() {
-        throw new UnsupportedOperationException("Method is not implemented");
+        throw new PhaseNotImplemented(Phase.INIT_BEFORE_GAME_CREATED);
     }
 
     /**
@@ -23,7 +23,7 @@ public interface Phases {
      * When the mod instance is created
      */
     default void initModCreateInstance() {
-        throw new UnsupportedOperationException("Method is not implemented");
+        throw new PhaseNotImplemented(Phase.INIT_MOD_CREATE_INSTANCE);
     }
 
     /**
@@ -31,7 +31,7 @@ public interface Phases {
      * When the game loaded a save game
      */
     default void onGameSaveLoaded(Path saveFilePath) {
-        throw new UnsupportedOperationException("Method is not implemented");
+        throw new PhaseNotImplemented(Phase.ON_GAME_SAVE_LOADED);
     }
 
     /**
@@ -39,7 +39,7 @@ public interface Phases {
      * When the player loads into game while already playing another one
      */
     default void onGameSaveReloaded() {
-        throw new UnsupportedOperationException("Method is not implemented");
+        throw new PhaseNotImplemented(Phase.ON_GAME_SAVE_RELOADED);
     }
 
     /**
@@ -48,7 +48,7 @@ public interface Phases {
      * This will not fire when the player loads from an existing game into another one.
      */
     default void initNewGameSession() {
-        throw new UnsupportedOperationException("Method is not implemented");
+        throw new PhaseNotImplemented(Phase.INIT_NEW_GAME_SESSION);
     }
 
     /**
@@ -56,7 +56,7 @@ public interface Phases {
      * When the game starts the update() process
      */
     default void initGameUpdating() {
-        throw new UnsupportedOperationException("Method is not implemented");
+        throw new PhaseNotImplemented(Phase.INIT_GAME_UPDATING);
     }
 
     /**
@@ -64,7 +64,7 @@ public interface Phases {
      * Called by the games update loop
      */
     default void onGameUpdate(double seconds)  {
-        throw new UnsupportedOperationException("Method is not implemented");
+        throw new PhaseNotImplemented(Phase.ON_GAME_UPDATE);
     }
 
     /**
@@ -72,20 +72,20 @@ public interface Phases {
      * When the game UI is loaded
      */
     default void initGameUiPresent() {
-        throw new UnsupportedOperationException("Method is not implemented");
+        throw new PhaseNotImplemented(Phase.INIT_GAME_UI_PRESENT);
     }
 
     /**
      * When the game saves
      */
     default void onGameSaved(Path saveFilePath) {
-        throw new UnsupportedOperationException("Method is not implemented");
+        throw new PhaseNotImplemented(Phase.ON_GAME_SAVED);
     }
 
     /**
      * When the game crashes
      */
     default void onCrash(Throwable e) {
-        throw new UnsupportedOperationException("Method is not implemented");
+        throw new PhaseNotImplemented(Phase.ON_CRASH);
     }
 }

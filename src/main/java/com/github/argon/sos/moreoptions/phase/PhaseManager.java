@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.phase;
 
 import com.github.argon.sos.moreoptions.game.DumpLogsException;
+import com.github.argon.sos.moreoptions.game.VoidAction;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.Getter;
@@ -46,58 +47,66 @@ public class PhaseManager implements Phases {
         phases.get(phase).add(init);
     }
 
+    private void execute(Phases phases, VoidAction action) {
+        try {
+            action.accept();
+        } catch (PhaseNotImplemented e) {
+           log.error("%s does not implement a method for a called phase.", phases.getClass(), e);
+        }
+    }
+
     @Override
     public void initGameUiPresent() {
         log.debug("PHASE: initGameUiPresent");
-        phases.get(Phase.INIT_GAME_UI_PRESENT).forEach(Phases::initGameUiPresent);
+        phases.get(Phase.INIT_GAME_UI_PRESENT).forEach(init -> execute(init, init::initGameUiPresent));
     }
 
     @Override
     public void initGameUpdating() {
         log.debug("PHASE: initGameUpdating");
-        phases.get(Phase.INIT_GAME_UPDATING).forEach(Phases::initGameUpdating);
+        phases.get(Phase.INIT_GAME_UPDATING).forEach(init -> execute(init, init::initGameUpdating));
     }
 
     @Override
     public void onGameUpdate(double seconds) {
         //log.trace("PHASE: onGameUpdate");
-        phases.get(Phase.ON_GAME_UPDATE).forEach(phase -> phase.onGameUpdate(seconds));
+        phases.get(Phase.ON_GAME_UPDATE).forEach(init -> init.onGameUpdate(seconds));
     }
 
     @Override
     public void initBeforeGameCreated() {
         log.debug("PHASE: initBeforeGameCreated");
-        phases.get(Phase.INIT_BEFORE_GAME_CREATED).forEach(Phases::initBeforeGameCreated);
+        phases.get(Phase.INIT_BEFORE_GAME_CREATED).forEach(init -> execute(init, init::initBeforeGameCreated));
     }
 
     @Override
     public void initModCreateInstance() {
         log.debug("PHASE: initModCreateInstance");
-        phases.get(Phase.INIT_MOD_CREATE_INSTANCE).forEach(Phases::initModCreateInstance);
+        phases.get(Phase.INIT_MOD_CREATE_INSTANCE).forEach(init -> execute(init, init::initModCreateInstance));
     }
 
     @Override
     public void onGameSaveLoaded(Path saveFilePath) {
         log.debug("PHASE: onGameSaveLoaded");
-        phases.get(Phase.ON_GAME_SAVE_LOADED).forEach(init -> init.onGameSaveLoaded(saveFilePath));
+        phases.get(Phase.ON_GAME_SAVE_LOADED).forEach(init -> execute(init, () -> init.onGameSaveLoaded(saveFilePath)));
     }
 
     @Override
     public void onGameSaved(Path saveFilePath) {
         log.debug("PHASE: onGameSaved");
-        phases.get(Phase.ON_GAME_SAVED).forEach(init -> init.onGameSaved(saveFilePath));
+        phases.get(Phase.ON_GAME_SAVED).forEach(init -> execute(init, () -> init.onGameSaved(saveFilePath)));
     }
 
     @Override
     public void initNewGameSession() {
         log.debug("PHASE: initNewGameSession");
-        phases.get(Phase.INIT_NEW_GAME_SESSION).forEach(Phases::initNewGameSession);
+        phases.get(Phase.INIT_NEW_GAME_SESSION).forEach(init -> execute(init, init::initNewGameSession));
     }
 
     @Override
     public void onGameSaveReloaded() {
         log.debug("PHASE: onGameSaveReloaded");
-        phases.get(Phase.ON_GAME_SAVE_RELOADED).forEach(Phases::onGameSaveReloaded);
+        phases.get(Phase.ON_GAME_SAVE_RELOADED).forEach(init -> execute(init, init::onGameSaveReloaded));
     }
 
     @Override
@@ -108,6 +117,6 @@ public class PhaseManager implements Phases {
             return;
         }
 
-        phases.get(Phase.ON_CRASH).forEach(init -> init.onCrash(throwable));
+        phases.get(Phase.ON_CRASH).forEach(init -> execute(init, () ->  init.onCrash(throwable)));
     }
 }

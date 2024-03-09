@@ -21,7 +21,7 @@ public class MoreOptionsV2Config {
     @Builder.Default
     private int version = VERSION;
     @Builder.Default
-    private Level logLevel = Level.WARN;
+    private Level logLevel = ConfigDefaults.CONFIG_DEFAULT_LOG_LEVEL;
 
     @Builder.Default
     private Sounds sounds = Sounds.builder().build();
