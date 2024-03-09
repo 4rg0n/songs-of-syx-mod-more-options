@@ -11,6 +11,7 @@ import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
 import game.VERSION;
 import init.paths.ModInfo;
+import init.paths.PATHS;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -71,6 +72,10 @@ public class MoreOptionsPanel extends GuiSection implements
     private final Button shareButton;
     @Getter
     private final Button resetButton;
+    @Getter
+    private final Button dumpLogsButton;
+    @Getter
+    private final Button gameLogsFolderButton;
     @Getter
     private final ButtonMenu<String> moreButtonMenu;
 
@@ -185,11 +190,25 @@ public class MoreOptionsPanel extends GuiSection implements
         this.folderButton = new Button(
             i18n.t("MoreOptionsPanel.button.folder.name"),
             i18n.t("MoreOptionsPanel.button.folder.desc"));
+        this.dumpLogsButton = new Button(
+            i18n.t("MoreOptionsPanel.button.logs.dump.name"),
+            i18n.t("MoreOptionsPanel.button.logs.dump.desc"));
+        this.gameLogsFolderButton = new Button(
+            i18n.t("MoreOptionsPanel.button.logs.folder.name"),
+            i18n.t("MoreOptionsPanel.button.logs.folder.desc", PATHS.local().LOGS.get().toString()));
         this.resetButton = new Button(
             i18n.t("MoreOptionsPanel.button.reset.name"),
             i18n.t("MoreOptionsPanel.button.reset.desc"));
 
-        List<Button> buttons = Lists.of(defaultButton, shareButton, folderButton, reloadButton, resetButton);
+        List<Button> buttons = Lists.of(
+            defaultButton,
+            shareButton,
+            folderButton,
+            reloadButton,
+            dumpLogsButton,
+            gameLogsFolderButton,
+            resetButton
+        );
         this.moreButtonMenu = ButtonMenu.ButtonMenuBuilder.fromList(buttons);
         this.moreButton.clickActionSet(() -> {
             GameUiApi.getInstance().popup().show(this.moreButtonMenu, this.moreButton);

@@ -5,12 +5,11 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.sprite.text.Str;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -170,49 +169,16 @@ public class StringUtil {
      * Replaces tokens like {0} {1} etc. in a string with the given argument on that place
      */
     public static String replaceTokens(String template, Object... args) {
-        // nothing to replace with?
-        if (args.length == 0) {
+        if (args.length == 0 || !template.contains("{")) {
             return template;
         }
 
-        // nothing to replace?
-        if (!template.contains("{")) {
-            return template;
-        }
-
-        StringBuilder stringBuilder = new StringBuilder();
+        Str tmp = Str.TMP.clear().add(template);
         for (int i = 0, argsLength = args.length; i < argsLength; i++) {
-            stringBuilder.append(i);
-            if (i != argsLength - 1) {
-                stringBuilder.append("|");
-            }
+            Object arg = args[i];
+            tmp.insert(i, stringifyValue(arg));
         }
 
-        String patternString = stringBuilder.toString();
-        Pattern pattern = Pattern.compile("\\{(" + patternString + ")}");
-        Matcher matcher = pattern.matcher(template);
-        StringBuffer stringBuffer = new StringBuffer();
-
-        try {
-            while(matcher.find()) {
-                int argsIndex = Integer.parseInt(matcher.group(1));
-
-                // no arg for this index / token?
-                if (argsIndex > args.length - 1) {
-                    continue;
-                }
-
-                String value = stringifyValue(args[argsIndex]);
-                matcher.appendReplacement(stringBuffer, value);
-            }
-            matcher.appendTail(stringBuffer);
-
-            return stringBuffer.toString();
-        } catch (Exception e) {
-            log.debug("Could not replace tokens in: %s", template);
-            log.trace("", e);
-        }
-
-        return template;
+        return tmp.toString();
     }
 }

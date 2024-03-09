@@ -1,5 +1,6 @@
 package snake2d;
 
+import com.github.argon.sos.moreoptions.game.DumpLogsException;
 import lombok.Setter;
 import snake2d.util.misc.ERROR_HANDLER;
 
@@ -60,6 +61,35 @@ public final class Errors {
 			handler.handle(e, dump);
 		}
 		
+	}
+
+	/**
+	 * MODDED
+	 */
+	public static void forceDump(String message) {
+		if (handler == null) {
+			return;
+		}
+
+		String n = System.getProperty("line.separator");
+		String fin = i.out.data.toString();
+		String err = i.err.data.toString();
+
+		fin = fin.replaceAll("\"", "'");
+		err = err.replaceAll("\"", "'");
+
+		String dump = ""
+			+ n + "|-------------------|"
+			+ n + "|     ERROR LOG     |"
+			+ n + "|-------------------|"
+			+ n + err
+			+ n + ""
+			+ n + "|-------------------|"
+			+ n + "|      STD OUT      |"
+			+ n + "|-------------------|"
+			+ n + fin;
+
+		handler.handle(new DumpLogsException(message), dump);
 	}
 	
 	public static void check() {

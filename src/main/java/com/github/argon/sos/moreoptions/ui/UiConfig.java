@@ -28,11 +28,13 @@ import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
+import init.paths.PATHS;
 import init.sprite.SPRITES;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import snake2d.Errors;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.file.FileManager;
 import snake2d.util.file.JsonE;
@@ -311,6 +313,23 @@ public class UiConfig implements Phases {
                 notificator.notifySuccess(i18n.t("notification.config.default.apply"));
             } catch (Exception e) {
                 notificator.notifyError(i18n.t("notification.config.default.not.apply"), e);
+            }
+        });
+
+        moreOptionsPanel.getDumpLogsButton().clickActionSet(() -> {
+            try {
+                Errors.forceDump(i18n.t("MoreOptionsPanel.text.logs.dump"));
+                notificator.notifySuccess(i18n.t("notification.logs.dump"));
+            } catch (Exception e) {
+                notificator.notifyError(i18n.t("notification.logs.not.dump"), e);
+            }
+        });
+
+        moreOptionsPanel.getGameLogsFolderButton().clickActionSet(() -> {
+            try {
+                FileManager.openDesctop(PATHS.local().LOGS.get().toString());
+            } catch (Exception e) {
+                notificator.notifyError(i18n.t("notification.logs.folder.not.open"), e);
             }
         });
 

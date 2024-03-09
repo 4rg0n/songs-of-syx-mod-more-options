@@ -7,6 +7,7 @@ Adds a menu with more options for the game:
 * Tune the amount of weather effects like snow
 * Influence bonuses
 * Collect and export game stats into a CSV file
+* Change the likings between your races
 * Game crash detection and backup mechanism
 
 ![Button](doc/img/button.png)
@@ -15,6 +16,7 @@ Adds a menu with more options for the game:
 ![Weather](doc/img/weather.png)
 ![Boosters](doc/img/boosters.png)
 ![Metrics](doc/img/metrics.png)
+![Races](doc/img/races.png)
 ![Backup](doc/img/backup.png)
 
 # Getting started

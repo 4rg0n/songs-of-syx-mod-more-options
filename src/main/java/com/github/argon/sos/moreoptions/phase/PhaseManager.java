@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.phase;
 
+import com.github.argon.sos.moreoptions.game.DumpLogsException;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.Getter;
@@ -102,6 +103,11 @@ public class PhaseManager implements Phases {
     @Override
     public void onCrash(Throwable throwable) {
         log.debug("PHASE: onCrash");
+        if (throwable instanceof DumpLogsException) {
+            log.debug("Not an actual game crash... but a forced logs dump.");
+            return;
+        }
+
         phases.get(Phase.ON_CRASH).forEach(init -> init.onCrash(throwable));
     }
 }
