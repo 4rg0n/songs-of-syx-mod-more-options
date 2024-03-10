@@ -4,8 +4,7 @@ package com.github.argon.sos.moreoptions.ui;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.game.ui.Modal;
-import com.github.argon.sos.moreoptions.game.ui.Window;
+import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
@@ -43,12 +42,18 @@ public class UiFactory {
     private final MetricExporter metricExporter;
     private final UiMapper uiMapper;
 
-    /**
-     * Generates More Options ui via available config
-     */
-    public Modal<MoreOptionsPanel> buildMoreOptionsModal(String title, MoreOptionsV2Config config) {
-        log.debug("Building '%s' ui", title);
+    public FullWindow<MoreOptionsPanel> buildMoreOptionsFullScreen(String title, MoreOptionsV2Config config) {
+        log.debug("Building '%s' full screen", title);
+        MoreOptionsPanel moreOptionsPanel = buildMoreOptionsPanel(config)
+            .availableWidth(FullWindow.FullView.WIDTH)
+            .availableHeight(FullWindow.FullView.HEIGHT)
+            .build();
+        Toggler<String> buttonMenu = moreOptionsPanel.getTabulator().getMenu();
 
+        return new FullWindow<>(title, moreOptionsPanel, buttonMenu);
+    }
+
+    public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV2Config config) {
         List<BoostersPanel.Entry> boosterEntries = uiMapper.toBoosterPanelEntries(config.getBoosters());
         Map<String, List<RacesPanel.Entry>> raceEntries = uiMapper.toRacePanelEntries(config.getRaces().getLikings());
 
@@ -57,19 +62,15 @@ public class UiFactory {
         Path exportFolder = MetricExporter.EXPORT_FOLDER;
         Path exportFile = metricExporter.getExportFile();
 
-        Modal<MoreOptionsPanel> moreOptionsModal = new Modal<>(title, new MoreOptionsPanel(
-            config,
-            configStore,
-            boosterEntries,
-            raceEntries,
-            availableStats,
-            exportFolder,
-            exportFile,
-            modInfo
-        ));
-        moreOptionsModal.center();
-
-        return moreOptionsModal;
+        return MoreOptionsPanel.builder()
+            .config(config)
+            .configStore(configStore)
+            .boosterEntries(boosterEntries)
+            .raceEntries(raceEntries)
+            .availableStats(availableStats)
+            .modInfo(modInfo)
+            .exportFolder(exportFolder)
+            .exportFile(exportFile);
     }
 
     /**

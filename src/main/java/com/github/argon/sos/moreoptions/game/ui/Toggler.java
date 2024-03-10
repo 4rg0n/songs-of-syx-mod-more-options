@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.gui.GuiSection;
@@ -22,10 +21,8 @@ public class Toggler<Key> extends GuiSection implements
     Resettable<Toggler<Key>>,
     Refreshable<Toggler<Key>> {
 
-    private final Collection<UiInfo<Key>> elements;
-
-    @Getter
-    private UiInfo<Key> activeInfo;
+    private Key activeKey;
+    private Key initKey;
 
     @Getter
     @Nullable
@@ -42,72 +39,37 @@ public class Toggler<Key> extends GuiSection implements
     @Setter
     @Accessors(fluent = true, chain = false)
     private Action<Toggler<Key>> refreshAction = o -> {};
+    @Getter
+    private final ButtonMenu<Key> menu;
 
-    public Toggler(List<UiInfo<Key>> elements) {
-        this(elements, 0, true, true, true);
-    }
 
-    /**
-     * @param elements list of info elements used for building the buttons
-     * @param margin space between buttons
-     * @param sameWidth whether all buttons will get the widest with of them all
-     * @param highlight whether the selected button shall be highlighted
-     */
     @Builder
-    public Toggler(List<UiInfo<Key>> elements, int margin, boolean sameWidth, boolean horizontal, boolean highlight) {
-        this.elements = elements;
+    public Toggler(ButtonMenu<Key> menu, boolean highlight) {
+        this.menu = menu;
+        menu.getButtons().forEach((key, button) -> {
+            if (activeKey == null) {
+                activeKey = key;
+                initKey = key;
+            }
 
-        // first element in map
-        activeInfo = elements.iterator().next();
-        Map<Key, Button> buttons = new LinkedHashMap<>(); // preserve order
-
-        for (UiInfo<Key> info : elements) {
-            Button button = buildButton(highlight, info);
-            buttons.put(info.getKey(), button);
-        }
-
-        ButtonMenu<Key> keyButtonMenu = ButtonMenu.<Key>builder()
-            .buttons(buttons)
-            .margin(margin)
-            .sameWidth(sameWidth)
-            .horizontal(horizontal)
-            .build();
-
-        add(keyButtonMenu);
+            initButton(key, button, highlight);
+        });
+        add(menu);
     }
 
-    @NotNull
-    private Button buildButton(boolean highlight, UiInfo<Key> info) {
-        Button button;
-        if (highlight) {
-            button = new Button(info.getTitle(), info.getDescription()) {
-                @Override
-                protected void clickA() {
-                    activeButton = this;
-                    Toggler.this.clickAction.accept(info.getKey());
-                    toggle(info.getKey());
-                }
+    private void initButton(Key key, final Button button, boolean highlight) {
+        button.clickActionSet(() -> {
+            activeButton = button;
+            clickAction.accept(key);
+            toggle(key);
+        });
 
-                @Override
-                protected void renAction() {
-                    boolean selected = false;
-                    if (info.getKey() != null) {
-                        selected = info.getKey().equals(activeInfo.getKey());
-                    }
-                    selectedSet(selected);
-                }
-            };
-        } else {
-            button = new Button(info.getTitle(), info.getDescription()) {
-                @Override
-                protected void clickA() {
-                    activeButton = this;
-                    Toggler.this.clickAction.accept(info.getKey());
-                    toggle(info.getKey());
-                }
-            };
+        if (highlight) {
+            button.renActionSet(() -> {
+                boolean selected = key.equals(activeKey);
+                button.selectedSet(selected);
+            });
         }
-        return button;
     }
 
     public void toggle(@Nullable Key key) {
@@ -116,12 +78,12 @@ public class Toggler<Key> extends GuiSection implements
         }
 
         // no toggle happened?
-        if (key.equals(activeInfo.getKey())) {
+        if (key.equals(activeKey)) {
             return;
         }
 
         get(key).ifPresent(element -> {
-            activeInfo = element;
+            activeKey = key;
             toggleAction.accept(key);
         });
     }
@@ -130,9 +92,10 @@ public class Toggler<Key> extends GuiSection implements
         toggleAction = Action;
     }
 
-    public Optional<UiInfo<Key>> get(Key key) {
-        return elements.stream()
-            .filter(element -> key.equals(element.getKey()))
+    public Optional<Button> get(Key key) {
+        return menu.getButtons().entrySet().stream()
+            .filter(entry -> key.equals(entry.getKey()))
+            .map(Map.Entry::getValue)
             .findFirst();
     }
 
@@ -143,7 +106,7 @@ public class Toggler<Key> extends GuiSection implements
 
     @Override
     public Key getValue() {
-        return activeInfo.getKey();
+        return activeKey;
     }
 
     @Override
@@ -153,10 +116,7 @@ public class Toggler<Key> extends GuiSection implements
 
     @Override
     public void reset() {
-        elements.stream()
-            .filter(element -> element instanceof Resettable)
-            .map(Resettable.class::cast)
-            .forEach(Resettable::reset);
+        this.activeKey = initKey;
     }
 
     @Override

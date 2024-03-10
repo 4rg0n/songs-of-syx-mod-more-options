@@ -13,12 +13,13 @@ import game.VERSION;
 import init.paths.ModInfo;
 import init.paths.PATHS;
 import init.sprite.UI.UI;
+import lombok.Builder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
-import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.renderable.RENDEROBJ;
 import util.gui.misc.GText;
 
 import java.nio.file.Path;
@@ -78,6 +79,8 @@ public class MoreOptionsPanel extends GuiSection implements
     private final Button gameLogsFolderButton;
     @Getter
     private final ButtonMenu<String> moreButtonMenu;
+    @Getter
+    private final Tabulator<String, RENDEROBJ, GuiSection> tabulator;
 
     private Action<MoreOptionsPanel> showAction = o -> {};
     private Action<MoreOptionsPanel> refreshAction = o -> {};
@@ -85,9 +88,11 @@ public class MoreOptionsPanel extends GuiSection implements
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
 
+
     /**
      * Builds the UI with given config
      */
+    @Builder
     public MoreOptionsPanel(
         MoreOptionsV2Config config,
         ConfigStore configStore,
@@ -96,86 +101,43 @@ public class MoreOptionsPanel extends GuiSection implements
         Set<String> availableStats,
         Path exportFolder,
         Path exportFile,
+        int availableWidth,
+        int availableHeight,
         @Nullable ModInfo modInfo
     ) {
         this.configStore = configStore;
-
-        soundsPanel = new SoundsPanel(config.getSounds());
-        eventsPanel = new EventsPanel(config.getEvents());
-        weatherPanel = new WeatherPanel(config.getWeather());
-        boostersPanel = new BoostersPanel(boosterEntries);
-        metricsPanel = new MetricsPanel(config.getMetrics(), availableStats, exportFolder, exportFile);
-        racesPanel = new RacesPanel(raceEntries);
-
-        Tabulator<String, ?, GuiSection> tabulator = new Tabulator<>(Maps.ofLinked(
-            UiInfo.<String>builder()
-                .key("sounds")
-                .title(i18n.t("MoreOptionsPanel.tab.sounds.name"))
-                .description(i18n.t("MoreOptionsPanel.tab.sounds.desc"))
-                .build(), soundsPanel,
-            UiInfo.<String>builder()
-                .key("events")
-                .title(i18n.t("MoreOptionsPanel.tab.events.name"))
-                .description(i18n.t("MoreOptionsPanel.tab.events.desc"))
-                .build(), eventsPanel,
-            UiInfo.<String>builder()
-                .key("weather")
-                .title(i18n.t("MoreOptionsPanel.tab.weather.name"))
-                .description(i18n.t("MoreOptionsPanel.tab.weather.desc"))
-                .build(), weatherPanel,
-            UiInfo.<String>builder()
-                .key("boosters")
-                .title(i18n.t("MoreOptionsPanel.tab.boosters.name"))
-                .description(i18n.t("MoreOptionsPanel.tab.boosters.desc"))
-                .build(), boostersPanel,
-            UiInfo.<String>builder()
-                .key("metrics")
-                .title(i18n.t("MoreOptionsPanel.tab.metrics.name"))
-                .description(i18n.t("MoreOptionsPanel.tab.metrics.desc"))
-                .build(), metricsPanel
-            , UiInfo.<String>builder()
-                .key("races")
-                .title(i18n.t("MoreOptionsPanel.tab.races.name"))
-                .description(i18n.t("MoreOptionsPanel.tab.races.desc"))
-                .build(), racesPanel
-        ), DIR.S, 30, 0, true, false);
-        addDownC(0, tabulator);
-
-        HorizontalLine horizontalLine = new HorizontalLine(body().width(), 14, 1);
-        addDownC(20, horizontalLine);
 
         GuiSection footer = new GuiSection();
         this.cancelButton = new Button(
             i18n.t("MoreOptionsPanel.button.cancel.name"),
             i18n.t("MoreOptionsPanel.button.cancel.desc"));
-        footer.addRight(0, cancelButton);
+        footer.addRightC(0, cancelButton);
 
         this.undoButton = new Button(
             i18n.t("MoreOptionsPanel.button.undo.name"),
             i18n.t("MoreOptionsPanel.button.undo.desc"));
         undoButton.activeSet(false);
-        footer.addRight(10, undoButton);
+        footer.addRightC(10, undoButton);
 
         this.moreButton = new Button(
             i18n.t("MoreOptionsPanel.button.more.name"),
             COLOR.WHITE15,
             i18n.t("MoreOptionsPanel.button.more.desc"));
-        footer.addRight(50, moreButton);
+        footer.addRightC(50, moreButton);
 
         String modVersion = "NO_VER";
         if (modInfo != null) {
             modVersion = modInfo.version;
         }
 
-        footer.addRight(50, versions(config.getVersion(), modVersion));
+        footer.addRightC(50, versions(config.getVersion(), modVersion));
 
         this.applyButton = new Button(i18n.t("MoreOptionsPanel.button.apply.name"), i18n.t("MoreOptionsPanel.button.apply.desc"));
         applyButton.activeSet(false);
-        footer.addRight(50, applyButton);
+        footer.addRightC(50, applyButton);
 
         this.okButton = new Button(i18n.t("MoreOptionsPanel.button.ok.name"), i18n.t("MoreOptionsPanel.button.ok.desc"));
-        footer.addRight(10, okButton);
-        addDownC(20, footer);
+        footer.addRightC(10, okButton);
 
         // More Button Menu
         this.defaultButton = new Button(
@@ -213,6 +175,61 @@ public class MoreOptionsPanel extends GuiSection implements
         this.moreButton.clickActionSet(() -> {
             GameUiApi.getInstance().popup().show(this.moreButtonMenu, this.moreButton);
         });
+
+        HorizontalLine horizontalLine = new HorizontalLine(footer.body().width(), 20, 1);
+        availableHeight = availableHeight - footer.body().height() - horizontalLine.body().height() - 40;
+
+        soundsPanel = new SoundsPanel(config.getSounds(), availableWidth, availableHeight);
+        eventsPanel = new EventsPanel(config.getEvents(), availableWidth, availableHeight);
+        weatherPanel = new WeatherPanel(config.getWeather(), availableWidth, availableHeight);
+        boostersPanel = new BoostersPanel(boosterEntries, availableWidth, availableHeight);
+        metricsPanel = new MetricsPanel(config.getMetrics(), availableStats, exportFolder, exportFile, availableWidth, availableHeight);
+        racesPanel = new RacesPanel(raceEntries, availableWidth, availableHeight);
+
+        tabulator = Tabulator.<String, RENDEROBJ, GuiSection>builder()
+            .tabs(Maps.ofLinked(
+                "sounds", soundsPanel,
+                "events", eventsPanel,
+                "weather", weatherPanel,
+                "boosters", boostersPanel,
+                "metrics", metricsPanel,
+                "races", racesPanel
+            ))
+            .tabMenu(Toggler.<String>builder()
+                .menu(ButtonMenu.<String>builder()
+                    .button("sounds", new Button(
+                        i18n.t("MoreOptionsPanel.tab.sounds.name"),
+                        i18n.t("MoreOptionsPanel.tab.sounds.desc")))
+                    .button("events", new Button(
+                        i18n.t("MoreOptionsPanel.tab.events.name"),
+                        i18n.t("MoreOptionsPanel.tab.events.desc")))
+                    .button("weather", new Button(
+                        i18n.t("MoreOptionsPanel.tab.weather.name"),
+                        i18n.t("MoreOptionsPanel.tab.weather.desc")))
+                    .button("boosters", new Button(
+                        i18n.t("MoreOptionsPanel.tab.boosters.name"),
+                        i18n.t("MoreOptionsPanel.tab.boosters.desc")))
+                    .button("metrics", new Button(
+                        i18n.t("MoreOptionsPanel.tab.metrics.name"),
+                        i18n.t("MoreOptionsPanel.tab.metrics.desc")))
+                    .button("races", new Button(
+                        i18n.t("MoreOptionsPanel.tab.races.name"),
+                        i18n.t("MoreOptionsPanel.tab.races.desc")))
+                    .sameWidth(true)
+                    .horizontal(true)
+                    .margin(21)
+                    .spacer(true)
+                    .buttonColor(COLOR.WHITE25)
+                    .build())
+                .highlight(true)
+                .build())
+            .center(true)
+            .build();
+
+        addDownC(0, tabulator);
+        addDownC(0, horizontalLine);
+        addDownC(20, footer);
+        addDownC(0, new Spacer(body().width(), 20));
     }
 
     @Override

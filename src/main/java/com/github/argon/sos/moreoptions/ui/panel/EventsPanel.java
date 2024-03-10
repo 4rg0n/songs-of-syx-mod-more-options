@@ -6,6 +6,7 @@ import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
+import init.sprite.UI.UI;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
@@ -28,39 +29,19 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
     private final Map<String, Checkbox> worldEventsCheckboxes;
     private final Map<String, Slider> eventsChanceSliders;
 
-    public EventsPanel(MoreOptionsV2Config.Events events) {
+    public EventsPanel(MoreOptionsV2Config.Events events, int availableWidth, int availableHeight) {
         this.settlementEventsCheckboxes = UiMapper.toCheckboxes(events.getSettlement());
         this.worldEventsCheckboxes = UiMapper.toCheckboxes(events.getWorld());
 
-        Table<Integer> settlementTable = Table.<Integer>builder()
-            .rows(UiMapper.toLabeledColumnRows(settlementEventsCheckboxes, i18n))
-            .rowPadding(5)
-            .displayHeight(300)
-            .build();
-
-        Table<Integer> worldTable = Table.<Integer>builder()
-            .rows(UiMapper.toLabeledColumnRows(worldEventsCheckboxes, i18n))
-            .rowPadding(5)
-            .displayHeight(300)
-            .build();
-
         GuiSection settlementSection = new GuiSection();
+        GuiSection worldSection = new GuiSection();
+        GuiSection checkBoxSection = new GuiSection();
+        GuiSection eventsChanceSection = new GuiSection();
+
         GHeader settlementHeader = new GHeader(i18n.t("EventsPanel.header.settlement.name"));
         settlementHeader.hoverInfoSet(i18n.t("EventsPanel.header.settlement.desc"));
-        settlementSection.addDown(0, settlementHeader);
-        settlementSection.addDown(10, settlementTable);
-
-        GuiSection worldSection = new GuiSection();
         GHeader worldHeader = new GHeader(i18n.t("EventsPanel.header.world.name"));
         settlementHeader.hoverInfoSet(i18n.t("EventsPanel.header.world.desc"));
-        worldSection.addDown(0, worldHeader);
-        worldSection.addDown(10, worldTable);
-
-        GuiSection checkBoxSection = new GuiSection();
-        checkBoxSection.addRight(0, settlementSection);
-        checkBoxSection.addRight(0, new VerticalLine(101, settlementSection.body().height(), 1));
-        checkBoxSection.addRight(0, worldSection);
-        addDownC(0, checkBoxSection);
 
         this.eventsChanceSliders = UiMapper.toSliders(events.getChance());
         List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(eventsChanceSliders, i18n);
@@ -69,13 +50,40 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
             .rowPadding(5)
             .build();
 
-        GuiSection eventsChanceSection = new GuiSection();
         GHeader eventChancesHeader = new GHeader(i18n.t("EventsPanel.header.chance.name"));
         eventChancesHeader.hoverInfoSet(i18n.t("EventsPanel.header.chance.desc"));
+
         eventsChanceSection.addDown(0, eventChancesHeader);
         eventsChanceSection.addDown(5, chanceTable);
 
         HorizontalLine horizontalLine = new HorizontalLine(eventsChanceSection.body().width(), 14, 1);
+        int tableHeight = availableHeight
+            - horizontalLine.body().height()
+            - eventsChanceSection.body().height()
+            - UI.FONT().H2.height() // headers height
+            - 40;
+
+        Table<Integer> settlementTable = Table.<Integer>builder()
+            .rows(UiMapper.toLabeledColumnRows(settlementEventsCheckboxes, i18n))
+            .rowPadding(5)
+            .displayHeight(tableHeight)
+            .build();
+
+        Table<Integer> worldTable = Table.<Integer>builder()
+            .rows(UiMapper.toLabeledColumnRows(worldEventsCheckboxes, i18n))
+            .rowPadding(5)
+            .displayHeight(tableHeight)
+            .build();
+
+        settlementSection.addDown(0, settlementHeader);
+        settlementSection.addDown(10, settlementTable);
+        worldSection.addDown(0, worldHeader);
+        worldSection.addDown(10, worldTable);
+        checkBoxSection.addRight(0, settlementSection);
+        checkBoxSection.addRight(0, new VerticalLine(101, settlementSection.body().height(), 1));
+        checkBoxSection.addRight(0, worldSection);
+
+        addDownC(0, checkBoxSection);
         addDownC(10, horizontalLine);
         addDownC(10, eventsChanceSection);
     }

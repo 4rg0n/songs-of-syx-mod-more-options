@@ -6,6 +6,7 @@ import com.github.argon.sos.moreoptions.config.JsonConfigMapper;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Button;
+import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.i18n.I18n;
@@ -27,7 +28,6 @@ import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
 import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
-import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import init.paths.PATHS;
 import init.sprite.SPRITES;
 import lombok.AccessLevel;
@@ -35,10 +35,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
-import snake2d.util.datatypes.DIR;
 import snake2d.util.file.FileManager;
 import snake2d.util.file.JsonE;
-import snake2d.util.gui.GuiSection;
 import util.gui.misc.GButt;
 import view.interrupter.IDebugPanel;
 import view.main.VIEW;
@@ -102,16 +100,16 @@ public class UiConfig implements Phases {
 
     @Getter
     @Nullable
-    private Modal<MoreOptionsPanel> moreOptionsModal;
+    private FullWindow<MoreOptionsPanel> moreOptionsModal;
     @Getter
     @Nullable
-    private Modal<MoreOptionsPanel> backupMoreOptionsModal;
+    private FullWindow<MoreOptionsPanel> backupMoreOptionsModal;
     @Getter
     @Nullable
     private Modal<BackupDialog> backupDialog;
 
     @Override
-    public void initBeforeGameCreated() {
+    public void initModCreateInstance() {
         initDebugActions();
     }
 
@@ -123,7 +121,7 @@ public class UiConfig implements Phases {
         MoreOptionsV2Config moreOptionsConfig = configStore.getCurrentConfig();
 
         // create More Options ui
-        moreOptionsModal = uiFactory.buildMoreOptionsModal(MOD_INFO.name.toString(), moreOptionsConfig);
+        moreOptionsModal = uiFactory.buildMoreOptionsFullScreen(MOD_INFO.name.toString(), moreOptionsConfig);
         initActions(moreOptionsModal);
         inject(moreOptionsModal);
         Optional<MoreOptionsV2Config> backupConfig = configStore.getBackupConfig();
@@ -131,7 +129,7 @@ public class UiConfig implements Phases {
         // create backup configuration dialog if needed
         if (backupConfig.isPresent()) {
             backupDialog = new Modal<>(MOD_INFO.name.toString(), new BackupDialog());
-            backupMoreOptionsModal = uiFactory.buildMoreOptionsModal(
+            backupMoreOptionsModal = uiFactory.buildMoreOptionsFullScreen(
                 MOD_INFO.name + " " + i18n.t("MoreOptionsPanel.backup.title.suffix"),
                 backupConfig.get());
 
@@ -141,8 +139,8 @@ public class UiConfig implements Phases {
         }
     }
 
-    public void inject(Modal<MoreOptionsPanel> moreOptionsModal) {
-        log.debug("Injecting button into game ui");
+    public void inject(FullWindow<MoreOptionsPanel> moreOptionsModal) {
+        log.debug("Injecting %s buttons into game ui", MOD_INFO.name);
         GButt.ButtPanel moreOptionsButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
             @Override
             protected void clickA() {
@@ -153,38 +151,11 @@ public class UiConfig implements Phases {
         moreOptionsButton.hoverInfoSet(MOD_INFO.name);
         moreOptionsButton.setDim(32, UIPanelTop.HEIGHT);
 
-        // inject button into world view
         try {
-            Object object = gameApis.ui().findUIElementInWorldView(UIPanelTop.class)
-                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
-                .orElse(null);
-
-            if (object == null) {
-                throw new IllegalStateException("Could not find UI to inject button into.");
-            }
-
-            log.debug("Injecting button into UIPanelTop#right in world view");
-            GuiSection right = (GuiSection) object;
-            right.addRelBody(8, DIR.W, moreOptionsButton);
+            gameApis.ui().injectIntoWorldUITopPanel(moreOptionsButton);
+            gameApis.ui().injectIntoSettlementUITopPanel(moreOptionsButton);
         } catch (Exception e) {
-            log.error("Could not inject %s UI button into world view :(", MOD_INFO.name, e);
-        }
-
-        // inject button into settlement view
-        try {
-            Object object = gameApis.ui().findUIElementInSettlementView(UIPanelTop.class)
-                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
-                .orElse(null);
-
-            if (object == null) {
-                throw new IllegalStateException("Could not find UI to inject button into.");
-            }
-
-            log.debug("Injecting button into UIPanelTop#right in settlement view");
-            GuiSection right = (GuiSection) object;
-            right.addRelBody(8, DIR.W, moreOptionsButton);
-        } catch (Exception e) {
-            log.error("Could not inject %s UI button into settlement view :(", MOD_INFO.name, e);
+            log.error("Could not inject %s buttons into game ui", MOD_INFO.name, e);
         }
     }
 
@@ -194,6 +165,7 @@ public class UiConfig implements Phases {
     public void initDebugActions() {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":phases:" + Phase.ON_GAME_SAVE_LOADED  , () -> PhaseManager.getInstance().onGameSaveReloaded());
+        IDebugPanel.add(MOD_INFO.name + ":fullScreen", () -> UiFactory.getInstance().buildMoreOptionsFullScreen("More Options", configStore.getDefaultConfig()).show());
         IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());
         IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> MetricScheduler.getInstance().stop());
         IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> MetricScheduler.getInstance().start());
@@ -207,7 +179,7 @@ public class UiConfig implements Phases {
         });
     }
 
-    public void initActions(Modal<MoreOptionsPanel> moreOptionsModal) {
+    public void initActions(FullWindow<MoreOptionsPanel> moreOptionsModal) {
         MoreOptionsPanel moreOptionsPanel = moreOptionsModal.getSection();
         initActions(moreOptionsModal, moreOptionsPanel);
 
@@ -236,7 +208,7 @@ public class UiConfig implements Phases {
         });
     }
 
-    public void initActions(Modal<MoreOptionsPanel> moreOptionsModal, MoreOptionsPanel moreOptionsPanel) {
+    public void initActions(FullWindow<MoreOptionsPanel> moreOptionsModal, MoreOptionsPanel moreOptionsPanel) {
         // update Notificator queue when More Options Modal is rendered
         moreOptionsModal.renderAction((modal, seconds) -> notificator.update(seconds));
         moreOptionsModal.hideAction(modal -> notificator.close());
@@ -504,19 +476,18 @@ public class UiConfig implements Phases {
 
     public void initBackupActions(
         Modal<BackupDialog> backupDialog,
-        Modal<MoreOptionsPanel> backupMoreOptionsModal,
-        Modal<MoreOptionsPanel> moreOptionsModal,
+        FullWindow<MoreOptionsPanel> backupMoreOptionsModal,
+        FullWindow<MoreOptionsPanel> moreOptionsModal,
         MoreOptionsV2Config backupConfig
     ) {
         // Close: More Options modal with backup config
-        backupMoreOptionsModal.getPanel().setCloseAction(() -> {
+        backupMoreOptionsModal.hideAction(panel -> {
             try {
                 configStore.deleteBackupConfig();
             } catch (Exception e) {
                 log.error("Could not delete backup config", e);
             }
 
-            backupMoreOptionsModal.hide();
             backupDialog.show();
         });
 

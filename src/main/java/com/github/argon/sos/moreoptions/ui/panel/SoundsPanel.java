@@ -4,6 +4,8 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
+import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
+import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -24,44 +26,40 @@ public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
     private final Map<String, Slider> ambienceSoundSliders;
     private final Map<String, Slider> settlementSoundSliders;
     private final Map<String, Slider> roomSoundSliders;
-    public SoundsPanel(MoreOptionsV2Config.Sounds sounds) {
-
+    public SoundsPanel(MoreOptionsV2Config.Sounds sounds, int availableWidth, int availableHeight) {
         this.ambienceSoundSliders = UiMapper.toSliders(sounds.getAmbience());
         this.settlementSoundSliders = UiMapper.toSliders(sounds.getSettlement());
         this.roomSoundSliders = UiMapper.toSliders(sounds.getRoom());
 
-        Table<Integer> ambienceSoundsTable = Table.<Integer>builder()
-            .rows(UiMapper.toLabeledColumnRows(ambienceSoundSliders, i18n))
-            .rowPadding(5)
-            .displayHeight(120)
-            .build();
-
-        Table<Integer> settlementSoundsTable = Table.<Integer>builder()
-            .rows(UiMapper.toLabeledColumnRows(settlementSoundSliders, i18n))
-            .rowPadding(5)
-            .displayHeight(120)
-            .build();
-
-        Table<Integer> roomSoundsTable = Table.<Integer>builder()
-            .rows(UiMapper.toLabeledColumnRows(roomSoundSliders, i18n))
-            .rowPadding(5)
-            .displayHeight(120)
-            .build();
-
         GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsPanel.header.ambienceSounds.name"));
         ambienceSoundsHeader.hoverInfoSet(i18n.d("SoundsPanel.header.ambienceSounds.desc"));
-        addDown(0, ambienceSoundsHeader);
-        addDown(5, ambienceSoundsTable);
 
         GHeader settlementSoundsHeader = new GHeader(i18n.t("SoundsPanel.header.settlementSounds.name"));
         settlementSoundsHeader.hoverInfoSet(i18n.d("SoundsPanel.header.settlementSounds.desc"));
-        addDown(10, settlementSoundsHeader);
-        addDown(5, settlementSoundsTable);
 
         GHeader roomSoundsHeader = new GHeader(i18n.t("SoundsPanel.header.roomSounds.name"));
         roomSoundsHeader.hoverInfoSet(i18n.d("SoundsPanel.header.roomSounds.desc"));
-        addDown(10, roomSoundsHeader);
-        addDown(5, roomSoundsTable);
+
+        Layout.vertical(availableHeight)
+            .addDown(0, ambienceSoundsHeader)
+            .addDown(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
+                .rows(UiMapper.toLabeledColumnRows(ambienceSoundSliders, i18n))
+                .rowPadding(5)
+                .displayHeight(height)
+                .build()))
+            .addDown(10, settlementSoundsHeader)
+            .addDown(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
+                .rows(UiMapper.toLabeledColumnRows(settlementSoundSliders, i18n))
+                .rowPadding(5)
+                .displayHeight(height)
+                .build()))
+            .addDown(10, roomSoundsHeader)
+            .addDown(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
+                .rows(UiMapper.toLabeledColumnRows(roomSoundSliders, i18n))
+                .rowPadding(5)
+                .displayHeight(height)
+                .build()))
+            .build(this);
     }
 
     @Override

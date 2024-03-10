@@ -90,6 +90,7 @@ public class UiMapper {
             Map.Entry::getKey,
             config -> Slider.SliderBuilder
                 .fromRange(config.getValue())
+                .lockScroll(true)
                 .input(true)
                 .width(300)
                 .build()));

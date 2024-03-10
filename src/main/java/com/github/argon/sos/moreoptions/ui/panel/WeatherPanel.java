@@ -5,6 +5,8 @@ import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.Valuable;
+import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
+import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -25,16 +27,16 @@ public class WeatherPanel extends GuiSection implements Valuable<Map<String, Mor
 
     @Getter
     private final Map<String, Slider> sliders;
-    public WeatherPanel(Map<String, MoreOptionsV2Config.Range> weatherConfig) {
+    public WeatherPanel(Map<String, MoreOptionsV2Config.Range> weatherConfig, int availableWidth, int availableHeight) {
         this.sliders = UiMapper.toSliders(weatherConfig);
         List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(sliders, i18n);
-        Table<Integer> weatherTable = Table.<Integer>builder()
-            .rows(rows)
-            .displayHeight(400)
-            .rowPadding(5)
-            .build();
-
-        addDownC(0, weatherTable);
+        Layout.vertical(availableHeight)
+            .addDownC(10, new VerticalLayout.Scalable(300, height -> Table.<Integer>builder()
+                .rows(rows)
+                .displayHeight(height)
+                .rowPadding(5)
+                .build()))
+            .build(this);
     }
 
     @Override

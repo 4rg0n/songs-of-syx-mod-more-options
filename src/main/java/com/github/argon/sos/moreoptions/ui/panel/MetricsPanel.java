@@ -4,6 +4,8 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
+import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Sets;
@@ -34,7 +36,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
     private final Slider collectionRate;
     private final Slider exportRate;
     private final UISwitcher exportFilePathView;
-    private final UISwitcher statsSection;
     @Getter
     private final StringInputSprite searchInput;
     private final Map<String, Checkbox> statsCheckboxes = new HashMap<>();
@@ -48,7 +49,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
     @Getter
     private final Button exportFolderButton;
     @Getter
-    private final Toggler<Boolean> searchToggler;
+    private final Toggler<Boolean> checkToggler;
 
     private Action<MetricsPanel> refreshAction = o -> {};
     private BiAction<MoreOptionsV2Config.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
@@ -57,23 +58,22 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         MoreOptionsV2Config.Metrics metricsConfig,
         Set<String> availableStats,
         Path exportFolderPath,
-        Path exportFilePath
+        Path exportFilePath,
+        int availableWidth,
+        int availableHeight
     ) {
         this.exportFolderPath = exportFolderPath;
 
         // Started / Stopped toggle
-        Toggler<Boolean> toggler = new Toggler<>(Lists.of(
-            UiInfo.<Boolean>builder()
-                .key(true)
-                .title(i18n.t("MetricsPanel.toggle.start.name"))
-                .description(i18n.t("MetricsPanel.toggle.start.desc"))
-                .build(),
-            UiInfo.<Boolean>builder()
-                .key(false)
-                .title(i18n.t("MetricsPanel.toggle.stop.name"))
-                .description(i18n.t("MetricsPanel.toggle.stop.desc"))
-                .build()
-        ), 0, true, true, true);
+        Toggler<Boolean> toggler = Toggler.<Boolean>builder()
+            .menu(ButtonMenu.<Boolean>builder()
+                .button(true, new Button(i18n.t("MetricsPanel.toggle.start.name"), i18n.t("MetricsPanel.toggle.start.desc")))
+                .button(false, new Button(i18n.t("MetricsPanel.toggle.stop.name"), i18n.t("MetricsPanel.toggle.stop.desc")))
+                .sameWidth(true)
+                .horizontal(true)
+                .build())
+            .highlight(true)
+            .build();
         ColumnRow<Void> onOffToggleRow = ColumnRow.<Void>builder()
             .column(Label.builder()
                 .name(i18n.t("MetricsPanel.toggle.label.name"))
@@ -137,19 +137,15 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         GuiSection searchBar = new GuiSection();
         this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("MetricsPanel.search.input.name"));
         searchBar.addRightC(0, new GInput(searchInput));
-        this.searchToggler = new Toggler<>(Lists.of(
-            UiInfo.<Boolean>builder()
-                .key(true)
-                .title(i18n.t("MetricsPanel.search.check.name"))
-                .description(i18n.t("MetricsPanel.search.check.desc"))
-                .build(),
-            UiInfo.<Boolean>builder()
-                .key(false)
-                .title(i18n.t("MetricsPanel.search.uncheck.name"))
-                .description(i18n.t("MetricsPanel.search.uncheck.desc"))
-                .build()
-        ),0, true, true, false);
-        searchBar.addRightC(10, searchToggler);
+        this.checkToggler = Toggler.<Boolean>builder()
+            .menu(ButtonMenu.<Boolean>builder()
+                .button(true, new Button(i18n.t("MetricsPanel.search.check.name"), i18n.t("MetricsPanel.search.check.desc")))
+                .button(false, new Button(i18n.t("MetricsPanel.search.uncheck.name"), i18n.t("MetricsPanel.search.uncheck.desc")))
+                .horizontal(true)
+                .build())
+            .highlight(false)
+            .build();
+        searchBar.addRightC(10, checkToggler);
 
         // Export stats section
         SortedSet<String> sortedAvailableStats = Sets.sort(availableStats);
@@ -167,14 +163,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
                 .build();
         }).collect(Collectors.toList());
 
-        Table<Boolean> exportStats = Table.<Boolean>builder()
-            .evenOdd(true)
-            .displayHeight(250)
-            .search(searchInput)
-            .rows(statRows)
-            .build();
-
-        this.statsSection = new UISwitcher(exportStats, true);
         this.onOffToggle = toggler;
         this.onOffToggle.toggle(metricsConfig.isEnabled());
 
@@ -195,13 +183,22 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         GHeader statsHeader = new GHeader(i18n.t("MetricsPanel.stats.header.name"));
         statsHeader.hoverInfoSet(i18n.t("MetricsPanel.stats.header.desc"));
 
-        addDownC(0, configTable);
-        addDownC(15, statsHeader);
-        addDownC(10, searchBar);
-        addDownC(15, statsSection);
+        VerticalLayout.Scalables scalables = Layout.vertical(availableHeight)
+            .addDownC(0, configTable)
+            .addDownC(15, statsHeader)
+            .addDownC(10, searchBar)
+            .addDownC(10, new VerticalLayout.Scalable(200, height -> Table.<Boolean>builder()
+                .evenOdd(true)
+                .displayHeight(height)
+                .search(searchInput)
+                .rows(statRows)
+                .build()))
+            .build(this);
+
+        Table<Boolean> exportStats = scalables.getAs(0);
 
         // Actions
-        searchToggler.clickAction(aBoolean -> {
+        checkToggler.clickAction(aBoolean -> {
             List<String> resultList = exportStats
                 .search(searchInput.text().toString());
             resultList.forEach(result -> statsCheckboxes.get(result).setValue(aBoolean));
