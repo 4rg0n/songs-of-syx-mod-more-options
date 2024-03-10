@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -11,7 +12,6 @@ import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -28,9 +28,10 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
     Resettable<Tabulator<Key, Element, Value>>,
     Refreshable<Tabulator<Key, Element, Value>> {
 
-    private final Map<UiInfo<Key>, Element> tabs;
+    private final Map<Key, Element> tabs;
     private final boolean resetOnToggle;
-    private final Toggler<Key> toggler;
+    @Getter
+    private final Toggler<Key> menu;
 
     @Setter
     @Accessors(fluent = true, chain = false)
@@ -38,11 +39,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
 
     @Getter
     private Element activeTab;
-    private final AbstractUISwitcher clicker;
-
-    public Tabulator(Map<UiInfo<Key>, Element> tabs) {
-        this(tabs, DIR.N, 0, 0, false, false);
-    }
+    private final AbstractUISwitcher view;
 
     /**
      * @param tabs list of ui elements to toggle with info for buttons
@@ -51,50 +48,52 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
      * @param center whether elements shall be centered
      * @param resetOnToggle whether elements shall be reset when toggling
      */
-    public Tabulator(Map<UiInfo<Key>, Element> tabs, DIR direction, int margin, int marginToggler, boolean center, boolean resetOnToggle) {
+    @Builder
+    public Tabulator(Map<Key, Element> tabs, Toggler<Key> tabMenu, int margin, boolean center, boolean resetOnToggle, @Nullable DIR direction) {
         this.tabs = tabs;
         this.resetOnToggle = resetOnToggle;
 
         // first element in map
         activeTab = tabs.values().iterator().next();
-
-        toggler = new Toggler<>(new ArrayList<>(tabs.keySet()), marginToggler, false, true, true);
-        toggler.clickAction(this::tab);
+        this.menu = tabMenu;
+        tabMenu.clickAction(this::tab);
 
         // guarantee same width
         int maxWidth = UiUtil.getMaxWidth(tabs.values());
         int maxHeight = UiUtil.getMaxHeight(tabs.values());
 
-        clicker = new AbstractUISwitcher(maxWidth, maxHeight, center) {
+        view = new AbstractUISwitcher(maxWidth, maxHeight, center) {
             @Override
             protected RENDEROBJ pget() {
                 return activeTab;
             }
         };
 
-        switch (direction) {
-            default:
-            case N:
-                addDownC(0, clicker);
-                addDownC(margin, toggler);
-                break;
-            case S:
-                addDownC(0, toggler);
-                addDownC(margin, clicker);
-                break;
-            case E:
-                addRightC(0, toggler);
-                addRightC(margin, clicker);
-                break;
-            case W:
-                addRightC(0, clicker);
-                addRightC(margin, toggler);
-                break;
+        if (direction != null) {
+            switch (direction) {
+                case N:
+                    addDownC(0, view);
+                    addDownC(margin, tabMenu);
+                    break;
+                case S:
+                    addDownC(0, tabMenu);
+                    addDownC(margin, view);
+                    break;
+                case E:
+                    addRightC(0, tabMenu);
+                    addRightC(margin, view);
+                    break;
+                case W:
+                    addRightC(0, view);
+                    addRightC(margin, tabMenu);
+                    break;
+                default:
+                    addDownC(0, view);
+                    break;
+            }
+        } else {
+            addDownC(0, view);
         }
-    }
-
-    public UiInfo<Key> getActiveInfo() {
-        return toggler.getActiveInfo();
     }
 
     public void tab(@Nullable Key key) {
@@ -103,12 +102,12 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
         }
 
         tabs.entrySet().stream()
-            .filter(element -> key.equals(element.getKey().getKey()))
+            .filter(element -> key.equals(element.getKey()))
             .findFirst()
             .ifPresent(element -> {
                 if (resetOnToggle) reset();
                 activeTab = element.getValue();
-                toggler.toggle(key);
+                menu.toggle(key);
             });
     }
 
@@ -150,7 +149,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
 
     @Override
     public void refresh() {
-        clicker.dirty = true;
+        view.dirty = true;
         refreshAction.accept(this);
 
         // refresh tabs if possible

@@ -25,12 +25,12 @@ public class WeatherPanel extends GuiSection implements Valuable<Map<String, Mor
 
     @Getter
     private final Map<String, Slider> sliders;
-    public WeatherPanel(Map<String, MoreOptionsV2Config.Range> weatherConfig) {
+    public WeatherPanel(Map<String, MoreOptionsV2Config.Range> weatherConfig, int availableWidth, int availableHeight) {
         this.sliders = UiMapper.toSliders(weatherConfig);
         List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(sliders, i18n);
         Table<Integer> weatherTable = Table.<Integer>builder()
             .rows(rows)
-            .displayHeight(400)
+            .displayHeight(availableHeight)
             .rowPadding(5)
             .build();
 

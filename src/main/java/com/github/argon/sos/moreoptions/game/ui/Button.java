@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.datatypes.COORDINATE;
+import snake2d.util.gui.clickable.CLICKABLE;
+import snake2d.util.misc.ACTION;
 import snake2d.util.sprite.SPRITE;
 import util.gui.misc.GButt;
 
@@ -26,6 +28,8 @@ public class Button extends GButt.ButtPanel {
     @Setter
     @Accessors(fluent = true)
     private boolean hoverable = true;
+    @Nullable
+    private ACTION renAction;
 
     public Button(CharSequence label) {
         this(label, COLOR.WHITE35, null);
@@ -119,6 +123,17 @@ public class Button extends GButt.ButtPanel {
     @Override
     public Button bg(COLOR c) {
         super.bg(c);
+        return this;
+    }
+
+    @Override
+    protected void renAction() {
+        if (renAction != null) renAction.exe();
+        super.renAction();
+    }
+
+    public CLICKABLE renActionSet(ACTION action) {
+        this.renAction = action;
         return this;
     }
 }

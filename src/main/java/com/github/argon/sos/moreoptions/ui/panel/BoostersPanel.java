@@ -1,15 +1,15 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
+import com.github.argon.sos.moreoptions.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
-import com.github.argon.sos.moreoptions.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.util.Maps;
-import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import game.boosting.Boostable;
 import game.boosting.BoostableCat;
 import init.race.RACES;
@@ -39,7 +39,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
     @Getter
     private final Map<String, Tabulator<String, Slider, Integer>> slidersWithToggle = new HashMap<>();
 
-    public BoostersPanel(List<Entry> boosterEntries) {
+    public BoostersPanel(List<Entry> boosterEntries, int availableWidth, int availableHeight) {
         Map<String, List<Entry>> groupedBoosterEntries = UiMapper.toBoosterPanelEntriesCategorized(boosterEntries);
         Map<String, List<ColumnRow<Integer>>> collect = groupedBoosterEntries.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
@@ -53,14 +53,17 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
         ));
 
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("BoostersPanel.search.input.name"));
+        GInput search = new GInput(searchInput);
+
+        int tableHeight = availableHeight - search.body().height() - 10;
         Table<Integer> boosterTable = Table.<Integer>builder()
             .rowsCategorized(collect)
             .evenOdd(true)
             .search(searchInput)
-            .displayHeight(450)
+            .displayHeight(tableHeight)
             .build();
 
-        addDownC(0, new GInput(searchInput));
+        addDownC(0, search);
         addDownC(10, boosterTable);
     }
 
@@ -88,6 +91,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
 
         Slider multiSlider = Slider.SliderBuilder.fromRange(rangeMulti)
             .input(true)
+            .lockScroll(true)
             .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))
             .threshold((int) (0.50 * rangeAdd.getMax()), COLOR.ORANGE100.shade(0.7d))
             .threshold((int) (0.75 * rangeAdd.getMax()), COLOR.RED100.shade(0.7d))
@@ -96,6 +100,7 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
             .build();
         Slider additiveSlider = Slider.SliderBuilder.fromRange(rangeAdd)
             .input(true)
+            .lockScroll(true)
             .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))
             .threshold((int) (0.50 * rangeAdd.getMax()), COLOR.ORANGE100.shade(0.7d))
             .threshold((int) (0.75 * rangeAdd.getMax()), COLOR.RED100.shade(0.7d))
@@ -104,20 +109,25 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
             .build();
 
         // Booster toggle
-        Tabulator<String, Slider, Integer> slidersWithToggle = new Tabulator<>(Maps.ofLinked(
-            UiInfo.<String>builder()
-                .key("add")
-                .title("Add")
-                .description("Adds to the booster value.")
-                .build(), additiveSlider,
-            UiInfo.<String>builder()
-                .key("multi")
-                .title("Perc")
-                .description("Regulates the percentage of the booster value. Values under 100% will lower the effect.")
-                .build(), multiSlider
-        ), DIR.W, 0, 0, false, true);
-        slidersWithToggle.tab(activeKey);
+        Tabulator<String, Slider, Integer> slidersWithToggle = Tabulator.<String, Slider, Integer>builder()
+            .tabs(Maps.ofLinked(
+                "multi", multiSlider,
+                "add", additiveSlider
+            ))
+            .tabMenu(Toggler.<String>builder()
+                .menu(ButtonMenu.<String>builder()
+                    .button("add", new Button(i18n.t("BoostersPanel.booster.toggle.add.name"), i18n.t("BoostersPanel.booster.toggle.add.desc")))
+                    .button("multi", new Button(i18n.t("BoostersPanel.booster.toggle.perc.name"), i18n.t("BoostersPanel.booster.toggle.perc.desc")))
+                    .horizontal(true)
+                    .sameWidth(true)
+                    .build())
+                .highlight(true)
+                .build())
+            .resetOnToggle(true)
+            .direction(DIR.W)
+            .build();
 
+        slidersWithToggle.tab(activeKey);
         return slidersWithToggle;
     }
 

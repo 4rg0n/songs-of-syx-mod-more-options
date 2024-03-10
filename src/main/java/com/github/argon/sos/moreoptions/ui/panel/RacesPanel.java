@@ -48,7 +48,7 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
     @Getter
     private final Button importButton;
 
-    public RacesPanel(Map<String, List<Entry>> raceEntries) {
+    public RacesPanel(Map<String, List<Entry>> raceEntries, int availableWidth, int availableHeight) {
         // Race Likings rows for table
         Map<String, List<ColumnRow<Integer>>> raceLikingsRowMap = raceEntries.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
@@ -87,14 +87,7 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
 
         // Race Likings table with search
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("RacesPanel.search.input.name"));
-        Table<Integer> raceLikingsTable = Table.<Integer>builder()
-            .evenOdd(true)
-            .scrollable(true)
-            .search(searchInput)
-            .rowPadding(5)
-            .rowsCategorized(raceLikingsRowMap)
-            .displayHeight(400)
-            .build();
+        GInput search = new GInput(searchInput);
 
         // menu with buttons
         this.folderButton = new Button(i18n.t("RacesPanel.button.folder.name"), i18n.t("RacesPanel.button.folder.desc"));
@@ -118,10 +111,24 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
         GuiSection searchBar = new GuiSection();
         GText raceLikingsHeader = new GText(UI.FONT().H2, i18n.t("RacesPanel.search.header.name"));
         searchBar.addRightC(0, raceLikingsHeader);
-        searchBar.addRightC(20, new GInput(searchInput));
+        searchBar.addRightC(20, search);
         searchBar.hoverInfoSet(i18n.t("RacesPanel.search.header.desc"));
 
-        addDownC(20, buttonMenu);
+        int tableHeight = availableHeight
+            - buttonMenu.body().height()
+            - searchBar.body().height()
+            - 40;
+
+        Table<Integer> raceLikingsTable = Table.<Integer>builder()
+            .evenOdd(true)
+            .scrollable(true)
+            .search(searchInput)
+            .rowPadding(5)
+            .rowsCategorized(raceLikingsRowMap)
+            .displayHeight(tableHeight)
+            .build();
+
+        addDownC(0, buttonMenu);
         addDownC(20, searchBar);
         addDownC(20, raceLikingsTable);
     }

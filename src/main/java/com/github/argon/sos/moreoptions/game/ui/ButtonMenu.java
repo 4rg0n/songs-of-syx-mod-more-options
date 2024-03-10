@@ -2,18 +2,18 @@ package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import lombok.Builder;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Builder
 public class ButtonMenu<Key> extends GuiSection {
 
+    @Getter
     private final Map<Key, Button> buttons;
 
     @Builder.Default
@@ -29,12 +29,13 @@ public class ButtonMenu<Key> extends GuiSection {
     private boolean spacer = false;
     @Builder.Default
     private int margin = 0;
-
+    @Builder.Default
+    private COLOR buttonColor = COLOR.WHITE35;
     @Builder.Default
     private List<Integer> widths = null;
 
     public ButtonMenu(Map<Key, Button> buttons) {
-        this(buttons, false, true, true, true, false, 0 ,null);
+        this(buttons, false, true, true, true, false, 0, COLOR.WHITE35,null);
     }
 
     public ButtonMenu(
@@ -45,6 +46,7 @@ public class ButtonMenu<Key> extends GuiSection {
         boolean hoverable,
         boolean spacer,
         int margin,
+        COLOR buttonColor,
         @Nullable List<Integer> widths
     ) {
         this.buttons = buttons;
@@ -67,6 +69,7 @@ public class ButtonMenu<Key> extends GuiSection {
             button.body().setWidth(width);
             button.clickable(clickable);
             button.hoverable(hoverable);
+            button.bg(buttonColor);
 
             // add buttons in correct directions
             if (horizontal) {
@@ -95,15 +98,26 @@ public class ButtonMenu<Key> extends GuiSection {
         return buttons.get(key);
     }
 
-
-
     public static class ButtonMenuBuilder<Key> {
+
+        private final Map<Key, Button> buttons = new LinkedHashMap<>();
+
         public static ButtonMenu<String> fromList(List<Button> infoList) {
             LinkedHashMap<String, Button> collect = infoList.stream().collect(Collectors.toMap(
                 Object::toString, button -> button,
                 (left, right) -> left, LinkedHashMap::new));
 
             return new ButtonMenu<>(collect);
+        }
+
+        public ButtonMenuBuilder<Key> buttons(Map<Key, Button> buttons) {
+            this.buttons.putAll(buttons);
+            return this;
+        }
+
+        public ButtonMenuBuilder<Key> button(Key key, Button button) {
+            this.buttons.put(key, button);
+            return this;
         }
     }
 }
