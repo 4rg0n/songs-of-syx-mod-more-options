@@ -60,7 +60,7 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
         int tableHeight = availableHeight
             - horizontalLine.body().height()
             - eventsChanceSection.body().height()
-            - UI.FONT().H2.height()
+            - UI.FONT().H2.height() // headers height
             - 40;
 
         Table<Integer> settlementTable = Table.<Integer>builder()
@@ -82,7 +82,6 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
         checkBoxSection.addRight(0, settlementSection);
         checkBoxSection.addRight(0, new VerticalLine(101, settlementSection.body().height(), 1));
         checkBoxSection.addRight(0, worldSection);
-
 
         addDownC(0, checkBoxSection);
         addDownC(10, horizontalLine);

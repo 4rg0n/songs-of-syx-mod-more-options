@@ -103,7 +103,7 @@ public class GameUiApi implements Phases {
         return interrupters;
     }
 
-    public boolean injectIntoWorldUITopPanel(RENDEROBJ element) throws UiException {
+    public boolean injectIntoWorldUITopPanel(RENDEROBJ element) throws ApiException {
         Object object = null;
         log.debug("Injecting %s into UIPanelTop#right in World %s",
             element.getClass().getSimpleName(), UIPanelTop.class.getSimpleName());
@@ -113,7 +113,7 @@ public class GameUiApi implements Phases {
                 .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
                 .orElse(null);
         } catch (Exception e) {
-            throw new UiException(
+            throw new ApiException(
                 String.format("Could not inject %s into World %s",
                     element.getClass().getSimpleName(),
                     UIPanelTop.class.getSimpleName()),
@@ -122,7 +122,7 @@ public class GameUiApi implements Phases {
         }
 
         if (object == null) {
-            throw new UiException(String.format("Could not find %s in World view", UIPanelTop.class.getSimpleName()));
+            throw new ApiException(String.format("Could not find %s in World view", UIPanelTop.class.getSimpleName()));
         }
 
         GuiSection right = (GuiSection) object;
@@ -130,7 +130,7 @@ public class GameUiApi implements Phases {
         return true;
     }
 
-    public boolean injectIntoSettlementUITopPanel(RENDEROBJ element) throws UiException {
+    public boolean injectIntoSettlementUITopPanel(RENDEROBJ element) throws ApiException {
         Object object = null;
         log.debug("Injecting %s into UIPanelTop#right in Settlement %s",
             element.getClass().getSimpleName(), UIPanelTop.class.getSimpleName());
@@ -140,7 +140,7 @@ public class GameUiApi implements Phases {
                 .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
                 .orElse(null);
         } catch (Exception e) {
-            throw new UiException(
+            throw new ApiException(
                 String.format("Could not inject %s into Settlement %s",
                     element.getClass().getSimpleName(),
                     UIPanelTop.class.getSimpleName()),
@@ -149,7 +149,7 @@ public class GameUiApi implements Phases {
         }
 
         if (object == null) {
-            throw new UiException(String.format("Could not find %s in Settlement view", UIPanelTop.class.getSimpleName()));
+            throw new ApiException(String.format("Could not find %s in Settlement view", UIPanelTop.class.getSimpleName()));
         }
 
         GuiSection right = (GuiSection) object;

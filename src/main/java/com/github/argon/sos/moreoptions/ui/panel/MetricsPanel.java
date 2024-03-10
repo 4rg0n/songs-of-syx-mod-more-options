@@ -4,6 +4,8 @@ import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
+import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Sets;
@@ -34,7 +36,6 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
     private final Slider collectionRate;
     private final Slider exportRate;
     private final UISwitcher exportFilePathView;
-    private final UISwitcher statsSection;
     @Getter
     private final StringInputSprite searchInput;
     private final Map<String, Checkbox> statsCheckboxes = new HashMap<>();
@@ -182,25 +183,19 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
         GHeader statsHeader = new GHeader(i18n.t("MetricsPanel.stats.header.name"));
         statsHeader.hoverInfoSet(i18n.t("MetricsPanel.stats.header.desc"));
 
-        int tableHeight = availableHeight
-            - configTable.body().height()
-            - statsHeader.body().height()
-            - searchBar.body().height()
-            - 40;
+        VerticalLayout.Scalables scalables = Layout.vertical(availableHeight)
+            .addDownC(0, configTable)
+            .addDownC(15, statsHeader)
+            .addDownC(10, searchBar)
+            .addDownC(10, new VerticalLayout.Scalable(200, height -> Table.<Boolean>builder()
+                .evenOdd(true)
+                .displayHeight(height)
+                .search(searchInput)
+                .rows(statRows)
+                .build()))
+            .build(this);
 
-        Table<Boolean> exportStats = Table.<Boolean>builder()
-            .evenOdd(true)
-            .displayHeight(tableHeight)
-            .search(searchInput)
-            .rows(statRows)
-            .build();
-
-        this.statsSection = new UISwitcher(exportStats, true);
-
-        addDownC(0, configTable);
-        addDownC(15, statsHeader);
-        addDownC(10, searchBar);
-        addDownC(15, statsSection);
+        Table<Boolean> exportStats = scalables.getAs(0);
 
         // Actions
         checkToggler.clickAction(aBoolean -> {

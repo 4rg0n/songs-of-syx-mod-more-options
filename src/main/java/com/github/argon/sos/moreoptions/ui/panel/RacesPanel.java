@@ -2,6 +2,8 @@ package com.github.argon.sos.moreoptions.ui.panel;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
+import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -114,23 +116,18 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
         searchBar.addRightC(20, search);
         searchBar.hoverInfoSet(i18n.t("RacesPanel.search.header.desc"));
 
-        int tableHeight = availableHeight
-            - buttonMenu.body().height()
-            - searchBar.body().height()
-            - 40;
-
-        Table<Integer> raceLikingsTable = Table.<Integer>builder()
-            .evenOdd(true)
-            .scrollable(true)
-            .search(searchInput)
-            .rowPadding(5)
-            .rowsCategorized(raceLikingsRowMap)
-            .displayHeight(tableHeight)
-            .build();
-
-        addDownC(0, buttonMenu);
-        addDownC(20, searchBar);
-        addDownC(20, raceLikingsTable);
+        Layout.vertical(availableHeight)
+            .addDownC(0, buttonMenu)
+            .addDownC(20, searchBar)
+            .addDownC(20, new VerticalLayout.Scalable(300, height ->  Table.<Integer>builder()
+                .evenOdd(true)
+                .scrollable(true)
+                .search(searchInput)
+                .rowPadding(5)
+                .rowsCategorized(raceLikingsRowMap)
+                .displayHeight(height)
+                .build()))
+            .build(this);
     }
 
     @Override

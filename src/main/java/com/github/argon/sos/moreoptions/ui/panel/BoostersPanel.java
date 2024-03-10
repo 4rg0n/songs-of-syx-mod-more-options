@@ -4,6 +4,8 @@ import com.github.argon.sos.moreoptions.booster.MoreOptionsBoosters;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
+import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -55,16 +57,15 @@ public class BoostersPanel extends GuiSection implements Valuable<Map<String, Mo
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("BoostersPanel.search.input.name"));
         GInput search = new GInput(searchInput);
 
-        int tableHeight = availableHeight - search.body().height() - 10;
-        Table<Integer> boosterTable = Table.<Integer>builder()
-            .rowsCategorized(collect)
-            .evenOdd(true)
-            .search(searchInput)
-            .displayHeight(tableHeight)
-            .build();
-
-        addDownC(0, search);
-        addDownC(10, boosterTable);
+        Layout.vertical(availableHeight)
+            .addDownC(0, search)
+            .addDownC(10, new VerticalLayout.Scalable(300, height -> Table.<Integer>builder()
+                .rowsCategorized(collect)
+                .evenOdd(true)
+                .search(searchInput)
+                .displayHeight(height)
+                .build()))
+            .build(this);
     }
 
     @Override
