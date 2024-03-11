@@ -1,7 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.BiAction;
-import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.function.Supplier;
 
@@ -11,7 +10,7 @@ import java.util.function.Supplier;
  * @param <Value> type of set and returned value
  * @param <Element> type of source object triggered the setting or getting
  */
-public interface Valuable<Value, Element> extends RENDEROBJ {
+public interface Valuable<Value, Element> {
     Value getValue();
     void setValue(Value value);
 

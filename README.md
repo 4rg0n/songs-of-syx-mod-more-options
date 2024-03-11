@@ -17,6 +17,7 @@ Adds a menu with more options for the game:
 ![Boosters](doc/img/boosters.png)
 ![Metrics](doc/img/metrics.png)
 ![Races](doc/img/races.png)
+![Advanced](doc/img/advanced.png)
 ![Backup](doc/img/backup.png)
 
 # Getting started

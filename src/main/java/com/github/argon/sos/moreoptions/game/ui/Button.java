@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +14,7 @@ import util.gui.misc.GButt;
 
 public class Button extends GButt.ButtPanel {
 
+    @Getter
     private COLOR color = COLOR.WHITE35;
 
     private boolean markSuccess = false;
@@ -54,6 +56,10 @@ public class Button extends GButt.ButtPanel {
         super(label);
         this.color = color;
         bg(color);
+    }
+
+    public SPRITE getLabel() {
+        return label;
     }
 
     public Button markApplied(boolean applied) {
@@ -116,12 +122,13 @@ public class Button extends GButt.ButtPanel {
 
     @Override
     public Button bgClear() {
-        super.bg(color);
+        super.bgClear();
         return this;
     }
 
     @Override
     public Button bg(COLOR c) {
+        color = c;
         super.bg(c);
         return this;
     }

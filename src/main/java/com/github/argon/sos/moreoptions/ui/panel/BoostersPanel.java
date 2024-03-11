@@ -35,13 +35,20 @@ import java.util.stream.Collectors;
 /**
  * Contains sliders to influence values of game boosters
  */
-public class BoostersPanel extends GuiSection implements Valuable<Map<String, MoreOptionsV2Config.Range>, BoostersPanel> {
+public class BoostersPanel extends AbstractPanel<Map<String, MoreOptionsV2Config.Range>, BoostersPanel> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     private static final I18n i18n = I18n.get(BoostersPanel.class);
     @Getter
     private final Map<String, Tabulator<String, Slider, Integer>> slidersWithToggle = new HashMap<>();
 
-    public BoostersPanel(List<Entry> boosterEntries, int availableWidth, int availableHeight) {
+    public BoostersPanel(
+        String title,
+        List<Entry> boosterEntries,
+        Map<String, MoreOptionsV2Config.Range> defaultConfig,
+        int availableWidth,
+        int availableHeight
+    ) {
+        super(title, defaultConfig);
         Map<String, List<Entry>> groupedBoosterEntries = UiMapper.toBoosterPanelEntriesCategorized(boosterEntries);
         Map<String, List<ColumnRow<Integer>>> collect = groupedBoosterEntries.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,

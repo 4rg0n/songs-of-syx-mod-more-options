@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Events, EventsPanel> {
+public class EventsPanel extends AbstractPanel<MoreOptionsV2Config.Events, EventsPanel> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
     private final static I18n i18n = I18n.get(EventsPanel.class);
@@ -29,7 +29,14 @@ public class EventsPanel extends GuiSection implements Valuable<MoreOptionsV2Con
     private final Map<String, Checkbox> worldEventsCheckboxes;
     private final Map<String, Slider> eventsChanceSliders;
 
-    public EventsPanel(MoreOptionsV2Config.Events events, int availableWidth, int availableHeight) {
+    public EventsPanel(
+        String title,
+        MoreOptionsV2Config.Events events,
+        MoreOptionsV2Config.Events defaultConfig,
+        int availableWidth,
+        int availableHeight
+    ) {
+        super(title, defaultConfig);
         this.settlementEventsCheckboxes = UiMapper.toCheckboxes(events.getSettlement());
         this.worldEventsCheckboxes = UiMapper.toCheckboxes(events.getWorld());
 

@@ -30,7 +30,7 @@ public class ButtonMenu<Key> extends GuiSection {
     @Builder.Default
     private int margin = 0;
     @Builder.Default
-    private COLOR buttonColor = COLOR.WHITE35;
+    private COLOR buttonColor = null;
     @Builder.Default
     private List<Integer> widths = null;
 
@@ -46,7 +46,7 @@ public class ButtonMenu<Key> extends GuiSection {
         boolean hoverable,
         boolean spacer,
         int margin,
-        COLOR buttonColor,
+        @Nullable COLOR buttonColor,
         @Nullable List<Integer> widths
     ) {
         this.buttons = buttons;
@@ -69,7 +69,7 @@ public class ButtonMenu<Key> extends GuiSection {
             button.body().setWidth(width);
             button.clickable(clickable);
             button.hoverable(hoverable);
-            button.bg(buttonColor);
+            if (buttonColor != null) button.bg(buttonColor);
 
             // add buttons in correct directions
             if (horizontal) {

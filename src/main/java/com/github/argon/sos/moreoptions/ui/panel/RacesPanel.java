@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Contains race likings adjustable via sliders
  */
-public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Config.RacesConfig, RacesPanel> {
+public class RacesPanel extends AbstractPanel<MoreOptionsV2Config.RacesConfig, RacesPanel> {
     private static final Logger log = Loggers.getLogger(RacesPanel.class);
 
     private final static I18n i18n = I18n.get(RacesPanel.class);
@@ -50,7 +50,14 @@ public class RacesPanel extends GuiSection implements Valuable<MoreOptionsV2Conf
     @Getter
     private final Button importButton;
 
-    public RacesPanel(Map<String, List<Entry>> raceEntries, int availableWidth, int availableHeight) {
+    public RacesPanel(
+        String title,
+        Map<String, List<Entry>> raceEntries,
+        MoreOptionsV2Config.RacesConfig defaultConfig,
+        int availableWidth,
+        int availableHeight
+    ) {
+        super(title, defaultConfig);
         // Race Likings rows for table
         Map<String, List<ColumnRow<Integer>>> raceLikingsRowMap = raceEntries.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,

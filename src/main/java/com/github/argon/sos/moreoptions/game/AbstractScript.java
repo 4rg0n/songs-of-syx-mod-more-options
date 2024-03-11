@@ -19,12 +19,10 @@ import java.util.Optional;
 public abstract class AbstractScript implements script.SCRIPT, Phases {
 
     private final static Logger log = Loggers.getLogger(AbstractScript.class);
-    public final static Level LOG_LEVEL_DEFAULT = Level.TRACE;
-
     public final static String LOG_LEVEL_ENV_NAME = "MOD.LOG_LEVEL";
 
     static {
-        Loggers.setLevels(LOG_LEVEL_DEFAULT);
+        Loggers.setLevels(Loggers.LOG_LEVEL_DEFAULT);
     }
 
     private final PhaseManager phaseManager = PhaseManager.getInstance();
@@ -62,7 +60,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     }
 
     protected Level initLogLevel() {
-        return LOG_LEVEL_DEFAULT;
+        return Loggers.LOG_LEVEL_DEFAULT;
     }
 
     @Override

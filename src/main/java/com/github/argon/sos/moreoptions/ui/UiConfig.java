@@ -23,10 +23,7 @@ import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.phase.Phases;
-import com.github.argon.sos.moreoptions.ui.panel.MetricsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
-import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
-import com.github.argon.sos.moreoptions.ui.panel.WeatherPanel;
+import com.github.argon.sos.moreoptions.ui.panel.*;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import init.paths.PATHS;
 import init.sprite.SPRITES;
@@ -191,6 +188,10 @@ public class UiConfig implements Phases {
         RacesPanel racesPanel = moreOptionsPanel.getRacesPanel();
         initActions(racesPanel);
 
+        // ADVANCED
+        AdvancedPanel advancedPanel = moreOptionsPanel.getAdvancedPanel();
+        initActions(advancedPanel, moreOptionsPanel);
+
         // after config is applied to game
         configurator.onAfterApplyAction(moreOptionsConfig -> {
             Path exportFile = metricExporter.getExportFile();
@@ -277,52 +278,29 @@ public class UiConfig implements Phases {
             }
         });
 
-        // Apply default config to ui
-        moreOptionsPanel.getDefaultButton().clickActionSet(() -> {
-            MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
+        // Apply default config to tab
+        moreOptionsPanel.getDefaultTabButton().clickActionSet(() -> {
             try {
-                moreOptionsPanel.setValue(defaultConfig);
-                notificator.notifySuccess(i18n.t("notification.config.default.apply"));
-            } catch (Exception e) {
-                notificator.notifyError(i18n.t("notification.config.default.not.apply"), e);
-            }
-        });
-
-        moreOptionsPanel.getDumpLogsButton().clickActionSet(() -> {
-            try {
-                Errors.forceDump(i18n.t("MoreOptionsPanel.text.logs.dump"));
-                notificator.notifySuccess(i18n.t("notification.logs.dump"));
-            } catch (Exception e) {
-                notificator.notifyError(i18n.t("notification.logs.not.dump"), e);
-            }
-        });
-
-        moreOptionsPanel.getGameLogsFolderButton().clickActionSet(() -> {
-            try {
-                FileManager.openDesctop(PATHS.local().LOGS.get().toString());
-            } catch (Exception e) {
-                notificator.notifyError(i18n.t("notification.logs.folder.not.open"), e);
-            }
-        });
-
-        // Apply default config to ui and game & delete config file
-        moreOptionsPanel.getResetButton().clickActionSet(() -> {
-            // are you sure message
-            VIEW.inters().yesNo.activate(i18n.t("MoreOptionsPanel.text.yesNo.reset"), () -> {
-                MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
-                try {
-                    moreOptionsPanel.setValue(defaultConfig);
-                    configStore.deleteConfig();
-                    if (applyAndSave(moreOptionsPanel)) {
-                        notificator.notifySuccess(i18n.t("notification.config.reset"));
-                    } else {
-                        notificator.notifyError(i18n.t("notification.config.not.reset"));
-                    }
-
-                } catch (Exception e) {
-                    notificator.notifyError(i18n.t("notification.config.not.reset"), e);
+                AbstractPanel<?, ?> abstractPanel = moreOptionsPanel.getTabulator().getActiveTab();
+                if (abstractPanel != null) {
+                    abstractPanel.resetToDefault();
+                    notificator.notifySuccess(i18n.t("notification.config.default.tab.apply", abstractPanel.getTitle()));
+                } else {
+                    notificator.notifyError(i18n.t("notification.config.default.tab.not.apply"));
                 }
-            }, () -> {}, true);
+            } catch (Exception e) {
+                notificator.notifyError(i18n.t("notification.config.default.tab.not.apply"), e);
+            }
+        });
+
+        // Apply default config to everything
+        moreOptionsPanel.getDefaultAllButton().clickActionSet(() -> {
+            try {
+                moreOptionsPanel.setValue(configStore.getDefaultConfig());
+                notificator.notifySuccess(i18n.t("notification.config.default.all.apply"));
+            } catch (Exception e) {
+                notificator.notifyError(i18n.t("notification.config.default.all.not.apply"), e);
+            }
         });
 
         //Ok: Apply & Save & Exit
@@ -334,15 +312,6 @@ public class UiConfig implements Phases {
             }
 
             moreOptionsModal.hide();
-        });
-
-        // opens folder with mod configuration
-        moreOptionsPanel.getFolderButton().clickActionSet(() -> {
-            try {
-                FileManager.openDesctop(ConfigStore.MORE_OPTIONS_CONFIG_PATH.get().toString());
-            } catch (Exception e) {
-                notificator.notifyError(i18n.t("notification.config.folder.not.open", ConfigStore.MORE_OPTIONS_CONFIG_PATH), e);
-            }
         });
     }
 
@@ -470,8 +439,55 @@ public class UiConfig implements Phases {
 
             racesConfigsSelection.show();
         });
+    }
 
+    public void initActions(AdvancedPanel advancedPanel, MoreOptionsPanel moreOptionsPanel) {
 
+        advancedPanel.getDumpLogsButton().clickActionSet(() -> {
+            try {
+                Errors.forceDump(i18n.t("MoreOptionsPanel.text.logs.dump"));
+                notificator.notifySuccess(i18n.t("notification.logs.dump"));
+            } catch (Exception e) {
+                notificator.notifyError(i18n.t("notification.logs.not.dump"), e);
+            }
+        });
+
+        advancedPanel.getGameLogsFolderButton().clickActionSet(() -> {
+            try {
+                FileManager.openDesctop(PATHS.local().LOGS.get().toString());
+            } catch (Exception e) {
+                notificator.notifyError(i18n.t("notification.logs.folder.not.open"), e);
+            }
+        });
+
+        // Apply default config to ui and game & delete config file
+        advancedPanel.getResetButton().clickActionSet(() -> {
+            // are you sure message
+            VIEW.inters().yesNo.activate(i18n.t("MoreOptionsPanel.text.yesNo.reset"), () -> {
+                MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
+                try {
+                    moreOptionsPanel.setValue(defaultConfig);
+                    configStore.deleteConfig();
+                    if (applyAndSave(moreOptionsPanel)) {
+                        notificator.notifySuccess(i18n.t("notification.config.reset"));
+                    } else {
+                        notificator.notifyError(i18n.t("notification.config.not.reset"));
+                    }
+
+                } catch (Exception e) {
+                    notificator.notifyError(i18n.t("notification.config.not.reset"), e);
+                }
+            }, () -> {}, true);
+        });
+
+        // opens folder with mod configuration
+        advancedPanel.getFolderButton().clickActionSet(() -> {
+            try {
+                FileManager.openDesctop(ConfigStore.MORE_OPTIONS_CONFIG_PATH.get().toString());
+            } catch (Exception e) {
+                notificator.notifyError(i18n.t("notification.config.folder.not.open", ConfigStore.MORE_OPTIONS_CONFIG_PATH), e);
+            }
+        });
     }
 
     public void initBackupActions(

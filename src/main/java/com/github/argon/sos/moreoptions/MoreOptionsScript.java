@@ -61,7 +61,7 @@ public final class MoreOptionsScript extends AbstractScript {
 	public Level initLogLevel() {
 		return configStore.getMetaInfo()
 			.map(MoreOptionsV2Config.Meta::getLogLevel)
-			.orElse(LOG_LEVEL_DEFAULT);
+			.orElse(Loggers.LOG_LEVEL_DEFAULT);
 	}
 
 	@Override

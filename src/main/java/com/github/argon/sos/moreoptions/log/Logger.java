@@ -18,7 +18,7 @@ import static com.github.argon.sos.moreoptions.util.StringUtil.*;
 public class Logger {
 
     public static final String PREFIX_MOD = "MO";
-    private final static Level DEFAULT_LEVEL = Level.INFO;
+    private final static Level DEFAULT_LEVEL = Loggers.getRootLevel();
     private final static String LOG_MSG_FORMAT = "[%s|%s]%s[%s] %s";
     private final static int NAME_DISPLAY_MAX_LENGTH = 32;
 

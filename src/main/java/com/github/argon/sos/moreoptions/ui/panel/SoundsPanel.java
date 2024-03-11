@@ -3,14 +3,12 @@ package com.github.argon.sos.moreoptions.ui.panel;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
-import com.github.argon.sos.moreoptions.game.ui.Valuable;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
 import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
-import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
 
 import java.util.Map;
@@ -19,14 +17,21 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the volume of game sound effects
  */
-public class SoundsPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Sounds, SoundsPanel> {
+public class SoundsPanel extends AbstractPanel<MoreOptionsV2Config.Sounds, SoundsPanel> {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
     private final static I18n i18n = I18n.get(SoundsPanel.class);
 
     private final Map<String, Slider> ambienceSoundSliders;
     private final Map<String, Slider> settlementSoundSliders;
     private final Map<String, Slider> roomSoundSliders;
-    public SoundsPanel(MoreOptionsV2Config.Sounds sounds, int availableWidth, int availableHeight) {
+    public SoundsPanel(
+        String title,
+        MoreOptionsV2Config.Sounds sounds,
+        MoreOptionsV2Config.Sounds defaultConfig,
+        int availableWidth,
+        int availableHeight
+    ) {
+        super(title, defaultConfig);
         this.ambienceSoundSliders = UiMapper.toSliders(sounds.getAmbience());
         this.settlementSoundSliders = UiMapper.toSliders(sounds.getSettlement());
         this.roomSoundSliders = UiMapper.toSliders(sounds.getRoom());

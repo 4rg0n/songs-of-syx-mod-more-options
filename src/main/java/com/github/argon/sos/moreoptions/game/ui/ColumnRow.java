@@ -70,6 +70,10 @@ public class ColumnRow<Value> extends GuiSection implements
     @Accessors(fluent = true)
     private boolean selectable = false;
 
+    @Getter
+    @Builder.Default
+    private int margin = 5;
+
     private float doubleClickTimer = 0;
 
     @Setter
@@ -128,7 +132,7 @@ public class ColumnRow<Value> extends GuiSection implements
             GuiSection section = columns.get(i);
             Integer width = columnWidths.get(i);
             section.body().setWidth(width);
-            addRightC(5, section);
+            addRightC(margin, section);
         }
     }
 
