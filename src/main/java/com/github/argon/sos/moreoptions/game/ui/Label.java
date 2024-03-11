@@ -58,9 +58,13 @@ public class Label extends GuiSection {
             case WARNING:
                 text.warnify();
                 break;
-            default:
             case NORMAL:
                 text.normalify();
+                break;
+            case HOVER:
+                text.hoverify();
+                break;
+            default:
                 break;
         }
 
@@ -78,6 +82,7 @@ public class Label extends GuiSection {
     @Override
     public void hoverInfoGet(GUI_BOX text) {
         hoverGuiAction.accept(text);
+        super.hoverInfoGet(text);
     }
 
     public enum Style {
@@ -85,6 +90,7 @@ public class Label extends GuiSection {
         WARNING,
         ERROR,
         LABEL_SUB,
-        NORMAL
+        NORMAL,
+        HOVER
     }
 }

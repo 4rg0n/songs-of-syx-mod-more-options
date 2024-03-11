@@ -1,13 +1,16 @@
 package com.github.argon.sos.moreoptions.config;
 
-import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.log.Level;
+import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Data
 @Builder
@@ -163,7 +166,7 @@ public class MoreOptionsV2Config {
         @Builder.Default
         private int version = VERSION;
         @Builder.Default
-        private Level logLevel = MoreOptionsScript.LOG_LEVEL_DEFAULT;
+        private Level logLevel = Loggers.LOG_LEVEL_DEFAULT;
     }
 
     @Getter

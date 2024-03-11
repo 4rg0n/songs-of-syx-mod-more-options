@@ -5,16 +5,19 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.i18n.I18n;
+import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
+import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
 import init.paths.ModInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import snake2d.util.color.COLOR;
 import util.save.SaveFile;
 
 import java.nio.file.Path;
@@ -26,6 +29,8 @@ import java.util.Set;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiFactory {
+
+    private static final I18n i18n = I18n.get(UiFactory.class);
 
     @Getter(lazy = true)
     private final static UiFactory instance = new UiFactory(
@@ -110,5 +115,34 @@ public class UiFactory {
         window.center();
 
         return window;
+    }
+
+    public static ButtonMenu.ButtonMenuBuilder<Level> buildLogLevelButtonMenu() {
+        double shade = 0.5;
+        return ButtonMenu.<Level>builder()
+            .button(Level.CRIT, new Button(
+                i18n.t("log.level.crit.name"),
+                i18n.t("log.level.crit.desc")
+            ).bg(COLOR.RED50.shade(shade)))
+            .button(Level.ERROR, new Button(
+                i18n.t("log.level.error.name"),
+                i18n.t("log.level.error.desc")
+            ).bg(COLOR.RED200.shade(shade)))
+            .button(Level.WARN, new Button(
+                i18n.t("log.level.warn.name"),
+                i18n.t("log.level.warn.desc")
+            ).bg(COLOR.YELLOW100.shade(shade)))
+            .button(Level.INFO, new Button(
+                i18n.t("log.level.info.name"),
+                i18n.t("log.level.info.desc")
+            ).bg(COLOR.BLUE100.shade(shade)))
+            .button(Level.DEBUG, new Button(
+                i18n.t("log.level.debug.name"),
+                i18n.t("log.level.debug.desc")
+            ).bg(COLOR.GREEN100.shade(shade)))
+            .button(Level.TRACE, new Button(
+                i18n.t("log.level.trace.name"),
+                i18n.t("log.level.trace.desc")
+            ).bg(COLOR.WHITE100.shade(shade)));
     }
 }

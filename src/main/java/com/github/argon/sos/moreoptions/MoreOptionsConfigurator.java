@@ -80,6 +80,7 @@ public class MoreOptionsConfigurator implements Phases {
         log.trace("Config: %s", config);
 
         try {
+            Loggers.setLevels(config.getLogLevel());
             applySettlementEventsConfig(config.getEvents().getSettlement());
             applyWorldEventsConfig(config.getEvents().getWorld());
             applyEventsChanceConfig(config.getEvents().getChance());

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Config.Metrics, MetricsPanel>, Refreshable<MetricsPanel> {
+public class MetricsPanel extends AbstractPanel<MoreOptionsV2Config.Metrics, MetricsPanel> implements Refreshable<MetricsPanel> {
 
     private final static I18n i18n = I18n.get(MetricsPanel.class);
 
@@ -55,13 +55,16 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
     private BiAction<MoreOptionsV2Config.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
 
     public MetricsPanel(
+        String title,
         MoreOptionsV2Config.Metrics metricsConfig,
+        MoreOptionsV2Config.Metrics defaultConfig,
         Set<String> availableStats,
         Path exportFolderPath,
         Path exportFilePath,
         int availableWidth,
         int availableHeight
     ) {
+        super(title, defaultConfig);
         this.exportFolderPath = exportFolderPath;
 
         // Started / Stopped toggle
@@ -177,6 +180,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
             .evenOdd(true)
             .scrollable(false)
             .rows(rows)
+            .rowPadding(5)
             .displayHeight(200)
             .build();
 
@@ -192,6 +196,7 @@ public class MetricsPanel extends GuiSection implements Valuable<MoreOptionsV2Co
                 .displayHeight(height)
                 .search(searchInput)
                 .rows(statRows)
+                .rowPadding(1)
                 .build()))
             .build(this);
 

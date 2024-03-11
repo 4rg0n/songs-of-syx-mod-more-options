@@ -21,7 +21,10 @@ public class Maps {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <K, V> Map<K, V> of(K key1, V value1, K key2, V value2) {
+    public static <K, V> Map<K, V> of(
+        K key1, V value1,
+        K key2, V value2
+    ) {
         HashMap<K, V> map = new HashMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
@@ -29,7 +32,11 @@ public class Maps {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <K, V> Map<K, V> of(K key1, V value1, K key2, V value2, K key3, V value3) {
+    public static <K, V> Map<K, V> of(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3
+    ) {
         HashMap<K, V> map = new HashMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
@@ -38,7 +45,12 @@ public class Maps {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <K, V> Map<K, V> of(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
+    public static <K, V> Map<K, V> of(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4
+    ) {
         HashMap<K, V> map = new HashMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
@@ -48,13 +60,134 @@ public class Maps {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <K, V> Map<K, V> of(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5) {
+    public static <K, V> Map<K, V> of(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5
+    ) {
         HashMap<K, V> map = new HashMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
         map.put(key3, value3);
         map.put(key4, value4);
         map.put(key5, value5);
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> of(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5,
+        K key6, V value6
+    ) {
+        HashMap<K, V> map = new HashMap<>();
+        map.put(key1, value1);
+        map.put(key2, value2);
+        map.put(key3, value3);
+        map.put(key4, value4);
+        map.put(key5, value5);
+        map.put(key6, value6);
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> of(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5,
+        K key6, V value6,
+        K key7, V value7
+    ) {
+        HashMap<K, V> map = new HashMap<>();
+        map.put(key1, value1);
+        map.put(key2, value2);
+        map.put(key3, value3);
+        map.put(key4, value4);
+        map.put(key5, value5);
+        map.put(key6, value6);
+        map.put(key7, value7);
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> of(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5,
+        K key6, V value6,
+        K key7, V value7,
+        K key8, V value8
+    ) {
+        HashMap<K, V> map = new HashMap<>();
+        map.put(key1, value1);
+        map.put(key2, value2);
+        map.put(key3, value3);
+        map.put(key4, value4);
+        map.put(key5, value5);
+        map.put(key6, value6);
+        map.put(key7, value7);
+        map.put(key8, value8);
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> of(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5,
+        K key6, V value6,
+        K key7, V value7,
+        K key8, V value8,
+        K key9, V value9
+    ) {
+        HashMap<K, V> map = new HashMap<>();
+        map.put(key1, value1);
+        map.put(key2, value2);
+        map.put(key3, value3);
+        map.put(key4, value4);
+        map.put(key5, value5);
+        map.put(key6, value6);
+        map.put(key7, value7);
+        map.put(key8, value8);
+        map.put(key9, value9);
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> of(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5,
+        K key6, V value6,
+        K key7, V value7,
+        K key8, V value8,
+        K key9, V value9,
+        K key10, V value10
+    ) {
+        HashMap<K, V> map = new HashMap<>();
+        map.put(key1, value1);
+        map.put(key2, value2);
+        map.put(key3, value3);
+        map.put(key4, value4);
+        map.put(key5, value5);
+        map.put(key6, value6);
+        map.put(key7, value7);
+        map.put(key8, value8);
+        map.put(key9, value9);
+        map.put(key10, value10);
 
         return Collections.unmodifiableMap(map);
     }
@@ -66,7 +199,10 @@ public class Maps {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <K, V> Map<K, V> ofLinked(K key1, V value1, K key2, V value2) {
+    public static <K, V> Map<K, V> ofLinked(
+        K key1, V value1,
+        K key2, V value2
+    ) {
         LinkedHashMap<K, V> map = new LinkedHashMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
@@ -74,7 +210,11 @@ public class Maps {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <K, V> Map<K, V> ofLinked(K key1, V value1, K key2, V value2, K key3, V value3) {
+    public static <K, V> Map<K, V> ofLinked(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3
+    ) {
         LinkedHashMap<K, V> map = new LinkedHashMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
@@ -83,7 +223,12 @@ public class Maps {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <K, V> Map<K, V> ofLinked(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
+    public static <K, V> Map<K, V> ofLinked(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4
+    ) {
         LinkedHashMap<K, V> map = new LinkedHashMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
@@ -93,7 +238,13 @@ public class Maps {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <K, V> Map<K, V> ofLinked(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5) {
+    public static <K, V> Map<K, V> ofLinked(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5
+    ) {
         LinkedHashMap<K, V> map = new LinkedHashMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
@@ -104,7 +255,14 @@ public class Maps {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <K, V> Map<K, V> ofLinked(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6) {
+    public static <K, V> Map<K, V> ofLinked(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5,
+        K key6, V value6
+    ) {
         LinkedHashMap<K, V> map = new LinkedHashMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
@@ -116,14 +274,98 @@ public class Maps {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <K, V> Map<K, V> ofLinked(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5, K key6, V value6, K key7, V value7) {
+    public static <K, V> Map<K, V> ofLinked(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5,
+        K key6, V value6,
+        K key7, V value7
+    ) {
         LinkedHashMap<K, V> map = new LinkedHashMap<>();
         map.put(key1, value1);
         map.put(key2, value2);
         map.put(key3, value3);
         map.put(key4, value4);
         map.put(key5, value5);
+        map.put(key6, value6);
         map.put(key7, value7);
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> ofLinked(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5,
+        K key6, V value6,
+        K key7, V value7,
+        K key8, V value8
+    ) {
+        LinkedHashMap<K, V> map = new LinkedHashMap<>();
+        map.put(key1, value1);
+        map.put(key2, value2);
+        map.put(key3, value3);
+        map.put(key4, value4);
+        map.put(key5, value5);
+        map.put(key6, value6);
+        map.put(key7, value7);
+        map.put(key8, value8);
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> ofLinked(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5,
+        K key6, V value6,
+        K key7, V value7,
+        K key8, V value8,
+        K key9, V value9
+    ) {
+        LinkedHashMap<K, V> map = new LinkedHashMap<>();
+        map.put(key1, value1);
+        map.put(key2, value2);
+        map.put(key3, value3);
+        map.put(key4, value4);
+        map.put(key5, value5);
+        map.put(key6, value6);
+        map.put(key7, value7);
+        map.put(key8, value8);
+        map.put(key9, value9);
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> ofLinked(
+        K key1, V value1,
+        K key2, V value2,
+        K key3, V value3,
+        K key4, V value4,
+        K key5, V value5,
+        K key6, V value6,
+        K key7, V value7,
+        K key8, V value8,
+        K key9, V value9,
+        K key10, V value10
+    ) {
+        LinkedHashMap<K, V> map = new LinkedHashMap<>();
+        map.put(key1, value1);
+        map.put(key2, value2);
+        map.put(key3, value3);
+        map.put(key4, value4);
+        map.put(key5, value5);
+        map.put(key6, value6);
+        map.put(key7, value7);
+        map.put(key8, value8);
+        map.put(key9, value9);
+        map.put(key10, value10);
 
         return Collections.unmodifiableMap(map);
     }

@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.Action;
-import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
+import com.github.argon.sos.moreoptions.util.Lists;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,6 +60,7 @@ public class Table<Value> extends GuiSection implements
         @Nullable Map<String, Button> headerButtons,
         @Nullable StringInputSprite search
     ) {
+        assert (!rows.isEmpty()) : "rows must not be empty";
         this.rows = rows;
         this.displayHeight = displayHeight;
         this.scrollable = scrollable;
@@ -73,6 +74,7 @@ public class Table<Value> extends GuiSection implements
 
         // max width for each column
         final List<Integer> maxWidths = UiUtil.getMaxColumnWidths(rows);
+        final int columnMargin = rows.get(0).getMargin();
 
         // prepare header if present
         if (headerButtons != null) {
@@ -103,7 +105,7 @@ public class Table<Value> extends GuiSection implements
         }
 
         // initialize rows
-        rows.forEach(columnRow -> {
+        for (ColumnRow<Value> columnRow : rows) {
             columnRow.init(maxWidths);
             columnRow.pad(rowPadding);
             columnRow.selectable(selectable);
@@ -121,7 +123,7 @@ public class Table<Value> extends GuiSection implements
             if (evenOdd && !columnRow.isHeader() && rows.indexOf(columnRow) % 2 == 0) {
                 columnRow.backgroundColor(COLOR.WHITE15);
             }
-        });
+        }
 
         // add header if needed
         if (headerButtons != null) {
@@ -129,7 +131,7 @@ public class Table<Value> extends GuiSection implements
             // compensate button width with padding
             if (rowPadding > 0) {
                 buttonMaxWidths = maxWidths.stream().map(maxWidth -> {
-                    int rowPaddingAdj = (rowPadding / headerButtons.size()) + 5;
+                    int rowPaddingAdj = (rowPadding / headerButtons.size()) + columnMargin;
                     return rowPaddingAdj + maxWidth;
                 }).collect(Collectors.toList());
             }
@@ -198,26 +200,24 @@ public class Table<Value> extends GuiSection implements
 
     public static class TableBuilder<Value> {
 
-        private List<ColumnRow<Value>> rows;
+        private List<ColumnRow<Value>> rows = new ArrayList<>();
 
-        public TableBuilder<Value> rowsCategorized(
-            Map<String, List<ColumnRow<Value>>> rowsCategorized
-        ) {
-            List<ColumnRow<Value>> columnRows = new ArrayList<>();
+        public TableBuilder<Value> category(String title, List<ColumnRow<Value>> rows) {
+            GHeader header = new GHeader(title, UI.FONT().H2);
+            GuiSection headerSection = UiUtil.toGuiSection(header);
+            headerSection.pad(10);
+            ColumnRow<Value> headerRow = ColumnRow.<Value>builder()
+                .columns(Lists.of(headerSection))
+                .build();
+            headerRow.isHeader(true);
+            this.rows.add(headerRow);
+            this.rows.addAll(rows);
 
-            rowsCategorized.forEach((categoryTitle, innerRows) -> {
-                GHeader header = new GHeader(categoryTitle, UI.FONT().H2);
-                GuiSection headerSection = UiUtil.toGuiSection(header);
-                headerSection.pad(10);
-                ColumnRow<Value> headerRow = ColumnRow.<Value>builder()
-                    .columns(Lists.of(headerSection))
-                    .build();
-                headerRow.isHeader(true);
-                columnRows.add(headerRow);
-                columnRows.addAll(innerRows);
-            });
-            rows = columnRows;
+            return this;
+        }
 
+        public TableBuilder<Value> rowsCategorized(Map<String, List<ColumnRow<Value>>> rowsCategorized) {
+            rowsCategorized.forEach(this::category);
             return this;
         }
 
@@ -235,6 +235,11 @@ public class Table<Value> extends GuiSection implements
 
         public TableBuilder<Value> rows(List<ColumnRow<Value>> rows) {
             this.rows = rows;
+            return this;
+        }
+
+        public TableBuilder<Value> row(ColumnRow<Value> row) {
+            this.rows.add(row);
             return this;
         }
     }

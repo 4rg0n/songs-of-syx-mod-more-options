@@ -1,5 +1,8 @@
 package com.github.argon.sos.moreoptions.log;
 
+import lombok.Getter;
+import snake2d.LOG;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +11,11 @@ import java.util.Map;
  */
 public class Loggers {
     private final static Map<String, Logger> loggers = new HashMap<>();
+
+    public final static Level LOG_LEVEL_DEFAULT = Level.INFO;
+
+    @Getter
+    private static Level rootLevel = LOG_LEVEL_DEFAULT;
 
     /**
      * Returns a registered Logger. Or registers it when not already present.
@@ -31,6 +39,12 @@ public class Loggers {
      * Sets the log level of all registered loggers
      */
     public static void setLevels(Level level) {
+        if (level.equals(rootLevel)) {
+            return;
+        }
+
+        LOG.ln("Setting loggers root level: " + level);
+        rootLevel = level;
         loggers.forEach((name, logger) -> logger.setLevel(level));
     }
 
@@ -43,5 +57,9 @@ public class Loggers {
                 logger.setLevel(level);
             }
         });
+    }
+
+    public static boolean isRootLevel(Level level) {
+        return (getRootLevel().getValue() > level.getValue());
     }
 }

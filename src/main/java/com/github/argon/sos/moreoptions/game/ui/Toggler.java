@@ -42,14 +42,19 @@ public class Toggler<Key> extends GuiSection implements
     @Getter
     private final ButtonMenu<Key> menu;
 
-
     @Builder
-    public Toggler(ButtonMenu<Key> menu, boolean highlight) {
+    public Toggler(ButtonMenu<Key> menu, boolean highlight, @Nullable Key aktiveKey) {
         this.menu = menu;
+        this.activeKey = aktiveKey;
+        this.initKey = aktiveKey;
+
         menu.getButtons().forEach((key, button) -> {
             if (activeKey == null) {
                 activeKey = key;
                 initKey = key;
+                activeButton = button;
+            } else if (activeKey.equals(key)) {
+                activeButton = button;
             }
 
             initButton(key, button, highlight);
