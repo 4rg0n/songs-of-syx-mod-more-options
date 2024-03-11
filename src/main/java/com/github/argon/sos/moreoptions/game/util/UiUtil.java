@@ -50,6 +50,18 @@ public class UiUtil {
         return maxWidth;
     }
 
+    public static <Value> int getMaxColumnMargin(Collection<ColumnRow<Value>> columnRows) {
+        int margin = 0;
+
+        for (ColumnRow<Value> columnRow : columnRows) {
+            if (margin < columnRow.getMargin()) {
+                margin = columnRow.getMargin();
+            }
+        }
+
+        return margin;
+    }
+
     /**
      * @return list of widths of the widest column in each row
      */

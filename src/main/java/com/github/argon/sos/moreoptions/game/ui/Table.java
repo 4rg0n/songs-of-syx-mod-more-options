@@ -72,9 +72,9 @@ public class Table<Value> extends GuiSection implements
         this.search = search;
         this.rowPadding = rowPadding;
 
-        // max width for each column
+        // max width and margin for each column
         final List<Integer> maxWidths = UiUtil.getMaxColumnWidths(rows);
-        final int columnMargin = rows.get(0).getMargin();
+        final int columnMargin = UiUtil.getMaxColumnMargin(rows);
 
         // prepare header if present
         if (headerButtons != null) {
@@ -103,7 +103,6 @@ public class Table<Value> extends GuiSection implements
                 maxWidths.addAll(Arrays.asList(newMaxWidths));
             }
         }
-
         // initialize rows
         for (ColumnRow<Value> columnRow : rows) {
             columnRow.init(maxWidths);
