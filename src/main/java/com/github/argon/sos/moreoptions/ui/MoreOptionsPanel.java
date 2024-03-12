@@ -74,7 +74,7 @@ public class MoreOptionsPanel extends GuiSection implements
     @Getter
     private final ButtonMenu<String> moreButtonMenu;
     @Getter
-    private final Tabulator<String, AbstractPanel<?, ?>, Void> tabulator;
+    private final Tabulator<String, AbstractConfigPanel<?, ?>, Void> tabulator;
 
     private Action<MoreOptionsPanel> showAction = o -> {};
     private Action<MoreOptionsPanel> refreshAction = o -> {};
@@ -172,7 +172,7 @@ public class MoreOptionsPanel extends GuiSection implements
         racesPanel = new RacesPanel(i18n.t("MoreOptionsPanel.tab.races.name"), raceEntries, defaultConfig.getRaces(), availableWidth, availableHeight);
         advancedPanel = new AdvancedPanel(i18n.t("MoreOptionsPanel.tab.advanced.name"), config.getLogLevel(), defaultConfig.getLogLevel(), availableWidth, availableHeight);
 
-        tabulator = Tabulator.<String, AbstractPanel<?, ?>, Void>builder()
+        tabulator = Tabulator.<String, AbstractConfigPanel<?, ?>, Void>builder()
             .tabs(Maps.ofLinked(
                 "sounds", soundsPanel,
                 "events", eventsPanel,

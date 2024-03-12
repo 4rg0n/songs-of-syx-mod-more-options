@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class WeatherPanel extends AbstractPanel<Map<String, MoreOptionsV2Config.Range>, WeatherPanel> {
+public class WeatherPanel extends AbstractConfigPanel<Map<String, MoreOptionsV2Config.Range>, WeatherPanel> {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
     private static final I18n i18n = I18n.get(WeatherPanel.class);
 

@@ -1,8 +1,6 @@
 package com.github.argon.sos.moreoptions.game;
 
 import com.github.argon.sos.moreoptions.phase.Phases;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.RequiredArgsConstructor;
 import script.SCRIPT;
 import snake2d.util.file.FileGetter;
@@ -23,23 +21,32 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 
-	private final static Logger log = Loggers.getLogger(ScriptInstance.class);
+	/**
+	 * Whether the game started calling its update() methods
+	 */
+	private boolean initGameUpdating = false;
 
-	private boolean initGameRunning = false;
-	private boolean initGamePresent = false;
+	/**
+	 * Whether the games ui is displayed
+	 */
+	private boolean initGameUiPresent = false;
+
+	/**
+	 * Whether this is a new game session or not (not a new game)
+	 */
 	private boolean newGameSession = true;
 
 	private final Phases scriptPhases;
 
 	@Override
 	public void update(double v) {
-		if (!initGameRunning) {
-			initGameRunning = true;
+		if (!initGameUpdating) {
+			initGameUpdating = true;
 			scriptPhases.initGameUpdating();
 		}
 
-		if (!initGamePresent && !VIEW.inters().load.isActivated()) {
-			initGamePresent = true;
+		if (!initGameUiPresent && !VIEW.inters().load.isActivated()) {
+			initGameUiPresent = true;
 			scriptPhases.initGameUiPresent();
 		}
 
@@ -57,7 +64,6 @@ public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 
 		if (newGameSession) {
 			newGameSession = false;
-			log.debug("Game just started");
 			scriptPhases.initNewGameSession();
 		} else {
 			scriptPhases.onGameSaveReloaded();
@@ -68,7 +74,7 @@ public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 	 * Reset initialisation states
 	 */
 	public void reset() {
-		this.initGamePresent = false;
-		this.initGameRunning = false;
+		this.initGameUiPresent = false;
+		this.initGameUpdating = false;
 	}
 }

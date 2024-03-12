@@ -13,7 +13,7 @@ public class JsonUtil {
     /**
      * This exists to make it easier for the {@link JsonParser} to process the games json format
      */
-    public static @Nullable String normalizeJson(@Nullable String jsonString) {
+    public static @Nullable String normalizeGameJson(@Nullable String jsonString) {
         if (jsonString == null || jsonString.isEmpty()) {
             return jsonString;
         }

@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * Contains sliders to influence values of game boosters
  */
-public class BoostersPanel extends AbstractPanel<Map<String, MoreOptionsV2Config.Range>, BoostersPanel> {
+public class BoostersPanel extends AbstractConfigPanel<Map<String, MoreOptionsV2Config.Range>, BoostersPanel> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     private static final I18n i18n = I18n.get(BoostersPanel.class);
     @Getter

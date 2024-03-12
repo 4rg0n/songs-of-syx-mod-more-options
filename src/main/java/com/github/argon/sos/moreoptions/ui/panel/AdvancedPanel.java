@@ -13,7 +13,7 @@ import lombok.Getter;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class AdvancedPanel extends AbstractPanel<Level, AdvancedPanel> {
+public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
     private static final Logger log = Loggers.getLogger(AdvancedPanel.class);
     private static final I18n i18n = I18n.get(AdvancedPanel.class);
 

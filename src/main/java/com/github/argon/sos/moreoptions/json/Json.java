@@ -70,7 +70,7 @@ public class Json {
     }
 
     public Json(String rawJson, JsonWriter writer) {
-        this.rawJson = JsonUtil.normalizeJson(rawJson.trim());
+        this.rawJson = JsonUtil.normalizeGameJson(rawJson.trim());
         this.writer = writer;
         this.index = 0;
         this.root = (JsonObject) JsonParser.parse(this);

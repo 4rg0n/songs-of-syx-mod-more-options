@@ -4,7 +4,7 @@ import java.util.Objects;
 
 /**
  * Simple function with two parameters and void return type
- * For UI elements triggering actions e.g. onShow
+ * For things triggering actions e.g. onShow
  *
  * @param <Param> type of first parameter handed to the action function
  * @param <Element> type of second parameter handed to the action function

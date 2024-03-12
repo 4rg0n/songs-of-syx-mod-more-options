@@ -38,15 +38,24 @@ public class StatsExtractor {
     );
 
     /**
+     * Used for summed stats for all races
+     */
+    private final static String TOTAL_SUFFIX = "_TOTAL";
+
+    /**
      * For checking whether a game stat shall be collected or not
      */
-    public boolean isWhitelisted(String key) {
+    public boolean isWhitelisted(String statName) {
         // no whitelist = accept all
         if (whitelist.isEmpty()) {
             return true;
         }
 
-        return whitelist.contains(key);
+        return whitelist.contains(statName);
+    }
+
+    public boolean isBlacklisted(String statName) {
+        return !isWhitelisted(statName);
     }
 
     public Map<String, Integer> getReligionStats(LIST<StatsReligion.StatReligion> statList) {
@@ -97,9 +106,9 @@ public class StatsExtractor {
 
     public Map<String, Integer> getStat(String keyPrefix, SETT_STATISTICS.SettStatistics stat) {
         Map<String, Integer> stats = new HashMap<>();
-        String key = keyPrefix + ":" + stat.info().name + ":_TOTAL";
+        String key = keyPrefix + ":" + stat.info().name + ":" + TOTAL_SUFFIX;
 
-        if (!isWhitelisted(key)) {
+        if (isBlacklisted(key)) {
             return stats;
         }
 
@@ -127,7 +136,7 @@ public class StatsExtractor {
                 key = stat.info().name + ":" + race.key;
             }
 
-            if (!isWhitelisted(key)) {
+            if (isBlacklisted(key)) {
                 continue;
             }
 
@@ -153,8 +162,8 @@ public class StatsExtractor {
             return Maps.of();
         }
 
-        String key = statKey + ":_TOTAL";
-        if (!isWhitelisted(key)) {
+        String key = statKey + ":" + TOTAL_SUFFIX;
+        if (isBlacklisted(key)) {
             return Maps.of();
         }
 
@@ -190,7 +199,7 @@ public class StatsExtractor {
             Race race = races.get(i);
 
             String key = statKey + ":" + race.key;
-            if (!isWhitelisted(key)) {
+            if (isBlacklisted(key)) {
                 continue;
             }
 

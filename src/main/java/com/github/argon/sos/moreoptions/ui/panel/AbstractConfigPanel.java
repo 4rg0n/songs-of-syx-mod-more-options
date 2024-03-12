@@ -5,12 +5,12 @@ import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 
 
-public abstract class AbstractPanel<Config, Element> extends GuiSection implements Valuable<Config, Element> {
+public abstract class AbstractConfigPanel<Config, Element> extends GuiSection implements Valuable<Config, Element> {
     protected final Config defaultConfig;
     @Getter
     protected final String title;
 
-    public AbstractPanel(String title, Config defaultConfig) {
+    public AbstractConfigPanel(String title, Config defaultConfig) {
         this.defaultConfig = defaultConfig;
         this.title = title;
     }

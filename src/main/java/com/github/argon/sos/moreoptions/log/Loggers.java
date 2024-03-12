@@ -49,7 +49,7 @@ public class Loggers {
     }
 
     /**
-     * Sets the level of all loggers which class name starts with
+     * Sets the level of all loggers which class name starts with (including package name)
      */
     public static void setLevels(String nameStartsWith, Level level) {
         loggers.forEach((name, logger) -> {

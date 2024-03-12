@@ -1,7 +1,5 @@
 package com.github.argon.sos.moreoptions.util;
 
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -14,8 +12,6 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StringUtil {
-
-    private final static Logger log = Loggers.getLogger(StringUtil.class);
 
     public static String toString(Object[] objects) {
         return Arrays.toString(objects);

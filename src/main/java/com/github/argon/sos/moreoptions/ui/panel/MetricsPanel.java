@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class MetricsPanel extends AbstractPanel<MoreOptionsV2Config.Metrics, MetricsPanel> implements Refreshable<MetricsPanel> {
+public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Metrics, MetricsPanel> implements Refreshable<MetricsPanel> {
 
     private final static I18n i18n = I18n.get(MetricsPanel.class);
 

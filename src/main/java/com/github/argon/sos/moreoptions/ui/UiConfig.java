@@ -281,10 +281,10 @@ public class UiConfig implements Phases {
         // Apply default config to tab
         moreOptionsPanel.getDefaultTabButton().clickActionSet(() -> {
             try {
-                AbstractPanel<?, ?> abstractPanel = moreOptionsPanel.getTabulator().getActiveTab();
-                if (abstractPanel != null) {
-                    abstractPanel.resetToDefault();
-                    notificator.notifySuccess(i18n.t("notification.config.default.tab.apply", abstractPanel.getTitle()));
+                AbstractConfigPanel<?, ?> abstractConfigPanel = moreOptionsPanel.getTabulator().getActiveTab();
+                if (abstractConfigPanel != null) {
+                    abstractConfigPanel.resetToDefault();
+                    notificator.notifySuccess(i18n.t("notification.config.default.tab.apply", abstractConfigPanel.getTitle()));
                 } else {
                     notificator.notifyError(i18n.t("notification.config.default.tab.not.apply"));
                 }

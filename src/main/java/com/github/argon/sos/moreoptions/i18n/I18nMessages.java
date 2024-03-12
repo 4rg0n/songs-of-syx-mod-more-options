@@ -26,6 +26,7 @@ public class I18nMessages implements Phases {
     );
 
     private final static Logger log = Loggers.getLogger(I18nMessages.class);
+    public static final String BUNDLE_NAME = "messages";
 
     private final GameLangApi gameLangApi;
 
@@ -42,12 +43,17 @@ public class I18nMessages implements Phases {
      * @param locale to load messages from
      * @return messages with given local or default english
      */
-    public static ResourceBundle load(Locale locale) {
+    public static ResourceBundle load(@Nullable Locale locale) {
+        if (locale == null) {
+            log.debug("No no locale given. Using fallback %s", LOCALE_FALLBACK);
+            return ResourceBundle.getBundle(BUNDLE_NAME, LOCALE_FALLBACK);
+        }
+
         try {
-            return ResourceBundle.getBundle("messages", locale);
+            return ResourceBundle.getBundle(BUNDLE_NAME, locale);
         } catch (MissingResourceException e) {
             log.debug("No translation messages for locale %s found. Using fallback %s", locale, LOCALE_FALLBACK);
-            return ResourceBundle.getBundle("messages", LOCALE_FALLBACK);
+            return ResourceBundle.getBundle(BUNDLE_NAME, LOCALE_FALLBACK);
         }
     }
 

@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 /**
  * Simple function with one parameter and void return type
- * For UI elements triggering actions e.g. onShow
+ * For things triggering actions e.g. onShow
  *
  * @param <Param> type of parameter handed to the action function
  */

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Contains race likings adjustable via sliders
  */
-public class RacesPanel extends AbstractPanel<MoreOptionsV2Config.RacesConfig, RacesPanel> {
+public class RacesPanel extends AbstractConfigPanel<MoreOptionsV2Config.RacesConfig, RacesPanel> {
     private static final Logger log = Loggers.getLogger(RacesPanel.class);
 
     private final static I18n i18n = I18n.get(RacesPanel.class);

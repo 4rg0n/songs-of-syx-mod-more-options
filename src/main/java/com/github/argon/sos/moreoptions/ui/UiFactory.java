@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
+/**
+ * Produces new more complex or common UI elements by given configs or from static objects.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiFactory {
 

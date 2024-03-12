@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class EventsPanel extends AbstractPanel<MoreOptionsV2Config.Events, EventsPanel> {
+public class EventsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Events, EventsPanel> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
     private final static I18n i18n = I18n.get(EventsPanel.class);

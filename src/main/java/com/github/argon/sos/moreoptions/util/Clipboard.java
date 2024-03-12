@@ -24,7 +24,7 @@ public class Clipboard {
             clipboard.setContents(stringSelection, stringSelection);
         } catch (Exception e) {
             log.info("Could not write to system clipboard: %s", e.getMessage());
-            log.trace("STRING: %s", string, e);
+            log.trace("", e);
             return false;
         }
         return true;

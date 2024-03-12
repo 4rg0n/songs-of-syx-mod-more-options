@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the volume of game sound effects
  */
-public class SoundsPanel extends AbstractPanel<MoreOptionsV2Config.Sounds, SoundsPanel> {
+public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Sounds, SoundsPanel> {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
     private final static I18n i18n = I18n.get(SoundsPanel.class);
 
