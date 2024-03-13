@@ -14,7 +14,7 @@ public abstract class AbstractBooster extends BoosterImp {
 
     protected final BoostMode boostMode;
 
-    protected double scale = 1.0D;
+    protected final double scale;
 
     public AbstractBooster(
         Boostable origin,
@@ -35,10 +35,10 @@ public abstract class AbstractBooster extends BoosterImp {
 
         switch (boostMode) {
             case PERCENT:
-                this.noValue = 0.01D;
+                this.noValue = 0.01D * this.scale ;
                 break;
             case MULTI:
-                this.noValue = 1.0D;
+                this.noValue = this.scale;
                 break;
             default:
             case ADD:
