@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.booster;
 
 import game.boosting.BSourceInfo;
 import game.boosting.Boostable;
+import game.faction.FACTIONS;
 import game.faction.Faction;
 import lombok.Builder;
 
@@ -10,7 +11,7 @@ import java.util.Map;
 
 public class FactionBooster extends AbstractBooster {
 
-    private final Map<Faction, Double> factionBoosts = new HashMap<>();
+    private final Map<Faction, Double> factionBoosts = new HashMap<>(FACTIONS.MAX);
 
     @Builder
     public FactionBooster(

@@ -84,20 +84,21 @@ public class BoostersPanel extends AbstractConfigPanel<Map<String, MoreOptionsV2
     }
 
     private Tabulator<String, Slider, Integer> toSliderWithToggle(Entry boosterEntry) {
-        MoreOptionsV2Config.Range rangeMulti;
+        MoreOptionsV2Config.Range rangePerc;
         MoreOptionsV2Config.Range rangeAdd;
         String activeKey;
+
         if (boosterEntry.getRange().getApplyMode().equals(MoreOptionsV2Config.Range.ApplyMode.PERCENT)) {
-            rangeMulti = boosterEntry.getRange();
+            rangePerc = boosterEntry.getRange();
             rangeAdd = ConfigDefaults.boosterAdd();
             activeKey = "perc";
         } else {
-            rangeMulti = ConfigDefaults.boosterMulti();
+            rangePerc = ConfigDefaults.boosterPercent();
             rangeAdd = boosterEntry.getRange();
             activeKey = "add";
         }
 
-        Slider multiSlider = Slider.SliderBuilder.fromRange(rangeMulti)
+        Slider multiSlider = Slider.SliderBuilder.fromRange(rangePerc)
             .input(true)
             .lockScroll(true)
             .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))

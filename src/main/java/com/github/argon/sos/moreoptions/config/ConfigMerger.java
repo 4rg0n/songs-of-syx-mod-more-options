@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,14 +42,14 @@ public class ConfigMerger {
         if (target.getWeather() == null) {
             target.setWeather(source.getWeather());
         } else {
-            merge(target.getWeather(), source.getWeather());
+            addMissing(target.getWeather(), source.getWeather());
         }
 
         // Boosters
         if (target.getBoosters() == null) {
             target.setBoosters(source.getBoosters());
         } else {
-            merge(target.getBoosters(), source.getBoosters());
+            addMissing(target.getBoosters(), source.getBoosters());
         }
 
         // Metrics
@@ -89,14 +88,10 @@ public class ConfigMerger {
 
         if (target.getCollectionRateSeconds() == null) {
             target.setCollectionRateSeconds(source.getCollectionRateSeconds());
-        } else {
-            merge(target.getCollectionRateSeconds(), source.getCollectionRateSeconds());
         }
 
         if (target.getExportRateMinutes() == null) {
             target.setExportRateMinutes(source.getExportRateMinutes());
-        } else {
-            merge(target.getExportRateMinutes(), source.getExportRateMinutes());
         }
 
         if (target.getStats() == null) {
@@ -114,19 +109,19 @@ public class ConfigMerger {
         if (target.getChance() == null) {
             target.setChance(source.getChance());
         } else {
-            merge(target.getChance(), source.getChance());
+            addMissing(target.getChance(), source.getChance());
         }
 
         if (target.getWorld() == null) {
             target.setWorld(source.getWorld());
         } else {
-            merge(target.getWorld(), source.getWorld());
+            addMissing(target.getWorld(), source.getWorld());
         }
 
         if (target.getSettlement() == null) {
             target.setSettlement(source.getSettlement());
         } else {
-            merge(target.getSettlement(), source.getSettlement());
+            addMissing(target.getSettlement(), source.getSettlement());
         }
     }
 
@@ -138,40 +133,20 @@ public class ConfigMerger {
         if (target.getRoom() == null) {
             target.setRoom(source.getRoom());
         } else {
-            merge(target.getRoom(), source.getRoom());
+            addMissing(target.getRoom(), source.getRoom());
         }
 
         if (target.getAmbience() == null) {
             target.setAmbience(source.getAmbience());
         } else {
-            merge(target.getAmbience(), source.getAmbience());
+            addMissing(target.getAmbience(), source.getAmbience());
         }
 
         if (target.getSettlement() == null) {
             target.setSettlement(source.getSettlement());
         } else {
-            merge(target.getSettlement(), source.getSettlement());
+            addMissing(target.getSettlement(), source.getSettlement());
         }
-    }
-
-    public static void merge(Range target, @Nullable Range source) {
-        if (source == null) {
-            return;
-        }
-
-        target.setValue(source.getValue());
-        target.setMin(source.getMin());
-        target.setMax(source.getMax());
-        target.setApplyMode(source.getApplyMode());
-        target.setDisplayMode(source.getDisplayMode());
-    }
-
-    public static <T> List<T> replace(List<T> target, @Nullable List<T> source) {
-        if (source == null) {
-            return target;
-        }
-
-        return source;
     }
 
     public static <T> Set<T> replace(Set<T> target, @Nullable Set<T> source) {
@@ -182,30 +157,16 @@ public class ConfigMerger {
         return source;
     }
 
-    public static <K, V> void merge(Map<K, V> target, @Nullable Map<K, V> source) {
+    public static <K, V> void addMissing(Map<K, V> target, @Nullable Map<K, V> source) {
         if (source == null) {
             return;
         }
 
-        // replace or update target entries with source entries
-        target.forEach((key, value) -> {
-            if (source.containsKey(key)) {
-                if (value instanceof Range) {
-                    merge((Range) value, (Range) source.get(key));
-                } else {
-                    target.put(key, source.get(key));
-                }
-            }
-        });
-
         // add missing entries
         source.forEach((key, value) -> {
             if (!target.containsKey(key)) {
-                source.put(key, value);
+                target.put(key, value);
             }
         });
-
-        target.clear();
-        target.putAll(source);
     }
 }

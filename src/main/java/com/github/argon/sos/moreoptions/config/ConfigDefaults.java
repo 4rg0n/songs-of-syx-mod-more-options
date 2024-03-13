@@ -36,7 +36,7 @@ public class ConfigDefaults {
         log.debug("Creating new default config");
         // Boosters
         Map<String, Range> multiBoosters = gameApis.booster().getBoosters().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.boosterMulti()));
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.boosterPercent()));
 
         // Weather
         Map<String, Range> weatherRanges = gameApis.weather().getWeatherThings().keySet().stream()
@@ -125,7 +125,7 @@ public class ConfigDefaults {
             .build();
     }
 
-    public static Range boosterMulti() {
+    public static Range boosterPercent() {
         return Range.builder()
             .value(100)
             .min(0)

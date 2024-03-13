@@ -111,7 +111,7 @@ public class BoosterFactory {
             log.trace("Reuse present multi booster: %s", presentBooster.getMulti().info.name);
             boosterMulti = presentBooster.getMulti();
         } else {
-            boosterMulti = createMoreOptionsBooster(booster, ConfigDefaults.boosterMulti());
+            boosterMulti = createMoreOptionsBooster(booster, ConfigDefaults.boosterPercent());
         }
 
         FactionBooster boosterAdd;
