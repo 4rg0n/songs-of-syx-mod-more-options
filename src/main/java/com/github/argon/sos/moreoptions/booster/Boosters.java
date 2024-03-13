@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Builder
 @RequiredArgsConstructor
-public class MoreOptionsBoosters {
-    private final MoreOptionsBooster add;
+public class Boosters {
+    private final FactionBooster add;
 
-    private final MoreOptionsBooster multi;
+    private final FactionBooster multi;
 }

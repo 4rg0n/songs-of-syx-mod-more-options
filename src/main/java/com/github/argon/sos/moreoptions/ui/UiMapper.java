@@ -130,4 +130,28 @@ public class UiMapper {
                 return Slider.ValueDisplay.NONE;
         }
     }
+
+    public static MoreOptionsV2Config.Range.ApplyMode toApplyMode(Slider.ValueDisplay valueDisplay) {
+        switch (valueDisplay) {
+            case ABSOLUTE:
+                return MoreOptionsV2Config.Range.ApplyMode.ADD;
+            case PERCENTAGE:
+                return MoreOptionsV2Config.Range.ApplyMode.PERCENT;
+            case NONE:
+            default:
+                return MoreOptionsV2Config.Range.ApplyMode.MULTI;
+        }
+    }
+
+    public static MoreOptionsV2Config.Range.DisplayMode toDisplayMode(Slider.ValueDisplay valueDisplay) {
+        switch (valueDisplay) {
+            case PERCENTAGE:
+                return MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE;
+            case ABSOLUTE:
+                return MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE;
+            default:
+            case NONE:
+                return MoreOptionsV2Config.Range.DisplayMode.NONE;
+        }
+    }
 }

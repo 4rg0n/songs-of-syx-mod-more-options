@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.booster.BoosterService;
-import com.github.argon.sos.moreoptions.booster.MoreOptionsBoosters;
+import com.github.argon.sos.moreoptions.booster.Boosters;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 
 /**
- * Access to the mods custom {@link MoreOptionsBoosters}
+ * Access to the mods custom {@link Boosters}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameBoosterApi implements Phases {
@@ -34,12 +34,12 @@ public class GameBoosterApi implements Phases {
         boosterService.reset();
     }
 
-    public Map<String, MoreOptionsBoosters> getBoosters() {
+    public Map<String, Boosters> getBoosters() {
         return boosterService.getBoosters()
             .orElseThrow(UninitializedException::new);
     }
 
-    public MoreOptionsBoosters get(String key) {
+    public Boosters get(String key) {
         return boosterService.get(key)
             .orElseThrow(UninitializedException::new);
     }

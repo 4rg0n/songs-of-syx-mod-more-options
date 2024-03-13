@@ -89,19 +89,13 @@ public class JsonConfigMapper {
 
             .sounds(Sounds.builder()
                 .ambience((json.has("SOUNDS_AMBIENCE")) ? mapRanges(json.json("SOUNDS_AMBIENCE")) : null)
-
                 .settlement((json.has("SOUNDS_SETTLEMENT")) ? mapRanges(json.json("SOUNDS_SETTLEMENT")) : null)
-
                 .room((json.has("SOUNDS_ROOM")) ? mapRanges(json.json("SOUNDS_ROOM")) : null)
                 .build())
 
             .weather((json.has("WEATHER")) ? mapRanges(json.json("WEATHER")) : null)
-
-            .boosters((json.has("BOOSTERS")) ? mapRanges(json.json("BOOSTERS")) : null)
-
+            .boosters((json.has("BOOSTERS")) ? mapBoosterRanges(json.json("BOOSTERS")) : null)
             .metrics((json.has("METRICS")) ? mapMetrics(json.json("METRICS")) : null)
-            // todo
-//            .races((json.has("RACES")) ? mapMetrics(json.json("RACES")) : null)
 
             .build();
     }
@@ -225,6 +219,18 @@ public class JsonConfigMapper {
         return map;
     }
 
+    public static Map<String, Range> mapBoosterRanges(Json json) {
+        Map<String, Range> map = new HashMap<>();
+
+        for (String key : json.keys()) {
+            Json rangeJson = json.json(key);
+            Range range = mapBoosterRange(rangeJson, null);
+            map.put(key, range);
+        }
+
+        return map;
+    }
+
     public static Range mapRange(Json rangeJson, @Nullable Integer overwriteValue) {
         return Range.builder()
             .value((overwriteValue != null) ? overwriteValue : rangeJson.i("VALUE"))
@@ -235,6 +241,32 @@ public class JsonConfigMapper {
             .displayMode(Range.DisplayMode
                 .valueOf(rangeJson.text("DISPLAY_MODE")))
             .build();
+    }
+
+    public static Range mapBoosterRange(Json rangeJson, @Nullable Integer overwriteValue) {
+        return Range.builder()
+            .value((overwriteValue != null) ? overwriteValue : rangeJson.i("VALUE"))
+            .min(rangeJson.i("MIN"))
+            .max(rangeJson.i("MAX"))
+            .applyMode(normalizeApplyMode(Range.ApplyMode
+                .valueOf(rangeJson.text("APPLY_MODE"))))
+            .displayMode(Range.DisplayMode
+                .valueOf(rangeJson.text("DISPLAY_MODE")))
+            .build();
+    }
+
+    /**
+     * For compatibility reasons: Old MULTI is the new PERCENT =)
+     */
+    private static Range.ApplyMode normalizeApplyMode(Range.ApplyMode applyMode) {
+        switch (applyMode) {
+            case ADD:
+                return applyMode;
+            default:
+            case MULTI:
+            case PERCENT:
+                return Range.ApplyMode.PERCENT;
+        }
     }
 
      public static JsonE mapRanges(Map<String, Range> ranges) {

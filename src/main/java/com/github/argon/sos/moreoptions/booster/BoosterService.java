@@ -3,9 +3,8 @@ package com.github.argon.sos.moreoptions.booster;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.BoosterUtil;
-import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.boosting.BoostableCat;
+import game.faction.FACTIONS;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * For accessing the games Booster mechanics with custom {@link MoreOptionsBooster}s.
+ * For accessing the games Booster mechanics with custom {@link FactionBooster}s.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoosterService {
@@ -26,17 +25,17 @@ public class BoosterService {
     @Getter(lazy = true)
     private final static BoosterService instance = new BoosterService();
 
-    private Map<String, MoreOptionsBoosters> boosters = new HashMap<>();
+    private Map<String, Boosters> boosters = new HashMap<>();
     private Map<String, BoostableCat> boosterCategories = new HashMap<>();
 
-    public Optional<MoreOptionsBoosters> get(String key) {
+    public Optional<Boosters> get(String key) {
         return getBoosters().map(boosters -> boosters.get(key));
     }
     public Optional<BoostableCat> getCat(String key) {
         return getBoosterCategories().map(boosterCategories -> boosterCategories.get(key));
     }
 
-    public Optional<Map<String, MoreOptionsBoosters>> getBoosters() {
+    public Optional<Map<String, Boosters>> getBoosters() {
         return Optional.ofNullable(boosters);
     }
 
@@ -55,14 +54,16 @@ public class BoosterService {
                 log.trace("Apply booster config for: %s", key);
 
                 switch (range.getApplyMode()) {
-                    case MULTI:
+                    case PERCENT:
                         log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
-                        moreOptionsBoosters.getMulti().set(MathUtil.toPercentage(range.getValue()));
+//                        moreOptionsBoosters.getMulti().set(FACTIONS.player(), MathUtil.toPercentage(range.getValue()));
+                        moreOptionsBoosters.getMulti().set(FACTIONS.player(), range.getValue());
                         moreOptionsBoosters.getAdd().reset();
                         break;
                     case ADD:
                         log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
-                        moreOptionsBoosters.getAdd().set(BoosterUtil.toBoosterValue(range.getValue()));
+//                        moreOptionsBoosters.getAdd().set(FACTIONS.player(), BoosterUtil.toBoosterValue(range.getValue()));
+                        moreOptionsBoosters.getAdd().set(FACTIONS.player(), range.getValue());
                         moreOptionsBoosters.getMulti().reset();
                         break;
                 }
@@ -78,7 +79,7 @@ public class BoosterService {
     }
 
     public void reset() {
-        Map<String, MoreOptionsBoosters> boosters = MoreOptionsBoosterFactory.createDefault(this.boosters);
+        Map<String, Boosters> boosters = BoosterFactory.createDefault(this.boosters);
 
         this.boosters = boosters;
         this.boosterCategories = boosters.entrySet().stream().collect(Collectors.toMap(
