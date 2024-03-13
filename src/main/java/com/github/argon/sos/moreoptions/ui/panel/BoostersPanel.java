@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel;
 
-import com.github.argon.sos.moreoptions.booster.MoreOptionsBoosters;
+import com.github.argon.sos.moreoptions.booster.Boosters;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.game.ui.*;
@@ -87,10 +87,10 @@ public class BoostersPanel extends AbstractConfigPanel<Map<String, MoreOptionsV2
         MoreOptionsV2Config.Range rangeMulti;
         MoreOptionsV2Config.Range rangeAdd;
         String activeKey;
-        if (boosterEntry.getRange().getApplyMode().equals(MoreOptionsV2Config.Range.ApplyMode.MULTI)) {
+        if (boosterEntry.getRange().getApplyMode().equals(MoreOptionsV2Config.Range.ApplyMode.PERCENT)) {
             rangeMulti = boosterEntry.getRange();
             rangeAdd = ConfigDefaults.boosterAdd();
-            activeKey = "multi";
+            activeKey = "perc";
         } else {
             rangeMulti = ConfigDefaults.boosterMulti();
             rangeAdd = boosterEntry.getRange();
@@ -119,23 +119,23 @@ public class BoostersPanel extends AbstractConfigPanel<Map<String, MoreOptionsV2
         // Booster toggle
         Tabulator<String, Slider, Integer> slidersWithToggle = Tabulator.<String, Slider, Integer>builder()
             .tabs(Maps.ofLinked(
-                "multi", multiSlider,
+                "perc", multiSlider,
                 "add", additiveSlider
             ))
             .tabMenu(Toggler.<String>builder()
                 .menu(ButtonMenu.<String>builder()
                     .button("add", new Button(i18n.t("BoostersPanel.booster.toggle.add.name"), i18n.t("BoostersPanel.booster.toggle.add.desc")))
-                    .button("multi", new Button(i18n.t("BoostersPanel.booster.toggle.perc.name"), i18n.t("BoostersPanel.booster.toggle.perc.desc")))
+                    .button("perc", new Button(i18n.t("BoostersPanel.booster.toggle.perc.name"), i18n.t("BoostersPanel.booster.toggle.perc.desc")))
                     .horizontal(true)
                     .sameWidth(true)
                     .build())
+                .aktiveKey(activeKey)
                 .highlight(true)
                 .build())
             .resetOnToggle(true)
             .direction(DIR.W)
             .build();
 
-        slidersWithToggle.tab(activeKey);
         return slidersWithToggle;
     }
 
@@ -194,6 +194,6 @@ public class BoostersPanel extends AbstractConfigPanel<Map<String, MoreOptionsV2
         @Builder.Default
         private BoostableCat cat = null;
 
-        private MoreOptionsBoosters boosters;
+        private Boosters boosters;
     }
 }

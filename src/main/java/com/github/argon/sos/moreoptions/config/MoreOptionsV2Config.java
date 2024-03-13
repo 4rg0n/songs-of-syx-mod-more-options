@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.ui.UiMapper;
 import lombok.*;
 
 import java.util.HashMap;
@@ -103,35 +104,12 @@ public class MoreOptionsV2Config {
             NONE,
             ABSOLUTE,
             PERCENTAGE;
-
-            public static DisplayMode fromValueDisplay(Slider.ValueDisplay valueDisplay) {
-                switch (valueDisplay) {
-                    case PERCENTAGE:
-                        return DisplayMode.PERCENTAGE;
-                    case ABSOLUTE:
-                        return DisplayMode.ABSOLUTE;
-                    default:
-                    case NONE:
-                        return DisplayMode.NONE;
-                }
-            }
         }
 
         public enum ApplyMode {
             ADD,
-            MULTI;
-
-            public static ApplyMode fromValueDisplay(Slider.ValueDisplay valueDisplay) {
-                switch (valueDisplay) {
-                    case ABSOLUTE:
-                        return ApplyMode.ADD;
-
-                    case PERCENTAGE:  // todo this is flaky ValueDisplay.PERCENTAGE will always map to MULTI
-                    case NONE:
-                    default:
-                        return ApplyMode.MULTI;
-                }
-            }
+            MULTI,
+            PERCENT;
         }
 
         public Range clone() {
@@ -149,10 +127,8 @@ public class MoreOptionsV2Config {
                 .value(slider.getValue())
                 .max(slider.getMax())
                 .min(slider.getMin())
-                .displayMode(MoreOptionsV2Config.Range.DisplayMode
-                    .fromValueDisplay(slider.getValueDisplay()))
-                .applyMode(MoreOptionsV2Config.Range.ApplyMode
-                    .fromValueDisplay(slider.getValueDisplay()))
+                .displayMode(UiMapper.toDisplayMode(slider.getValueDisplay()))
+                .applyMode(UiMapper.toApplyMode(slider.getValueDisplay()))
                 .build();
         }
     }

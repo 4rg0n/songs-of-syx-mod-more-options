@@ -20,29 +20,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * For preparing and creating {@link MoreOptionsBooster}s.
+ * For preparing and creating {@link FactionBooster}s.
  * Boosters influence game bonuses and mechanics.
  *
  * Custom boosters need to be added to a game {@link Boostable} to have an effect.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MoreOptionsBoosterFactory {
+public class BoosterFactory {
 
-    private final static Logger log = Loggers.getLogger(MoreOptionsBoosterFactory.class);
+    private final static Logger log = Loggers.getLogger(BoosterFactory.class);
 
     public final static String KEY_PREFIX = "booster";
 
     /**
-     * Creates {@link MoreOptionsBoosters} for each available booster in the game.
+     * Creates {@link Boosters} for each available booster in the game.
      * Uses default settings for preparing the boosters.
      *
      * @return map of all custom boosters with their key
      */
-    public static Map<String, MoreOptionsBoosters> createDefault(Map<String, MoreOptionsBoosters> presentBoosters) {
-        Map<String, MoreOptionsBoosters> boosters = new HashMap<>();
+    public static Map<String, Boosters> createDefault(Map<String, Boosters> presentBoosters) {
+        Map<String, Boosters> boosters = new HashMap<>();
 
         String opinionKey = key(ROpinions.GET().key);
-        MoreOptionsBoosters opinionBoosters = createMoreOptionsBoosters(ROpinions.GET(), presentBoosters.get(key(opinionKey)));
+        Boosters opinionBoosters = createMoreOptionsBoosters(ROpinions.GET(), presentBoosters.get(key(opinionKey)));
         boosters.put(opinionKey, opinionBoosters);
 
         BOOSTABLES.CIVICS().all().forEach(booster -> boosters.put(
@@ -75,35 +75,38 @@ public class MoreOptionsBoosterFactory {
     }
 
     /**
-     * Creates a {@link MoreOptionsBooster} and attaches it to the given vanilla game {@link Boostable}
+     * Creates a {@link FactionBooster} and attaches it to the given vanilla game {@link Boostable}
      *
      * @param booster on which game booster the custom one shall be attached
      * @param range definition for the booster
      */
-    public static MoreOptionsBooster createMoreOptionsBooster(Boostable booster, MoreOptionsV2Config.Range range) {
-        String suffix = " Perc";
+    public static FactionBooster createMoreOptionsBooster(Boostable booster, MoreOptionsV2Config.Range range) {
+        String suffix = " Percent"; // todo i18n
+        double scale = 1.0D;
 
         if (range.getApplyMode().equals(MoreOptionsV2Config.Range.ApplyMode.ADD)) {
-            suffix = " Add";
+            suffix = " Add"; // todo i18n
+            scale = 0.01D;
         }
 
-        MoreOptionsBooster moreOptionsBooster = MoreOptionsBooster.fromRange(
+        FactionBooster factionBooster = BoosterMapper.fromRange(
             booster,
             new BSourceInfo(MoreOptionsScript.MOD_INFO.name + suffix, SPRITES.icons().m.cog),
-            range
+            range,
+            scale
         );
 
-        BoostSpec boostSpec = new BoostSpec(moreOptionsBooster, booster, MoreOptionsScript.MOD_INFO.name);
+        BoostSpec boostSpec = new BoostSpec(factionBooster, booster, MoreOptionsScript.MOD_INFO.name);
         booster.addFactor(boostSpec);
 
-        return moreOptionsBooster;
+        return factionBooster;
     }
 
     /**
-     * Creates new {@link MoreOptionsBoosters} or uses the present booster
+     * Creates new {@link Boosters} or uses the present booster
      */
-    private static MoreOptionsBoosters createMoreOptionsBoosters(Boostable booster, @Nullable MoreOptionsBoosters presentBooster) {
-        MoreOptionsBooster boosterMulti;
+    private static Boosters createMoreOptionsBoosters(Boostable booster, @Nullable Boosters presentBooster) {
+        FactionBooster boosterMulti;
         if (presentBooster != null && BoosterUtil.alreadyExtended(booster, true)) {
             log.trace("Reuse present multi booster: %s", presentBooster.getMulti().info.name);
             boosterMulti = presentBooster.getMulti();
@@ -111,7 +114,7 @@ public class MoreOptionsBoosterFactory {
             boosterMulti = createMoreOptionsBooster(booster, ConfigDefaults.boosterMulti());
         }
 
-        MoreOptionsBooster boosterAdd;
+        FactionBooster boosterAdd;
         if (presentBooster != null && BoosterUtil.alreadyExtended(booster, false)) {
             log.trace("Reuse present add booster: %s", presentBooster.getAdd().info.name);
             boosterAdd = presentBooster.getAdd();
@@ -119,7 +122,7 @@ public class MoreOptionsBoosterFactory {
             boosterAdd = createMoreOptionsBooster(booster, ConfigDefaults.boosterAdd());
         }
 
-        return MoreOptionsBoosters.builder()
+        return Boosters.builder()
             .add(boosterAdd)
             .multi(boosterMulti)
             .build();

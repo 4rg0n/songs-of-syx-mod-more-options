@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.*;
+
 /**
  * Provides default configuration partially gathered from the game.
  */
@@ -33,27 +35,27 @@ public class ConfigDefaults {
     public MoreOptionsV2Config newDefaultConfig() {
         log.debug("Creating new default config");
         // Boosters
-        Map<String, MoreOptionsV2Config.Range> multiBoosters = gameApis.booster().getBoosters().keySet().stream()
+        Map<String, Range> multiBoosters = gameApis.booster().getBoosters().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.boosterMulti()));
 
         // Weather
-        Map<String, MoreOptionsV2Config.Range> weatherRanges = gameApis.weather().getWeatherThings().keySet().stream()
+        Map<String, Range> weatherRanges = gameApis.weather().getWeatherThings().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.weather()));
 
         // Sounds Ambience
-        Map<String, MoreOptionsV2Config.Range> ambienceSounds = gameApis.sounds().getAmbienceSounds().keySet().stream()
+        Map<String, Range> ambienceSounds = gameApis.sounds().getAmbienceSounds().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
         // Sounds Room
-        Map<String, MoreOptionsV2Config.Range> roomSounds = gameApis.sounds().getRoomSounds().keySet().stream()
+        Map<String, Range> roomSounds = gameApis.sounds().getRoomSounds().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
         // Sounds Settlement
-        Map<String, MoreOptionsV2Config.Range> settlementSounds = gameApis.sounds().getSettlementSounds().keySet().stream()
+        Map<String, Range> settlementSounds = gameApis.sounds().getSettlementSounds().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
         // Events Chance
-        Map<String, MoreOptionsV2Config.Range> eventChances = gameApis.events().getEventsChance().keySet().stream()
+        Map<String, Range> eventChances = gameApis.events().getEventsChance().keySet().stream()
             .collect(Collectors.toMap(key -> key, key -> ConfigDefaults.eventChance()));
 
         // Events Settlement
@@ -65,40 +67,40 @@ public class ConfigDefaults {
             .collect(Collectors.toMap(key -> key, o -> true));
 
         // Metrics
-        MoreOptionsV2Config.Metrics metrics = ConfigDefaults.metrics();
+        Metrics metrics = ConfigDefaults.metrics();
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         metrics.setStats(availableStats);
 
         // Races
         List<Race> racesAll = gameApis.race().getAll();
         List<Race> otherRacesAll = new ArrayList<>(racesAll);
-        Set<MoreOptionsV2Config.RacesConfig.Liking> raceLikings = new HashSet<>();
+        Set<RacesConfig.Liking> raceLikings = new HashSet<>();
         for (Race race : racesAll) {
             for (Race otherRace : otherRacesAll) {
                 double racePref = race.pref().race(otherRace);
                 int value = MathUtil.fromPercentage(racePref);
 
-                MoreOptionsV2Config.Range range = raceLiking();
+                Range range = raceLiking();
                 range.setValue(value);
 
-                raceLikings.add(MoreOptionsV2Config.RacesConfig.Liking.builder()
+                raceLikings.add(RacesConfig.Liking.builder()
                     .race(race.key)
                     .otherRace(otherRace.key)
                     .range(range)
                     .build());
             }
         }
-        MoreOptionsV2Config.RacesConfig races = MoreOptionsV2Config.RacesConfig.builder()
+        RacesConfig races = RacesConfig.builder()
             .likings(raceLikings)
             .build();
 
-        MoreOptionsV2Config defaultConfig = MoreOptionsV2Config.builder()
-            .events(MoreOptionsV2Config.Events.builder()
+        MoreOptionsV2Config defaultConfig = builder()
+            .events(Events.builder()
                 .world(worldEvents)
                 .settlement(settlementEvents)
                 .chance(eventChances)
                 .build())
-            .sounds(MoreOptionsV2Config.Sounds.builder()
+            .sounds(Sounds.builder()
                 .ambience(ambienceSounds)
                 .settlement(settlementSounds)
                 .room(roomSounds)
@@ -113,84 +115,84 @@ public class ConfigDefaults {
         return defaultConfig;
     }
 
-    public static MoreOptionsV2Config.Range boosterAdd() {
-        return MoreOptionsV2Config.Range.builder()
+    public static Range boosterAdd() {
+        return Range.builder()
             .value(0)
             .min(0)
             .max(10000)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
-            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
+            .applyMode(Range.ApplyMode.ADD)
+            .displayMode(Range.DisplayMode.ABSOLUTE)
             .build();
     }
 
-    public static MoreOptionsV2Config.Range boosterMulti() {
-        return MoreOptionsV2Config.Range.builder()
+    public static Range boosterMulti() {
+        return Range.builder()
             .value(100)
-            .min(1)
+            .min(0)
             .max(10000)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.MULTI)
-            .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
+            .applyMode(Range.ApplyMode.PERCENT)
+            .displayMode(Range.DisplayMode.PERCENTAGE)
             .build();
     }
 
-    public static MoreOptionsV2Config.Metrics metrics() {
-        return MoreOptionsV2Config.Metrics.builder().build();
+    public static Metrics metrics() {
+        return Metrics.builder().build();
     }
 
-    public static MoreOptionsV2Config.Range raceLiking() {
-        return MoreOptionsV2Config.Range.builder()
+    public static Range raceLiking() {
+        return Range.builder()
             .min(0)
             .max(100)
             .value(0)
-            .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.MULTI)
+            .displayMode(Range.DisplayMode.PERCENTAGE)
+            .applyMode(Range.ApplyMode.PERCENT)
             .build();
     }
 
-    public static MoreOptionsV2Config.Range metricCollectionRate() {
-        return MoreOptionsV2Config.Range.builder()
+    public static Range metricCollectionRate() {
+        return Range.builder()
             .min(5)
             .value(15)
             .max(600)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
-            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
+            .applyMode(Range.ApplyMode.ADD)
+            .displayMode(Range.DisplayMode.ABSOLUTE)
             .build();
     }
 
-    public static MoreOptionsV2Config.Range metricExportRate() {
-        return MoreOptionsV2Config.Range.builder()
+    public static Range metricExportRate() {
+        return Range.builder()
             .min(5)
             .value(15)
             .max(600)
-            .applyMode(MoreOptionsV2Config.Range.ApplyMode.ADD)
-            .displayMode(MoreOptionsV2Config.Range.DisplayMode.ABSOLUTE)
+            .applyMode(Range.ApplyMode.ADD)
+            .displayMode(Range.DisplayMode.ABSOLUTE)
             .build();
     }
 
-    public static MoreOptionsV2Config.Range weather() {
-        return MoreOptionsV2Config.Range.builder()
+    public static Range weather() {
+        return Range.builder()
                 .value(100)
                 .min(0)
                 .max(100)
-                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
+                .displayMode(Range.DisplayMode.PERCENTAGE)
                 .build();
     }
 
-    public static MoreOptionsV2Config.Range sound() {
-        return MoreOptionsV2Config.Range.builder()
+    public static Range sound() {
+        return Range.builder()
                 .value(100)
                 .min(0)
                 .max(100)
-                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
+                .displayMode(Range.DisplayMode.PERCENTAGE)
                 .build();
     }
 
-    public static MoreOptionsV2Config.Range eventChance() {
-        return MoreOptionsV2Config.Range.builder()
+    public static Range eventChance() {
+        return Range.builder()
                 .value(100)
                 .min(0)
                 .max(10000)
-                .displayMode(MoreOptionsV2Config.Range.DisplayMode.PERCENTAGE)
+                .displayMode(Range.DisplayMode.PERCENTAGE)
                 .build();
     }
 }
