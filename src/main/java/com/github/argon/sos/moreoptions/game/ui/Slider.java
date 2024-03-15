@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.util.TextFormatUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
@@ -467,7 +467,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
 
         private Map<Integer, COLOR> thresholds = new TreeMap<>();
 
-        public static SliderBuilder fromRange(MoreOptionsV2Config.Range range) {
+        public static SliderBuilder fromRange(MoreOptionsV3Config.Range range) {
             return Slider.builder()
                 .min(range.getMin())
                 .max(range.getMax())

@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui;
 
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
@@ -10,9 +10,10 @@ import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
-import com.github.argon.sos.moreoptions.ui.panel.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.RacesPanel;
-import com.github.argon.sos.moreoptions.ui.panel.RacesSelectionPanel;
+import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
+import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
+import com.github.argon.sos.moreoptions.ui.panel.races.RacesSelectionPanel;
+import game.faction.Faction;
 import init.paths.ModInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -49,7 +50,7 @@ public class UiFactory {
     private final MetricExporter metricExporter;
     private final UiMapper uiMapper;
 
-    public FullWindow<MoreOptionsPanel> buildMoreOptionsFullScreen(String title, MoreOptionsV2Config config) {
+    public FullWindow<MoreOptionsPanel> buildMoreOptionsFullScreen(String title, MoreOptionsV3Config config) {
         log.debug("Building '%s' full screen", title);
         MoreOptionsPanel moreOptionsPanel = buildMoreOptionsPanel(config)
             .availableWidth(FullWindow.FullView.WIDTH)
@@ -60,8 +61,8 @@ public class UiFactory {
         return new FullWindow<>(title, moreOptionsPanel, buttonMenu);
     }
 
-    public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV2Config config) {
-        List<BoostersPanel.Entry> boosterEntries = uiMapper.toBoosterPanelEntries(config.getBoosters());
+    public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV3Config config) {
+        Map<Faction, List<BoostersPanel.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(config.getBoosters());
         Map<String, List<RacesPanel.Entry>> raceEntries = uiMapper.toRacePanelEntries(config.getRaces().getLikings());
 
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
@@ -72,9 +73,9 @@ public class UiFactory {
         return MoreOptionsPanel.builder()
             .config(config)
             .configStore(configStore)
-            .boosterEntries(boosterEntries)
             .raceEntries(raceEntries)
             .availableStats(availableStats)
+            .boosterEntries(boosterEntries)
             .modInfo(modInfo)
             .exportFolder(exportFolder)
             .exportFile(exportFile);

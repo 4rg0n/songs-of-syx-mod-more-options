@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.ConfigUtil;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.phase.Phases;
@@ -18,6 +18,7 @@ import init.sound.SoundSettlement;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import settlement.weather.WeatherThing;
 
 import java.util.HashSet;
@@ -27,7 +28,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 /**
- * For manipulating game classes by given config {@link MoreOptionsV2Config}
+ * For manipulating game classes by given config {@link MoreOptionsV3Config}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsConfigurator implements Phases {
@@ -55,9 +56,9 @@ public class MoreOptionsConfigurator implements Phases {
 
     private Set<String> lastMetricStats = new HashSet<>();
 
-    private Action<MoreOptionsV2Config> afterApplyAction = o -> {};
+    private Action<MoreOptionsV3Config> afterApplyAction = o -> {};
 
-    public void onAfterApplyAction(Action<MoreOptionsV2Config> afterApplyAction) {
+    public void onAfterApplyAction(Action<MoreOptionsV3Config> afterApplyAction) {
         this.afterApplyAction = afterApplyAction;
     }
 
@@ -75,7 +76,11 @@ public class MoreOptionsConfigurator implements Phases {
      *
      * @param config to apply
      */
-    public void applyConfig(MoreOptionsV2Config config) {
+    public void applyConfig(@Nullable MoreOptionsV3Config config) {
+        if (config == null) {
+            return;
+        }
+
         log.debug("Apply More Options config to game");
         log.trace("Config: %s", config);
 
@@ -97,7 +102,7 @@ public class MoreOptionsConfigurator implements Phases {
         }
     }
 
-    private void applyRacesConfig(MoreOptionsV2Config.RacesConfig races) {
+    private void applyRacesConfig(MoreOptionsV3Config.RacesConfig races) {
         races.getLikings().forEach(liking -> gameApis.race().setLiking(
             liking.getRace(),
             liking.getOtherRace(),
@@ -105,7 +110,7 @@ public class MoreOptionsConfigurator implements Phases {
 
     }
 
-    private void applyMetricsConfig(MoreOptionsV2Config.Metrics metrics) {
+    private void applyMetricsConfig(MoreOptionsV3Config.Metrics metrics) {
         Set<String> metricStats = metrics.getStats();
 
         // use new file when exported stats change
@@ -149,11 +154,11 @@ public class MoreOptionsConfigurator implements Phases {
         }
     }
 
-    private void applyBoostersConfig(Map<String, MoreOptionsV2Config.Range> rangeMap) {
-        gameApis.booster().setBoosters(rangeMap);
+    private void applyBoostersConfig(MoreOptionsV3Config.BoostersConfig boostersConfig) {
+        gameApis.booster().setBoosters(boostersConfig);
     }
 
-    private void applyEventsChanceConfig(Map<String, MoreOptionsV2Config.Range> eventsChanceConfig) {
+    private void applyEventsChanceConfig(Map<String, MoreOptionsV3Config.Range> eventsChanceConfig) {
         eventsChanceConfig.forEach((key, range) -> {
             Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChance();
 
@@ -206,7 +211,7 @@ public class MoreOptionsConfigurator implements Phases {
         });
     }
 
-    private void applySoundsAmbienceConfig(Map<String, MoreOptionsV2Config.Range> soundsConfig) {
+    private void applySoundsAmbienceConfig(Map<String, MoreOptionsV3Config.Range> soundsConfig) {
         Map<String, SoundAmbience.Ambience> ambienceSounds = gameApis.sounds().getAmbienceSounds();
 
         soundsConfig.forEach((key, range) -> {
@@ -220,7 +225,7 @@ public class MoreOptionsConfigurator implements Phases {
         });
     }
 
-    private void applySoundsSettlementConfig(Map<String, MoreOptionsV2Config.Range> soundsConfig) {
+    private void applySoundsSettlementConfig(Map<String, MoreOptionsV3Config.Range> soundsConfig) {
         Map<String, SoundSettlement.Sound> settlementSounds = gameApis.sounds().getSettlementSounds();
 
         soundsConfig.forEach((key, range) -> {
@@ -234,7 +239,7 @@ public class MoreOptionsConfigurator implements Phases {
         });
     }
 
-    private void applySoundsRoomConfig(Map<String, MoreOptionsV2Config.Range> soundsConfig) {
+    private void applySoundsRoomConfig(Map<String, MoreOptionsV3Config.Range> soundsConfig) {
         Map<String, SoundSettlement.Sound> roomSounds = gameApis.sounds().getRoomSounds();
 
         soundsConfig.forEach((key, range) -> {

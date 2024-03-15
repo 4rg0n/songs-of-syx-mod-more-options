@@ -2,10 +2,11 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.phase.Phases;
-import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.phase.Phase;
+import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.util.Lists;
 import init.paths.PATH;
 import init.paths.PATHS;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Handles loading and saving of {@link MoreOptionsV2Config}
+ * Handles loading and saving of {@link MoreOptionsV3Config}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigStore implements Phases {
@@ -53,13 +54,19 @@ public class ConfigStore implements Phases {
     private final GameApis gameApis;
 
     @Nullable
-    private MoreOptionsV2Config.Meta metaInfo;
+    private MoreOptionsV3Config.Meta metaInfo;
     @Nullable
-    private MoreOptionsV2Config currentConfig;
+    private MoreOptionsV3Config currentConfig;
     @Nullable
-    private MoreOptionsV2Config backupConfig;
+    private MoreOptionsV3Config backupConfig;
     @Nullable
-    private MoreOptionsV2Config defaultConfig;
+    private MoreOptionsV3Config defaultConfig;
+
+    @Nullable
+    private MoreOptionsV3Config loadedConfig;
+
+    @Nullable
+    private MoreOptionsV3Config.RacesConfig loadedRacesConfig;
 
     @Override
     public void initBeforeGameCreated() {
@@ -72,34 +79,49 @@ public class ConfigStore implements Phases {
             }
         }
 
-        MoreOptionsV2Config.Meta meta = loadMeta()
-            .orElse(MoreOptionsV2Config.Meta.builder().build());
+        MoreOptionsV3Config.Meta meta = loadMeta()
+            .orElse(MoreOptionsV3Config.Meta.builder().build());
         setMetaInfo(meta);
+
+        // load config from file if present
+        MoreOptionsV3Config config = loadConfig().orElse(null);
+        if (currentConfig == null && config != null) {
+            setCurrentConfig(config);
+            loadedConfig = config;
+        }
 
         // load backup config from file if present
         loadBackupConfig().ifPresent(this::setBackupConfig);
     }
 
     @Override
-    public void initModCreateInstance() {
-        setDefaultConfig(configDefaults.newDefaultConfig());
-        // load config from file if present; merge missing fields with defaults
-        MoreOptionsV2Config config = loadConfig().orElse(defaultConfig);
-        if (currentConfig == null) {
-            setCurrentConfig(config);
+    public void initGameUpdating() {
+        // initialize defaults
+        MoreOptionsV3Config defaultConfig = configDefaults.newConfig();
+        setDefaultConfig(defaultConfig);
+
+        // merge or set defaults?
+        if (currentConfig != null) {
+            ConfigMerger.merge(currentConfig, defaultConfig);
+        } else {
+            setCurrentConfig(defaultConfig);
+        }
+
+        if (loadedRacesConfig != null) {
+            currentConfig.setRaces(loadedRacesConfig);
         }
 
         // detect version change in config
         getMetaInfo().ifPresent(meta -> {
             log.trace("Detecting config version with meta: %s", meta);
 
-            int configVersion = config.getVersion();
+            int configVersion = currentConfig.getVersion();
             int metaVersion = meta.getVersion();
             // do we have a version increase?
             if (configVersion > metaVersion) {
                 log.info("Detected config version increase from %s to %s." +
                     "Saving version %s", metaVersion, configVersion, configVersion);
-                saveConfig(config);
+                saveConfig(currentConfig);
             } else if (configVersion < metaVersion) {
                 log.warn("Detected config version decrease from %s to %s. This shouldn't happen...", metaVersion, configVersion);
             }
@@ -109,7 +131,12 @@ public class ConfigStore implements Phases {
     @Override
     public void onGameSaved(Path saveFilePath) {
         // each save gets it race likings config associated
-        configService.saveConfig(racesConfigPath(), getCurrentConfig().getRaces());
+        MoreOptionsV3Config currentConfig = getCurrentConfig();
+
+        if (currentConfig != null) {
+            configService.saveConfig(racesConfigPath(), currentConfig.getRaces());
+            saveConfig(currentConfig);
+        }
     }
 
     @Override
@@ -120,10 +147,9 @@ public class ConfigStore implements Phases {
             return;
         }
 
-        // todo need to apply to ui?
         // load races config additionally
-        configService.loadConfig(path)
-            .ifPresent(getCurrentConfig()::setRaces);
+        configService.loadRacesConfig(path)
+            .ifPresent(racesConfig -> loadedRacesConfig = racesConfig);
     }
 
     @Override
@@ -136,52 +162,52 @@ public class ConfigStore implements Phases {
     /**
      * Used by the mod as current configuration to apply and use
      */
-    public void setCurrentConfig(MoreOptionsV2Config currentConfig) {
+    public void setCurrentConfig(MoreOptionsV3Config currentConfig) {
         log.debug("Setting Current Config");
         log.trace("Config: %s", currentConfig);
         this.currentConfig = currentConfig;
     }
 
-    public void setMetaInfo(MoreOptionsV2Config.Meta metaInfo) {
+    public void setMetaInfo(MoreOptionsV3Config.Meta metaInfo) {
         log.debug("Setting Meta Info");
         log.trace("Info: %s", metaInfo);
         this.metaInfo = metaInfo;
     }
 
-    public void setBackupConfig(MoreOptionsV2Config backupConfig) {
+    public void setBackupConfig(MoreOptionsV3Config backupConfig) {
         log.debug("Setting Backup Config");
         log.trace("Config: %s", backupConfig);
         this.backupConfig = backupConfig;
     }
 
-    public MoreOptionsV2Config getCurrentConfig() {
-        return Optional.ofNullable(currentConfig)
-            .orElseThrow(() -> new UninitializedException("ConfigStore wasn't correctly initialized"));
+    @Nullable
+    public MoreOptionsV3Config getCurrentConfig() {
+        return currentConfig;
     }
 
-    public void setDefaultConfig(MoreOptionsV2Config defaultConfig) {
+    public void setDefaultConfig(MoreOptionsV3Config defaultConfig) {
         log.debug("Setting Default Config");
         log.trace("Config: %s", defaultConfig);
         this.defaultConfig = defaultConfig;
     }
 
     /**
-     * Accessing defaults before the "game instance created" phase can cause problems.
+     * Accessing defaults before the "INIT_GAME_UPDATING" phase can cause problems.
      */
-    public MoreOptionsV2Config getDefaultConfig() {
+    public MoreOptionsV3Config getDefaultConfig() {
         return Optional.ofNullable(defaultConfig)
-            .orElseThrow(() -> new UninitializedException("ConfigStore wasn't correctly initialized"));
+            .orElseThrow(() -> new UninitializedException(Phase.INIT_GAME_UPDATING));
     }
 
-    public Optional<MoreOptionsV2Config.Meta> getMetaInfo() {
+    public Optional<MoreOptionsV3Config.Meta> getMetaInfo() {
         return Optional.ofNullable(metaInfo);
     }
 
-    public Optional<MoreOptionsV2Config> getBackupConfig() {
+    public Optional<MoreOptionsV3Config> getBackupConfig() {
         return Optional.ofNullable(backupConfig);
     }
 
-    public Optional<MoreOptionsV2Config.Meta> loadMeta() {
+    public Optional<MoreOptionsV3Config.Meta> loadMeta() {
         return configService.loadMeta(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME);
     }
 
@@ -189,22 +215,22 @@ public class ConfigStore implements Phases {
         return configService.delete(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME);
     }
 
-    public Optional<MoreOptionsV2Config> loadBackupConfig() {
+    public Optional<MoreOptionsV3Config> loadBackupConfig() {
         return loadConfig(MORE_OPTIONS_FILE_NAME_BACKUP);
     }
 
     /**
      * @return configuration loaded from file with merged defaults
      */
-    public Optional<MoreOptionsV2Config> loadConfig() {
+    public Optional<MoreOptionsV3Config> loadConfig() {
         return loadConfig(MORE_OPTIONS_FILE_NAME);
     }
 
-    public Optional<MoreOptionsV2Config.RacesConfig> loadRaceConfig(Path path) {
-        return configService.loadConfig(path);
+    public Optional<MoreOptionsV3Config.RacesConfig> loadRaceConfig(Path path) {
+        return configService.loadRacesConfig(path);
     }
 
-    private Optional<MoreOptionsV2Config> loadConfig(String fileName) {
+    private Optional<MoreOptionsV3Config> loadConfig(String fileName) {
         return configService.loadConfig(MORE_OPTIONS_CONFIG_PATH, fileName)
             .map(config -> {
                 ConfigMerger.merge(config, defaultConfig);
@@ -255,7 +281,11 @@ public class ConfigStore implements Phases {
         return createBackupConfig(getCurrentConfig());
     }
 
-    public boolean createBackupConfig(MoreOptionsV2Config config) {
+    public boolean createBackupConfig(@Nullable MoreOptionsV3Config config) {
+        if (config == null) {
+            return true;
+        }
+
         log.debug("Creating backup config file: %s", backupConfigPath());
         if (configService.saveConfig(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME_BACKUP, config)) {
             log.info("Backup config file successfully created at: %s",
@@ -280,7 +310,7 @@ public class ConfigStore implements Phases {
      *
      * @return whether saving was successful
      */
-    public boolean saveConfig(MoreOptionsV2Config config) {
+    public boolean saveConfig(MoreOptionsV3Config config) {
        return (configService.saveConfig(MORE_OPTIONS_CONFIG_PATH, MORE_OPTIONS_FILE_NAME, config)
            && configService.saveConfig(racesConfigPath(), config.getRaces()));
     }

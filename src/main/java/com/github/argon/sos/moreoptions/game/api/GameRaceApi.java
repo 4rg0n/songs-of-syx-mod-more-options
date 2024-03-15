@@ -196,7 +196,7 @@ public class GameRaceApi implements Phases {
     }
 
     public List<Race> getAll() {
-        return Lists.listFromLIST(RACES.all());
+        return Lists.fromGameLIST(RACES.all());
     }
 
     public int citizenCount(Race race) {

@@ -1,12 +1,12 @@
-package com.github.argon.sos.moreoptions.ui.panel;
+package com.github.argon.sos.moreoptions.ui.panel.metrics;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
 import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
 import com.github.argon.sos.moreoptions.i18n.I18n;
+import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Sets;
 import init.sprite.UI.UI;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Metrics, MetricsPanel> implements Refreshable<MetricsPanel> {
+public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Metrics, MetricsPanel> {
 
     private final static I18n i18n = I18n.get(MetricsPanel.class);
 
@@ -50,21 +50,19 @@ public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Metric
     private final Button exportFolderButton;
     @Getter
     private final Toggler<Boolean> checkToggler;
-
-    private Action<MetricsPanel> refreshAction = o -> {};
-    private BiAction<MoreOptionsV2Config.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
+    private BiAction<MoreOptionsV3Config.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
 
     public MetricsPanel(
         String title,
-        MoreOptionsV2Config.Metrics metricsConfig,
-        MoreOptionsV2Config.Metrics defaultConfig,
+        MoreOptionsV3Config.Metrics metricsConfig,
+        MoreOptionsV3Config.Metrics defaultConfig,
         Set<String> availableStats,
         Path exportFolderPath,
         Path exportFilePath,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultConfig);
+        super(title, defaultConfig, availableWidth, availableHeight);
         this.exportFolderPath = exportFolderPath;
 
         // Started / Stopped toggle
@@ -75,6 +73,7 @@ public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Metric
                 .sameWidth(true)
                 .horizontal(true)
                 .build())
+            .aktiveKey(metricsConfig.isEnabled())
             .highlight(true)
             .build();
         ColumnRow<Void> onOffToggleRow = ColumnRow.<Void>builder()
@@ -218,17 +217,17 @@ public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Metric
     }
 
     @Override
-    public MoreOptionsV2Config.Metrics getValue() {
-        return MoreOptionsV2Config.Metrics.builder()
-            .collectionRateSeconds(MoreOptionsV2Config.Range.fromSlider(collectionRate))
-            .exportRateMinutes(MoreOptionsV2Config.Range.fromSlider(exportRate))
+    public MoreOptionsV3Config.Metrics getValue() {
+        return MoreOptionsV3Config.Metrics.builder()
+            .collectionRateSeconds(MoreOptionsV3Config.Range.fromSlider(collectionRate))
+            .exportRateMinutes(MoreOptionsV3Config.Range.fromSlider(exportRate))
             .stats(getCheckedStats())
             .enabled(onOffToggle.getValue())
             .build();
     }
 
     @Override
-    public void setValue(MoreOptionsV2Config.Metrics metricsConfig) {
+    public void setValue(MoreOptionsV3Config.Metrics metricsConfig) {
         onOffToggle.toggle(metricsConfig.isEnabled());
         collectionRate.setValue(metricsConfig.getCollectionRateSeconds().getValue());
         exportRate.setValue(metricsConfig.getExportRateMinutes().getValue());
@@ -277,18 +276,13 @@ public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Metric
         }
     }
 
-    @Override
-    public void refresh() {
-        refreshAction.accept(this);
-    }
 
     @Override
-    public void refreshAction(Action<MetricsPanel> refreshAction) {
-        this.refreshAction = refreshAction;
-    }
-
-    @Override
-    public void afterValueSetAction(BiAction<MoreOptionsV2Config.Metrics, MetricsPanel> afterValueSetAction) {
+    public void afterValueSetAction(BiAction<MoreOptionsV3Config.Metrics, MetricsPanel> afterValueSetAction) {
         this.afterSetValueAction = afterValueSetAction;
+    }
+
+    protected MetricsPanel element() {
+        return this;
     }
 }

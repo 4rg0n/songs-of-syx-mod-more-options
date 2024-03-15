@@ -22,9 +22,10 @@ import java.util.stream.Collectors;
 @Builder
 public class Table<Value> extends GuiSection implements
     Searchable<String, List<String>>,
-    Selectable<Integer, ColumnRow<Value>> {
+    Selectable<Integer, ColumnRow<Value>>,
+    Valuable<Map<String, Value>, Table<Value>> {
 
-    private final List<ColumnRow<Value>> rows;
+    private final Map<String, ColumnRow<Value>> rows;
     @Builder.Default
     private int displayHeight = 100;
     @Builder.Default
@@ -61,7 +62,7 @@ public class Table<Value> extends GuiSection implements
         @Nullable StringInputSprite search
     ) {
         assert (!rows.isEmpty()) : "rows must not be empty";
-        this.rows = rows;
+        this.rows = rows.stream().collect(Collectors.toMap(ColumnRow::getKey, row -> row));
         this.displayHeight = displayHeight;
         this.scrollable = scrollable;
         this.evenOdd = evenOdd;
@@ -138,7 +139,8 @@ public class Table<Value> extends GuiSection implements
             ButtonMenu<String> header = ButtonMenu.<String>builder()
                 .buttons(headerButtons)
                 .horizontal(true)
-                .clickable(false)
+                .notClickable(true)
+                .notHoverable(true)
                 .widths(buttonMaxWidths)
                 .build();
 
@@ -167,7 +169,7 @@ public class Table<Value> extends GuiSection implements
 
     @Override
     public List<String> search(String term) {
-        return rows.stream()
+        return rows.values().stream()
             .filter(columnRow -> columnRow.search(term))
             .map(ColumnRow::searchTerm)
             .collect(Collectors.toList());
@@ -184,17 +186,38 @@ public class Table<Value> extends GuiSection implements
 
     @Override
     public List<ColumnRow<Value>> getSelection() {
-        return rows.stream()
+        return rows.values().stream()
             .filter(GuiSection::selectedIs)
             .collect(Collectors.toList());
     }
 
     public void doubleClickAction(Action<ColumnRow<Value>> doubleClickAction) {
-        rows.forEach(row -> row.doubleClickAction(doubleClickAction));
+        rows.forEach((key, row) -> row.doubleClickAction(doubleClickAction));
     }
 
     public void clickAction(Action<ColumnRow<Value>> clickAction) {
-        rows.forEach(row -> row.clickAction(clickAction));
+        rows.forEach((key, row) -> row.clickAction(clickAction));
+    }
+
+    @Override
+    public Map<String, Value> getValue() {
+        return rows.values().stream()
+            .filter(row -> !row.isHeader())
+            .collect(Collectors.toMap(
+                ColumnRow::getKey,
+                ColumnRow::getValue
+            ));
+    }
+
+    @Override
+    public void setValue(Map<String, Value> values) {
+        values.forEach((key, value) -> {
+            ColumnRow<Value> row = rows.get(key);
+
+            if (row != null) {
+                row.setValue(value);
+            }
+        });
     }
 
     public static class TableBuilder<Value> {

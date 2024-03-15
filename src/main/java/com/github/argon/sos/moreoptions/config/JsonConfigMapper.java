@@ -10,10 +10,10 @@ import snake2d.util.file.JsonE;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.*;
+import static com.github.argon.sos.moreoptions.config.MoreOptionsV3Config.*;
 
 /**
- * For mapping the game {@link Json} and {@link JsonE} into {@link MoreOptionsV2Config} and back
+ * For mapping the game {@link Json} and {@link JsonE} into {@link MoreOptionsV3Config} and back
  */
 public class JsonConfigMapper {
 
@@ -22,7 +22,7 @@ public class JsonConfigMapper {
      *
      * @param json with config data
      */
-    public static MoreOptionsV2Config mapV1(Json json) {
+    public static MoreOptionsV3Config mapV1(Json json) {
         return builder()
             .version(VERSION)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
@@ -64,18 +64,19 @@ public class JsonConfigMapper {
                     entry -> ConfigUtil.newRange(entry.getValue())
                 )) : null)
 
-            .boosters((json.has("BOOSTERS")) ? JsonUtil.mapInteger(json.json("BOOSTERS")).entrySet().stream()
-                .collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry -> ConfigUtil.newRange(entry.getValue())
-                )) : null)
+            // FIXME
+//            .boosters((json.has("BOOSTERS")) ? JsonUtil.mapInteger(json.json("BOOSTERS")).entrySet().stream()
+//                .collect(Collectors.toMap(
+//                    Map.Entry::getKey,
+//                    entry -> ConfigUtil.newRange(entry.getValue())
+//                )) : null)
             .build();
     }
 
     /**
      * Maps V2 config to the current config structure
      */
-    public static MoreOptionsV2Config mapV2(Json json) {
+    public static MoreOptionsV3Config mapV2(Json json) {
         return builder()
             .version(VERSION)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
@@ -94,13 +95,13 @@ public class JsonConfigMapper {
                 .build())
 
             .weather((json.has("WEATHER")) ? mapRanges(json.json("WEATHER")) : null)
-            .boosters((json.has("BOOSTERS")) ? mapBoosterRanges(json.json("BOOSTERS")) : null)
+            // FIXME   .boosters((json.has("BOOSTERS")) ? mapBoosterRanges(json.json("BOOSTERS")) : null)
             .metrics((json.has("METRICS")) ? mapMetrics(json.json("METRICS")) : null)
 
             .build();
     }
 
-    public static JsonE mapConfig(MoreOptionsV2Config config) {
+    public static JsonE mapConfig(MoreOptionsV3Config config) {
         JsonE json = new JsonE();
         json.add("VERSION", config.getVersion());
         json.addString("LOG_LEVEL", config.getLogLevel().getName());
@@ -111,7 +112,7 @@ public class JsonConfigMapper {
         json.add("SOUNDS_SETTLEMENT", mapRanges(config.getSounds().getSettlement()));
         json.add("SOUNDS_ROOM", mapRanges(config.getSounds().getRoom()));
         json.add("WEATHER", mapRanges(config.getWeather()));
-        json.add("BOOSTERS", mapRanges(config.getBoosters()));
+        // FIXME json.add("BOOSTERS", mapRanges(config.getBoosters()));
         json.add("METRICS", mapMetrics(config.getMetrics()));
         return json;
     }

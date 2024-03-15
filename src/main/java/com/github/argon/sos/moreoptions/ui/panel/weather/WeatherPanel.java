@@ -1,6 +1,6 @@
-package com.github.argon.sos.moreoptions.ui.panel;
+package com.github.argon.sos.moreoptions.ui.panel.weather;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
@@ -10,6 +10,7 @@ import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
+import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
 import lombok.Getter;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class WeatherPanel extends AbstractConfigPanel<Map<String, MoreOptionsV2Config.Range>, WeatherPanel> {
+public class WeatherPanel extends AbstractConfigPanel<Map<String, MoreOptionsV3Config.Range>, WeatherPanel> {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
     private static final I18n i18n = I18n.get(WeatherPanel.class);
 
@@ -27,12 +28,12 @@ public class WeatherPanel extends AbstractConfigPanel<Map<String, MoreOptionsV2C
     private final Map<String, Slider> sliders;
     public WeatherPanel(
         String title,
-        Map<String, MoreOptionsV2Config.Range> weatherConfig,
-        Map<String, MoreOptionsV2Config.Range> defaultConfig,
+        Map<String, MoreOptionsV3Config.Range> weatherConfig,
+        Map<String, MoreOptionsV3Config.Range> defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultConfig);
+        super(title, defaultConfig, availableWidth, availableHeight);
         this.sliders = UiMapper.toSliders(weatherConfig);
         List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(sliders, i18n);
         Layout.vertical(availableHeight)
@@ -45,15 +46,15 @@ public class WeatherPanel extends AbstractConfigPanel<Map<String, MoreOptionsV2C
     }
 
     @Override
-    public Map<String, MoreOptionsV2Config.Range> getValue() {
+    public Map<String, MoreOptionsV3Config.Range> getValue() {
         return sliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsV2Config.Range.fromSlider(tab.getValue())));
+                tab -> MoreOptionsV3Config.Range.fromSlider(tab.getValue())));
     }
 
     @Override
-    public void setValue(Map<String, MoreOptionsV2Config.Range> config) {
+    public void setValue(Map<String, MoreOptionsV3Config.Range> config) {
         config.forEach((key, range) -> {
             if (sliders.containsKey(key)) {
                 sliders.get(key).setValue(range.getValue());
@@ -61,5 +62,9 @@ public class WeatherPanel extends AbstractConfigPanel<Map<String, MoreOptionsV2C
                 log.warn("No slider with key %s found in UI", key);
             }
         });
+    }
+
+    protected WeatherPanel element() {
+        return this;
     }
 }

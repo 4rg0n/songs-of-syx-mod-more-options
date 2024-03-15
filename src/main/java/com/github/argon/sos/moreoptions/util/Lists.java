@@ -139,7 +139,7 @@ public class Lists {
         }
     }
 
-    public static <T> List<T> listFromLIST(LIST<T> gameLIST) {
+    public static <T> List<T> fromGameLIST(LIST<T> gameLIST) {
         List<T> list = new ArrayList<>();
 
         for (int i = 0; i < gameLIST.size(); i++) {

@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.AbstractScript;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.i18n.I18nMessages;
@@ -46,7 +46,7 @@ public final class MoreOptionsScript extends AbstractScript {
 		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, MetricExporter.getInstance());
 		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, I18nMessages.getInstance());
 		phaseManager.register(Phase.INIT_MOD_CREATE_INSTANCE, UiConfig.getInstance());
-		phaseManager.register(Phase.INIT_MOD_CREATE_INSTANCE, ConfigStore.getInstance());
+		phaseManager.register(Phase.INIT_GAME_UPDATING, ConfigStore.getInstance());
 		phaseManager.register(Phase.INIT_GAME_UI_PRESENT, UiConfig.getInstance());
 
 		phaseManager.register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance());
@@ -60,13 +60,13 @@ public final class MoreOptionsScript extends AbstractScript {
 	@Override
 	public Level initLogLevel() {
 		return configStore.getMetaInfo()
-			.map(MoreOptionsV2Config.Meta::getLogLevel)
+			.map(MoreOptionsV3Config.Meta::getLogLevel)
 			.orElse(Loggers.LOG_LEVEL_DEFAULT);
 	}
 
 	@Override
 	public void initGameUiPresent() {
-		// initialize ui stuff
+		// initialize other ui stuff
 		super.initGameUiPresent();
 		Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
 		// show backup dialog?

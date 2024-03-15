@@ -1,6 +1,6 @@
-package com.github.argon.sos.moreoptions.ui.panel;
+package com.github.argon.sos.moreoptions.ui.panel.sounds;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
@@ -9,6 +9,7 @@ import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
+import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
 import util.gui.misc.GHeader;
 
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the volume of game sound effects
  */
-public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Sounds, SoundsPanel> {
+public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Sounds, SoundsPanel> {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
     private final static I18n i18n = I18n.get(SoundsPanel.class);
 
@@ -26,12 +27,12 @@ public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Sounds,
     private final Map<String, Slider> roomSoundSliders;
     public SoundsPanel(
         String title,
-        MoreOptionsV2Config.Sounds sounds,
-        MoreOptionsV2Config.Sounds defaultConfig,
+        MoreOptionsV3Config.Sounds sounds,
+        MoreOptionsV3Config.Sounds defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultConfig);
+        super(title, defaultConfig, availableWidth, availableHeight);
         this.ambienceSoundSliders = UiMapper.toSliders(sounds.getAmbience());
         this.settlementSoundSliders = UiMapper.toSliders(sounds.getSettlement());
         this.roomSoundSliders = UiMapper.toSliders(sounds.getRoom());
@@ -68,37 +69,37 @@ public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Sounds,
     }
 
     @Override
-    public MoreOptionsV2Config.Sounds getValue() {
-        return MoreOptionsV2Config.Sounds.builder()
+    public MoreOptionsV3Config.Sounds getValue() {
+        return MoreOptionsV3Config.Sounds.builder()
             .ambience(getSoundsAmbienceConfig())
             .settlement(getSoundsSettlementConfig())
             .room(getSoundsRoomConfig())
             .build();
     }
 
-    public Map<String, MoreOptionsV2Config.Range> getSoundsAmbienceConfig() {
+    public Map<String, MoreOptionsV3Config.Range> getSoundsAmbienceConfig() {
         return ambienceSoundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsV2Config.Range.fromSlider(tab.getValue())));
+                tab -> MoreOptionsV3Config.Range.fromSlider(tab.getValue())));
     }
 
-    public Map<String, MoreOptionsV2Config.Range> getSoundsSettlementConfig() {
+    public Map<String, MoreOptionsV3Config.Range> getSoundsSettlementConfig() {
         return settlementSoundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsV2Config.Range.fromSlider(tab.getValue())));
+                tab -> MoreOptionsV3Config.Range.fromSlider(tab.getValue())));
     }
 
-    public Map<String, MoreOptionsV2Config.Range> getSoundsRoomConfig() {
+    public Map<String, MoreOptionsV3Config.Range> getSoundsRoomConfig() {
         return roomSoundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsV2Config.Range.fromSlider(tab.getValue())));
+                tab -> MoreOptionsV3Config.Range.fromSlider(tab.getValue())));
     }
 
     @Override
-    public void setValue(MoreOptionsV2Config.Sounds sounds) {
+    public void setValue(MoreOptionsV3Config.Sounds sounds) {
         log.trace("Applying UI sounds config %s", sounds);
 
         sounds.getAmbience().forEach((key, range) -> {
@@ -124,5 +125,9 @@ public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Sounds,
                 log.warn("No slider with key %s found in UI", key);
             }
         });
+    }
+
+    protected SoundsPanel element() {
+        return this;
     }
 }

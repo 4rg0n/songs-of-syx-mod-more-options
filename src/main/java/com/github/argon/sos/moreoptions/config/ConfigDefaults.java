@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
+import game.faction.Faction;
 import init.race.Race;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.*;
+import static com.github.argon.sos.moreoptions.config.MoreOptionsV3Config.*;
 
 /**
  * Provides default configuration partially gathered from the game.
@@ -32,45 +33,23 @@ public class ConfigDefaults {
 
     private final GameApis gameApis;
 
-    public MoreOptionsV2Config newDefaultConfig() {
+    public MoreOptionsV3Config newConfig() {
         log.debug("Creating new default config");
-        // Boosters
-        Map<String, Range> multiBoosters = gameApis.booster().getBoosters().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.boosterPercent()));
 
-        // Weather
-        Map<String, Range> weatherRanges = gameApis.weather().getWeatherThings().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.weather()));
+        MoreOptionsV3Config defaultConfig = builder()
+            .events(newEvents())
+            .sounds(newSounds())
+            .weather(newWeather())
+            .boosters(newBoostersConfig())
+            .metrics(newMetrics())
+            .races(newRacesConfig())
+            .build();
 
-        // Sounds Ambience
-        Map<String, Range> ambienceSounds = gameApis.sounds().getAmbienceSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+        log.trace("Default config: %s", defaultConfig);
+        return defaultConfig;
+    }
 
-        // Sounds Room
-        Map<String, Range> roomSounds = gameApis.sounds().getRoomSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
-
-        // Sounds Settlement
-        Map<String, Range> settlementSounds = gameApis.sounds().getSettlementSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
-
-        // Events Chance
-        Map<String, Range> eventChances = gameApis.events().getEventsChance().keySet().stream()
-            .collect(Collectors.toMap(key -> key, key -> ConfigDefaults.eventChance()));
-
-        // Events Settlement
-        Map<String, Boolean> settlementEvents = gameApis.events().getSettlementEvents().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> true));
-
-        // Event World
-        Map<String, Boolean> worldEvents = gameApis.events().getWorldEvents().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> true));
-
-        // Metrics
-        Metrics metrics = ConfigDefaults.metrics();
-        Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
-        metrics.setStats(availableStats);
-
+    public RacesConfig newRacesConfig() {
         // Races
         List<Race> racesAll = gameApis.race().getAll();
         List<Race> otherRacesAll = new ArrayList<>(racesAll);
@@ -90,29 +69,101 @@ public class ConfigDefaults {
                     .build());
             }
         }
-        RacesConfig races = RacesConfig.builder()
+
+        return RacesConfig.builder()
             .likings(raceLikings)
             .build();
+    }
 
-        MoreOptionsV2Config defaultConfig = builder()
-            .events(Events.builder()
-                .world(worldEvents)
-                .settlement(settlementEvents)
-                .chance(eventChances)
-                .build())
-            .sounds(Sounds.builder()
-                .ambience(ambienceSounds)
-                .settlement(settlementSounds)
-                .room(roomSounds)
-                .build())
-            .weather(weatherRanges)
-            .boosters(multiBoosters)
-            .metrics(metrics)
-            .races(races)
+    public Map<String, Set<BoostersConfig.Booster>> newBoosters(Collection<? extends Faction> factions) {
+        Map<String, Set<BoostersConfig.Booster>> factionBoosters = new HashMap<>();
+        for (Faction faction : factions) {
+            Set<BoostersConfig.Booster> boosters = newBoosters(faction);
+            factionBoosters.put(faction.name.toString(), boosters);
+        }
+
+        return factionBoosters;
+    }
+
+    public Set<BoostersConfig.Booster> newBoosters(Faction factions) {
+        return gameApis.booster().getBoosters().keySet().stream()
+            .map(boosterKey ->
+                BoostersConfig.Booster.builder()
+                    .key(boosterKey)
+                    .range(ConfigDefaults.boosterPercent())
+                    .build()
+            ).collect(Collectors.toSet());
+    }
+
+    public BoostersConfig newBoostersConfig(Collection<Faction> factions) {
+        // Boosters
+        Map<String, Set<BoostersConfig.Booster>> boosters = newBoosters(factions);
+        return BoostersConfig.builder()
+            .faction(boosters)
             .build();
+    }
 
-        log.trace("Default config: %s", defaultConfig);
-        return defaultConfig;
+    public BoostersConfig newBoostersConfig() {
+        // Boosters
+        Map<String, Set<BoostersConfig.Booster>> boosters = newBoosters(gameApis.faction().getFactionNPCs().values());
+        return BoostersConfig.builder()
+            .faction(boosters)
+            .player(newBoosters(gameApis.faction().getPlayer()))
+            .build();
+    }
+
+    public Map<String, Range> newWeather() {
+        return gameApis.weather().getWeatherThings().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.weather()));
+    }
+
+    public Sounds newSounds() {
+        // Sounds Ambience
+        Map<String, Range> ambienceSounds = gameApis.sounds().getAmbienceSounds().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+
+        // Sounds Room
+        Map<String, Range> roomSounds = gameApis.sounds().getRoomSounds().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+
+        // Sounds Settlement
+        Map<String, Range> settlementSounds = gameApis.sounds().getSettlementSounds().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+
+        return Sounds.builder()
+            .ambience(ambienceSounds)
+            .settlement(settlementSounds)
+            .room(roomSounds)
+            .build();
+    }
+
+    public Events newEvents() {
+        // Events Chance
+        Map<String, Range> eventChances = gameApis.events().getEventsChance().keySet().stream()
+            .collect(Collectors.toMap(key -> key, key -> ConfigDefaults.eventChance()));
+
+        // Events Settlement
+        Map<String, Boolean> settlementEvents = gameApis.events().getSettlementEvents().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> true));
+
+        // Event World
+        Map<String, Boolean> worldEvents = gameApis.events().getWorldEvents().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> true));
+
+        return Events.builder()
+            .world(worldEvents)
+            .settlement(settlementEvents)
+            .chance(eventChances)
+            .build();
+    }
+
+    public Metrics newMetrics() {
+        // Metrics
+        Metrics metrics = ConfigDefaults.metrics();
+        Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
+        metrics.setStats(availableStats);
+
+        return metrics;
     }
 
     public static Range boosterAdd() {

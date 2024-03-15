@@ -8,19 +8,16 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
 import lombok.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Builder
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MoreOptionsV2Config {
+public class MoreOptionsV3Config {
 
-    public final static int VERSION = 2;
+    public final static int VERSION = 3;
 
     @Builder.Default
     private int version = VERSION;
@@ -34,7 +31,9 @@ public class MoreOptionsV2Config {
     @Builder.Default
     private Map<String, Range> weather = new HashMap<>();
     @Builder.Default
-    private Map<String, Range> boosters = new HashMap<>();
+    private BoostersConfig boosters = BoostersConfig.builder().build();
+    @Builder.Default
+    private Set<BoostersPreset> boostersPresets = new HashSet<>();
     @Builder.Default
     private Metrics metrics = Metrics.builder().build();
     @Builder.Default
@@ -123,7 +122,7 @@ public class MoreOptionsV2Config {
         }
 
         public static Range fromSlider(Slider slider) {
-            return MoreOptionsV2Config.Range.builder()
+            return MoreOptionsV3Config.Range.builder()
                 .value(slider.getValue())
                 .max(slider.getMax())
                 .min(slider.getMin())
@@ -148,6 +147,7 @@ public class MoreOptionsV2Config {
     @Getter
     @Builder
     @NoArgsConstructor
+    @EqualsAndHashCode
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class BoosterEntry {
         private String key;
@@ -163,6 +163,42 @@ public class MoreOptionsV2Config {
 
     @Data
     @Builder
+    @EqualsAndHashCode
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class BoostersPreset {
+        private String name;
+        @Builder.Default
+        private Set<BoostersConfig.Booster> boosters = new HashSet<>();
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class BoostersConfig {
+
+        @Builder.Default
+        private Map<String, Set<Booster>> faction = new HashMap<>();
+
+        @Builder.Default
+        private Set<BoostersConfig.Booster> player = new HashSet<>();
+
+        @Data
+        @Builder
+        @EqualsAndHashCode
+        @NoArgsConstructor
+        @AllArgsConstructor(access = AccessLevel.PRIVATE)
+        public static class Booster {
+            private String key;
+            private Range range;
+        }
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class RacesConfig {

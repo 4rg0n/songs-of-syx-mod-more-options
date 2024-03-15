@@ -6,7 +6,7 @@ import snake2d.util.datatypes.DIR;
 import snake2d.util.sprite.SPRITE;
 
 
-public class DropDown<Key> extends Button implements Valuable<Key, DropDown<Key>>{
+public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
     private final Toggler<Key> menu;
 
     @Builder
@@ -47,5 +47,10 @@ public class DropDown<Key> extends Button implements Valuable<Key, DropDown<Key>
     @Override
     public void setValue(Key value) {
         menu.setValue(value);
+    }
+
+    @Override
+    protected DropDown<Key> element() {
+        return this;
     }
 }

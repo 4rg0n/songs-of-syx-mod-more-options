@@ -40,7 +40,7 @@ public class StringUtil {
     public static String toStringPrimitiveArray(@Nullable Object arg) {
         if (arg == null) {
             return "null";
-        }else if (arg instanceof int[]) {
+        } else if (arg instanceof int[]) {
             return Arrays.toString((int[]) arg);
         } else if (arg instanceof long[]) {
             return Arrays.toString((long[]) arg);

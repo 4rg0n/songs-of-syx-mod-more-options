@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.game.ui.NonHidingPopup;
 import com.github.argon.sos.moreoptions.game.ui.NotificationPopup;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
@@ -50,7 +51,7 @@ public class GameUiApi implements Phases {
         SettView settView = VIEW.s();
 
         if (settView == null) {
-            throw new UninitializedException("Games settlement ui isn't initialized yet.");
+            throw new UninitializedException(Phase.INIT_GAME_UI_PRESENT);
         }
 
         return settView;
@@ -60,7 +61,7 @@ public class GameUiApi implements Phases {
         WorldView worldView = VIEW.world();
 
         if (worldView == null) {
-            throw new UninitializedException("Games world ui isn't initialized yet.");
+            throw new UninitializedException(Phase.INIT_GAME_UI_PRESENT);
         }
 
         return worldView;
@@ -97,7 +98,7 @@ public class GameUiApi implements Phases {
         Interrupters interrupters = VIEW.inters();
 
         if (interrupters == null) {
-            throw new UninitializedException("Games interrupt ui isn't initialized yet.");
+            throw new UninitializedException(Phase.INIT_GAME_UI_PRESENT);
         }
 
         return interrupters;

@@ -1,11 +1,12 @@
-package com.github.argon.sos.moreoptions.ui.panel;
+package com.github.argon.sos.moreoptions.ui.panel.events;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
+import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class EventsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Events, EventsPanel> {
+public class EventsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Events, EventsPanel> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
     private final static I18n i18n = I18n.get(EventsPanel.class);
@@ -31,12 +32,12 @@ public class EventsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Events,
 
     public EventsPanel(
         String title,
-        MoreOptionsV2Config.Events events,
-        MoreOptionsV2Config.Events defaultConfig,
+        MoreOptionsV3Config.Events events,
+        MoreOptionsV3Config.Events defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultConfig);
+        super(title, defaultConfig, availableWidth, availableHeight);
         this.settlementEventsCheckboxes = UiMapper.toCheckboxes(events.getSettlement());
         this.worldEventsCheckboxes = UiMapper.toCheckboxes(events.getWorld());
 
@@ -96,8 +97,8 @@ public class EventsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Events,
     }
 
     @Override
-    public MoreOptionsV2Config.Events getValue() {
-       return MoreOptionsV2Config.Events.builder()
+    public MoreOptionsV3Config.Events getValue() {
+       return MoreOptionsV3Config.Events.builder()
            .settlement(getSettlementEventsConfig())
            .world(getWorldEventsConfig())
            .chance(getEventsChanceConfig())
@@ -114,14 +115,14 @@ public class EventsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Events,
             .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 
-    public Map<String, MoreOptionsV2Config.Range> getEventsChanceConfig() {
+    public Map<String, MoreOptionsV3Config.Range> getEventsChanceConfig() {
         return eventsChanceSliders.entrySet().stream().collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsV2Config.Range.fromSlider(tab.getValue())));
+                tab -> MoreOptionsV3Config.Range.fromSlider(tab.getValue())));
     }
 
     @Override
-    public void setValue(MoreOptionsV2Config.Events events) {
+    public void setValue(MoreOptionsV3Config.Events events) {
         log.trace("Applying UI settlement events config %s", events);
 
         events.getSettlement().forEach((key, value) -> {
@@ -147,5 +148,9 @@ public class EventsPanel extends AbstractConfigPanel<MoreOptionsV2Config.Events,
                 log.warn("No slider with key %s found in UI", key);
             }
         });
+    }
+
+    protected EventsPanel element() {
+        return this;
     }
 }

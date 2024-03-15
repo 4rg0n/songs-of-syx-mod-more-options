@@ -1,9 +1,10 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.JsonConfigMapper;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
@@ -23,8 +24,16 @@ import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.phase.Phases;
-import com.github.argon.sos.moreoptions.ui.panel.*;
+import com.github.argon.sos.moreoptions.phase.UninitializedException;
+import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.ui.panel.advanced.AdvancedPanel;
+import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
+import com.github.argon.sos.moreoptions.ui.panel.metrics.MetricsPanel;
+import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
+import com.github.argon.sos.moreoptions.ui.panel.races.RacesSelectionPanel;
+import com.github.argon.sos.moreoptions.ui.panel.weather.WeatherPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
+import game.faction.Faction;
 import init.paths.PATHS;
 import init.sprite.SPRITES;
 import lombok.AccessLevel;
@@ -42,15 +51,14 @@ import view.ui.top.UIPanelTop;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 import static java.time.temporal.ChronoField.*;
 
 /**
- * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsV2Config}.
+ * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsV3Config}.
  * So when a new entry is added, a new UI element like e.g. an additional slider will also be visible.
  * For setting up the UI and adding functionality to buttons.
  */
@@ -62,8 +70,10 @@ public class UiConfig implements Phases {
         GameApis.getInstance(),
         MoreOptionsConfigurator.getInstance(),
         ConfigStore.getInstance(),
+        ConfigDefaults.getInstance(),
         MetricExporter.getInstance(),
         UiFactory.getInstance(),
+        UiMapper.getInstance(),
         Notificator.getInstance()
     );
 
@@ -91,13 +101,15 @@ public class UiConfig implements Phases {
     private final GameApis gameApis;
     private final MoreOptionsConfigurator configurator;
     private final ConfigStore configStore;
+    private final ConfigDefaults configDefaults;
     private final MetricExporter metricExporter;
     private final UiFactory uiFactory;
+    private final UiMapper uiMapper;
     private final Notificator notificator;
 
     @Getter
     @Nullable
-    private FullWindow<MoreOptionsPanel> moreOptionsModal;
+    private FullWindow<MoreOptionsPanel> moreOptionsFull;
     @Getter
     @Nullable
     private FullWindow<MoreOptionsPanel> backupMoreOptionsModal;
@@ -115,25 +127,29 @@ public class UiConfig implements Phases {
      */
     @Override
     public void initGameUiPresent() {
-        MoreOptionsV2Config moreOptionsConfig = configStore.getCurrentConfig();
+        MoreOptionsV3Config moreOptionsConfig = configStore.getCurrentConfig();
+
+        if (moreOptionsConfig == null) {
+            throw new UninitializedException("Configuration is not initialized.");
+        }
 
         // create More Options ui
-        moreOptionsModal = uiFactory.buildMoreOptionsFullScreen(MOD_INFO.name.toString(), moreOptionsConfig);
-        initActions(moreOptionsModal);
-        inject(moreOptionsModal);
-        Optional<MoreOptionsV2Config> backupConfig = configStore.getBackupConfig();
+        moreOptionsFull = uiFactory.buildMoreOptionsFullScreen(MOD_INFO.name.toString(), moreOptionsConfig);
+        initActions(moreOptionsFull);
+        inject(moreOptionsFull);
 
         // create backup configuration dialog if needed
-        if (backupConfig.isPresent()) {
+        configStore.getBackupConfig().ifPresent(backupConfig -> {
             backupDialog = new Modal<>(MOD_INFO.name.toString(), new BackupDialog());
             backupMoreOptionsModal = uiFactory.buildMoreOptionsFullScreen(
                 MOD_INFO.name + " " + i18n.t("MoreOptionsPanel.backup.title.suffix"),
-                backupConfig.get());
+                backupConfig);
 
-            configStore.setCurrentConfig(backupConfig.get());
+            configStore.setCurrentConfig(backupConfig);
+            //noinspection DataFlowIssue
             initActions(backupMoreOptionsModal);
-            initBackupActions(backupDialog, backupMoreOptionsModal, moreOptionsModal, backupConfig.get());
-        }
+            initBackupActions(backupDialog, backupMoreOptionsModal, moreOptionsFull, backupConfig);
+        });
     }
 
     public void inject(FullWindow<MoreOptionsPanel> moreOptionsModal) {
@@ -179,6 +195,14 @@ public class UiConfig implements Phases {
     public void initActions(FullWindow<MoreOptionsPanel> moreOptionsModal) {
         MoreOptionsPanel moreOptionsPanel = moreOptionsModal.getSection();
         initActions(moreOptionsModal, moreOptionsPanel);
+
+        // BOOSTERS
+        BoostersPanel boostersPanel = moreOptionsPanel.getBoostersPanel();
+        initActions(boostersPanel);
+
+        moreOptionsPanel.showAction(panel -> {
+            boostersPanel.refresh();
+        });
 
         // METRICS
         MetricsPanel metricsPanel = moreOptionsPanel.getMetricsPanel();
@@ -248,7 +272,7 @@ public class UiConfig implements Phases {
 
         // reload and apply config from file
         moreOptionsPanel.getReloadButton().clickActionSet(() -> {
-            MoreOptionsV2Config moreOptionsConfig = configStore.loadConfig().orElse(null);
+            MoreOptionsV3Config moreOptionsConfig = configStore.loadConfig().orElse(null);
             if (moreOptionsConfig != null) {
                 moreOptionsPanel.setValue(moreOptionsConfig);
                 notificator.notifySuccess(i18n.t("notification.config.reload"));
@@ -259,7 +283,7 @@ public class UiConfig implements Phases {
 
         // copy config from ui into clipboard
         moreOptionsPanel.getShareButton().clickActionSet(() -> {
-            MoreOptionsV2Config moreOptionsConfig = moreOptionsPanel.getValue();
+            MoreOptionsV3Config moreOptionsConfig = moreOptionsPanel.getValue();
             try {
                 if (moreOptionsConfig != null) {
                     JsonE jsonE = JsonConfigMapper.mapConfig(moreOptionsConfig);
@@ -386,7 +410,7 @@ public class UiConfig implements Phases {
         // Export current race config from ui into clipboard
         racesPanel.getExportButton().clickActionSet(() -> {
             try {
-                MoreOptionsV2Config.RacesConfig racesConfig = racesPanel.getValue();
+                MoreOptionsV3Config.RacesConfig racesConfig = racesPanel.getValue();
                 JsonElement jsonElement = JsonMapper.mapObject(racesConfig);
                 Json json = new Json(jsonElement, JsonWriter.getJsonE());
 
@@ -405,7 +429,7 @@ public class UiConfig implements Phases {
             try {
                 Clipboard.read().ifPresent(s -> {
                     Json json = new Json(s, JsonWriter.getJsonE());
-                    MoreOptionsV2Config.RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), MoreOptionsV2Config.RacesConfig.class);
+                    MoreOptionsV3Config.RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), MoreOptionsV3Config.RacesConfig.class);
 
                     racesPanel.setValue(racesConfig);
                     notificator.notifySuccess(i18n.t("notification.races.config.import"));
@@ -421,9 +445,10 @@ public class UiConfig implements Phases {
             // load from race config file on doubleclick
             racesConfigsSelection.getSection().getRacesConfigTable().doubleClickAction(row -> {
                 try {
+                    Objects.requireNonNull(row);
                     RacesSelectionPanel.Entry entry = row.getValue();
                     Path configPath = entry.getConfigPath();
-                    MoreOptionsV2Config.RacesConfig racesConfig = configStore.loadRaceConfig(configPath).orElse(null);
+                    MoreOptionsV3Config.RacesConfig racesConfig = configStore.loadRaceConfig(configPath).orElse(null);
 
                     if (racesConfig != null) {
                         racesPanel.setValue(racesConfig);
@@ -438,6 +463,19 @@ public class UiConfig implements Phases {
             });
 
             racesConfigsSelection.show();
+        });
+    }
+
+    public void initActions(BoostersPanel boostersPanel) {
+        boostersPanel.refreshAction(panel -> {
+            configDefaults.newBoostersConfig();
+            Map<Faction, List<BoostersPanel.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(configDefaults.newBoostersConfig());
+            Objects.requireNonNull(panel);
+            panel.refresh(boosterEntries);
+            MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
+            Objects.requireNonNull(currentConfig);
+
+            panel.setValue(currentConfig.getBoosters());
         });
     }
 
@@ -464,7 +502,7 @@ public class UiConfig implements Phases {
         advancedPanel.getResetButton().clickActionSet(() -> {
             // are you sure message
             VIEW.inters().yesNo.activate(i18n.t("MoreOptionsPanel.text.yesNo.reset"), () -> {
-                MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
+                MoreOptionsV3Config defaultConfig = configStore.getDefaultConfig();
                 try {
                     moreOptionsPanel.setValue(defaultConfig);
                     configStore.deleteConfig();
@@ -494,7 +532,7 @@ public class UiConfig implements Phases {
         Modal<BackupDialog> backupDialog,
         FullWindow<MoreOptionsPanel> backupMoreOptionsModal,
         FullWindow<MoreOptionsPanel> moreOptionsModal,
-        MoreOptionsV2Config backupConfig
+        MoreOptionsV3Config backupConfig
     ) {
         // Close: More Options modal with backup config
         backupMoreOptionsModal.hideAction(panel -> {
@@ -525,7 +563,7 @@ public class UiConfig implements Phases {
         // Ok
         Button okButton = moreOptionsPanel.getOkButton();
         okButton.clickActionSet(() -> {
-            MoreOptionsV2Config readConfig = moreOptionsPanel.getValue();
+            MoreOptionsV3Config readConfig = moreOptionsPanel.getValue();
 
             // fallback
             if (readConfig == null) {
@@ -561,7 +599,7 @@ public class UiConfig implements Phases {
         backupDialog.getPanel().setCloseAction(() -> {
             try {
                 configStore.deleteBackupConfig();
-                MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
+                MoreOptionsV3Config defaultConfig = configStore.getDefaultConfig();
                 moreOptionsModal.getSection().setValue(defaultConfig);
                 configurator.applyConfig(defaultConfig);
                 configStore.setCurrentConfig(defaultConfig);
@@ -577,7 +615,7 @@ public class UiConfig implements Phases {
         backupDialog.getSection().getDiscardButton().clickActionSet(() -> {
             try {
                 configStore.deleteBackupConfig();
-                MoreOptionsV2Config defaultConfig = configStore.getDefaultConfig();
+                MoreOptionsV3Config defaultConfig = configStore.getDefaultConfig();
                 moreOptionsModal.getSection().setValue(defaultConfig);
                 configurator.applyConfig(defaultConfig);
                 configStore.setCurrentConfig(defaultConfig);
@@ -605,10 +643,10 @@ public class UiConfig implements Phases {
         });
     }
 
-    private @Nullable MoreOptionsV2Config apply(MoreOptionsPanel moreOptionsPanel) {
+    private @Nullable MoreOptionsV3Config apply(MoreOptionsPanel moreOptionsPanel) {
         // only save when changes were made
         if (moreOptionsPanel.isDirty()) {
-            MoreOptionsV2Config config = moreOptionsPanel.getValue();
+            MoreOptionsV3Config config = moreOptionsPanel.getValue();
 
             if (config == null) {
                 log.warn("Could read config from modal. Got null");
@@ -616,7 +654,8 @@ public class UiConfig implements Phases {
             }
 
             // notify when metric collection status changes
-            MoreOptionsV2Config currentConfig = configStore.getCurrentConfig();
+            MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
+            Objects.requireNonNull(currentConfig);
             if (currentConfig.getMetrics().isEnabled() != config.getMetrics().isEnabled()) {
                 if (config.getMetrics().isEnabled()) {
                     notificator.notify(i18n.t("notification.metrics.start"));
@@ -634,7 +673,7 @@ public class UiConfig implements Phases {
     }
 
     private boolean applyAndSave(MoreOptionsPanel moreOptionsPanel) {
-        MoreOptionsV2Config appliedConfig = apply(moreOptionsPanel);
+        MoreOptionsV3Config appliedConfig = apply(moreOptionsPanel);
 
         if (appliedConfig != null) {
             return configStore.saveConfig(appliedConfig);
@@ -644,7 +683,7 @@ public class UiConfig implements Phases {
     }
 
     private void undo(MoreOptionsPanel moreOptionsPanel) {
-        MoreOptionsV2Config currentConfig = configStore.getCurrentConfig();
+        MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
         moreOptionsPanel.setValue(currentConfig);
     }
 }
