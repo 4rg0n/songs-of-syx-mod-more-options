@@ -1,7 +1,7 @@
 
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.booster.BoosterService;
 import com.github.argon.sos.moreoptions.booster.Boosters;
 import com.github.argon.sos.moreoptions.phase.Phase;
@@ -50,7 +50,7 @@ public class GameBoosterApi implements Phases {
             .orElseThrow(() -> new UninitializedException(Phase.INIT_MOD_CREATE_INSTANCE));
     }
 
-    public void setBoosters(MoreOptionsV3Config.BoostersConfig boostersConfig) {
+    public void setBoosters(BoostersConfig boostersConfig) {
         boosterService.setBoosterValues(boostersConfig);
     }
 

@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.AbstractScript;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.i18n.I18nMessages;

@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.panel.weather;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class WeatherPanel extends AbstractConfigPanel<Map<String, MoreOptionsV3Config.Range>, WeatherPanel> {
+public class WeatherPanel extends AbstractConfigPanel<Map<String, Range>, WeatherPanel> {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
     private static final I18n i18n = I18n.get(WeatherPanel.class);
 
@@ -28,8 +28,8 @@ public class WeatherPanel extends AbstractConfigPanel<Map<String, MoreOptionsV3C
     private final Map<String, Slider> sliders;
     public WeatherPanel(
         String title,
-        Map<String, MoreOptionsV3Config.Range> weatherConfig,
-        Map<String, MoreOptionsV3Config.Range> defaultConfig,
+        Map<String, Range> weatherConfig,
+        Map<String, Range> defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
@@ -46,15 +46,15 @@ public class WeatherPanel extends AbstractConfigPanel<Map<String, MoreOptionsV3C
     }
 
     @Override
-    public Map<String, MoreOptionsV3Config.Range> getValue() {
+    public Map<String, Range> getValue() {
         return sliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsV3Config.Range.fromSlider(tab.getValue())));
+                tab -> Range.fromSlider(tab.getValue())));
     }
 
     @Override
-    public void setValue(Map<String, MoreOptionsV3Config.Range> config) {
+    public void setValue(Map<String, Range> config) {
         config.forEach((key, range) -> {
             if (sliders.containsKey(key)) {
                 sliders.get(key).setValue(range.getValue());

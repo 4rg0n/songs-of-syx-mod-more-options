@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.github.argon.sos.moreoptions.config.MoreOptionsV3Config.*;
+import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config.*;
 
 /**
  * Provides default configuration partially gathered from the game.
@@ -117,7 +118,7 @@ public class ConfigDefaults {
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.weather()));
     }
 
-    public Sounds newSounds() {
+    public SoundsConfig newSounds() {
         // Sounds Ambience
         Map<String, Range> ambienceSounds = gameApis.sounds().getAmbienceSounds().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
@@ -130,14 +131,14 @@ public class ConfigDefaults {
         Map<String, Range> settlementSounds = gameApis.sounds().getSettlementSounds().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
-        return Sounds.builder()
+        return SoundsConfig.builder()
             .ambience(ambienceSounds)
             .settlement(settlementSounds)
             .room(roomSounds)
             .build();
     }
 
-    public Events newEvents() {
+    public EventsConfig newEvents() {
         // Events Chance
         Map<String, Range> eventChances = gameApis.events().getEventsChance().keySet().stream()
             .collect(Collectors.toMap(key -> key, key -> ConfigDefaults.eventChance()));
@@ -150,20 +151,20 @@ public class ConfigDefaults {
         Map<String, Boolean> worldEvents = gameApis.events().getWorldEvents().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> true));
 
-        return Events.builder()
+        return EventsConfig.builder()
             .world(worldEvents)
             .settlement(settlementEvents)
             .chance(eventChances)
             .build();
     }
 
-    public Metrics newMetrics() {
+    public MetricsConfig newMetrics() {
         // Metrics
-        Metrics metrics = ConfigDefaults.metrics();
+        MetricsConfig metricsConfig = ConfigDefaults.metrics();
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
-        metrics.setStats(availableStats);
+        metricsConfig.setStats(availableStats);
 
-        return metrics;
+        return metricsConfig;
     }
 
     public static Range boosterAdd() {
@@ -186,8 +187,8 @@ public class ConfigDefaults {
             .build();
     }
 
-    public static Metrics metrics() {
-        return Metrics.builder().build();
+    public static MetricsConfig metrics() {
+        return MetricsConfig.builder().build();
     }
 
     public static Range raceLiking() {

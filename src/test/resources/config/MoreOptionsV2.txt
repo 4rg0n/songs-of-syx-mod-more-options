@@ -197,84 +197,84 @@ SOUNDS_ROOM: {
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.TEMPLE_AMINION: {
+	soundsConfig.room.TEMPLE_AMINION: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.MACHINE: {
+	soundsConfig.room.MACHINE: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.AXE: {
+	soundsConfig.room.AXE: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.CATAPULT_HIT: {
+	soundsConfig.room.CATAPULT_HIT: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.TEXTILE: {
+	soundsConfig.room.TEXTILE: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.DIG: {
+	soundsConfig.room.DIG: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.CRANK: {
+	soundsConfig.room.CRANK: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.LIBRARY: {
+	soundsConfig.room.LIBRARY: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.SQUISH: {
+	soundsConfig.room.SQUISH: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.FART: {
+	soundsConfig.room.FART: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.ARROW_HIT: {
+	soundsConfig.room.ARROW_HIT: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,
 		APPLY_MODE: "PERCENT",
 		DISPLAY_MODE: "PERCENTAGE",
 	},
-	sounds.room.CATAPULT_RELEASE: {
+	soundsConfig.room.CATAPULT_RELEASE: {
 		VALUE: 100,
 		MIN: 0,
 		MAX: 100,

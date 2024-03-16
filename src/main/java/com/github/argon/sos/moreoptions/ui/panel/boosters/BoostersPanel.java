@@ -1,9 +1,11 @@
 package com.github.argon.sos.moreoptions.ui.panel.boosters;
 
 import com.github.argon.sos.moreoptions.booster.Boosters;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
@@ -14,6 +16,7 @@ import game.faction.player.Player;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
@@ -25,8 +28,9 @@ import java.util.stream.Collectors;
 /**
  * Contains sliders to influence values of game boosters
  */
-public class BoostersPanel extends AbstractConfigPanel<MoreOptionsV3Config.BoostersConfig, BoostersPanel> {
+public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersPanel> {
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
+    private final static I18n i18n = I18n.get(BoostersPanel.class);
 
     private final Map<Faction, BoostersSection> factionBoostersSections = new HashMap<>();
 
@@ -35,33 +39,61 @@ public class BoostersPanel extends AbstractConfigPanel<MoreOptionsV3Config.Boost
     private final Player playerFaction = FACTIONS.player();
 
     private final int tableHeight;
+    @Getter
+    private final Button loadPresetButton;
+    @Getter
+    private final Button savePresetButton;
+    @Getter
+    private final Button copyButton;
+    @Getter
+    private final Button pasteButton;
 
+    @Getter
     private BoostersSection currentBoosterSection;
 
-    private Map<String, MoreOptionsV3Config.Range> clipboard;
+    private Map<String, Range> clipboard;
+
+    @Getter
+    private Map<String, Map<String, Range>> presets;
 
     public BoostersPanel(
         String title,
         Map<Faction, List<Entry>> boosterEntries,
-        MoreOptionsV3Config.BoostersConfig defaultConfig,
+        Map<String, BoostersConfig.BoostersPreset> presets,
+        BoostersConfig defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
         super(title, defaultConfig, availableWidth, availableHeight);
+        this.presets = presets.entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey,
+            entry -> entry.getValue().getBoosters().stream().collect(Collectors.toMap(
+                BoostersConfig.Booster::getKey,
+                BoostersConfig.Booster::getRange
+            ))
+        ));
 
         GETTER.GETTER_IMP<Faction> getter = new GETTER.GETTER_IMP<>();
         FactionList factionList = new FactionList(getter, availableHeight);
 
-        Button loadPresetButton = new Button("Load", "");
-        Button savePresetButton = new Button("Save", "");
-        Button copyButton = new Button("Copy", "");
-        Button pasteButtonButton = new Button("Paste", "");
+        loadPresetButton = new Button(
+            i18n.t("BoostersPanel.button.preset.load.name"),
+            i18n.t("BoostersPanel.button.preset.load.desc"));
+        savePresetButton = new Button(
+            i18n.t("BoostersPanel.button.preset.save.name"),
+            i18n.t("BoostersPanel.button.preset.save.desc"));
+        copyButton = new Button(
+            i18n.t("BoostersPanel.button.boosters.copy.name"),
+            i18n.t("BoostersPanel.button.boosters.copy.desc"));
+        pasteButton = new Button(
+            i18n.t("BoostersPanel.button.boosters.paste.name"),
+            i18n.t("BoostersPanel.button.boosters.paste.desc"));
 
         ButtonMenu<String> buttons = ButtonMenu.<String>builder()
             .button("load", loadPresetButton)
             .button("save", savePresetButton)
             .button("copy", copyButton)
-            .button("paste", pasteButtonButton)
+            .button("paste", pasteButton)
             .horizontal(true)
             .spacer(true)
             .margin(20)
@@ -91,8 +123,9 @@ public class BoostersPanel extends AbstractConfigPanel<MoreOptionsV3Config.Boost
     /**
      * Saves currently selected booster settings
      */
-    public void copyBoostersConfig() {
+    public Faction copyBoostersConfig() {
         clipboard = currentBoosterSection.getValue();
+        return currentBoosterSection.getFaction();
     }
 
     /**
@@ -119,37 +152,37 @@ public class BoostersPanel extends AbstractConfigPanel<MoreOptionsV3Config.Boost
     }
 
     @Override
-    public MoreOptionsV3Config.BoostersConfig getValue() {
-        Map<String, Set<MoreOptionsV3Config.BoostersConfig.Booster>> factionBoosters = factionBoostersSections.entrySet().stream()
+    public BoostersConfig getValue() {
+        Map<String, Set<BoostersConfig.Booster>> factionBoosters = factionBoostersSections.entrySet().stream()
             .filter(entry -> !entry.getKey().equals(playerFaction))
             .collect(Collectors.toMap(
                 entry -> entry.getKey().name.toString(),
                 entry -> {
                     BoostersSection section = entry.getValue();
-                    Map<String, MoreOptionsV3Config.Range> boosterValues = section.getValue();
+                    Map<String, Range> boosterValues = section.getValue();
                     return buildConfigBooster(boosterValues);
                 }
         ));
 
-        Set<MoreOptionsV3Config.BoostersConfig.Booster> playerBoosters = factionBoostersSections.entrySet().stream()
+        Set<BoostersConfig.Booster> playerBoosters = factionBoostersSections.entrySet().stream()
             .filter(entry -> entry.getKey().equals(playerFaction))
             .findFirst()
             .map(entry -> {
                 BoostersSection section = entry.getValue();
-                Map<String, MoreOptionsV3Config.Range> boosterValues = section.getValue();
+                Map<String, Range> boosterValues = section.getValue();
                 return buildConfigBooster(boosterValues);
             }).orElse(new HashSet<>());
 
-        return MoreOptionsV3Config.BoostersConfig.builder()
+        return BoostersConfig.builder()
             .faction(factionBoosters)
             .player(playerBoosters)
             .build();
     }
 
     @NotNull
-    private static Set<MoreOptionsV3Config.BoostersConfig.Booster> buildConfigBooster(Map<String, MoreOptionsV3Config.Range> boosterValues) {
+    private static Set<BoostersConfig.Booster> buildConfigBooster(Map<String, Range> boosterValues) {
         return boosterValues.entrySet().stream().map(stringRangeEntry ->
-                MoreOptionsV3Config.BoostersConfig.Booster.builder()
+                BoostersConfig.Booster.builder()
                     .key(stringRangeEntry.getKey())
                     .range(stringRangeEntry.getValue())
                     .build())
@@ -157,7 +190,7 @@ public class BoostersPanel extends AbstractConfigPanel<MoreOptionsV3Config.Boost
     }
 
     @Override
-    public void setValue(MoreOptionsV3Config.BoostersConfig config) {
+    public void setValue(BoostersConfig config) {
         log.trace("Applying Booster config %s", config);
 
         config.getFaction().forEach((factionName, boosters) -> {
@@ -171,7 +204,7 @@ public class BoostersPanel extends AbstractConfigPanel<MoreOptionsV3Config.Boost
                 return;
             }
 
-            Map<String, MoreOptionsV3Config.Range> values = toValues(boosters);
+            Map<String, Range> values = toValues(boosters);
 
             boostersSection.setValue(values);
         });
@@ -183,10 +216,10 @@ public class BoostersPanel extends AbstractConfigPanel<MoreOptionsV3Config.Boost
     }
 
     @NotNull
-    private static Map<String, MoreOptionsV3Config.Range> toValues(Set<MoreOptionsV3Config.BoostersConfig.Booster> boosters) {
+    private static Map<String, Range> toValues(Set<BoostersConfig.Booster> boosters) {
         return boosters.stream().collect(Collectors.toMap(
-            MoreOptionsV3Config.BoostersConfig.Booster::getKey,
-            MoreOptionsV3Config.BoostersConfig.Booster::getRange));
+            BoostersConfig.Booster::getKey,
+            BoostersConfig.Booster::getRange));
     }
 
     protected BoostersPanel element() {
@@ -198,7 +231,7 @@ public class BoostersPanel extends AbstractConfigPanel<MoreOptionsV3Config.Boost
     @Builder
     @EqualsAndHashCode
     public static class Entry {
-        private MoreOptionsV3Config.Range range;
+        private Range range;
         private String key;
 
         //  |\__/,|   (`\

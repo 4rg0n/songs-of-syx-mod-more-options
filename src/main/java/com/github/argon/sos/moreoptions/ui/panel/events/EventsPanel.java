@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel.events;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.EventsConfig;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class EventsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Events, EventsPanel> {
+public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> {
 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
     private final static I18n i18n = I18n.get(EventsPanel.class);
@@ -32,14 +33,14 @@ public class EventsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Events,
 
     public EventsPanel(
         String title,
-        MoreOptionsV3Config.Events events,
-        MoreOptionsV3Config.Events defaultConfig,
+        EventsConfig eventsConfig,
+        EventsConfig defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
         super(title, defaultConfig, availableWidth, availableHeight);
-        this.settlementEventsCheckboxes = UiMapper.toCheckboxes(events.getSettlement());
-        this.worldEventsCheckboxes = UiMapper.toCheckboxes(events.getWorld());
+        this.settlementEventsCheckboxes = UiMapper.toCheckboxes(eventsConfig.getSettlement());
+        this.worldEventsCheckboxes = UiMapper.toCheckboxes(eventsConfig.getWorld());
 
         GuiSection settlementSection = new GuiSection();
         GuiSection worldSection = new GuiSection();
@@ -51,7 +52,7 @@ public class EventsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Events,
         GHeader worldHeader = new GHeader(i18n.t("EventsPanel.header.world.name"));
         settlementHeader.hoverInfoSet(i18n.t("EventsPanel.header.world.desc"));
 
-        this.eventsChanceSliders = UiMapper.toSliders(events.getChance());
+        this.eventsChanceSliders = UiMapper.toSliders(eventsConfig.getChance());
         List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(eventsChanceSliders, i18n);
         Table<Integer> chanceTable = Table.<Integer>builder()
             .rows(rows)
@@ -97,8 +98,8 @@ public class EventsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Events,
     }
 
     @Override
-    public MoreOptionsV3Config.Events getValue() {
-       return MoreOptionsV3Config.Events.builder()
+    public EventsConfig getValue() {
+       return EventsConfig.builder()
            .settlement(getSettlementEventsConfig())
            .world(getWorldEventsConfig())
            .chance(getEventsChanceConfig())
@@ -115,17 +116,17 @@ public class EventsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Events,
             .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 
-    public Map<String, MoreOptionsV3Config.Range> getEventsChanceConfig() {
+    public Map<String, Range> getEventsChanceConfig() {
         return eventsChanceSliders.entrySet().stream().collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsV3Config.Range.fromSlider(tab.getValue())));
+                tab -> Range.fromSlider(tab.getValue())));
     }
 
     @Override
-    public void setValue(MoreOptionsV3Config.Events events) {
-        log.trace("Applying UI settlement events config %s", events);
+    public void setValue(EventsConfig eventsConfig) {
+        log.trace("Applying UI settlement events config %s", eventsConfig);
 
-        events.getSettlement().forEach((key, value) -> {
+        eventsConfig.getSettlement().forEach((key, value) -> {
             if (settlementEventsCheckboxes.containsKey(key)) {
                 settlementEventsCheckboxes.get(key).selectedSet(value);
             } else {
@@ -133,7 +134,7 @@ public class EventsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Events,
             }
         });
 
-        events.getWorld().forEach((key, value) -> {
+        eventsConfig.getWorld().forEach((key, value) -> {
             if (worldEventsCheckboxes.containsKey(key)) {
                 worldEventsCheckboxes.get(key).selectedSet(value);
             } else {
@@ -141,7 +142,7 @@ public class EventsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Events,
             }
         });
 
-        events.getChance().forEach((key, range) -> {
+        eventsConfig.getChance().forEach((key, range) -> {
             if (eventsChanceSliders.containsKey(key)) {
                 eventsChanceSliders.get(key).setValue(range.getValue());
             } else {

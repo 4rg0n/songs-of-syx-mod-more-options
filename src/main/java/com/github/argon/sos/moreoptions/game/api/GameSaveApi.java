@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.api;
 
+import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -41,8 +42,11 @@ public class GameSaveApi implements Phases {
 
     private void setCurrent(Path saveFilePath) {
         SaveFile saveFile = findByPathContains(saveFilePath).orElse(null);
-        log.debug("Set new current game save file: %s", saveFilePath);
-        log.trace("Current Save: %s", saveFile);
+        if (log.isLevel(Level.DEBUG)) {
+            log.debug("Set current saveFilePath: %s", saveFilePath);
+            log.debug("Set current saveFile: %s", (saveFile == null) ? "null" : saveFile.fullName);
+        }
+
         this.currentPath = saveFilePath;
         this.currentFile = saveFile;
     }

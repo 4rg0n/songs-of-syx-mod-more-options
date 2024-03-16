@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -57,7 +59,7 @@ public class ConfigService {
         return jsonService.saveJson(configJson, path, fileName);
     }
 
-    public boolean saveConfig(Path path, MoreOptionsV3Config.RacesConfig config) {
+    public boolean saveConfig(Path path, RacesConfig config) {
         log.trace("CONFIG: %s", config);
 
         JsonE configJson = JsonConfigMapper.mapRacesConfig(config);
@@ -65,7 +67,7 @@ public class ConfigService {
         return jsonService.saveJson(configJson, path);
     }
 
-    public Optional<MoreOptionsV3Config.RacesConfig> loadRacesConfig(Path path) {
+    public Optional<RacesConfig> loadRacesConfig(Path path) {
         try {
             return jsonService.loadJson(path)
                 .map(JsonConfigMapper::mapRacesConfig);

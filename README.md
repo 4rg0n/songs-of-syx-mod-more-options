@@ -2,8 +2,8 @@ Updated for **V65** by [Senso](https://github.com/SensoHakai).
 
 Adds a menu with more options for the game:
 
-* Tune the volume of in game sounds like wind
-* Toggle certain random events
+* Tune the volume of in game soundsConfig like wind
+* Toggle certain random eventsConfig
 * Tune the amount of weather effects like snow
 * Influence bonuses
 * Collect and export game stats into a CSV file
@@ -11,11 +11,11 @@ Adds a menu with more options for the game:
 * Game crash detection and backup mechanism
 
 ![Button](doc/img/button.png)
-![Sounds](doc/img/sounds.png)
-![Events](doc/img/events.png)
+![Sounds](doc/img/soundsConfig.png)
+![Events](doc/img/eventsConfig.png)
 ![Weather](doc/img/weather.png)
 ![Boosters](doc/img/boosters.png)
-![Metrics](doc/img/metrics.png)
+![Metrics](doc/img/metricsConfig.png)
 ![Races](doc/img/races.png)
 ![Advanced](doc/img/advanced.png)
 ![Backup](doc/img/backup.png)

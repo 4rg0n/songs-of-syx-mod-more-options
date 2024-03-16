@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel.boosters;
 
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BoostersSection extends GuiSection implements Valuable<Map<String, MoreOptionsV3Config.Range>, BoostersSection> {
+public class BoostersSection extends GuiSection implements Valuable<Map<String, Range>, BoostersSection> {
     private static final I18n i18n = I18n.get(BoostersPanel.class);
 
-    private final Table<MoreOptionsV3Config.Range> boosterTable;
+    private final Table<Range> boosterTable;
 
     @Getter
     private final Faction faction;
@@ -38,7 +38,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         this.faction = faction;
 
         Map<String, List<BoostersPanel.Entry>> groupedBoosterEntries = UiMapper.toBoosterPanelEntriesCategorized(boosterEntries);
-        Map<String, List<ColumnRow<MoreOptionsV3Config.Range>>> boosterRows = groupedBoosterEntries.entrySet().stream().collect(Collectors.toMap(
+        Map<String, List<ColumnRow<Range>>> boosterRows = groupedBoosterEntries.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             entry -> entry.getValue().stream()
                 .map(this::boosterRow)
@@ -56,7 +56,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
 
         int tableHeight = availableHeight - header.body().height() - search.body().height() - 30;
 
-        this.boosterTable = Table.<MoreOptionsV3Config.Range>builder()
+        this.boosterTable = Table.<Range>builder()
             .rowsCategorized(boosterRows)
             .evenOdd(true)
             .search(searchInput)
@@ -68,10 +68,10 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         addDownC(10, boosterTable);
     }
 
-    private ColumnRow<MoreOptionsV3Config.Range> boosterRow(BoostersPanel.Entry boosterEntry) {
+    private ColumnRow<Range> boosterRow(BoostersPanel.Entry boosterEntry) {
         Boostable boostable = boosterEntry.getBoosters().getAdd().getOrigin();
-        MoreOptionsV3Config.Range rangePerc;
-        MoreOptionsV3Config.Range rangeAdd;
+        Range rangePerc;
+        Range rangeAdd;
         String activeKey;
 
         BOOSTABLE_O bonus;
@@ -96,7 +96,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         // Icon
         GuiSection icon = UiUtil.toGuiSection(new RENDEROBJ.Sprite(boostable.icon));
 
-        if (boosterEntry.getRange().getApplyMode().equals(MoreOptionsV3Config.Range.ApplyMode.PERCENT)) {
+        if (boosterEntry.getRange().getApplyMode().equals(Range.ApplyMode.PERCENT)) {
             rangePerc = boosterEntry.getRange();
             rangeAdd = ConfigDefaults.boosterAdd();
             activeKey = "perc";
@@ -145,24 +145,24 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             .direction(DIR.W)
             .build();
 
-        return ColumnRow.<MoreOptionsV3Config.Range>builder()
+        return ColumnRow.<Range>builder()
             .key(boosterEntry.getKey())
             .column(boosterLabel)
             .column(icon)
             .column(slidersWithToggle)
             .searchTerm(boostable.name.toString())
             .valueConsumer(range -> slidersWithToggle.setValue(range.getValue()))
-            .valueSupplier(() -> MoreOptionsV3Config.Range.fromSlider(slidersWithToggle.getActiveTab()))
+            .valueSupplier(() -> Range.fromSlider(slidersWithToggle.getActiveTab()))
             .build();
     }
 
     @Override
-    public Map<String, MoreOptionsV3Config.Range> getValue() {
+    public Map<String, Range> getValue() {
         return boosterTable.getValue();
     }
 
     @Override
-    public void setValue(Map<String, MoreOptionsV3Config.Range> boosterValues) {
+    public void setValue(Map<String, Range> boosterValues) {
         boosterTable.setValue(boosterValues);
     }
 }

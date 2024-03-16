@@ -42,6 +42,10 @@ public class GameUiApi implements Phases {
     @Accessors(fluent = true)
     private NotificationPopup notification;
 
+    public Interrupters inters() {
+        return VIEW.inters();
+    }
+
     /**
      * Contains the settlements ui elements
      *

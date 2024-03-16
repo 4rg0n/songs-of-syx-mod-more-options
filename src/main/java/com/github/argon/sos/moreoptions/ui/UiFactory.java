@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui;
 
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
@@ -15,17 +15,22 @@ import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
 import com.github.argon.sos.moreoptions.ui.panel.races.RacesSelectionPanel;
 import game.faction.Faction;
 import init.paths.ModInfo;
+import init.sprite.SPRITES;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import snake2d.util.color.COLOR;
+import util.gui.misc.GButt;
 import util.save.SaveFile;
+import view.ui.top.UIPanelTop;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 
 /**
  * Produces new more complex or common UI elements by given configs or from static objects.
@@ -147,5 +152,19 @@ public class UiFactory {
                 i18n.t("log.level.trace.name"),
                 i18n.t("log.level.trace.desc")
             ).bg(COLOR.WHITE100.shade(shade)));
+    }
+
+    public static GButt.ButtPanel buildMoreOptionsButton(FullWindow<MoreOptionsPanel> moreOptionsModal) {
+        GButt.ButtPanel moreOptionsButton = new GButt.ButtPanel(SPRITES.icons().s.cog) {
+            @Override
+            protected void clickA() {
+                moreOptionsModal.show();
+            }
+        };
+
+        moreOptionsButton.hoverInfoSet(MOD_INFO.name);
+        moreOptionsButton.setDim(32, UIPanelTop.HEIGHT);
+
+        return moreOptionsButton;
     }
 }

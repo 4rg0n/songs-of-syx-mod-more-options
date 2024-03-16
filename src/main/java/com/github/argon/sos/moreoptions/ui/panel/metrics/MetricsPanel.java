@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel.metrics;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Metrics, MetricsPanel> {
+public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPanel> {
 
     private final static I18n i18n = I18n.get(MetricsPanel.class);
 
@@ -50,12 +51,12 @@ public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Metric
     private final Button exportFolderButton;
     @Getter
     private final Toggler<Boolean> checkToggler;
-    private BiAction<MoreOptionsV3Config.Metrics, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
+    private BiAction<MetricsConfig, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
 
     public MetricsPanel(
         String title,
-        MoreOptionsV3Config.Metrics metricsConfig,
-        MoreOptionsV3Config.Metrics defaultConfig,
+        MetricsConfig metricsConfig,
+        MetricsConfig defaultConfig,
         Set<String> availableStats,
         Path exportFolderPath,
         Path exportFilePath,
@@ -217,17 +218,17 @@ public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Metric
     }
 
     @Override
-    public MoreOptionsV3Config.Metrics getValue() {
-        return MoreOptionsV3Config.Metrics.builder()
-            .collectionRateSeconds(MoreOptionsV3Config.Range.fromSlider(collectionRate))
-            .exportRateMinutes(MoreOptionsV3Config.Range.fromSlider(exportRate))
+    public MetricsConfig getValue() {
+        return MetricsConfig.builder()
+            .collectionRateSeconds(Range.fromSlider(collectionRate))
+            .exportRateMinutes(Range.fromSlider(exportRate))
             .stats(getCheckedStats())
             .enabled(onOffToggle.getValue())
             .build();
     }
 
     @Override
-    public void setValue(MoreOptionsV3Config.Metrics metricsConfig) {
+    public void setValue(MetricsConfig metricsConfig) {
         onOffToggle.toggle(metricsConfig.isEnabled());
         collectionRate.setValue(metricsConfig.getCollectionRateSeconds().getValue());
         exportRate.setValue(metricsConfig.getExportRateMinutes().getValue());
@@ -278,7 +279,7 @@ public class MetricsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Metric
 
 
     @Override
-    public void afterValueSetAction(BiAction<MoreOptionsV3Config.Metrics, MetricsPanel> afterValueSetAction) {
+    public void afterValueSetAction(BiAction<MetricsConfig, MetricsPanel> afterValueSetAction) {
         this.afterSetValueAction = afterValueSetAction;
     }
 

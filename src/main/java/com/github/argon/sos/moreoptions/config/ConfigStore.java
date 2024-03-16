@@ -1,6 +1,8 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -66,7 +68,7 @@ public class ConfigStore implements Phases {
     private MoreOptionsV3Config loadedConfig;
 
     @Nullable
-    private MoreOptionsV3Config.RacesConfig loadedRacesConfig;
+    private RacesConfig loadedRacesConfig;
 
     @Override
     public void initBeforeGameCreated() {
@@ -226,7 +228,7 @@ public class ConfigStore implements Phases {
         return loadConfig(MORE_OPTIONS_FILE_NAME);
     }
 
-    public Optional<MoreOptionsV3Config.RacesConfig> loadRaceConfig(Path path) {
+    public Optional<RacesConfig> loadRaceConfig(Path path) {
         return configService.loadRacesConfig(path);
     }
 

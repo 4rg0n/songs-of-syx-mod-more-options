@@ -37,13 +37,13 @@ public class GameApis implements Phases {
     private final GameSoundsApi sounds;
 
     @Accessors(fluent = true)
-    private final  GameUiApi ui;
+    private final GameUiApi ui;
 
     @Accessors(fluent = true)
-    private final  GameWeatherApi weather;
+    private final GameWeatherApi weather;
 
     @Accessors(fluent = true)
-    private final  GameBoosterApi booster;
+    private final GameBoosterApi booster;
 
     @Accessors(fluent = true)
     private final GameModApi mod;

@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.game.util.JsonUtil;
 import com.github.argon.sos.moreoptions.util.Sets;
@@ -10,7 +11,7 @@ import snake2d.util.file.JsonE;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.github.argon.sos.moreoptions.config.MoreOptionsV3Config.*;
+import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config.*;
 
 /**
  * For mapping the game {@link Json} and {@link JsonE} into {@link MoreOptionsV3Config} and back
@@ -27,7 +28,7 @@ public class JsonConfigMapper {
             .version(VERSION)
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
-            .events(Events.builder()
+            .events(EventsConfig.builder()
                 .world((json.has("EVENTS_WORLD")) ? JsonUtil.mapBoolean(json.json("EVENTS_WORLD"), true) : null)
                 .settlement((json.has("EVENTS_SETTLEMENT")) ? JsonUtil.mapBoolean(json.json("EVENTS_SETTLEMENT"), true) : null)
 
@@ -38,7 +39,7 @@ public class JsonConfigMapper {
                     )) : null)
                 .build())
 
-            .sounds(Sounds.builder()
+            .sounds(SoundsConfig.builder()
                 .ambience((json.has("SOUNDS_AMBIENCE")) ? JsonUtil.mapInteger(json.json("SOUNDS_AMBIENCE")).entrySet().stream()
                     .collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -82,13 +83,13 @@ public class JsonConfigMapper {
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO)
                 : Level.INFO)
 
-            .events(Events.builder()
+            .events(EventsConfig.builder()
                 .world((json.has("EVENTS_WORLD")) ? JsonUtil.mapBoolean(json.json("EVENTS_WORLD"), true) : null)
                 .settlement((json.has("EVENTS_SETTLEMENT")) ? JsonUtil.mapBoolean(json.json("EVENTS_SETTLEMENT"), true) : null)
                 .chance((json.has("EVENTS_CHANCE")) ? mapRanges(json.json("EVENTS_CHANCE")) : null)
                 .build())
 
-            .sounds(Sounds.builder()
+            .sounds(SoundsConfig.builder()
                 .ambience((json.has("SOUNDS_AMBIENCE")) ? mapRanges(json.json("SOUNDS_AMBIENCE")) : null)
                 .settlement((json.has("SOUNDS_SETTLEMENT")) ? mapRanges(json.json("SOUNDS_SETTLEMENT")) : null)
                 .room((json.has("SOUNDS_ROOM")) ? mapRanges(json.json("SOUNDS_ROOM")) : null)
@@ -117,22 +118,22 @@ public class JsonConfigMapper {
         return json;
     }
 
-    public static JsonE mapMetrics(Metrics metrics) {
+    public static JsonE mapMetrics(MetricsConfig metricsConfig) {
         JsonE json = new JsonE();
 
-        json.add("ENABLED", metrics.isEnabled());
-        json.add("COLLECTION_RATE_SECONDS", mapRange(metrics.getCollectionRateSeconds(), 15));
-        json.add("EXPORT_RATE_MINUTES", mapRange(metrics.getExportRateMinutes(), 30));
-        json.addStrings("STATS", metrics.getStats().toArray(new String[]{}));
+        json.add("ENABLED", metricsConfig.isEnabled());
+        json.add("COLLECTION_RATE_SECONDS", mapRange(metricsConfig.getCollectionRateSeconds(), 15));
+        json.add("EXPORT_RATE_MINUTES", mapRange(metricsConfig.getExportRateMinutes(), 30));
+        json.addStrings("STATS", metricsConfig.getStats().toArray(new String[]{}));
 
         return json;
     }
 
-    public static Metrics mapMetrics(Json json) {
-        Metrics defaultMetrics = ConfigDefaults.metrics();
+    public static MetricsConfig mapMetrics(Json json) {
+        MetricsConfig defaultMetrics = ConfigDefaults.metrics();
         Set<String> stats = (json.has("STATS")) ? Sets.of(json.texts("STATS")) : defaultMetrics.getStats();
 
-        return Metrics.builder()
+        return MetricsConfig.builder()
             .enabled((json.has("ENABLED"))
                 ? json.bool("ENABLED")
                 : defaultMetrics.isEnabled())
@@ -201,8 +202,8 @@ public class JsonConfigMapper {
             .build();
     }
 
-    public static Meta mapMeta(Json json) {
-        return Meta.builder()
+    public static MoreOptionsV3Config.Meta mapMeta(Json json) {
+        return MoreOptionsV3Config.Meta.builder()
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO) : Level.INFO)
             .version((json.has("VERSION")) ? json.i("VERSION") : VERSION)
             .build();

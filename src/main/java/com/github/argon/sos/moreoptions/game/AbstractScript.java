@@ -135,6 +135,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     private Level determineLogLevel() {
         // determine and set log level
         String logLevelName = System.getenv(LOG_LEVEL_ENV_NAME);
+
         return Optional.ofNullable(logLevelName)
             .flatMap(Level::fromName)
             .orElseGet(this::initLogLevel);

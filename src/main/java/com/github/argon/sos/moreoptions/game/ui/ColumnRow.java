@@ -78,9 +78,9 @@ public class ColumnRow<Value> extends GuiSection implements
 
     @Getter
     @Builder.Default
-    private int margin = 5;
+    private int margin = 0;
 
-    private float doubleClickTimer = 0;
+    private float doubleClickTimer = 0.0f;
 
     private Value value;
     private boolean isSelected;
@@ -104,6 +104,8 @@ public class ColumnRow<Value> extends GuiSection implements
     @Builder.Default
     @Accessors(fluent = true, chain = false)
     private Action<ColumnRow<Value>> clickAction = o -> {};
+
+
 
     public void init() {
         List<Integer> maxWidths = UiUtil.getMaxColumnWidths(Lists.of(columns));

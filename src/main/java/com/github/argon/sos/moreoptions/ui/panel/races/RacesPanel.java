@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel.races;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
 import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Contains race likings adjustable via sliders
  */
-public class RacesPanel extends AbstractConfigPanel<MoreOptionsV3Config.RacesConfig, RacesPanel> {
+public class RacesPanel extends AbstractConfigPanel<RacesConfig, RacesPanel> {
     private static final Logger log = Loggers.getLogger(RacesPanel.class);
 
     private final static I18n i18n = I18n.get(RacesPanel.class);
@@ -54,7 +55,7 @@ public class RacesPanel extends AbstractConfigPanel<MoreOptionsV3Config.RacesCon
     public RacesPanel(
         String title,
         Map<String, List<Entry>> raceEntries,
-        MoreOptionsV3Config.RacesConfig defaultConfig,
+        RacesConfig defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
@@ -65,7 +66,7 @@ public class RacesPanel extends AbstractConfigPanel<MoreOptionsV3Config.RacesCon
             mapEntry -> mapEntry.getValue().stream().map(entry -> {
                 Race race = entry.getRace();
                 Race otherRace = entry.getOtherRace();
-                MoreOptionsV3Config.Range range = entry.getRange();
+                Range range = entry.getRange();
 
                 // Race icons
                 GuiSection raceIcon = UiUtil.toGuiSection(race.appearance().icon);
@@ -139,26 +140,26 @@ public class RacesPanel extends AbstractConfigPanel<MoreOptionsV3Config.RacesCon
     }
 
     @Override
-    public MoreOptionsV3Config.RacesConfig getValue() {
-        Set<MoreOptionsV3Config.RacesConfig.Liking> likings = likingsSliders.entrySet().stream().map(entry -> {
+    public RacesConfig getValue() {
+        Set<RacesConfig.Liking> likings = likingsSliders.entrySet().stream().map(entry -> {
             String[] split = entry.getKey().split(RACE_SEPARATOR);
             String race = split[0];
             String otherRace = split[1];
 
-            return MoreOptionsV3Config.RacesConfig.Liking.builder()
+            return RacesConfig.Liking.builder()
                 .race(race)
                 .otherRace(otherRace)
-                .range(MoreOptionsV3Config.Range.fromSlider(entry.getValue()))
+                .range(Range.fromSlider(entry.getValue()))
                 .build();
         }).collect(Collectors.toSet());
 
-        return MoreOptionsV3Config.RacesConfig.builder()
+        return RacesConfig.builder()
             .likings(likings)
             .build();
     }
 
     @Override
-    public void setValue(MoreOptionsV3Config.RacesConfig config) {
+    public void setValue(RacesConfig config) {
         config.getLikings().forEach(liking -> {
             String key = key(liking);
             Slider slider = likingsSliders.get(key);
@@ -169,7 +170,7 @@ public class RacesPanel extends AbstractConfigPanel<MoreOptionsV3Config.RacesCon
         });
     }
 
-    private String key(MoreOptionsV3Config.RacesConfig.Liking liking) {
+    private String key(RacesConfig.Liking liking) {
         return liking.getRace() + RACE_SEPARATOR + liking.getOtherRace();
     }
 
@@ -193,6 +194,6 @@ public class RacesPanel extends AbstractConfigPanel<MoreOptionsV3Config.RacesCon
         private String otherRaceKey;
         private Race race;
         private Race otherRace;
-        private MoreOptionsV3Config.Range range;
+        private Range range;
     }
 }

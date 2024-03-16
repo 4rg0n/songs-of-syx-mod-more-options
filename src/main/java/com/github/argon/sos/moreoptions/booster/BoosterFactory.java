@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.booster;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
@@ -80,11 +80,11 @@ public class BoosterFactory {
      * @param booster on which game booster the custom one shall be attached
      * @param range definition for the booster
      */
-    public static FactionBooster createMoreOptionsBooster(Boostable booster, MoreOptionsV3Config.Range range) {
+    public static FactionBooster createMoreOptionsBooster(Boostable booster, Range range) {
         String suffix = " Percent"; // todo i18n
         double scale = 1.0D;
 
-        if (range.getApplyMode().equals(MoreOptionsV3Config.Range.ApplyMode.ADD)) {
+        if (range.getApplyMode().equals(Range.ApplyMode.ADD)) {
             suffix = " Add"; // todo i18n
             scale = 0.01D;
         }

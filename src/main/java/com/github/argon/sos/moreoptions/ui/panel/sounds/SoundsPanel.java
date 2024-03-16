@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel.sounds;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.moreoptions.config.domain.SoundsConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the volume of game sound effects
  */
-public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Sounds, SoundsPanel> {
+public class SoundsPanel extends AbstractConfigPanel<SoundsConfig, SoundsPanel> {
     private static final Logger log = Loggers.getLogger(SoundsPanel.class);
     private final static I18n i18n = I18n.get(SoundsPanel.class);
 
@@ -27,15 +28,15 @@ public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Sounds,
     private final Map<String, Slider> roomSoundSliders;
     public SoundsPanel(
         String title,
-        MoreOptionsV3Config.Sounds sounds,
-        MoreOptionsV3Config.Sounds defaultConfig,
+        SoundsConfig soundsConfig,
+        SoundsConfig defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
         super(title, defaultConfig, availableWidth, availableHeight);
-        this.ambienceSoundSliders = UiMapper.toSliders(sounds.getAmbience());
-        this.settlementSoundSliders = UiMapper.toSliders(sounds.getSettlement());
-        this.roomSoundSliders = UiMapper.toSliders(sounds.getRoom());
+        this.ambienceSoundSliders = UiMapper.toSliders(soundsConfig.getAmbience());
+        this.settlementSoundSliders = UiMapper.toSliders(soundsConfig.getSettlement());
+        this.roomSoundSliders = UiMapper.toSliders(soundsConfig.getRoom());
 
         GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsPanel.header.ambienceSounds.name"));
         ambienceSoundsHeader.hoverInfoSet(i18n.d("SoundsPanel.header.ambienceSounds.desc"));
@@ -69,40 +70,40 @@ public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Sounds,
     }
 
     @Override
-    public MoreOptionsV3Config.Sounds getValue() {
-        return MoreOptionsV3Config.Sounds.builder()
+    public SoundsConfig getValue() {
+        return SoundsConfig.builder()
             .ambience(getSoundsAmbienceConfig())
             .settlement(getSoundsSettlementConfig())
             .room(getSoundsRoomConfig())
             .build();
     }
 
-    public Map<String, MoreOptionsV3Config.Range> getSoundsAmbienceConfig() {
+    public Map<String, Range> getSoundsAmbienceConfig() {
         return ambienceSoundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsV3Config.Range.fromSlider(tab.getValue())));
+                tab -> Range.fromSlider(tab.getValue())));
     }
 
-    public Map<String, MoreOptionsV3Config.Range> getSoundsSettlementConfig() {
+    public Map<String, Range> getSoundsSettlementConfig() {
         return settlementSoundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsV3Config.Range.fromSlider(tab.getValue())));
+                tab -> Range.fromSlider(tab.getValue())));
     }
 
-    public Map<String, MoreOptionsV3Config.Range> getSoundsRoomConfig() {
+    public Map<String, Range> getSoundsRoomConfig() {
         return roomSoundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                tab -> MoreOptionsV3Config.Range.fromSlider(tab.getValue())));
+                tab -> Range.fromSlider(tab.getValue())));
     }
 
     @Override
-    public void setValue(MoreOptionsV3Config.Sounds sounds) {
-        log.trace("Applying UI sounds config %s", sounds);
+    public void setValue(SoundsConfig soundsConfig) {
+        log.trace("Applying UI sounds config %s", soundsConfig);
 
-        sounds.getAmbience().forEach((key, range) -> {
+        soundsConfig.getAmbience().forEach((key, range) -> {
             if (ambienceSoundSliders.containsKey(key)) {
                 ambienceSoundSliders.get(key).setValue(range.getValue());
             } else {
@@ -110,7 +111,7 @@ public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Sounds,
             }
         });
 
-        sounds.getSettlement().forEach((key, range) -> {
+        soundsConfig.getSettlement().forEach((key, range) -> {
             if (settlementSoundSliders.containsKey(key)) {
                 settlementSoundSliders.get(key).setValue(range.getValue());
             } else {
@@ -118,7 +119,7 @@ public class SoundsPanel extends AbstractConfigPanel<MoreOptionsV3Config.Sounds,
             }
         });
 
-        sounds.getRoom().forEach((key, range) -> {
+        soundsConfig.getRoom().forEach((key, range) -> {
             if (roomSoundSliders.containsKey(key)) {
                 roomSoundSliders.get(key).setValue(range.getValue());
             } else {

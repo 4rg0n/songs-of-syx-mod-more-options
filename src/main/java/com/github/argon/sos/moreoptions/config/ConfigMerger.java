@@ -1,14 +1,13 @@
 package com.github.argon.sos.moreoptions.config;
 
 
+import com.github.argon.sos.moreoptions.config.domain.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
-
-import static com.github.argon.sos.moreoptions.config.MoreOptionsV3Config.*;
 
 /**
  * Can merge two {@link MoreOptionsV3Config}s while one serves as target and the other source of the data.
@@ -105,7 +104,7 @@ public class ConfigMerger {
         }
     }
 
-    public static void merge(Metrics target, @Nullable Metrics source) {
+    public static void merge(MetricsConfig target, @Nullable MetricsConfig source) {
         if (source == null) {
             return;
         }
@@ -127,7 +126,7 @@ public class ConfigMerger {
         }
     }
 
-    public static void merge(Events target, @Nullable Events source) {
+    public static void merge(EventsConfig target, @Nullable EventsConfig source) {
         if (source == null) {
             return;
         }
@@ -151,7 +150,7 @@ public class ConfigMerger {
         }
     }
 
-    public static void merge(Sounds target, @Nullable Sounds source) {
+    public static void merge(SoundsConfig target, @Nullable SoundsConfig source) {
         if (source == null) {
             return;
         }

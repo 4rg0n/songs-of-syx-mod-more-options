@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.ConfigUtil;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.phase.Phases;
@@ -102,7 +102,7 @@ public class MoreOptionsConfigurator implements Phases {
         }
     }
 
-    private void applyRacesConfig(MoreOptionsV3Config.RacesConfig races) {
+    private void applyRacesConfig(RacesConfig races) {
         races.getLikings().forEach(liking -> gameApis.race().setLiking(
             liking.getRace(),
             liking.getOtherRace(),
@@ -110,8 +110,8 @@ public class MoreOptionsConfigurator implements Phases {
 
     }
 
-    private void applyMetricsConfig(MoreOptionsV3Config.Metrics metrics) {
-        Set<String> metricStats = metrics.getStats();
+    private void applyMetricsConfig(MetricsConfig metricsConfig) {
+        Set<String> metricStats = metricsConfig.getStats();
 
         // use new file when exported stats change
         if (!metricStats.containsAll(lastMetricStats)) {
@@ -122,15 +122,15 @@ public class MoreOptionsConfigurator implements Phases {
         }
 
         // reschedule
-        if (metricScheduler.isStarted() && metrics.isEnabled()) {
+        if (metricScheduler.isStarted() && metricsConfig.isEnabled()) {
             log.debug("Reschedule metric collection scheduler");
             metricScheduler.stop();
             metricScheduler.clear();
             metricScheduler
                 .schedule(() -> metricCollector.buffer(metricStats),
-                    metrics.getCollectionRateSeconds().getValue(), metrics.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
+                    metricsConfig.getCollectionRateSeconds().getValue(), metricsConfig.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
                 .schedule(metricExporter::export,
-                    metrics.getExportRateMinutes().getValue(), metrics.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
+                    metricsConfig.getExportRateMinutes().getValue(), metricsConfig.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
                 .start();
             return;
         }
@@ -143,22 +143,22 @@ public class MoreOptionsConfigurator implements Phases {
         }
 
         // start
-        if (metrics.isEnabled()) {
+        if (metricsConfig.isEnabled()) {
             log.debug("Start metric scheduler");
             metricScheduler
                 .schedule(() -> metricCollector.buffer(metricStats),
-                    metrics.getCollectionRateSeconds().getValue(), metrics.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
+                    metricsConfig.getCollectionRateSeconds().getValue(), metricsConfig.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
                 .schedule(metricExporter::export,
-                    metrics.getExportRateMinutes().getValue(), metrics.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
+                    metricsConfig.getExportRateMinutes().getValue(), metricsConfig.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
                 .start();
         }
     }
 
-    private void applyBoostersConfig(MoreOptionsV3Config.BoostersConfig boostersConfig) {
+    private void applyBoostersConfig(BoostersConfig boostersConfig) {
         gameApis.booster().setBoosters(boostersConfig);
     }
 
-    private void applyEventsChanceConfig(Map<String, MoreOptionsV3Config.Range> eventsChanceConfig) {
+    private void applyEventsChanceConfig(Map<String, Range> eventsChanceConfig) {
         eventsChanceConfig.forEach((key, range) -> {
             Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChance();
 
@@ -211,7 +211,7 @@ public class MoreOptionsConfigurator implements Phases {
         });
     }
 
-    private void applySoundsAmbienceConfig(Map<String, MoreOptionsV3Config.Range> soundsConfig) {
+    private void applySoundsAmbienceConfig(Map<String, Range> soundsConfig) {
         Map<String, SoundAmbience.Ambience> ambienceSounds = gameApis.sounds().getAmbienceSounds();
 
         soundsConfig.forEach((key, range) -> {
@@ -225,7 +225,7 @@ public class MoreOptionsConfigurator implements Phases {
         });
     }
 
-    private void applySoundsSettlementConfig(Map<String, MoreOptionsV3Config.Range> soundsConfig) {
+    private void applySoundsSettlementConfig(Map<String, Range> soundsConfig) {
         Map<String, SoundSettlement.Sound> settlementSounds = gameApis.sounds().getSettlementSounds();
 
         soundsConfig.forEach((key, range) -> {
@@ -239,7 +239,7 @@ public class MoreOptionsConfigurator implements Phases {
         });
     }
 
-    private void applySoundsRoomConfig(Map<String, MoreOptionsV3Config.Range> soundsConfig) {
+    private void applySoundsRoomConfig(Map<String, Range> soundsConfig) {
         Map<String, SoundSettlement.Sound> roomSounds = gameApis.sounds().getRoomSounds();
 
         soundsConfig.forEach((key, range) -> {

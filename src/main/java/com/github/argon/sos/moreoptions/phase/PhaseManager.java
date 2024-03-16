@@ -4,7 +4,6 @@ import com.github.argon.sos.moreoptions.game.DumpLogsException;
 import com.github.argon.sos.moreoptions.game.VoidAction;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import game.faction.FACTIONS;
 import lombok.Getter;
 
 import java.nio.file.Path;
@@ -59,42 +58,36 @@ public class PhaseManager implements Phases {
     @Override
     public void initBeforeGameCreated() {
         log.debug("PHASE: initBeforeGameCreated");
-        log.debug("Player Faction: %s", "null");
         phases.get(Phase.INIT_BEFORE_GAME_CREATED).forEach(init -> execute(init, init::initBeforeGameCreated));
     }
 
     @Override
     public void initModCreateInstance() {
         log.debug("PHASE: initModCreateInstance");
-        log.debug("Player Faction: %s", FACTIONS.player().name);
         phases.get(Phase.INIT_MOD_CREATE_INSTANCE).forEach(init -> execute(init, init::initModCreateInstance));
     }
 
     @Override
     public void onGameSaveLoaded(Path saveFilePath) {
         log.debug("PHASE: onGameSaveLoaded");
-        log.debug("Player Faction: %s", FACTIONS.player().name);
         phases.get(Phase.ON_GAME_SAVE_LOADED).forEach(init -> execute(init, () -> init.onGameSaveLoaded(saveFilePath)));
     }
 
     @Override
     public void onGameSaveReloaded() {
         log.debug("PHASE: onGameSaveReloaded");
-        log.debug("Player Faction: %s", FACTIONS.player().name);
         phases.get(Phase.ON_GAME_SAVE_RELOADED).forEach(init -> execute(init, init::onGameSaveReloaded));
     }
 
     @Override
     public void initNewGameSession() {
         log.debug("PHASE: initNewGameSession");
-        log.debug("Player Faction: %s", FACTIONS.player().name);
         phases.get(Phase.INIT_NEW_GAME_SESSION).forEach(init -> execute(init, init::initNewGameSession));
     }
 
     @Override
     public void initGameUpdating() {
         log.debug("PHASE: initGameUpdating");
-        log.debug("Player Faction: %s", FACTIONS.player().name);
         phases.get(Phase.INIT_GAME_UPDATING).forEach(init -> execute(init, init::initGameUpdating));
     }
 
@@ -107,7 +100,6 @@ public class PhaseManager implements Phases {
     @Override
     public void initGameUiPresent() {
         log.debug("PHASE: initGameUiPresent");
-        log.debug("Player Faction: %s", (FACTIONS.player() != null) ? FACTIONS.player().name : "null");
         phases.get(Phase.INIT_GAME_UI_PRESENT).forEach(init -> execute(init, init::initGameUiPresent));
     }
 

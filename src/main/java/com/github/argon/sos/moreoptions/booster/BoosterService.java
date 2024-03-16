@@ -1,6 +1,8 @@
 package com.github.argon.sos.moreoptions.booster;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.api.GameFactionApi;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -50,12 +52,12 @@ public class BoosterService {
        setBoosterValues(config.getBoosters());
     }
 
-    public void setBoosterValues(MoreOptionsV3Config.BoostersConfig config) {
+    public void setBoosterValues(BoostersConfig config) {
         config.getFaction().forEach((factionName, boostersConfig) -> {
             boostersConfig.forEach(boosterConfig -> {
                 getBoosters().ifPresent(gameBoosters -> {
                     String key = boosterConfig.getKey();
-                    MoreOptionsV3Config.Range range = boosterConfig.getRange();
+                    Range range = boosterConfig.getRange();
                     Faction faction = factionApi.getByName(factionName);
 
                     if (faction == null) {

@@ -13,7 +13,7 @@ import snake2d.util.gui.GuiSection;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+// todo maxHeight / width and make scrollable
 public class ButtonMenu<Key> extends GuiSection {
 
     @Getter
@@ -25,7 +25,7 @@ public class ButtonMenu<Key> extends GuiSection {
     private Action<Key> clickAction;
 
     public ButtonMenu(Map<Key, Button> buttons) {
-        this(buttons, false, true, true, true, false, 0, COLOR.WHITE35, null, null);
+        this(buttons, false, true, true, true, false, 0, 0, 0, COLOR.WHITE35, null, null);
     }
 
     @Builder
@@ -37,6 +37,8 @@ public class ButtonMenu<Key> extends GuiSection {
         boolean notHoverable,
         boolean spacer,
         int margin,
+        int width,
+        int minWidth,
         @Nullable COLOR buttonColor,
         @Nullable List<Integer> widths,
         @Nullable Action<Key> clickAction
@@ -63,8 +65,16 @@ public class ButtonMenu<Key> extends GuiSection {
             } else if (widths != null && pos < widths.size()) {
                 // adjust width by given widths
                 buttonWidth = widths.get(pos);
+            } else if (width > 0) {
+                // set all buttons to the same given width
+                buttonWidth = width;
             } else {
+                // use the new button width
                 buttonWidth = newButton.body().width();
+            }
+
+            if (minWidth > 0 && buttonWidth < minWidth) {
+                buttonWidth = minWidth;
             }
 
             newButton.body().setWidth(buttonWidth);

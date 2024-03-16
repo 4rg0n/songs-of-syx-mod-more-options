@@ -1,6 +1,8 @@
 package com.github.argon.sos.moreoptions.ui;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
+import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.Checkbox;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
@@ -33,10 +35,10 @@ public class UiMapper {
 
     private final GameApis gameApis = GameApis.getInstance();
 
-    public Map<String, List<RacesPanel.Entry>> toRacePanelEntries(Set<MoreOptionsV3Config.RacesConfig.Liking> raceLikings) {
+    public Map<String, List<RacesPanel.Entry>> toRacePanelEntries(Set<RacesConfig.Liking> raceLikings) {
         Map<String, List<RacesPanel.Entry>> entries = new HashMap<>();
 
-        for (MoreOptionsV3Config.RacesConfig.Liking raceLiking : raceLikings) {
+        for (RacesConfig.Liking raceLiking : raceLikings) {
             RacesPanel.Entry entry = toRacePanelEntry(raceLiking);
             String raceKey = entry.getRace().info.name.toString();
             entries.putIfAbsent(raceKey, new ArrayList<>());
@@ -46,7 +48,7 @@ public class UiMapper {
         return entries;
     }
 
-    public RacesPanel.Entry toRacePanelEntry(MoreOptionsV3Config.RacesConfig.Liking liking) {
+    public RacesPanel.Entry toRacePanelEntry(RacesConfig.Liking liking) {
         Race race = gameApis.race().getRace(liking.getRace()).orElse(null);
         Race otherRace = gameApis.race().getRace(liking.getOtherRace()).orElse(null);
 
@@ -59,10 +61,10 @@ public class UiMapper {
             .build();
     }
 
-    public Map<Faction, List<BoostersPanel.Entry>> toBoosterPanelEntries(MoreOptionsV3Config.BoostersConfig boostersConfig) {
+    public Map<Faction, List<BoostersPanel.Entry>> toBoosterPanelEntries(BoostersConfig boostersConfig) {
         Map<Faction, List<BoostersPanel.Entry>> factionBoosters = new HashMap<>();
         // npc factions
-        for (Map.Entry<String, Set<MoreOptionsV3Config.BoostersConfig.Booster>> entry : boostersConfig.getFaction().entrySet()) {
+        for (Map.Entry<String, Set<BoostersConfig.Booster>> entry : boostersConfig.getFaction().entrySet()) {
             String factionName = entry.getKey();
             Faction faction = gameApis.faction().getByName(factionName);
 
@@ -89,7 +91,7 @@ public class UiMapper {
     }
 
     @Nullable
-    public BoostersPanel.Entry toBoosterPanelEntry(MoreOptionsV3Config.BoostersConfig.Booster booster) {
+    public BoostersPanel.Entry toBoosterPanelEntry(BoostersConfig.Booster booster) {
         BoostersPanel.Entry.EntryBuilder entryBuilder = BoostersPanel.Entry.builder()
             .key(booster.getKey())
             .range(booster.getRange())
@@ -104,7 +106,7 @@ public class UiMapper {
             .collect(groupingBy(entry -> entry.getCat().name.toString()));
     }
 
-    public static Map<String, Slider> toSliders(Map<String, MoreOptionsV3Config.Range> slidersConfig) {
+    public static Map<String, Slider> toSliders(Map<String, Range> slidersConfig) {
         return slidersConfig.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
             config -> Slider.SliderBuilder
@@ -138,7 +140,7 @@ public class UiMapper {
             entry -> new Checkbox(entry.getValue())));
     }
 
-    public static Slider.ValueDisplay toValueDisplay(MoreOptionsV3Config.Range.DisplayMode displayMode) {
+    public static Slider.ValueDisplay toValueDisplay(Range.DisplayMode displayMode) {
         switch (displayMode) {
             case PERCENTAGE:
                 return Slider.ValueDisplay.PERCENTAGE;
@@ -150,27 +152,27 @@ public class UiMapper {
         }
     }
 
-    public static MoreOptionsV3Config.Range.ApplyMode toApplyMode(Slider.ValueDisplay valueDisplay) {
+    public static Range.ApplyMode toApplyMode(Slider.ValueDisplay valueDisplay) {
         switch (valueDisplay) {
             case ABSOLUTE:
-                return MoreOptionsV3Config.Range.ApplyMode.ADD;
+                return Range.ApplyMode.ADD;
             case PERCENTAGE:
-                return MoreOptionsV3Config.Range.ApplyMode.PERCENT;
+                return Range.ApplyMode.PERCENT;
             case NONE:
             default:
-                return MoreOptionsV3Config.Range.ApplyMode.MULTI;
+                return Range.ApplyMode.MULTI;
         }
     }
 
-    public static MoreOptionsV3Config.Range.DisplayMode toDisplayMode(Slider.ValueDisplay valueDisplay) {
+    public static Range.DisplayMode toDisplayMode(Slider.ValueDisplay valueDisplay) {
         switch (valueDisplay) {
             case PERCENTAGE:
-                return MoreOptionsV3Config.Range.DisplayMode.PERCENTAGE;
+                return Range.DisplayMode.PERCENTAGE;
             case ABSOLUTE:
-                return MoreOptionsV3Config.Range.DisplayMode.ABSOLUTE;
+                return Range.DisplayMode.ABSOLUTE;
             default:
             case NONE:
-                return MoreOptionsV3Config.Range.DisplayMode.NONE;
+                return Range.DisplayMode.NONE;
         }
     }
 }
