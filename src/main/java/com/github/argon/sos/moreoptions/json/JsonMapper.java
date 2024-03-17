@@ -51,7 +51,7 @@ public class JsonMapper {
      *     jsonArray.add(new JsonLong(2L));
      *     jsonArray.add(new JsonLong(3L));
      *     // you will need a {@link TypeInfo} with the type info as generic
-     *     List<Integer> integerList = JsonMapper.mapJson(jsonArray, new TypeToken<List<Integer>>(){});
+     *     List<Integer> integerList = JsonMapper.mapJson(jsonArray, new TypeInfo<List<Integer>>(){});
      * }</pre>
      *
      * @param json to map
@@ -132,7 +132,7 @@ public class JsonMapper {
      *     Map<String, List<String>> map = new HashMap();
      *     map.put("test", Arrays.asList("test", "test"));
      *     // you will need a {@link TypeInfo} with the type info as generic
-     *     JsonObject jsonObject = (JsonObject) JsonMapper.mapObject(map, new TypeToken<Map<String, List<String>>>(){});
+     *     JsonObject jsonObject = (JsonObject) JsonMapper.mapObject(map, new TypeInfo<Map<String, List<String>>>(){});
      * }</pre>
      *
      * @param object to map

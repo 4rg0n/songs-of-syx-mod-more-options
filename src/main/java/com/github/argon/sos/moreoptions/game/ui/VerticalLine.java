@@ -1,15 +1,18 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import snake2d.SPRITE_RENDERER;
-import snake2d.util.gui.renderable.RENDEROBJ;
 import util.colors.GCOLOR;
 
 /**
  * Draws a vertical pixel line
  */
-public class VerticalLine extends RENDEROBJ.RenderImp {
+public class VerticalLine extends AbstractRender {
 
     private final int thickness;
+
+    public VerticalLine(int thickness) {
+        this.thickness = thickness;
+    }
 
     public VerticalLine(int width, int height, int thickness) {
         super(width, height);

@@ -53,12 +53,11 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         header.addRightC(0, faction.banner().HUGE);
         header.addRightC(20, titleHeader);
 
-
         int tableHeight = availableHeight - header.body().height() - search.body().height() - 30;
-
         this.boosterTable = Table.<Range>builder()
             .rowsCategorized(boosterRows)
             .evenOdd(true)
+            .highlight(true)
             .search(searchInput)
             .displayHeight(tableHeight)
             .build();

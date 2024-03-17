@@ -79,14 +79,14 @@ public class ConfigDefaults {
     public Map<String, Set<BoostersConfig.Booster>> newBoosters(Collection<? extends Faction> factions) {
         Map<String, Set<BoostersConfig.Booster>> factionBoosters = new HashMap<>();
         for (Faction faction : factions) {
-            Set<BoostersConfig.Booster> boosters = newBoosters(faction);
+            Set<BoostersConfig.Booster> boosters = newBoosters();
             factionBoosters.put(faction.name.toString(), boosters);
         }
 
         return factionBoosters;
     }
 
-    public Set<BoostersConfig.Booster> newBoosters(Faction factions) {
+    public Set<BoostersConfig.Booster> newBoosters() {
         return gameApis.booster().getBoosters().keySet().stream()
             .map(boosterKey ->
                 BoostersConfig.Booster.builder()
@@ -109,7 +109,7 @@ public class ConfigDefaults {
         Map<String, Set<BoostersConfig.Booster>> boosters = newBoosters(gameApis.faction().getFactionNPCs().values());
         return BoostersConfig.builder()
             .faction(boosters)
-            .player(newBoosters(gameApis.faction().getPlayer()))
+            .player(newBoosters())
             .build();
     }
 

@@ -4,11 +4,13 @@ import com.github.argon.sos.moreoptions.booster.Boosters;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.game.ui.layout.Layouts;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.util.Lists;
 import game.boosting.BoostableCat;
 import game.faction.FACTIONS;
 import game.faction.Faction;
@@ -18,6 +20,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import util.data.GETTER;
@@ -32,7 +35,8 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
     private static final Logger log = Loggers.getLogger(BoostersPanel.class);
     private final static I18n i18n = I18n.get(BoostersPanel.class);
 
-    private final Map<Faction, BoostersSection> factionBoostersSections = new HashMap<>();
+    @Getter
+    private final Map<Faction, BoostersSection> boostersSections = new HashMap<>();
 
     private final Map<String, Faction> factions = new HashMap<>();
 
@@ -47,6 +51,12 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
     private final Button copyButton;
     @Getter
     private final Button pasteButton;
+    @Getter
+    private final Button pasteFactionsButton;
+    @Getter
+    private final Button resetCurrentButton;
+    @Getter
+    private final Button resetFactionsButton;
 
     @Getter
     private BoostersSection currentBoosterSection;
@@ -88,21 +98,53 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
         pasteButton = new Button(
             i18n.t("BoostersPanel.button.boosters.paste.name"),
             i18n.t("BoostersPanel.button.boosters.paste.desc"));
+        pasteFactionsButton = new Button(
+            i18n.t("BoostersPanel.button.boosters.paste.factions.name"),
+            i18n.t("BoostersPanel.button.boosters.paste.factions.desc"));
+        resetCurrentButton = new Button(
+            i18n.t("BoostersPanel.button.boosters.reset.name"),
+            i18n.t("BoostersPanel.button.boosters.reset.desc"));
+        resetFactionsButton = new Button(
+            i18n.t("BoostersPanel.button.boosters.reset.factions.name"),
+            i18n.t("BoostersPanel.button.boosters.reset.factions.desc"));
 
-        ButtonMenu<String> buttons = ButtonMenu.<String>builder()
+
+        ButtonMenu<String> presetButtons = ButtonMenu.<String>builder()
             .button("load", loadPresetButton)
             .button("save", savePresetButton)
-            .button("copy", copyButton)
-            .button("paste", pasteButton)
-            .horizontal(true)
-            .spacer(true)
-            .margin(20)
+            .margin(5)
+            .sameWidth(true)
             .build();
 
-        this.tableHeight = availableHeight - buttons.body().height() - 40;
+        ButtonMenu<String> copyPasteButtons = ButtonMenu.<String>builder()
+            .button("copy", copyButton)
+            .button("paste", pasteButton)
+            .button("pasteFactions", pasteFactionsButton)
+            .margin(5)
+            .sameWidth(true)
+            .build();
+
+        ButtonMenu<String> resetButtons = ButtonMenu.<String>builder()
+            .button("reset", resetCurrentButton)
+            .button("resetFactions", resetFactionsButton)
+            .margin(5)
+            .sameWidth(true)
+            .build();
+
+        GuiSection buttons = Layouts.horizontal(Lists.of(
+            presetButtons,
+            copyPasteButtons,
+            resetButtons
+        ), 20, true);
+
+        ColorBox buttonBox = new ColorBox(COLOR.WHITE15);
+        buttonBox.add(buttons);
+        buttonBox.pad(5);
+
+        this.tableHeight = availableHeight - buttonBox.body().height() - 20;
         refresh(boosterEntries);
 
-        int maxWidth = UiUtil.getMaxWidth(factionBoostersSections.values());
+        int maxWidth = UiUtil.getMaxWidth(boostersSections.values());
         GuiSection section = new GuiSection();
         AbstractUISwitcher boosterSwitcher = new AbstractUISwitcher(maxWidth, tableHeight, false) {
             @Override
@@ -110,9 +152,9 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
                 return currentBoosterSection;
             }
         };
-        factionList.clickAction(faction -> currentBoosterSection = factionBoostersSections.get(faction));
+        factionList.clickAction(faction -> currentBoosterSection = boostersSections.get(faction));
 
-        section.addDownC(20, buttons);
+        section.addDownC(0, buttonBox);
         section.addDownC(20, boosterSwitcher);
 
         addRightC(0, factionList);
@@ -123,7 +165,7 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
     /**
      * Saves currently selected booster settings
      */
-    public Faction copyBoostersConfig() {
+    public Faction copyBoosters() {
         clipboard = currentBoosterSection.getValue();
         return currentBoosterSection.getFaction();
     }
@@ -131,7 +173,7 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
     /**
      * Applies saved booster settings to currently selected
      */
-    public boolean pasteBoostersConfig() {
+    public boolean pasteBoosters() {
         if (clipboard == null) {
             return false;
         }
@@ -140,20 +182,41 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
         return true;
     }
 
+    public int pasteBoostersToNPCFactions() {
+        if (clipboard == null) {
+            return 0;
+        }
+
+        int amount = 0;
+        for (Map.Entry<Faction, BoostersSection> entry : boostersSections.entrySet()) {
+            Faction faction = entry.getKey();
+            BoostersSection boostersSection = entry.getValue();
+
+            if (faction.equals(playerFaction)) {
+                continue;
+            }
+
+            boostersSection.setValue(clipboard);
+            amount ++;
+        }
+
+        return amount;
+    }
+
     public void refresh(Map<Faction, List<Entry>> boosterEntries) {
-        factionBoostersSections.clear();
+        boostersSections.clear();
         factions.clear();
         boosterEntries.forEach((faction, entries) -> {
                 factions.put(faction.name.toString(), faction);
-                factionBoostersSections.put(faction, new BoostersSection(faction, entries, tableHeight));
+                boostersSections.put(faction, new BoostersSection(faction, entries, tableHeight));
             });
 
-        currentBoosterSection = factionBoostersSections.get(playerFaction);
+        currentBoosterSection = boostersSections.get(playerFaction);
     }
 
     @Override
     public BoostersConfig getValue() {
-        Map<String, Set<BoostersConfig.Booster>> factionBoosters = factionBoostersSections.entrySet().stream()
+        Map<String, Set<BoostersConfig.Booster>> factionBoosters = boostersSections.entrySet().stream()
             .filter(entry -> !entry.getKey().equals(playerFaction))
             .collect(Collectors.toMap(
                 entry -> entry.getKey().name.toString(),
@@ -164,7 +227,7 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
                 }
         ));
 
-        Set<BoostersConfig.Booster> playerBoosters = factionBoostersSections.entrySet().stream()
+        Set<BoostersConfig.Booster> playerBoosters = boostersSections.entrySet().stream()
             .filter(entry -> entry.getKey().equals(playerFaction))
             .findFirst()
             .map(entry -> {
@@ -199,7 +262,7 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
                 return;
             }
 
-            BoostersSection boostersSection = factionBoostersSections.get(faction);
+            BoostersSection boostersSection = boostersSections.get(faction);
             if (boostersSection == null) {
                 return;
             }
@@ -209,7 +272,7 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
             boostersSection.setValue(values);
         });
 
-        BoostersSection playerBoostersSection = factionBoostersSections.get(playerFaction);
+        BoostersSection playerBoostersSection = boostersSections.get(playerFaction);
         if (playerBoostersSection != null) {
             playerBoostersSection.setValue(toValues(config.getPlayer()));
         }

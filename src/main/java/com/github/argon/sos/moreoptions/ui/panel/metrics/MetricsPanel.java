@@ -181,6 +181,7 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
             .scrollable(false)
             .rows(rows)
             .rowPadding(5)
+            .columnMargin(5)
             .displayHeight(200)
             .build();
 

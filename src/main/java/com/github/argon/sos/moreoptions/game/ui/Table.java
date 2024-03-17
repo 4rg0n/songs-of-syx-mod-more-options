@@ -39,7 +39,11 @@ public class Table<Value> extends GuiSection implements
     @Builder.Default
     private boolean multiselect = false;
     @Builder.Default
+    private boolean highlight = false;
+    @Builder.Default
     private int rowPadding = 0;
+    @Builder.Default
+    private int columnMargin = 0;
 
     @Nullable
     @Builder.Default
@@ -57,7 +61,9 @@ public class Table<Value> extends GuiSection implements
         boolean scrollable,
         boolean selectable,
         boolean multiselect,
+        boolean highlight,
         int rowPadding,
+        int columnMargin,
         @Nullable Map<String, Button> headerButtons,
         @Nullable StringInputSprite search
     ) {
@@ -69,13 +75,14 @@ public class Table<Value> extends GuiSection implements
         this.evenColumnWidth = evenColumnWidth;
         this.multiselect = multiselect;
         this.selectable = selectable;
+        this.highlight = highlight;
         this.headerButtons = headerButtons;
         this.search = search;
         this.rowPadding = rowPadding;
+        this.columnMargin = columnMargin;
 
         // max width and margin for each column
         final List<Integer> maxWidths = UiUtil.getMaxColumnWidths(rows);
-        final int columnMargin = UiUtil.getMaxColumnMargin(rows);
 
         // prepare header if present
         if (headerButtons != null) {
@@ -89,6 +96,8 @@ public class Table<Value> extends GuiSection implements
                     maxWidths.set(i, buttonWith);
                 }
             }
+
+            headerButtons.values().forEach(button -> button.bg(COLOR.WHITE15));
         }
 
         // make every column the same with?
@@ -106,9 +115,11 @@ public class Table<Value> extends GuiSection implements
         }
         // initialize rows
         for (ColumnRow<Value> columnRow : rows) {
+            columnRow.margin(columnMargin);
             columnRow.init(maxWidths);
             columnRow.pad(rowPadding);
             columnRow.selectable(selectable);
+            if (!columnRow.isHeader()) columnRow.highlightable(highlight);
 
             // unselect other rows on click?
             if (selectable && !multiselect) {
@@ -131,7 +142,7 @@ public class Table<Value> extends GuiSection implements
             // compensate button width with padding
             if (rowPadding > 0) {
                 buttonMaxWidths = maxWidths.stream().map(maxWidth -> {
-                    int rowPaddingAdj = (rowPadding / headerButtons.size()) + columnMargin;
+                    int rowPaddingAdj = (int) Math.ceil((double) rowPadding * 2 / headerButtons.size()) + columnMargin;
                     return rowPaddingAdj + maxWidth;
                 }).collect(Collectors.toList());
             }
@@ -148,9 +159,7 @@ public class Table<Value> extends GuiSection implements
         }
 
         // add the rows and scrollbar if needed
-        int currentHeight = rows.stream()
-            .mapToInt(value -> value.body().height())
-            .sum();
+        int currentHeight = UiUtil.sumHeights(rows);
         if (search != null || scrollable || (displayHeight > 0 && currentHeight > displayHeight)) {
             ScrollRows scrollRows = ScrollRows.builder()
                 .height(displayHeight)

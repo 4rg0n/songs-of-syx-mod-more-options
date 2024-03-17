@@ -14,7 +14,11 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
         super(label, description);
         this.menu = menu;
         Button activeButton = menu.getActiveButton();
-        body().setWidth(menu.body().width());
+
+        int menuWidth = menu.body().width();
+        if (menuWidth > body().width()) {
+            body().setWidth(menuWidth);
+        }
 
         if (activeButton != null) {
             SPRITE activeLabel = activeButton.getLabel();

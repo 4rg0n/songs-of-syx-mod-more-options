@@ -77,7 +77,9 @@ public class ColumnRow<Value> extends GuiSection implements
     private boolean selectable = false;
 
     @Getter
+    @Setter
     @Builder.Default
+    @Accessors(fluent = true)
     private int margin = 0;
 
     private float doubleClickTimer = 0.0f;

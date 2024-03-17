@@ -1,15 +1,24 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
+import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.config.domain.Range;
-import com.github.argon.sos.moreoptions.ui.panel.boosters.BoosterPresetsPanel;
+import com.github.argon.sos.moreoptions.json.Json;
+import com.github.argon.sos.moreoptions.json.JsonMapper;
+import com.github.argon.sos.moreoptions.json.JsonWriter;
+import com.github.argon.sos.moreoptions.json.element.JsonElement;
+import com.github.argon.sos.moreoptions.json.mapper.TypeInfo;
 import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
+import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPresetsSection;
+import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersSection;
+import com.github.argon.sos.moreoptions.util.Clipboard;
 import game.faction.Faction;
 import snake2d.util.misc.STRING_RECIEVER;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class BoostersPanelController extends AbstractUiController<BoostersPanel> {
     public BoostersPanelController(BoostersPanel boostersPanel) {
@@ -20,15 +29,56 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
         boostersPanel.getSavePresetButton().clickActionSet(this::saveBoostersPreset);
         boostersPanel.getCopyButton().clickActionSet(this::copyBoostersConfig);
         boostersPanel.getPasteButton().clickActionSet(this::pasteBoostersConfig);
+        boostersPanel.getPasteFactionsButton().clickActionSet(this::pasteBoostersConfigToAllNPCFactions);
+        boostersPanel.getResetCurrentButton().clickActionSet(this::resetCurrentBoosters);
+        boostersPanel.getResetFactionsButton().clickActionSet(this::resetNPCFactionsBoosters);
+    }
+
+    public void resetNPCFactionsBoosters() {
+        Map<String, Range> boosterValues = configDefaults.newBoosters().stream().collect(Collectors.toMap(
+            BoostersConfig.Booster::getKey,
+            BoostersConfig.Booster::getRange
+        ));
+
+        element.getBoostersSections().forEach((faction, boostersSection) -> {
+            if (gameApis.faction().isPlayer(faction)) {
+                return;
+            }
+
+            boostersSection.setValue(boosterValues);
+        });
+
+        notificator.notifySuccess(i18n.t("notification.boosters.factions.reset"));
+    }
+
+    public void resetCurrentBoosters() {
+        BoostersSection currentBoosterSection = element.getCurrentBoosterSection();
+        Map<String, Range> boosterValues = configDefaults.newBoosters().stream().collect(Collectors.toMap(
+            BoostersConfig.Booster::getKey,
+            BoostersConfig.Booster::getRange
+        ));
+        currentBoosterSection.setValue(boosterValues);
+
+        notificator.notifySuccess(i18n.t("notification.boosters.reset", currentBoosterSection.getFaction().name.toString()));
     }
 
     public void copyBoostersConfig() {
-        Faction copiedFaction = element.copyBoostersConfig();
+        Faction copiedFaction = element.copyBoosters();
         notificator.notifySuccess(i18n.t("notification.boosters.copy", copiedFaction.name.toString()));
     }
 
+    public void pasteBoostersConfigToAllNPCFactions() {
+        int amount = element.pasteBoostersToNPCFactions();
+
+        if (amount > 0) {
+            notificator.notifySuccess(i18n.t("notification.boosters.factions.paste", amount));
+        } else {
+            notificator.notifyError(i18n.t("notification.boosters.factions.not.paste"));
+        }
+    }
+
     public void pasteBoostersConfig() {
-        if (element.pasteBoostersConfig()) {
+        if (element.pasteBoosters()) {
             notificator.notifySuccess(i18n.t("notification.boosters.paste"));
         } else {
             notificator.notifyError(i18n.t("notification.boosters.not.paste"));
@@ -49,7 +99,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
 
     public void loadBoostersPreset() {
         Map<String, Map<String, Range>> presets = element.getPresets();
-        BoosterPresetsPanel presetsPanel = BoosterPresetsPanel.builder()
+        BoostersPresetsSection presetsPanel = BoostersPresetsSection.builder()
             .presets(presets)
             .clickAction(key -> {
                 Map<String, Range> boostersPreset = presets.get(key);
@@ -57,11 +107,27 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
                 notificator.notifySuccess(i18n.t("notification.boosters.preset.load", key));
             })
             .deleteAction((key, panel) -> {
-                gameApis.ui().inters().yesNo.activate(i18n.t("BoostersPanel.text.yesNo.preset.delete"), () -> {
+                gameApis.ui().inters().yesNo.activate(i18n.t("BoostersPanel.text.yesNo.preset.delete", key), () -> {
                     presets.remove(key);
                     panel.disableButtons(key);
                 }, () -> {}, true);
-            }).build();
+            })
+            .shareAction(key -> {
+                try {
+                    Map<String, Range> boostersPreset = presets.get(key);
+                    JsonElement jsonElement = JsonMapper.mapObject(boostersPreset, new TypeInfo<Map<String, Range>>(){});
+                    Json json = new Json(jsonElement, JsonWriter.getJsonE());
+
+                    if (Clipboard.write(json.toString())) {
+                        notificator.notifySuccess(i18n.t("notification.boosters.preset.copy", key));
+                    } else {
+                        notificator.notifyError(i18n.t("notification.boosters.preset.not.copy", key));
+                    }
+                } catch (Exception e) {
+                    notificator.notifyError(i18n.t("notification.boosters.preset.not.copy", key), e);
+                }
+            })
+            .build();
 
         gameApis.ui().popup().show(presetsPanel, element.getLoadPresetButton());
     }

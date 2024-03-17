@@ -12,6 +12,7 @@ import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.NonNull;
+import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GTextR;
 
@@ -20,18 +21,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BoosterPresetsPanel extends GuiSection {
+/**
+ * For selecting or removing a saved boosters preset
+ */
+public class BoostersPresetsSection extends GuiSection {
 
     private final static I18n i18n = I18n.get(BoostersPanel.class);
 
     private final Map<String, Button> presetButtons = new HashMap<>();
     private final Map<String, Button> deleteButtons = new HashMap<>();
+    private final Map<String, Button> shareButtons = new HashMap<>();
 
     @Builder
-    public BoosterPresetsPanel(
+    public BoostersPresetsSection(
         @NonNull Map<String, Map<String, Range>> presets,
         @NonNull Action<String> clickAction,
-        @NonNull BiAction<String, BoosterPresetsPanel> deleteAction
+        @NonNull BiAction<String, BoostersPresetsSection> deleteAction,
+        @NonNull Action<String> shareAction
     ) {
         if (presets.isEmpty()) {
             add(new GTextR(UI.FONT().S, i18n.t("BoostersPanel.text.empty.preset")));
@@ -48,22 +54,25 @@ public class BoosterPresetsPanel extends GuiSection {
         List<ColumnRow<String>> rows = presetButtons.entrySet().stream().map(entry -> {
             String key = entry.getKey();
             Button presetButton = entry.getValue();
-            Button deleteButton = new Button(SPRITES.icons().m.trash);
+            presetButton.hoverInfoSet(i18n.t("BoostersPanel.button.preset.desc", key));
+            Button deleteButton = new Button(SPRITES.icons().m.trash, i18n.t("BoostersPanel.button.preset.delete.desc", key));
+            Button shareButton = new Button(SPRITES.icons().m.openscroll, i18n.t("BoostersPanel.button.preset.share.desc", key));
             presetButton.body().setWidth(presetButtonsWidth);
+
+            deleteButton.bg(COLOR.RED50);
+            shareButton.bg(COLOR.WHITE65);
 
             this.presetButtons.put(key, presetButton);
             this.deleteButtons.put(key, deleteButton);
+            this.shareButtons.put(key, shareButton);
 
-            presetButton.clickActionSet(() -> {
-                clickAction.accept(key);
-            });
-
-            deleteButton.clickActionSet(() -> {
-                deleteAction.accept(key, this);
-            });
+            presetButton.clickActionSet(() -> clickAction.accept(key));
+            deleteButton.clickActionSet(() -> deleteAction.accept(key, this));
+            shareButton.clickActionSet(() -> shareAction.accept(key));
 
             return ColumnRow.<String>builder()
                 .column(presetButton)
+                .column(shareButton)
                 .column(deleteButton)
                 .build();
         }).collect(Collectors.toList());
@@ -84,6 +93,10 @@ public class BoosterPresetsPanel extends GuiSection {
 
         if (deleteButtons.containsKey(key)) {
             deleteButtons.get(key).activeSet(false);
+        }
+
+        if (shareButtons.containsKey(key)) {
+            shareButtons.get(key).activeSet(false);
         }
     }
 }

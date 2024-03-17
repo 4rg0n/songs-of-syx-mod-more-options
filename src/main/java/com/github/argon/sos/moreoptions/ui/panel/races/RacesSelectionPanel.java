@@ -4,11 +4,11 @@ import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Spacer;
 import com.github.argon.sos.moreoptions.game.ui.Table;
+import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
-import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
 import init.sprite.UI.UI;
@@ -16,7 +16,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GInput;
@@ -97,7 +96,6 @@ public class RacesSelectionPanel extends GuiSection {
             ColumnRow<Entry> row = ColumnRow.<Entry>builder()
                 .columns(columns)
                 .searchTerm(fileName)
-                .highlightable(true)
                 .build();
             row.setValue(entry);
             row.hoverInfoSet(i18n.t("RacesSelectionPanel.text.select.name"));
@@ -106,11 +104,11 @@ public class RacesSelectionPanel extends GuiSection {
 
         // header for table columns
         Map<String, Button> header = Maps.ofLinked(
-            "file", new Button(i18n.t("RacesSelectionPanel.table.file.name"), i18n.t("RacesSelectionPanel.table.file.desc")).bg(COLOR.WHITE15),
-            "save", new Button(i18n.t("RacesSelectionPanel.table.save.name"), i18n.t("RacesSelectionPanel.table.save.desc")).bg(COLOR.WHITE15),
-            "active", new Button(i18n.t("RacesSelectionPanel.table.active.name"), i18n.t("RacesSelectionPanel.table.active.desc")).bg(COLOR.WHITE15),
-            "created", new Button(i18n.t("RacesSelectionPanel.table.created.name"), i18n.t("RacesSelectionPanel.table.created.desc")).bg(COLOR.WHITE15),
-            "updated", new Button(i18n.t("RacesSelectionPanel.table.updated.name"), i18n.t("RacesSelectionPanel.table.updated.desc")).bg(COLOR.WHITE15)
+            "file", new Button(i18n.t("RacesSelectionPanel.table.file.name"), i18n.t("RacesSelectionPanel.table.file.desc")),
+            "save", new Button(i18n.t("RacesSelectionPanel.table.save.name"), i18n.t("RacesSelectionPanel.table.save.desc")),
+            "active", new Button(i18n.t("RacesSelectionPanel.table.active.name"), i18n.t("RacesSelectionPanel.table.active.desc")),
+            "created", new Button(i18n.t("RacesSelectionPanel.table.created.name"), i18n.t("RacesSelectionPanel.table.created.desc")),
+            "updated", new Button(i18n.t("RacesSelectionPanel.table.updated.name"), i18n.t("RacesSelectionPanel.table.updated.desc"))
         );
 
         // race config table and search
@@ -120,6 +118,7 @@ public class RacesSelectionPanel extends GuiSection {
             .scrollable(true)
             .search(searchInput)
             .rows(rows)
+            .highlight(true)
             .selectable(true)
             .displayHeight(500)
             .headerButtons(header)

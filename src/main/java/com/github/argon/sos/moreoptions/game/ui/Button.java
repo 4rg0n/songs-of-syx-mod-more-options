@@ -26,6 +26,10 @@ public class Button extends AbstractButton<Void, Button> {
         super(label, color);
     }
 
+    public Button(SPRITE label, @Nullable CharSequence description) {
+        super(label, description);
+    }
+
     @Override
     protected Button element() {
         return this;

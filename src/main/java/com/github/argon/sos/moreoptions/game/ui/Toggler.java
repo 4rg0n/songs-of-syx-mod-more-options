@@ -21,8 +21,10 @@ public class Toggler<Key> extends GuiSection implements
     Resettable<Toggler<Key>>,
     Refreshable<Toggler<Key>> {
 
+    @Nullable
     private Key activeKey;
-    private Key initKey;
+    @Nullable
+    private final Key initKey;
 
     @Getter
     @Nullable
@@ -49,11 +51,7 @@ public class Toggler<Key> extends GuiSection implements
         this.initKey = aktiveKey;
 
         menu.getButtons().forEach((key, button) -> {
-            if (activeKey == null) {
-                activeKey = key;
-                initKey = key;
-                activeButton = button;
-            } else if (activeKey.equals(key)) {
+            if (activeKey != null && activeKey.equals(key)) {
                 activeButton = button;
             }
 
@@ -110,6 +108,7 @@ public class Toggler<Key> extends GuiSection implements
     }
 
     @Override
+    @Nullable
     public Key getValue() {
         return activeKey;
     }

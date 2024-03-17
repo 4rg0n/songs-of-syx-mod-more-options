@@ -2,16 +2,24 @@ package com.github.argon.sos.moreoptions.game.ui;
 
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
-import snake2d.util.gui.renderable.RENDEROBJ;
 import util.colors.GCOLOR;
 
 /**
  * Draws a horizontal pixel line
  */
-public class HorizontalLine extends RENDEROBJ.RenderImp {
+public class HorizontalLine extends AbstractRender {
 
     private final int thickness;
     private final boolean shadow;
+
+    public HorizontalLine(int thickness) {
+        this(thickness, false);
+    }
+
+    public HorizontalLine(int thickness, boolean shadow) {
+        this.thickness = thickness;
+        this.shadow = shadow;
+    }
 
     public HorizontalLine(int width, int height, int thickness) {
         this(width, height, thickness, false);

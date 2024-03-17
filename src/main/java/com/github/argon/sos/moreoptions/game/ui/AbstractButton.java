@@ -54,6 +54,11 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
         super(label);
     }
 
+    public AbstractButton(SPRITE label, @Nullable CharSequence description) {
+        super(label);
+        hoverInfoSet(description);
+    }
+
     public AbstractButton(SPRITE label, COLOR color) {
         super(label);
         this.color = color;

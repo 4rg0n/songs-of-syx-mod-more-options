@@ -167,4 +167,10 @@ public class UiFactory {
 
         return moreOptionsButton;
     }
+
+    public static Window<UiShowRoom> buildUiShowRoom() {
+        Window<UiShowRoom> uiShowRoom = new Window<>("UI Show Room", new UiShowRoom());
+        uiShowRoom.center();
+        return uiShowRoom;
+    }
 }
