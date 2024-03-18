@@ -1,6 +1,8 @@
 package com.github.argon.sos.moreoptions.config.json;
 
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
+import com.github.argon.sos.moreoptions.config.domain.EventsConfig;
+import com.github.argon.sos.moreoptions.config.domain.SoundsConfig;
 import com.github.argon.sos.moreoptions.config.domain.WeatherConfig;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonMoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonRacesV2Config;
@@ -14,8 +16,16 @@ public class JsonConfigV3Mapper {
     public static JsonMoreOptionsV3Config map(JsonMoreOptionsV2Config config) {
         return JsonMoreOptionsV3Config.builder()
             .logLevel(config.getLogLevel())
-            .events(config.getEvents())
-            .sounds(config.getSounds())
+            .events(EventsConfig.builder()
+                .settlement(config.getEventsSettlement())
+                .world(config.getEventsWorld())
+                .chance(config.getEventsChance())
+                .build())
+            .sounds(SoundsConfig.builder()
+                .settlement(config.getSoundsSettlement())
+                .room(config.getSoundsRoom())
+                .ambience(config.getSoundsAmbience())
+                .build())
             .metrics(config.getMetrics())
             .boostersPlayer(config.getBoosters().entrySet().stream()
                 .map(boosterEntry -> BoostersConfig.Booster.builder()

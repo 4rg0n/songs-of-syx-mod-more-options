@@ -44,13 +44,11 @@ public class ConfigStore implements Phases {
     @Override
     public void initBeforeGameCreated() {
         // load configs into store
-        configService.reloadNotBoundToSave();
         configService.getMeta().ifPresent(meta -> configMeta = meta);
     }
 
     @Override
     public void initGameUpdating() {
-        configService.reloadBackups();
         MoreOptionsV3Config defaultConfig = configDefaults.newConfig();
         setDefaultConfig(defaultConfig);
         MoreOptionsV3Config config = configService.getConfig()

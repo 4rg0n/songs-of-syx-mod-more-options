@@ -1,10 +1,8 @@
 package com.github.argon.sos.moreoptions.config.json.v2;
 
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.domain.EventsConfig;
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
 import com.github.argon.sos.moreoptions.config.domain.Range;
-import com.github.argon.sos.moreoptions.config.domain.SoundsConfig;
 import lombok.*;
 
 import java.util.HashMap;
@@ -22,11 +20,18 @@ public class JsonMoreOptionsV2Config {
     private int version = VERSION;
     @Builder.Default
     private String logLevel = ConfigDefaults.LOG_LEVEL.getName();
-
     @Builder.Default
-    private SoundsConfig sounds = SoundsConfig.builder().build();
+    private Map<String, Boolean> eventsSettlement = new HashMap<>();
     @Builder.Default
-    private EventsConfig events = EventsConfig.builder().build();
+    private Map<String, Boolean> eventsWorld = new HashMap<>();
+    @Builder.Default
+    private Map<String, Range> eventsChance = new HashMap<>();
+    @Builder.Default
+    private Map<String, Range> soundsAmbience = new HashMap<>();
+    @Builder.Default
+    private Map<String, Range> soundsSettlement = new HashMap<>();
+    @Builder.Default
+    private Map<String, Range> soundsRoom = new HashMap<>();
     @Builder.Default
     private Map<String, Range> weather = new HashMap<>();
     @Builder.Default
