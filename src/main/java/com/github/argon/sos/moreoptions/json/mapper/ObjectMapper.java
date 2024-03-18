@@ -22,7 +22,6 @@ import java.util.Map;
 import static com.github.argon.sos.moreoptions.json.util.JsonUtil.toJsonKey;
 import static com.github.argon.sos.moreoptions.util.MethodUtil.*;
 import static com.github.argon.sos.moreoptions.util.ReflectionUtil.getAnnotation;
-import static com.github.argon.sos.moreoptions.util.ReflectionUtil.invokeMethodOneArgument;
 
 public class ObjectMapper implements Mapper<JsonObject> {
 
@@ -109,8 +108,13 @@ public class ObjectMapper implements Mapper<JsonObject> {
             JsonElement jsonElement = jsonObject.getMap().get(jsonKey);
 
             Object mappedObject = JsonMapper.mapJson(jsonElement, fieldTypeInfo);
-            // call setter method
-            invokeMethodOneArgument(method, instance, mappedObject);
+            try {
+                // call setter method
+                ReflectionUtil.invokeMethodOneArgument(method, instance, mappedObject);
+            } catch (Exception e) {
+                log.warn("Could not invoke method for setting %s into %s.%s",
+                    mappedObject.getClass().getSimpleName(), instance.getClass().getSimpleName(), method.getName(), e);
+            }
         }
 
         return instance;

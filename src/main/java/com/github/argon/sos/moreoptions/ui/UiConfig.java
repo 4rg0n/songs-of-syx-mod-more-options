@@ -117,7 +117,7 @@ public class UiConfig implements Phases {
         injectMoreOptionsButton(moreOptionsFull);
 
         // create backup configuration dialog if needed
-        configStore.getBackupConfig().ifPresent(backupConfig -> {
+        configStore.getBackup().ifPresent(backupConfig -> {
             backupDialog = new Modal<>(MOD_INFO.name.toString(), new BackupDialog());
             backupMoreOptionsModal = uiFactory.buildMoreOptionsFullScreen(
                 MOD_INFO.name + " " + i18n.t("MoreOptionsPanel.backup.title.suffix"),
@@ -169,8 +169,6 @@ public class UiConfig implements Phases {
         IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());
         IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> MetricScheduler.getInstance().stop());
         IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> MetricScheduler.getInstance().start());
-        IDebugPanel.add(MOD_INFO.name + ":config:backup", ConfigStore.getInstance()::createBackupConfig);
-        IDebugPanel.add(MOD_INFO.name + ":config:delete", ConfigStore.getInstance()::deleteConfig);
         IDebugPanel.add(MOD_INFO.name + ":i18n:load", I18nMessages.getInstance()::loadWithCurrentGameLocale);
         IDebugPanel.add(MOD_INFO.name + ":log:stats", () -> {
             log.info("Events Status: %s", gameApis.events().readEventsEnabledStatus()

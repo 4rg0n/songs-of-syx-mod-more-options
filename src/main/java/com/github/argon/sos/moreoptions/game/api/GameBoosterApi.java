@@ -56,7 +56,6 @@ public class GameBoosterApi implements Phases {
 
     @Override
     public void initModCreateInstance() {
-        log.debug("Init game booster api");
         boosterService.reset();
     }
 }

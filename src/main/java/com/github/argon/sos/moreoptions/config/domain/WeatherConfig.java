@@ -10,11 +10,7 @@ import java.util.Map;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class EventsConfig {
+public class WeatherConfig {
     @Builder.Default
-    private Map<String, Boolean> settlement = new HashMap<>();
-    @Builder.Default
-    private Map<String, Boolean> world = new HashMap<>();
-    @Builder.Default
-    private Map<String, Range> chance = new HashMap<>();
+    private Map<String, Range> effects = new HashMap<>();
 }

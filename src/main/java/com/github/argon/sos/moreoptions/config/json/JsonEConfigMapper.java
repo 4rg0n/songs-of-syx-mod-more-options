@@ -1,5 +1,7 @@
-package com.github.argon.sos.moreoptions.config;
+package com.github.argon.sos.moreoptions.config.json;
 
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
+import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.game.util.JsonUtil;
@@ -16,7 +18,7 @@ import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config
 /**
  * For mapping the game {@link Json} and {@link JsonE} into {@link MoreOptionsV3Config} and back
  */
-public class JsonConfigMapper {
+public class JsonEConfigMapper {
 
     /**
      * Maps old V1 config to the current config structure
@@ -59,11 +61,11 @@ public class JsonConfigMapper {
                     )) : null)
                 .build())
 
-            .weather((json.has("WEATHER")) ? JsonUtil.mapInteger(json.json("WEATHER")).entrySet().stream()
-                .collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry -> ConfigUtil.newRange(entry.getValue())
-                )) : null)
+//            .weather((json.has("WEATHER")) ? JsonUtil.mapInteger(json.json("WEATHER")).entrySet().stream()
+//                .collect(Collectors.toMap(
+//                    Map.Entry::getKey,
+//                    entry -> ConfigUtil.newRange(entry.getValue())
+//                )) : null)
 
             // FIXME
 //            .boosters((json.has("BOOSTERS")) ? JsonUtil.mapInteger(json.json("BOOSTERS")).entrySet().stream()
@@ -95,7 +97,7 @@ public class JsonConfigMapper {
                 .room((json.has("SOUNDS_ROOM")) ? mapRanges(json.json("SOUNDS_ROOM")) : null)
                 .build())
 
-            .weather((json.has("WEATHER")) ? mapRanges(json.json("WEATHER")) : null)
+//            .weather((json.has("WEATHER")) ? mapRanges(json.json("WEATHER")) : null)
             // FIXME   .boosters((json.has("BOOSTERS")) ? mapBoosterRanges(json.json("BOOSTERS")) : null)
             .metrics((json.has("METRICS")) ? mapMetrics(json.json("METRICS")) : null)
 
@@ -112,7 +114,7 @@ public class JsonConfigMapper {
         json.add("SOUNDS_AMBIENCE", mapRanges(config.getSounds().getAmbience()));
         json.add("SOUNDS_SETTLEMENT", mapRanges(config.getSounds().getSettlement()));
         json.add("SOUNDS_ROOM", mapRanges(config.getSounds().getRoom()));
-        json.add("WEATHER", mapRanges(config.getWeather()));
+//        json.add("WEATHER", mapRanges(config.getWeather()));
         // FIXME json.add("BOOSTERS", mapRanges(config.getBoosters()));
         json.add("METRICS", mapMetrics(config.getMetrics()));
         return json;
@@ -202,8 +204,8 @@ public class JsonConfigMapper {
             .build();
     }
 
-    public static MoreOptionsV3Config.Meta mapMeta(Json json) {
-        return MoreOptionsV3Config.Meta.builder()
+    public static ConfigMeta mapMeta(Json json) {
+        return ConfigMeta.builder()
             .logLevel((json.has("LOG_LEVEL")) ? Level.fromName(json.text("LOG_LEVEL")).orElse(Level.INFO) : Level.INFO)
             .version((json.has("VERSION")) ? json.i("VERSION") : VERSION)
             .build();

@@ -1,6 +1,5 @@
 package com.github.argon.sos.moreoptions.ui;
 
-import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
 import init.sprite.UI.UI;
@@ -21,7 +20,8 @@ public class BackupDialog extends GuiSection {
     private Button discardButton;
 
     public BackupDialog() {
-        GText fileText = new GText(UI.FONT().M, "Backup file found at: " + ConfigStore.backupConfigPath());
+        // todo i18n
+        GText fileText = new GText(UI.FONT().M, "Backup file found!");
         GText text1 = new GText(UI.FONT().M, "A backup file of your More Options config was loaded. ");
         GText text2 = new GText(UI.FONT().M,"Probably because the game just crashed. What do you want to do with it?");
 

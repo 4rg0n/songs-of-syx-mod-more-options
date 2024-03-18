@@ -116,7 +116,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
                 try {
                     Map<String, Range> boostersPreset = presets.get(key);
                     JsonElement jsonElement = JsonMapper.mapObject(boostersPreset, new TypeInfo<Map<String, Range>>(){});
-                    Json json = new Json(jsonElement, JsonWriter.getJsonE());
+                    Json json = new Json(jsonElement, JsonWriter.jsonE());
 
                     if (Clipboard.write(json.toString())) {
                         notificator.notifySuccess(i18n.t("notification.boosters.preset.copy", key));

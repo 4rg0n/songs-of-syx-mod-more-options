@@ -1,21 +1,25 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.game.AbstractScript;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.i18n.I18nMessages;
-import com.github.argon.sos.moreoptions.phase.PhaseManager;
-import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
+import com.github.argon.sos.moreoptions.phase.Phase;
+import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
+import init.paths.PATHS;
 import lombok.NoArgsConstructor;
 import util.info.INFO;
+
+import java.nio.file.Path;
 
 
 /**
@@ -27,8 +31,11 @@ public final class MoreOptionsScript extends AbstractScript {
 	private final static Logger log = Loggers.getLogger(MoreOptionsScript.class);
 	public final static INFO MOD_INFO = new INFO("More Options", "Adds more options to the game :)");
 	private final ConfigStore configStore = ConfigStore.getInstance();
-	private final MoreOptionsConfigurator configurator = MoreOptionsConfigurator.getInstance();
+	private final ConfigApplier configApplier = ConfigApplier.getInstance();
 	private final UiConfig uiConfig = UiConfig.getInstance();
+	public final static Path MORE_OPTIONS_PROFILE = PATHS.local().PROFILE.get().resolve(MoreOptionsScript.MOD_INFO.name.toString());
+
+	public final static Path MORE_OPTIONS_CONFIG = PATHS.local().SETTINGS.get().resolve("MoreOptions.txt");
 
 	@Override
 	public CharSequence name() {
@@ -42,9 +49,9 @@ public final class MoreOptionsScript extends AbstractScript {
 
 	@Override
 	protected void registerPhases(PhaseManager phaseManager) {
-		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, ConfigStore.getInstance());
 		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, MetricExporter.getInstance());
 		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, I18nMessages.getInstance());
+		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, ConfigStore.getInstance());
 		phaseManager.register(Phase.INIT_MOD_CREATE_INSTANCE, UiConfig.getInstance());
 		phaseManager.register(Phase.INIT_GAME_UPDATING, ConfigStore.getInstance());
 		phaseManager.register(Phase.INIT_GAME_UI_PRESENT, UiConfig.getInstance());
@@ -52,15 +59,22 @@ public final class MoreOptionsScript extends AbstractScript {
 		phaseManager.register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance());
 		phaseManager.register(Phase.ON_GAME_SAVED, ConfigStore.getInstance());
 		phaseManager.register(Phase.ON_GAME_SAVE_RELOADED, MetricExporter.getInstance());
-		phaseManager.register(Phase.ON_GAME_SAVE_RELOADED, MoreOptionsConfigurator.getInstance());
+		phaseManager.register(Phase.ON_GAME_SAVE_RELOADED, ConfigApplier.getInstance());
 		phaseManager.register(Phase.ON_CRASH, MetricScheduler.getInstance());
 		phaseManager.register(Phase.ON_CRASH, ConfigStore.getInstance());
 	}
 
 	@Override
+	public void initBeforeGameCreated() {
+		super.initBeforeGameCreated();
+		// force the use of the environment log level when present
+		configApplier.setEnvLogLevel(getEnvLogLevel());
+	}
+
+	@Override
 	public Level initLogLevel() {
-		return configStore.getMetaInfo()
-			.map(MoreOptionsV3Config.Meta::getLogLevel)
+		return configStore.getConfigMeta()
+			.map(ConfigMeta::getLogLevel)
 			.orElse(Loggers.LOG_LEVEL_DEFAULT);
 	}
 
@@ -74,7 +88,7 @@ public final class MoreOptionsScript extends AbstractScript {
 			backupDialog.show();
 		} else {
 			// apply loaded config
-			configurator.applyConfig(configStore.getCurrentConfig());
+			configApplier.applyToGame(configStore.getCurrentConfig());
 		}
 
 		// TODO experimental

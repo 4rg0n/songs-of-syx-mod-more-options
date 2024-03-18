@@ -1,115 +1,115 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
-import com.github.argon.sos.moreoptions.log.Level;
+import com.github.argon.sos.moreoptions.config.json.JsonConfigStore;
+import com.github.argon.sos.moreoptions.config.json.JsonConfigVersionHandler;
+import com.github.argon.sos.moreoptions.config.json.JsonMeta;
+import com.github.argon.sos.moreoptions.config.json.v3.JsonBoostersV3Config;
+import com.github.argon.sos.moreoptions.config.json.v3.JsonMoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
+import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import init.paths.PATH;
-import lombok.AccessLevel;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import snake2d.util.file.JsonE;
 
-import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-/**
- * For saving and loading {@link MoreOptionsV3Config} as json
- */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ConfigService {
+
+public class ConfigService implements Phases {
     private final static Logger log = Loggers.getLogger(ConfigService.class);
 
     @Getter(lazy = true)
     private final static ConfigService instance = new ConfigService(
-        JsonService.getInstance()
+        ConfigFactory.getInstance()
     );
 
-    private final JsonService jsonService;
+    private final JsonConfigStore jsonConfigStore;
+    private final JsonConfigVersionHandler versionHandler;
 
-    public boolean delete(PATH path, String fileName) {
-        if (!path.exists(fileName)) {
-            return true;
-        }
-
-        try {
-            if (log.isLevel(Level.DEBUG)) log.debug("Deleting file: %s", path.get(fileName));
-            path.delete(fileName);
-        } catch (Exception e) {
-            if (log.isLevel(Level.WARN)) log.warn("Could not delete file %s", path.get(fileName));
-            return false;
-        }
-
-        return true;
+    public ConfigService(ConfigFactory configFactory) {
+        this.jsonConfigStore = configFactory.newJsonConfigStoreV3();
+        this.versionHandler = new JsonConfigVersionHandler(configFactory, this.jsonConfigStore);
     }
 
-    public Optional<MoreOptionsV3Config.Meta> loadMeta(PATH path, String fileName) {
-        return jsonService.loadJson(path, fileName)
-            .map(JsonConfigMapper::mapMeta);
+    public Optional<ConfigMeta> getMeta() {
+        return jsonConfigStore.get(JsonMeta.class)
+            .map(ConfigMapper::mapMeta);
     }
 
-    public boolean saveConfig(PATH path, String fileName, MoreOptionsV3Config config) {
-        log.debug("Saving more options config v%s", config.getVersion());
-        log.trace("CONFIG: %s", config);
-
-        JsonE configJson = JsonConfigMapper.mapConfig(config);
-
-        return jsonService.saveJson(configJson, path, fileName);
+    public Optional<MoreOptionsV3Config> getConfig() {
+        return getMeta()
+            .map(versionHandler::handleMapping);
     }
 
-    public boolean saveConfig(Path path, RacesConfig config) {
-        log.trace("CONFIG: %s", config);
+    public Optional<MoreOptionsV3Config> getBackup() {
+        return jsonConfigStore.getBackup(JsonMoreOptionsV3Config.class)
+            .map(ConfigMapper::mapConfig)
+            // add other configs
+            .map(domainConfig -> {
+                jsonConfigStore.getBackup(JsonRacesV3Config.class)
+                    .ifPresent(racesConfig -> ConfigMapper.mapInto(racesConfig, domainConfig));
+                jsonConfigStore.getBackup(JsonBoostersV3Config.class)
+                    .ifPresent(boostersConfig -> ConfigMapper.mapInto(boostersConfig, domainConfig));
+                return domainConfig;
+            });
+    }
 
-        JsonE configJson = JsonConfigMapper.mapRacesConfig(config);
+    public boolean saveBackups() {
+        return jsonConfigStore.saveBackups(true);
+    }
 
-        return jsonService.saveJson(configJson, path);
+    public List<FileService.FileMeta> readRacesConfigMetas() {
+        return jsonConfigStore.readMetas(JsonRacesV3Config.class);
+    }
+
+    public Optional<MoreOptionsV3Config> reloadAll() {
+        jsonConfigStore.reloadAll();
+        return getConfig();
+    }
+
+    public Optional<MoreOptionsV3Config> reloadBackups() {
+        jsonConfigStore.reloadBackups();
+        return getBackup();
+    }
+
+    public void reloadBoundToSave() {
+        jsonConfigStore.reloadBoundToSave();
+    }
+
+    public void reloadNotBoundToSave() {
+        jsonConfigStore.reloadNotBoundToSave();
     }
 
     public Optional<RacesConfig> loadRacesConfig(Path path) {
-        try {
-            return jsonService.loadJson(path)
-                .map(JsonConfigMapper::mapRacesConfig);
-        } catch (Exception e) {
-            log.error("Could load config: %s", path, e);
-            return Optional.empty();
-        }
+        return jsonConfigStore.readFromPath(RacesConfig.class, path);
     }
 
-    public Optional<MoreOptionsV3Config> loadConfig(PATH path, String fileName) {
-        if (!path.exists(fileName)) {
-            // do not load what's not there
-            log.debug("File %s" + File.separator + "%s.txt not present", path.get(), fileName);
-            return Optional.empty();
-        }
+    public Optional<Path> getRacesConfigPath() {
+        return jsonConfigStore.getPath(JsonRacesV3Config.class);
+    }
 
-        Path filePath = path.get(fileName);
+    public boolean save(MoreOptionsV3Config config) {
+        return Stream.of(
+            jsonConfigStore.save(ConfigMapper.mapConfig(config)),
+            jsonConfigStore.save(ConfigMapper.mapRacesConfig(config)),
+            jsonConfigStore.save(ConfigMapper.mapBoostersConfig(config))
+        )
+        // all succeeded?
+        .noneMatch(Objects::isNull);
+    }
 
-        try {
-            return jsonService.loadJson(filePath).map(json -> {
-                MoreOptionsV3Config.Meta meta = JsonConfigMapper.mapMeta(json);
-                int version = meta.getVersion();
-                log.debug("Loaded config v%s", version);
+    public void clear() {
+        jsonConfigStore.clear();
+    }
 
-                MoreOptionsV3Config config;
-                switch (version) {
-                    case 1:
-                        config = JsonConfigMapper.mapV1(json);
-                        break;
-                    case 2:
-                        config = JsonConfigMapper.mapV2(json);
-                        break;
-                    default:
-                        log.warn("Unsupported config version v%s found in %s", version, filePath);
-                        return null;
-                }
-
-                return config;
-            });
-        } catch (Exception e) {
-            log.error("Could load config: %s", filePath, e);
-            return Optional.empty();
-        }
+    public boolean deleteBackups(boolean removeFromStore) {
+        return jsonConfigStore.deleteBackups(removeFromStore);
     }
 }

@@ -87,7 +87,7 @@ public class GameFactionApi implements Phases {
         this.factionNPCs.putAll(factions);
 
         log.debug("Initialized %s factions", factions.size());
-        log.debug("Player: %s", player.name.toString());
+        log.debug("Player faction: %s", player.name.toString());
         log.trace("Factions: %s", factions.keySet());
     }
 }

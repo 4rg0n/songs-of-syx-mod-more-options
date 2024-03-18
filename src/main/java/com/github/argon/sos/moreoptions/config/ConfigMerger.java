@@ -41,7 +41,7 @@ public class ConfigMerger {
         if (target.getWeather() == null) {
             target.setWeather(source.getWeather());
         } else {
-            addMissing(target.getWeather(), source.getWeather());
+            merge(target.getWeather(), source.getWeather());
         }
 
         // Boosters
@@ -63,6 +63,17 @@ public class ConfigMerger {
             target.setRaces(source.getRaces());
         } else {
             merge(target.getRaces(), source.getRaces());
+        }
+    }
+    public static void merge(WeatherConfig target, @Nullable WeatherConfig source) {
+        if (source == null) {
+            return;
+        }
+
+        if (target.getEffects() == null || target.getEffects().isEmpty()) {
+            target.setEffects(source.getEffects());
+        }else {
+            addMissing(target.getEffects(), source.getEffects());
         }
     }
 

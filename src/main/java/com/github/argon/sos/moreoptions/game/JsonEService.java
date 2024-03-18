@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.config;
+package com.github.argon.sos.moreoptions.game;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -15,17 +15,17 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 /**
- * For saving the data in the games json format
+ * For saving the data in the games JsonE format
  */
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class JsonService {
+public class JsonEService {
 
-    private final static Logger log = Loggers.getLogger(JsonService.class);
+    private final static Logger log = Loggers.getLogger(JsonEService.class);
     @Getter(lazy = true)
-    private final static JsonService instance = new JsonService();
+    private final static JsonEService instance = new JsonEService();
 
-    public Optional<Json> loadJson(PATH path, String fileName) {
+    public Optional<Json> load(PATH path, String fileName) {
         log.debug("Loading json file %s from %s", fileName, path.get());
         if (!path.exists(fileName)) {
             // do not load what's not there
@@ -34,10 +34,10 @@ public class JsonService {
         }
 
         Path loadPath = path.get(fileName);
-        return loadJson(loadPath);
+        return load(loadPath);
     }
 
-    public Optional<Json> loadJson(Path path) {
+    public Optional<Json> load(Path path) {
         if (!path.toFile().exists()) {
             // do not load what's not there
             log.debug("File %s does not exist", path);
@@ -52,7 +52,7 @@ public class JsonService {
         }
     }
 
-    public boolean saveJson(JsonE json, PATH savePath, String fileName) {
+    public boolean save(JsonE json, PATH savePath, String fileName) {
         // file exists?
         Path path;
         if (!savePath.exists(fileName)) {
@@ -62,10 +62,10 @@ public class JsonService {
             path = savePath.get(fileName);
         }
 
-        return saveJson(json, path);
+        return save(json, path);
     }
 
-    public boolean saveJson(JsonE json, Path savePath) {
+    public boolean save(JsonE json, Path savePath) {
         try {
             boolean success = json.save(savePath);
             log.debug("Saving to %s was successful? %s", savePath, success);

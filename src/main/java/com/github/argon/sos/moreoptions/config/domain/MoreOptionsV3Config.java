@@ -4,11 +4,7 @@ import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.log.Level;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @Builder
@@ -22,14 +18,14 @@ public class MoreOptionsV3Config {
     @Builder.Default
     private int version = VERSION;
     @Builder.Default
-    private Level logLevel = ConfigDefaults.CONFIG_DEFAULT_LOG_LEVEL;
+    private Level logLevel = ConfigDefaults.LOG_LEVEL;
 
     @Builder.Default
     private SoundsConfig sounds = SoundsConfig.builder().build();
     @Builder.Default
     private EventsConfig events = EventsConfig.builder().build();
     @Builder.Default
-    private Map<String, Range> weather = new HashMap<>();
+    private WeatherConfig weather = WeatherConfig.builder().build();
     @Builder.Default
     private BoostersConfig boosters = BoostersConfig.builder().build();
     @Builder.Default
@@ -49,17 +45,5 @@ public class MoreOptionsV3Config {
     public String toJson() {
         Json json = new Json(JsonMapper.mapObject(this));
         return json.toString();
-    }
-
-    @Data
-    @Builder
-    @EqualsAndHashCode
-    @NoArgsConstructor
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Meta {
-        @Builder.Default
-        private int version = VERSION;
-        @Builder.Default
-        private Level logLevel = Loggers.LOG_LEVEL_DEFAULT;
     }
 }

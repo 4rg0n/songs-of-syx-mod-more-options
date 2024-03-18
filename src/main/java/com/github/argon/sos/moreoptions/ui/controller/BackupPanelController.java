@@ -31,7 +31,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
         this.moreOptionsPanel = moreOptionsPanel;
         this.backupMoreOptionsPanel = backupMoreOptionsWindow.getSection();
         this.backupMoreOptionsWindow = backupMoreOptionsWindow;
-        this.backupConfig = configStore.getBackupConfig().orElse(null);
+        this.backupConfig = configStore.getBackup().orElse(null);
 
         backupMoreOptionsWindow.hideAction(panel -> this.closeWindow());
         backupMoreOptionsPanel.getCancelButton().clickActionSet(this::cancelAndUndo);
@@ -45,7 +45,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
 
     public void closeWindow() {
         try {
-            configStore.deleteBackupConfig();
+            configStore.deleteBackups();
         } catch (Exception e) {
             log.error("Could not delete backup config", e);
         }
@@ -55,12 +55,10 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
 
     public void closeDialog() {
         try {
-            configStore.deleteBackupConfig();
+            configStore.deleteBackups();
             MoreOptionsV3Config defaultConfig = configStore.getDefaultConfig();
             moreOptionsPanel.setValue(defaultConfig);
-            configurator.applyConfig(defaultConfig);
-            configStore.setCurrentConfig(defaultConfig);
-            configStore.saveConfig(defaultConfig);
+            configApplier.applyToGameAndSave(defaultConfig);
         } catch (Exception e) {
             log.error("Could not apply default config via backup dialog", e);
         }
@@ -88,7 +86,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
 
         try {
             moreOptionsPanel.setValue(readConfig);
-            configStore.deleteBackupConfig();
+            configStore.deleteBackups();
         } catch (Exception e) {
             notificator.notifyError(i18n.t("notification.backup.config.not.apply", MOD_INFO.name), e);
             return;
@@ -117,11 +115,9 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
                 return;
             }
 
-            configurator.applyConfig(backupConfig);
+            configApplier.applyToGameAndSave(backupConfig);
             moreOptionsPanel.setValue(backupConfig);
-            configStore.setCurrentConfig(backupConfig);
-            configStore.saveConfig(backupConfig);
-            configStore.deleteBackupConfig();
+            configStore.deleteBackups();
         } catch (Exception e) {
             log.error("Could not apply backup config", e);
         }

@@ -21,7 +21,7 @@ public class BoostersConfig {
     private Set<Booster> player = new HashSet<>();
 
     @Builder.Default
-    private Map<String, BoostersPreset> boostersPresets = new HashMap<>();
+    private Map<String, BoostersPreset> presets = new HashMap<>();
 
     @Data
     @Builder
@@ -42,5 +42,4 @@ public class BoostersConfig {
         @Builder.Default
         private Set<Booster> boosters = new HashSet<>();
     }
-
 }

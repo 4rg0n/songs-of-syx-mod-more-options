@@ -6,7 +6,7 @@ import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
-import com.github.argon.sos.moreoptions.ui.panel.*;
+import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
 import com.github.argon.sos.moreoptions.ui.panel.advanced.AdvancedPanel;
 import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.events.EventsPanel;
@@ -175,7 +175,7 @@ public class MoreOptionsPanel extends GuiSection implements
         soundsPanel = new SoundsPanel(i18n.t("MoreOptionsPanel.tab.sounds.name"), config.getSounds(), defaultConfig.getSounds(), availableWidth, availableHeight);
         eventsPanel = new EventsPanel(i18n.t("MoreOptionsPanel.tab.events.name"), config.getEvents(), defaultConfig.getEvents(), availableWidth, availableHeight);
         weatherPanel = new WeatherPanel(i18n.t("MoreOptionsPanel.tab.weather.name"), config.getWeather(), defaultConfig.getWeather(), availableWidth, availableHeight);
-        boostersPanel = new BoostersPanel(i18n.t("MoreOptionsPanel.tab.boosters.name"), boosterEntries, config.getBoosters().getBoostersPresets(), defaultConfig.getBoosters(), availableWidth, availableHeight);
+        boostersPanel = new BoostersPanel(i18n.t("MoreOptionsPanel.tab.boosters.name"), boosterEntries, config.getBoosters().getPresets(), defaultConfig.getBoosters(), availableWidth, availableHeight);
         metricsPanel = new MetricsPanel(i18n.t("MoreOptionsPanel.tab.metrics.name"), config.getMetrics(), defaultConfig.getMetrics(), availableStats, exportFolder, exportFile, availableWidth, availableHeight);
         racesPanel = new RacesPanel(i18n.t("MoreOptionsPanel.tab.races.name"), raceEntries, defaultConfig.getRaces(), availableWidth, availableHeight);
         advancedPanel = new AdvancedPanel(i18n.t("MoreOptionsPanel.tab.advanced.name"), config.getLogLevel(), defaultConfig.getLogLevel(), availableWidth, availableHeight);
@@ -262,14 +262,18 @@ public class MoreOptionsPanel extends GuiSection implements
      * @return whether panel configuration is different from {@link ConfigStore#getCurrentConfig()} ()}
      */
     public boolean isDirty() {
-        MoreOptionsV3Config config = getValue();
+        MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
+        return isDirty(currentConfig);
+    }
 
-        if (config == null) {
+    public boolean isDirty(@Nullable MoreOptionsV3Config config) {
+        MoreOptionsV3Config uiConfig = getValue();
+
+        if (uiConfig == null) {
             return false;
         }
 
-        MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
-        return !config.equals(currentConfig);
+        return !uiConfig.equals(config);
     }
 
    private GuiSection versions(int configVersionNumber, String modVersionString) {

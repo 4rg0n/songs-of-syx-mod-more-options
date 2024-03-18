@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.config.ConfigStore;
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.advanced.AdvancedPanel;
@@ -41,9 +41,9 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedPanel>
 
     public void openModConfigFolder() {
         try {
-            FileManager.openDesctop(ConfigStore.MORE_OPTIONS_CONFIG_PATH.get().toString());
+            FileManager.openDesctop(ConfigDefaults.CONFIGE_PATH.toString());
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.config.folder.not.open", ConfigStore.MORE_OPTIONS_CONFIG_PATH), e);
+            notificator.notifyError(i18n.t("notification.config.folder.not.open", ConfigDefaults.CONFIGE_PATH), e);
         }
     }
 
@@ -53,7 +53,7 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedPanel>
             MoreOptionsV3Config defaultConfig = configStore.getDefaultConfig();
             try {
                 moreOptionsPanel.setValue(defaultConfig);
-                configStore.deleteConfig();
+                configStore.clear();
                 if (applyAndSave(moreOptionsPanel)) {
                     notificator.notifySuccess(i18n.t("notification.config.reset"));
                 } else {

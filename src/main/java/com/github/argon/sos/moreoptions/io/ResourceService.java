@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.config;
+package com.github.argon.sos.moreoptions.io;
 
 import lombok.AccessLevel;
 import lombok.Getter;

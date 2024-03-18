@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel.weather;
 
 import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.moreoptions.config.domain.WeatherConfig;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.game.ui.Table;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class WeatherPanel extends AbstractConfigPanel<Map<String, Range>, WeatherPanel> {
+public class WeatherPanel extends AbstractConfigPanel<WeatherConfig, WeatherPanel> {
     private static final Logger log = Loggers.getLogger(WeatherPanel.class);
     private static final I18n i18n = I18n.get(WeatherPanel.class);
 
@@ -28,13 +29,13 @@ public class WeatherPanel extends AbstractConfigPanel<Map<String, Range>, Weathe
     private final Map<String, Slider> sliders;
     public WeatherPanel(
         String title,
-        Map<String, Range> weatherConfig,
-        Map<String, Range> defaultConfig,
+        WeatherConfig weatherConfig,
+        WeatherConfig defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
         super(title, defaultConfig, availableWidth, availableHeight);
-        this.sliders = UiMapper.toSliders(weatherConfig);
+        this.sliders = UiMapper.toSliders(weatherConfig.getEffects());
         List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(sliders, i18n);
         Layout.vertical(availableHeight)
             .addDownC(10, new VerticalLayout.Scalable(300, height -> Table.<Integer>builder()
@@ -46,16 +47,20 @@ public class WeatherPanel extends AbstractConfigPanel<Map<String, Range>, Weathe
     }
 
     @Override
-    public Map<String, Range> getValue() {
-        return sliders.entrySet().stream()
+    public WeatherConfig getValue() {
+        Map<String, Range> effects = sliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 tab -> Range.fromSlider(tab.getValue())));
+
+        return WeatherConfig.builder()
+            .effects(effects)
+            .build();
     }
 
     @Override
-    public void setValue(Map<String, Range> config) {
-        config.forEach((key, range) -> {
+    public void setValue(WeatherConfig config) {
+        config.getEffects().forEach((key, range) -> {
             if (sliders.containsKey(key)) {
                 sliders.get(key).setValue(range.getValue());
             } else {

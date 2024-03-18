@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Level;
@@ -7,11 +8,13 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.faction.Faction;
+import init.paths.PATHS;
 import init.race.Race;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,7 +28,14 @@ public class ConfigDefaults {
 
     private final static Logger log = Loggers.getLogger(ConfigDefaults.class);
 
-    public final static Level CONFIG_DEFAULT_LOG_LEVEL = Level.INFO;
+    public final static Level LOG_LEVEL = Level.INFO;
+
+    public final static Path PROFILE_PATH = PATHS.local().PROFILE.get().resolve(MoreOptionsScript.MOD_INFO.name.toString());
+    public final static Path CONFIGE_PATH = PATHS.local().SETTINGS.get();
+    public final static Path CONFIG_FILE_PATH = CONFIGE_PATH.resolve("MoreOptions.txt");
+
+    public final static Path RACES_CONFIG_FOLDER_PATH = PROFILE_PATH.resolve("races");
+    public final static Path BOOSTERS_CONFIG_FOLDER_PATH = PROFILE_PATH.resolve("boosters");
 
     @Getter(lazy = true)
     private final static ConfigDefaults instance = new ConfigDefaults(
@@ -113,9 +123,13 @@ public class ConfigDefaults {
             .build();
     }
 
-    public Map<String, Range> newWeather() {
-        return gameApis.weather().getWeatherThings().keySet().stream()
+    public WeatherConfig newWeather() {
+        Map<String, Range> effects = gameApis.weather().getWeatherThings().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.weather()));
+
+        return WeatherConfig.builder()
+            .effects(effects)
+            .build();
     }
 
     public SoundsConfig newSounds() {
@@ -223,28 +237,31 @@ public class ConfigDefaults {
 
     public static Range weather() {
         return Range.builder()
-                .value(100)
-                .min(0)
-                .max(100)
-                .displayMode(Range.DisplayMode.PERCENTAGE)
-                .build();
+            .value(100)
+            .min(0)
+            .max(100)
+            .displayMode(Range.DisplayMode.PERCENTAGE)
+            .applyMode(Range.ApplyMode.PERCENT)
+            .build();
     }
 
     public static Range sound() {
         return Range.builder()
-                .value(100)
-                .min(0)
-                .max(100)
-                .displayMode(Range.DisplayMode.PERCENTAGE)
-                .build();
+            .value(100)
+            .min(0)
+            .max(100)
+            .displayMode(Range.DisplayMode.PERCENTAGE)
+            .applyMode(Range.ApplyMode.PERCENT)
+            .build();
     }
 
     public static Range eventChance() {
         return Range.builder()
-                .value(100)
-                .min(0)
-                .max(10000)
-                .displayMode(Range.DisplayMode.PERCENTAGE)
-                .build();
+            .value(100)
+            .min(0)
+            .max(10000)
+            .displayMode(Range.DisplayMode.PERCENTAGE)
+            .applyMode(Range.ApplyMode.PERCENT)
+            .build();
     }
 }

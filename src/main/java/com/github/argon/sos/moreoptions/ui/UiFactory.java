@@ -6,6 +6,7 @@ import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
+import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -95,12 +96,12 @@ public class UiFactory {
 
         // prepare entries
         List<RacesSelectionPanel.Entry> racesConfigs = new ArrayList<>();
-        List<ConfigStore.RaceConfigMeta> raceConfigMetas = configStore.loadRacesConfigMetas();
-        for (ConfigStore.RaceConfigMeta configMeta : raceConfigMetas) {
-            SaveFile saveFile = gameApis.save().findByPathContains(configMeta.getConfigPath()).orElse(null);
+        List<FileService.FileMeta> raceConfigMetas = configStore.readRacesConfigMetas();
+        for (FileService.FileMeta configMeta : raceConfigMetas) {
+            SaveFile saveFile = gameApis.save().findByPathContains(configMeta.getPath()).orElse(null);
 
             RacesSelectionPanel.Entry entry = RacesSelectionPanel.Entry.builder()
-                .configPath(configMeta.getConfigPath())
+                .configPath(configMeta.getPath())
                 .creationDate(configMeta.getCreationTime())
                 .updateDate(configMeta.getUpdateTime())
                 .saveFile(saveFile)

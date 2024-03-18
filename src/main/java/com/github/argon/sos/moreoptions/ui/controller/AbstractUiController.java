@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
+import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
@@ -8,9 +8,11 @@ import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.*;
+import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
+import com.github.argon.sos.moreoptions.ui.Notificator;
+import com.github.argon.sos.moreoptions.ui.UiFactory;
+import com.github.argon.sos.moreoptions.ui.UiMapper;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -22,49 +24,37 @@ public abstract class AbstractUiController<Element> {
     private final static Logger log = Loggers.getLogger(AbstractUiController.class);
 
     protected final GameApis gameApis = GameApis.getInstance();
-    protected final MoreOptionsConfigurator configurator = MoreOptionsConfigurator.getInstance();
     protected final ConfigStore configStore = ConfigStore.getInstance();
     protected final ConfigDefaults configDefaults = ConfigDefaults.getInstance();
     protected final UiMapper uiMapper = UiMapper.getInstance();
     protected final UiFactory uiFactory = UiFactory.getInstance();
     protected final Notificator notificator = Notificator.getInstance();
-
-    protected @Nullable MoreOptionsV3Config apply(MoreOptionsPanel moreOptionsPanel) {
-        // only save when changes were made
-        if (moreOptionsPanel.isDirty()) {
-            MoreOptionsV3Config config = moreOptionsPanel.getValue();
-
-            if (config == null) {
-                log.warn("Could read config from modal. Got null");
-                return null;
-            }
-
-            // notify when metric collection status changes
-            MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
-            Objects.requireNonNull(currentConfig);
-            if (currentConfig.getMetrics().isEnabled() != config.getMetrics().isEnabled()) {
-                if (config.getMetrics().isEnabled()) {
-                    notificator.notify(i18n.t("notification.metrics.start"));
-                } else {
-                    notificator.notify(i18n.t("notification.metrics.stop"));
-                }
-            }
-
-            configurator.applyConfig(config);
-            configStore.setCurrentConfig(config);
-            return config;
-        }
-
-        return null;
-    }
+    protected final ConfigApplier configApplier = ConfigApplier.getInstance();
 
     protected boolean applyAndSave(MoreOptionsPanel moreOptionsPanel) {
-        try {
-            MoreOptionsV3Config appliedConfig = apply(moreOptionsPanel);
+        MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
+        // only save when changes were made
+        if (!moreOptionsPanel.isDirty(currentConfig)) {
+            return true;
+        }
+        MoreOptionsV3Config config = moreOptionsPanel.getValue();
+        if (config == null) {
+            log.warn("Could read config from modal. Got null");
+            return false;
+        }
 
-            if (appliedConfig != null) {
-                return configStore.saveConfig(appliedConfig);
+        // notify when metric collection status changes
+        Objects.requireNonNull(currentConfig);
+        if (currentConfig.getMetrics().isEnabled() != config.getMetrics().isEnabled()) {
+            if (config.getMetrics().isEnabled()) {
+                notificator.notify(i18n.t("notification.metrics.start"));
+            } else {
+                notificator.notify(i18n.t("notification.metrics.stop"));
             }
+        }
+
+        try {
+            return configApplier.applyToGameAndSave(config);
         } catch (Exception e) {
             log.error("Could not apply config to game.", e);
         }

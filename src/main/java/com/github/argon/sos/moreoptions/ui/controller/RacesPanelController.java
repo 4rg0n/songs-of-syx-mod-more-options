@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.config.ConfigStore;
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.json.Json;
@@ -27,8 +27,8 @@ public class RacesPanelController extends AbstractUiController<RacesPanel> {
     }
 
     public void openCurrentRacesConfigFile() {
-        Path path = configStore.racesConfigPath();
-        if (!path.toFile().exists()) {
+        Path path = configStore.getRacesConfigPath().orElse(null);
+        if (path == null || !path.toFile().exists()) {
             notificator.notify(i18n.t("notification.races.file.not.exists", path));
             return;
         }
@@ -41,15 +41,15 @@ public class RacesPanelController extends AbstractUiController<RacesPanel> {
     }
 
     public void openRacesConfigFolder() {
-        if (!ConfigStore.RACES_CONFIG_PATH.toFile().exists()) {
-            notificator.notifyError(i18n.t("notification.races.folder.not.exists", ConfigStore.RACES_CONFIG_PATH));
+        if (!ConfigDefaults.RACES_CONFIG_FOLDER_PATH.toFile().exists()) {
+            notificator.notifyError(i18n.t("notification.races.folder.not.exists", ConfigDefaults.RACES_CONFIG_FOLDER_PATH));
             return;
         }
 
         try {
-            FileManager.openDesctop(ConfigStore.RACES_CONFIG_PATH.toString());
+            FileManager.openDesctop(ConfigDefaults.RACES_CONFIG_FOLDER_PATH.toString());
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.races.folder.not.open", ConfigStore.RACES_CONFIG_PATH), e);
+            notificator.notifyError(i18n.t("notification.races.folder.not.open", ConfigDefaults.RACES_CONFIG_FOLDER_PATH), e);
         }
     }
 
@@ -57,7 +57,7 @@ public class RacesPanelController extends AbstractUiController<RacesPanel> {
         try {
             RacesConfig racesConfig = element.getValue();
             JsonElement jsonElement = JsonMapper.mapObject(racesConfig);
-            Json json = new Json(jsonElement, JsonWriter.getJsonE());
+            Json json = new Json(jsonElement, JsonWriter.jsonE());
 
             if (Clipboard.write(json.toString())) {
                 notificator.notifySuccess(i18n.t("notification.races.config.copy"));
@@ -72,7 +72,7 @@ public class RacesPanelController extends AbstractUiController<RacesPanel> {
     public void importRacesConfigFromClipboard() {
         try {
             Clipboard.read().ifPresent(s -> {
-                Json json = new Json(s, JsonWriter.getJsonE());
+                Json json = new Json(s, JsonWriter.jsonE());
                 RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), RacesConfig.class);
 
                 element.setValue(racesConfig);
@@ -91,7 +91,7 @@ public class RacesPanelController extends AbstractUiController<RacesPanel> {
                 Objects.requireNonNull(row);
                 RacesSelectionPanel.Entry entry = row.getValue();
                 Path configPath = entry.getConfigPath();
-                RacesConfig racesConfig = configStore.loadRaceConfig(configPath).orElse(null);
+                RacesConfig racesConfig = configStore.loadRacesConfig(configPath).orElse(null);
 
                 if (racesConfig != null) {
                     element.setValue(racesConfig);

@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.config.JsonConfigMapper;
+import com.github.argon.sos.moreoptions.config.json.JsonEConfigMapper;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
@@ -60,7 +60,7 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
     }
 
     public void reloadAndApply() {
-        MoreOptionsV3Config moreOptionsConfig = configStore.loadConfig().orElse(null);
+        MoreOptionsV3Config moreOptionsConfig = configStore.reloadConfig().orElse(null);
         if (moreOptionsConfig != null) {
             element.setValue(moreOptionsConfig);
             notificator.notifySuccess(i18n.t("notification.config.reload"));
@@ -73,7 +73,7 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
         MoreOptionsV3Config moreOptionsConfig = element.getValue();
         try {
             if (moreOptionsConfig != null) {
-                JsonE jsonE = JsonConfigMapper.mapConfig(moreOptionsConfig);
+                JsonE jsonE = JsonEConfigMapper.mapConfig(moreOptionsConfig);
                 boolean written = Clipboard.write(jsonE.toString());
 
                 if (written) {
