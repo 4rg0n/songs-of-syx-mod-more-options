@@ -1,12 +1,10 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.config.json.JsonEConfigMapper;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
-import snake2d.util.file.JsonE;
 
 public class MoreOptionsPanelController extends AbstractUiController<MoreOptionsPanel> {
 
@@ -73,8 +71,7 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
         MoreOptionsV3Config moreOptionsConfig = element.getValue();
         try {
             if (moreOptionsConfig != null) {
-                JsonE jsonE = JsonEConfigMapper.mapConfig(moreOptionsConfig);
-                boolean written = Clipboard.write(jsonE.toString());
+                boolean written = Clipboard.write(moreOptionsConfig.toJson());
 
                 if (written) {
                     notificator.notifySuccess(i18n.t("notification.config.copy"));

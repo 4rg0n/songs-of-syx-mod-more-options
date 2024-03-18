@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.config.domain;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
+import com.github.argon.sos.moreoptions.json.JsonWriter;
 import com.github.argon.sos.moreoptions.log.Level;
 import lombok.*;
 
@@ -39,11 +40,8 @@ public class MoreOptionsV3Config {
 
      */
 
-    /**
-     * Only for debugging purposes
-     */
     public String toJson() {
-        Json json = new Json(JsonMapper.mapObject(this));
+        Json json = new Json(JsonMapper.mapObject(this), JsonWriter.jsonE());
         return json.toString();
     }
 }
