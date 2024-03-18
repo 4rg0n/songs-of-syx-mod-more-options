@@ -24,10 +24,7 @@ import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GInput;
 import util.gui.misc.GText;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -63,37 +60,39 @@ public class RacesPanel extends AbstractConfigPanel<RacesConfig, RacesPanel> {
         // Race Likings rows for table
         Map<String, List<ColumnRow<Integer>>> raceLikingsRowMap = raceEntries.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
-            mapEntry -> mapEntry.getValue().stream().map(entry -> {
-                Race race = entry.getRace();
-                Race otherRace = entry.getOtherRace();
-                Range range = entry.getRange();
+            mapEntry -> mapEntry.getValue().stream()
+                .sorted(Comparator.comparing(entry -> entry.getOtherRace().info.name.toString()))
+                .map(entry -> {
+                    Race race = entry.getRace();
+                    Race otherRace = entry.getOtherRace();
+                    Range range = entry.getRange();
 
-                // Race icons
-                GuiSection raceIcon = UiUtil.toGuiSection(race.appearance().icon);
-                raceIcon.hoverInfoSet(race.info.name);
-                GuiSection otherRaceIcon = UiUtil.toGuiSection(otherRace.appearance().icon);
-                otherRaceIcon.hoverInfoSet(otherRace.info.name);
+                    // Race icons
+                    GuiSection raceIcon = UiUtil.toGuiSection(race.appearance().icon);
+                    raceIcon.hoverInfoSet(race.info.name);
+                    GuiSection otherRaceIcon = UiUtil.toGuiSection(otherRace.appearance().icon);
+                    otherRaceIcon.hoverInfoSet(otherRace.info.name);
 
-                // Likings Slider
-                Slider likingsSlider = Slider.SliderBuilder
-                    .fromRange(range)
-                    .width(300)
-                    .input(true)
-                    .lockScroll(true)
-                    .threshold(0, COLOR.RED100.shade(0.5d))
-                    .threshold((int) (0.25 * range.getMax()), COLOR.YELLOW100.shade(0.5d))
-                    .threshold((int) (0.50 * range.getMax()), COLOR.ORANGE100.shade(0.5d))
-                    .threshold((int) (0.75 * range.getMax()), COLOR.GREEN100.shade(0.5d))
-                    .build();
+                    // Likings Slider
+                    Slider likingsSlider = Slider.SliderBuilder
+                        .fromRange(range)
+                        .width(300)
+                        .input(true)
+                        .lockScroll(true)
+                        .threshold(0, COLOR.RED100.shade(0.5d))
+                        .threshold((int) (0.25 * range.getMax()), COLOR.YELLOW100.shade(0.5d))
+                        .threshold((int) (0.50 * range.getMax()), COLOR.ORANGE100.shade(0.5d))
+                        .threshold((int) (0.75 * range.getMax()), COLOR.GREEN100.shade(0.5d))
+                        .build();
 
-                likingsSliders.put(key(race, otherRace), likingsSlider);
-                List<GuiSection> columns = Lists.of(raceIcon, likingsSlider, otherRaceIcon);
+                    likingsSliders.put(key(race, otherRace), likingsSlider);
+                    List<GuiSection> columns = Lists.of(raceIcon, likingsSlider, otherRaceIcon);
 
-                return ColumnRow.<Integer>builder()
-                    .searchTerm(term(race, otherRace))
-                    .highlightable(true)
-                    .columns(columns)
-                    .build();
+                    return ColumnRow.<Integer>builder()
+                        .searchTerm(term(race, otherRace))
+                        .highlightable(true)
+                        .columns(columns)
+                        .build();
             }).collect(Collectors.toList())));
 
         // Race Likings table with search

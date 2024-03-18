@@ -118,20 +118,23 @@ public class UiMapper {
     }
 
     public static <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toLabeledColumnRows(Map<String, Element> elements, I18n i18n) {
-        return elements.entrySet().stream().map(entry -> {
-            String key = entry.getKey();
-            Element element = entry.getValue();
+        return elements.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .map(entry -> {
+                String key = entry.getKey();
+                Element element = entry.getValue();
 
-            // label with element
-            return ColumnRow.<Value>builder()
-                .column(Label.builder()
-                    .name(i18n.n(key))
-                    .description(i18n.dn(key))
-                    .maxWidth(300)
-                    .build())
-                .column(element)
-                .build();
-        }).collect(Collectors.toList());
+                // label with element
+                return ColumnRow.<Value>builder()
+                    .column(Label.builder()
+                        .name(i18n.n(key))
+                        .description(i18n.dn(key))
+                        .maxWidth(300)
+                        .build())
+                    .column(element)
+                    .build();
+            })
+            .collect(Collectors.toList());
     }
 
     public static Map<String, Checkbox> toCheckboxes(Map<String, Boolean> eventConfig) {

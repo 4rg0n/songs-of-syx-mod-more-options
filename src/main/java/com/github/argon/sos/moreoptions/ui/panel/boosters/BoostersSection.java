@@ -22,6 +22,7 @@ import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GHeader;
 import util.gui.misc.GInput;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,12 +39,14 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         this.faction = faction;
 
         Map<String, List<BoostersPanel.Entry>> groupedBoosterEntries = UiMapper.toBoosterPanelEntriesCategorized(boosterEntries);
-        Map<String, List<ColumnRow<Range>>> boosterRows = groupedBoosterEntries.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            entry -> entry.getValue().stream()
-                .map(this::boosterRow)
-                .collect(Collectors.toList())
-        ));
+        Map<String, List<ColumnRow<Range>>> boosterRows = groupedBoosterEntries.entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().stream()
+                    .sorted(Comparator.comparing(boosterEntry -> boosterEntry.getBoosters().getAdd().getOrigin().name.toString()))
+                    .map(this::boosterRow)
+                    .collect(Collectors.toList())
+            ));
 
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("BoostersPanel.search.input.name"));
         GInput search = new GInput(searchInput);
