@@ -27,11 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class UiShowRoom extends GuiSection {
+public class UiShowroom extends GuiSection {
 
     private final Notificator notificator = Notificator.getInstance();
 
-    public UiShowRoom() {
+    public UiShowroom() {
         int width = 900;
         // Small Icons
         List<GuiSection> iconsSmall = ReflectionUtil.<Icons.S.IconS>getDeclaredFieldValuesMap(Icons.S.IconS.class, SPRITES.icons().s)

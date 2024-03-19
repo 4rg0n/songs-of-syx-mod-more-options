@@ -28,7 +28,6 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
     private final Button gameLogsFolderButton;
     private final DropDown<Level> dropDown;
 
-
     public AdvancedPanel(
         String title,
         Level logLevel,
@@ -108,6 +107,7 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
             .category(i18n.t("AdvancedPanel.header.mod.name"), Lists.of(modFunctions))
             .evenOdd(true)
             .displayHeight(availableHeight)
+            .columnMargin(5)
             .rowPadding(10)
             .build();
 
