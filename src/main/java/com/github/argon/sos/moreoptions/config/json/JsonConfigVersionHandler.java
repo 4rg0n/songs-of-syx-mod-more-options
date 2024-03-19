@@ -69,7 +69,7 @@ public class JsonConfigVersionHandler {
                     }).orElse(null);
                 break;
             default:
-                log.info("Can not handle config version %s", version);
+                log.info("Can not handle config version V%s", version);
                 break;
         }
 

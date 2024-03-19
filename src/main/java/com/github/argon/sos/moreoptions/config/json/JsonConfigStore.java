@@ -88,6 +88,11 @@ public class JsonConfigStore {
             .build());
     }
 
+    /**
+     * Remove a config class from the store
+     *
+     * @param configClass to remove
+     */
     public void unbind(Class<?> configClass) {
         configStore.remove(configClass);
         backupConfigStore.remove(configClass);
@@ -122,11 +127,17 @@ public class JsonConfigStore {
         return readMetas(configDefinition);
     }
 
+    /**
+     * @return file path of the currently loaded config class
+     */
     public Optional<Path> getPath(Class<?> configClass) {
         return Optional.ofNullable(configStore.get(configClass))
             .map(ConfigObject::getPath);
     }
 
+    /**
+     * @return backup file path of the currently loaded config class
+     */
     public Optional<Path> getBackupPath(Class<?> configClass) {
         return Optional.ofNullable(backupConfigStore.get(configClass))
             .map(ConfigObject::getPath);
@@ -146,6 +157,7 @@ public class JsonConfigStore {
             ConfigObject<?> configObject = backupConfigStore.get(configClass);
 
             if (configObject != null) {
+                //noinspection unchecked
                 config = (T) configObject.getConfig();
             }
         } catch (Exception e) {
@@ -174,6 +186,7 @@ public class JsonConfigStore {
             ConfigObject<?> configObject = backupConfigStore.get(configClass);
 
             if (configObject != null) {
+                //noinspection unchecked
                 config = (T) configObject.getConfig();
             }
         } catch (Exception e) {
@@ -202,7 +215,7 @@ public class JsonConfigStore {
     }
 
     /**
-     * Reloads only configs bound to saves from files
+     * Reloads configs bound not to saves from files
      */
     public void reloadNotBoundToSave() {
         Boolean success = configDefinitions.entrySet().stream()
@@ -326,18 +339,14 @@ public class JsonConfigStore {
         return true;
     }
 
-    public <T> Optional<T> loadFromPath(Class<T> configClass, String fileName) {
-        ConfigDefinition configDefinition = this.configDefinitions.get(configClass);
-
-        if (configDefinition == null) {
-            log.debug("Can not load %s config from file %s. No config entry.", configClass, fileName);
-            return Optional.empty();
-        }
-
-        Path path = configDefinition.getPath().resolve(fileName);
-        return load(configClass, path, false);
-    }
-
+    /**
+     * Will read a config file with the given path. Will not store the read config.
+     *
+     * @param configClass to read
+     * @param path of the file with content
+     * @return read config class with content
+     * @param <T> type of the config class
+     */
     public <T> Optional<T> readFromPath(Class<T> configClass, Path path) {
         ConfigDefinition configDefinition = this.configDefinitions.get(configClass);
 
