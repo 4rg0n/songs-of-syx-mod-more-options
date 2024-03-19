@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.ui;
 
-import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
@@ -13,6 +13,9 @@ import util.gui.misc.GText;
  * Used when the player decides to edit the loaded backup config
  */
 public class BackupDialog extends GuiSection {
+
+    private final static I18n i18n = I18n.get(BackupDialog.class);
+
     @Getter
     private Button applyButton;
     @Getter
@@ -21,9 +24,9 @@ public class BackupDialog extends GuiSection {
     private Button discardButton;
 
     public BackupDialog() {
-        GText fileText = new GText(UI.FONT().M, "Backup file found at: " + ConfigStore.backupConfigPath());
-        GText text1 = new GText(UI.FONT().M, "A backup file of your More Options config was loaded. ");
-        GText text2 = new GText(UI.FONT().M,"Probably because the game just crashed. What do you want to do with it?");
+        GText fileText = new GText(UI.FONT().M, i18n.t("BackupDialog.text.backup.found"));
+        GText text1 = new GText(UI.FONT().M, i18n.t("BackupDialog.text.line1"));
+        GText text2 = new GText(UI.FONT().M,i18n.t("BackupDialog.text.line2"));
 
         addDownC(0, fileText);
         addDownC(20, text1);

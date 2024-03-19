@@ -1,16 +1,16 @@
 package com.github.argon.sos.moreoptions;
 
-import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.ConfigUtil;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.events.EVENTS;
 import init.sound.SoundAmbience;
@@ -18,6 +18,8 @@ import init.sound.SoundSettlement;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import settlement.weather.WeatherThing;
 
 import java.util.HashSet;
@@ -27,7 +29,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 /**
- * For manipulating game classes by given config {@link MoreOptionsV2Config}
+ * For manipulating game classes by given config {@link MoreOptionsV3Config}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsConfigurator implements Phases {
@@ -37,8 +39,7 @@ public class MoreOptionsConfigurator implements Phases {
         GameApis.getInstance(),
         MetricCollector.getInstance(),
         MetricExporter.getInstance(),
-        MetricScheduler.getInstance(),
-        ConfigStore.getInstance()
+        MetricScheduler.getInstance()
     );
 
     private final static Logger log = Loggers.getLogger(MoreOptionsConfigurator.class);
@@ -51,23 +52,13 @@ public class MoreOptionsConfigurator implements Phases {
 
     private final MetricScheduler metricScheduler;
 
-    private final ConfigStore configStore;
-
+    @Setter
+    private Level envLogLevel;
     private Set<String> lastMetricStats = new HashSet<>();
+    private Action<MoreOptionsV3Config> afterApplyAction = o -> {};
 
-    private Action<MoreOptionsV2Config> afterApplyAction = o -> {};
-
-    public void onAfterApplyAction(Action<MoreOptionsV2Config> afterApplyAction) {
+    public void onAfterApplyAction(Action<MoreOptionsV3Config> afterApplyAction) {
         this.afterApplyAction = afterApplyAction;
-    }
-
-    @Override
-    public void onGameSaveReloaded() {
-        // only apply when there's no backup present
-        if (!configStore.getBackupConfig().isPresent()) {
-            log.debug("Reapplying config because of game load.");
-            applyConfig(configStore.getCurrentConfig());
-        }
     }
 
     /**
@@ -75,29 +66,36 @@ public class MoreOptionsConfigurator implements Phases {
      *
      * @param config to apply
      */
-    public void applyConfig(MoreOptionsV2Config config) {
+    public boolean applyConfig(@Nullable MoreOptionsV3Config config) {
+        if (config == null) {
+            return false;
+        }
+
         log.debug("Apply More Options config to game");
         log.trace("Config: %s", config);
 
         try {
-            Loggers.setLevels(config.getLogLevel());
+            Loggers.setLevels((envLogLevel == null) ? config.getLogLevel() : envLogLevel);
             applySettlementEventsConfig(config.getEvents().getSettlement());
             applyWorldEventsConfig(config.getEvents().getWorld());
             applyEventsChanceConfig(config.getEvents().getChance());
             applySoundsAmbienceConfig(config.getSounds().getAmbience());
             applySoundsSettlementConfig(config.getSounds().getSettlement());
             applySoundsRoomConfig(config.getSounds().getRoom());
-            applyWeatherConfig(ConfigUtil.extractValues(config.getWeather()));
+            applyWeatherConfig(config.getWeather());
             applyBoostersConfig(config.getBoosters());
             applyMetricsConfig(config.getMetrics());
             applyRacesConfig(config.getRaces());
             afterApplyAction.accept(config);
         } catch (Exception e) {
             log.error("Could not apply config: %s", config, e);
+            return false;
         }
+
+        return true;
     }
 
-    private void applyRacesConfig(MoreOptionsV2Config.RacesConfig races) {
+    private void applyRacesConfig(RacesConfig races) {
         races.getLikings().forEach(liking -> gameApis.race().setLiking(
             liking.getRace(),
             liking.getOtherRace(),
@@ -105,8 +103,8 @@ public class MoreOptionsConfigurator implements Phases {
 
     }
 
-    private void applyMetricsConfig(MoreOptionsV2Config.Metrics metrics) {
-        Set<String> metricStats = metrics.getStats();
+    private void applyMetricsConfig(MetricsConfig metricsConfig) {
+        Set<String> metricStats = metricsConfig.getStats();
 
         // use new file when exported stats change
         if (!metricStats.containsAll(lastMetricStats)) {
@@ -117,15 +115,15 @@ public class MoreOptionsConfigurator implements Phases {
         }
 
         // reschedule
-        if (metricScheduler.isStarted() && metrics.isEnabled()) {
+        if (metricScheduler.isStarted() && metricsConfig.isEnabled()) {
             log.debug("Reschedule metric collection scheduler");
             metricScheduler.stop();
             metricScheduler.clear();
             metricScheduler
                 .schedule(() -> metricCollector.buffer(metricStats),
-                    metrics.getCollectionRateSeconds().getValue(), metrics.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
+                    metricsConfig.getCollectionRateSeconds().getValue(), metricsConfig.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
                 .schedule(metricExporter::export,
-                    metrics.getExportRateMinutes().getValue(), metrics.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
+                    metricsConfig.getExportRateMinutes().getValue(), metricsConfig.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
                 .start();
             return;
         }
@@ -138,22 +136,22 @@ public class MoreOptionsConfigurator implements Phases {
         }
 
         // start
-        if (metrics.isEnabled()) {
+        if (metricsConfig.isEnabled()) {
             log.debug("Start metric scheduler");
             metricScheduler
                 .schedule(() -> metricCollector.buffer(metricStats),
-                    metrics.getCollectionRateSeconds().getValue(), metrics.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
+                    metricsConfig.getCollectionRateSeconds().getValue(), metricsConfig.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
                 .schedule(metricExporter::export,
-                    metrics.getExportRateMinutes().getValue(), metrics.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
+                    metricsConfig.getExportRateMinutes().getValue(), metricsConfig.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
                 .start();
         }
     }
 
-    private void applyBoostersConfig(Map<String, MoreOptionsV2Config.Range> rangeMap) {
-        gameApis.booster().setBoosters(rangeMap);
+    private void applyBoostersConfig(BoostersConfig boostersConfig) {
+        gameApis.booster().setBoosters(boostersConfig);
     }
 
-    private void applyEventsChanceConfig(Map<String, MoreOptionsV2Config.Range> eventsChanceConfig) {
+    private void applyEventsChanceConfig(Map<String, Range> eventsChanceConfig) {
         eventsChanceConfig.forEach((key, range) -> {
             Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChance();
 
@@ -206,7 +204,7 @@ public class MoreOptionsConfigurator implements Phases {
         });
     }
 
-    private void applySoundsAmbienceConfig(Map<String, MoreOptionsV2Config.Range> soundsConfig) {
+    private void applySoundsAmbienceConfig(Map<String, Range> soundsConfig) {
         Map<String, SoundAmbience.Ambience> ambienceSounds = gameApis.sounds().getAmbienceSounds();
 
         soundsConfig.forEach((key, range) -> {
@@ -220,7 +218,7 @@ public class MoreOptionsConfigurator implements Phases {
         });
     }
 
-    private void applySoundsSettlementConfig(Map<String, MoreOptionsV2Config.Range> soundsConfig) {
+    private void applySoundsSettlementConfig(Map<String, Range> soundsConfig) {
         Map<String, SoundSettlement.Sound> settlementSounds = gameApis.sounds().getSettlementSounds();
 
         soundsConfig.forEach((key, range) -> {
@@ -234,7 +232,7 @@ public class MoreOptionsConfigurator implements Phases {
         });
     }
 
-    private void applySoundsRoomConfig(Map<String, MoreOptionsV2Config.Range> soundsConfig) {
+    private void applySoundsRoomConfig(Map<String, Range> soundsConfig) {
         Map<String, SoundSettlement.Sound> roomSounds = gameApis.sounds().getRoomSounds();
 
         soundsConfig.forEach((key, range) -> {
@@ -248,16 +246,17 @@ public class MoreOptionsConfigurator implements Phases {
         });
     }
 
-    private void applyWeatherConfig(Map<String, Integer> weatherConfig) {
+    private void applyWeatherConfig(WeatherConfig weatherConfig) {
+        Map<String, Integer> weatherEffects = ConfigUtil.extractValues(weatherConfig.getEffects());
         Map<String, WeatherThing> weatherThings = gameApis.weather().getWeatherThings();
 
-        weatherConfig.forEach((key, value) -> {
+        weatherEffects.forEach((key, value) -> {
             if (weatherThings.containsKey(key)) {
                 WeatherThing weatherThing = weatherThings.get(key);
                 gameApis.weather().setAmountLimit(weatherThing, value);
             } else {
                 log.warn("Could not find entry %s in game api result.", key);
-                log.trace("API Result: %s", weatherConfig);
+                log.trace("API Result: %s", weatherEffects);
             }
         });
     }

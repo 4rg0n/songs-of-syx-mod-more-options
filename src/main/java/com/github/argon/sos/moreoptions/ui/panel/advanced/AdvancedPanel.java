@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel;
+package com.github.argon.sos.moreoptions.ui.panel.advanced;
 
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
@@ -6,6 +6,7 @@ import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
+import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
 import com.github.argon.sos.moreoptions.util.Lists;
 import init.paths.PATHS;
 import lombok.Getter;
@@ -27,7 +28,6 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
     private final Button gameLogsFolderButton;
     private final DropDown<Level> dropDown;
 
-
     public AdvancedPanel(
         String title,
         Level logLevel,
@@ -35,14 +35,13 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultLogLevel);
+        super(title, defaultLogLevel, availableWidth, availableHeight);
         dropDown = DropDown.<Level>builder()
             .label(i18n.t("AdvancedPanel.dropDown.log.level.name"))
             .description(i18n.t("AdvancedPanel.dropDown.log.level.desc"))
             .closeOnSelect(true)
             .menu(Toggler.<Level>builder()
                 .menu(UiFactory.buildLogLevelButtonMenu()
-                    .hoverable(true)
                     .sameWidth(true)
                     .build())
                 .highlight(true)
@@ -108,6 +107,7 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
             .category(i18n.t("AdvancedPanel.header.mod.name"), Lists.of(modFunctions))
             .evenOdd(true)
             .displayHeight(availableHeight)
+            .columnMargin(5)
             .rowPadding(10)
             .build();
 
@@ -122,5 +122,9 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
     @Override
     public void setValue(Level logLevel) {
         dropDown.setValue(logLevel);
+    }
+
+    protected AdvancedPanel element() {
+        return this;
     }
 }

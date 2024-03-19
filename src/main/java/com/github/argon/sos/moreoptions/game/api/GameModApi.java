@@ -24,7 +24,7 @@ public class GameModApi {
     private final static GameModApi instance = new GameModApi();
 
     public List<ModInfo> getCurrentMods() {
-        return Lists.listFromLIST(PATHS.currentMods());
+        return Lists.fromGameLIST(PATHS.currentMods());
     }
 
     public Path getCurrentModPath() {

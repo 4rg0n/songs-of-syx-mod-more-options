@@ -7,6 +7,7 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.phase.Phases;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
 
@@ -30,6 +31,17 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     @Nullable
     private ScriptInstance scriptInstance;
 
+    @Getter
+    @Nullable
+    private final Level envLogLevel;
+
+    public AbstractScript() {
+        // set log level from env variable
+        envLogLevel = Optional.ofNullable(System.getenv(LOG_LEVEL_ENV_NAME))
+            .flatMap(Level::fromName)
+            .orElse(null);
+    }
+
     @Override
     public abstract CharSequence name();
 
@@ -44,8 +56,11 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         // custom error handling
         Errors.setHandler(new ErrorHandler<>(this));
 
-        // set log level
-        Level level = determineLogLevel();
+        Level level = envLogLevel;
+        if (level == null) {
+            level = initLogLevel();
+        }
+
         Loggers.setLevels(level);
 
         // initialize game apis first
@@ -126,17 +141,5 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         } catch (Exception e) {
             log.error("Something bad happened while trying to handle game crash", e);
         }
-    }
-
-    /**
-     * Read log {@link Level} from environment variable {@link AbstractScript#LOG_LEVEL_ENV_NAME} first.
-     * Then try to fetch from {@link AbstractScript#initLogLevel()}
-     */
-    private Level determineLogLevel() {
-        // determine and set log level
-        String logLevelName = System.getenv(LOG_LEVEL_ENV_NAME);
-        return Optional.ofNullable(logLevelName)
-            .flatMap(Level::fromName)
-            .orElseGet(this::initLogLevel);
     }
 }

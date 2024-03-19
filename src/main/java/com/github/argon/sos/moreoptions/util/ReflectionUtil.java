@@ -9,10 +9,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -98,6 +96,59 @@ public class ReflectionUtil {
             log.warn("Can not access field %s in %s.", fieldName, clazz.getSimpleName(), e);
             return Optional.empty();
         }
+    }
+
+    public static List<Field> getDeclaredFields(Class<?> fieldClazz, Class<?> clazz) {
+        List<Field> fields = new ArrayList<>();
+
+        for (Field declaredField : clazz.getDeclaredFields()) {
+            if (declaredField.getType().equals(fieldClazz)) {
+                fields.add(declaredField);
+            }
+        }
+
+        return fields;
+    }
+
+    public static <T> List<T> getDeclaredFieldValues(Class<?> fieldClazz, Object instance) {
+        return ReflectionUtil.getDeclaredFields(
+                fieldClazz,
+                instance.getClass())
+            .stream().map(field ->
+                ReflectionUtil.<T>getDeclaredFieldValue(field, instance)
+                    .orElse(null))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    }
+
+    public static <T> Map<Field, T> getDeclaredFieldValuesMap(Class<?> fieldClazz, Object instance) {
+        Map<Field, T> fieldValues = new HashMap<>();
+
+        ReflectionUtil.getDeclaredFields(
+                fieldClazz,
+                instance.getClass())
+            .forEach(field -> {
+                T value = ReflectionUtil.<T>getDeclaredFieldValue(field, instance)
+                    .orElse(null);
+                fieldValues.put(field, value);
+            });
+
+        return fieldValues;
+    }
+
+    public static <T> Map<Field, T> getDeclaredFieldValuesMap(Class<?> fieldClazz, Class<?> clazz) {
+        Map<Field, T> fieldValues = new HashMap<>();
+
+        ReflectionUtil.getDeclaredFields(
+                fieldClazz,
+                clazz)
+            .forEach(field -> {
+                T value = ReflectionUtil.<T>getDeclaredFieldValue(field, clazz)
+                    .orElse(null);
+                fieldValues.put(field, value);
+            });
+
+        return fieldValues;
     }
 
     public static Optional<Field> getField(String fieldName, Class<?> clazz) {

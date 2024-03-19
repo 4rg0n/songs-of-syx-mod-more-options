@@ -2,7 +2,8 @@ package com.github.argon.sos.moreoptions.booster;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
@@ -29,6 +30,7 @@ import java.util.Map;
 public class BoosterFactory {
 
     private final static Logger log = Loggers.getLogger(BoosterFactory.class);
+    private final static I18n i18n = I18n.get(BoosterFactory.class);
 
     public final static String KEY_PREFIX = "booster";
 
@@ -80,12 +82,12 @@ public class BoosterFactory {
      * @param booster on which game booster the custom one shall be attached
      * @param range definition for the booster
      */
-    public static FactionBooster createMoreOptionsBooster(Boostable booster, MoreOptionsV2Config.Range range) {
-        String suffix = " Percent"; // todo i18n
+    public static FactionBooster createMoreOptionsBooster(Boostable booster, Range range) {
+        String suffix = " " +  i18n.t("Boosters.percent.suffix");
         double scale = 1.0D;
 
-        if (range.getApplyMode().equals(MoreOptionsV2Config.Range.ApplyMode.ADD)) {
-            suffix = " Add"; // todo i18n
+        if (range.getApplyMode().equals(Range.ApplyMode.ADD)) {
+            suffix = " " +  i18n.t("Boosters.add.suffix");
             scale = 0.01D;
         }
 

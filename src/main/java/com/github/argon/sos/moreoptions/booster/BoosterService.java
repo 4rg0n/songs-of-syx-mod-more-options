@@ -1,10 +1,13 @@
 package com.github.argon.sos.moreoptions.booster;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.moreoptions.game.api.GameFactionApi;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import game.boosting.BoostableCat;
-import game.faction.FACTIONS;
+import game.faction.Faction;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +26,9 @@ public class BoosterService {
     private final static Logger log = Loggers.getLogger(BoosterService.class);
 
     @Getter(lazy = true)
-    private final static BoosterService instance = new BoosterService();
+    private final static BoosterService instance = new BoosterService(GameFactionApi.getInstance());
+
+    private final GameFactionApi factionApi;
 
     private Map<String, Boosters> boosters = new HashMap<>();
     private Map<String, BoostableCat> boosterCategories = new HashMap<>();
@@ -43,37 +48,49 @@ public class BoosterService {
         return Optional.ofNullable(boosterCategories);
     }
 
-    public void setBoosterValues(MoreOptionsV2Config config) {
+    public void setBoosterValues(MoreOptionsV3Config config) {
        setBoosterValues(config.getBoosters());
     }
 
-    public void setBoosterValues(Map<String, MoreOptionsV2Config.Range> ranges) {
-        ranges.forEach((key, range) -> {
-            getBoosters().ifPresent(boosters ->
-                boosters.computeIfPresent(key, (keyAgain, moreOptionsBoosters) -> {
-                log.trace("Apply booster config for: %s", key);
+    public void setBoosterValues(BoostersConfig config) {
+        config.getFaction().forEach((factionName, boostersConfig) -> {
+            boostersConfig.forEach(boosterConfig -> {
+                getBoosters().ifPresent(gameBoosters -> {
+                    String key = boosterConfig.getKey();
+                    Range range = boosterConfig.getRange();
+                    Faction faction = factionApi.getByName(factionName);
 
-                switch (range.getApplyMode()) {
-                    case PERCENT:
-                        log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
-//                        moreOptionsBoosters.getMulti().set(FACTIONS.player(), MathUtil.toPercentage(range.getValue()));
-                        moreOptionsBoosters.getMulti().set(FACTIONS.player(), range.getValue());
-                        moreOptionsBoosters.getAdd().reset();
-                        break;
-                    case ADD:
-                        log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
-//                        moreOptionsBoosters.getAdd().set(FACTIONS.player(), BoosterUtil.toBoosterValue(range.getValue()));
-                        moreOptionsBoosters.getAdd().set(FACTIONS.player(), range.getValue());
-                        moreOptionsBoosters.getMulti().reset();
-                        break;
-                }
+                    if (faction == null) {
+                        return; // skip for factions not present in game
+                    }
 
-                return moreOptionsBoosters;
-            }));
+                    gameBoosters.computeIfPresent(key, (keyAgain, gameBooster) -> {
+                        log.trace("Apply booster config for: %s", key);
+
+                        switch (range.getApplyMode()) {
+                            case PERCENT:
+                                log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
+                                gameBooster.getMulti().set(faction, range.getValue());
+                                gameBooster.getAdd().reset();
+                                break;
+                            case ADD:
+                                log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
+                                gameBooster.getAdd().set(faction, range.getValue());
+                                gameBooster.getMulti().reset();
+                                break;
+                        }
+
+                        return gameBooster;
+                    });
+                });
+            });
+
+
+
         });
     }
 
-    public void reset(MoreOptionsV2Config config) {
+    public void reset(MoreOptionsV3Config config) {
         reset();
         setBoosterValues(config);
     }

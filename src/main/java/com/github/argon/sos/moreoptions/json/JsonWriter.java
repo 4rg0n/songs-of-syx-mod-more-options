@@ -49,7 +49,7 @@ public class JsonWriter {
     /**
      * @return writer that prints json the same as the games {@link JsonE}
      */
-    public static JsonWriter getJsonE() {
+    public static JsonWriter jsonE() {
         return new JsonWriter(false, true, true, false);
     }
 

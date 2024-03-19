@@ -32,19 +32,23 @@ public class ListMapper implements Mapper<JsonArray> {
 
         elementType = TypeInfo.get(genericTypes[0]);
 
-        if (isAssignableFrom(type, List.class) || isAssignableFrom(type, Collection.class) || isAssignableFrom(type, ArrayList.class)) {
-            return json.getElements().stream()
-                .map(jsonElement ->  JsonMapper.mapJson(jsonElement, elementType))
-                .collect(Collectors.toList());
-        } else if (isAssignableFrom(type, Set.class)) {
-            return json.getElements().stream()
-                .map(jsonElement -> JsonMapper.mapJson(jsonElement, elementType))
-                .collect(Collectors.toSet());
-        } else if (isAssignableFrom(type, LinkedList.class)) {
+        if (isAssignableFrom(type, LinkedList.class)) {
             return json.getElements().stream()
                 .map(jsonElement -> JsonMapper.mapJson(jsonElement, elementType))
                 .distinct()
                 .collect(Collectors.toCollection(LinkedList::new));
+        } if (isAssignableFrom(type, TreeSet.class)) {
+            return json.getElements().stream()
+                .map(jsonElement -> JsonMapper.mapJson(jsonElement, elementType))
+                .collect(Collectors.toCollection(TreeSet::new));
+        } else if (isAssignableFrom(type, Set.class)) {
+            return json.getElements().stream()
+                .map(jsonElement -> JsonMapper.mapJson(jsonElement, elementType))
+                .collect(Collectors.toSet());
+        } else if (isAssignableFrom(type, List.class) || isAssignableFrom(type, ArrayList.class)) {
+            return json.getElements().stream()
+                .map(jsonElement ->  JsonMapper.mapJson(jsonElement, elementType))
+                .collect(Collectors.toList());
         } else {
             throw new JsonMapperException("Can not map " + JsonArray.class.getSimpleName() + " to type " + type.getTypeName());
         }

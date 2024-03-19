@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.booster;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.boosting.BSourceInfo;
 import game.boosting.Boostable;
@@ -12,7 +12,7 @@ public class BoosterMapper {
     public static FactionBooster fromRange(
         Boostable origin,
         BSourceInfo bSourceInfo,
-        MoreOptionsV2Config.Range range,
+        Range range,
         double scale
     ) {
         return FactionBooster.builder()

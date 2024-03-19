@@ -1,9 +1,10 @@
 
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.booster.BoosterService;
 import com.github.argon.sos.moreoptions.booster.Boosters;
+import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -36,26 +37,25 @@ public class GameBoosterApi implements Phases {
 
     public Map<String, Boosters> getBoosters() {
         return boosterService.getBoosters()
-            .orElseThrow(UninitializedException::new);
+            .orElseThrow(() -> new UninitializedException(Phase.INIT_MOD_CREATE_INSTANCE));
     }
 
     public Boosters get(String key) {
         return boosterService.get(key)
-            .orElseThrow(UninitializedException::new);
+            .orElseThrow(() -> new UninitializedException(Phase.INIT_MOD_CREATE_INSTANCE));
     }
 
     public BoostableCat getCat(String key) {
         return boosterService.getCat(key)
-            .orElseThrow(UninitializedException::new);
+            .orElseThrow(() -> new UninitializedException(Phase.INIT_MOD_CREATE_INSTANCE));
     }
 
-    public void setBoosters(Map<String, MoreOptionsV2Config.Range> ranges) {
-        boosterService.setBoosterValues(ranges);
+    public void setBoosters(BoostersConfig boostersConfig) {
+        boosterService.setBoosterValues(boostersConfig);
     }
 
     @Override
     public void initModCreateInstance() {
-        log.debug("Init game booster api");
         boosterService.reset();
     }
 }

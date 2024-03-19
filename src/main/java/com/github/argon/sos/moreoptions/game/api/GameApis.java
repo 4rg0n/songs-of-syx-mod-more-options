@@ -26,7 +26,8 @@ public class GameApis implements Phases {
         GameStatsApi.getInstance(),
         GameRaceApi.getInstance(),
         GameSaveApi.getInstance(),
-        GameLangApi.getInstance()
+        GameLangApi.getInstance(),
+        GameFactionApi.getInstance()
     );
 
     @Accessors(fluent = true)
@@ -36,13 +37,13 @@ public class GameApis implements Phases {
     private final GameSoundsApi sounds;
 
     @Accessors(fluent = true)
-    private final  GameUiApi ui;
+    private final GameUiApi ui;
 
     @Accessors(fluent = true)
-    private final  GameWeatherApi weather;
+    private final GameWeatherApi weather;
 
     @Accessors(fluent = true)
-    private final  GameBoosterApi booster;
+    private final GameBoosterApi booster;
 
     @Accessors(fluent = true)
     private final GameModApi mod;
@@ -59,6 +60,9 @@ public class GameApis implements Phases {
     @Accessors(fluent = true)
     private final GameLangApi lang;
 
+    @Accessors(fluent = true)
+    private final GameFactionApi faction;
+
     public void clear() {
         // todo need to verify again...
         // game will initialize new instances of the cached class references on load
@@ -66,6 +70,7 @@ public class GameApis implements Phases {
         sounds().clearCached();
         weather().clearCached();
         booster().clearCached();
+        faction().clearCached();
     }
 
     @Override
@@ -74,6 +79,7 @@ public class GameApis implements Phases {
     @Override
     public void initGameUpdating() {
         ui().initGameUpdating();
+        faction().initGameUpdating();
     }
 
     @Override

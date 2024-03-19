@@ -4,6 +4,8 @@ import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.datatypes.RECTANGLEE;
+import snake2d.util.datatypes.Rec;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.SPRITE;
@@ -54,8 +56,8 @@ public class UiUtil {
         int margin = 0;
 
         for (ColumnRow<Value> columnRow : columnRows) {
-            if (margin < columnRow.getMargin()) {
-                margin = columnRow.getMargin();
+            if (margin < columnRow.margin()) {
+                margin = columnRow.margin();
             }
         }
 
@@ -214,5 +216,22 @@ public class UiUtil {
         return renderobjs.stream()
             .map(value -> value.body().width())
             .collect(Collectors.toList());
+    }
+
+    public static int sumHeights(Collection<? extends RENDEROBJ> renderobjs) {
+        return renderobjs.stream()
+            .mapToInt(value -> value.body().height())
+            .sum();
+    }
+
+    @Nullable
+    public static Rec getResizeableBody(RENDEROBJ element) {
+        RECTANGLEE body = element.body();
+
+        if (body instanceof Rec) {
+            return (Rec) body;
+        }
+
+        return null;
     }
 }

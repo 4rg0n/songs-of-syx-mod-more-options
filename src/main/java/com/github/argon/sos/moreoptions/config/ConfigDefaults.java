@@ -1,19 +1,24 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.MathUtil;
+import game.faction.Faction;
+import init.paths.PATHS;
 import init.race.Race;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.*;
+import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config.*;
 
 /**
  * Provides default configuration partially gathered from the game.
@@ -23,7 +28,14 @@ public class ConfigDefaults {
 
     private final static Logger log = Loggers.getLogger(ConfigDefaults.class);
 
-    public final static Level CONFIG_DEFAULT_LOG_LEVEL = Level.INFO;
+    public final static Level LOG_LEVEL = Level.INFO;
+
+    public final static Path PROFILE_PATH = PATHS.local().PROFILE.get().resolve(MoreOptionsScript.MOD_INFO.name.toString());
+    public final static Path CONFIGE_PATH = PATHS.local().SETTINGS.get();
+    public final static Path CONFIG_FILE_PATH = CONFIGE_PATH.resolve("MoreOptions.txt");
+
+    public final static Path RACES_CONFIG_FOLDER_PATH = PROFILE_PATH.resolve("races");
+    public final static Path BOOSTERS_CONFIG_FOLDER_PATH = PROFILE_PATH.resolve("boosters");
 
     @Getter(lazy = true)
     private final static ConfigDefaults instance = new ConfigDefaults(
@@ -32,45 +44,23 @@ public class ConfigDefaults {
 
     private final GameApis gameApis;
 
-    public MoreOptionsV2Config newDefaultConfig() {
+    public MoreOptionsV3Config newConfig() {
         log.debug("Creating new default config");
-        // Boosters
-        Map<String, Range> multiBoosters = gameApis.booster().getBoosters().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.boosterPercent()));
 
-        // Weather
-        Map<String, Range> weatherRanges = gameApis.weather().getWeatherThings().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.weather()));
+        MoreOptionsV3Config defaultConfig = builder()
+            .events(newEvents())
+            .sounds(newSounds())
+            .weather(newWeather())
+            .boosters(newBoostersConfig())
+            .metrics(newMetrics())
+            .races(newRacesConfig())
+            .build();
 
-        // Sounds Ambience
-        Map<String, Range> ambienceSounds = gameApis.sounds().getAmbienceSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+        log.trace("Default config: %s", defaultConfig);
+        return defaultConfig;
+    }
 
-        // Sounds Room
-        Map<String, Range> roomSounds = gameApis.sounds().getRoomSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
-
-        // Sounds Settlement
-        Map<String, Range> settlementSounds = gameApis.sounds().getSettlementSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
-
-        // Events Chance
-        Map<String, Range> eventChances = gameApis.events().getEventsChance().keySet().stream()
-            .collect(Collectors.toMap(key -> key, key -> ConfigDefaults.eventChance()));
-
-        // Events Settlement
-        Map<String, Boolean> settlementEvents = gameApis.events().getSettlementEvents().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> true));
-
-        // Event World
-        Map<String, Boolean> worldEvents = gameApis.events().getWorldEvents().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> true));
-
-        // Metrics
-        Metrics metrics = ConfigDefaults.metrics();
-        Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
-        metrics.setStats(availableStats);
-
+    public RacesConfig newRacesConfig() {
         // Races
         List<Race> racesAll = gameApis.race().getAll();
         List<Race> otherRacesAll = new ArrayList<>(racesAll);
@@ -90,29 +80,105 @@ public class ConfigDefaults {
                     .build());
             }
         }
-        RacesConfig races = RacesConfig.builder()
+
+        return RacesConfig.builder()
             .likings(raceLikings)
             .build();
+    }
 
-        MoreOptionsV2Config defaultConfig = builder()
-            .events(Events.builder()
-                .world(worldEvents)
-                .settlement(settlementEvents)
-                .chance(eventChances)
-                .build())
-            .sounds(Sounds.builder()
-                .ambience(ambienceSounds)
-                .settlement(settlementSounds)
-                .room(roomSounds)
-                .build())
-            .weather(weatherRanges)
-            .boosters(multiBoosters)
-            .metrics(metrics)
-            .races(races)
+    public Map<String, Set<BoostersConfig.Booster>> newBoosters(Collection<? extends Faction> factions) {
+        Map<String, Set<BoostersConfig.Booster>> factionBoosters = new HashMap<>();
+        for (Faction faction : factions) {
+            Set<BoostersConfig.Booster> boosters = newBoosters();
+            factionBoosters.put(faction.name.toString(), boosters);
+        }
+
+        return factionBoosters;
+    }
+
+    public Set<BoostersConfig.Booster> newBoosters() {
+        return gameApis.booster().getBoosters().keySet().stream()
+            .map(boosterKey ->
+                BoostersConfig.Booster.builder()
+                    .key(boosterKey)
+                    .range(ConfigDefaults.boosterPercent())
+                    .build()
+            ).collect(Collectors.toSet());
+    }
+
+    public BoostersConfig newBoostersConfig(Collection<Faction> factions) {
+        // Boosters
+        Map<String, Set<BoostersConfig.Booster>> boosters = newBoosters(factions);
+        return BoostersConfig.builder()
+            .faction(boosters)
             .build();
+    }
 
-        log.trace("Default config: %s", defaultConfig);
-        return defaultConfig;
+    public BoostersConfig newBoostersConfig() {
+        // Boosters
+        Map<String, Set<BoostersConfig.Booster>> boosters = newBoosters(gameApis.faction().getFactionNPCs().values());
+        return BoostersConfig.builder()
+            .faction(boosters)
+            .player(newBoosters())
+            .build();
+    }
+
+    public WeatherConfig newWeather() {
+        Map<String, Range> effects = gameApis.weather().getWeatherThings().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.weather()));
+
+        return WeatherConfig.builder()
+            .effects(effects)
+            .build();
+    }
+
+    public SoundsConfig newSounds() {
+        // Sounds Ambience
+        Map<String, Range> ambienceSounds = gameApis.sounds().getAmbienceSounds().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+
+        // Sounds Room
+        Map<String, Range> roomSounds = gameApis.sounds().getRoomSounds().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+
+        // Sounds Settlement
+        Map<String, Range> settlementSounds = gameApis.sounds().getSettlementSounds().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+
+        return SoundsConfig.builder()
+            .ambience(ambienceSounds)
+            .settlement(settlementSounds)
+            .room(roomSounds)
+            .build();
+    }
+
+    public EventsConfig newEvents() {
+        // Events Chance
+        Map<String, Range> eventChances = gameApis.events().getEventsChance().keySet().stream()
+            .collect(Collectors.toMap(key -> key, key -> ConfigDefaults.eventChance()));
+
+        // Events Settlement
+        Map<String, Boolean> settlementEvents = gameApis.events().getSettlementEvents().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> true));
+
+        // Event World
+        Map<String, Boolean> worldEvents = gameApis.events().getWorldEvents().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> true));
+
+        return EventsConfig.builder()
+            .world(worldEvents)
+            .settlement(settlementEvents)
+            .chance(eventChances)
+            .build();
+    }
+
+    public MetricsConfig newMetrics() {
+        // Metrics
+        MetricsConfig metricsConfig = ConfigDefaults.metrics();
+        Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
+        metricsConfig.setStats(availableStats);
+
+        return metricsConfig;
     }
 
     public static Range boosterAdd() {
@@ -135,8 +201,8 @@ public class ConfigDefaults {
             .build();
     }
 
-    public static Metrics metrics() {
-        return Metrics.builder().build();
+    public static MetricsConfig metrics() {
+        return MetricsConfig.builder().build();
     }
 
     public static Range raceLiking() {
@@ -171,28 +237,31 @@ public class ConfigDefaults {
 
     public static Range weather() {
         return Range.builder()
-                .value(100)
-                .min(0)
-                .max(100)
-                .displayMode(Range.DisplayMode.PERCENTAGE)
-                .build();
+            .value(100)
+            .min(0)
+            .max(100)
+            .displayMode(Range.DisplayMode.PERCENTAGE)
+            .applyMode(Range.ApplyMode.PERCENT)
+            .build();
     }
 
     public static Range sound() {
         return Range.builder()
-                .value(100)
-                .min(0)
-                .max(100)
-                .displayMode(Range.DisplayMode.PERCENTAGE)
-                .build();
+            .value(100)
+            .min(0)
+            .max(100)
+            .displayMode(Range.DisplayMode.PERCENTAGE)
+            .applyMode(Range.ApplyMode.PERCENT)
+            .build();
     }
 
     public static Range eventChance() {
         return Range.builder()
-                .value(100)
-                .min(0)
-                .max(10000)
-                .displayMode(Range.DisplayMode.PERCENTAGE)
-                .build();
+            .value(100)
+            .min(0)
+            .max(10000)
+            .displayMode(Range.DisplayMode.PERCENTAGE)
+            .applyMode(Range.ApplyMode.PERCENT)
+            .build();
     }
 }

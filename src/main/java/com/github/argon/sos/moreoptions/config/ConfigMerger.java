@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 
+import com.github.argon.sos.moreoptions.config.domain.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -8,15 +9,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.Set;
 
-import static com.github.argon.sos.moreoptions.config.MoreOptionsV2Config.*;
-
 /**
- * Can merge two {@link MoreOptionsV2Config}s while one serves as target and the other source of the data.
+ * Can merge two {@link MoreOptionsV3Config}s while one serves as target and the other source of the data.
  * Will fill empty fields. Used for e.g. merging default configs into loaded configs.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigMerger {
-    public static void merge(MoreOptionsV2Config target, @Nullable MoreOptionsV2Config source) {
+    public static void merge(MoreOptionsV3Config target, @Nullable MoreOptionsV3Config source) {
         if (source == null) {
             return;
         }
@@ -42,14 +41,14 @@ public class ConfigMerger {
         if (target.getWeather() == null) {
             target.setWeather(source.getWeather());
         } else {
-            addMissing(target.getWeather(), source.getWeather());
+            merge(target.getWeather(), source.getWeather());
         }
 
         // Boosters
         if (target.getBoosters() == null) {
             target.setBoosters(source.getBoosters());
         } else {
-            addMissing(target.getBoosters(), source.getBoosters());
+            merge(target.getBoosters(), source.getBoosters());
         }
 
         // Metrics
@@ -66,20 +65,57 @@ public class ConfigMerger {
             merge(target.getRaces(), source.getRaces());
         }
     }
+    public static void merge(WeatherConfig target, @Nullable WeatherConfig source) {
+        if (source == null) {
+            return;
+        }
+
+        if (target.getEffects() == null || target.getEffects().isEmpty()) {
+            target.setEffects(source.getEffects());
+        }else {
+            addMissing(target.getEffects(), source.getEffects());
+        }
+    }
+
+    public static void merge(BoostersConfig target, @Nullable BoostersConfig source) {
+        if (source == null) {
+            return;
+        }
+
+        if (target.getPlayer() == null || target.getPlayer().isEmpty()) {
+            target.setPlayer(source.getPlayer());
+        } else {
+            addMissing(target.getPlayer(), source.getPlayer());
+        }
+
+        if (target.getFaction() == null || target.getFaction().isEmpty()) {
+            target.setFaction(source.getFaction());
+        } else {
+            merge(target.getFaction(), source.getFaction());
+        }
+    }
+
+    private static <T> void addMissing(Set<T> target, @Nullable Set<T> source) {
+        if (source == null) {
+            return;
+        }
+
+        target.addAll(source);
+    }
 
     public static void merge(RacesConfig target, @Nullable RacesConfig source) {
         if (source == null) {
             return;
         }
 
-        if (target.getLikings() == null) {
+        if (target.getLikings() == null || target.getLikings().isEmpty()) {
             target.setLikings(source.getLikings());
         } else {
             target.setLikings(replace(target.getLikings(), source.getLikings()));
         }
     }
 
-    public static void merge(Metrics target, @Nullable Metrics source) {
+    public static void merge(MetricsConfig target, @Nullable MetricsConfig source) {
         if (source == null) {
             return;
         }
@@ -94,55 +130,55 @@ public class ConfigMerger {
             target.setExportRateMinutes(source.getExportRateMinutes());
         }
 
-        if (target.getStats() == null) {
+        if (target.getStats() == null || target.getStats().isEmpty()) {
             target.setStats(source.getStats());
         } else {
             target.setStats(replace(target.getStats(), source.getStats()));
         }
     }
 
-    public static void merge(Events target, @Nullable Events source) {
+    public static void merge(EventsConfig target, @Nullable EventsConfig source) {
         if (source == null) {
             return;
         }
 
-        if (target.getChance() == null) {
+        if (target.getChance() == null || target.getChance().isEmpty()) {
             target.setChance(source.getChance());
         } else {
             addMissing(target.getChance(), source.getChance());
         }
 
-        if (target.getWorld() == null) {
+        if (target.getWorld() == null || target.getWorld().isEmpty()) {
             target.setWorld(source.getWorld());
         } else {
             addMissing(target.getWorld(), source.getWorld());
         }
 
-        if (target.getSettlement() == null) {
+        if (target.getSettlement() == null || target.getSettlement().isEmpty()) {
             target.setSettlement(source.getSettlement());
         } else {
             addMissing(target.getSettlement(), source.getSettlement());
         }
     }
 
-    public static void merge(Sounds target, @Nullable Sounds source) {
+    public static void merge(SoundsConfig target, @Nullable SoundsConfig source) {
         if (source == null) {
             return;
         }
 
-        if (target.getRoom() == null) {
+        if (target.getRoom() == null || target.getRoom().isEmpty()) {
             target.setRoom(source.getRoom());
         } else {
             addMissing(target.getRoom(), source.getRoom());
         }
 
-        if (target.getAmbience() == null) {
+        if (target.getAmbience() == null || target.getAmbience().isEmpty()) {
             target.setAmbience(source.getAmbience());
         } else {
             addMissing(target.getAmbience(), source.getAmbience());
         }
 
-        if (target.getSettlement() == null) {
+        if (target.getSettlement() == null || target.getSettlement().isEmpty()) {
             target.setSettlement(source.getSettlement());
         } else {
             addMissing(target.getSettlement(), source.getSettlement());
@@ -155,6 +191,32 @@ public class ConfigMerger {
         }
 
         return source;
+    }
+
+    public static <K, V> void merge(Map<K, V> target, @Nullable Map<K, V> source) {
+        if (source == null) {
+            return;
+        }
+
+        if (target.isEmpty()) {
+            target.putAll(source);
+            return;
+        }
+
+        removeExcess(target, source);
+        addMissing(target, source);
+    }
+
+    public static <K, V> void removeExcess(Map<K, V> target, @Nullable Map<K, V> source) {
+        if (source == null) {
+            return;
+        }
+
+        target.forEach((key, value) -> {
+            if (!source.containsKey(key)) {
+                target.remove(key);
+            }
+        });
     }
 
     public static <K, V> void addMissing(Map<K, V> target, @Nullable Map<K, V> source) {

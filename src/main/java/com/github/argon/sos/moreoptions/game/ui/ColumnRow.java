@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.util.ClassUtil;
 import com.github.argon.sos.moreoptions.util.Lists;
-import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +18,8 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -28,6 +30,10 @@ import java.util.function.Supplier;
 public class ColumnRow<Value> extends GuiSection implements
     Searchable<String, Boolean>,
     Valuable<Value, ColumnRow<Value>> {
+
+    @Getter
+    @Builder.Default
+    private String key = UUID.randomUUID().toString();
 
     @Nullable
     @Setter
@@ -71,12 +77,13 @@ public class ColumnRow<Value> extends GuiSection implements
     private boolean selectable = false;
 
     @Getter
-    @Builder.Default
-    private int margin = 5;
-
-    private float doubleClickTimer = 0;
-
     @Setter
+    @Builder.Default
+    @Accessors(fluent = true)
+    private int margin = 0;
+
+    private float doubleClickTimer = 0.0f;
+
     private Value value;
     private boolean isSelected;
 
@@ -88,12 +95,19 @@ public class ColumnRow<Value> extends GuiSection implements
     @Setter
     @Nullable
     @Accessors(fluent = true, chain = false)
+    private Consumer<Value> valueConsumer;
+
+    @Setter
+    @Nullable
+    @Accessors(fluent = true, chain = false)
     private Action<ColumnRow<Value>> doubleClickAction;
 
     @Setter
     @Builder.Default
     @Accessors(fluent = true, chain = false)
     private Action<ColumnRow<Value>> clickAction = o -> {};
+
+
 
     public void init() {
         List<Integer> maxWidths = UiUtil.getMaxColumnWidths(Lists.of(columns));
@@ -196,6 +210,15 @@ public class ColumnRow<Value> extends GuiSection implements
         }
 
         return value;
+    }
+
+    @Override
+    public void setValue(Value value) {
+        if (valueConsumer != null) {
+            valueConsumer.accept(value);
+        }
+
+        this.value = value;
     }
 
     @Override

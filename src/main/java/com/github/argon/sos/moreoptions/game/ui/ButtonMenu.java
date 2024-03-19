@@ -1,96 +1,71 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.util.UiUtil;
+import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.ui.layout.Layouts;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-@Builder
+// todo maxHeight / width and make scrollable
 public class ButtonMenu<Key> extends GuiSection {
 
     @Getter
     private final Map<Key, Button> buttons;
 
-    @Builder.Default
-    private boolean horizontal = false;
-    @Builder.Default
-    private boolean sameWidth = false;
-
-    @Builder.Default
-    private boolean clickable = true;
-    @Builder.Default
-    private boolean hoverable = true;
-    @Builder.Default
-    private boolean spacer = false;
-    @Builder.Default
-    private int margin = 0;
-    @Builder.Default
-    private COLOR buttonColor = null;
-    @Builder.Default
-    private List<Integer> widths = null;
+    @Setter
+    @Nullable
+    @Accessors(fluent = true, chain = false)
+    private Action<Key> clickAction;
 
     public ButtonMenu(Map<Key, Button> buttons) {
-        this(buttons, false, true, true, true, false, 0, COLOR.WHITE35,null);
+        this(buttons, false, true, true, true, false, 0, 0, 0, COLOR.WHITE35, null, null);
     }
 
+    @Builder
     public ButtonMenu(
         Map<Key, Button> buttons,
         boolean horizontal,
         boolean sameWidth,
-        boolean clickable,
-        boolean hoverable,
+        boolean notClickable,
+        boolean notHoverable,
         boolean spacer,
         int margin,
+        int width,
+        int minWidth,
         @Nullable COLOR buttonColor,
-        @Nullable List<Integer> widths
+        @Nullable List<Integer> widths,
+        @Nullable Action<Key> clickAction
     ) {
         this.buttons = buttons;
-        int maxWidth = 0;
-        if (widths == null) maxWidth = UiUtil.getMaxWidth(buttons.values());
-        Collection<Button> buttonList = this.buttons.values();
+        this.clickAction = clickAction;
 
-        int pos = 0;
-        for (Button button : buttonList) {
+        for (Map.Entry<Key, Button> entry : buttons.entrySet()) {
+            Key key = entry.getKey();
+            Button newButton = entry.getValue();
 
-            int width = button.body().width();
-            if (sameWidth && maxWidth > 0) {
-                // adjust with by widest
-                width = maxWidth;
-            } else if (widths != null && pos < widths.size()) {
-                // adjust width by given widths
-                width = widths.get(pos);
+            newButton.clickable(!notClickable);
+            newButton.hoverable(!notHoverable);
+            if (buttonColor != null) newButton.bg(buttonColor);
+            if (clickAction != null) {
+                newButton.clickActionSet(() -> {
+                    clickAction.accept(key);
+                });
             }
+        }
 
-            button.body().setWidth(width);
-            button.clickable(clickable);
-            button.hoverable(hoverable);
-            if (buttonColor != null) button.bg(buttonColor);
-
-            // add buttons in correct directions
-            if (horizontal) {
-                if (spacer) {
-                    addRightC(0, button);
-                    if (pos < buttonList.size() - 1)
-                        addRightC(0, new VerticalLine(margin, button.body.height(), 1));
-                } else {
-                    addRightC(margin, button);
-                }
-            } else {
-                if (spacer) {
-                    addDownC(0, button);
-                    if (pos < buttonList.size() - 1)
-                        addDownC(0, new VerticalLine(margin, button.body.height(), 1));
-                } else {
-                    addDownC(margin, button);
-                }
-            }
-
-            pos++;
+        if (horizontal) {
+            Layouts.horizontal(buttons.values(), this, margin, true, spacer, sameWidth, width, minWidth, widths);
+        } else {
+            Layouts.vertical(buttons.values(), this, margin, true, spacer, sameWidth, width, minWidth, widths);
         }
     }
 

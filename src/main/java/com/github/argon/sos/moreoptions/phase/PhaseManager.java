@@ -56,24 +56,6 @@ public class PhaseManager implements Phases {
     }
 
     @Override
-    public void initGameUiPresent() {
-        log.debug("PHASE: initGameUiPresent");
-        phases.get(Phase.INIT_GAME_UI_PRESENT).forEach(init -> execute(init, init::initGameUiPresent));
-    }
-
-    @Override
-    public void initGameUpdating() {
-        log.debug("PHASE: initGameUpdating");
-        phases.get(Phase.INIT_GAME_UPDATING).forEach(init -> execute(init, init::initGameUpdating));
-    }
-
-    @Override
-    public void onGameUpdate(double seconds) {
-        //log.trace("PHASE: onGameUpdate");
-        phases.get(Phase.ON_GAME_UPDATE).forEach(init -> init.onGameUpdate(seconds));
-    }
-
-    @Override
     public void initBeforeGameCreated() {
         log.debug("PHASE: initBeforeGameCreated");
         phases.get(Phase.INIT_BEFORE_GAME_CREATED).forEach(init -> execute(init, init::initBeforeGameCreated));
@@ -92,9 +74,9 @@ public class PhaseManager implements Phases {
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
-        log.debug("PHASE: onGameSaved");
-        phases.get(Phase.ON_GAME_SAVED).forEach(init -> execute(init, () -> init.onGameSaved(saveFilePath)));
+    public void onGameSaveReloaded() {
+        log.debug("PHASE: onGameSaveReloaded");
+        phases.get(Phase.ON_GAME_SAVE_RELOADED).forEach(init -> execute(init, init::onGameSaveReloaded));
     }
 
     @Override
@@ -104,9 +86,27 @@ public class PhaseManager implements Phases {
     }
 
     @Override
-    public void onGameSaveReloaded() {
-        log.debug("PHASE: onGameSaveReloaded");
-        phases.get(Phase.ON_GAME_SAVE_RELOADED).forEach(init -> execute(init, init::onGameSaveReloaded));
+    public void initGameUpdating() {
+        log.debug("PHASE: initGameUpdating");
+        phases.get(Phase.INIT_GAME_UPDATING).forEach(init -> execute(init, init::initGameUpdating));
+    }
+
+    @Override
+    public void onGameUpdate(double seconds) {
+        //log.trace("PHASE: onGameUpdate");
+        phases.get(Phase.ON_GAME_UPDATE).forEach(init -> init.onGameUpdate(seconds));
+    }
+
+    @Override
+    public void initGameUiPresent() {
+        log.debug("PHASE: initGameUiPresent");
+        phases.get(Phase.INIT_GAME_UI_PRESENT).forEach(init -> execute(init, init::initGameUiPresent));
+    }
+
+    @Override
+    public void onGameSaved(Path saveFilePath) {
+        log.debug("PHASE: onGameSaved");
+        phases.get(Phase.ON_GAME_SAVED).forEach(init -> execute(init, () -> init.onGameSaved(saveFilePath)));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.json;
 
-import com.github.argon.sos.moreoptions.config.ResourceService;
+import com.github.argon.sos.moreoptions.io.ResourceService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ class JsonTest {
     @Test
     void parse_JsonEAndProduceJsonE() throws IOException {
         String jsonString = resourceService.readResource("json/JsonE.txt").orElse("");
-        Json json = new Json(jsonString, JsonWriter.getJsonE());
+        Json json = new Json(jsonString, JsonWriter.jsonE());
 
         String parsedJsonString = json.toString();
 

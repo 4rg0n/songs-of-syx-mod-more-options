@@ -99,11 +99,21 @@ public class FullWindow<Section extends GuiSection> extends Interrupter implemen
         view.getSection().body().moveY1(FullView.TOP_HEIGHT);
         view.getSection().body().centerX(C.DIM());
         showAction.accept(this);
+
+        if (view.getSection() instanceof Showable) {
+            ((Showable<?>) view.getSection()).show();
+        }
+
         super.show(VIEW.inters().manager);
     }
 
     public void hide() {
         hideAction.accept(this);
+
+        if (view.getSection() instanceof Hideable) {
+            ((Hideable<?>) view.getSection()).hide();
+        }
+
         super.hide();
     }
 

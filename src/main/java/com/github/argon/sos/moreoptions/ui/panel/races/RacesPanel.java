@@ -1,15 +1,17 @@
-package com.github.argon.sos.moreoptions.ui.panel;
+package com.github.argon.sos.moreoptions.ui.panel.races;
 
-import com.github.argon.sos.moreoptions.config.MoreOptionsV2Config;
+import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
 import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
+import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
-import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import init.race.Race;
 import init.sprite.UI.UI;
 import lombok.Builder;
@@ -22,16 +24,13 @@ import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GInput;
 import util.gui.misc.GText;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Contains race likings adjustable via sliders
  */
-public class RacesPanel extends AbstractConfigPanel<MoreOptionsV2Config.RacesConfig, RacesPanel> {
+public class RacesPanel extends AbstractConfigPanel<RacesConfig, RacesPanel> {
     private static final Logger log = Loggers.getLogger(RacesPanel.class);
 
     private final static I18n i18n = I18n.get(RacesPanel.class);
@@ -53,45 +52,47 @@ public class RacesPanel extends AbstractConfigPanel<MoreOptionsV2Config.RacesCon
     public RacesPanel(
         String title,
         Map<String, List<Entry>> raceEntries,
-        MoreOptionsV2Config.RacesConfig defaultConfig,
+        RacesConfig defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultConfig);
+        super(title, defaultConfig, availableWidth, availableHeight);
         // Race Likings rows for table
         Map<String, List<ColumnRow<Integer>>> raceLikingsRowMap = raceEntries.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
-            mapEntry -> mapEntry.getValue().stream().map(entry -> {
-                Race race = entry.getRace();
-                Race otherRace = entry.getOtherRace();
-                MoreOptionsV2Config.Range range = entry.getRange();
+            mapEntry -> mapEntry.getValue().stream()
+                .sorted(Comparator.comparing(entry -> entry.getOtherRace().info.name.toString()))
+                .map(entry -> {
+                    Race race = entry.getRace();
+                    Race otherRace = entry.getOtherRace();
+                    Range range = entry.getRange();
 
-                // Race icons
-                GuiSection raceIcon = UiUtil.toGuiSection(race.appearance().icon);
-                raceIcon.hoverInfoSet(race.info.name);
-                GuiSection otherRaceIcon = UiUtil.toGuiSection(otherRace.appearance().icon);
-                otherRaceIcon.hoverInfoSet(otherRace.info.name);
+                    // Race icons
+                    GuiSection raceIcon = UiUtil.toGuiSection(race.appearance().icon);
+                    raceIcon.hoverInfoSet(race.info.name);
+                    GuiSection otherRaceIcon = UiUtil.toGuiSection(otherRace.appearance().icon);
+                    otherRaceIcon.hoverInfoSet(otherRace.info.name);
 
-                // Likings Slider
-                Slider likingsSlider = Slider.SliderBuilder
-                    .fromRange(range)
-                    .width(300)
-                    .input(true)
-                    .lockScroll(true)
-                    .threshold(0, COLOR.RED100.shade(0.5d))
-                    .threshold((int) (0.25 * range.getMax()), COLOR.YELLOW100.shade(0.5d))
-                    .threshold((int) (0.50 * range.getMax()), COLOR.ORANGE100.shade(0.5d))
-                    .threshold((int) (0.75 * range.getMax()), COLOR.GREEN100.shade(0.5d))
-                    .build();
+                    // Likings Slider
+                    Slider likingsSlider = Slider.SliderBuilder
+                        .fromRange(range)
+                        .width(300)
+                        .input(true)
+                        .lockScroll(true)
+                        .threshold(0, COLOR.RED100.shade(0.5d))
+                        .threshold((int) (0.25 * range.getMax()), COLOR.YELLOW100.shade(0.5d))
+                        .threshold((int) (0.50 * range.getMax()), COLOR.ORANGE100.shade(0.5d))
+                        .threshold((int) (0.75 * range.getMax()), COLOR.GREEN100.shade(0.5d))
+                        .build();
 
-                likingsSliders.put(key(race, otherRace), likingsSlider);
-                List<GuiSection> columns = Lists.of(raceIcon, likingsSlider, otherRaceIcon);
+                    likingsSliders.put(key(race, otherRace), likingsSlider);
+                    List<GuiSection> columns = Lists.of(raceIcon, likingsSlider, otherRaceIcon);
 
-                return ColumnRow.<Integer>builder()
-                    .searchTerm(term(race, otherRace))
-                    .highlightable(true)
-                    .columns(columns)
-                    .build();
+                    return ColumnRow.<Integer>builder()
+                        .searchTerm(term(race, otherRace))
+                        .highlightable(true)
+                        .columns(columns)
+                        .build();
             }).collect(Collectors.toList())));
 
         // Race Likings table with search
@@ -138,26 +139,26 @@ public class RacesPanel extends AbstractConfigPanel<MoreOptionsV2Config.RacesCon
     }
 
     @Override
-    public MoreOptionsV2Config.RacesConfig getValue() {
-        Set<MoreOptionsV2Config.RacesConfig.Liking> likings = likingsSliders.entrySet().stream().map(entry -> {
+    public RacesConfig getValue() {
+        Set<RacesConfig.Liking> likings = likingsSliders.entrySet().stream().map(entry -> {
             String[] split = entry.getKey().split(RACE_SEPARATOR);
             String race = split[0];
             String otherRace = split[1];
 
-            return MoreOptionsV2Config.RacesConfig.Liking.builder()
+            return RacesConfig.Liking.builder()
                 .race(race)
                 .otherRace(otherRace)
-                .range(MoreOptionsV2Config.Range.fromSlider(entry.getValue()))
+                .range(Range.fromSlider(entry.getValue()))
                 .build();
         }).collect(Collectors.toSet());
 
-        return MoreOptionsV2Config.RacesConfig.builder()
+        return RacesConfig.builder()
             .likings(likings)
             .build();
     }
 
     @Override
-    public void setValue(MoreOptionsV2Config.RacesConfig config) {
+    public void setValue(RacesConfig config) {
         config.getLikings().forEach(liking -> {
             String key = key(liking);
             Slider slider = likingsSliders.get(key);
@@ -168,7 +169,7 @@ public class RacesPanel extends AbstractConfigPanel<MoreOptionsV2Config.RacesCon
         });
     }
 
-    private String key(MoreOptionsV2Config.RacesConfig.Liking liking) {
+    private String key(RacesConfig.Liking liking) {
         return liking.getRace() + RACE_SEPARATOR + liking.getOtherRace();
     }
 
@@ -180,6 +181,10 @@ public class RacesPanel extends AbstractConfigPanel<MoreOptionsV2Config.RacesCon
         return race.info.name + RACE_SEPARATOR + otherRace.info.name;
     }
 
+    protected RacesPanel element() {
+        return this;
+    }
+
     @Data
     @Builder
     @EqualsAndHashCode
@@ -188,6 +193,6 @@ public class RacesPanel extends AbstractConfigPanel<MoreOptionsV2Config.RacesCon
         private String otherRaceKey;
         private Race race;
         private Race otherRace;
-        private MoreOptionsV2Config.Range range;
+        private Range range;
     }
 }

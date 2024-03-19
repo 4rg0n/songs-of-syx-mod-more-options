@@ -31,7 +31,7 @@ public class GameRaceApi implements Phases {
 
     @Getter(lazy = true)
     private final static GameRaceApi instance = new GameRaceApi();
-    private static List<RaceLiking> vanillaLikings;
+    private List<RaceLiking> vanillaLikings;
     private final Map<String, Integer> raceIndexMap = new HashMap<>();
 
     /**
@@ -104,6 +104,8 @@ public class GameRaceApi implements Phases {
             // todo do I need to clear and reload this on game save reload?
             vanillaLikings = getAllLikings();
         }
+
+        log.debug("Initialized %s races", raceIndexMap.size());
     }
 
     /**
@@ -196,7 +198,7 @@ public class GameRaceApi implements Phases {
     }
 
     public List<Race> getAll() {
-        return Lists.listFromLIST(RACES.all());
+        return Lists.fromGameLIST(RACES.all());
     }
 
     public int citizenCount(Race race) {
