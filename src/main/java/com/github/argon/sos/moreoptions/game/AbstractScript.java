@@ -10,6 +10,7 @@ import com.github.argon.sos.moreoptions.phase.Phases;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
+import world.WORLD;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -53,6 +54,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
 
     @Override
     public void initBeforeGameCreated() {
+        log.debug("Initializing Script");
         // custom error handling
         Errors.setHandler(new ErrorHandler<>(this));
 
@@ -90,6 +92,8 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
             log.debug("Creating Instance");
             scriptInstance = new ScriptInstance(this);
         }
+
+        log.debug("World Seed: " + WORLD.GEN().seed);
 
         // or else the init methods won't be called again when a save game is loaded
         scriptInstance.reset();

@@ -160,6 +160,7 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
                 .searchTerm(statName)
                 .column(Label.builder()
                     .font(UI.FONT().S)
+                    .style(Label.Style.NORMAL)
                     .name(statName)
                     .build())
                 .column(checkbox)

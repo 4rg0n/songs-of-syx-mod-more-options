@@ -18,7 +18,7 @@ public class Label extends GuiSection {
     @Builder.Default
     private int maxWidth = 0;
     @Builder.Default
-    private Font font = UI.FONT().M;
+    private Font font = UI.FONT().H2;
     @Nullable
     @Builder.Default
     private String description = null;

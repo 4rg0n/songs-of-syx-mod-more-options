@@ -26,6 +26,28 @@ public class Layouts {
         return align(elements, null, margin, false, spacer, false, false, 0, 0, null);
     }
 
+    public static GuiSection vertical(int margin, boolean center, RENDEROBJ... renders) {
+        GuiSection section = new GuiSection();
+
+        for (int i = 0; i < renders.length; i++) {
+            RENDEROBJ render = renders[i];
+            addDown(section, margin, render, center);
+        }
+
+        return section;
+    }
+
+    public static GuiSection horizontal(int margin, boolean center, RENDEROBJ... renders) {
+        GuiSection section = new GuiSection();
+
+        for (int i = 0; i < renders.length; i++) {
+            RENDEROBJ render = renders[i];
+            addRight(section, margin, render, center);
+        }
+
+        return section;
+    }
+
     public static GuiSection vertical(
         Collection<? extends RENDEROBJ> elements,
         @Nullable GuiSection section,

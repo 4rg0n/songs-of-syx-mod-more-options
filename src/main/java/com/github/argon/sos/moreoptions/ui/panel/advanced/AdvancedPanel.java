@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.panel.advanced;
 
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.game.ui.layout.Layouts;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -9,7 +10,10 @@ import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
 import com.github.argon.sos.moreoptions.util.Lists;
 import init.paths.PATHS;
+import init.sprite.UI.UI;
 import lombok.Getter;
+import util.gui.misc.GTextR;
+import world.WORLD;
 
 /**
  * Contains slider for controlling the intensity of weather effects
@@ -18,6 +22,7 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
     private static final Logger log = Loggers.getLogger(AdvancedPanel.class);
     private static final I18n i18n = I18n.get(AdvancedPanel.class);
 
+    private final DropDown<Level> logLevelDropDown;
     @Getter
     private final Button resetButton;
     @Getter
@@ -26,7 +31,9 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
     private final Button dumpLogsButton;
     @Getter
     private final Button gameLogsFolderButton;
-    private final DropDown<Level> dropDown;
+    @Getter
+    private final Button copySeedButton;
+
 
     public AdvancedPanel(
         String title,
@@ -36,7 +43,7 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
         int availableHeight
     ) {
         super(title, defaultLogLevel, availableWidth, availableHeight);
-        dropDown = DropDown.<Level>builder()
+        logLevelDropDown = DropDown.<Level>builder()
             .label(i18n.t("AdvancedPanel.dropDown.log.level.name"))
             .description(i18n.t("AdvancedPanel.dropDown.log.level.desc"))
             .closeOnSelect(true)
@@ -54,8 +61,7 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
                 .name(i18n.t("AdvancedPanel.label.log.level.name"))
                 .description(i18n.t("AdvancedPanel.label.log.level.desc"))
                 .build())
-            .column(dropDown)
-            .margin(20)
+            .column(logLevelDropDown)
             .build();
 
         this.dumpLogsButton = new Button(
@@ -77,7 +83,6 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
                 .sameWidth(true)
                 .margin(10)
                 .build())
-            .margin(20)
             .build();
 
         this.resetButton = new Button(
@@ -99,15 +104,30 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
                 .sameWidth(true)
                 .margin(10)
                 .build())
-            .margin(20)
+            .build();
+
+        this.copySeedButton = new Button(
+            i18n.t("AdvancedPanel.button.world.seed.copy.name"),
+            i18n.t("AdvancedPanel.button.world.seed.copy.desc", WORLD.GEN().seed));
+
+        ColumnRow<Void> worldFunctions = ColumnRow.<Void>builder()
+            .column(Label.builder()
+                .name(i18n.t("AdvancedPanel.label.world.seed.name"))
+                .description(i18n.t("AdvancedPanel.label.world.seed.desc"))
+                .build())
+            .column(Layouts.horizontal(10, true,
+                new GTextR(UI.FONT().M, String.valueOf(WORLD.GEN().seed)),
+                copySeedButton
+            ))
             .build();
 
         Table<Void> settings = Table.<Void>builder()
             .category(i18n.t("AdvancedPanel.header.log.name"), Lists.of(logLevelSelect, logFunctions))
             .category(i18n.t("AdvancedPanel.header.mod.name"), Lists.of(modFunctions))
-            .evenOdd(true)
+            .category(i18n.t("AdvancedPanel.header.world.name"), Lists.of(worldFunctions))
             .displayHeight(availableHeight)
-            .columnMargin(5)
+            .columnMargin(20)
+            .evenOdd(true)
             .rowPadding(10)
             .build();
 
@@ -116,12 +136,12 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
 
     @Override
     public Level getValue() {
-        return dropDown.getValue();
+        return logLevelDropDown.getValue();
     }
 
     @Override
     public void setValue(Level logLevel) {
-        dropDown.setValue(logLevel);
+        logLevelDropDown.setValue(logLevel);
     }
 
     protected AdvancedPanel element() {
