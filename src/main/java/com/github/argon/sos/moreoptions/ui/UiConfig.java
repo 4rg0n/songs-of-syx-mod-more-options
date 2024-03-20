@@ -104,7 +104,7 @@ public class UiConfig implements Phases {
      * Prepare ui elements
      */
     @Override
-    public void initGameUiPresent() {
+    public void initSettlementUiPresent() {
         MoreOptionsV3Config moreOptionsConfig = configStore.getCurrentConfig();
 
         if (moreOptionsConfig == null) {

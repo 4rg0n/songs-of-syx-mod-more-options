@@ -1,6 +1,10 @@
 package com.github.argon.sos.moreoptions.game;
 
+import com.github.argon.sos.moreoptions.log.Logger;
+import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.phase.state.State;
+import com.github.argon.sos.moreoptions.phase.state.StateManager;
 import lombok.RequiredArgsConstructor;
 import script.SCRIPT;
 import snake2d.util.file.FileGetter;
@@ -21,60 +25,53 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 
-	/**
-	 * Whether the game started calling its update() methods
-	 */
-	private boolean initGameUpdating = false;
-
-	/**
-	 * Whether the games ui is displayed
-	 */
-	private boolean initGameUiPresent = false;
-
-	/**
-	 * Whether this is a new game session or not (not a new game)
-	 */
-	private boolean newGameSession = true;
+	private final static Logger log = Loggers.getLogger(ScriptInstance.class);
 
 	private final Phases scriptPhases;
+	private final StateManager stateManager = StateManager.getInstance();
 
 	@Override
 	public void update(double v) {
-		if (!initGameUpdating) {
-			initGameUpdating = true;
+		State state = stateManager.getState();
+
+		if (!state.isInitGameUpdating()) {
+			state.setInitGameUpdating(true);
 			scriptPhases.initGameUpdating();
 		}
 
-		if (!initGameUiPresent && !VIEW.inters().load.isActivated()) {
-			initGameUiPresent = true;
+		scriptPhases.onGameUpdate(v);
+
+		if (!state.isInitGameUiPresent() && !VIEW.inters().load.isActivated()) {
+			state.setInitGameUiPresent(true);
 			scriptPhases.initGameUiPresent();
 		}
 
-		scriptPhases.onGameUpdate(v);
+		if (!state.isInitSettlementUiPresent() && VIEW.s() != null && VIEW.s().isActive()) {
+			state.setInitSettlementUiPresent(true);
+			scriptPhases.initSettlementUiPresent();
+		}
 	}
 
 	@Override
 	public void save(FilePutter filePutter) {
+		State state = stateManager.getState();
+		state.setGameSaved(true);
 		scriptPhases.onGameSaved(filePutter.getPath());
 	}
 
 	@Override
 	public void load(FileGetter fileGetter) throws IOException {
+		State state = stateManager.getState();
+		state.setGameSaveLoaded(true);
 		scriptPhases.onGameSaveLoaded(Paths.get(fileGetter.getPath()));
 
-		if (newGameSession) {
-			newGameSession = false;
+		if (state.isNewGameSession()) {
+			state.setNewGameSession(false);
+			state.setNewGame(false);
 			scriptPhases.initNewGameSession();
 		} else {
+			state.setGameSaveReloaded(true);
 			scriptPhases.onGameSaveReloaded();
 		}
-	}
-
-	/**
-	 * Reset initialisation states
-	 */
-	public void reset() {
-		this.initGameUiPresent = false;
-		this.initGameUpdating = false;
 	}
 }

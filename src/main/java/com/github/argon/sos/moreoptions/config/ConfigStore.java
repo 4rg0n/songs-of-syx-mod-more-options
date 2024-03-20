@@ -9,6 +9,7 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.UninitializedException;
+import com.github.argon.sos.moreoptions.phase.state.StateManager;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,13 @@ public class ConfigStore implements Phases {
     @Getter(lazy = true)
     private final static ConfigStore instance = new ConfigStore(
         ConfigService.getInstance(),
-        ConfigDefaults.getInstance()
+        ConfigDefaults.getInstance(),
+        StateManager.getInstance()
     );
 
     private final ConfigService configService;
     private final ConfigDefaults configDefaults;
+    private final StateManager stateManager;
 
     @Nullable
     private MoreOptionsV3Config currentConfig;
@@ -48,10 +51,14 @@ public class ConfigStore implements Phases {
     }
 
     @Override
-    public void initGameUpdating() {
+    public void initSettlementUiPresent() {
         MoreOptionsV3Config defaultConfig = configDefaults.newConfig();
         setDefaultConfig(defaultConfig);
         MoreOptionsV3Config config = configService.getConfig()
+            .map(loadedConfig -> {
+                ConfigMerger.merge(loadedConfig, defaultConfig);
+                return loadedConfig;
+            })
             .orElse(defaultConfig);
 
         if (currentConfig == null) {
@@ -67,8 +74,8 @@ public class ConfigStore implements Phases {
     @Override
     public void onGameSaved(Path saveFilePath) {
         MoreOptionsV3Config currentConfig = getCurrentConfig();
-        if (currentConfig != null) {
-            configService.save(currentConfig);
+        if (currentConfig != null && !stateManager.getState().isNewGame()) {
+            save(currentConfig);
         }
     }
     @Override
@@ -83,6 +90,7 @@ public class ConfigStore implements Phases {
             return false;
         }
 
+        log.debug("Saving %s", config.getClass().getSimpleName());
         if (configService.save(config)) {
             setCurrentConfig(config);
             return true;

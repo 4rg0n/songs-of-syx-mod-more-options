@@ -79,13 +79,10 @@ public class GameApis implements Phases {
     @Override
     public void initGameUpdating() {
         ui().initGameUpdating();
-        faction().initGameUpdating();
     }
 
     @Override
-    public void initBeforeGameCreated() {
-
-    }
+    public void initBeforeGameCreated() {}
 
     @Override
     public void initModCreateInstance() {
@@ -95,6 +92,11 @@ public class GameApis implements Phases {
 
     @Override
     public void initNewGameSession() {
+    }
+
+    @Override
+    public void initSettlementUiPresent() {
+        faction.initSettlementUiPresent();
     }
 
     @Override

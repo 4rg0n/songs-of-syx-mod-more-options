@@ -7,6 +7,7 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.phase.state.StateManager;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
@@ -28,6 +29,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     }
 
     private final PhaseManager phaseManager = PhaseManager.getInstance();
+    private final StateManager stateManager = StateManager.getInstance();
 
     @Nullable
     private ScriptInstance scriptInstance;
@@ -96,7 +98,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         log.debug("World Seed: " + WORLD.GEN().seed);
 
         // or else the init methods won't be called again when a save game is loaded
-        scriptInstance.reset();
+        stateManager.reset();
         return scriptInstance;
     }
 
@@ -108,6 +110,11 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     @Override
     public void initGameUiPresent() {
         phaseManager.initGameUiPresent();
+    }
+
+    @Override
+    public void initSettlementUiPresent() {
+        phaseManager.initSettlementUiPresent();
     }
 
     @Override
@@ -125,6 +132,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         phaseManager.initNewGameSession();
     }
 
+
     @Override
     public void onGameSaveReloaded() {
         phaseManager.onGameSaveReloaded();
@@ -134,6 +142,8 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     public void onGameUpdate(double seconds) {
         phaseManager.onGameUpdate(seconds);
     }
+
+
 
     @Override
     public void onCrash(Throwable throwable) {
