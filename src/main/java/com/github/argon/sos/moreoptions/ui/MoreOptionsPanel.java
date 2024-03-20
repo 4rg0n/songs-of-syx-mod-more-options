@@ -27,6 +27,7 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GText;
+import world.WORLD;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -103,6 +104,7 @@ public class MoreOptionsPanel extends GuiSection implements
         Set<String> availableStats,
         Path exportFolder,
         Path exportFile,
+        String saveStamp,
         int availableWidth,
         int availableHeight,
         @Nullable ModInfo modInfo
@@ -178,7 +180,7 @@ public class MoreOptionsPanel extends GuiSection implements
         boostersPanel = new BoostersPanel(i18n.t("MoreOptionsPanel.tab.boosters.name"), boosterEntries, config.getBoosters().getPresets(), defaultConfig.getBoosters(), availableWidth, availableHeight);
         metricsPanel = new MetricsPanel(i18n.t("MoreOptionsPanel.tab.metrics.name"), config.getMetrics(), defaultConfig.getMetrics(), availableStats, exportFolder, exportFile, availableWidth, availableHeight);
         racesPanel = new RacesPanel(i18n.t("MoreOptionsPanel.tab.races.name"), raceEntries, defaultConfig.getRaces(), availableWidth, availableHeight);
-        advancedPanel = new AdvancedPanel(i18n.t("MoreOptionsPanel.tab.advanced.name"), config.getLogLevel(), defaultConfig.getLogLevel(), availableWidth, availableHeight);
+        advancedPanel = new AdvancedPanel(i18n.t("MoreOptionsPanel.tab.advanced.name"), saveStamp, WORLD.GEN().seed, config.getLogLevel(), defaultConfig.getLogLevel(), availableWidth, availableHeight);
 
         tabulator = Tabulator.<String, AbstractConfigPanel<?, ?>, Void>builder()
             .tabs(Maps.ofLinked(

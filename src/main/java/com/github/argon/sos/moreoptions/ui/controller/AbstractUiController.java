@@ -8,16 +8,19 @@ import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.Notificator;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
+import com.github.argon.sos.moreoptions.util.Clipboard;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 @RequiredArgsConstructor
-public abstract class AbstractUiController<Element> {
+public abstract class AbstractUiController<Element> implements Phases {
     protected static final I18n i18n = I18n.get(AbstractUiController.class);
     protected final Element element;
 
@@ -30,6 +33,28 @@ public abstract class AbstractUiController<Element> {
     protected final UiFactory uiFactory = UiFactory.getInstance();
     protected final Notificator notificator = Notificator.getInstance();
     protected final ConfigApplier configApplier = ConfigApplier.getInstance();
+
+    protected boolean copyToClipboard(@Nullable String content, String successMessage, String errorMessage) {
+        boolean written = false;
+
+        try {
+            if (content != null) {
+                written = Clipboard.write(content);
+
+                if (written) {
+                    notificator.notifySuccess(successMessage);
+                } else {
+                    notificator.notifyError(errorMessage);
+                }
+            } else {
+                notificator.notifyError(errorMessage);
+            }
+        } catch (Exception e) {
+            notificator.notifyError(errorMessage, e);
+        }
+
+        return written;
+    }
 
     protected boolean applyAndSave(MoreOptionsPanel moreOptionsPanel) {
         MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
