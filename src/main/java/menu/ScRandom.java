@@ -117,10 +117,16 @@ class ScRandom extends GuiSection implements SC{
 		s.addDown(4, new Sprite(UI.FONT().H2.getText(MoreOptionsScript.MOD_INFO.name), COLORS.label));
 		boos = new Boostable[] {
 			BOOSTABLES.START().KNOWLEDGE,
+		};
+		values = new double[] {
+			-2000, -1000, 0, 1000, 2000, 5000,
+		};
+		addLine(s, boos, values, hText);
+		boos = new Boostable[] {
 			BOOSTABLES.START().LANDING,
 		};
 		values = new double[] {
-			-0.2, -0.1, 0, 0.05, 0.1, 0.2,
+			-0.5, -0.2, 0, 1, 2, 5,
 		};
 		addLine(s, boos, values, hText);
 		
