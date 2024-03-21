@@ -7,6 +7,7 @@ import com.github.argon.sos.moreoptions.game.api.GameFactionApi;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import game.boosting.BoostableCat;
+import game.faction.FACTIONS;
 import game.faction.Faction;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -55,37 +56,44 @@ public class BoosterService {
     public void setBoosterValues(BoostersConfig config) {
         config.getFaction().forEach((factionName, boostersConfig) -> {
             boostersConfig.forEach((boosterKey, boosterConfig) -> {
-                getBoosters().ifPresent(gameBoosters -> {
-                    Range range = boosterConfig.getRange();
-                    Faction faction = factionApi.getByName(factionName);
+                Faction faction = factionApi.getByName(factionName);
 
-                    if (faction == null) {
-                        return; // skip for factions not present in game
-                    }
+                if (faction == null) {
+                    return; // skip for factions not present in game
+                }
 
-                    gameBoosters.computeIfPresent(boosterKey, (keyAgain, gameBooster) -> {
-                        log.trace("Apply booster config for: %s", boosterKey);
-
-                        switch (range.getApplyMode()) {
-                            case PERCENT:
-                                log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
-                                gameBooster.getMulti().set(faction, range.getValue());
-                                gameBooster.getAdd().reset();
-                                break;
-                            case ADD:
-                                log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
-                                gameBooster.getAdd().set(faction, range.getValue());
-                                gameBooster.getMulti().reset();
-                                break;
-                        }
-
-                        return gameBooster;
-                    });
-                });
+                applyBoosters(faction, boosterConfig);
             });
+        });
 
+        config.getPlayer().forEach((boosterKey, boosterConfig) -> {
+            applyBoosters(FACTIONS.player(), boosterConfig);
+        });
+    }
 
+    private void applyBoosters(Faction faction, BoostersConfig.Booster boosterConfig) {
+        String boosterKey = boosterConfig.getKey();
 
+        getBoosters().ifPresent(gameBoosters -> {
+            Range range = boosterConfig.getRange();
+            gameBoosters.computeIfPresent(boosterKey, (keyAgain, gameBooster) -> {
+                log.trace("Apply booster config for: %s", boosterKey);
+
+                switch (range.getApplyMode()) {
+                    case PERCENT:
+                        log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
+                        gameBooster.getMulti().set(faction, range.getValue());
+                        gameBooster.getAdd().reset();
+                        break;
+                    case ADD:
+                        log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
+                        gameBooster.getAdd().set(faction, range.getValue());
+                        gameBooster.getMulti().reset();
+                        break;
+                }
+
+                return gameBooster;
+            });
         });
     }
 

@@ -90,9 +90,9 @@ public final class MoreOptionsScript extends AbstractScript {
 	}
 
 	@Override
-	public void initGameUiPresent() {
+	public void initSettlementUiPresent() {
 		// initialize other ui stuff
-		super.initGameUiPresent();
+		super.initSettlementUiPresent();
 		Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
 		// show backup dialog?
 		if (backupDialog != null) {
