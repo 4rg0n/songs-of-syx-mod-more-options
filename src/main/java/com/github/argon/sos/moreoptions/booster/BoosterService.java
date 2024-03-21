@@ -54,9 +54,8 @@ public class BoosterService {
 
     public void setBoosterValues(BoostersConfig config) {
         config.getFaction().forEach((factionName, boostersConfig) -> {
-            boostersConfig.forEach(boosterConfig -> {
+            boostersConfig.forEach((boosterKey, boosterConfig) -> {
                 getBoosters().ifPresent(gameBoosters -> {
-                    String key = boosterConfig.getKey();
                     Range range = boosterConfig.getRange();
                     Faction faction = factionApi.getByName(factionName);
 
@@ -64,8 +63,8 @@ public class BoosterService {
                         return; // skip for factions not present in game
                     }
 
-                    gameBoosters.computeIfPresent(key, (keyAgain, gameBooster) -> {
-                        log.trace("Apply booster config for: %s", key);
+                    gameBoosters.computeIfPresent(boosterKey, (keyAgain, gameBooster) -> {
+                        log.trace("Apply booster config for: %s", boosterKey);
 
                         switch (range.getApplyMode()) {
                             case PERCENT:

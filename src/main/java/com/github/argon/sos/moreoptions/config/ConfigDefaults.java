@@ -86,29 +86,30 @@ public class ConfigDefaults {
             .build();
     }
 
-    public Map<String, Set<BoostersConfig.Booster>> newBoosters(Collection<? extends Faction> factions) {
-        Map<String, Set<BoostersConfig.Booster>> factionBoosters = new HashMap<>();
+    public Map<String, Map<String, BoostersConfig.Booster>> newBoosters(Collection<? extends Faction> factions) {
+        Map<String, Map<String, BoostersConfig.Booster>> factionBoosters = new HashMap<>();
         for (Faction faction : factions) {
-            Set<BoostersConfig.Booster> boosters = newBoosters();
+            Map<String, BoostersConfig.Booster> boosters = newBoosters();
             factionBoosters.put(faction.name.toString(), boosters);
         }
 
         return factionBoosters;
     }
 
-    public Set<BoostersConfig.Booster> newBoosters() {
+    public Map<String, BoostersConfig.Booster> newBoosters() {
         return gameApis.booster().getBoosters().keySet().stream()
-            .map(boosterKey ->
-                BoostersConfig.Booster.builder()
+            .collect(Collectors.toMap(
+                boosterKey -> boosterKey,
+                boosterKey -> BoostersConfig.Booster.builder()
                     .key(boosterKey)
                     .range(ConfigDefaults.boosterPercent())
                     .build()
-            ).collect(Collectors.toSet());
+            ));
     }
 
     public BoostersConfig newBoostersConfig(Collection<Faction> factions) {
         // Boosters
-        Map<String, Set<BoostersConfig.Booster>> boosters = newBoosters(factions);
+        Map<String, Map<String, BoostersConfig.Booster>> boosters = newBoosters(factions);
         return BoostersConfig.builder()
             .faction(boosters)
             .build();
@@ -116,7 +117,7 @@ public class ConfigDefaults {
 
     public BoostersConfig newBoostersConfig() {
         // Boosters
-        Map<String, Set<BoostersConfig.Booster>> boosters = newBoosters(gameApis.faction().getFactionNPCs().values());
+        Map<String, Map<String, BoostersConfig.Booster>> boosters = newBoosters(gameApis.faction().getFactionNPCs().values());
         return BoostersConfig.builder()
             .faction(boosters)
             .player(newBoosters())

@@ -5,9 +5,7 @@ import com.github.argon.sos.moreoptions.config.domain.*;
 import lombok.*;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config.VERSION;
 
@@ -31,7 +29,7 @@ public class JsonMoreOptionsV3Config {
     @Builder.Default
     private MetricsConfig metrics = MetricsConfig.builder().build();
     @Builder.Default
-    private Set<BoostersConfig.Booster> boostersPlayer = new HashSet<>();
+    private Map<String, BoostersConfig.Booster> boostersPlayer = new HashMap<>();
     @Builder.Default
     private Map<String, BoostersConfig.BoostersPreset> boostersPresets = new HashMap<>();
 }

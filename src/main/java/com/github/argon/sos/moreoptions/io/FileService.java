@@ -6,14 +6,10 @@ import com.github.argon.sos.moreoptions.util.Lists;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
@@ -26,27 +22,15 @@ import java.util.stream.Stream;
  * Simple service for handling file operations
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class FileService {
+public class FileService extends AbstractIOService {
     @Getter(lazy = true)
     private final static FileService instance = new FileService();
     private final static Logger log = Loggers.getLogger(FileService.class);
-
     public final static Charset CHARSET = StandardCharsets.UTF_8;
 
     @Nullable
     public String read(Path path) {
-        Stream<String> lines = lines(path);
-
-        if (lines == null) {
-            return null;
-        }
-
-        return lines.collect(Collectors.joining("\n"));
-    }
-
-    @Nullable
-    public Stream<String> lines(Path path) {
-        log.debug("Reading lines from file %s", path);
+        log.debug("Reading from file %s", path);
         File file = path.toFile();
         if (!file.isFile() || !file.exists() || !file.canRead()) {
             // do not load what's not there
@@ -54,10 +38,10 @@ public class FileService {
             return null;
         }
 
-        try {
-            return Files.lines(path, CHARSET);
+        try (InputStream inputStream = Files.newInputStream(path)) {
+            return readFromInputStream(inputStream);
         } catch (Exception e) {
-            log.info("Could not read file content from %s", path, e);
+            log.error("Could not read file content from %s", path, e);
             return null;
         }
     }
@@ -78,7 +62,7 @@ public class FileService {
         try {
             Files.write(path, content.getBytes(CHARSET), StandardOpenOption.CREATE);
         } catch (IOException e) {
-            log.info("Could not write into %s", path, e);
+            log.error("Could not write into %s", path, e);
             return false;
         }
 
@@ -92,7 +76,7 @@ public class FileService {
         } catch (NoSuchFileException e) {
             return true;
         } catch (Exception e) {
-            log.info("Could not delete file %s", path, e);
+            log.error("Could not delete file %s", path, e);
             return false;
         }
 

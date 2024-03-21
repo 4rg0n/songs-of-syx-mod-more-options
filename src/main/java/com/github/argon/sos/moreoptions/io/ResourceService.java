@@ -4,10 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -18,7 +16,7 @@ import java.util.Optional;
  * For reading files from the class path a.k.a. "resources" folder
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ResourceService {
+public class ResourceService extends AbstractIOService {
     @Getter(lazy = true)
     private final static ResourceService instance = new ResourceService();
 
@@ -34,7 +32,6 @@ public class ResourceService {
         });
     }
 
-
     public Optional<String> readResource(String path) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
 
@@ -45,18 +42,5 @@ public class ResourceService {
 
             return Optional.of(readFromInputStream(inputStream));
         }
-    }
-
-
-    private String readFromInputStream(InputStream inputStream) throws IOException {
-        StringBuilder resultStringBuilder = new StringBuilder();
-
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                resultStringBuilder.append(line).append("\n");
-            }
-        }
-        return resultStringBuilder.toString();
     }
 }

@@ -9,6 +9,7 @@ import com.github.argon.sos.moreoptions.config.json.v2.JsonRacesV2Config;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonMoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JsonConfigV3Mapper {
@@ -28,11 +29,13 @@ public class JsonConfigV3Mapper {
                 .build())
             .metrics(config.getMetrics())
             .boostersPlayer(config.getBoosters().entrySet().stream()
-                .map(boosterEntry -> BoostersConfig.Booster.builder()
-                    .key(boosterEntry.getKey())
-                    .range(boosterEntry.getValue())
-                    .build())
-                .collect(Collectors.toSet()))
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    boosterEntry -> BoostersConfig.Booster.builder()
+                        .key(boosterEntry.getKey())
+                        .range(boosterEntry.getValue())
+                        .build()
+                )))
             .weather(WeatherConfig.builder()
                 .effects(config.getWeather())
                 .build())

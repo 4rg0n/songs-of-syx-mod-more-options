@@ -64,7 +64,7 @@ public class UiMapper {
     public Map<Faction, List<BoostersPanel.Entry>> toBoosterPanelEntries(BoostersConfig boostersConfig) {
         Map<Faction, List<BoostersPanel.Entry>> factionBoosters = new HashMap<>();
         // npc factions
-        for (Map.Entry<String, Set<BoostersConfig.Booster>> entry : boostersConfig.getFaction().entrySet()) {
+        for (Map.Entry<String, Map<String, BoostersConfig.Booster>> entry : boostersConfig.getFaction().entrySet()) {
             String factionName = entry.getKey();
             Faction faction = gameApis.faction().getByName(factionName);
 
@@ -75,7 +75,7 @@ public class UiMapper {
 
             factionBoosters.put(
                 faction,
-                entry.getValue().stream()
+                entry.getValue().values().stream()
                     .map(this::toBoosterPanelEntry)
                     .collect(Collectors.toList()));
         }
@@ -83,7 +83,7 @@ public class UiMapper {
         // add player faction
         factionBoosters.put(
             gameApis.faction().getPlayer(),
-            boostersConfig.getPlayer().stream()
+            boostersConfig.getPlayer().values().stream()
                 .map(this::toBoosterPanelEntry)
                 .collect(Collectors.toList()));
 

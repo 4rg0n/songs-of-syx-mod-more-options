@@ -64,24 +64,18 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
     private Map<String, Range> clipboard;
 
     @Getter
-    private Map<String, Map<String, Range>> presets;
+    private Map<String, Map<String, Range>> boosterPresets;
 
     public BoostersPanel(
         String title,
         Map<Faction, List<Entry>> boosterEntries,
-        Map<String, BoostersConfig.BoostersPreset> presets,
+        Map<String, BoostersConfig.BoostersPreset> boosterPresets,
         BoostersConfig defaultConfig,
         int availableWidth,
         int availableHeight
     ) {
         super(title, defaultConfig, availableWidth, availableHeight);
-        this.presets = presets.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            entry -> entry.getValue().getBoosters().stream().collect(Collectors.toMap(
-                BoostersConfig.Booster::getKey,
-                BoostersConfig.Booster::getRange
-            ))
-        ));
+        this.boosterPresets = boosterPresetValues(boosterPresets);
 
         GETTER.GETTER_IMP<Faction> getter = new GETTER.GETTER_IMP<>();
         FactionList factionList = new FactionList(getter, availableHeight);
@@ -162,6 +156,17 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
         addRightC(0, section);
     }
 
+    @NotNull
+    private static Map<String, Map<String, Range>> boosterPresetValues(Map<String, BoostersConfig.BoostersPreset> boosterPresets) {
+        return boosterPresets.entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey,
+            boosterPreset -> boosterPreset.getValue().getBoosters().values().stream().collect(Collectors.toMap(
+                BoostersConfig.Booster::getKey,
+                BoostersConfig.Booster::getRange
+            ))
+        ));
+    }
+
     /**
      * Saves currently selected booster settings
      */
@@ -216,7 +221,7 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
 
     @Override
     public BoostersConfig getValue() {
-        Map<String, Set<BoostersConfig.Booster>> factionBoosters = boostersSections.entrySet().stream()
+        Map<String, Map<String, BoostersConfig.Booster>> factionBoosters = boostersSections.entrySet().stream()
             .filter(entry -> !entry.getKey().equals(playerFaction))
             .collect(Collectors.toMap(
                 entry -> entry.getKey().name.toString(),
@@ -227,29 +232,40 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
                 }
         ));
 
-        Set<BoostersConfig.Booster> playerBoosters = boostersSections.entrySet().stream()
+        Map<String, BoostersConfig.Booster> playerBoosters = boostersSections.entrySet().stream()
             .filter(entry -> entry.getKey().equals(playerFaction))
             .findFirst()
             .map(entry -> {
                 BoostersSection section = entry.getValue();
                 Map<String, Range> boosterValues = section.getValue();
                 return buildConfigBooster(boosterValues);
-            }).orElse(new HashSet<>());
+            }).orElse(new HashMap<>());
+
+        Map<String, BoostersConfig.BoostersPreset> presets = boosterPresets.entrySet().stream().collect(Collectors.toMap(
+            Map.Entry::getKey,
+            boosterPreset -> BoostersConfig.BoostersPreset.builder()
+                .name(boosterPreset.getKey())
+                .boosters(buildConfigBooster(boosterPreset.getValue()))
+                .build()
+        ));
 
         return BoostersConfig.builder()
             .faction(factionBoosters)
             .player(playerBoosters)
+            .presets(presets)
             .build();
     }
 
     @NotNull
-    private static Set<BoostersConfig.Booster> buildConfigBooster(Map<String, Range> boosterValues) {
-        return boosterValues.entrySet().stream().map(stringRangeEntry ->
-                BoostersConfig.Booster.builder()
-                    .key(stringRangeEntry.getKey())
-                    .range(stringRangeEntry.getValue())
-                    .build())
-            .collect(Collectors.toSet());
+    private static Map<String, BoostersConfig.Booster> buildConfigBooster(Map<String, Range> boosterValues) {
+        return boosterValues.entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> BoostersConfig.Booster.builder()
+                    .key(entry.getKey())
+                    .range(entry.getValue())
+                    .build()
+            ));
     }
 
     @Override
@@ -276,11 +292,13 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
         if (playerBoostersSection != null) {
             playerBoostersSection.setValue(toValues(config.getPlayer()));
         }
+
+        boosterPresets = boosterPresetValues(config.getPresets());
     }
 
     @NotNull
-    private static Map<String, Range> toValues(Set<BoostersConfig.Booster> boosters) {
-        return boosters.stream().collect(Collectors.toMap(
+    private static Map<String, Range> toValues(Map<String, BoostersConfig.Booster> boosters) {
+        return boosters.values().stream().collect(Collectors.toMap(
             BoostersConfig.Booster::getKey,
             BoostersConfig.Booster::getRange));
     }

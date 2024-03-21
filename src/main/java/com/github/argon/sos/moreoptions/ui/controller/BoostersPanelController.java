@@ -35,7 +35,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
     }
 
     public void resetNPCFactionsBoosters() {
-        Map<String, Range> boosterValues = configDefaults.newBoosters().stream().collect(Collectors.toMap(
+        Map<String, Range> boosterValues = configDefaults.newBoosters().values().stream().collect(Collectors.toMap(
             BoostersConfig.Booster::getKey,
             BoostersConfig.Booster::getRange
         ));
@@ -53,7 +53,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
 
     public void resetCurrentBoosters() {
         BoostersSection currentBoosterSection = element.getCurrentBoosterSection();
-        Map<String, Range> boosterValues = configDefaults.newBoosters().stream().collect(Collectors.toMap(
+        Map<String, Range> boosterValues = configDefaults.newBoosters().values().stream().collect(Collectors.toMap(
             BoostersConfig.Booster::getKey,
             BoostersConfig.Booster::getRange
         ));
@@ -89,7 +89,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
         Map<String, Range> preset = element.getCurrentBoosterSection().getValue();
         STRING_RECIEVER r = presetName -> {
             if (presetName != null && presetName.length() > 0) {
-                element.getPresets().put(presetName.toString(), preset);
+                element.getBoosterPresets().put(presetName.toString(), preset);
                 notificator.notifySuccess(i18n.t("notification.boosters.preset.save", presetName.toString()));
             }
         };
@@ -98,7 +98,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
     }
 
     public void loadBoostersPreset() {
-        Map<String, Map<String, Range>> presets = element.getPresets();
+        Map<String, Map<String, Range>> presets = element.getBoosterPresets();
         BoostersPresetsSection presetsPanel = BoostersPresetsSection.builder()
             .presets(presets)
             .clickAction(key -> {

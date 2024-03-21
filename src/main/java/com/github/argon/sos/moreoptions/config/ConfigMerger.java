@@ -85,7 +85,7 @@ public class ConfigMerger {
         if (target.getPlayer() == null || target.getPlayer().isEmpty()) {
             target.setPlayer(source.getPlayer());
         } else {
-            addMissing(target.getPlayer(), source.getPlayer());
+            merge(target.getPlayer(), source.getPlayer());
         }
 
         if (target.getFaction() == null || target.getFaction().isEmpty()) {
@@ -93,14 +93,6 @@ public class ConfigMerger {
         } else {
             merge(target.getFaction(), source.getFaction());
         }
-    }
-
-    private static <T> void addMissing(Set<T> target, @Nullable Set<T> source) {
-        if (source == null) {
-            return;
-        }
-
-        target.addAll(source);
     }
 
     public static void merge(RacesConfig target, @Nullable RacesConfig source) {
