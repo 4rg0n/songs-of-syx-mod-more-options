@@ -75,9 +75,11 @@ public class UiFactory {
         ModInfo modInfo = gameApis.mod().getCurrentMod().orElse(null);
         Path exportFolder = MetricExporter.EXPORT_FOLDER;
         Path exportFile = metricExporter.getExportFile();
+        String saveStamp = gameApis.save().getSaveStamp();
 
         return MoreOptionsPanel.builder()
             .config(config)
+            .saveStamp(saveStamp)
             .configStore(configStore)
             .raceEntries(raceEntries)
             .availableStats(availableStats)

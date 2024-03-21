@@ -50,7 +50,7 @@ public class FileService {
         File file = path.toFile();
         if (!file.isFile() || !file.exists() || !file.canRead()) {
             // do not load what's not there
-            log.debug("%s is not a file, does not exists or is not readable", path);
+            log.info("%s is not a file, does not exists or is not readable", path);
             return null;
         }
 
@@ -108,7 +108,7 @@ public class FileService {
                 .fromFileAttributes(filePath, fileAttributes)
                 .build();
         } catch (Exception e) {
-            log.error("Could not read file meta from %s", filePath, e);
+            log.info("Could not read file meta from %s", filePath, e);
         }
 
         return null;
@@ -124,7 +124,7 @@ public class FileService {
             log.debug("Loaded %s file metas from folder %s", metas.size(), folderPath);
             return metas;
         } catch (IOException e) {
-            log.error("Could not load file metas from folder %s", folderPath, e);
+            log.info("Could not load file metas from folder %s", folderPath, e);
             return Lists.of();
         }
     }

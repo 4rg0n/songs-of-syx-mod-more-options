@@ -113,8 +113,12 @@ public class Table<Value> extends GuiSection implements
                 maxWidths.addAll(Arrays.asList(newMaxWidths));
             }
         }
+
+        int evenOddCounter = 0;
+        boolean lastWasHeader = false;
         // initialize rows
-        for (ColumnRow<Value> columnRow : rows) {
+        for (int i = 0, rowsSize = rows.size(); i < rowsSize; i++) {
+            ColumnRow<Value> columnRow = rows.get(i);
             columnRow.margin(columnMargin);
             columnRow.init(maxWidths);
             columnRow.pad(rowPadding);
@@ -131,9 +135,18 @@ public class Table<Value> extends GuiSection implements
                 });
             }
 
-            if (evenOdd && !columnRow.isHeader() && rows.indexOf(columnRow) % 2 == 0) {
+            // make sure next row after header will be colored and don't color header
+            if (evenOdd && columnRow.isHeader()) {
+                if (evenOddCounter % 2 == 0) {
+                    evenOddCounter -= 1;
+                }
+            }
+
+            if (evenOdd && evenOddCounter % 2 == 0) {
                 columnRow.backgroundColor(COLOR.WHITE15);
             }
+
+            evenOddCounter++;
         }
 
         // add header if needed

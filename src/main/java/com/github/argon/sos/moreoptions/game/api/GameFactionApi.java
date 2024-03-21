@@ -36,7 +36,7 @@ public class GameFactionApi implements Phases {
 
     public Player getPlayer() {
         if (player == null) {
-            throw new UninitializedException(Phase.INIT_GAME_UPDATING);
+            throw new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT);
         }
 
         return player;
@@ -48,7 +48,7 @@ public class GameFactionApi implements Phases {
 
     public Map<String, Faction> getFactions() {
         if (factions.isEmpty()) {
-            throw new UninitializedException(Phase.INIT_GAME_UPDATING);
+            throw new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT);
         }
 
         return factions;
@@ -56,7 +56,7 @@ public class GameFactionApi implements Phases {
 
     public Map<String, FactionNPC> getFactionNPCs() {
         if (factionNPCs.isEmpty()) {
-            throw new UninitializedException(Phase.INIT_GAME_UPDATING);
+            throw new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT);
         }
 
         return factionNPCs;
@@ -74,7 +74,11 @@ public class GameFactionApi implements Phases {
     }
 
     @Override
-    public void initGameUpdating() {
+    public void initSettlementUiPresent() {
+        reloadFactions();
+    }
+
+    private void reloadFactions() {
         // add player faction
         player = FACTIONS.player();
         factions.put(player.name.toString(), player);

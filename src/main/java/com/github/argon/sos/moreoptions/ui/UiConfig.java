@@ -54,7 +54,8 @@ public class UiConfig implements Phases {
         ConfigStore.getInstance(),
         MetricExporter.getInstance(),
         UiFactory.getInstance(),
-        Notificator.getInstance()
+        Notificator.getInstance(),
+        PhaseManager.getInstance()
     );
 
     private static final I18n i18n = I18n.get(WeatherPanel.class);
@@ -84,6 +85,7 @@ public class UiConfig implements Phases {
     private final MetricExporter metricExporter;
     private final UiFactory uiFactory;
     private final Notificator notificator;
+    private final PhaseManager phaseManager;
 
     @Getter
     @Nullable
@@ -104,7 +106,7 @@ public class UiConfig implements Phases {
      * Prepare ui elements
      */
     @Override
-    public void initGameUiPresent() {
+    public void initSettlementUiPresent() {
         MoreOptionsV3Config moreOptionsConfig = configStore.getCurrentConfig();
 
         if (moreOptionsConfig == null) {
@@ -199,7 +201,7 @@ public class UiConfig implements Phases {
 
         // ADVANCED
         AdvancedPanel advancedPanel = moreOptionsPanel.getAdvancedPanel();
-        new AdvancedPanelController(advancedPanel, moreOptionsPanel);
+        phaseManager.register(Phase.ON_GAME_SAVED, new AdvancedPanelController(advancedPanel, moreOptionsPanel));
     }
 
     public void initBackupControls(

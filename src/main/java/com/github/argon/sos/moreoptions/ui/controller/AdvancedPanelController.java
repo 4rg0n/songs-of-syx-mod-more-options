@@ -8,6 +8,8 @@ import init.paths.PATHS;
 import snake2d.Errors;
 import snake2d.util.file.FileManager;
 
+import java.nio.file.Path;
+
 public class AdvancedPanelController extends AbstractUiController<AdvancedPanel> {
 
     private final MoreOptionsPanel moreOptionsPanel;
@@ -20,6 +22,13 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedPanel>
         advancedPanel.getGameLogsFolderButton().clickActionSet(this::openGameLogsFolder);
         advancedPanel.getResetButton().clickActionSet(this::resetModConfig);
         advancedPanel.getFolderButton().clickActionSet(this::openModConfigFolder);
+        advancedPanel.getCopySaveStampButton().clickActionSet(this::copySaveStamp);
+        advancedPanel.getCopyWorldSeedButton().clickActionSet(this::copyWorldSeed);
+    }
+
+    @Override
+    public void onGameSaved(Path saveFilePath) {
+        element.refresh(gameApis.save().getSaveStamp());
     }
 
     public void dumpLogs() {
@@ -64,5 +73,23 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedPanel>
                 notificator.notifyError(i18n.t("notification.config.not.reset"), e);
             }
         }, () -> {}, true);
+    }
+
+    public void copySaveStamp() {
+        String saveStamp = element.getSaveStamp();
+        copyToClipboard(
+            saveStamp,
+            i18n.t("notification.advanced.saveStamp.copy", saveStamp),
+            i18n.t("notification.advanced.saveStamp.not.copy")
+        );
+    }
+
+    public void copyWorldSeed() {
+        int worldSeed = element.getWorldSeed();
+        copyToClipboard(
+            String.valueOf(worldSeed),
+            i18n.t("notification.advanced.worldSeed.copy", worldSeed),
+            i18n.t("notification.advanced.worldSeed.not.copy")
+        );
     }
 }
