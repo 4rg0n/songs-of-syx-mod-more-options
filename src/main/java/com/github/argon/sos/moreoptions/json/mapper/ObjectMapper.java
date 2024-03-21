@@ -9,6 +9,7 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.ClassUtil;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -123,7 +124,17 @@ public class ObjectMapper implements Mapper<JsonObject> {
     @Override
     public JsonObject mapObject(Object object, TypeInfo<?> typeInfo) {
         Class<?> clazz = typeInfo.getTypeClass();
+        MapMapper mapMapper = new MapMapper();
 
+        if (mapMapper.supports(object.getClass())) {
+            return mapMapper.mapObject(object, TypeInfo.get(typeInfo.getType()));
+        } else {
+            return mapObject(object, clazz);
+        }
+    }
+
+    @NotNull
+    private static JsonObject mapObject(Object object, Class<?> clazz) {
         JsonObject jsonObject = new JsonObject();
         for (Method method : clazz.getDeclaredMethods()) {
             if (!isGetterMethod(method)) {
@@ -162,4 +173,5 @@ public class ObjectMapper implements Mapper<JsonObject> {
 
         return jsonObject;
     }
+
 }

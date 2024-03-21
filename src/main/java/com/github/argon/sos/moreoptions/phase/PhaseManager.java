@@ -39,12 +39,14 @@ public class PhaseManager implements Phases {
         }
     }
 
-    public void register(Phase phase, Phases init) {
+    public PhaseManager register(Phase phase, Phases init) {
         if (phases.get(phase).contains(init)) {
-            return;
+            return this;
         }
 
         phases.get(phase).add(init);
+
+        return this;
     }
 
     private void execute(Phases phases, VoidAction action) {
