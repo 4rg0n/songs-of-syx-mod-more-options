@@ -64,9 +64,17 @@ class ScRandom extends GuiSection implements SC{
 				});
 			}
 		};
-		
+
+		CLICKABLE moreOptions = new Screener.ScreenButton(MoreOptionsScript.MOD_INFO.name) {
+			@Override
+			protected void clickA() {
+				menu.switchScreen(new MoreOptions());
+			}
+		};
+
+		screen.addButt(moreOptions);
 		screen.addButt(b);
-		
+
 		GuiSection options = new GuiSection(); 
 		
 		{
