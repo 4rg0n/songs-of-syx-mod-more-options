@@ -133,7 +133,7 @@ public class StringUtil {
         }
 
         if (string.charAt(0) == prefix && string.charAt(string.length() - 1) == suffix) {
-            string = string.substring(1, string.length() - 2);
+            string = string.substring(1, string.length() - 1);
         }
 
         return string;

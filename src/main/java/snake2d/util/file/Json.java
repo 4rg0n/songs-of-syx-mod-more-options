@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Json {
 	
@@ -17,6 +18,11 @@ public class Json {
 	private final GameJsonStore gameJsonStore = GameJsonStore.getInstance();
 	
 	public Json(String content, String path) {
+		String storedJson = gameJsonStore.get(Paths.get(path));
+
+		if (storedJson != null) {
+			content = storedJson;
+		}
 		
 		parser = new JsonParser(content, path);
 	}
