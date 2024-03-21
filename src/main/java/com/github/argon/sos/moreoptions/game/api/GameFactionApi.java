@@ -2,7 +2,9 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.util.Lists;
 import game.faction.FACTIONS;
 import game.faction.Faction;
@@ -33,9 +35,9 @@ public class GameFactionApi implements Phases {
     private Player player;
 
     public Player getPlayer() {
-//        if (player == null) {
-//            throw new UninitializedException(Phase.INIT_GAME_UPDATING);
-//        }
+        if (player == null) {
+            throw new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT);
+        }
 
         return player;
     }
@@ -45,17 +47,17 @@ public class GameFactionApi implements Phases {
     }
 
     public Map<String, Faction> getFactions() {
-//        if (factions.isEmpty()) {
-//            throw new UninitializedException(Phase.INIT_GAME_UPDATING);
-//        }
+        if (factions.isEmpty()) {
+            throw new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT);
+        }
 
         return factions;
     }
 
     public Map<String, FactionNPC> getFactionNPCs() {
-//        if (factionNPCs.isEmpty()) {
-//            throw new UninitializedException(Phase.INIT_GAME_UPDATING);
-//        }
+        if (factionNPCs.isEmpty()) {
+            throw new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT);
+        }
 
         return factionNPCs;
     }
