@@ -88,7 +88,7 @@ public class MoreOptionsConfigurator implements Phases {
             applyRacesConfig(config.getRaces());
             afterApplyAction.accept(config);
         } catch (Exception e) {
-            log.error("Could not apply config: %s", config, e);
+            log.error("Could not apply config", e);
             return false;
         }
 
