@@ -65,7 +65,6 @@ public final class MoreOptionsScript extends AbstractScript {
 			.register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance())
 			.register(Phase.ON_GAME_SAVED, ConfigStore.getInstance())
 			.register(Phase.ON_GAME_SAVE_RELOADED, MetricExporter.getInstance())
-			.register(Phase.ON_GAME_SAVE_RELOADED, ConfigApplier.getInstance())
 			.register(Phase.ON_CRASH, MetricScheduler.getInstance())
 			.register(Phase.ON_CRASH, ConfigStore.getInstance());
 	}
@@ -101,8 +100,5 @@ public final class MoreOptionsScript extends AbstractScript {
 			// apply loaded config
 			configApplier.applyToGame(configStore.getCurrentConfig());
 		}
-
-		// TODO experimental
-//		gameApis.weatherApi().lockDayCycle(1, true);
 	}
 }
