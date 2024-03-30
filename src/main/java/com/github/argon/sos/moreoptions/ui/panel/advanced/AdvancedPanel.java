@@ -178,9 +178,13 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
         }
     }
 
-    private static GuiSection saveStamp(String saveStamp) {
+    private static GuiSection saveStamp(@Nullable String saveStamp) {
         int maxWidth = 300;
         int height = UI.FONT().S.height() * 3;
+
+        if (saveStamp == null) {
+            saveStamp = "NONE";
+        }
 
         GTextR text = new GText(UI.FONT().S, saveStamp)
             .setMaxWidth(maxWidth)
