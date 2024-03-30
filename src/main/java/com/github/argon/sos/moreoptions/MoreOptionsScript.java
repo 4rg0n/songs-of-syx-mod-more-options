@@ -50,8 +50,8 @@ public final class MoreOptionsScript extends AbstractScript {
 
 	@Override
 	protected void registerPhases(PhaseManager phaseManager) {
-		gameJsonStore
-			.register(PATHS.INIT().getFolder("race").get("HUMAN"));
+        gameJsonStore
+            .register(PATHS.INIT().getFolder("race").get("HUMAN"));
 
 		phaseManager
 			.register(Phase.INIT_BEFORE_GAME_CREATED, gameJsonStore)

@@ -29,15 +29,6 @@ public class ConfigApplier implements Phases {
         configurator.setEnvLogLevel(envLogLevel);
     }
 
-    @Override
-    public void onGameSaveReloaded() {
-        // only apply when there's no backup present
-        if (!configStore.getBackup().isPresent()) {
-            log.debug("Reapplying config because of game load.");
-            applyToGame(configStore.getCurrentConfig());
-        }
-    }
-
     public boolean applyToGame(@Nullable MoreOptionsV3Config config) {
         return configurator.applyConfig(config);
     }

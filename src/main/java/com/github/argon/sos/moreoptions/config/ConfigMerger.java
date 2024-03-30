@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -204,11 +205,14 @@ public class ConfigMerger {
             return;
         }
 
+        Set<K> toRemove = new HashSet<>();
         target.forEach((key, value) -> {
             if (!source.containsKey(key)) {
-                target.remove(key);
+                toRemove.add(key);
             }
         });
+
+        toRemove.forEach(target::remove);
     }
 
     public static <K, V> void addMissing(Map<K, V> target, @Nullable Map<K, V> source) {

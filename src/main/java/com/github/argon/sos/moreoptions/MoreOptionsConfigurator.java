@@ -11,6 +11,7 @@ import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.events.EVENTS;
 import init.sound.SoundAmbience;
@@ -22,10 +23,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import settlement.weather.WeatherThing;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -74,190 +72,265 @@ public class MoreOptionsConfigurator implements Phases {
         log.debug("Apply More Options config to game");
         log.trace("Config: %s", config);
 
+        Loggers.setLevels((envLogLevel == null) ? config.getLogLevel() : envLogLevel);
+        List<Boolean> results = Lists.of(
+            applyWorldEventsConfig(config.getEvents().getWorld()),
+            applyEventsChanceConfig(config.getEvents().getChance()),
+            applySoundsAmbienceConfig(config.getSounds().getAmbience()),
+            applySoundsSettlementConfig(config.getSounds().getSettlement()),
+            applySoundsRoomConfig(config.getSounds().getRoom()),
+            applyWeatherConfig(config.getWeather()),
+            applyBoostersConfig(config.getBoosters()),
+            applyMetricsConfig(config.getMetrics()),
+            applyRacesConfig(config.getRaces())
+        );
+
         try {
-            Loggers.setLevels((envLogLevel == null) ? config.getLogLevel() : envLogLevel);
-            applySettlementEventsConfig(config.getEvents().getSettlement());
-            applyWorldEventsConfig(config.getEvents().getWorld());
-            applyEventsChanceConfig(config.getEvents().getChance());
-            applySoundsAmbienceConfig(config.getSounds().getAmbience());
-            applySoundsSettlementConfig(config.getSounds().getSettlement());
-            applySoundsRoomConfig(config.getSounds().getRoom());
-            applyWeatherConfig(config.getWeather());
-            applyBoostersConfig(config.getBoosters());
-            applyMetricsConfig(config.getMetrics());
-            applyRacesConfig(config.getRaces());
             afterApplyAction.accept(config);
         } catch (Exception e) {
-            log.error("Could not apply config: %s", config, e);
+            log.error("Error executing after apply action", e);
+            return false;
+        }
+
+        // when there's at least one failed apply result, return false
+        return results.stream()
+            .filter(success -> !success)
+            .findFirst()
+            .orElse(true);
+    }
+
+    private boolean applyRacesConfig(RacesConfig races) {
+        try {
+            races.getLikings().forEach(liking -> gameApis.race().setLiking(
+                liking.getRace(),
+                liking.getOtherRace(),
+                MathUtil.toPercentage(liking.getRange().getValue())));
+        } catch (Exception e) {
+            log.error("Could not apply race config to game", e);
             return false;
         }
 
         return true;
     }
 
-    private void applyRacesConfig(RacesConfig races) {
-        races.getLikings().forEach(liking -> gameApis.race().setLiking(
-            liking.getRace(),
-            liking.getOtherRace(),
-            MathUtil.toPercentage(liking.getRange().getValue())));
+    private boolean applyMetricsConfig(MetricsConfig metricsConfig) {
+        try {
+            Set<String> metricStats = metricsConfig.getStats();
 
-    }
-
-    private void applyMetricsConfig(MetricsConfig metricsConfig) {
-        Set<String> metricStats = metricsConfig.getStats();
-
-        // use new file when exported stats change
-        if (!metricStats.containsAll(lastMetricStats)) {
-            log.debug("New metric export stat list with %s stats", metricStats.size());
-            log.trace("Stats: %s", metricStats);
-            metricExporter.newExportFile();
-            lastMetricStats = new TreeSet<>(metricStats);
-        }
-
-        // reschedule
-        if (metricScheduler.isStarted() && metricsConfig.isEnabled()) {
-            log.debug("Reschedule metric collection scheduler");
-            metricScheduler.stop();
-            metricScheduler.clear();
-            metricScheduler
-                .schedule(() -> metricCollector.buffer(metricStats),
-                    metricsConfig.getCollectionRateSeconds().getValue(), metricsConfig.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
-                .schedule(metricExporter::export,
-                    metricsConfig.getExportRateMinutes().getValue(), metricsConfig.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
-                .start();
-            return;
-        }
-
-        // stop
-        if (metricScheduler.isStarted()) {
-            log.debug("Stop metric scheduler");
-            metricScheduler.stop();
-            return;
-        }
-
-        // start
-        if (metricsConfig.isEnabled()) {
-            log.debug("Start metric scheduler");
-            metricScheduler
-                .schedule(() -> metricCollector.buffer(metricStats),
-                    metricsConfig.getCollectionRateSeconds().getValue(), metricsConfig.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
-                .schedule(metricExporter::export,
-                    metricsConfig.getExportRateMinutes().getValue(), metricsConfig.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
-                .start();
-        }
-    }
-
-    private void applyBoostersConfig(BoostersConfig boostersConfig) {
-        gameApis.booster().setBoosters(boostersConfig);
-    }
-
-    private void applyEventsChanceConfig(Map<String, Range> eventsChanceConfig) {
-        eventsChanceConfig.forEach((key, range) -> {
-            Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChance();
-
-            if (eventsChance.containsKey(key)) {
-                log.trace("Setting %s chance to %s%%", key, range.getValue());
-                gameApis.events().setChance(key, range.getValue());
-            } else {
-                log.warn("Could not find entry %s in game api result.", key);
-                log.trace("API Result: %s", eventsChance);
+            // use new file when exported stats change
+            if (!metricStats.containsAll(lastMetricStats)) {
+                log.debug("New metric export stat list with %s stats", metricStats.size());
+                log.trace("Stats: %s", metricStats);
+                metricExporter.newExportFile();
+                lastMetricStats = new TreeSet<>(metricStats);
             }
-        });
+
+            // reschedule
+            if (metricScheduler.isStarted() && metricsConfig.isEnabled()) {
+                log.debug("Reschedule metric collection scheduler");
+                metricScheduler.stop();
+                metricScheduler.clear();
+                metricScheduler
+                    .schedule(() -> metricCollector.buffer(metricStats),
+                        metricsConfig.getCollectionRateSeconds().getValue(), metricsConfig.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
+                    .schedule(metricExporter::export,
+                        metricsConfig.getExportRateMinutes().getValue(), metricsConfig.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
+                    .start();
+                return true;
+            }
+
+            // stop
+            if (metricScheduler.isStarted()) {
+                log.debug("Stop metric scheduler");
+                metricScheduler.stop();
+                return true;
+            }
+
+            // start
+            if (metricsConfig.isEnabled()) {
+                log.debug("Start metric scheduler");
+                metricScheduler
+                    .schedule(() -> metricCollector.buffer(metricStats),
+                        metricsConfig.getCollectionRateSeconds().getValue(), metricsConfig.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
+                    .schedule(metricExporter::export,
+                        metricsConfig.getExportRateMinutes().getValue(), metricsConfig.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
+                    .start();
+            }
+        } catch (Exception e) {
+            log.error("Could not apply metrics config", e);
+            return false;
+        }
+
+        return true;
     }
 
-    private void applySettlementEventsConfig(Map<String, Boolean> eventsConfig) {
-        Map<String, EVENTS.EventResource> settlementEvents = gameApis.events().getSettlementEvents();
+    private boolean applyBoostersConfig(BoostersConfig boostersConfig) {
+        try {
+            gameApis.booster().setBoosters(boostersConfig);
+        } catch (Exception e) {
+            log.error("Could not apply boosters config to game", e);
+            return false;
+        }
 
-        eventsConfig.forEach((key, enabled) -> {
-            if (settlementEvents.containsKey(key)) {
-                EVENTS.EventResource event = settlementEvents.get(key);
-                log.trace("Setting event %s enabled = %s", key, enabled);
-                gameApis.events().enableEvent(event, enabled);
+        return true;
+    }
 
-                if (!enabled) {
-                    gameApis.events().reset(event);
+    private boolean applyEventsChanceConfig(Map<String, Range> eventsChanceConfig) {
+        try {
+            eventsChanceConfig.forEach((key, range) -> {
+                Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChance();
+
+                if (eventsChance.containsKey(key)) {
+                    log.trace("Setting %s chance to %s%%", key, range.getValue());
+                    gameApis.events().setChance(key, range.getValue());
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", eventsChance);
                 }
+            });
+        } catch (Exception e) {
+            log.error("Could not apply event chances game", e);
+            return false;
+        }
 
-            } else {
-                log.warn("Could not find entry %s in game api result.", key);
-                log.trace("API Result: %s", settlementEvents);
-            }
-        });
+        return true;
     }
 
-    private void applyWorldEventsConfig(Map<String, Boolean> eventsConfig) {
-        Map<String, EVENTS.EventResource> worldEvents = gameApis.events().getWorldEvents();
+    private boolean applySettlementEventsConfig(Map<String, Boolean> eventsConfig) {
+        try {
+            Map<String, EVENTS.EventResource> settlementEvents = gameApis.events().getSettlementEvents();
 
-        eventsConfig.forEach((key, enabled) -> {
-            if (worldEvents.containsKey(key)) {
-                EVENTS.EventResource event = worldEvents.get(key);
-                log.trace("Setting event %s enabled = %s", event.getClass().getSimpleName(), enabled);
-                gameApis.events().enableEvent(event, enabled);
+            eventsConfig.forEach((key, enabled) -> {
+                if (settlementEvents.containsKey(key)) {
+                    EVENTS.EventResource event = settlementEvents.get(key);
+                    log.trace("Setting event %s enabled = %s", key, enabled);
+                    gameApis.events().enableEvent(event, enabled);
 
-                if (!enabled) {
-                    gameApis.events().reset(event);
+                    if (!enabled) {
+                        gameApis.events().reset(event);
+                    }
+
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", settlementEvents);
                 }
-            } else {
-                log.warn("Could not find entry %s in game api result.", key);
-                log.trace("API Result: %s", worldEvents);
-            }
-        });
+            });
+        } catch (Exception e) {
+            log.error("Could not apply settlement events config to game", e);
+            return false;
+        }
+
+        return true;
     }
 
-    private void applySoundsAmbienceConfig(Map<String, Range> soundsConfig) {
-        Map<String, SoundAmbience.Ambience> ambienceSounds = gameApis.sounds().getAmbienceSounds();
+    private boolean applyWorldEventsConfig(Map<String, Boolean> eventsConfig) {
+        try {
+            Map<String, EVENTS.EventResource> worldEvents = gameApis.events().getWorldEvents();
 
-        soundsConfig.forEach((key, range) -> {
-            if (ambienceSounds.containsKey(key)) {
-                SoundAmbience.Ambience ambienceSound = ambienceSounds.get(key);
-                gameApis.sounds().setSoundGainLimiter(ambienceSound, range.getValue());
-            } else {
-                log.warn("Could not find entry %s in game api result.", key);
-                log.trace("API Result: %s", ambienceSounds);
-            }
-        });
+            eventsConfig.forEach((key, enabled) -> {
+                if (worldEvents.containsKey(key)) {
+                    EVENTS.EventResource event = worldEvents.get(key);
+                    log.trace("Setting event %s enabled = %s", event.getClass().getSimpleName(), enabled);
+                    gameApis.events().enableEvent(event, enabled);
+
+                    if (!enabled) {
+                        gameApis.events().reset(event);
+                    }
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", worldEvents);
+                }
+            });
+        } catch (Exception e) {
+            log.error("Could not apply world events config to game", e);
+            return false;
+        }
+
+        return true;
     }
 
-    private void applySoundsSettlementConfig(Map<String, Range> soundsConfig) {
-        Map<String, SoundSettlement.Sound> settlementSounds = gameApis.sounds().getSettlementSounds();
+    private boolean applySoundsAmbienceConfig(Map<String, Range> soundsConfig) {
+        try {
+            Map<String, SoundAmbience.Ambience> ambienceSounds = gameApis.sounds().getAmbienceSounds();
 
-        soundsConfig.forEach((key, range) -> {
-            if (settlementSounds.containsKey(key)) {
-                SoundSettlement.Sound settlementSound = settlementSounds.get(key);
-                gameApis.sounds().setSoundsGainLimiter(settlementSound, range.getValue());
-            } else {
-                log.warn("Could not find entry %s in game api result.", key);
-                log.trace("API Result: %s", settlementSounds);
-            }
-        });
+            soundsConfig.forEach((key, range) -> {
+                if (ambienceSounds.containsKey(key)) {
+                    SoundAmbience.Ambience ambienceSound = ambienceSounds.get(key);
+                    gameApis.sounds().setSoundGainLimiter(ambienceSound, range.getValue());
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", ambienceSounds);
+                }
+            });
+        } catch (Exception e) {
+            log.error("Could not apply sound ambience config to game", e);
+            return false;
+        }
+
+        return true;
     }
 
-    private void applySoundsRoomConfig(Map<String, Range> soundsConfig) {
-        Map<String, SoundSettlement.Sound> roomSounds = gameApis.sounds().getRoomSounds();
+    private boolean applySoundsSettlementConfig(Map<String, Range> soundsConfig) {
+        try {
+            Map<String, SoundSettlement.Sound> settlementSounds = gameApis.sounds().getSettlementSounds();
 
-        soundsConfig.forEach((key, range) -> {
-            if (roomSounds.containsKey(key)) {
-                SoundSettlement.Sound roomeSound = roomSounds.get(key);
-                gameApis.sounds().setSoundsGainLimiter(roomeSound, range.getValue());
-            } else {
-                log.warn("Could not find entry %s in game api result.", key);
-                log.trace("API Result: %s", roomSounds);
-            }
-        });
+            soundsConfig.forEach((key, range) -> {
+                if (settlementSounds.containsKey(key)) {
+                    SoundSettlement.Sound settlementSound = settlementSounds.get(key);
+                    gameApis.sounds().setSoundsGainLimiter(settlementSound, range.getValue());
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", settlementSounds);
+                }
+            });
+        } catch (Exception e) {
+            log.error("Could not apply sounds settlement config to game", e);
+            return false;
+        }
+
+        return true;
     }
 
-    private void applyWeatherConfig(WeatherConfig weatherConfig) {
-        Map<String, Integer> weatherEffects = ConfigUtil.extractValues(weatherConfig.getEffects());
-        Map<String, WeatherThing> weatherThings = gameApis.weather().getWeatherThings();
+    private boolean applySoundsRoomConfig(Map<String, Range> soundsConfig) {
+        try {
+            Map<String, SoundSettlement.Sound> roomSounds = gameApis.sounds().getRoomSounds();
 
-        weatherEffects.forEach((key, value) -> {
-            if (weatherThings.containsKey(key)) {
-                WeatherThing weatherThing = weatherThings.get(key);
-                gameApis.weather().setAmountLimit(weatherThing, value);
-            } else {
-                log.warn("Could not find entry %s in game api result.", key);
-                log.trace("API Result: %s", weatherEffects);
-            }
-        });
+            soundsConfig.forEach((key, range) -> {
+                if (roomSounds.containsKey(key)) {
+                    SoundSettlement.Sound roomeSound = roomSounds.get(key);
+                    gameApis.sounds().setSoundsGainLimiter(roomeSound, range.getValue());
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", roomSounds);
+                }
+            });
+        } catch (Exception e) {
+            log.error("Could not apply sounds room config to game", e);
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean applyWeatherConfig(WeatherConfig weatherConfig) {
+        try {
+            Map<String, Integer> weatherEffects = ConfigUtil.extractValues(weatherConfig.getEffects());
+            Map<String, WeatherThing> weatherThings = gameApis.weather().getWeatherThings();
+
+            weatherEffects.forEach((key, value) -> {
+                if (weatherThings.containsKey(key)) {
+                    WeatherThing weatherThing = weatherThings.get(key);
+                    gameApis.weather().setAmountLimit(weatherThing, value);
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", weatherEffects);
+                }
+            });
+        } catch (Exception e) {
+            log.error("Could not apply weather config to game", e);
+            return false;
+        }
+
+        return true;
     }
 }

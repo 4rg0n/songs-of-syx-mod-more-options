@@ -80,8 +80,8 @@ public class RacesPanel extends AbstractConfigPanel<RacesConfig, RacesPanel> {
                         .input(true)
                         .lockScroll(true)
                         .threshold(0, COLOR.RED100.shade(0.5d))
-                        .threshold((int) (0.25 * range.getMax()), COLOR.YELLOW100.shade(0.5d))
-                        .threshold((int) (0.50 * range.getMax()), COLOR.ORANGE100.shade(0.5d))
+                        .threshold((int) (0.25 * range.getMax()), COLOR.ORANGE100.shade(0.5d))
+                        .threshold((int) (0.50 * range.getMax()), COLOR.YELLOW100.shade(0.5d))
                         .threshold((int) (0.75 * range.getMax()), COLOR.GREEN100.shade(0.5d))
                         .build();
 
