@@ -21,6 +21,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class BoostersPanelController extends AbstractUiController<BoostersPanel> {
+
+
     public BoostersPanelController(BoostersPanel boostersPanel) {
         super(boostersPanel);
         boostersPanel.refreshAction(panel -> refreshBoosters());
@@ -90,6 +92,13 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
         STRING_RECIEVER r = presetName -> {
             if (presetName != null && presetName.length() > 0) {
                 element.getBoosterPresets().put(presetName.toString(), preset);
+                MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
+
+                if (currentConfig != null) {
+                    currentConfig.getBoosters().setPresets(element.getValue().getPresets());
+                    configStore.save(currentConfig);
+                }
+
                 notificator.notifySuccess(i18n.t("notification.boosters.preset.save", presetName.toString()));
             }
         };
