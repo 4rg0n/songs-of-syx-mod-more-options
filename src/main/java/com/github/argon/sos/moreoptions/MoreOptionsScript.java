@@ -59,7 +59,6 @@ public final class MoreOptionsScript extends AbstractScript {
 		phaseManager.register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance());
 		phaseManager.register(Phase.ON_GAME_SAVED, ConfigStore.getInstance());
 		phaseManager.register(Phase.ON_GAME_SAVE_RELOADED, MetricExporter.getInstance());
-		phaseManager.register(Phase.ON_GAME_SAVE_RELOADED, ConfigApplier.getInstance());
 		phaseManager.register(Phase.ON_CRASH, MetricScheduler.getInstance());
 		phaseManager.register(Phase.ON_CRASH, ConfigStore.getInstance());
 	}
