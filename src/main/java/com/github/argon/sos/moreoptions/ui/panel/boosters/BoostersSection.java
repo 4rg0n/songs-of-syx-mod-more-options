@@ -74,7 +74,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         Boostable boostable = boosterEntry.getBoosters().getAdd().getOrigin();
         Range rangePerc;
         Range rangeAdd;
-        String activeKey;
+        Range.ApplyMode activeKey;
 
         BOOSTABLE_O bonus;
         if (faction instanceof FactionNPC) {
@@ -101,11 +101,11 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         if (boosterEntry.getRange().getApplyMode().equals(Range.ApplyMode.PERCENT)) {
             rangePerc = boosterEntry.getRange();
             rangeAdd = ConfigDefaults.boosterAdd();
-            activeKey = "perc";
+            activeKey = Range.ApplyMode.PERCENT;
         } else {
             rangePerc = ConfigDefaults.boosterPercent();
             rangeAdd = boosterEntry.getRange();
-            activeKey = "add";
+            activeKey = Range.ApplyMode.ADD;
         }
 
         Slider multiSlider = Slider.SliderBuilder.fromRange(rangePerc)
@@ -128,15 +128,15 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             .build();
 
         // Booster toggle
-        Tabulator<String, Slider, Integer> slidersWithToggle = Tabulator.<String, Slider, Integer>builder()
+        Tabulator<Range.ApplyMode, Slider, Integer> slidersWithToggle = Tabulator.<Range.ApplyMode, Slider, Integer>builder()
             .tabs(Maps.ofLinked(
-                "perc", multiSlider,
-                "add", additiveSlider
+                Range.ApplyMode.PERCENT, multiSlider,
+                Range.ApplyMode.ADD, additiveSlider
             ))
-            .tabMenu(Toggler.<String>builder()
-                .menu(ButtonMenu.<String>builder()
-                    .button("add", new Button(i18n.t("BoostersPanel.booster.toggle.add.name"), i18n.t("BoostersPanel.booster.toggle.add.desc")))
-                    .button("perc", new Button(i18n.t("BoostersPanel.booster.toggle.perc.name"), i18n.t("BoostersPanel.booster.toggle.perc.desc")))
+            .tabMenu(Toggler.<Range.ApplyMode>builder()
+                .menu(ButtonMenu.<Range.ApplyMode>builder()
+                    .button(Range.ApplyMode.ADD, new Button(i18n.t("BoostersPanel.booster.toggle.add.name"), i18n.t("BoostersPanel.booster.toggle.add.desc")))
+                    .button(Range.ApplyMode.PERCENT, new Button(i18n.t("BoostersPanel.booster.toggle.perc.name"), i18n.t("BoostersPanel.booster.toggle.perc.desc")))
                     .horizontal(true)
                     .sameWidth(true)
                     .build())
@@ -153,7 +153,10 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             .column(icon)
             .column(slidersWithToggle)
             .searchTerm(boostable.name.toString())
-            .valueConsumer(range -> slidersWithToggle.setValue(range.getValue()))
+            .valueConsumer(range -> {
+                slidersWithToggle.tab(range.getApplyMode());
+                slidersWithToggle.setValue(range.getValue());
+            })
             .valueSupplier(() -> Range.fromSlider(slidersWithToggle.getActiveTab()))
             .build();
     }
