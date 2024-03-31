@@ -1,5 +1,7 @@
 Updated for **V65** by [Senso](https://github.com/SensoHakai).
 
+[Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3044071344)
+
 Adds a menu with more options for the game:
 
 * Tune the volume of in game soundsConfig like wind
@@ -19,6 +21,8 @@ Adds a menu with more options for the game:
 ![Races](doc/img/races.png)
 ![Advanced](doc/img/advanced.png)
 ![Backup](doc/img/backup.png)
+
+
 
 # Getting started
 
