@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import settlement.weather.WeatherThing;
+import world.battle.AC_Resolver;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -74,6 +75,7 @@ public class MoreOptionsConfigurator implements Phases {
 
         Loggers.setLevels((envLogLevel == null) ? config.getLogLevel() : envLogLevel);
         List<Boolean> results = Lists.of(
+            applyEventsBattleTribute(config.getEvents()),
             applyWorldEventsConfig(config.getEvents().getWorld()),
             applyEventsChanceConfig(config.getEvents().getChance()),
             applySoundsAmbienceConfig(config.getSounds().getAmbience()),
@@ -97,6 +99,12 @@ public class MoreOptionsConfigurator implements Phases {
             .filter(success -> !success)
             .findFirst()
             .orElse(true);
+    }
+
+    private boolean applyEventsBattleTribute(EventsConfig config) {
+        AC_Resolver.setEnemyLootMulti(MathUtil.toPercentage(config.getEnemyBattleLoot().getValue()));
+        AC_Resolver.setPlayerLootMulti(MathUtil.toPercentage(config.getPlayerBattleLoot().getValue()));
+        return true;
     }
 
     private boolean applyRacesConfig(RacesConfig races) {

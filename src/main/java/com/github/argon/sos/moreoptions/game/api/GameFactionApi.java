@@ -29,6 +29,7 @@ public class GameFactionApi implements Phases {
     private final static GameFactionApi instance = new GameFactionApi();
 
     private final Map<String, Faction> factions = new HashMap<>(FACTIONS.MAX);
+    @Getter
     private final Map<String, FactionNPC> factionNPCs = new HashMap<>(FACTIONS.NPCS_MAX);
 
     @Nullable
@@ -54,14 +55,6 @@ public class GameFactionApi implements Phases {
         return factions;
     }
 
-    public Map<String, FactionNPC> getFactionNPCs() {
-        if (factionNPCs.isEmpty()) {
-            throw new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT);
-        }
-
-        return factionNPCs;
-    }
-
     @Nullable
     public Faction getByName(String name) {
         return getFactions().get(name);
@@ -84,14 +77,14 @@ public class GameFactionApi implements Phases {
         factions.put(player.name.toString(), player);
 
         // add npc factions
-        Map<String, FactionNPC> factions = Lists.fromGameLIST(FACTIONS.NPCs()).stream()
+        Map<String, FactionNPC> factionNPCs = Lists.fromGameLIST(FACTIONS.NPCs()).stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toMap(faction -> faction.name.toString(), faction -> faction));
-        this.factions.putAll(factions);
-        this.factionNPCs.putAll(factions);
+        this.factions.putAll(factionNPCs);
+        this.factionNPCs.putAll(factionNPCs);
 
-        log.debug("Initialized %s factions", factions.size());
+        log.debug("Initialized %s npc factions", factionNPCs.size());
         log.debug("Player faction: %s", player.name.toString());
-        log.trace("Factions: %s", factions.keySet());
+        log.trace("Factions: %s", factionNPCs.keySet());
     }
 }

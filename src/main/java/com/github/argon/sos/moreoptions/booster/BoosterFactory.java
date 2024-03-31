@@ -7,11 +7,7 @@ import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
-import game.boosting.BOOSTABLES;
-import game.boosting.BSourceInfo;
-import game.boosting.BoostSpec;
-import game.boosting.Boostable;
-import game.faction.npc.ruler.ROpinions;
+import game.boosting.*;
 import init.sprite.SPRITES;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -43,33 +39,16 @@ public class BoosterFactory {
     public static Map<String, Boosters> createDefault(Map<String, Boosters> presentBoosters) {
         Map<String, Boosters> boosters = new HashMap<>();
 
-        String opinionKey = key(ROpinions.GET().key);
-        Boosters opinionBoosters = createMoreOptionsBoosters(ROpinions.GET(), presentBoosters.get(key(opinionKey)));
-        boosters.put(opinionKey, opinionBoosters);
+        BOOSTING.ALL().forEach(booster -> {
+            // filter broken boosters without names
+            if (booster.name == null || booster.name.toString().isEmpty()) {
+                return;
+            }
 
-        BOOSTABLES.CIVICS().all().forEach(booster -> boosters.put(
-            key(booster.key),
-            createMoreOptionsBoosters(booster, presentBoosters.get(key(booster.key)))));
-
-        BOOSTABLES.BATTLE().all().forEach(booster -> boosters.put(
-            key(booster.key),
-            createMoreOptionsBoosters(booster, presentBoosters.get(key(booster.key)))));
-
-        BOOSTABLES.BEHAVIOUR().all().forEach(booster -> boosters.put(
-            key(booster.key),
-            createMoreOptionsBoosters(booster, presentBoosters.get(key(booster.key)))));
-
-        BOOSTABLES.PHYSICS().all().forEach(booster -> boosters.put(
-            key(booster.key),
-            createMoreOptionsBoosters(booster, presentBoosters.get(key(booster.key)))));
-
-        BOOSTABLES.ROOMS().all().forEach(booster -> boosters.put(
-            key(booster.key),
-            createMoreOptionsBoosters(booster, presentBoosters.get(key(booster.key)))));
-
-        BOOSTABLES.START().all().forEach(booster -> boosters.put(
+            boosters.put(
                 key(booster.key),
-                createMoreOptionsBoosters(booster, presentBoosters.get(key(booster.key)))));
+                createMoreOptionsBoosters(booster, presentBoosters.get(key(booster.key))));
+        });
 
         log.debug("Built %s default boosters", boosters.size());
 

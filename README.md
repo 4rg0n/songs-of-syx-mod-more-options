@@ -1,5 +1,7 @@
 Updated for **V65** by [Senso](https://github.com/SensoHakai).
 
+[Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3044071344)
+
 Adds a menu with more options for the game:
 
 * Tune the volume of in game soundsConfig like wind
@@ -11,14 +13,16 @@ Adds a menu with more options for the game:
 * Game crash detection and backup mechanism
 
 ![Button](doc/img/button.png)
-![Sounds](doc/img/soundsConfig.png)
-![Events](doc/img/eventsConfig.png)
+![Sounds](doc/img/sounds.png)
+![Events](doc/img/events.png)
 ![Weather](doc/img/weather.png)
 ![Boosters](doc/img/boosters.png)
-![Metrics](doc/img/metricsConfig.png)
+![Metrics](doc/img/metrics.png)
 ![Races](doc/img/races.png)
 ![Advanced](doc/img/advanced.png)
 ![Backup](doc/img/backup.png)
+
+
 
 # Getting started
 

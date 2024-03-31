@@ -35,8 +35,8 @@ public class Logger {
 
     public Logger(Class<?> clazz, Level level) {
         this.name = clazz.getCanonicalName();
-        this.shortName = shortenName(clazz);
-        this.displayName = cutOrFill(shortName, NAME_DISPLAY_MAX_LENGTH, false);
+        this.shortName = StringUtil.shortenName(clazz);
+        this.displayName = StringUtil.cutOrFill(shortName, NAME_DISPLAY_MAX_LENGTH, false);
         this.level = level;
     }
 
@@ -93,7 +93,7 @@ public class Logger {
                 timestamp(),
                 displayName,
                 levelText,
-                String.format(formatMsg, stringifyValues(args))));
+                String.format(formatMsg, StringUtil.stringifyValues(args))));
         } catch (Exception e) {
             System.err.println("PROBLEM WHILE LOGGING!");
             System.err.println("formatMsg: " + formatMsg);
