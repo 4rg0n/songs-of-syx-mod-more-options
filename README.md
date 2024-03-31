@@ -15,7 +15,7 @@ Adds a menu with more options for the game:
 ![Events](doc/img/eventsConfig.png)
 ![Weather](doc/img/weather.png)
 ![Boosters](doc/img/boosters.png)
-![Metrics](doc/img/metricsConfig.png)
+![Metrics](doc/img/metrics.png)
 ![Races](doc/img/races.png)
 ![Advanced](doc/img/advanced.png)
 ![Backup](doc/img/backup.png)
