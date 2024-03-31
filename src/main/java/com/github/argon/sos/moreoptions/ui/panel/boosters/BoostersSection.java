@@ -86,7 +86,6 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         // Label with hover
         Label boosterLabel = Label.builder()
             .name(boostable.name.toString())
-            .maxWidth(300)
             .hoverGuiAction(guiBox -> {
                 guiBox.title(faction.name + ": " + boostable.name);
                 guiBox.text(boostable.desc);
@@ -97,6 +96,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
 
         // Icon
         GuiSection icon = UiUtil.toGuiSection(new RENDEROBJ.Sprite(boostable.icon));
+        icon.pad(5);
 
         if (boosterEntry.getRange().getApplyMode().equals(Range.ApplyMode.PERCENT)) {
             rangePerc = boosterEntry.getRange();

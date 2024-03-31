@@ -8,6 +8,7 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.util.Maps;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import snake2d.util.gui.GuiSection;
@@ -30,6 +31,7 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
 
     private final Map<String, Checkbox> worldEventsCheckboxes;
     private final Map<String, Slider> eventsChanceSliders;
+    private final Map<String, Slider> tributeSliders;
 
     public EventsPanel(
         String title,
@@ -46,31 +48,47 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
         GuiSection worldSection = new GuiSection();
         GuiSection checkBoxSection = new GuiSection();
         GuiSection eventsChanceSection = new GuiSection();
+        GuiSection tributeSection = new GuiSection();
 
         GHeader settlementHeader = new GHeader(i18n.t("EventsPanel.header.settlement.name"));
         settlementHeader.hoverInfoSet(i18n.t("EventsPanel.header.settlement.desc"));
         GHeader worldHeader = new GHeader(i18n.t("EventsPanel.header.world.name"));
-        settlementHeader.hoverInfoSet(i18n.t("EventsPanel.header.world.desc"));
+        worldHeader.hoverInfoSet(i18n.t("EventsPanel.header.world.desc"));
 
+        // Event chances
         this.eventsChanceSliders = UiMapper.toSliders(eventsConfig.getChance());
-        List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(eventsChanceSliders, i18n);
+        List<ColumnRow<Integer>> evenChanceRows = UiMapper.toLabeledColumnRows(eventsChanceSliders, i18n);
         Table<Integer> chanceTable = Table.<Integer>builder()
-            .rows(rows)
+            .rows(evenChanceRows)
             .rowPadding(5)
             .build();
-
         GHeader eventChancesHeader = new GHeader(i18n.t("EventsPanel.header.chance.name"));
         eventChancesHeader.hoverInfoSet(i18n.t("EventsPanel.header.chance.desc"));
-
         eventsChanceSection.addDown(0, eventChancesHeader);
         eventsChanceSection.addDown(5, chanceTable);
-
         HorizontalLine horizontalLine = new HorizontalLine(eventsChanceSection.body().width(), 14, 1);
+
+        // Siege tributes
+        GHeader tributeHeader = new GHeader(i18n.t("EventsPanel.header.battle.loot.name"));
+        tributeHeader.hoverInfoSet(i18n.t("EventsPanel.header.battle.loot.desc"));
+        tributeSliders = UiMapper.toSliders(Maps.of(
+            "EventsPanel.battle.loot.player", eventsConfig.getPlayerBattleLoot(),
+            "EventsPanel.battle.loot.enemy", eventsConfig.getEnemyBattleLoot()
+        ));
+        List<ColumnRow<Integer>> tributeRows = UiMapper.toLabeledColumnRows(tributeSliders, i18n);
+        Table<Integer> tributeTable = Table.<Integer>builder()
+            .rows(tributeRows)
+            .rowPadding(5)
+            .build();
+        tributeSection.addDown(0, tributeHeader);
+        tributeSection.addDown(5, tributeTable);
+
         int tableHeight = availableHeight
             - horizontalLine.body().height()
             - eventsChanceSection.body().height()
+            - tributeSection.body().height()
             - UI.FONT().H2.height() // headers height
-            - 40;
+            - 50;
 
         Table<Integer> settlementTable = Table.<Integer>builder()
             .rows(UiMapper.toLabeledColumnRows(settlementEventsCheckboxes, i18n))
@@ -95,6 +113,7 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
         addDownC(0, checkBoxSection);
         addDownC(10, horizontalLine);
         addDownC(10, eventsChanceSection);
+        addDownC(10, tributeSection);
     }
 
     @Override
@@ -103,6 +122,8 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
            .settlement(getSettlementEventsConfig())
            .world(getWorldEventsConfig())
            .chance(getEventsChanceConfig())
+           .enemyBattleLoot(Range.fromSlider(tributeSliders.get("EventsPanel.battle.loot.enemy")))
+           .playerBattleLoot(Range.fromSlider(tributeSliders.get("EventsPanel.battle.loot.player")))
            .build();
     }
 

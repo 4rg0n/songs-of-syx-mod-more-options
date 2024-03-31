@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config.domain;
 
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import lombok.*;
 
 import java.util.HashMap;
@@ -17,4 +18,16 @@ public class EventsConfig {
     private Map<String, Boolean> world = new HashMap<>();
     @Builder.Default
     private Map<String, Range> chance = new HashMap<>();
+
+    /**
+     * Influences the amount of loot and slaves the player gets when winning a battle
+     */
+    @Builder.Default
+    private Range playerBattleLoot = ConfigDefaults.battleLoot();
+
+    /**
+     * Influences the amount of loot and slaves the enemy gets when losing a battle
+     */
+    @Builder.Default
+    private Range enemyBattleLoot = ConfigDefaults.battleLoot();
 }
