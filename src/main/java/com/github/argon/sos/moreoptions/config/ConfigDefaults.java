@@ -170,6 +170,8 @@ public class ConfigDefaults {
             .world(worldEvents)
             .settlement(settlementEvents)
             .chance(eventChances)
+            .enemyBattleLoot(battleLoot())
+            .playerBattleLoot(battleLoot())
             .build();
     }
 
@@ -257,6 +259,16 @@ public class ConfigDefaults {
     }
 
     public static Range eventChance() {
+        return Range.builder()
+            .value(100)
+            .min(0)
+            .max(10000)
+            .displayMode(Range.DisplayMode.PERCENTAGE)
+            .applyMode(Range.ApplyMode.PERCENT)
+            .build();
+    }
+
+    public static Range battleLoot() {
         return Range.builder()
             .value(100)
             .min(0)

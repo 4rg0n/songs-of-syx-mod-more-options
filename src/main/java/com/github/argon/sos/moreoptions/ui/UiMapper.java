@@ -117,6 +117,15 @@ public class UiMapper {
                 .build()));
     }
 
+    public static Slider toSlider(Range range) {
+        return Slider.SliderBuilder
+            .fromRange(range)
+            .lockScroll(true)
+            .input(true)
+            .width(300)
+            .build();
+    }
+
     public static <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toLabeledColumnRows(Map<String, Element> elements, I18n i18n) {
         return elements.entrySet().stream()
             .sorted(Map.Entry.comparingByKey())

@@ -13,8 +13,8 @@ Adds a menu with more options for the game:
 * Game crash detection and backup mechanism
 
 ![Button](doc/img/button.png)
-![Sounds](doc/img/soundsConfig.png)
-![Events](doc/img/eventsConfig.png)
+![Sounds](doc/img/sounds.png)
+![Events](doc/img/events.png)
 ![Weather](doc/img/weather.png)
 ![Boosters](doc/img/boosters.png)
 ![Metrics](doc/img/metrics.png)
