@@ -7,13 +7,18 @@ import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
-import game.boosting.*;
+import com.github.argon.sos.moreoptions.util.Lists;
+import game.boosting.BOOSTING;
+import game.boosting.BSourceInfo;
+import game.boosting.BoostSpec;
+import game.boosting.Boostable;
 import init.sprite.SPRITES;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +35,14 @@ public class BoosterFactory {
 
     public final static String KEY_PREFIX = "booster";
 
+    private final static List<String> blacklist = Lists.of(
+        /*
+        Because MoreOptions boosters have a high max value, this results in a very high possible max world population.
+        NPC factions will then have a lot more population compared to vanilla.
+         */
+        "WORLD_POPULATION_CAPACITY"
+    );
+
     /**
      * Creates {@link Boosters} for each available booster in the game.
      * Uses default settings for preparing the boosters.
@@ -42,6 +55,11 @@ public class BoosterFactory {
         BOOSTING.ALL().forEach(booster -> {
             // filter broken boosters without names
             if (booster.name == null || booster.name.toString().isEmpty()) {
+                return;
+            }
+
+            // filter boosters on blacklist
+            if (blacklist.contains(booster.key)) {
                 return;
             }
 
