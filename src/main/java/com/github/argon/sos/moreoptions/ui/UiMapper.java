@@ -77,6 +77,7 @@ public class UiMapper {
                 faction,
                 entry.getValue().values().stream()
                     .map(this::toBoosterPanelEntry)
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList()));
         }
 
@@ -85,6 +86,7 @@ public class UiMapper {
             gameApis.faction().getPlayer(),
             boostersConfig.getPlayer().values().stream()
                 .map(this::toBoosterPanelEntry)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList()));
 
         return factionBoosters;
@@ -92,13 +94,13 @@ public class UiMapper {
 
     @Nullable
     public BoostersPanel.Entry toBoosterPanelEntry(BoostersConfig.Booster booster) {
-        BoostersPanel.Entry.EntryBuilder entryBuilder = BoostersPanel.Entry.builder()
+        return gameApis.booster().get(booster.getKey()).map(boosters -> BoostersPanel.Entry.builder()
             .key(booster.getKey())
             .range(booster.getRange())
-            .boosters(gameApis.booster().get(booster.getKey()))
-            .cat(gameApis.booster().getCat(booster.getKey()));
-
-        return entryBuilder.build();
+            .boosters(boosters)
+            .cat(gameApis.booster().getCat(booster.getKey()))
+            .build()
+        ).orElse(null);
     }
 
     public static Map<String, List<BoostersPanel.Entry>> toBoosterPanelEntriesCategorized(List<BoostersPanel.Entry> boosterEntries) {

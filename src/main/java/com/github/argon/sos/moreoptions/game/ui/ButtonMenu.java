@@ -27,7 +27,7 @@ public class ButtonMenu<Key> extends GuiSection {
     private Action<Key> clickAction;
 
     public ButtonMenu(Map<Key, Button> buttons) {
-        this(buttons, false, true, true, true, false, 0, 0, 0, COLOR.WHITE35, null, null);
+        this(buttons, false, true, false, false, false, 0, 0, 0, COLOR.WHITE35, null, null);
     }
 
     @Builder
