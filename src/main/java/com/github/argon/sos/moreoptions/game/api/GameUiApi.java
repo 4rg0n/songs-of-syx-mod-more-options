@@ -129,7 +129,7 @@ public class GameUiApi implements Phases {
         return true;
     }
 
-    public boolean injectIntoSettlementUITopPanel(RENDEROBJ element) throws ApiException {
+    public void injectIntoSettlementUITopPanel(RENDEROBJ element) throws ApiException {
         Object object;
         log.debug("Injecting ui element into Settlement UIPanelTop#right");
 
@@ -147,7 +147,6 @@ public class GameUiApi implements Phases {
 
         GuiSection right = (GuiSection) object;
         right.addRelBody(8, DIR.W, element);
-        return true;
     }
 
     @Override
