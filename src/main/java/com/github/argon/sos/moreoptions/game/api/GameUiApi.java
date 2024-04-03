@@ -18,6 +18,7 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 import view.main.Interrupters;
 import view.main.VIEW;
 import view.sett.SettView;
+import view.sett.invasion.SBattleView;
 import view.ui.top.UIPanelTop;
 import view.world.WorldView;
 
@@ -52,23 +53,33 @@ public class GameUiApi implements Phases {
      * @throws UninitializedException when ui isn't initialized yet
      */
     public SettView settlement() {
-        SettView settView = VIEW.s();
+        SettView view = VIEW.s();
 
-        if (settView == null) {
+        if (view == null) {
             throw new UninitializedException(Phase.INIT_GAME_UI_PRESENT);
         }
 
-        return settView;
+        return view;
     }
 
     public WorldView world() {
-        WorldView worldView = VIEW.world();
+        WorldView view = VIEW.world();
 
-        if (worldView == null) {
+        if (view == null) {
             throw new UninitializedException(Phase.INIT_GAME_UI_PRESENT);
         }
 
-        return worldView;
+        return view;
+    }
+
+    public SBattleView battle() {
+        SBattleView view = VIEW.s().battle;
+
+        if (view == null) {
+            throw new UninitializedException(Phase.INIT_GAME_UI_PRESENT);
+        }
+
+        return view;
     }
 
     public <T> Optional<T> findUIElementInSettlementView(Class<T> clazz) {
@@ -78,6 +89,11 @@ public class GameUiApi implements Phases {
 
     public <T> Optional<T> findUIElementInWorldView(Class<T> clazz) {
         return ReflectionUtil.getDeclaredField("inters", world().uiManager)
+            .flatMap(inters -> extractFromIterable((Iterable<?>) inters, clazz));
+    }
+
+    public <T> Optional<T> findUIElementInBattleView(Class<T> clazz) {
+        return ReflectionUtil.getDeclaredField("inters", battle().uiManager)
             .flatMap(inters -> extractFromIterable((Iterable<?>) inters, clazz));
     }
 
@@ -108,7 +124,13 @@ public class GameUiApi implements Phases {
         return interrupters;
     }
 
-    public boolean injectIntoWorldUITopPanel(RENDEROBJ element) throws ApiException {
+    public void injectIntoUITopPanels(RENDEROBJ element) throws ApiException {
+        injectIntoBattleUITopPanel(element);
+        injectIntoWorldUITopPanel(element);
+        injectIntoSettlementUITopPanel(element);
+    }
+
+    public void injectIntoWorldUITopPanel(RENDEROBJ element) throws ApiException {
         Object object;
         log.debug("Injecting ui element into in World UIPanelTop#right");
 
@@ -126,7 +148,6 @@ public class GameUiApi implements Phases {
 
         GuiSection right = (GuiSection) object;
         right.addRelBody(8, DIR.W, element);
-        return true;
     }
 
     public void injectIntoSettlementUITopPanel(RENDEROBJ element) throws ApiException {
@@ -143,6 +164,26 @@ public class GameUiApi implements Phases {
 
         if (object == null) {
             throw new ApiException("Could not find ui element in Settlement UIPanelTop");
+        }
+
+        GuiSection right = (GuiSection) object;
+        right.addRelBody(8, DIR.W, element);
+    }
+
+    public void injectIntoBattleUITopPanel(RENDEROBJ element) throws ApiException {
+        Object object;
+        log.debug("Injecting ui element into Battle UIPanelTop#right");
+
+        try {
+            object = findUIElementInBattleView(UIPanelTop.class)
+                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
+                .orElse(null);
+        } catch (Exception e) {
+            throw new ApiException("Could not inject ui element into Battle UIPanelTop#right", e);
+        }
+
+        if (object == null) {
+            throw new ApiException("Could not find ui element in Battle UIPanelTop");
         }
 
         GuiSection right = (GuiSection) object;

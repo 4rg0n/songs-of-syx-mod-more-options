@@ -4,8 +4,6 @@ import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.game.AbstractScript;
-import com.github.argon.sos.moreoptions.game.api.ApiException;
-import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.i18n.I18nMessages;
 import com.github.argon.sos.moreoptions.log.Level;
@@ -16,7 +14,6 @@ import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
-import com.github.argon.sos.moreoptions.ui.Stats;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
 import init.paths.PATHS;
 import lombok.NoArgsConstructor;
@@ -92,13 +89,6 @@ public final class MoreOptionsScript extends AbstractScript {
 			// apply loaded config
 			configApplier.applyToGame(configStore.getCurrentConfig());
 		}
-
-		Stats stats = new Stats();
-        try {
-            GameUiApi.getInstance().injectIntoSettlementUITopPanel(stats);
-        } catch (ApiException e) {
-            throw new RuntimeException(e);
-        }
 
         // TODO experimental
 //		gameApis.weatherApi().lockDayCycle(1, true);
