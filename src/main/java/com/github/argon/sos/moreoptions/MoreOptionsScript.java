@@ -80,15 +80,14 @@ public final class MoreOptionsScript extends AbstractScript {
 	@Override
 	public void onViewSetup() {
 		log.debug("onViewSetup");
-		Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
-		// show backup dialog?
-		if (backupDialog != null) {
-			backupDialog.show();
-		} else {
-			// apply loaded config
-			configApplier.applyToGame(configStore.getCurrentConfig());
-		}
-	}
+        Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
+        // show backup dialog?
+        if (backupDialog != null) {
+            backupDialog.show();
+        } else {
+            // apply loaded config
+            configApplier.applyToGame(configStore.getCurrentConfig());
+        }
     }
 
 	@Override
@@ -96,3 +95,4 @@ public final class MoreOptionsScript extends AbstractScript {
 		return true;
 	}
 }
+
