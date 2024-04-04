@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.config.json.v3;
+package com.github.argon.sos.moreoptions.config.json.v4;
 
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.*;
@@ -14,16 +14,16 @@ import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class JsonMoreOptionsV3Config {
+public class JsonMoreOptionsV4Config {
     @Builder.Default
     private int version = VERSION;
     @Builder.Default
     private String logLevel = ConfigDefaults.LOG_LEVEL.getName();
 
     @Builder.Default
-    private JsonSoundsV3Config sounds = JsonSoundsV3Config.builder().build();
+    private SoundsConfig sounds = SoundsConfig.builder().build();
     @Builder.Default
-    private JsonEventsV3Config events = JsonEventsV3Config.builder().build();
+    private EventsConfig events = EventsConfig.builder().build();
     @Builder.Default
     private WeatherConfig weather = WeatherConfig.builder().build();
     @Builder.Default

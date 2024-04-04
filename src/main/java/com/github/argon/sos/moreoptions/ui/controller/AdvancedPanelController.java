@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.advanced.AdvancedPanel;
 import init.paths.PATHS;
@@ -59,7 +59,7 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedPanel>
     public void resetModConfig() {
         // are you sure message
         gameApis.ui().inters().yesNo.activate(i18n.t("MoreOptionsPanel.text.yesNo.reset"), () -> {
-            MoreOptionsV3Config defaultConfig = configStore.getDefaultConfig();
+            MoreOptionsV4Config defaultConfig = configStore.getDefaultConfig();
             try {
                 moreOptionsPanel.setValue(defaultConfig);
                 configStore.clear();

@@ -1,14 +1,15 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.config.json.JsonConfigStore;
 import com.github.argon.sos.moreoptions.config.json.JsonConfigVersionHandler;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
-import com.github.argon.sos.moreoptions.config.json.v3.JsonBoostersV3Config;
-import com.github.argon.sos.moreoptions.config.json.v3.JsonMoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
+import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
+import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
 import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -34,7 +35,7 @@ public class ConfigService implements Phases {
     private final JsonConfigVersionHandler versionHandler;
 
     public ConfigService(ConfigFactory configFactory) {
-        this.jsonConfigStore = configFactory.newJsonConfigStoreV3();
+        this.jsonConfigStore = configFactory.newJsonConfigStoreV4();
         this.versionHandler = new JsonConfigVersionHandler(configFactory, this.jsonConfigStore);
     }
 
@@ -43,19 +44,19 @@ public class ConfigService implements Phases {
             .map(ConfigMapper::mapMeta);
     }
 
-    public Optional<MoreOptionsV3Config> getConfig() {
+    public Optional<MoreOptionsV4Config> getConfig() {
         return getMeta()
             .map(versionHandler::handleMapping);
     }
 
-    public Optional<MoreOptionsV3Config> getBackup() {
-        return jsonConfigStore.getBackup(JsonMoreOptionsV3Config.class)
+    public Optional<MoreOptionsV4Config> getBackup() {
+        return jsonConfigStore.getBackup(JsonMoreOptionsV4Config.class)
             .map(ConfigMapper::mapConfig)
             // add other configs
             .map(domainConfig -> {
-                jsonConfigStore.getBackup(JsonRacesV3Config.class)
+                jsonConfigStore.getBackup(JsonRacesV4Config.class)
                     .ifPresent(racesConfig -> ConfigMapper.mapInto(racesConfig, domainConfig));
-                jsonConfigStore.getBackup(JsonBoostersV3Config.class)
+                jsonConfigStore.getBackup(JsonBoostersV4Config.class)
                     .ifPresent(boostersConfig -> ConfigMapper.mapInto(boostersConfig, domainConfig));
                 return domainConfig;
             });
@@ -69,12 +70,12 @@ public class ConfigService implements Phases {
         return jsonConfigStore.readMetas(JsonRacesV3Config.class);
     }
 
-    public Optional<MoreOptionsV3Config> reloadAll() {
+    public Optional<MoreOptionsV4Config> reloadAll() {
         jsonConfigStore.reloadAll();
         return getConfig();
     }
 
-    public Optional<MoreOptionsV3Config> reloadBackups() {
+    public Optional<MoreOptionsV4Config> reloadBackups() {
         jsonConfigStore.reloadBackups();
         return getBackup();
     }
@@ -95,7 +96,7 @@ public class ConfigService implements Phases {
         return jsonConfigStore.getPath(JsonRacesV3Config.class);
     }
 
-    public boolean save(MoreOptionsV3Config config) {
+    public boolean save(MoreOptionsV4Config config) {
         return Stream.of(
             jsonConfigStore.save(ConfigMapper.mapConfig(config)),
             jsonConfigStore.save(ConfigMapper.mapRacesConfig(config)),

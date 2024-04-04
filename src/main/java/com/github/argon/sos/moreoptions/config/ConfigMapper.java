@@ -2,19 +2,19 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
-import com.github.argon.sos.moreoptions.config.json.v3.JsonBoostersV3Config;
-import com.github.argon.sos.moreoptions.config.json.v3.JsonMoreOptionsV3Config;
-import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
+import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
+import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
 import com.github.argon.sos.moreoptions.log.Level;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigMapper {
-    public static MoreOptionsV3Config mapConfig(JsonMoreOptionsV3Config config) {
-       return MoreOptionsV3Config.builder()
+    public static MoreOptionsV4Config mapConfig(JsonMoreOptionsV4Config config) {
+       return MoreOptionsV4Config.builder()
             .logLevel(Level.fromName(config.getLogLevel())
                 .orElse(ConfigDefaults.LOG_LEVEL))
             .version(config.getVersion())
@@ -29,8 +29,8 @@ public class ConfigMapper {
             .build();
     }
 
-    public static JsonMoreOptionsV3Config mapConfig(MoreOptionsV3Config config) {
-        return JsonMoreOptionsV3Config.builder()
+    public static JsonMoreOptionsV4Config mapConfig(MoreOptionsV4Config config) {
+        return JsonMoreOptionsV4Config.builder()
             .logLevel(config.getLogLevel().getName())
             .version(config.getVersion())
             .sounds(config.getSounds())
@@ -42,14 +42,14 @@ public class ConfigMapper {
             .build();
     }
 
-    public static JsonRacesV3Config mapRacesConfig(MoreOptionsV3Config config) {
-        return JsonRacesV3Config.builder()
+    public static JsonRacesV4Config mapRacesConfig(MoreOptionsV4Config config) {
+        return JsonRacesV4Config.builder()
             .likings(config.getRaces().getLikings())
             .build();
     }
 
-    public static JsonBoostersV3Config mapBoostersConfig(MoreOptionsV3Config config) {
-        return JsonBoostersV3Config.builder()
+    public static JsonBoostersV4Config mapBoostersConfig(MoreOptionsV4Config config) {
+        return JsonBoostersV4Config.builder()
             .faction(config.getBoosters().getFaction())
             .build();
     }
@@ -62,11 +62,11 @@ public class ConfigMapper {
             .build();
     }
 
-    public static void mapInto(JsonRacesV3Config racesConfig, MoreOptionsV3Config config) {
+    public static void mapInto(JsonRacesV4Config racesConfig, MoreOptionsV4Config config) {
         config.getRaces().setLikings(racesConfig.getLikings());
     }
 
-    public static void mapInto(JsonBoostersV3Config boostersConfig, MoreOptionsV3Config config) {
+    public static void mapInto(JsonBoostersV4Config boostersConfig, MoreOptionsV4Config config) {
         config.getBoosters().setFaction(boostersConfig.getFaction());
     }
 }

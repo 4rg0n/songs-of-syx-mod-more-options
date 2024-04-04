@@ -78,9 +78,8 @@ public final class MoreOptionsScript extends AbstractScript {
 	}
 
 	@Override
-	public void initSettlementUiPresent() {
-		// initialize other ui stuff
-		super.initSettlementUiPresent();
+	public void onViewSetup() {
+		log.debug("onViewSetup");
 		Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
 		// show backup dialog?
 		if (backupDialog != null) {
@@ -89,8 +88,15 @@ public final class MoreOptionsScript extends AbstractScript {
 			// apply loaded config
 			configApplier.applyToGame(configStore.getCurrentConfig());
 		}
+	}
 
-		// TODO experimental
-//		gameApis.weatherApi().lockDayCycle(1, true);
+	/*
+	 TODO
+	  * Sounds are now in AUDIO.
+	 */
+
+	@Override
+	public boolean forceInit() {
+		return true;
 	}
 }

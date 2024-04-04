@@ -10,7 +10,6 @@ import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
 import com.github.argon.sos.moreoptions.util.Maps;
 import init.sprite.UI.UI;
-import lombok.Getter;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
 
@@ -26,10 +25,7 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
     private static final Logger log = Loggers.getLogger(EventsPanel.class);
     private final static I18n i18n = I18n.get(EventsPanel.class);
 
-    @Getter
-    private final Map<String, Checkbox> settlementEventsCheckboxes;
-
-    private final Map<String, Checkbox> worldEventsCheckboxes;
+    private final Map<String, Checkbox> eventsCheckboxes;
     private final Map<String, Slider> eventsChanceSliders;
     private final Map<String, Slider> tributeSliders;
 
@@ -41,12 +37,10 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
         int availableHeight
     ) {
         super(title, defaultConfig, availableWidth, availableHeight);
-        this.settlementEventsCheckboxes = UiMapper.toCheckboxes(eventsConfig.getSettlement());
-        this.worldEventsCheckboxes = UiMapper.toCheckboxes(eventsConfig.getWorld());
+        this.eventsCheckboxes = UiMapper.toCheckboxes(eventsConfig.getEvents());
 
         GuiSection settlementSection = new GuiSection();
         GuiSection worldSection = new GuiSection();
-        GuiSection checkBoxSection = new GuiSection();
         GuiSection eventsChanceSection = new GuiSection();
         GuiSection tributeSection = new GuiSection();
 
@@ -90,27 +84,17 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
             - UI.FONT().H2.height() // headers height
             - 50;
 
-        Table<Integer> settlementTable = Table.<Integer>builder()
-            .rows(UiMapper.toLabeledColumnRows(settlementEventsCheckboxes, i18n))
-            .rowPadding(5)
-            .displayHeight(tableHeight)
-            .build();
-
-        Table<Integer> worldTable = Table.<Integer>builder()
-            .rows(UiMapper.toLabeledColumnRows(worldEventsCheckboxes, i18n))
+        Table<Integer> eventsTable = Table.<Integer>builder()
+            .rows(UiMapper.toLabeledColumnRows(eventsCheckboxes, i18n))
             .rowPadding(5)
             .displayHeight(tableHeight)
             .build();
 
         settlementSection.addDown(0, settlementHeader);
-        settlementSection.addDown(10, settlementTable);
         worldSection.addDown(0, worldHeader);
-        worldSection.addDown(10, worldTable);
-        checkBoxSection.addRight(0, settlementSection);
-        checkBoxSection.addRight(0, new VerticalLine(101, settlementSection.body().height(), 1));
-        checkBoxSection.addRight(0, worldSection);
+        worldSection.addDown(10, eventsTable);
 
-        addDownC(0, checkBoxSection);
+        addDownC(0, eventsTable);
         addDownC(10, horizontalLine);
         addDownC(10, eventsChanceSection);
         addDownC(10, tributeSection);
@@ -119,21 +103,15 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
     @Override
     public EventsConfig getValue() {
        return EventsConfig.builder()
-           .settlement(getSettlementEventsConfig())
-           .world(getWorldEventsConfig())
+           .events(getEventsConfig())
            .chance(getEventsChanceConfig())
            .enemyBattleLoot(Range.fromSlider(tributeSliders.get("EventsPanel.battle.loot.enemy")))
            .playerBattleLoot(Range.fromSlider(tributeSliders.get("EventsPanel.battle.loot.player")))
            .build();
     }
 
-    public Map<String, Boolean> getSettlementEventsConfig() {
-        return settlementEventsCheckboxes.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
-    }
-
-    public Map<String, Boolean> getWorldEventsConfig() {
-        return worldEventsCheckboxes.entrySet().stream()
+    public Map<String, Boolean> getEventsConfig() {
+        return eventsCheckboxes.entrySet().stream()
             .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 
@@ -147,17 +125,9 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
     public void setValue(EventsConfig eventsConfig) {
         log.trace("Applying UI settlement events config %s", eventsConfig);
 
-        eventsConfig.getSettlement().forEach((key, value) -> {
-            if (settlementEventsCheckboxes.containsKey(key)) {
-                settlementEventsCheckboxes.get(key).selectedSet(value);
-            } else {
-                log.warn("No checkbox with key %s found in UI", key);
-            }
-        });
-
-        eventsConfig.getWorld().forEach((key, value) -> {
-            if (worldEventsCheckboxes.containsKey(key)) {
-                worldEventsCheckboxes.get(key).selectedSet(value);
+        eventsConfig.getEvents().forEach((key, value) -> {
+            if (eventsCheckboxes.containsKey(key)) {
+                eventsCheckboxes.get(key).selectedSet(value);
             } else {
                 log.warn("No checkbox with key %s found in UI", key);
             }
@@ -167,9 +137,12 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
             if (eventsChanceSliders.containsKey(key)) {
                 eventsChanceSliders.get(key).setValue(range.getValue());
             } else {
-                log.warn("No slider with key %s found in UI", key);
+                log.warn("No event chance slider with key %s found in UI", key);
             }
         });
+
+        tributeSliders.get("EventsPanel.battle.loot.enemy").setValue(eventsConfig.getEnemyBattleLoot().getValue());
+        tributeSliders.get("EventsPanel.battle.loot.player").setValue(eventsConfig.getPlayerBattleLoot().getValue());
     }
 
     protected EventsPanel element() {

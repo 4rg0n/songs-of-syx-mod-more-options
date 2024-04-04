@@ -3,8 +3,9 @@ package world.battle;
 import game.GAME;
 import game.faction.FACTIONS;
 import game.faction.Faction;
+import game.faction.diplomacy.DIP;
 import game.faction.npc.FactionNPC;
-import game.faction.npc.ruler.ROpinions;
+import game.faction.royalty.opinion.ROPINIONS;
 import init.config.Config;
 import init.race.RACES;
 import init.resources.RESOURCES;
@@ -14,21 +15,22 @@ import settlement.stats.Induvidual;
 import settlement.stats.STATS;
 import settlement.stats.equip.EquipBattle;
 import snake2d.util.misc.CLAMP;
+import snake2d.util.sets.ArrayListGrower;
 import view.main.VIEW;
 import world.army.AD;
+import world.army.ADSupplies.ADArtillery;
 import world.army.ADSupply;
 import world.army.WDIV;
-import world.army.WDivGeneration;
+import world.army.util.WDivGeneration;
 import world.battle.spec.WBattleResult;
-import world.battle.spec.WBattleResult.RTYPE;
+import world.battle.spec.WBattleResult.BATTLE_RESULT;
 import world.battle.spec.WBattleSide;
 import world.battle.spec.WBattleSiege;
 import world.battle.spec.WBattleUnit;
-import world.log.WLogger;
-import world.regions.Region;
-import world.regions.data.RD;
-import world.regions.data.RDOutput.RDResource;
-import world.regions.data.pop.RDRace;
+import world.map.regions.Region;
+import world.region.RD;
+import world.region.RDOutput.RDResource;
+import world.region.pop.RDRace;
 
 import java.util.Arrays;
 
@@ -61,37 +63,42 @@ public class AC_Resolver {
 	}
 	
 	public void battle(Side winner, int[] wlosses, Side looser, int[] llosses) {
+		BattleListener.notify(winner, wlosses, looser, llosses);
 		BSide w = aa.init(winner, wlosses);
 		BSide l = bb.init(looser, llosses);
-		log(w, l);
 		l.extract(llosses, null);
 		autoLosses(w, wlosses);
 		autoLosses(l, llosses);
 		retreater.retreat(l.side);
 		
 		if (w.side.isPlayer) {
-			pbattle.init(w, l, RTYPE.VICTORY, false);
+			pbattle.init(w, l, BATTLE_RESULT.VICTORY, false);
 		}else if (l.side.isPlayer) {
-			pbattle.init(l, w, RTYPE.DEFEAT, false);
+			pbattle.init(l, w, BATTLE_RESULT.DEFEAT, false);
 		}else {
 			shipper.ship(w.side, l.side, l.capturedRaces, l.lostRes);
 		}
 		
 	}
 	
-	public void manualBattle(Side player, Induvidual[][] survivors, Side enemy, int[] elosses, int[] ecaptured, RTYPE type) {
+	public void manualBattle(Side player, Induvidual[][] survivors, Side enemy, int[] elosses, int[] ecaptured, BATTLE_RESULT type) {
 		int [] plosses = new int[player.divs()];
 		for (int i = 0; i < player.divs(); i++) {
 			plosses[i] = player.div(i).men()-survivors[i].length;
 		}
+		
+		
 		BSide p = aa.init(player, plosses);
 		BSide e = bb.init(enemy, elosses);
 		
-		if (type == RTYPE.VICTORY) {
+		if (type == BATTLE_RESULT.VICTORY) {
+			BattleListener.notify(player, plosses, enemy, elosses);
+			
 			e.extract(elosses, ecaptured, null);
 			
 			//shipper.ship(p.side, e.side, e.capturedRaces, e.lostRes);
 		}else {
+			BattleListener.notify(enemy, elosses, player, plosses);
 			p.extract(plosses, null);
 			
 			//shipper.ship(e.side, p.side, p.capturedRaces, p.lostRes);
@@ -112,7 +119,7 @@ public class AC_Resolver {
 			div.resolve(am, 0);
 		}
 		
-		if (type == RTYPE.VICTORY) {
+		if (type == BATTLE_RESULT.VICTORY) {
 			e.extract(elosses, null);
 			pbattle.init(p, e, type, false);
 		}else {
@@ -123,19 +130,20 @@ public class AC_Resolver {
 	
 	public void conquer(Side winner, int[] wlosses, Side looser, int[] llosses, Region reg) {
 
-		
+		BattleListener.notify(winner, wlosses, looser, llosses);
+		BattleListener.notify(winner, reg);
 		
 		if (reg == FACTIONS.player().capitolRegion()) {
 	
-			WDivGeneration[] divs = new WDivGeneration[winner.divs()];
+			ArrayListGrower<WDivGeneration> divs = new ArrayListGrower<>();
 			for (int i = 0; i < winner.divs(); i++) {
-				divs[i] = winner.div(i).generate();
+				divs.add(winner.div(i).generate());
 			}
 			
 			
 			Faction f = winner.unit(0).faction();
 			
-			SETT.INVADOR().invade(winner.unit(0).coo.x(), winner.unit(0).coo.y(), divs, (FactionNPC) f);
+			SETT.INVADOR().invade(winner.unit(0).coo.x(), winner.unit(0).coo.y(), divs, (FactionNPC) f, true);
 			
 			for (SideUnit u : winner.us) {
 				if (u.a() != null)
@@ -146,7 +154,6 @@ public class AC_Resolver {
 		
 		BSide w = aa.init(winner, wlosses);
 		BSide l = bb.init(looser, llosses);
-		WLogger.siege(w.side.us.get(0).faction(), reg, false);
 		l.extract(llosses, reg);
 		autoLosses(w, wlosses);
 		autoLosses(l, llosses);
@@ -162,9 +169,10 @@ public class AC_Resolver {
 	}
 	
 	public void retreat(Side retreater, int[] rlosses, Side winner, int[] wlosses) {
+		
+		BattleListener.notify(winner, wlosses, retreater, rlosses);
 		BSide w = aa.init(winner, wlosses);
 		BSide l = bb.init(retreater, rlosses);
-		log(w, l);
 		l.extract(rlosses, null);
 		autoLosses(w, wlosses);
 		autoLosses(l, rlosses);
@@ -172,17 +180,13 @@ public class AC_Resolver {
 		this.retreater.retreat(l.side);
 		
 		if (w.side.isPlayer) {
-			pbattle.init(w, l, RTYPE.VICTORY, true);
+			pbattle.init(w, l, BATTLE_RESULT.VICTORY, true);
 		}else if (l.side.isPlayer) {
-			pbattle.init(l, w, RTYPE.RETREAT, false);
+			pbattle.init(l, w, BATTLE_RESULT.RETREAT, false);
 		}else {
 			shipper.ship(w.side, l.side, l.capturedRaces, l.lostRes);
 		}
 		
-	}
-	
-	private static void log(BSide w, BSide l) {
-		WLogger.battle(w.side.us.get(0).faction(), l.side.us.get(0).faction(), w.side.us.get(0).coo.x(), w.side.us.get(0).coo.y());
 	}
 
 	
@@ -225,7 +229,7 @@ public class AC_Resolver {
 			this.shipper = shipper;
 		}
 		
-		public void init(BSide player, BSide enemy, RTYPE result, boolean eretreats) {
+		public void init(BSide player, BSide enemy, BATTLE_RESULT result, boolean eretreats) {
 			this.result = result;
 			this.sPlayer = player;
 			this.sEnemy = enemy;
@@ -234,7 +238,7 @@ public class AC_Resolver {
 			initSide(uf, enemy, this.enemy);
 
 			// MODDED
-			if (result == RTYPE.VICTORY) {
+			if (result == BATTLE_RESULT.VICTORY) {
 				setLoot(this, enemy, 1 * AC_Resolver.playerLootMulti);
 			}else {
 				setLoot(this, player, -1 * AC_Resolver.enemyLootMulti);
@@ -244,7 +248,7 @@ public class AC_Resolver {
 		}
 		
 		private static void initSide(PUnitFactory uf, BSide s, WBattleSide bs) {
-			bs.artilleryPieces = 0;
+			Arrays.fill(bs.artilleryPieces, 0);
 			bs.coo.set(s.side.us.get(0).coo);
 			bs.losses = 0;
 			bs.lossesRetreat = 0;
@@ -260,8 +264,7 @@ public class AC_Resolver {
 				bs.men += u.men;
 			}
 		}
-
-		// MODDED
+		
 		private static void setLoot(WBattleResult res, BSide side, double d) {
 			for (int i = 0; i < res.capturedRaces.length; i++) {
 				res.capturedRaces[i] = (int) (side.capturedRaces[i]*d);
@@ -273,7 +276,7 @@ public class AC_Resolver {
 
 		@Override
 		public void accept(int[] enslave, int[] resources) {
-			if (result == RTYPE.VICTORY)
+			if (result == BATTLE_RESULT.VICTORY)
 				shipper.ship(sPlayer.side, sEnemy.side, enslave, resources);
 			else
 				shipper.ship(sEnemy.side, sPlayer.side, sPlayer.capturedRaces, sPlayer.lostRes);
@@ -298,7 +301,7 @@ public class AC_Resolver {
 		}
 		
 		public void init(BSide player, BSide enemy, Region reg) {
-			this.result = RTYPE.VICTORY;
+			this.result = BATTLE_RESULT.VICTORY;
 			boolean surrender = RD.MILITARY().garrison(reg) == 0;
 			this.sPlayer = player;
 			this.sEnemy = enemy;
@@ -342,10 +345,10 @@ public class AC_Resolver {
 			
 			regger.processConqured(sPlayer.side, plunderAmount, besiged, null);
 			
-			FactionNPC f = FACTIONS.activateNext(besiged);
+			FactionNPC f = FACTIONS.activateNext(besiged, true);
 			f.generate(RD.RACES().get(FACTIONS.player().race()), true);
-			ROpinions.liberate(f);
-			FACTIONS.DIP().trade(f, FACTIONS.player(), true);
+			ROPINIONS.OTHER().liberate(f);
+			DIP.VASSAL().set(f, FACTIONS.player());
 			GAME.events().world.dip.dismissWelcome(f);
 			
 		}
@@ -397,8 +400,6 @@ public class AC_Resolver {
 				}
 			}
 			
-			
-			
 			for (int ui = 0; ui < side.us.size(); ui++) {
 				SideUnit u = side.us.get(ui);
 				if (u.a() != null) {
@@ -422,6 +423,15 @@ public class AC_Resolver {
 						su.current().set(u.a(), am);
 						lostRes[su.res.index()] += am;
 					}
+					for (ADArtillery aa : AD.supplies().arts()) {
+						for (ADSupply su : aa.sups()) {
+							int am = (int) (su.current().get(u.a())*d);
+							su.current().set(u.a(), am);
+							lostRes[su.res.index()] += am;
+						}
+						
+						
+					}
 				}
 			}
 			
@@ -433,7 +443,7 @@ public class AC_Resolver {
 			if (conqured != null) {
 				
 				for (RDResource res: RD.OUTPUT().all) {
-					lostRes[res.res.index()] += (1.0-RD.DEVASTATION().current.getD(conqured))* res.boost.get(conqured)*8.0;
+					lostRes[res.res.index()] += res.loot(conqured)*8;
 				}
 				
 				for (RDRace res: RD.RACES().all) {

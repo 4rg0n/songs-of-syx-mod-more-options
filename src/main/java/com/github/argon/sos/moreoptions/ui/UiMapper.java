@@ -140,7 +140,6 @@ public class UiMapper {
                     .column(Label.builder()
                         .name(i18n.n(key))
                         .description(i18n.dn(key))
-                        .maxWidth(300)
                         .build())
                     .column(element)
                     .build();

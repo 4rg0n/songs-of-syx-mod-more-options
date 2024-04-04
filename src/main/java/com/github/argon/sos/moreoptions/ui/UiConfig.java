@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
@@ -40,7 +40,7 @@ import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 import static java.time.temporal.ChronoField.*;
 
 /**
- * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsV3Config}.
+ * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsV4Config}.
  * So when a new entry is added, a new UI element like e.g. an additional slider will also be visible.
  * For setting up the UI and adding functionality to buttons.
  */
@@ -107,7 +107,7 @@ public class UiConfig implements Phases {
      */
     @Override
     public void initSettlementUiPresent() {
-        MoreOptionsV3Config moreOptionsConfig = configStore.getCurrentConfig();
+        MoreOptionsV4Config moreOptionsConfig = configStore.getCurrentConfig();
 
         if (moreOptionsConfig == null) {
             throw new UninitializedException("Configuration is not initialized.");

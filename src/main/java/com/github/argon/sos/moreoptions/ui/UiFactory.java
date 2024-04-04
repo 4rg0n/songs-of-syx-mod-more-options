@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui;
 
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
@@ -56,7 +56,7 @@ public class UiFactory {
     private final MetricExporter metricExporter;
     private final UiMapper uiMapper;
 
-    public FullWindow<MoreOptionsPanel> buildMoreOptionsFullScreen(String title, MoreOptionsV3Config config) {
+    public FullWindow<MoreOptionsPanel> buildMoreOptionsFullScreen(String title, MoreOptionsV4Config config) {
         log.debug("Building '%s' full screen", title);
         MoreOptionsPanel moreOptionsPanel = buildMoreOptionsPanel(config)
             .availableWidth(FullWindow.FullView.WIDTH)
@@ -67,7 +67,7 @@ public class UiFactory {
         return new FullWindow<>(title, moreOptionsPanel, buttonMenu);
     }
 
-    public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV3Config config) {
+    public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV4Config config) {
         Map<Faction, List<BoostersPanel.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(config.getBoosters());
         Map<String, List<RacesPanel.Entry>> raceEntries = uiMapper.toRacePanelEntries(config.getRaces().getLikings());
 

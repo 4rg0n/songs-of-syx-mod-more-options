@@ -6,8 +6,8 @@ import com.github.argon.sos.moreoptions.util.MathUtil;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import game.GAME;
 import game.events.EVENTS;
-import game.events.EventDisease;
-import init.disease.DISEASES;
+import game.events.disaster.EventDisease;
+import init.type.DISEASES;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -22,7 +22,7 @@ public class GameEventsApi {
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
     private Map<String, EVENTS.EventResource> settlementEvents;
-    private Map<String, EVENTS.EventResource> worldEvents;
+    private Map<String, EVENTS.EventResource> events;
     private Map<String, EVENTS.EventResource> eventsChance;
 
     public final static String KEY_PREFIX = "event";
@@ -31,56 +31,24 @@ public class GameEventsApi {
     private final static GameEventsApi instance = new GameEventsApi();
 
     public void clearCached() {
-        settlementEvents = null;
-        worldEvents = null;
+        events = null;
         eventsChance = null;
     }
 
-    public Map<String, EVENTS.EventResource> getSettlementEvents() {
-        if (settlementEvents == null) {
-            settlementEvents = readSettlementEvents();
+
+    public Map<String, EVENTS.EventResource> getEvents() {
+        if (events == null) {
+            events = readWorldEvents();
         }
 
-        return settlementEvents;
-    }
-    public Map<String, EVENTS.EventResource> readSettlementEvents() {
-        Map<String, EVENTS.EventResource> settlementEvents = new HashMap<>();
-        EVENTS gameEvents = GAME.events();
-
-        settlementEvents.put(KEY_PREFIX + ".settlement.accident", gameEvents.accident);
-        settlementEvents.put(KEY_PREFIX + ".settlement.advice", gameEvents.advice);
-        settlementEvents.put(KEY_PREFIX + ".settlement.disease", gameEvents.disease);
-        settlementEvents.put(KEY_PREFIX + ".settlement.farm", gameEvents.farm);
-        settlementEvents.put(KEY_PREFIX + ".settlement.fish", gameEvents.fish);
-        settlementEvents.put(KEY_PREFIX + ".settlement.killer", gameEvents.killer);
-        settlementEvents.put(KEY_PREFIX + ".settlement.orchard", gameEvents.orchard);
-        settlementEvents.put(KEY_PREFIX + ".settlement.pasture", gameEvents.pasture);
-        settlementEvents.put(KEY_PREFIX + ".settlement.riot", gameEvents.riot);
-        settlementEvents.put(KEY_PREFIX + ".settlement.slaver", gameEvents.slaver);
-        settlementEvents.put(KEY_PREFIX + ".settlement.temperature", gameEvents.temperature);
-        settlementEvents.put(KEY_PREFIX + ".settlement.uprising", gameEvents.uprising);
-
-        return settlementEvents;
-    }
-
-    public Map<String, EVENTS.EventResource> getWorldEvents() {
-        if (worldEvents == null) {
-            worldEvents = readWorldEvents();
-        }
-
-        return worldEvents;
+        return events;
     }
 
     public Map<String, EVENTS.EventResource> readWorldEvents() {
         Map<String, EVENTS.EventResource> worldEvents = new HashMap<>();
-        EVENTS gameEvents = GAME.events();
-
-        worldEvents.put(KEY_PREFIX + ".world.factionExpand", gameEvents.world.factionExpand);
-        worldEvents.put(KEY_PREFIX + ".world.factionBreak", gameEvents.world.factionBreak);
-        worldEvents.put(KEY_PREFIX + ".world.popup", gameEvents.world.popup);
-        worldEvents.put(KEY_PREFIX + ".world.war", gameEvents.world.war);
-        worldEvents.put(KEY_PREFIX + ".world.warPlayer", gameEvents.world.warPlayer);
-        worldEvents.put(KEY_PREFIX + ".world.rebellion", gameEvents.world.rebellion);
+        for (EVENTS.EventResource eventResource : GAME.events().all()) {
+            worldEvents.put(KEY_PREFIX + "." + eventResource.key, eventResource);
+        }
 
         return worldEvents;
     }
@@ -116,22 +84,12 @@ public class GameEventsApi {
     }
 
     public Map<String, Boolean> readEventsEnabledStatus() {
-        Map<String, EVENTS.EventResource> events = getSettlementEvents();
-        Map<String, EVENTS.EventResource> worldEvents = getWorldEvents();
-        events.putAll(worldEvents);
-
-        return events.entrySet().stream()
+        return getEvents().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> isEnabled(entry.getValue())));
     }
 
     public void enableEvent(EVENTS.EventResource event, Boolean enabled) {
-        ReflectionUtil.getDeclaredField("supress", EVENTS.EventResource.class).ifPresent(field -> {
-            try {
-                ReflectionUtil.setField(field, event, !enabled);
-            } catch (Exception e) {
-                log.warn("Could not set '%s.supress' to %s", event.getClass().getSimpleName(), !enabled, e);
-            }
-        });
+        event.supress(!enabled);
     }
 
     /**

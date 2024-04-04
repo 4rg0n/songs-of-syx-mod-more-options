@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.ui.controller;
 import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -57,12 +57,12 @@ public abstract class AbstractUiController<Element> implements Phases {
     }
 
     protected boolean applyAndSave(MoreOptionsPanel moreOptionsPanel) {
-        MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
+        MoreOptionsV4Config currentConfig = configStore.getCurrentConfig();
         // only save when changes were made
         if (!moreOptionsPanel.isDirty(currentConfig)) {
             return true;
         }
-        MoreOptionsV3Config config = moreOptionsPanel.getValue();
+        MoreOptionsV4Config config = moreOptionsPanel.getValue();
         if (config == null) {
             log.warn("Could read config from modal. Got null");
             return false;
@@ -88,7 +88,7 @@ public abstract class AbstractUiController<Element> implements Phases {
     }
 
     protected void undo(MoreOptionsPanel moreOptionsPanel) {
-        MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
+        MoreOptionsV4Config currentConfig = configStore.getCurrentConfig();
         moreOptionsPanel.setValue(currentConfig);
     }
 }

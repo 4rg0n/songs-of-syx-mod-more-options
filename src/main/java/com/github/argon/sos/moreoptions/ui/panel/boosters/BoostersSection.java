@@ -9,9 +9,9 @@ import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.util.Maps;
 import game.boosting.BOOSTABLE_O;
 import game.boosting.Boostable;
+import game.faction.FACTIONS;
 import game.faction.Faction;
 import game.faction.npc.FactionNPC;
-import init.race.RACES;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
@@ -80,7 +80,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         if (faction instanceof FactionNPC) {
             bonus = ((FactionNPC) faction).bonus;
         } else {
-            bonus = RACES.clP(null, null);
+            bonus = FACTIONS.player(); // fixme
         }
 
         // Label with hover

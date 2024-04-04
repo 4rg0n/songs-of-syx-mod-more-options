@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
@@ -92,7 +92,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
         STRING_RECIEVER r = presetName -> {
             if (presetName != null && presetName.length() > 0) {
                 element.getBoosterPresets().put(presetName.toString(), preset);
-                MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
+                MoreOptionsV4Config currentConfig = configStore.getCurrentConfig();
 
                 if (currentConfig != null) {
                     currentConfig.getBoosters().setPresets(element.getValue().getPresets());
@@ -145,7 +145,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
         configDefaults.newBoostersConfig();
         Map<Faction, List<BoostersPanel.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(configDefaults.newBoostersConfig());
         element.refresh(boosterEntries);
-        MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
+        MoreOptionsV4Config currentConfig = configStore.getCurrentConfig();
         Objects.requireNonNull(currentConfig);
         element.setValue(currentConfig.getBoosters());
     }

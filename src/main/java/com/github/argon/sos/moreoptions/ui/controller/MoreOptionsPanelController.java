@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
@@ -58,7 +58,7 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
     }
 
     public void reloadAndApply() {
-        MoreOptionsV3Config moreOptionsConfig = configStore.reloadConfig().orElse(null);
+        MoreOptionsV4Config moreOptionsConfig = configStore.reloadConfig().orElse(null);
         if (moreOptionsConfig != null) {
             element.setValue(moreOptionsConfig);
             notificator.notifySuccess(i18n.t("notification.config.reload"));
@@ -68,7 +68,7 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
     }
 
     public void copyMoreOptionsConfigToClipboard() {
-        MoreOptionsV3Config moreOptionsConfig = element.getValue();
+        MoreOptionsV4Config moreOptionsConfig = element.getValue();
         try {
             if (moreOptionsConfig != null) {
                 boolean written = Clipboard.write(moreOptionsConfig.toJson());

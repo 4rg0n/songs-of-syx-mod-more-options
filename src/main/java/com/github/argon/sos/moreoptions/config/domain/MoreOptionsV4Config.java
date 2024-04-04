@@ -12,9 +12,9 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MoreOptionsV3Config {
+public class MoreOptionsV4Config {
 
-    public final static int VERSION = 3;
+    public final static int VERSION = 4;
 
     @Builder.Default
     private int version = VERSION;
@@ -33,12 +33,6 @@ public class MoreOptionsV3Config {
     private MetricsConfig metrics = MetricsConfig.builder().build();
     @Builder.Default
     private RacesConfig races = RacesConfig.builder().build();
-
-    /* TODO
-       * day night / cycle; lightning
-       * toggle deposit overlay when building
-
-     */
 
     public String toJson() {
         Json json = new Json(JsonMapper.mapObject(this), JsonWriter.jsonE());

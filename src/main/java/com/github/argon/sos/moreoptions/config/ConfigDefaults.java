@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config.*;
+import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config.*;
 
 /**
  * Provides default configuration partially gathered from the game.
@@ -44,10 +44,10 @@ public class ConfigDefaults {
 
     private final GameApis gameApis;
 
-    public MoreOptionsV3Config newConfig() {
+    public MoreOptionsV4Config newConfig() {
         log.debug("Creating new default config");
 
-        MoreOptionsV3Config defaultConfig = builder()
+        MoreOptionsV4Config defaultConfig = builder()
             .events(newEvents())
             .sounds(newSounds())
             .weather(newWeather())
@@ -139,17 +139,17 @@ public class ConfigDefaults {
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
         // Sounds Room
-        Map<String, Range> roomSounds = gameApis.sounds().getRoomSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+//        Map<String, Range> roomSounds = gameApis.sounds().getRoomSounds().keySet().stream()
+//            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
         // Sounds Settlement
-        Map<String, Range> settlementSounds = gameApis.sounds().getSettlementSounds().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+//        Map<String, Range> settlementSounds = gameApis.sounds().getSettlementSounds().keySet().stream()
+//            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
         return SoundsConfig.builder()
             .ambience(ambienceSounds)
-            .settlement(settlementSounds)
-            .room(roomSounds)
+//            .settlement(settlementSounds)
+//            .room(roomSounds)
             .build();
     }
 
@@ -158,17 +158,12 @@ public class ConfigDefaults {
         Map<String, Range> eventChances = gameApis.events().getEventsChance().keySet().stream()
             .collect(Collectors.toMap(key -> key, key -> ConfigDefaults.eventChance()));
 
-        // Events Settlement
-        Map<String, Boolean> settlementEvents = gameApis.events().getSettlementEvents().keySet().stream()
-            .collect(Collectors.toMap(key -> key, o -> true));
-
-        // Event World
-        Map<String, Boolean> worldEvents = gameApis.events().getWorldEvents().keySet().stream()
+        // Events
+        Map<String, Boolean> events = gameApis.events().getEvents().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> true));
 
         return EventsConfig.builder()
-            .world(worldEvents)
-            .settlement(settlementEvents)
+            .events(events)
             .chance(eventChances)
             .enemyBattleLoot(battleLoot())
             .playerBattleLoot(battleLoot())
