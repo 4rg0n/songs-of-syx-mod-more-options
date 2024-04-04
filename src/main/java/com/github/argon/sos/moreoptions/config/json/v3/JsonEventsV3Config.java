@@ -24,11 +24,11 @@ public class JsonEventsV3Config {
      * Influences the amount of loot and slaves the player gets when winning a battle
      */
     @Builder.Default
-    private Range playerBattleLoot = ConfigDefaults.battleLoot();
+    private Range playerBattleLoot = ConfigDefaults.battleLootPlayer();
 
     /**
      * Influences the amount of loot and slaves the enemy gets when losing a battle
      */
     @Builder.Default
-    private Range enemyBattleLoot = ConfigDefaults.battleLoot();
+    private Range enemyBattleLoot = ConfigDefaults.battleLootEnemy();
 }

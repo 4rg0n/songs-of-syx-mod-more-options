@@ -55,6 +55,8 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
         Table<Integer> chanceTable = Table.<Integer>builder()
             .rows(evenChanceRows)
             .rowPadding(5)
+            .columnMargin(5)
+            .highlight(true)
             .build();
         GHeader eventChancesHeader = new GHeader(i18n.t("EventsPanel.header.chance.name"));
         eventChancesHeader.hoverInfoSet(i18n.t("EventsPanel.header.chance.desc"));
@@ -73,6 +75,8 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
         Table<Integer> tributeTable = Table.<Integer>builder()
             .rows(tributeRows)
             .rowPadding(5)
+            .columnMargin(5)
+            .highlight(true)
             .build();
         tributeSection.addDown(0, tributeHeader);
         tributeSection.addDown(5, tributeTable);
@@ -87,6 +91,8 @@ public class EventsPanel extends AbstractConfigPanel<EventsConfig, EventsPanel> 
         Table<Integer> eventsTable = Table.<Integer>builder()
             .rows(UiMapper.toLabeledColumnRows(eventsCheckboxes, i18n))
             .rowPadding(5)
+            .columnMargin(20)
+            .highlight(true)
             .displayHeight(tableHeight)
             .build();
 

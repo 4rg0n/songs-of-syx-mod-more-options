@@ -8,6 +8,7 @@ import com.github.argon.sos.moreoptions.game.ui.Checkbox;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Label;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -15,10 +16,13 @@ import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
 import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
 import game.faction.Faction;
 import init.race.Race;
+import init.sprite.SPRITES;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import settlement.room.main.RoomBlueprintImp;
 import snake2d.util.gui.renderable.RENDEROBJ;
+import snake2d.util.sprite.SPRITE;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -141,6 +145,34 @@ public class UiMapper {
                         .name(i18n.n(key))
                         .description(i18n.dn(key))
                         .build())
+                    .column(element)
+                    .build();
+            })
+            .collect(Collectors.toList());
+    }
+
+    public <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toRoomSoundLabeledColumnRows(Map<String, Element> elements) {
+        return elements.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .map(entry -> {
+                String key = entry.getKey();
+                Element element = entry.getValue();
+
+                String name = key;
+                SPRITE sprite = SPRITES.icons().m.cancel;
+                Optional<RoomBlueprintImp> bySound = gameApis.rooms().getBySound(key);
+
+                if (bySound.isPresent()) {
+                    name = bySound.get().info.name.toString();
+                    sprite = bySound.get().iconBig().medium;
+                }
+
+                // label with element
+                return ColumnRow.<Value>builder()
+                    .column(Label.builder()
+                        .name(name)
+                        .build())
+                    .column(UiUtil.toRender(sprite))
                     .column(element)
                     .build();
             })

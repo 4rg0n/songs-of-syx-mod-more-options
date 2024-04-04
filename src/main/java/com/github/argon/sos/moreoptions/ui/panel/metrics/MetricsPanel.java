@@ -198,7 +198,9 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
                 .displayHeight(height)
                 .search(searchInput)
                 .rows(statRows)
-                .rowPadding(1)
+                .rowPadding(2)
+                .columnMargin(5)
+                .highlight(true)
                 .build()))
             .build(this);
 

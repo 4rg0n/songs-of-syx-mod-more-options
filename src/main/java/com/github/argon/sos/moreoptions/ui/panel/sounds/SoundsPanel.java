@@ -54,19 +54,23 @@ public class SoundsPanel extends AbstractConfigPanel<SoundsConfig, SoundsPanel> 
             - 30) / 2;
 
         Layout.vertical(tableHeight)
-            .addDown(0, ambienceSoundsHeader)
-            .addDown(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
+            .addDownC(0, ambienceSoundsHeader)
+            .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
                 .rows(UiMapper.toLabeledColumnRows(ambience, i18n))
                 .rowPadding(5)
+                .columnMargin(5)
+                .highlight(true)
                 .displayHeight(height)
                 .build()))
             .build(this);
 
         Layout.vertical(tableHeight)
-            .addDown(20, roomSoundsHeader)
-            .addDown(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
-                .rows(UiMapper.toLabeledColumnRows(room, i18n))
+            .addDownC(20, roomSoundsHeader)
+            .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
+                .rows(UiMapper.getInstance().toRoomSoundLabeledColumnRows(room))
                 .rowPadding(5)
+                .columnMargin(5)
+                .highlight(true)
                 .displayHeight(height)
                 .build()))
             .build(this);

@@ -27,7 +27,8 @@ public class GameApis implements Phases {
         GameRaceApi.getInstance(),
         GameSaveApi.getInstance(),
         GameLangApi.getInstance(),
-        GameFactionApi.getInstance()
+        GameFactionApi.getInstance(),
+        GameRoomsApi.getInstance()
     );
 
     @Accessors(fluent = true)
@@ -62,6 +63,9 @@ public class GameApis implements Phases {
 
     @Accessors(fluent = true)
     private final GameFactionApi faction;
+
+    @Accessors(fluent = true)
+    private final GameRoomsApi rooms;
 
     public void clear() {
         // todo need to verify again...

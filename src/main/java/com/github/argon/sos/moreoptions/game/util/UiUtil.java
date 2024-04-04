@@ -201,6 +201,10 @@ public class UiUtil {
         return toGuiSection(renderobj);
     }
 
+    public static RENDEROBJ toRender(SPRITE sprite) {
+        return new RENDEROBJ.Sprite(sprite);
+    }
+
     public static GuiSection toGuiSection(RENDEROBJ renderobj) {
         if (renderobj instanceof GuiSection) {
             return (GuiSection) renderobj;

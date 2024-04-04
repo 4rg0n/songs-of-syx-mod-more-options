@@ -12,6 +12,7 @@ import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +43,10 @@ public class GameEventsApi {
         }
 
         return events;
+    }
+
+    public Optional<EVENTS.EventResource> getEvent(String key) {
+        return Optional.ofNullable(getEvents().get(key));
     }
 
     public Map<String, EVENTS.EventResource> readWorldEvents() {

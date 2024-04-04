@@ -40,8 +40,11 @@ public class WeatherPanel extends AbstractConfigPanel<WeatherConfig, WeatherPane
         Layout.vertical(availableHeight)
             .addDownC(10, new VerticalLayout.Scalable(300, height -> Table.<Integer>builder()
                 .rows(rows)
+                .evenOdd(true)
+                .highlight(true)
                 .displayHeight(height)
                 .rowPadding(5)
+                .columnMargin(5)
                 .build()))
             .build(this);
     }

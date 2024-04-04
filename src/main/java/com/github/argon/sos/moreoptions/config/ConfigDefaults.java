@@ -138,18 +138,8 @@ public class ConfigDefaults {
         Map<String, Range> ambienceSounds = gameApis.sounds().getAmbienceSounds().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
-        // Sounds Room
-//        Map<String, Range> roomSounds = gameApis.sounds().getRoomSounds().keySet().stream()
-//            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
-
-        // Sounds Settlement
-//        Map<String, Range> settlementSounds = gameApis.sounds().getSettlementSounds().keySet().stream()
-//            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
-
         return SoundsConfig.builder()
             .ambience(ambienceSounds)
-//            .settlement(settlementSounds)
-//            .room(roomSounds)
             .build();
     }
 
@@ -165,8 +155,8 @@ public class ConfigDefaults {
         return EventsConfig.builder()
             .events(events)
             .chance(eventChances)
-            .enemyBattleLoot(battleLoot())
-            .playerBattleLoot(battleLoot())
+            .enemyBattleLoot(battleLootEnemy())
+            .playerBattleLoot(battleLootPlayer())
             .build();
     }
 
@@ -263,7 +253,17 @@ public class ConfigDefaults {
             .build();
     }
 
-    public static Range battleLoot() {
+    public static Range battleLootPlayer() {
+        return Range.builder()
+            .value(25)
+            .min(0)
+            .max(10000)
+            .displayMode(Range.DisplayMode.PERCENTAGE)
+            .applyMode(Range.ApplyMode.PERCENT)
+            .build();
+    }
+
+    public static Range battleLootEnemy() {
         return Range.builder()
             .value(100)
             .min(0)
