@@ -116,7 +116,7 @@ public class UiConfig implements Phases {
         // create More Options ui
         moreOptionsFull = uiFactory.buildMoreOptionsFullScreen(MOD_INFO.name.toString(), moreOptionsConfig);
         initControls(moreOptionsFull);
-        injectMoreOptionsButton(moreOptionsFull);
+        injectIntoUITopPanel(moreOptionsFull);
 
         // create backup configuration dialog if needed
         configStore.getBackup().ifPresent(backupConfig -> {
@@ -146,15 +146,26 @@ public class UiConfig implements Phases {
                 }
             }
         });
+
+        // inject Stats UI
+        StatsUi statsUi = StatsUi.getInstance();
+        injectStatsUI(statsUi);
     }
 
-    public void injectMoreOptionsButton(FullWindow<MoreOptionsPanel> moreOptionsModal) {
+    public void injectStatsUI(StatsUi statsUi) {
+        try {
+            gameApis.ui().injectIntoUITopPanels(statsUi);
+        } catch (Exception e) {
+            log.error("Could not inject Stats ui ", e);
+        }
+    }
+
+    public void injectIntoUITopPanel(FullWindow<MoreOptionsPanel> moreOptionsModal) {
         log.debug("Injecting %s buttons into game ui", MOD_INFO.name);
         GButt.ButtPanel moreOptionsButton = UiFactory.buildMoreOptionsButton(moreOptionsModal);
 
         try {
-            gameApis.ui().injectIntoWorldUITopPanel(moreOptionsButton);
-            gameApis.ui().injectIntoSettlementUITopPanel(moreOptionsButton);
+            gameApis.ui().injectIntoUITopPanels(moreOptionsButton);
         } catch (Exception e) {
             log.error("Could not inject %s buttons into game ui", MOD_INFO.name, e);
         }

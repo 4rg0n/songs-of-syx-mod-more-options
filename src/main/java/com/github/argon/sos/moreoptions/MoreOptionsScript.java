@@ -89,11 +89,7 @@ public final class MoreOptionsScript extends AbstractScript {
 			configApplier.applyToGame(configStore.getCurrentConfig());
 		}
 	}
-
-	/*
-	 TODO
-	  * Sounds are now in AUDIO.
-	 */
+    }
 
 	@Override
 	public boolean forceInit() {
