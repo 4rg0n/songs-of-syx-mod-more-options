@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.json;
 import com.github.argon.sos.moreoptions.json.element.JsonArray;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
+import com.github.argon.sos.moreoptions.json.element.JsonString;
 import com.github.argon.sos.moreoptions.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,12 @@ public class JsonWriter {
     private boolean quoteKeys = true;
 
     /**
+     * Will quote strings in "" when true
+     */
+    @Getter @Setter
+    private boolean quoteStrings = true;
+
+    /**
      * Will print with indents and line breaks when true
      */
     @Getter @Setter
@@ -50,17 +57,18 @@ public class JsonWriter {
      * @return writer that prints json the same as the games {@link JsonE}
      */
     public static JsonWriter jsonE() {
-        return new JsonWriter(false, true, true, false);
+        return new JsonWriter(false, false, true, true, false);
     }
 
     public JsonWriter() {
     }
 
-    public JsonWriter(boolean quoteKeys, boolean prettyPrint, boolean trailingComma, boolean rootBraces) {
+    public JsonWriter(boolean quoteKeys, boolean quoteStrings, boolean prettyPrint, boolean trailingComma, boolean rootBraces) {
         this.quoteKeys = quoteKeys;
         this.prettyPrint = prettyPrint;
         this.trailingComma = trailingComma;
         this.rootBraces = rootBraces;
+        this.quoteStrings = quoteStrings;
     }
 
     /**
@@ -75,11 +83,6 @@ public class JsonWriter {
         // remove braces to be compliant with game json format?
         if (!rootBraces) {
             jsonString = StringUtil.unwrap(jsonString, '{', '}');
-        }
-
-        // add trailing comma?
-        if (trailingComma) {
-            jsonString += ",";
         }
 
         return jsonString;
@@ -98,6 +101,15 @@ public class JsonWriter {
             JsonArray jsonArray = (JsonArray) json;
 
             return print(jsonArray);
+        } if (json instanceof JsonString) {
+            JsonString jsonString = (JsonString) json;
+
+            String string = jsonString.toString();
+            if (!quoteKeys) {
+                string = StringUtil.unwrap(string, '"', '"');
+            }
+
+            return string;
         } else {
             return json.toString();
         }
@@ -141,14 +153,14 @@ public class JsonWriter {
             JsonElement value = jsonObject.getMap().get(key);
             sb.append(toJsonString(value));
         }
+
+        // add trailing comma?
+        if (trailingComma && !jsonObject.getMap().keySet().isEmpty()) {
+            sb.append(",");
+        }
         sb.append('\n');
         String indent = StringUtil.repeat(' ', Math.max(0, printDepth - 2));
         sb.append(indent);
-
-        // add trailing comma?
-        if (trailingComma) {
-            sb.append(",");
-        }
         sb.append("}");
 
         printDepth -= 2;
@@ -160,7 +172,7 @@ public class JsonWriter {
         String suffix = "]";
 
         // add trailing comma?
-        if (trailingComma) {
+        if (trailingComma && !jsonArray.getElements().isEmpty()) {
             suffix = ",]";
         }
 

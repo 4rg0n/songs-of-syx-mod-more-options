@@ -25,6 +25,10 @@ public class JsonObject implements JsonElement {
         return map.put(key.name(), value);
     }
 
+    public boolean containsKey(String key) {
+        return map.containsKey(key);
+    }
+
     @Override
     public String toString() {
         return map.keySet().stream()

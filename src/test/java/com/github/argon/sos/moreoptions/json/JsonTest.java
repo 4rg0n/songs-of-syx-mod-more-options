@@ -25,7 +25,7 @@ class JsonTest {
     void parse_JsonEAndProduceJson() throws IOException {
         String jsonEString = resourceService.readResource("json/JsonE.txt").orElse("");
         String jsonString = resourceService.readResource("json/Json.txt").orElse("");
-        Json json = new Json(jsonEString, new JsonWriter(true, true, false, true));
+        Json json = new Json(jsonEString, new JsonWriter(true, true, true, false, true));
 
         String parsedJsonString = json.toString();
         assertEqualsWithoutWhitespace(jsonString, parsedJsonString);

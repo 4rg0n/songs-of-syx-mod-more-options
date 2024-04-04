@@ -33,6 +33,7 @@ public final class MoreOptionsScript extends AbstractScript {
 	private final ConfigStore configStore = ConfigStore.getInstance();
 	private final ConfigApplier configApplier = ConfigApplier.getInstance();
 	private final UiConfig uiConfig = UiConfig.getInstance();
+	private final GameJsonStore gameJsonStore = GameJsonStore.getInstance();
 	public final static Path MORE_OPTIONS_PROFILE = PATHS.local().PROFILE.get().resolve(MoreOptionsScript.MOD_INFO.name.toString());
 
 	public final static Path MORE_OPTIONS_CONFIG = PATHS.local().SETTINGS.get().resolve("MoreOptions.txt");
@@ -49,18 +50,20 @@ public final class MoreOptionsScript extends AbstractScript {
 
 	@Override
 	protected void registerPhases(PhaseManager phaseManager) {
-		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, MetricExporter.getInstance());
-		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, I18nMessages.getInstance());
-		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, ConfigStore.getInstance());
-		phaseManager.register(Phase.INIT_MOD_CREATE_INSTANCE, UiConfig.getInstance());
-		phaseManager.register(Phase.INIT_SETTLEMENT_UI_PRESENT, ConfigStore.getInstance());
-		phaseManager.register(Phase.INIT_SETTLEMENT_UI_PRESENT, UiConfig.getInstance());
+        phaseManager
+            .register(Phase.INIT_BEFORE_GAME_CREATED, gameJsonStore)
+            .register(Phase.INIT_BEFORE_GAME_CREATED, MetricExporter.getInstance())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, I18nMessages.getInstance())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, ConfigStore.getInstance())
+            .register(Phase.INIT_MOD_CREATE_INSTANCE, UiConfig.getInstance())
+            .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ConfigStore.getInstance())
+            .register(Phase.INIT_SETTLEMENT_UI_PRESENT, UiConfig.getInstance())
 
-		phaseManager.register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance());
-		phaseManager.register(Phase.ON_GAME_SAVED, ConfigStore.getInstance());
-		phaseManager.register(Phase.ON_GAME_SAVE_RELOADED, MetricExporter.getInstance());
-		phaseManager.register(Phase.ON_CRASH, MetricScheduler.getInstance());
-		phaseManager.register(Phase.ON_CRASH, ConfigStore.getInstance());
+            .register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance())
+            .register(Phase.ON_GAME_SAVED, ConfigStore.getInstance())
+            .register(Phase.ON_GAME_SAVE_RELOADED, MetricExporter.getInstance())
+            .register(Phase.ON_CRASH, MetricScheduler.getInstance())
+            .register(Phase.ON_CRASH, ConfigStore.getInstance());
 	}
 
 	@Override
@@ -68,6 +71,11 @@ public final class MoreOptionsScript extends AbstractScript {
 		super.initBeforeGameCreated();
 		// force the use of the environment log level when present
 		configApplier.setEnvLogLevel(getEnvLogLevel());
+
+//		Json json = gameJsonStore.getJson(PATHS.INIT().getFolder("race").get("HUMAN"));
+//		json.getRoot().put("PLAYABLE", new JsonBoolean(false));
+//
+//		gameJsonStore.put(PATHS.INIT().getFolder("race").get("HUMAN"), json.toString());
 	}
 
 	@Override
