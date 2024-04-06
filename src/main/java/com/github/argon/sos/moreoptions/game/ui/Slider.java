@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.util.TextFormatUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
+import com.github.argon.sos.moreoptions.util.MathUtil;
 import init.D;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
@@ -11,10 +12,13 @@ import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 import snake2d.MButt;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.datatypes.COORDINATE;
+import snake2d.util.datatypes.Coo;
 import snake2d.util.gui.GUI_BOX;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.misc.CLAMP;
@@ -32,6 +36,8 @@ import view.main.VIEW;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 
@@ -52,8 +58,12 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
 
     private final int initialValue;
 
+    private final int step;
+
     @Getter
     private final ValueDisplay valueDisplay;
+    private final int resolution;
+    private final int resolutionMulti;
 
     /**
      * Makes slider unusable and greyed out
@@ -74,14 +84,20 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
         D.ts(GSliderInt.class);
     }
 
-    public Integer getValue() {
-        return in.get();
-    }
+    @Setter
+    @Nullable
+    @Accessors(fluent = true, chain = false)
+    private Supplier<Integer> valueSupplier;
 
-    @Override
-    public void setValue(Integer value) {
-        in.set(value);
-    }
+    @Setter
+    @Nullable
+    @Accessors(fluent = true, chain = false)
+    private Consumer<Integer> valueConsumer;
+
+    @Setter
+    @Nullable
+    @Accessors(fluent = true, chain = false)
+    private Supplier<Coo> mouseCooSupplier = () -> new Coo(VIEW.mouse().x(), VIEW.mouse().y());
 
     @Builder
     public Slider(
@@ -90,13 +106,23 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
         int value,
         int width,
         int height,
+        int step,
+        int resolution,
         boolean input,
         boolean lockScroll,
         ValueDisplay valueDisplay,
         Map<Integer, COLOR> thresholds
     ){
+        resolution = (resolution > 0) ? resolution : 1;
+
+        this.resolution = resolution;
+        this.resolutionMulti = MathUtil.precisionMulti(this.resolution);
+        min = resolutionMulti * min;
+        max = resolutionMulti * max;
+
         this.in = new INT.IntImp(min, max);
         this.in.set(value);
+
         this.initialValue = in.get();
         this.initialDValue = in.getD();
         this.valueDisplay = valueDisplay;
@@ -114,6 +140,8 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
         if (height > 0) {
             sliderHeight = height;
         }
+
+        this.step = (step == 0) ? 1 : step;
 
         if (thresholds != null) {
             // sort by key
@@ -142,7 +170,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
 
                 @Override
                 protected void clickA() {
-                    in.inc(-1);
+                    in.inc(-1 * step);
                 }
 
                 @Override
@@ -150,9 +178,10 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
                                       boolean isHovered) {
                     if (isHovered &&  MButt.LEFT.isDown()) {
                         clickSpeed += ds;
+
                         if (clickSpeed > 10)
                             clickSpeed = 10;
-                        in.inc(-(int)clickSpeed);
+                        in.inc(-(int)clickSpeed * step);
 
                     }else {
                         clickSpeed = 0;
@@ -171,7 +200,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
 
                 @Override
                 protected void clickA() {
-                    in.inc(1);
+                    in.inc(1 * step);
                 }
 
                 @Override
@@ -181,7 +210,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
                         clickSpeed += ds*2;
                         if (clickSpeed > 10)
                             clickSpeed = 10;
-                        in.inc((int)clickSpeed);
+                        in.inc((int)clickSpeed * step);
 
                     }else {
                         clickSpeed = 0;
@@ -214,12 +243,24 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
             GStat valueText;
             if (valueDisplay == ValueDisplay.PERCENTAGE) {
                 maxString = maxString + "%";
-                valueText = new GStat() {
-                    @Override
-                    public void update(GText text) {
-                        TextFormatUtil.percentage(text, in.get() / 100d);
-                    }
-                };
+
+                if (this.resolution > 1) {
+                    valueText = new GStat() {
+                        @Override
+                        public void update(GText text) {
+                            GFORMAT.percBig(text, (in.get() / 100d) / Slider.this.resolutionMulti);
+                        }
+                    };
+                } else {
+                    valueText = new GStat() {
+                        @Override
+                        public void update(GText text) {
+                            TextFormatUtil.percentage(text, in.get() / 100d / Slider.this.resolutionMulti);
+                        }
+                    };
+                }
+
+
             } else {
                 valueText = new GStat() {
                     @Override
@@ -240,15 +281,47 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
         }
     }
 
+    @Override
+    public Integer getValue() {
+        if (valueSupplier != null) {
+            return valueSupplier.get();
+        }
+
+        return in.get();
+    }
+
+    public Double getValueD() {
+        return (double) (in.get() / resolutionMulti / 100);
+    }
+
+    @Override
+    public void setValue(Integer value) {
+        if (valueConsumer != null) {
+            valueConsumer.accept(value);
+        }
+
+        in.set(value);
+    }
+
+    public void setValueD(Double value) {
+        in.set((int) (value * resolutionMulti * 100));
+    }
+
     private final STRING_RECIEVER rec = new STRING_RECIEVER() {
 
         @Override
         public void acceptString(CharSequence string) {
             String s = ""+string;
             try {
-                int i = Integer.parseInt(s);
-                i = CLAMP.i(i, in.min(), in.max());
-                in.set(i);
+                int value = Integer.parseInt(s);
+                value = CLAMP.i(value, in.min(), in.max());
+                int rest = value % step;
+
+                if (rest != 0) {
+                    value = value - rest;
+                }
+
+                in.set(value);
             }catch(Exception e) {
 
             }
@@ -343,12 +416,19 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
                 value = CLAMP.d(clickPos, 0, 1);
             }
 
-            in.setD(value);
+            int intValue = (int) Math.ceil(value * getMax());
+            int rest = intValue % step;
+
+            if (rest != 0) {
+                intValue = intValue - rest;
+            }
+
+            in.set(intValue);
         }
 
         private double getClickPos() {
             int barStartX = body().x1();
-            int clickX = VIEW.mouse().x();
+            int clickX = mouseCooSupplier.get().x();
             int clickPos = clickX - barStartX;
 
             if (in.min() < 0) {
@@ -466,6 +546,15 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
     public static class SliderBuilder {
 
         private Map<Integer, COLOR> thresholds = new TreeMap<>();
+
+        public SliderBuilder valueD(Double value, int precision) {
+            int precisionMulti = MathUtil.precisionMulti(precision);
+
+            value((int) (precisionMulti * value * 100));
+            resolution(precision);
+
+            return this;
+        }
 
         public static SliderBuilder fromRange(Range range) {
             return Slider.builder()

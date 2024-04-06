@@ -16,10 +16,10 @@ import java.util.*;
  * When a button is clicked it will be marked "active".
  * Only one button can be active.
  */
-public class Toggler<Key> extends GuiSection implements
-    Valuable<Key, Toggler<Key>>,
-    Resettable<Toggler<Key>>,
-    Refreshable<Toggler<Key>> {
+public class Toggle<Key> extends GuiSection implements
+    Valuable<Key, Toggle<Key>>,
+    Resettable<Toggle<Key>>,
+    Refreshable<Toggle<Key>> {
 
     @Nullable
     private Key activeKey;
@@ -40,12 +40,12 @@ public class Toggler<Key> extends GuiSection implements
 
     @Setter
     @Accessors(fluent = true, chain = false)
-    private Action<Toggler<Key>> refreshAction = o -> {};
+    private Action<Toggle<Key>> refreshAction = o -> {};
     @Getter
     private final ButtonMenu<Key> menu;
 
     @Builder
-    public Toggler(ButtonMenu<Key> menu, boolean highlight, @Nullable Key aktiveKey) {
+    public Toggle(ButtonMenu<Key> menu, boolean highlight, @Nullable Key aktiveKey) {
         this.menu = menu;
         this.activeKey = aktiveKey;
         this.initKey = aktiveKey;

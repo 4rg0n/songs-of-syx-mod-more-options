@@ -6,14 +6,14 @@ import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
-import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
-import com.github.argon.sos.moreoptions.ui.panel.advanced.AdvancedPanel;
-import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.events.EventsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.metrics.MetricsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
-import com.github.argon.sos.moreoptions.ui.panel.sounds.SoundsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.weather.WeatherPanel;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
+import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
+import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.events.EventsTab;
+import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
+import com.github.argon.sos.moreoptions.ui.tab.sounds.SoundsTab;
+import com.github.argon.sos.moreoptions.ui.tab.weather.WeatherTab;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
 import game.VERSION;
@@ -44,23 +44,23 @@ public class MoreOptionsPanel extends GuiSection implements
     Refreshable<MoreOptionsPanel>,
     Valuable<MoreOptionsV4Config, MoreOptionsPanel> {
 
-    private static final I18n i18n = I18n.get(WeatherPanel.class);
+    private static final I18n i18n = I18n.get(WeatherTab.class);
 
     private final ConfigStore configStore;
     @Getter
-    private final EventsPanel eventsPanel;
+    private final EventsTab eventsTab;
     @Getter
-    private final SoundsPanel soundsPanel;
+    private final SoundsTab soundsTab;
     @Getter
-    private final WeatherPanel weatherPanel;
+    private final WeatherTab weatherTab;
     @Getter
-    private final BoostersPanel boostersPanel;
+    private final BoostersTab boostersTab;
     @Getter
-    private final MetricsPanel metricsPanel;
+    private final MetricsTab metricsTab;
     @Getter
-    private final RacesPanel racesPanel;
+    private final RacesTab racesTab;
     @Getter
-    private final AdvancedPanel advancedPanel;
+    private final AdvancedTab advancedTab;
 
     @Getter
     private final Button cancelButton;
@@ -83,7 +83,7 @@ public class MoreOptionsPanel extends GuiSection implements
     @Getter
     private final ButtonMenu<String> moreButtonMenu;
     @Getter
-    private final Tabulator<String, AbstractConfigPanel<?, ?>, Void> tabulator;
+    private final Tabulator<String, AbstractConfigTab<?, ?>, Void> tabulator;
 
     private Action<MoreOptionsPanel> showAction = o -> {};
     private Action<MoreOptionsPanel> refreshAction = o -> {};
@@ -99,8 +99,8 @@ public class MoreOptionsPanel extends GuiSection implements
     public MoreOptionsPanel(
         MoreOptionsV4Config config,
         ConfigStore configStore,
-        Map<Faction, List<BoostersPanel.Entry>> boosterEntries,
-        Map<String, List<RacesPanel.Entry>> raceEntries,
+        Map<Faction, List<BoostersTab.Entry>> boosterEntries,
+        Map<String, List<RacesTab.Entry>> raceEntries,
         Set<String> availableStats,
         Path exportFolder,
         Path exportFile,
@@ -174,25 +174,25 @@ public class MoreOptionsPanel extends GuiSection implements
 
         MoreOptionsV4Config defaultConfig = configStore.getDefaultConfig();
 
-        soundsPanel = new SoundsPanel(i18n.t("MoreOptionsPanel.tab.sounds.name"), config.getSounds(), defaultConfig.getSounds(), availableWidth, availableHeight);
-        eventsPanel = new EventsPanel(i18n.t("MoreOptionsPanel.tab.events.name"), config.getEvents(), defaultConfig.getEvents(), availableWidth, availableHeight);
-        weatherPanel = new WeatherPanel(i18n.t("MoreOptionsPanel.tab.weather.name"), config.getWeather(), defaultConfig.getWeather(), availableWidth, availableHeight);
-        boostersPanel = new BoostersPanel(i18n.t("MoreOptionsPanel.tab.boosters.name"), boosterEntries, config.getBoosters().getPresets(), defaultConfig.getBoosters(), availableWidth, availableHeight);
-        metricsPanel = new MetricsPanel(i18n.t("MoreOptionsPanel.tab.metrics.name"), config.getMetrics(), defaultConfig.getMetrics(), availableStats, exportFolder, exportFile, availableWidth, availableHeight);
-        racesPanel = new RacesPanel(i18n.t("MoreOptionsPanel.tab.races.name"), raceEntries, defaultConfig.getRaces(), availableWidth, availableHeight);
-        advancedPanel = new AdvancedPanel(i18n.t("MoreOptionsPanel.tab.advanced.name"), saveStamp, WORLD.GEN().seed, config.getLogLevel(), defaultConfig.getLogLevel(), availableWidth, availableHeight);
+        soundsTab = new SoundsTab(i18n.t("MoreOptionsPanel.tab.sounds.name"), config.getSounds(), defaultConfig.getSounds(), availableWidth, availableHeight);
+        eventsTab = new EventsTab(i18n.t("MoreOptionsPanel.tab.events.name"), config.getEvents(), defaultConfig.getEvents(), availableWidth, availableHeight);
+        weatherTab = new WeatherTab(i18n.t("MoreOptionsPanel.tab.weather.name"), config.getWeather(), defaultConfig.getWeather(), availableWidth, availableHeight);
+        boostersTab = new BoostersTab(i18n.t("MoreOptionsPanel.tab.boosters.name"), boosterEntries, config.getBoosters().getPresets(), defaultConfig.getBoosters(), availableWidth, availableHeight);
+        metricsTab = new MetricsTab(i18n.t("MoreOptionsPanel.tab.metrics.name"), config.getMetrics(), defaultConfig.getMetrics(), availableStats, exportFolder, exportFile, availableWidth, availableHeight);
+        racesTab = new RacesTab(i18n.t("MoreOptionsPanel.tab.races.name"), raceEntries, defaultConfig.getRaces(), availableWidth, availableHeight);
+        advancedTab = new AdvancedTab(i18n.t("MoreOptionsPanel.tab.advanced.name"), saveStamp, WORLD.GEN().seed, config.getLogLevel(), defaultConfig.getLogLevel(), availableWidth, availableHeight);
 
-        tabulator = Tabulator.<String, AbstractConfigPanel<?, ?>, Void>builder()
+        tabulator = Tabulator.<String, AbstractConfigTab<?, ?>, Void>builder()
             .tabs(Maps.ofLinked(
-                "sounds", soundsPanel,
-                "events", eventsPanel,
-                "weather", weatherPanel,
-                "boosters", boostersPanel,
-                "metrics", metricsPanel,
-                "races", racesPanel,
-                "advanced", advancedPanel
+                "sounds", soundsTab,
+                "events", eventsTab,
+                "weather", weatherTab,
+                "boosters", boostersTab,
+                "metrics", metricsTab,
+                "races", racesTab,
+                "advanced", advancedTab
             ))
-            .tabMenu(Toggler.<String>builder()
+            .tabMenu(Toggle.<String>builder()
                 .menu(ButtonMenu.<String>builder()
                     .button("sounds", new Button(
                         i18n.t("MoreOptionsPanel.tab.sounds.name"),
@@ -235,13 +235,13 @@ public class MoreOptionsPanel extends GuiSection implements
     @Override
     public MoreOptionsV4Config getValue() {
         return MoreOptionsV4Config.builder()
-            .logLevel(advancedPanel.getValue())
-            .events(eventsPanel.getValue())
-            .sounds(soundsPanel.getValue())
-            .weather(weatherPanel.getValue())
-            .boosters(boostersPanel.getValue())
-            .metrics(metricsPanel.getValue())
-            .races(racesPanel.getValue())
+            .logLevel(advancedTab.getValue())
+            .events(eventsTab.getValue())
+            .sounds(soundsTab.getValue())
+            .weather(weatherTab.getValue())
+            .boosters(boostersTab.getValue())
+            .metrics(metricsTab.getValue())
+            .races(racesTab.getValue())
             .build();
     }
 
@@ -251,13 +251,13 @@ public class MoreOptionsPanel extends GuiSection implements
             return;
         }
 
-        eventsPanel.setValue(config.getEvents());
-        soundsPanel.setValue(config.getSounds());
-        weatherPanel.setValue(config.getWeather());
-        boostersPanel.setValue(config.getBoosters());
-        metricsPanel.setValue(config.getMetrics());
-        racesPanel.setValue(config.getRaces());
-        advancedPanel.setValue(config.getLogLevel());
+        eventsTab.setValue(config.getEvents());
+        soundsTab.setValue(config.getSounds());
+        weatherTab.setValue(config.getWeather());
+        boostersTab.setValue(config.getBoosters());
+        metricsTab.setValue(config.getMetrics());
+        racesTab.setValue(config.getRaces());
+        advancedTab.setValue(config.getLogLevel());
     }
 
     /**

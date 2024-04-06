@@ -31,7 +31,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
     private final Map<Key, Element> tabs;
     private final boolean resetOnToggle;
     @Getter
-    private final Toggler<Key> menu;
+    private final Toggle<Key> menu;
 
     @Setter
     @Accessors(fluent = true, chain = false)
@@ -49,7 +49,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
      * @param resetOnToggle whether elements shall be reset when toggling
      */
     @Builder
-    public Tabulator(Map<Key, Element> tabs, Toggler<Key> tabMenu, int margin, boolean center, boolean resetOnToggle, @Nullable DIR direction) {
+    public Tabulator(Map<Key, Element> tabs, Toggle<Key> tabMenu, int margin, boolean center, boolean resetOnToggle, @Nullable DIR direction) {
         this.tabs = tabs;
         this.resetOnToggle = resetOnToggle;
 

@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel.races;
+package com.github.argon.sos.moreoptions.ui.tab.races;
 
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.config.domain.Range;
@@ -9,7 +9,7 @@ import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
 import init.race.Race;
@@ -30,10 +30,10 @@ import java.util.stream.Collectors;
 /**
  * Contains race likings adjustable via sliders
  */
-public class RacesPanel extends AbstractConfigPanel<RacesConfig, RacesPanel> {
-    private static final Logger log = Loggers.getLogger(RacesPanel.class);
+public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
+    private static final Logger log = Loggers.getLogger(RacesTab.class);
 
-    private final static I18n i18n = I18n.get(RacesPanel.class);
+    private final static I18n i18n = I18n.get(RacesTab.class);
 
     private final Map<String, Slider> likingsSliders = new HashMap<>();
     private final static String RACE_SEPARATOR = "~";
@@ -49,7 +49,7 @@ public class RacesPanel extends AbstractConfigPanel<RacesConfig, RacesPanel> {
     @Getter
     private final Button importButton;
 
-    public RacesPanel(
+    public RacesTab(
         String title,
         Map<String, List<Entry>> raceEntries,
         RacesConfig defaultConfig,
@@ -96,13 +96,13 @@ public class RacesPanel extends AbstractConfigPanel<RacesConfig, RacesPanel> {
             }).collect(Collectors.toList())));
 
         // Race Likings table with search
-        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("RacesPanel.search.input.name"));
+        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("RacesTab.search.input.name"));
         GInput search = new GInput(searchInput);
 
         // menu with buttons
-        this.folderButton = new Button(i18n.t("RacesPanel.button.folder.name"), i18n.t("RacesPanel.button.folder.desc"));
-        this.fileButton = new Button(i18n.t("RacesPanel.button.file.name"), i18n.t("RacesPanel.button.file.desc"));
-        this.loadButton = new Button(i18n.t("RacesPanel.button.load.name"), i18n.t("RacesPanel.button.load.desc"));
+        this.folderButton = new Button(i18n.t("RacesTab.button.folder.name"), i18n.t("RacesTab.button.folder.desc"));
+        this.fileButton = new Button(i18n.t("RacesTab.button.file.name"), i18n.t("RacesTab.button.file.desc"));
+        this.loadButton = new Button(i18n.t("RacesTab.button.load.name"), i18n.t("RacesTab.button.load.desc"));
         this.exportButton = new Button(i18n.t("RacesPanel.button.export.name"), i18n.t("RacesPanel.button.export.desc"));
         this.importButton = new Button(i18n.t("RacesPanel.button.import.name"), i18n.t("RacesPanel.button.import.desc"));
         ButtonMenu<String> buttonMenu = ButtonMenu.<String>builder()
@@ -183,7 +183,7 @@ public class RacesPanel extends AbstractConfigPanel<RacesConfig, RacesPanel> {
         return race.info.name + RACE_SEPARATOR + otherRace.info.name;
     }
 
-    protected RacesPanel element() {
+    protected RacesTab element() {
         return this;
     }
 

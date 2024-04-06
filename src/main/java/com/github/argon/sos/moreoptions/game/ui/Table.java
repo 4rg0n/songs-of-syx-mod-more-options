@@ -11,6 +11,7 @@ import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GHeader;
+import util.gui.misc.GInput;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class Table<Value> extends GuiSection implements
 
     private final Map<String, ColumnRow<Value>> rows;
     @Builder.Default
-    private int displayHeight = 100;
+    private int displayHeight = 150;
     @Builder.Default
     private boolean evenColumnWidth = false;
     @Builder.Default
@@ -41,6 +42,8 @@ public class Table<Value> extends GuiSection implements
     @Builder.Default
     private boolean highlight = false;
     @Builder.Default
+    private boolean displaySearch = false;
+    @Builder.Default
     private int rowPadding = 0;
     @Builder.Default
     private int columnMargin = 0;
@@ -48,7 +51,6 @@ public class Table<Value> extends GuiSection implements
     @Nullable
     @Builder.Default
     private Map<String, Button> headerButtons = null;
-
     @Nullable
     @Builder.Default
     private StringInputSprite search = null;
@@ -62,6 +64,7 @@ public class Table<Value> extends GuiSection implements
         boolean selectable,
         boolean multiselect,
         boolean highlight,
+        boolean displaySearch,
         int rowPadding,
         int columnMargin,
         @Nullable Map<String, Button> headerButtons,
@@ -171,20 +174,32 @@ public class Table<Value> extends GuiSection implements
             addDown(0, header);
         }
 
+        int searchBarMargin = 0;
+        int searchBarHeight = 0;
+        if (displaySearch) {
+            if (this.search == null) {
+                this.search = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
+            }
+            GInput searchField = new GInput(this.search);
+            addDown(0, searchField);
+            searchBarMargin = 10;
+            searchBarHeight = searchField.body().height();
+        }
+
         // add the rows and scrollbar if needed
-        int currentHeight = UiUtil.sumHeights(rows);
-        if (search != null || scrollable || (displayHeight > 0 && currentHeight > displayHeight)) {
+        int currentHeight = UiUtil.sumHeights(rows) + searchBarMargin + searchBarHeight;
+        if (this.search != null || scrollable || (displayHeight > 0 && currentHeight > displayHeight)) {
             ScrollRows scrollRows = ScrollRows.builder()
                 .height(displayHeight)
                 .rows(rows)
                 .slide(true)
-                .search(search)
+                .search(this.search)
                 .build();
 
-            addDown(0, scrollRows.view());
+            addDown(searchBarMargin, scrollRows.view());
         } else {
             for (ColumnRow<Value> row : rows) {
-                addDown(0, row);
+                addDown(searchBarMargin, row);
             }
         }
     }

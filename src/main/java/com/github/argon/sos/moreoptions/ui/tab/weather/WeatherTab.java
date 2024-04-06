@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel.weather;
+package com.github.argon.sos.moreoptions.ui.tab.weather;
 
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.config.domain.WeatherConfig;
@@ -11,7 +11,7 @@ import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
-import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import lombok.Getter;
 
 import java.util.List;
@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class WeatherPanel extends AbstractConfigPanel<WeatherConfig, WeatherPanel> {
-    private static final Logger log = Loggers.getLogger(WeatherPanel.class);
-    private static final I18n i18n = I18n.get(WeatherPanel.class);
+public class WeatherTab extends AbstractConfigTab<WeatherConfig, WeatherTab> {
+    private static final Logger log = Loggers.getLogger(WeatherTab.class);
+    private static final I18n i18n = I18n.get(WeatherTab.class);
 
     @Getter
     private final Map<String, Slider> sliders;
-    public WeatherPanel(
+    public WeatherTab(
         String title,
         WeatherConfig weatherConfig,
         WeatherConfig defaultConfig,
@@ -72,7 +72,7 @@ public class WeatherPanel extends AbstractConfigPanel<WeatherConfig, WeatherPane
         });
     }
 
-    protected WeatherPanel element() {
+    protected WeatherTab element() {
         return this;
     }
 }

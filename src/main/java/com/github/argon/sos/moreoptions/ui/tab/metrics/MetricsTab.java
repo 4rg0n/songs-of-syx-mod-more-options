@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel.metrics;
+package com.github.argon.sos.moreoptions.ui.tab.metrics;
 
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
 import com.github.argon.sos.moreoptions.config.domain.Range;
@@ -7,7 +7,7 @@ import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
 import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
 import com.github.argon.sos.moreoptions.i18n.I18n;
-import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Sets;
 import init.sprite.UI.UI;
@@ -29,11 +29,11 @@ import java.util.stream.Collectors;
 /**
  * Contains control elements for enabling and disabling game events.
  */
-public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPanel> {
+public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
-    private final static I18n i18n = I18n.get(MetricsPanel.class);
+    private final static I18n i18n = I18n.get(MetricsTab.class);
 
-    private final Toggler<Boolean> onOffToggle;
+    private final Toggle<Boolean> onOffToggle;
     private final Slider collectionRate;
     private final Slider exportRate;
     private final UISwitcher exportFilePathView;
@@ -50,10 +50,10 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
     @Getter
     private final Button exportFolderButton;
     @Getter
-    private final Toggler<Boolean> checkToggler;
-    private BiAction<MetricsConfig, MetricsPanel> afterSetValueAction = (o1, o2)  -> {};
+    private final Toggle<Boolean> checkToggle;
+    private BiAction<MetricsConfig, MetricsTab> afterSetValueAction = (o1, o2)  -> {};
 
-    public MetricsPanel(
+    public MetricsTab(
         String title,
         MetricsConfig metricsConfig,
         MetricsConfig defaultConfig,
@@ -67,10 +67,10 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
         this.exportFolderPath = exportFolderPath;
 
         // Started / Stopped toggle
-        Toggler<Boolean> toggler = Toggler.<Boolean>builder()
+        Toggle<Boolean> toggle = Toggle.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
-                .button(true, new Button(i18n.t("MetricsPanel.toggle.start.name"), i18n.t("MetricsPanel.toggle.start.desc")))
-                .button(false, new Button(i18n.t("MetricsPanel.toggle.stop.name"), i18n.t("MetricsPanel.toggle.stop.desc")))
+                .button(true, new Button(i18n.t("MetricsTab.toggle.start.name"), i18n.t("MetricsTab.toggle.start.desc")))
+                .button(false, new Button(i18n.t("MetricsTab.toggle.stop.name"), i18n.t("MetricsTab.toggle.stop.desc")))
                 .sameWidth(true)
                 .horizontal(true)
                 .build())
@@ -79,10 +79,10 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
             .build();
         ColumnRow<Void> onOffToggleRow = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.t("MetricsPanel.toggle.label.name"))
-                .description(i18n.t("MetricsPanel.toggle.label.desc"))
+                .name(i18n.t("MetricsTab.toggle.label.name"))
+                .description(i18n.t("MetricsTab.toggle.label.desc"))
                 .build())
-            .column(toggler)
+            .column(toggle)
             .build();
 
         // Collection rate slider
@@ -93,11 +93,11 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
             .build();
         ColumnRow<Void> collectionRateRow = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.t("MetricsPanel.collectionRate.label.name"))
-                .description(i18n.t("MetricsPanel.collectionRate.label.desc"))
+                .name(i18n.t("MetricsTab.collectionRate.label.name"))
+                .description(i18n.t("MetricsTab.collectionRate.label.desc"))
                 .build())
             .column(collectionRate)
-            .column(new GTextR(UI.FONT().S, i18n.t("MetricsPanel.text.seconds")))
+            .column(new GTextR(UI.FONT().S, i18n.t("MetricsTab.text.seconds")))
             .build();
 
         // Export rate slider
@@ -140,7 +140,7 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
         GuiSection searchBar = new GuiSection();
         this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("MetricsPanel.search.input.name"));
         searchBar.addRightC(0, new GInput(searchInput));
-        this.checkToggler = Toggler.<Boolean>builder()
+        this.checkToggle = Toggle.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
                 .button(true, new Button(i18n.t("MetricsPanel.search.check.name"), i18n.t("MetricsPanel.search.check.desc")))
                 .button(false, new Button(i18n.t("MetricsPanel.search.uncheck.name"), i18n.t("MetricsPanel.search.uncheck.desc")))
@@ -148,7 +148,7 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
                 .build())
             .highlight(false)
             .build();
-        searchBar.addRightC(10, checkToggler);
+        searchBar.addRightC(10, checkToggle);
 
         // Export stats section
         SortedSet<String> sortedAvailableStats = Sets.sort(availableStats);
@@ -167,7 +167,7 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
                 .build();
         }).collect(Collectors.toList());
 
-        this.onOffToggle = toggler;
+        this.onOffToggle = toggle;
         this.onOffToggle.toggle(metricsConfig.isEnabled());
 
         List<ColumnRow<Void>> rows = Lists.of(
@@ -207,7 +207,7 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
         Table<Boolean> exportStats = scalables.getAs(0);
 
         // Actions
-        checkToggler.clickAction(aBoolean -> {
+        checkToggle.clickAction(aBoolean -> {
             List<String> resultList = exportStats
                 .search(searchInput.text().toString());
             resultList.forEach(result -> statsCheckboxes.get(result).setValue(aBoolean));
@@ -283,11 +283,11 @@ public class MetricsPanel extends AbstractConfigPanel<MetricsConfig, MetricsPane
 
 
     @Override
-    public void afterValueSetAction(BiAction<MetricsConfig, MetricsPanel> afterValueSetAction) {
+    public void afterValueSetAction(BiAction<MetricsConfig, MetricsTab> afterValueSetAction) {
         this.afterSetValueAction = afterValueSetAction;
     }
 
-    protected MetricsPanel element() {
+    protected MetricsTab element() {
         return this;
     }
 }

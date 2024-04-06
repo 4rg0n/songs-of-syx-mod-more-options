@@ -7,23 +7,23 @@ import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.JsonWriter;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesSelectionPanel;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import snake2d.util.file.FileManager;
 
 import java.nio.file.Path;
 import java.util.Objects;
 
-public class RacesPanelController extends AbstractUiController<RacesPanel> {
-    public RacesPanelController(RacesPanel racesPanel) {
-        super(racesPanel);
+public class RacesPanelController extends AbstractUiController<RacesTab> {
+    public RacesPanelController(RacesTab racesTab) {
+        super(racesTab);
 
-        racesPanel.getFileButton().clickActionSet(this::openCurrentRacesConfigFile);
-        racesPanel.getFolderButton().clickActionSet(this::openRacesConfigFolder);
-        racesPanel.getExportButton().clickActionSet(this::exportRacesConfigToClipboard);
-        racesPanel.getImportButton().clickActionSet(this::importRacesConfigFromClipboard);
-        racesPanel.getLoadButton().clickActionSet(this::openRacesConfigSelection);
+        racesTab.getFileButton().clickActionSet(this::openCurrentRacesConfigFile);
+        racesTab.getFolderButton().clickActionSet(this::openRacesConfigFolder);
+        racesTab.getExportButton().clickActionSet(this::exportRacesConfigToClipboard);
+        racesTab.getImportButton().clickActionSet(this::importRacesConfigFromClipboard);
+        racesTab.getLoadButton().clickActionSet(this::openRacesConfigSelection);
     }
 
     public void openCurrentRacesConfigFile() {

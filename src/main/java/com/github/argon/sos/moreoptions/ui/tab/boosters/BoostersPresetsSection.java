@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel.boosters;
+package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.Action;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class BoostersPresetsSection extends GuiSection {
 
-    private final static I18n i18n = I18n.get(BoostersPanel.class);
+    private final static I18n i18n = I18n.get(BoostersTab.class);
 
     private final Map<String, Button> presetButtons = new HashMap<>();
     private final Map<String, Button> deleteButtons = new HashMap<>();
@@ -40,7 +40,7 @@ public class BoostersPresetsSection extends GuiSection {
         @NonNull Action<String> shareAction
     ) {
         if (presets.isEmpty()) {
-            add(new GTextR(UI.FONT().S, i18n.t("BoostersPanel.text.empty.preset")));
+            add(new GTextR(UI.FONT().S, i18n.t("BoostersTab.text.empty.preset")));
             return;
         }
 

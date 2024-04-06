@@ -53,7 +53,7 @@ public class FullWindow<Section extends GuiSection> extends Interrupter implemen
     protected BiAction<FullWindow<Section>, Float> renderAction = (o1, o2) -> {};
 
     @Builder
-    public FullWindow(String name, Section section, @Nullable Toggler<String> menu) {
+    public FullWindow(String name, Section section, @Nullable Toggle<String> menu) {
         this.view = new FullView<>(name, section);
         top.body().setHeight(TOP_HEIGHT);
         top.body().setWidth(C.WIDTH());

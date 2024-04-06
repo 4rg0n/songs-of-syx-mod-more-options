@@ -23,6 +23,19 @@ public class StringUtil {
             .collect(Collectors.joining(", ", "{", "}"));
     }
 
+    @Nullable
+    public static String removeTrailing(@Nullable final String str, String toRemove) {
+        if (str == null) {
+            return null;
+        }
+
+        if (!str.endsWith(toRemove)) {
+            return str;
+        }
+
+        return str.substring(0, str.length() - toRemove.length());
+    }
+
     public static String unCapitalize(String text) {
         return Character.toLowerCase(text.charAt(0)) + text.substring(1);
     }

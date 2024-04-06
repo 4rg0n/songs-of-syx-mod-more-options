@@ -12,11 +12,12 @@ import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
+import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.faction.Faction;
 import init.race.Race;
 import init.sprite.SPRITES;
+import init.sprite.UI.UI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -39,11 +40,11 @@ public class UiMapper {
 
     private final GameApis gameApis = GameApis.getInstance();
 
-    public Map<String, List<RacesPanel.Entry>> toRacePanelEntries(Set<RacesConfig.Liking> raceLikings) {
-        Map<String, List<RacesPanel.Entry>> entries = new HashMap<>();
+    public Map<String, List<RacesTab.Entry>> toRacePanelEntries(Set<RacesConfig.Liking> raceLikings) {
+        Map<String, List<RacesTab.Entry>> entries = new HashMap<>();
 
         for (RacesConfig.Liking raceLiking : raceLikings) {
-            RacesPanel.Entry entry = toRacePanelEntry(raceLiking);
+            RacesTab.Entry entry = toRacePanelEntry(raceLiking);
             String raceKey = entry.getRace().info.name.toString();
             entries.putIfAbsent(raceKey, new ArrayList<>());
             entries.get(raceKey).add(entry);
@@ -52,11 +53,11 @@ public class UiMapper {
         return entries;
     }
 
-    public RacesPanel.Entry toRacePanelEntry(RacesConfig.Liking liking) {
+    public RacesTab.Entry toRacePanelEntry(RacesConfig.Liking liking) {
         Race race = gameApis.race().getRace(liking.getRace()).orElse(null);
         Race otherRace = gameApis.race().getRace(liking.getOtherRace()).orElse(null);
 
-        return RacesPanel.Entry.builder()
+        return RacesTab.Entry.builder()
             .raceKey(liking.getRace())
             .otherRaceKey(liking.getOtherRace())
             .race(race)
@@ -65,8 +66,8 @@ public class UiMapper {
             .build();
     }
 
-    public Map<Faction, List<BoostersPanel.Entry>> toBoosterPanelEntries(BoostersConfig boostersConfig) {
-        Map<Faction, List<BoostersPanel.Entry>> factionBoosters = new HashMap<>();
+    public Map<Faction, List<BoostersTab.Entry>> toBoosterPanelEntries(BoostersConfig boostersConfig) {
+        Map<Faction, List<BoostersTab.Entry>> factionBoosters = new HashMap<>();
         // npc factions
         for (Map.Entry<String, Map<String, BoostersConfig.Booster>> entry : boostersConfig.getFaction().entrySet()) {
             String factionName = entry.getKey();
@@ -97,8 +98,8 @@ public class UiMapper {
     }
 
     @Nullable
-    public BoostersPanel.Entry toBoosterPanelEntry(BoostersConfig.Booster booster) {
-        return gameApis.booster().get(booster.getKey()).map(boosters -> BoostersPanel.Entry.builder()
+    public BoostersTab.Entry toBoosterPanelEntry(BoostersConfig.Booster booster) {
+        return gameApis.booster().get(booster.getKey()).map(boosters -> BoostersTab.Entry.builder()
             .key(booster.getKey())
             .range(booster.getRange())
             .boosters(boosters)
@@ -107,7 +108,7 @@ public class UiMapper {
         ).orElse(null);
     }
 
-    public static Map<String, List<BoostersPanel.Entry>> toBoosterPanelEntriesCategorized(List<BoostersPanel.Entry> boosterEntries) {
+    public static Map<String, List<BoostersTab.Entry>> toBoosterPanelEntriesCategorized(List<BoostersTab.Entry> boosterEntries) {
         return boosterEntries.stream()
             .collect(groupingBy(entry -> entry.getCat().name.toString()));
     }
@@ -144,6 +145,25 @@ public class UiMapper {
                     .column(Label.builder()
                         .name(i18n.n(key))
                         .description(i18n.dn(key))
+                        .build())
+                    .column(element)
+                    .build();
+            })
+            .collect(Collectors.toList());
+    }
+
+    public static <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toLabeledColumnRows(Map<String, Element> elements) {
+        return elements.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .map(entry -> {
+                String key = entry.getKey();
+                Element element = entry.getValue();
+
+                // label with element
+                return ColumnRow.<Value>builder()
+                    .column(Label.builder()
+                        .name(key)
+                        .font(UI.FONT().S)
                         .build())
                     .column(element)
                     .build();

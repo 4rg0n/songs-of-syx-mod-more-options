@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.game.AbstractScript;
+import com.github.argon.sos.moreoptions.game.GameJsonStore;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.i18n.I18nMessages;
 import com.github.argon.sos.moreoptions.log.Level;
@@ -33,7 +34,6 @@ public final class MoreOptionsScript extends AbstractScript {
 	private final ConfigStore configStore = ConfigStore.getInstance();
 	private final ConfigApplier configApplier = ConfigApplier.getInstance();
 	private final UiConfig uiConfig = UiConfig.getInstance();
-	private final GameJsonStore gameJsonStore = GameJsonStore.getInstance();
 	public final static Path MORE_OPTIONS_PROFILE = PATHS.local().PROFILE.get().resolve(MoreOptionsScript.MOD_INFO.name.toString());
 
 	public final static Path MORE_OPTIONS_CONFIG = PATHS.local().SETTINGS.get().resolve("MoreOptions.txt");
@@ -51,7 +51,7 @@ public final class MoreOptionsScript extends AbstractScript {
 	@Override
 	protected void registerPhases(PhaseManager phaseManager) {
         phaseManager
-            .register(Phase.INIT_BEFORE_GAME_CREATED, gameJsonStore)
+            .register(Phase.INIT_BEFORE_GAME_CREATED, GameJsonStore.getInstance())
             .register(Phase.INIT_BEFORE_GAME_CREATED, MetricExporter.getInstance())
             .register(Phase.INIT_BEFORE_GAME_CREATED, I18nMessages.getInstance())
             .register(Phase.INIT_BEFORE_GAME_CREATED, ConfigStore.getInstance())

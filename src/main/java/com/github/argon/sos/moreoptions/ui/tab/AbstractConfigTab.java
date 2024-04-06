@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel;
+package com.github.argon.sos.moreoptions.ui.tab;
 
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.ui.Refreshable;
@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 import snake2d.util.gui.GuiSection;
 
 
-public abstract class AbstractConfigPanel<Config, Element> extends GuiSection implements
+public abstract class AbstractConfigTab<Config, Element> extends GuiSection implements
     Valuable<Config, Element>,
     Refreshable<Element> {
 
@@ -23,7 +23,7 @@ public abstract class AbstractConfigPanel<Config, Element> extends GuiSection im
     @Accessors(fluent = true, chain = false)
     protected Action<Element> refreshAction = o -> {};
 
-    public AbstractConfigPanel(String title, Config defaultConfig, int availableWidth, int availableHeight) {
+    public AbstractConfigTab(String title, Config defaultConfig, int availableWidth, int availableHeight) {
         this.defaultConfig = defaultConfig;
         this.title = title;
         this.availableWidth = availableWidth;

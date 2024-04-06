@@ -1,6 +1,6 @@
 package snake2d.util.file;
 
-import com.github.argon.sos.moreoptions.GameJsonStore;
+import com.github.argon.sos.moreoptions.game.GameJsonStore;
 import snake2d.Errors;
 import snake2d.util.sets.LIST;
 

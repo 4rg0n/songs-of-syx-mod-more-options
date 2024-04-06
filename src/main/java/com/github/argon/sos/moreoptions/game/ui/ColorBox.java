@@ -1,12 +1,16 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import lombok.Getter;
+import lombok.Setter;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 
 public class ColorBox extends GuiSection {
 
-    private final COLOR color;
+    @Setter
+    @Getter
+    private COLOR color;
 
     public ColorBox(COLOR color) {
         this.color = color;

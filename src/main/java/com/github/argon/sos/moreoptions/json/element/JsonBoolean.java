@@ -14,4 +14,8 @@ public class JsonBoolean implements JsonElement {
     public String toString() {
         return Boolean.toString(value);
     }
+
+    public static JsonBoolean of(Boolean value) {
+        return new JsonBoolean(value);
+    }
 }

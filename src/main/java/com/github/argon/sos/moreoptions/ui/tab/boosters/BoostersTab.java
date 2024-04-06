@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel.boosters;
+package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
 import com.github.argon.sos.moreoptions.booster.Boosters;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
@@ -9,7 +9,7 @@ import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.util.Lists;
 import game.boosting.BoostableCat;
 import game.faction.FACTIONS;
@@ -33,9 +33,9 @@ import java.util.stream.Collectors;
 /**
  * Contains sliders to influence values of game boosters
  */
-public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersPanel> {
-    private static final Logger log = Loggers.getLogger(BoostersPanel.class);
-    private final static I18n i18n = I18n.get(BoostersPanel.class);
+public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> {
+    private static final Logger log = Loggers.getLogger(BoostersTab.class);
+    private final static I18n i18n = I18n.get(BoostersTab.class);
 
     @Getter
     private final Map<Faction, BoostersSection> boostersSections = new HashMap<>();
@@ -68,7 +68,7 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
     @Getter
     private Map<String, Map<String, Range>> boosterPresets;
 
-    public BoostersPanel(
+    public BoostersTab(
         String title,
         Map<Faction, List<Entry>> boosterEntries,
         Map<String, BoostersConfig.BoostersPreset> boosterPresets,
@@ -83,26 +83,26 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
         FactionList factionList = new FactionList(getter, availableHeight);
 
         loadPresetButton = new Button(
-            i18n.t("BoostersPanel.button.preset.load.name"),
-            i18n.t("BoostersPanel.button.preset.load.desc"));
+            i18n.t("BoostersTab.button.preset.load.name"),
+            i18n.t("BoostersTab.button.preset.load.desc"));
         savePresetButton = new Button(
-            i18n.t("BoostersPanel.button.preset.save.name"),
-            i18n.t("BoostersPanel.button.preset.save.desc"));
+            i18n.t("BoostersTab.button.preset.save.name"),
+            i18n.t("BoostersTab.button.preset.save.desc"));
         copyButton = new Button(
-            i18n.t("BoostersPanel.button.boosters.copy.name"),
-            i18n.t("BoostersPanel.button.boosters.copy.desc"));
+            i18n.t("BoostersTab.button.boosters.copy.name"),
+            i18n.t("BoostersTab.button.boosters.copy.desc"));
         pasteButton = new Button(
-            i18n.t("BoostersPanel.button.boosters.paste.name"),
-            i18n.t("BoostersPanel.button.boosters.paste.desc"));
+            i18n.t("BoostersTab.button.boosters.paste.name"),
+            i18n.t("BoostersTab.button.boosters.paste.desc"));
         pasteFactionsButton = new Button(
-            i18n.t("BoostersPanel.button.boosters.paste.factions.name"),
-            i18n.t("BoostersPanel.button.boosters.paste.factions.desc"));
+            i18n.t("BoostersTab.button.boosters.paste.factions.name"),
+            i18n.t("BoostersTab.button.boosters.paste.factions.desc"));
         resetCurrentButton = new Button(
-            i18n.t("BoostersPanel.button.boosters.reset.name"),
-            i18n.t("BoostersPanel.button.boosters.reset.desc"));
+            i18n.t("BoostersTab.button.boosters.reset.name"),
+            i18n.t("BoostersTab.button.boosters.reset.desc"));
         resetFactionsButton = new Button(
-            i18n.t("BoostersPanel.button.boosters.reset.factions.name"),
-            i18n.t("BoostersPanel.button.boosters.reset.factions.desc"));
+            i18n.t("BoostersTab.button.boosters.reset.factions.name"),
+            i18n.t("BoostersTab.button.boosters.reset.factions.desc"));
 
 
         ButtonMenu<String> presetButtons = ButtonMenu.<String>builder()
@@ -131,7 +131,7 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
             presetButtons,
             copyPasteButtons,
             resetButtons
-        ), 20, true);
+        ), null, 20, 0, 0,true);
 
         ColorBox buttonBox = new ColorBox(COLOR.WHITE15);
         buttonBox.add(buttons);
@@ -305,7 +305,7 @@ public class BoostersPanel extends AbstractConfigPanel<BoostersConfig, BoostersP
             BoostersConfig.Booster::getRange));
     }
 
-    protected BoostersPanel element() {
+    protected BoostersTab element() {
         return this;
     }
 

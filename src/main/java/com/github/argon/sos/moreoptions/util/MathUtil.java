@@ -14,6 +14,20 @@ public class MathUtil {
     }
 
     public static int fromPercentage(double percentage) {
-        return (int) (percentage * 100);
+        return fromResolution(percentage, 2);
     }
+
+    public static int fromResolution(double percentage, int resolution) {
+        return (int) (percentage * Math.pow(10, resolution));
+    }
+
+    public static double toResolution(double percentage, int resolution) {
+        return (int) (percentage / Math.pow(10, resolution));
+    }
+
+    public static int precisionMulti(int resolution) {
+        return (int) (Math.pow(10, resolution) / 10);
+    }
+
+
 }

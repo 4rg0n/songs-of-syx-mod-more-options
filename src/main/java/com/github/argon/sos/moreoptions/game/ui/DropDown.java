@@ -1,16 +1,27 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import lombok.Builder;
+import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.sprite.SPRITE;
 
 
 public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
-    private final Toggler<Key> menu;
+    @Getter
+    private final Toggle<Key> menu;
 
     @Builder
-    public DropDown(CharSequence label, CharSequence description, Toggler<Key> menu, final boolean closeOnSelect) {
+    public DropDown(
+        CharSequence label,
+        CharSequence description,
+        Toggle<Key> menu,
+        boolean closeOnSelect,
+        @Nullable Action<DropDown<Key>> clickAction,
+        @Nullable Action<DropDown<Key>> closeAction
+    ) {
         super(label, description);
         this.menu = menu;
         Button activeButton = menu.getActiveButton();
@@ -27,9 +38,15 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
             bg(activeButton.getColor());
         }
 
-        clickActionSet(() -> {
-            GameUiApi.getInstance().popup().show(this.menu, this);
-        });
+        if (clickAction != null) {
+            clickActionSet(() -> {
+                clickAction.accept(this);
+            });
+        } else {
+            clickActionSet(() -> {
+                GameUiApi.getInstance().popup().show(this.menu, this);
+            });
+        }
 
         menu.onToggle(key -> {
             menu.get(key).ifPresent(selectedButton -> {
@@ -37,7 +54,11 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
                 bg(selectedButton.getColor());
 
                 if (closeOnSelect) {
-                    GameUiApi.getInstance().popup().close();
+                    if (closeAction != null) {
+                        closeAction.accept(this);
+                    } else {
+                        GameUiApi.getInstance().popup().close();
+                    }
                 }
             });
         });

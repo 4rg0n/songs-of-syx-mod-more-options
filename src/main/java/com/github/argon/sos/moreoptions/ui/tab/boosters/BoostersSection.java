@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel.boosters;
+package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.Range;
@@ -28,17 +28,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BoostersSection extends GuiSection implements Valuable<Map<String, Range>, BoostersSection> {
-    private static final I18n i18n = I18n.get(BoostersPanel.class);
+    private static final I18n i18n = I18n.get(BoostersTab.class);
 
     private final Table<Range> boosterTable;
 
     @Getter
     private final Faction faction;
 
-    public BoostersSection(Faction faction, List<BoostersPanel.Entry> boosterEntries, int availableHeight) {
+    public BoostersSection(Faction faction, List<BoostersTab.Entry> boosterEntries, int availableHeight) {
         this.faction = faction;
 
-        Map<String, List<BoostersPanel.Entry>> groupedBoosterEntries = UiMapper.toBoosterPanelEntriesCategorized(boosterEntries);
+        Map<String, List<BoostersTab.Entry>> groupedBoosterEntries = UiMapper.toBoosterPanelEntriesCategorized(boosterEntries);
         Map<String, List<ColumnRow<Range>>> boosterRows = groupedBoosterEntries.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
@@ -48,7 +48,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
                     .collect(Collectors.toList())
             ));
 
-        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("BoostersPanel.search.input.name"));
+        StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("BoostersTab.search.input.name"));
         GInput search = new GInput(searchInput);
 
         GHeader titleHeader = new GHeader(faction.name, UI.FONT().H1);
@@ -70,7 +70,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         addDownC(10, boosterTable);
     }
 
-    private ColumnRow<Range> boosterRow(BoostersPanel.Entry boosterEntry) {
+    private ColumnRow<Range> boosterRow(BoostersTab.Entry boosterEntry) {
         Boostable boostable = boosterEntry.getBoosters().getAdd().getOrigin();
         Range rangePerc;
         Range rangeAdd;
@@ -133,10 +133,10 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
                 Range.ApplyMode.PERCENT, multiSlider,
                 Range.ApplyMode.ADD, additiveSlider
             ))
-            .tabMenu(Toggler.<Range.ApplyMode>builder()
+            .tabMenu(Toggle.<Range.ApplyMode>builder()
                 .menu(ButtonMenu.<Range.ApplyMode>builder()
-                    .button(Range.ApplyMode.ADD, new Button(i18n.t("BoostersPanel.booster.toggle.add.name"), i18n.t("BoostersPanel.booster.toggle.add.desc")))
-                    .button(Range.ApplyMode.PERCENT, new Button(i18n.t("BoostersPanel.booster.toggle.perc.name"), i18n.t("BoostersPanel.booster.toggle.perc.desc")))
+                    .button(Range.ApplyMode.ADD, new Button(i18n.t("BoostersTab.booster.toggle.add.name"), i18n.t("BoostersTab.booster.toggle.add.desc")))
+                    .button(Range.ApplyMode.PERCENT, new Button(i18n.t("BoostersTab.booster.toggle.perc.name"), i18n.t("BoostersTab.booster.toggle.perc.desc")))
                     .horizontal(true)
                     .sameWidth(true)
                     .build())

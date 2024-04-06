@@ -7,7 +7,7 @@ import snake2d.util.sets.LinkedList;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.table.GScrollRows;
 
-import java.util.List;
+import java.util.Collection;
 
 
 public class ScrollRows extends GScrollRows {
@@ -40,7 +40,7 @@ public class ScrollRows extends GScrollRows {
     public static class ScrollRowsBuilder {
         private Iterable<RENDEROBJ> rows;
 
-        public ScrollRowsBuilder rows(List<? extends RENDEROBJ> rows) {
+        public ScrollRowsBuilder rows(Collection<? extends RENDEROBJ> rows) {
             LinkedList<RENDEROBJ> rowsLinked = new LinkedList<>(rows);
             this.rows = rowsLinked;
 

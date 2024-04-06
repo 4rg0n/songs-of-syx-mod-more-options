@@ -8,9 +8,9 @@ import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.JsonWriter;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.mapper.TypeInfo;
-import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPresetsSection;
-import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersSection;
+import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersPresetsSection;
+import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersSection;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import game.faction.Faction;
 import snake2d.util.misc.STRING_RECIEVER;
@@ -20,20 +20,20 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class BoostersPanelController extends AbstractUiController<BoostersPanel> {
+public class BoostersPanelController extends AbstractUiController<BoostersTab> {
 
 
-    public BoostersPanelController(BoostersPanel boostersPanel) {
-        super(boostersPanel);
-        boostersPanel.refreshAction(panel -> refreshBoosters());
+    public BoostersPanelController(BoostersTab boostersTab) {
+        super(boostersTab);
+        boostersTab.refreshAction(panel -> refreshBoosters());
 
-        boostersPanel.getLoadPresetButton().clickActionSet(this::loadBoostersPreset);
-        boostersPanel.getSavePresetButton().clickActionSet(this::saveBoostersPreset);
-        boostersPanel.getCopyButton().clickActionSet(this::copyBoostersConfig);
-        boostersPanel.getPasteButton().clickActionSet(this::pasteBoostersConfig);
-        boostersPanel.getPasteFactionsButton().clickActionSet(this::pasteBoostersConfigToAllNPCFactions);
-        boostersPanel.getResetCurrentButton().clickActionSet(this::resetCurrentBoosters);
-        boostersPanel.getResetFactionsButton().clickActionSet(this::resetNPCFactionsBoosters);
+        boostersTab.getLoadPresetButton().clickActionSet(this::loadBoostersPreset);
+        boostersTab.getSavePresetButton().clickActionSet(this::saveBoostersPreset);
+        boostersTab.getCopyButton().clickActionSet(this::copyBoostersConfig);
+        boostersTab.getPasteButton().clickActionSet(this::pasteBoostersConfig);
+        boostersTab.getPasteFactionsButton().clickActionSet(this::pasteBoostersConfigToAllNPCFactions);
+        boostersTab.getResetCurrentButton().clickActionSet(this::resetCurrentBoosters);
+        boostersTab.getResetFactionsButton().clickActionSet(this::resetNPCFactionsBoosters);
     }
 
     public void resetNPCFactionsBoosters() {
@@ -103,7 +103,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
             }
         };
 
-        gameApis.ui().inters().input.requestInput(r, i18n.t("BoostersPanel.input.preset.name"));
+        gameApis.ui().inters().input.requestInput(r, i18n.t("BoostersTab.input.preset.name"));
     }
 
     public void loadBoostersPreset() {
@@ -143,7 +143,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersPanel>
 
     public void refreshBoosters() {
         configDefaults.newBoostersConfig();
-        Map<Faction, List<BoostersPanel.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(configDefaults.newBoostersConfig());
+        Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(configDefaults.newBoostersConfig());
         element.refresh(boosterEntries);
         MoreOptionsV4Config currentConfig = configStore.getCurrentConfig();
         Objects.requireNonNull(currentConfig);

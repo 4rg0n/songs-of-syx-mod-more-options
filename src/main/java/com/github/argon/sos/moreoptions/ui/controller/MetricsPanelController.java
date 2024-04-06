@@ -1,17 +1,17 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.ui.panel.metrics.MetricsPanel;
+import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import snake2d.util.file.FileManager;
 
 import java.nio.file.Path;
 
-public class MetricsPanelController extends AbstractUiController<MetricsPanel> {
-    public MetricsPanelController(MetricsPanel metricsPanel) {
-        super(metricsPanel);
+public class MetricsPanelController extends AbstractUiController<MetricsTab> {
+    public MetricsPanelController(MetricsTab metricsTab) {
+        super(metricsTab);
 
-        metricsPanel.getExportFolderButton().clickActionSet(this::openMetricsExportFolder);
-        metricsPanel.getCopyExportFileButton().clickActionSet(this::copyMetricExportFilename);
+        metricsTab.getExportFolderButton().clickActionSet(this::openMetricsExportFolder);
+        metricsTab.getCopyExportFileButton().clickActionSet(this::copyMetricExportFilename);
     }
 
     public void openMetricsExportFolder() {

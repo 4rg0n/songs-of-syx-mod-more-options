@@ -4,20 +4,25 @@ import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.datatypes.Coo;
 import snake2d.util.datatypes.RECTANGLEE;
 import snake2d.util.datatypes.Rec;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.SPRITE;
+import view.main.VIEW;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiUtil {
+
+    public final static Supplier<Coo> MOUSE_COO_SUPPLIER = () -> new Coo(VIEW.mouse().x(), VIEW.mouse().y());
 
     /**
      * @return width of widest ui element in list
@@ -214,6 +219,11 @@ public class UiUtil {
 
             return section;
         }
+    }
+
+    public static Integer getMaxWidths(Collection<? extends RENDEROBJ> renderobjs, int margin) {
+        return getWidths(renderobjs).stream().mapToInt(Integer::intValue).sum()
+            + (renderobjs.size() - 1) * margin;
     }
 
     public static List<Integer> getWidths(Collection<? extends RENDEROBJ> renderobjs) {

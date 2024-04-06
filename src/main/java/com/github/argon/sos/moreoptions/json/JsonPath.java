@@ -18,19 +18,43 @@ public class JsonPath {
         this.keys = keys;
     }
 
+    public String last() {
+        return keys.get(keys.size() - 1);
+    }
+
     public Optional<JsonElement> extract(JsonObject json) {
+        return extract(json, JsonElement.class);
+    }
+
+    public <T extends JsonElement> Optional<T> extract(JsonObject json, Class<T> clazz) {
         JsonElement element = null;
+
         for (String key : getKeys()) {
             if (json.containsKey(key)) {
                 element = json.get(key);
 
                 if (element instanceof JsonObject) {
                     json = (JsonObject) element;
+                    element = extract(json, clazz).orElse(null);
                 }
             }
         }
 
-        return Optional.ofNullable(element);
+        try {
+            return Optional.ofNullable(element)
+                .filter(clazz::isInstance)
+                .map(clazz::cast);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public void put(JsonObject json, JsonElement value) {
+        extract(json).ifPresent(jsonElement -> {
+            if (jsonElement instanceof JsonObject) {
+                ((JsonObject) jsonElement).put(last(), value);
+            }
+        });
     }
 
     public static JsonPath get(String path) {

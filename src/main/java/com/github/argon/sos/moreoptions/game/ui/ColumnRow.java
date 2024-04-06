@@ -82,7 +82,7 @@ public class ColumnRow<Value> extends GuiSection implements
     @Accessors(fluent = true)
     private int margin = 0;
 
-    private float doubleClickTimer = 0.0f;
+    private float doubleClickTimer;
 
     private Value value;
     private boolean isSelected;
@@ -204,6 +204,7 @@ public class ColumnRow<Value> extends GuiSection implements
         return super.hover(mCoo);
     }
 
+    @Override
     public Value getValue() {
         if (valueSupplier != null) {
             return valueSupplier.get();

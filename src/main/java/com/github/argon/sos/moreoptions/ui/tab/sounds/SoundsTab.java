@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel.sounds;
+package com.github.argon.sos.moreoptions.ui.tab.sounds;
 
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.config.domain.SoundsConfig;
@@ -10,7 +10,7 @@ import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
-import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import util.gui.misc.GHeader;
 
 import java.util.Map;
@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 /**
  * Contains slider for controlling the volume of game sound effects
  */
-public class SoundsPanel extends AbstractConfigPanel<SoundsConfig, SoundsPanel> {
-    private static final Logger log = Loggers.getLogger(SoundsPanel.class);
-    private final static I18n i18n = I18n.get(SoundsPanel.class);
+public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
+    private static final Logger log = Loggers.getLogger(SoundsTab.class);
+    private final static I18n i18n = I18n.get(SoundsTab.class);
 
     private final Map<String, Slider> ambienceSoundSliders;
-    public SoundsPanel(
+    public SoundsTab(
         String title,
         SoundsConfig soundsConfig,
         SoundsConfig defaultConfig,
@@ -34,11 +34,11 @@ public class SoundsPanel extends AbstractConfigPanel<SoundsConfig, SoundsPanel> 
         super(title, defaultConfig, availableWidth, availableHeight);
         this.ambienceSoundSliders = UiMapper.toSliders(soundsConfig.getAmbience());
 
-        GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsPanel.header.ambienceSounds.name"));
-        ambienceSoundsHeader.hoverInfoSet(i18n.d("SoundsPanel.header.ambienceSounds.desc"));
+        GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsTab.header.ambienceSounds.name"));
+        ambienceSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.ambienceSounds.desc"));
 
-        GHeader roomSoundsHeader = new GHeader(i18n.t("SoundsPanel.header.roomSounds.name"));
-        roomSoundsHeader.hoverInfoSet(i18n.d("SoundsPanel.header.roomSounds.desc"));
+        GHeader roomSoundsHeader = new GHeader(i18n.t("SoundsTab.header.roomSounds.name"));
+        roomSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.roomSounds.desc"));
 
         Map<String, Slider> ambience = ambienceSoundSliders.entrySet().stream()
             .filter(stringSliderEntry -> !stringSliderEntry.getKey().contains("ROOM_"))
@@ -103,7 +103,7 @@ public class SoundsPanel extends AbstractConfigPanel<SoundsConfig, SoundsPanel> 
         });
     }
 
-    protected SoundsPanel element() {
+    protected SoundsTab element() {
         return this;
     }
 }

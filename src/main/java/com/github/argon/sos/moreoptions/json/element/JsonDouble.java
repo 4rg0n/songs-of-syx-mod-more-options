@@ -14,4 +14,8 @@ public class JsonDouble implements JsonElement {
     public String toString() {
         return Double.toString(value);
     }
+
+    public static JsonDouble of(Double value) {
+        return new JsonDouble(value);
+    }
 }

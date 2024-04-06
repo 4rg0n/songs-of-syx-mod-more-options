@@ -15,4 +15,8 @@ public class JsonString implements JsonElement {
     public String toString() {
         return StringUtil.quote(value);
     }
+
+    public static JsonString of(String value) {
+        return new JsonString(value);
+    }
 }

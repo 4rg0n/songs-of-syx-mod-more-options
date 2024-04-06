@@ -121,7 +121,7 @@ public class UiShowroom extends GuiSection {
             .build();
 
         // set of buttons with the ability to toggle
-        Toggler<String> toggler = Toggler.<String>builder()
+        Toggle<String> toggle = Toggle.<String>builder()
             .menu(ButtonMenu.<String>builder()
                 .button("button1", new Button("Toggle 1"))
                 .button("button2", new Button("Toggle 2"))
@@ -134,7 +134,7 @@ public class UiShowroom extends GuiSection {
 
         // button opening a menu with options to choose
         DropDown<String> dropDown = DropDown.<String>builder()
-            .menu(Toggler.<String>builder()
+            .menu(Toggle.<String>builder()
                 .menu(ButtonMenu.<String>builder()
                     .button("button1", new Button("Option 1"))
                     .button("button2", new Button("Option 2"))
@@ -176,7 +176,7 @@ public class UiShowroom extends GuiSection {
         List<RENDEROBJ> buttonElements = Lists.of(
             button,
             buttonMenu,
-            toggler,
+            toggle,
             dropDown,
             notificationButtons
         );
@@ -278,7 +278,7 @@ public class UiShowroom extends GuiSection {
 
         // Tabulator switching through ui elements on a button click
         Tabulator<String, RENDEROBJ, Void> tabulator = Tabulator.<String, RENDEROBJ, Void>builder()
-            .tabMenu(Toggler.<String>builder()
+            .tabMenu(Toggle.<String>builder()
                 .menu(ButtonMenu.<String>builder()
                     .button("tab1", new Button("Tab 1"))
                     .button("tab2", new Button("Tab 2"))

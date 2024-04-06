@@ -18,11 +18,12 @@ import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.ui.controller.*;
-import com.github.argon.sos.moreoptions.ui.panel.advanced.AdvancedPanel;
-import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.metrics.MetricsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
-import com.github.argon.sos.moreoptions.ui.panel.weather.WeatherPanel;
+import com.github.argon.sos.moreoptions.ui.controller.*;
+import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
+import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
+import com.github.argon.sos.moreoptions.ui.tab.weather.WeatherTab;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +59,7 @@ public class UiConfig implements Phases {
         PhaseManager.getInstance()
     );
 
-    private static final I18n i18n = I18n.get(WeatherPanel.class);
+    private static final I18n i18n = I18n.get(WeatherTab.class);
     private final static Logger log = Loggers.getLogger(UiConfig.class);
 
     /**
@@ -130,15 +131,15 @@ public class UiConfig implements Phases {
             initBackupControls(backupDialog, backupMoreOptionsModal, moreOptionsFull.getSection());
         });
 
-        MetricsPanel metricsPanel = moreOptionsFull.getSection().getMetricsPanel();
+        MetricsTab metricsTab = moreOptionsFull.getSection().getMetricsTab();
         // after config is applied to game
         configurator.onAfterApplyAction(config -> {
             Path exportFile = metricExporter.getExportFile();
-            Path currentExportFile = metricsPanel.getExportFilePath();
+            Path currentExportFile = metricsTab.getExportFilePath();
 
             // export file changed?
             if (!exportFile.equals(currentExportFile)) {
-                metricsPanel.refresh(exportFile);
+                metricsTab.refresh(exportFile);
 
                 // don't notify for initial files
                 if (currentExportFile != null) {
@@ -195,24 +196,24 @@ public class UiConfig implements Phases {
         new MoreOptionsPanelController(moreOptionsPanel, moreOptionsWindow);
 
         // BOOSTERS
-        BoostersPanel boostersPanel = moreOptionsPanel.getBoostersPanel();
-        new BoostersPanelController(boostersPanel);
+        BoostersTab boostersTab = moreOptionsPanel.getBoostersTab();
+        new BoostersPanelController(boostersTab);
 
         moreOptionsPanel.showAction(panel -> {
-            boostersPanel.refresh();
+            boostersTab.refresh();
         });
 
         // METRICS
-        MetricsPanel metricsPanel = moreOptionsPanel.getMetricsPanel();
-        new MetricsPanelController(metricsPanel);
+        MetricsTab metricsTab = moreOptionsPanel.getMetricsTab();
+        new MetricsPanelController(metricsTab);
 
         // RACES
-        RacesPanel racesPanel = moreOptionsPanel.getRacesPanel();
-        new RacesPanelController(racesPanel);
+        RacesTab racesTab = moreOptionsPanel.getRacesTab();
+        new RacesPanelController(racesTab);
 
         // ADVANCED
-        AdvancedPanel advancedPanel = moreOptionsPanel.getAdvancedPanel();
-        phaseManager.register(Phase.ON_GAME_SAVED, new AdvancedPanelController(advancedPanel, moreOptionsPanel));
+        AdvancedTab advancedTab = moreOptionsPanel.getAdvancedTab();
+        phaseManager.register(Phase.ON_GAME_SAVED, new AdvancedPanelController(advancedTab, moreOptionsPanel));
     }
 
     public void initBackupControls(

@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -23,5 +24,12 @@ public class JsonArray implements JsonElement {
     @Override
     public String toString() {
         return elements.toString();
+    }
+
+    public <T extends JsonElement> List<T> as(Class<T> clazz) {
+        return elements.stream()
+            .filter(clazz::isInstance)
+            .map(clazz::cast)
+            .collect(Collectors.toList());
     }
 }

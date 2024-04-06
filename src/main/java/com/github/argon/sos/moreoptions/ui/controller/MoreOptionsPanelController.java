@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.ui.controller;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 
 public class MoreOptionsPanelController extends AbstractUiController<MoreOptionsPanel> {
@@ -88,10 +88,10 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
 
     public void resetTabToDefaultConfig() {
         try {
-            AbstractConfigPanel<?, ?> abstractConfigPanel = element.getTabulator().getActiveTab();
-            if (abstractConfigPanel != null) {
-                abstractConfigPanel.resetToDefault();
-                notificator.notifySuccess(i18n.t("notification.config.default.tab.apply", abstractConfigPanel.getTitle()));
+            AbstractConfigTab<?, ?> abstractConfigTab = element.getTabulator().getActiveTab();
+            if (abstractConfigTab != null) {
+                abstractConfigTab.resetToDefault();
+                notificator.notifySuccess(i18n.t("notification.config.default.tab.apply", abstractConfigTab.getTitle()));
             } else {
                 notificator.notifyError(i18n.t("notification.config.default.tab.not.apply"));
             }

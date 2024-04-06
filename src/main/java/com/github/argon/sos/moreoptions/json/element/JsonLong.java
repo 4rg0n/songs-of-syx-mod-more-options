@@ -14,4 +14,12 @@ public class JsonLong implements JsonElement {
     public String toString() {
         return Long.toString(value);
     }
+
+    public static JsonLong of(long value) {
+        return new JsonLong(value);
+    }
+
+    public static JsonLong of(int value) {
+        return new JsonLong((long) value);
+    }
 }

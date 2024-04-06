@@ -11,9 +11,9 @@ import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
-import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesSelectionPanel;
+import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.faction.Faction;
 import init.paths.ModInfo;
 import init.sprite.SPRITES;
@@ -62,14 +62,14 @@ public class UiFactory {
             .availableWidth(FullWindow.FullView.WIDTH)
             .availableHeight(FullWindow.FullView.HEIGHT)
             .build();
-        Toggler<String> buttonMenu = moreOptionsPanel.getTabulator().getMenu();
+        Toggle<String> buttonMenu = moreOptionsPanel.getTabulator().getMenu();
 
         return new FullWindow<>(title, moreOptionsPanel, buttonMenu);
     }
 
     public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV4Config config) {
-        Map<Faction, List<BoostersPanel.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(config.getBoosters());
-        Map<String, List<RacesPanel.Entry>> raceEntries = uiMapper.toRacePanelEntries(config.getRaces().getLikings());
+        Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(config.getBoosters());
+        Map<String, List<RacesTab.Entry>> raceEntries = uiMapper.toRacePanelEntries(config.getRaces().getLikings());
 
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod().orElse(null);

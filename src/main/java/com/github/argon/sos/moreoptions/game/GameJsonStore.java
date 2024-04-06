@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions;
+package com.github.argon.sos.moreoptions.game;
 
 import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.json.Json;
@@ -45,12 +45,17 @@ public class GameJsonStore implements Phases {
     public void loadRegistered() {
         filePaths.forEach(this::load);
     }
+
     @Nullable
     public Json getJson(Path filePath) {
         String content = get(filePath);
 
         if (content == null) {
-            return null;
+            content = load(filePath);
+
+            if (content == null) {
+                return null;
+            }
         }
 
         try {

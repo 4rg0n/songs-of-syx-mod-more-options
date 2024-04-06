@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel.races;
+package com.github.argon.sos.moreoptions.ui.tab.races;
 
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
@@ -46,7 +46,7 @@ public class RacesSelectionPanel extends GuiSection {
             racesConfigTable = Table.<Entry>builder()
                 .rows(Lists.of())
                 .build();
-            addDownC(0, new GText(UI.FONT().H2, i18n.t("RacesSelectionPanel.nothing.desc")));
+            addDownC(0, new GText(UI.FONT().H2, i18n.t("RacesSelectionTab.nothing.desc")));
             return;
         }
 
@@ -84,7 +84,7 @@ public class RacesSelectionPanel extends GuiSection {
             GuiSection activeMarker;
             if (currentConfig != null && currentConfig.getConfigPath().equals(entry.getConfigPath())) {
                 activeMarker = UiUtil.toGuiSection(activeMarkerIcon);
-                activeMarker.hoverInfoSet(i18n.t("RacesSelectionPanel.marker.active.desc"));
+                activeMarker.hoverInfoSet(i18n.t("RacesSelectionTab.marker.active.desc"));
             } else {
                 activeMarker = UiUtil.toGuiSection(new Spacer(
                     activeMarkerIcon.width(),
@@ -98,14 +98,14 @@ public class RacesSelectionPanel extends GuiSection {
                 .searchTerm(fileName)
                 .build();
             row.setValue(entry);
-            row.hoverInfoSet(i18n.t("RacesSelectionPanel.text.select.name"));
+            row.hoverInfoSet(i18n.t("RacesSelectionTab.text.select.name"));
             return row;
         }).collect(Collectors.toList());
 
         // header for table columns
         Map<String, Button> header = Maps.ofLinked(
-            "file", new Button(i18n.t("RacesSelectionPanel.table.file.name"), i18n.t("RacesSelectionPanel.table.file.desc")),
-            "save", new Button(i18n.t("RacesSelectionPanel.table.save.name"), i18n.t("RacesSelectionPanel.table.save.desc")),
+            "file", new Button(i18n.t("RacesSelectionTab.table.file.name"), i18n.t("RacesSelectionTab.table.file.desc")),
+            "save", new Button(i18n.t("RacesSelectionTab.table.save.name"), i18n.t("RacesSelectionTab.table.save.desc")),
             "active", new Button(i18n.t("RacesSelectionPanel.table.active.name"), i18n.t("RacesSelectionPanel.table.active.desc")),
             "created", new Button(i18n.t("RacesSelectionPanel.table.created.name"), i18n.t("RacesSelectionPanel.table.created.desc")),
             "updated", new Button(i18n.t("RacesSelectionPanel.table.updated.name"), i18n.t("RacesSelectionPanel.table.updated.desc"))

@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.ui.panel.advanced;
+package com.github.argon.sos.moreoptions.ui.tab.advanced;
 
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
@@ -6,7 +6,7 @@ import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
-import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.util.Lists;
 import init.paths.PATHS;
 import init.sprite.UI.UI;
@@ -20,9 +20,9 @@ import util.gui.misc.GTextR;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
-    private static final Logger log = Loggers.getLogger(AdvancedPanel.class);
-    private static final I18n i18n = I18n.get(AdvancedPanel.class);
+public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
+    private static final Logger log = Loggers.getLogger(AdvancedTab.class);
+    private static final I18n i18n = I18n.get(AdvancedTab.class);
 
     private final DropDown<Level> logLevelDropDown;
     @Getter
@@ -46,7 +46,7 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
     private final int worldSeed;
 
 
-    public AdvancedPanel(
+    public AdvancedTab(
         String title,
         String saveStamp,
         int worldSeed,
@@ -60,10 +60,10 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
         this.saveStamp = saveStamp;
 
         logLevelDropDown = DropDown.<Level>builder()
-            .label(i18n.t("AdvancedPanel.dropDown.log.level.name"))
-            .description(i18n.t("AdvancedPanel.dropDown.log.level.desc"))
+            .label(i18n.t("AdvancedTab.dropDown.log.level.name"))
+            .description(i18n.t("AdvancedTab.dropDown.log.level.desc"))
             .closeOnSelect(true)
-            .menu(Toggler.<Level>builder()
+            .menu(Toggle.<Level>builder()
                 .menu(UiFactory.buildLogLevelButtonMenu()
                     .sameWidth(true)
                     .build())
@@ -73,22 +73,22 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
             .build();
         ColumnRow<Void> logLevelSelect = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.t("AdvancedPanel.label.log.level.name"))
-                .description(i18n.t("AdvancedPanel.label.log.level.desc"))
+                .name(i18n.t("AdvancedTab.label.log.level.name"))
+                .description(i18n.t("AdvancedTab.label.log.level.desc"))
                 .build())
             .column(logLevelDropDown)
             .build();
 
         this.dumpLogsButton = new Button(
-            i18n.t("AdvancedPanel.button.logs.dump.name"),
-            i18n.t("AdvancedPanel.button.logs.dump.desc"));
+            i18n.t("AdvancedTab.button.logs.dump.name"),
+            i18n.t("AdvancedTab.button.logs.dump.desc"));
         this.gameLogsFolderButton = new Button(
-            i18n.t("AdvancedPanel.button.logs.folder.name"),
-            i18n.t("AdvancedPanel.button.logs.folder.desc", PATHS.local().LOGS.get().toString()));
+            i18n.t("AdvancedTab.button.logs.folder.name"),
+            i18n.t("AdvancedTab.button.logs.folder.desc", PATHS.local().LOGS.get().toString()));
         ColumnRow<Void> logFunctions = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.t("AdvancedPanel.label.log.functions.name"))
-                .description(i18n.t("AdvancedPanel.label.log.functions.desc"))
+                .name(i18n.t("AdvancedTab.label.log.functions.name"))
+                .description(i18n.t("AdvancedTab.label.log.functions.desc"))
                 .build())
             .column(ButtonMenu.builder()
                 .button("dumpLogs", dumpLogsButton)
@@ -100,8 +100,8 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
             .build();
 
         this.resetButton = new Button(
-            i18n.t("AdvancedPanel.button.reset.name"),
-            i18n.t("AdvancedPanel.button.reset.desc"));
+            i18n.t("AdvancedTab.button.reset.name"),
+            i18n.t("AdvancedTab.button.reset.desc"));
         this.folderButton = new Button(
             i18n.t("AdvancedPanel.button.folder.name"),
             i18n.t("AdvancedPanel.button.folder.desc"));
@@ -167,7 +167,7 @@ public class AdvancedPanel extends AbstractConfigPanel<Level, AdvancedPanel> {
         logLevelDropDown.setValue(logLevel);
     }
 
-    protected AdvancedPanel element() {
+    protected AdvancedTab element() {
         return this;
     }
 
