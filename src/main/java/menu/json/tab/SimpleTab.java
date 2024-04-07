@@ -41,4 +41,9 @@ public class SimpleTab extends AbstractTab {
             .build().table(this.availableHeight - 10);
         addDownC(10, table);
     }
+
+    @Override
+    public String getTitle() {
+        return path.getFileName().toString();
+    }
 }

@@ -1,6 +1,6 @@
 package snake2d.util.file;
 
-import com.github.argon.sos.moreoptions.game.GameJsonStore;
+import com.github.argon.sos.moreoptions.game.json.GameJsonStore;
 import snake2d.Errors;
 import snake2d.util.sets.LIST;
 
@@ -16,23 +16,41 @@ public class Json {
 	private final JsonParser parser;
 
 	private final GameJsonStore gameJsonStore = GameJsonStore.getInstance();
-	
-	public Json(String content, String path) {
-		String storedJson = gameJsonStore.get(Paths.get(path));
 
-		if (storedJson != null) {
-			content = storedJson;
-		}
-		
-		parser = new JsonParser(content, path);
+	public Json(String content, String path) {
+		this(content, path, true);
 	}
 	
+	public Json(String content, String path, boolean doStore) {
+		if (doStore) {
+			String storedJson = gameJsonStore.getContent(Paths.get(path));
+
+			if (storedJson != null) {
+				content = storedJson;
+			}
+		}
+
+		parser = new JsonParser(content, path);
+	}
+
 	public Json(Path p) {
-		String storedJson = gameJsonStore.get(p);
+		this(p, true);
+	}
+	
+	public Json(Path p, boolean doStore) {
+		String content = null;
+		if (doStore) {
+			String storedJson = gameJsonStore.getContent(p);
+
+			if (storedJson != null) {
+				content = storedJson;
+			}
+		}
+
 		String path = ""+p;
 
-		if (storedJson != null) {
-			parser = new JsonParser(storedJson, path);
+		if (content != null) {
+			parser = new JsonParser(content, path);
 		} else {
 			try {
 				byte[] encoded = Files.readAllBytes(p);

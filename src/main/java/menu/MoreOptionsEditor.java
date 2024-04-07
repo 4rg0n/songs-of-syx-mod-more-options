@@ -25,10 +25,9 @@ public class MoreOptionsEditor extends GuiSection {
 
     @Getter
     private final Tabulator<String, AbstractTab, Void> tabulator;
-
     public MoreOptionsEditor() {
         int availableHeight = FullWindow.AVAILABLE_HEIGHT - 100;
-
+        
         List<AbstractTab> tabs = new ArrayList<>();
         tabs.add(world(availableHeight));
         tabs.add(settlement(availableHeight));
@@ -71,61 +70,70 @@ public class MoreOptionsEditor extends GuiSection {
         return JsonUi.builder(PATHS.RACE().init)
             .templates(jsonUiTemplate -> {
                 jsonUiTemplate.checkbox("PLAYABLE");
+                jsonUiTemplate.dropDown("SPRITE_FILE", GameResources.getRaces());
+                jsonUiTemplate.text("ICON_SMALL");
+                jsonUiTemplate.text("ICON_BIG");
 
+                jsonUiTemplate.header("PROPERTIES");
                 jsonUiTemplate.slider("PROPERTIES.HEIGHT", 0, 200);
                 jsonUiTemplate.slider("PROPERTIES.WIDTH", 5, 15);
                 jsonUiTemplate.slider("PROPERTIES.ADULT_AT_DAY", 0, 100);
                 jsonUiTemplate.checkbox("PROPERTIES.CORPSE_DECAY");
                 jsonUiTemplate.checkbox("PROPERTIES.SLEEPS");
-                jsonUiTemplate.separator();
 
+                jsonUiTemplate.header("BEHAVIOUR");
                 jsonUiTemplate.sliderD("BEHAVIOUR.SKINNY_DIPS", 0, 100);
                 jsonUiTemplate.sliderD("BEHAVIOUR.USES_BENCH", 0, 100);
-                jsonUiTemplate.separator();
 
+                jsonUiTemplate.header("PREFERRED");
                 jsonUiTemplate.selectS("PREFERRED.FOOD", GameResources.getEdibles());
                 jsonUiTemplate.selectS("PREFERRED.DRINK", GameResources.getDrinkables());
-                jsonUiTemplate.separator();
 
+                jsonUiTemplate.header("PREFERRED.STRUCTURE");
                 Wildcard.from(GameResources.getStructures()).forEach(s -> {
                     jsonUiTemplate.sliderD("PREFERRED.STRUCTURE." + s, 0, 100);
                 });
-                jsonUiTemplate.separator();
-
+                jsonUiTemplate.header("PREFERRED.ROAD");
                 Wildcard.from(GameResources.getFloors()).forEach(s -> {
                     jsonUiTemplate.sliderD("PREFERRED.ROAD." + s, 0, 100);
                 });
-                jsonUiTemplate.separator();
-
+                jsonUiTemplate.header("PREFERRED.WORK");
                 Wildcard.from(GameResources.getRooms()).forEach(s -> {
                     jsonUiTemplate.sliderD("PREFERRED.WORK." + s, 0, 100);
                 });
-                jsonUiTemplate.separator();
-
+                jsonUiTemplate.header("PREFERRED.OTHER_RACES");
                 Wildcard.from(GameResources.getRaces()).forEach(s -> {
                     jsonUiTemplate.sliderD("PREFERRED.OTHER_RACES." + s, 0, 100);
                 });
-                jsonUiTemplate.separator();
-
+                jsonUiTemplate.header("PREFERRED.OTHER_RACES_REVERSE");
                 Wildcard.from(GameResources.getRaces()).forEach(s -> {
                     jsonUiTemplate.sliderD("PREFERRED.OTHER_RACES_REVERSE." + s, 0, 100);
                 });
-                jsonUiTemplate.separator();
-
-                Wildcard.from(GameResources.getTraits()).forEach(s -> {
+                jsonUiTemplate.header("PREFERRED.TRAITS");
+                Wildcard.from(GameResources.getRaceTraits()).forEach(s -> {
                     jsonUiTemplate.sliderD("PREFERRED.TRAITS." + s, 0, 100);
                 });
-                jsonUiTemplate.separator();
 
+                jsonUiTemplate.header("MILITARY_EQUIPMENT_EFFICIENCY");
+                Wildcard.from(GameResources.getEquipBattle()).forEach(s -> {
+                    jsonUiTemplate.slider("MILITARY_EQUIPMENT_EFFICIENCY." + s, 0, 100);
+                });
+                jsonUiTemplate.header("MILITARY_SUPPLY_USE");
+                Wildcard.from(GameResources.getArmySupplies()).forEach(s -> {
+                    jsonUiTemplate.slider("MILITARY_SUPPLY_USE." + s, 0, 100);
+                });
+
+                jsonUiTemplate.header("RESOURCE");
                 Wildcard.from(GameResources.getResources()).forEach(s -> {
                     jsonUiTemplate.slider("RESOURCE." + s, 0, 100);
                 });
-                jsonUiTemplate.separator();
 
+                jsonUiTemplate.header("RESOURCE_GROOMING");
                 Wildcard.from(GameResources.getResources()).forEach(s -> {
                     jsonUiTemplate.slider("RESOURCE_GROOMING." + s, 0, 100);
                 });
-                jsonUiTemplate.separator();
+
+                JsonUITemplates.stats(jsonUiTemplate);
             }).build().folder(availableHeight);
     }
 
@@ -163,24 +171,295 @@ public class MoreOptionsEditor extends GuiSection {
     private static MultiTab<SimpleTab> rooms(int availableHeight) {
         return JsonUi.builder(PATHS.INIT().getFolder("room"))
             .templates( "WORKSHOP_", jsonUiTemplate -> {
-                jsonUiTemplate.color("MINI_COLOR");
-                jsonUiTemplate.selectS("RESOURCES", GameResources.getResources());
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 2);
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .templates( "WELL_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 3);
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "UNIVERSITY_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                jsonUiTemplate.sliderD("LEARNING_SPEED", 0, 100);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.room(jsonUiTemplate);
+            })
+            .templates( "TOMB_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.dropDown("MONUMENT", GameResources.getMonuments());
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.standing(jsonUiTemplate);
+                JsonUITemplates.room(jsonUiTemplate);
+            })
+            .templates( "TEMPLE_", jsonUiTemplate -> {
+                JsonUITemplates.roomHead(jsonUiTemplate);
+                jsonUiTemplate.dropDown("SACRIFICE_TYPE", GameResources.getRaces());
+                jsonUiTemplate.sliderD("SACRIFICE_TIME", 0, 100);
+                jsonUiTemplate.dropDown("RELIGION", GameResources.getReligions());
                 jsonUiTemplate.dropDown("FLOOR", GameResources.getFloors());
-                jsonUiTemplate.sliderD("WORK.SHIFT_OFFSET", 0, 100);
-                jsonUiTemplate.sliderD("WORK.FULFILLMENT", 0, 100);
-                jsonUiTemplate.sliderD("WORK.ACCIDENTS_PER_YEAR", 0, 100, 4);
+                jsonUiTemplate.dropDown("FLOOR_PATH", GameResources.getFloors());
+                jsonUiTemplate.separator();
 
-                GameResources.getResources().forEach(s -> {
-                    jsonUiTemplate.sliderD("INDUSTRY.IN." + s, 0, 1000);
-                });
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "TAVERN_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                jsonUiTemplate.separator();
 
-                GameResources.getResources().forEach(s -> {
-                    jsonUiTemplate.sliderD("INDUSTRY.OUT." + s, 0, 1000);
-                });
+                JsonUITemplates.upgrades(jsonUiTemplate, 2);
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "STAGE_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.separator();
 
-                jsonUiTemplate.sliderD("ENVIRONMENT_EMI._NOISE.VALUE", 0, 100);
-                jsonUiTemplate.sliderD("ENVIRONMENT_EMI._NOISE.RADIUS", 0, 100);
-            }).build().folder(availableHeight);
+                JsonUITemplates.upgrades(jsonUiTemplate, 2);
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "SPEAKER_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "SHRINE_", jsonUiTemplate -> {
+                JsonUITemplates.roomHead(jsonUiTemplate);
+                jsonUiTemplate.dropDown("RELIGION", GameResources.getReligions());
+                jsonUiTemplate.selectS("FLOOR", GameResources.getFloors());
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 3);
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "RESTHOME_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.room(jsonUiTemplate);
+            })
+            .templates( "REFINER_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 3);
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .templates( "POOL_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconS(jsonUiTemplate);
+                jsonUiTemplate.color("WATER_COLOR");
+                jsonUiTemplate.sliderD("WATER_DEPTH", 0, 100);
+                jsonUiTemplate.checkbox("CLEARS_GRASS");
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.room(jsonUiTemplate);
+            })
+            .templates( "PLEASURE_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                jsonUiTemplate.dropDown("FLOOR2", GameResources.getFloors());
+                jsonUiTemplate.color("COLOR_PIXEL_BAS");
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 3);
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "PHYSICIAN_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "PASTURE_", jsonUiTemplate -> {
+                JsonUITemplates.roomHead(jsonUiTemplate);
+                jsonUiTemplate.dropDown("FLOOR", GameResources.getFloors());
+                jsonUiTemplate.dropDown("FENCE", GameResources.getFences());
+                jsonUiTemplate.dropDown("ANIMAL", GameResources.getAnimals());
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .templates( "ORCHARD_", jsonUiTemplate -> {
+                JsonUITemplates.roomHead(jsonUiTemplate);
+                jsonUiTemplate.dropDown("FLOOR", GameResources.getFloors());
+                jsonUiTemplate.checkbox("INDOORS");
+                jsonUiTemplate.dropDown("EXTRA_RESOURCE", GameResources.getResources());
+                jsonUiTemplate.slider("EXTRA_AMOUNT", 0, 256);
+                jsonUiTemplate.slider("DAYS_TILL_GROWTH", 0, 256);
+                jsonUiTemplate.sliderD("RIPE_AT_PART_OF_YEAR", 0, 100);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .templates( "NURSERY_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.dropDown("RACE", GameResources.getRaces());
+                jsonUiTemplate.slider("INCUBATION_DAYS", 0, 256);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .templates( "MONUMENT_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.checkbox("SOLID");
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.standing(jsonUiTemplate);
+                JsonUITemplates.room(jsonUiTemplate);
+            })
+            .templates( "MINE_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.dropDown("MINABLE", GameResources.getMinables());
+                jsonUiTemplate.text("SPRITE");
+                jsonUiTemplate.slider("YEILD_WORKER_DAILY", 0, 1000);
+                jsonUiTemplate.slider("DEGRADE_RATE", 0, 100);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 3);
+                JsonUITemplates.standing(jsonUiTemplate);
+                JsonUITemplates.room(jsonUiTemplate);
+            })
+            .templates( "MARKET_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 2);
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "LIBRARY_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                JsonUITemplates.admin(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 2);
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .templates("LAVATORY_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 2);
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "LABORATORY_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                JsonUITemplates.admin(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 3);
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .templates( "HUNTER_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.slider("MAX_EMPLOYED", 1, 10000);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .templates( "GRAVEYARD_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.standing(jsonUiTemplate);
+                JsonUITemplates.room(jsonUiTemplate);
+            })
+            .templates( "GATEHOUSE_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+            })
+            .templates( "FISHERY_", jsonUiTemplate -> {
+                JsonUITemplates.roomHead(jsonUiTemplate);
+                jsonUiTemplate.slider("DEGRADE_RATE", 0, 100);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 2);
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .templates( "FARM_", jsonUiTemplate -> {
+                JsonUITemplates.roomHead(jsonUiTemplate);
+                jsonUiTemplate.dropDown("GROWABLE", GameResources.getGrowables());
+                jsonUiTemplate.checkbox("INDOORS");
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .templates( "EATERY_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 2);
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "CANTEEN_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.industryServiceRoom(jsonUiTemplate);
+            })
+            .templates( "BATH_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.color("WATER_COLOR");
+                jsonUiTemplate.sliderD("WATER_OPACITY", 0, 100);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.industryServiceRoom(jsonUiTemplate);
+            })
+            .templates( "BARRACKS_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                jsonUiTemplate.sliderD("RACE_PREFERENCE", 0, 100);
+                jsonUiTemplate.slider("FULL_TRAINING_IN_DAYS", 0, 1000);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 3);
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "BARBER_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
+                jsonUiTemplate.sliderD("WORK_TIME_IN_DAYS", 0, 100);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "ARTILLERY_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.text("SOUND_WORK");
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.projectile(jsonUiTemplate);
+            })
+            .templates( "ARENAG_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "ARENA_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.upgrades(jsonUiTemplate, 2);
+                JsonUITemplates.serviceRoom(jsonUiTemplate);
+            })
+            .templates( "ARCHERY_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                jsonUiTemplate.slider("TRAINING.FULL_TRAINING_IN_DAYS", 0, 1000);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.room(jsonUiTemplate);
+            })
+            .templates( "ADMIN_", jsonUiTemplate -> {
+                JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
+                JsonUITemplates.admin(jsonUiTemplate);
+                jsonUiTemplate.separator();
+
+                JsonUITemplates.industryRoom(jsonUiTemplate);
+            })
+            .build().folder(availableHeight);
     }
 
     private static MultiTab<SimpleTab> settlement(int availableHeight) {

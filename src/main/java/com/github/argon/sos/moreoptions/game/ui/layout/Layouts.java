@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.Rec;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
+import snake2d.util.sprite.text.StringInputSprite;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +22,7 @@ public class Layouts {
     public static GuiSection vertical(
         Collection<? extends RENDEROBJ> elements,
         @Nullable GuiSection section,
+        @Nullable StringInputSprite search,
         int margin,
         int maxHeight,
         boolean center
@@ -34,6 +36,7 @@ public class Layouts {
             ScrollRows scrollRows = ScrollRows.builder()
                 .height(maxHeight)
                 .rows(elements)
+                .search(search)
                 .slide(true)
                 .build();
 

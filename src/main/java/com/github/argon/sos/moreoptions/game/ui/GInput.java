@@ -30,7 +30,7 @@ public class GInput extends CLICKABLE.ClickableAbs {
 		
 		int w = input.font().maxCWidth*input.text().spaceLeft() + 12;
 
-		if (w > inputWidth) {
+		if (inputWidth > 0 && w > inputWidth) {
 			w = inputWidth;
 		}
 

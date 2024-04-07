@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,10 +27,27 @@ public class JsonArray implements JsonElement {
         return elements.toString();
     }
 
+    public int size() {
+        return elements.size();
+    }
+
     public <T extends JsonElement> List<T> as(Class<T> clazz) {
         return elements.stream()
             .filter(clazz::isInstance)
             .map(clazz::cast)
             .collect(Collectors.toList());
+    }
+    public static JsonArray of(Collection<JsonElement> elements) {
+        return of(elements.toArray(new JsonElement[0]));
+    }
+
+    public static JsonArray of(JsonElement... elements) {
+        JsonArray jsonArray = new JsonArray();
+
+        for (JsonElement jsonElement : elements) {
+            jsonArray.add(jsonElement);
+        }
+
+        return jsonArray;
     }
 }

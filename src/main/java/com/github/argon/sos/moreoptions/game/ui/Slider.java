@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.util.TextFormatUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
+import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.MathUtil;
 import init.D;
 import init.sprite.SPRITES;
@@ -34,6 +35,7 @@ import util.gui.slider.GSliderInt;
 import util.info.GFORMAT;
 import view.main.VIEW;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
@@ -78,7 +80,9 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
     @Setter
     private boolean lockScroll = false;
 
-    private TreeMap<Integer, COLOR> thresholds;
+    private final TreeMap<Integer, COLOR> thresholds;
+
+    private final List<Integer> allowedValues;
 
     static {
         D.ts(GSliderInt.class);
@@ -111,11 +115,11 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
         boolean input,
         boolean lockScroll,
         ValueDisplay valueDisplay,
-        Map<Integer, COLOR> thresholds
+        Map<Integer, COLOR> thresholds,
+        List<Integer> allowedValues
     ){
-        resolution = (resolution > 0) ? resolution : 1;
-
-        this.resolution = resolution;
+        this.allowedValues = (allowedValues != null) ? allowedValues : Lists.of();
+        this.resolution = (resolution > 0) ? resolution : 1;
         this.resolutionMulti = MathUtil.precisionMulti(this.resolution);
         min = resolutionMulti * min;
         max = resolutionMulti * max;
@@ -181,8 +185,29 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
 
                         if (clickSpeed > 10)
                             clickSpeed = 10;
-                        in.inc(-(int)clickSpeed * step);
+                        List<Integer> allowedValues = Slider.this.allowedValues;
+                        if (allowedValues.isEmpty()) {
+                            in.inc(-(int)(clickSpeed * step));
+                        } else {
+                            int i = allowedValues.indexOf(in.get());
+                            int index;
 
+                            if (i < 0) {
+                                int currentValue = in.get();
+                                int nearest = MathUtil.nearest(currentValue, allowedValues);
+                                i = allowedValues.indexOf(nearest);
+                            }
+
+                            if (i >= 0) {
+                                index = i - Math.max(1, (int) (clickSpeed / 2));
+                                if (index < 0) {
+                                    index = 0;
+                                }
+
+                                Integer value = allowedValues.get(index);
+                                in.set(value);
+                            }
+                        }
                     }else {
                         clickSpeed = 0;
                     }
@@ -210,7 +235,29 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
                         clickSpeed += ds*2;
                         if (clickSpeed > 10)
                             clickSpeed = 10;
-                        in.inc((int)clickSpeed * step);
+                        List<Integer> allowedValues = Slider.this.allowedValues;
+                        if (allowedValues.isEmpty()) {
+                            in.inc((int)clickSpeed * step);
+                        } else {
+                            int i = allowedValues.indexOf(in.get());
+                            int index;
+
+                            if (i < 0) {
+                                int currentValue = in.get();
+                                int nearest = MathUtil.nearest(currentValue, allowedValues);
+                                i = allowedValues.indexOf(nearest);
+                            }
+
+                            if (i >= 0) {
+                                index = i + Math.max(1, (int) (clickSpeed / 2));
+                                if (index > allowedValues.size() - 1) {
+                                    index = allowedValues.size() - 1;
+                                }
+
+                                Integer value = allowedValues.get(index);
+                                in.set(value);
+                            }
+                        }
 
                     }else {
                         clickSpeed = 0;
@@ -320,6 +367,10 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
                 if (rest != 0) {
                     value = value - rest;
                 }
+                List<Integer> allowedValues = Slider.this.allowedValues;
+                if (!allowedValues.isEmpty()) {
+                    value = MathUtil.nearest(value, allowedValues);
+                }
 
                 in.set(value);
             }catch(Exception e) {
@@ -422,7 +473,10 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
             if (rest != 0) {
                 intValue = intValue - rest;
             }
-
+            List<Integer> allowedValues = Slider.this.allowedValues;
+            if (!allowedValues.isEmpty()) {
+                intValue = MathUtil.nearest(intValue, allowedValues);
+            }
             in.set(intValue);
         }
 

@@ -3,7 +3,7 @@ package menu.json;
 import com.github.argon.sos.moreoptions.json.element.JsonLong;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 
-public class JsonMapper {
+public class JsonUiMapper {
     public static Integer[] colors(JsonObject json) {
         Integer[] colors = new Integer[3];
 

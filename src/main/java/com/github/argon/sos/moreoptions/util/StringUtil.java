@@ -23,12 +23,7 @@ public class StringUtil {
             .collect(Collectors.joining(", ", "{", "}"));
     }
 
-    @Nullable
-    public static String removeTrailing(@Nullable final String str, String toRemove) {
-        if (str == null) {
-            return null;
-        }
-
+    public static String removeTrailing(final String str, String toRemove) {
         if (!str.endsWith(toRemove)) {
             return str;
         }

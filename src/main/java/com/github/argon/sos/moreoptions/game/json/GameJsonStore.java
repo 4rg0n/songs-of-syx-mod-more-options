@@ -1,8 +1,9 @@
-package com.github.argon.sos.moreoptions.game;
+package com.github.argon.sos.moreoptions.game.json;
 
 import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonWriter;
+import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.phase.Phases;
@@ -12,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameJsonStore implements Phases {
@@ -29,7 +27,7 @@ public class GameJsonStore implements Phases {
     private final FileService fileService;
 
     private final Map<Path, String> jsonContent = new HashMap<>();
-
+    private final Map<Path, Json> jsonObjects = new HashMap<>();
     private final Set<Path> filePaths = new HashSet<>();
 
     @Override
@@ -47,8 +45,8 @@ public class GameJsonStore implements Phases {
     }
 
     @Nullable
-    public Json getJson(Path filePath) {
-        String content = get(filePath);
+    public snake2d.util.file.Json getJsonE(Path filePath) {
+        String content = getContent(filePath);
 
         if (content == null) {
             content = load(filePath);
@@ -59,8 +57,34 @@ public class GameJsonStore implements Phases {
         }
 
         try {
-            Json json = new Json(content, JsonWriter.jsonE());
+            snake2d.util.file.Json json = new snake2d.util.file.Json(content, filePath.toString(), false);
             return json;
+        } catch (Exception e) {
+            log.info("Could not parse jsonE content from %s", filePath, e);
+            return null;
+        }
+    }
+
+    public Optional<JsonObject> getJsonObject(Path filePath) {
+        return Optional.ofNullable(getJson(filePath))
+            .map(Json::getRoot);
+    }
+
+    @Nullable
+    public Json getJson(Path filePath) {
+
+        String content = getContent(filePath);
+
+        if (content == null) {
+            content = load(filePath);
+
+            if (content == null) {
+                return null;
+            }
+        }
+
+        try {
+            return jsonObjects.get(filePath);
         } catch (Exception e) {
             log.info("Could not parse json content from %s", filePath, e);
             return null;
@@ -70,10 +94,11 @@ public class GameJsonStore implements Phases {
     public void put(Path filePath, String content) {
         log.debug("Adding json content for %s", filePath);
         jsonContent.put(filePath, content);
+        jsonObjects.put(filePath, new Json(content, JsonWriter.jsonE()));
     }
 
     @Nullable
-    public String get(Path filePath) {
+    public String getContent(Path filePath) {
         return jsonContent.get(filePath);
     }
 

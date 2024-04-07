@@ -10,10 +10,7 @@ import snake2d.util.color.COLOR;
 import snake2d.util.datatypes.DIR;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -21,16 +18,16 @@ public class MultiTab<Tab extends AbstractTab> extends AbstractTab {
 
     private final Tabulator<String, Tab, Void> tabulator;
 
-    public MultiTab(PATH path, Function<Path, Tab> tabSupplier) {
-        this(path, tabSupplier, null);
+    public MultiTab(PATH path, int availableHeight, Function<Path, Tab> tabSupplier) {
+        this(path, availableHeight, tabSupplier, null);
     }
 
-    public MultiTab(PATH path, List<Tab> tabs) {
-        this(path, null, tabs);
+    public MultiTab(PATH path,  int availableHeight, List<Tab> tabs) {
+        this(path, availableHeight, null, tabs);
     }
 
-    private MultiTab(PATH path, @Nullable Function<Path, Tab> tabSupplier, @Nullable List<Tab> tabs) {
-        super(path, 0, false);
+    private MultiTab(PATH path, int availableHeight, @Nullable Function<Path, Tab> tabSupplier, @Nullable List<Tab> tabs) {
+        super(path, availableHeight, false);
 
         if (tabs == null) {
             Objects.requireNonNull(path);
@@ -50,14 +47,20 @@ public class MultiTab<Tab extends AbstractTab> extends AbstractTab {
 
         Map<String, Button> buttons = tabs.stream().collect(Collectors.toMap(
             AbstractTab::getTitle,
-            tab -> new Button(tab.getTitle(), tab.getPath().toString())
+            tab -> {
+                Button button = new Button(tab.getTitle(), tab.getPath().toString());
+                button.searchTerm(tab.getTitle());
+                return button;
+            }
         ));
 
         tabulator = Tabulator.<String, Tab, Void>builder()
-            .tabs(tabMap)
+            .tabs(new TreeMap<>(tabMap)) // sort by title
             .tabMenu(Toggle.<String>builder()
                 .menu(ButtonMenu.<String>builder()
-                    .buttons(buttons)
+                    .displaySearch(true)
+                    .maxHeight(availableHeight)
+                    .buttons(new TreeMap<>(buttons)) // sort by title
                     .sameWidth(true)
                     .buttonColor(COLOR.WHITE25)
                     .build())

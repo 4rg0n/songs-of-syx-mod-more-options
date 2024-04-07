@@ -10,7 +10,10 @@ import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.nio.file.Path;
@@ -25,13 +28,25 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
     private final Value initValue;
     @Nullable
     private final String key;
-    private final JsonObject config;
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    private JsonObject config;
     private final Path path;
-    private final boolean optional;
-    private final Function<Element, Value> valueSupplier;
-    private final BiAction<Element, Value> valueConsumer;
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    private boolean optional;
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    private Function<Element, Value> valueSupplier;
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    private BiAction<Element, Value> valueConsumer;
     @Nullable
     private final JsonPath jsonPath;
+    @Nullable
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    private String description;
 
     @Builder
     public JsonUiElement(
@@ -39,6 +54,7 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
         Value defaultValue,
         Value initValue,
         @Nullable String key,
+        @Nullable String description,
         JsonObject config,
         Path path,
         boolean optional,
@@ -49,6 +65,7 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
         this.defaultValue = defaultValue;
         this.initValue = (initValue != null) ? initValue : defaultValue;
         this.key = key;
+        this.description = description;
         this.config = config;
         this.path = path;
         this.optional = optional;
@@ -74,28 +91,37 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
                 (key == null) ? "NO_KEY" : key
             ));
         }
+        RENDEROBJ spacer = new Spacer(SPRITES.icons().m.DIM, SPRITES.icons().m.DIM);
 
         ColumnRow.ColumnRowBuilder<Void> columnRowBuilder = ColumnRow.builder();
         if (key != null) {
-            RENDEROBJ optionalIcon = new Spacer(SPRITES.icons().m.DIM, SPRITES.icons().m.DIM);
-
-            if (optional) {
-                optionalIcon = UiUtil.toGuiSection(SPRITES.icons().m.questionmark)
-                    .hoverInfoSet("Not present in vanilla game config.");
-            }
-
             columnRowBuilder
                 .searchTerm(key)
                 .column(Label.builder()
                     .name(key)
                     .font(UI.FONT().S)
-                    .build())
-                .column(optionalIcon);
+                    .build());
+
+            if (optional) {
+                GuiSection optionalIcon = UiUtil.toGuiSection(SPRITES.icons().m.cancel)
+                    .hoverInfoSet("Not present in vanilla game config.");
+                columnRowBuilder.column(optionalIcon);
+            } else {
+                columnRowBuilder.column(spacer);
+            }
         } else {
             columnRowBuilder.isHeader(true);
         }
 
         columnRowBuilder.column(element);
+
+        if (description != null) {
+            GuiSection descriptionIcon = UiUtil.toGuiSection(SPRITES.icons().m.questionmark)
+                .hoverInfoSet(description);
+            columnRowBuilder.column(descriptionIcon);
+        } else {
+            columnRowBuilder.column(spacer);
+        }
 
         if (key != null) {
             Button resetButton = new Button(SPRITES.icons().m.arrow_left);
@@ -115,7 +141,7 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
     ) {
         JsonUiElementBuilder<Value, Element> builder = JsonUiElement.builder();
         JsonPath jsonPath = JsonPath.get(key);
-        Value value = jsonPath.extract(config, clazz)
+        Value value = jsonPath.get(config, clazz)
             .orElseGet(() -> {
                 builder.optional(true);
                 return defaultValue;

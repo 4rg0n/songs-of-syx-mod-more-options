@@ -1,9 +1,12 @@
 package menu.json;
 
-import com.github.argon.sos.moreoptions.game.GameJsonStore;
+import com.github.argon.sos.moreoptions.game.json.GameJsonStore;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.element.*;
+import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.moreoptions.util.StringUtil;
+import menu.IconView;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.nio.file.Path;
@@ -13,12 +16,25 @@ import java.util.stream.Collectors;
 public class JsonUiTemplate {
     private final JsonUiElementFactory factory;
 
+
     private JsonUiTemplate(Path path, JsonObject jsonConfig) {
-       this.factory = new JsonUiElementFactory(path, jsonConfig);
+        this.factory = new JsonUiElementFactory(path, jsonConfig);
     }
 
     public void reset() {
         factory.reset();
+    }
+
+    public JsonUiElement<JsonString, IconView> icon(String key) {
+        return factory.icon(key, JsonString.of(""));
+    }
+
+    public JsonUiElement<JsonObject, IconView> iconO(String key) {
+        return factory.icon(key, new JsonObject());
+    }
+
+    public JsonUiElement<JsonString, GInput> text(String key) {
+        return factory.text(key, JsonString.of(""));
     }
 
     public JsonUiElement<JsonArray, Select<String>> selectS(String key, List<String> options) {
@@ -33,16 +49,28 @@ public class JsonUiTemplate {
         return factory.checkbox(key, JsonBoolean.of(false));
     }
 
+    public JsonUiElement<JsonLong, Slider> slider(String key, List<Integer> allowedValues) {
+        int min = 0;
+        int max = 1;
+
+        if (!allowedValues.isEmpty()) {
+            min = allowedValues.get(0);
+            max = allowedValues.get(allowedValues.size() - 1);
+        }
+
+        return factory.slider(key, min, max, 1, allowedValues, JsonLong.of(0L));
+    }
+
     public JsonUiElement<JsonLong, Slider> slider(String key, int min, int max, int step) {
-        return factory.slider(key, min, max, step, JsonLong.of(0L));
+        return factory.slider(key, min, max, step, Lists.of(), JsonLong.of(0L));
     }
 
     public JsonUiElement<JsonLong, Slider> slider(String key, int min, int max) {
-        return factory.slider(key, min, max, 1, JsonLong.of(0L));
+        return factory.slider(key, min, max, 1, Lists.of(),JsonLong.of(0L));
     }
 
     public JsonUiElement<JsonLong, Slider> slider(String key, int min, int max, JsonLong defaultValue) {
-        return factory.slider(key, min, max, 1, defaultValue);
+        return factory.slider(key, min, max, 1, Lists.of(), defaultValue);
     }
 
     public JsonUiElement<JsonDouble, Slider> sliderD(String key, int min, int max) {
@@ -69,10 +97,18 @@ public class JsonUiTemplate {
         return factory.separator();
     }
 
+    public JsonUiElement<JsonNull, RENDEROBJ> header(String text) {
+        return factory.header(text);
+    }
+
     public List<ColumnRow<Void>> toColumnRows() {
         return factory.getAll().values().stream()
             .map(JsonUiElement::toColumnRow)
             .collect(Collectors.toList());
+    }
+
+    public String getName() {
+        return StringUtil.removeTrailing(getPath().getFileName().toString(), ".txt");
     }
 
     public String getFileName() {

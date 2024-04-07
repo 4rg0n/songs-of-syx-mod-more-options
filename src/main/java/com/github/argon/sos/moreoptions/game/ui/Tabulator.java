@@ -50,12 +50,12 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
      */
     @Builder
     public Tabulator(Map<Key, Element> tabs, Toggle<Key> tabMenu, int margin, boolean center, boolean resetOnToggle, @Nullable DIR direction) {
+        assert !tabs.isEmpty() : "tabs must not be empty";
         this.tabs = tabs;
         this.resetOnToggle = resetOnToggle;
-
-        // first element in map
-        activeTab = tabs.values().iterator().next();
         this.menu = tabMenu;
+        // activate first element in map
+        tab(tabs.keySet().iterator().next());
         tabMenu.clickAction(this::tab);
 
         // guarantee same width

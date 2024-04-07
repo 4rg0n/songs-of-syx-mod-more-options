@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.game.ui;
 import com.github.argon.sos.moreoptions.game.Action;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layouts;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
+import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
+import snake2d.util.sprite.text.StringInputSprite;
+import util.gui.misc.GInput;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -30,7 +33,7 @@ public class ButtonMenu<Key> extends GuiSection {
     private Action<Key> clickAction;
 
     public ButtonMenu(Map<Key, Button> buttons) {
-        this(buttons, false, true, false, false, false, 0, 0, 0, 0, 0, COLOR.WHITE35, null, null);
+        this(buttons, false, true, false, false, false, false, 0, 0, 0, 0, 0, COLOR.WHITE35, null, null, null);
     }
 
     @Builder
@@ -41,6 +44,7 @@ public class ButtonMenu<Key> extends GuiSection {
         boolean notClickable,
         boolean notHoverable,
         boolean spacer,
+        boolean displaySearch,
         int margin,
         int width,
         int minWidth,
@@ -48,8 +52,10 @@ public class ButtonMenu<Key> extends GuiSection {
         int maxHeight,
         @Nullable COLOR buttonColor,
         @Nullable List<Integer> widths,
-        @Nullable Action<Key> clickAction
+        @Nullable Action<Key> clickAction,
+        @Nullable StringInputSprite search
     ) {
+        assert !buttons.isEmpty() : "buttons must not be empty";
         this.buttons = buttons;
         this.clickAction = clickAction;
 
@@ -67,6 +73,18 @@ public class ButtonMenu<Key> extends GuiSection {
             }
         }
 
+        int searchBarHeight = 0;
+        int searchBarMargin = 0;
+        if (displaySearch) {
+            if (search == null) {
+                search = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
+            }
+            GInput searchField = new GInput(search);
+            addDownC(0, searchField);
+            searchBarHeight = searchField.body().height();
+            searchBarMargin = 10;
+        }
+
         List<? extends RENDEROBJ> renders = Layouts.align(buttons.values(), horizontal, margin, spacer, sameWidth, width, minWidth, widths);
         maxWidth = (maxWidth > 0) ? maxWidth : 300;
         maxHeight = (maxHeight > 0) ? maxHeight : 300;
@@ -80,7 +98,8 @@ public class ButtonMenu<Key> extends GuiSection {
                 Layouts.horizontal(renders, this, margin, maxWidth, maxHeight, true);
             }
         } else {
-            Layouts.vertical(renders, this, margin, maxHeight, true);
+            GuiSection vertical = Layouts.vertical(renders, null, search, margin, maxHeight - searchBarHeight, true);
+            addDownC(searchBarMargin, vertical);
         }
     }
 

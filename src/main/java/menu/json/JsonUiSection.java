@@ -55,7 +55,7 @@ public class JsonUiSection {
             .map((JsonUiTemplate jsonUiTemplate) -> file(jsonUiTemplate, height))
             .collect(Collectors.toList());
 
-        return new MultiTab<>(folderPath, tabs);
+        return new MultiTab<>(folderPath, height, tabs);
     }
 
     private SimpleTab file(JsonUiTemplate jsonUiTemplate, int height) {

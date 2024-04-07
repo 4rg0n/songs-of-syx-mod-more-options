@@ -11,9 +11,9 @@ import snake2d.util.misc.ACTION;
 import snake2d.util.sprite.SPRITE;
 import util.gui.misc.GButt;
 
-public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> extends GButt.ButtPanel implements Valuable<Value, Element> {
+public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> extends GButt.ButtPanel implements Valuable<Value, Element>, Searchable<Value, Boolean> {
     @Getter
-    private COLOR color = COLOR.WHITE35;
+    protected COLOR color = COLOR.WHITE35;
 
     private boolean markSuccess = false;
     private boolean markError = false;
@@ -23,17 +23,23 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
 
     @Getter
     @Setter
-    private Value value;
+    protected Value value;
 
     @Setter
     @Accessors(fluent = true)
-    private boolean clickable = true;
+    protected boolean clickable = true;
 
     @Setter
     @Accessors(fluent = true)
-    private boolean hoverable = true;
+    protected boolean hoverable = true;
     @Nullable
-    private ACTION renAction;
+    protected ACTION renAction;
+
+    @Nullable
+    @Setter
+    @Getter
+    @Accessors(fluent = true)
+    protected Value searchTerm;
 
     public AbstractButton(CharSequence label) {
         this(label, COLOR.WHITE35, null);
@@ -148,4 +154,13 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
     }
 
     protected abstract Element element();
+
+    @Override
+    public Boolean search(Value s) {
+        if (searchTerm == null) {
+            return true;
+        }
+
+        return searchTerm.equals(s);
+    }
 }
