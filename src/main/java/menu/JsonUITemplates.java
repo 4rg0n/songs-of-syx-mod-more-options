@@ -228,7 +228,7 @@ public class JsonUITemplates {
 
     private static void items(JsonUiTemplate jsonUiTemplate, int itemsAmount, int resourcesAmount, int statsAmount) {
         jsonUiTemplate.header("ITEMS");
-        jsonUiTemplate.selectS("RESOURCES", GameResources.getResources());
+        jsonUiTemplate.selectS("RESOURCES", GameResources.getResources(), true);
 
         for (int i = 0; i < itemsAmount; i++) {
             for (int j = 0; j < resourcesAmount; j++) {

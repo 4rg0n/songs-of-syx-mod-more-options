@@ -118,13 +118,13 @@ public class JsonUiElementFactory implements Resettable<Void>{
         return slider;
     }
     
-    public JsonUiElement<JsonArray, Select<String>> selectS(String key, List<String> options, JsonArray defaultValue) {
+    public JsonUiElement<JsonArray, Select<String>> selectS(String key, List<String> options, JsonArray defaultValue, int maxSelect, boolean maxSelected) {
         JsonUiElement<JsonArray, Select<String>> select = JsonUiElement.from(
                 key,
                 config,
                 defaultValue,
                 JsonArray.class,
-                value -> JsonUiFactory.selectS(value, options))
+                value -> JsonUiFactory.selectS(value, options, maxSelect, maxSelected))
             .path(path)
             .valueSupplier(stringSelect -> {
                 JsonArray jsonValue = new JsonArray();

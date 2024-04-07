@@ -115,14 +115,6 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
 
         columnRowBuilder.column(element);
 
-        if (description != null) {
-            GuiSection descriptionIcon = UiUtil.toGuiSection(SPRITES.icons().m.questionmark)
-                .hoverInfoSet(description);
-            columnRowBuilder.column(descriptionIcon);
-        } else {
-            columnRowBuilder.column(spacer);
-        }
-
         if (key != null) {
             Button resetButton = new Button(SPRITES.icons().m.arrow_left);
             resetButton.clickActionSet(this::reset);

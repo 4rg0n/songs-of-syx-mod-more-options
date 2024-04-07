@@ -42,12 +42,15 @@ public class Select<Key> extends GuiSection implements
     @Getter
     private final ButtonMenu<Key> menu;
 
+    private final int maxSelect;
+
     private final List<Key> initActiveKeys;
 
     @Builder
-    public Select(ButtonMenu<Key> menu, List<Key> selectedKeys) {
+    public Select(ButtonMenu<Key> menu, List<Key> selectedKeys, int maxSelect) {
         this.selectedKeys = new ArrayList<>(menu.getButtons().size());
         this.menu = menu;
+        this.maxSelect = maxSelect;
         if (selectedKeys == null) {
             selectedKeys = Lists.of();
         }
@@ -88,6 +91,10 @@ public class Select<Key> extends GuiSection implements
 
     public void select(@Nullable Key key) {
         if (key == null) {
+            return;
+        }
+
+        if (maxSelect > 0 && selectedKeys.size() >= maxSelect) {
             return;
         }
 

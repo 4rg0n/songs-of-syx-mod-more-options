@@ -37,8 +37,16 @@ public class JsonUiTemplate {
         return factory.text(key, JsonString.of(""));
     }
 
+    public JsonUiElement<JsonArray, Select<String>> selectS(String key, List<String> options, boolean maxSelected) {
+        return factory.selectS(key, options, new JsonArray(), 0, maxSelected);
+    }
+
+    public JsonUiElement<JsonArray, Select<String>> selectS(String key, List<String> options, int maxSelect) {
+        return factory.selectS(key, options, new JsonArray(), maxSelect, false);
+    }
+
     public JsonUiElement<JsonArray, Select<String>> selectS(String key, List<String> options) {
-        return factory.selectS(key, options, new JsonArray());
+        return factory.selectS(key, options, new JsonArray(), 0, false);
     }
 
     public JsonUiElement<JsonString, DropDown<String>> dropDown(String key, List<String> options) {

@@ -59,7 +59,7 @@ public class JsonUiFactory {
     }
 
     @Nullable
-    public static Select<String> selectS(JsonElement jsonElement, List<String> options) {
+    public static Select<String> selectS(JsonElement jsonElement, List<String> options, int maxSelect, boolean maxSelected) {
         List<String> selected = new ArrayList<>();
         if (jsonElement instanceof JsonArray) {
             selected.addAll(((JsonArray) jsonElement).getElements().stream()
@@ -70,8 +70,11 @@ public class JsonUiFactory {
         }
 
         ButtonMenu.ButtonMenuBuilder<String> menuBuilder = ButtonMenu.builder();
-        options.forEach(name -> menuBuilder
-            .button(name, new Button(name)));
+        options.forEach(name -> menuBuilder.button(name, new Button(name)));
+
+        if (maxSelected) {
+            maxSelect = selected.size();
+        }
 
         return Select.<String>builder()
             .menu(menuBuilder
@@ -79,6 +82,7 @@ public class JsonUiFactory {
                 .maxWidth(600)
                 .sameWidth(true)
                 .build())
+            .maxSelect(maxSelect)
             .selectedKeys(selected)
             .build();
     }
