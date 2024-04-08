@@ -27,7 +27,7 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
     private final Value defaultValue;
     private final Value initValue;
     @Nullable
-    private final String key;
+    private final String jsonPath;
     @Setter
     @Accessors(chain = true, fluent = true)
     private JsonObject config;
@@ -42,7 +42,7 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
     @Accessors(chain = true, fluent = true)
     private BiAction<Element, Value> valueConsumer;
     @Nullable
-    private final JsonPath jsonPath;
+    private final JsonPath jsonPathObject;
     @Nullable
     @Setter
     @Accessors(chain = true, fluent = true)
@@ -53,7 +53,7 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
         Element element,
         Value defaultValue,
         Value initValue,
-        @Nullable String key,
+        @Nullable String jsonPath,
         @Nullable String description,
         JsonObject config,
         Path path,
@@ -64,14 +64,14 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
         this.element = element;
         this.defaultValue = defaultValue;
         this.initValue = (initValue != null) ? initValue : defaultValue;
-        this.key = key;
+        this.jsonPath = jsonPath;
         this.description = description;
         this.config = config;
         this.path = path;
         this.optional = optional;
         this.valueSupplier = (valueSupplier != null) ? valueSupplier : o -> null;
         this.valueConsumer = (valueConsumer != null) ? valueConsumer : (o1, o2) -> {};
-        this.jsonPath = (key != null) ? JsonPath.get(key) : null;
+        this.jsonPathObject = (jsonPath != null) ? JsonPath.get(jsonPath) : null;
     }
 
     @Override
@@ -88,17 +88,17 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
         if (element == null) {
             throw new JsonUiException(String.format("Element for %s %s is null.",
                 path.toString(),
-                (key == null) ? "NO_KEY" : key
+                (jsonPath == null) ? "NO_KEY" : jsonPath
             ));
         }
         RENDEROBJ spacer = new Spacer(SPRITES.icons().m.DIM, SPRITES.icons().m.DIM);
 
         ColumnRow.ColumnRowBuilder<Void> columnRowBuilder = ColumnRow.builder();
-        if (key != null) {
+        if (jsonPath != null) {
             columnRowBuilder
-                .searchTerm(key)
+                .searchTerm(jsonPath)
                 .column(Label.builder()
-                    .name(key)
+                    .name(jsonPath)
                     .font(UI.FONT().S)
                     .build());
 
@@ -115,9 +115,10 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
 
         columnRowBuilder.column(element);
 
-        if (key != null) {
+        if (jsonPath != null) {
             Button resetButton = new Button(SPRITES.icons().m.arrow_left);
             resetButton.clickActionSet(this::reset);
+            resetButton.hoverInfoSet("Reset " + jsonPath);
             columnRowBuilder.column(resetButton);
         }
 
@@ -125,15 +126,15 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
     }
 
     public static <Value extends JsonElement, Element extends RENDEROBJ> JsonUiElementBuilder<Value, Element> from(
-        String key,
+        String jsonPath,
         JsonObject config,
         Value defaultValue,
         Class<Value> clazz,
         Function<Value, Element> elementProvider
     ) {
         JsonUiElementBuilder<Value, Element> builder = JsonUiElement.builder();
-        JsonPath jsonPath = JsonPath.get(key);
-        Value value = jsonPath.get(config, clazz)
+        JsonPath jsonPathO = JsonPath.get(jsonPath);
+        Value value = jsonPathO.get(config, clazz)
             .orElseGet(() -> {
                 builder.optional(true);
                 return defaultValue;
@@ -142,17 +143,17 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
         return builder
             .config(config)
             .element(elementProvider.apply(value))
-            .key(key)
+            .jsonPath(jsonPath)
             .initValue(value)
             .defaultValue(defaultValue);
     }
     public void writeInto(JsonObject config) {
-        if (jsonPath == null) {
+        if (jsonPathObject == null) {
             return;
         }
 
         JsonElement jsonValue = getValue();
-        jsonPath.put(config, jsonValue);
+        jsonPathObject.put(config, jsonValue);
     }
 
     @Override

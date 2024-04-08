@@ -232,7 +232,7 @@ public class JsonUiElementFactory implements Resettable<Void>{
 
     public JsonObject getValue() {
         getAll().values().stream()
-            .filter(element -> element.getKey() != null)
+            .filter(element -> element.getJsonPath() != null)
             .forEach(element -> element.writeInto(config));
         return config;
     }

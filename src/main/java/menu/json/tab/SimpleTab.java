@@ -22,6 +22,7 @@ public class SimpleTab extends AbstractTab {
         StringInputSprite search = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
         GInput searchField = new GInput(search);
         Button resetButton = new Button(SPRITES.icons().m.arrow_left);
+        resetButton.hoverInfoSet("Reset " + getTitle());
         resetButton.clickActionSet(jsonUiTemplate::reset);
 
         Table<Void> table = JsonUiSection.builder()

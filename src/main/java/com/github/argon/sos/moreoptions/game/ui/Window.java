@@ -8,6 +8,7 @@ import init.C;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 import snake2d.MButt;
 import snake2d.Renderer;
 import snake2d.util.datatypes.COORDINATE;
@@ -60,7 +61,7 @@ public class Window<Section extends GuiSection> extends Interrupter implements
     @Accessors(fluent = true, chain = false)
     protected BiAction<Window<Section>, Float> renderAction = (o1, o2) -> {};
 
-    public Window(String title, Section section) {
+    public Window(@Nullable String title, Section section) {
         this.section = section;
         this.panel = new GPanel();
         this.panel.setTitle(title);

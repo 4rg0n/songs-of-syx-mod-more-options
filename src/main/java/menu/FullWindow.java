@@ -89,7 +89,7 @@ public class FullWindow<Section extends GuiSection> extends ColorBox implements
 
     @Override
     public boolean back(Menu menu) {
-        menu.switchScreen(menu.sandbox);
+        menu.switchScreen(menu.main);
         return true;
     }
 }
