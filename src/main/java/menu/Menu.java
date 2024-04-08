@@ -51,7 +51,7 @@ public class Menu extends CORE_STATE{
 	private final Intro intro;
 	private static boolean hasIntro = true;
 	private float fadeLight = 0;
-	private final IMouseMessage mouseMessage;
+	private final MouseMessage mouseMessage;
 
 	private double hoverTimer = 0;
 	
@@ -89,7 +89,7 @@ public class Menu extends CORE_STATE{
 		bounds.centerIn(C.DIM());
 		GUI.init(bounds);
 
-		this.mouseMessage = new IMouseMessage();
+		this.mouseMessage = new MouseMessage();
 		moreOptions = UiFactory.moreOptionsFullsWindow();
 
 		bg = new Background(this, bounds);

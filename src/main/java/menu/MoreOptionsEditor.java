@@ -11,6 +11,7 @@ import init.paths.PATHS;
 import lombok.Getter;
 import menu.json.JsonUi;
 import menu.json.tab.AbstractTab;
+import menu.json.JsonUITemplates;
 import menu.json.tab.MultiTab;
 import menu.json.tab.SimpleTab;
 import snake2d.util.color.COLOR;
@@ -86,8 +87,8 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.sliderD("BEHAVIOUR.USES_BENCH", 0, 100);
 
                 jsonUiTemplate.header("PREFERRED");
-                jsonUiTemplate.selectS("PREFERRED.FOOD", GameResources.getEdibles());
-                jsonUiTemplate.selectS("PREFERRED.DRINK", GameResources.getDrinkables());
+                jsonUiTemplate.multiDropDown("PREFERRED.FOOD", GameResources.getEdibles());
+                jsonUiTemplate.multiDropDown("PREFERRED.DRINK", GameResources.getDrinkables());
 
                 jsonUiTemplate.header("PREFERRED.STRUCTURE");
                 Wildcard.from(GameResources.getStructures()).forEach(s -> {
@@ -233,7 +234,7 @@ public class MoreOptionsEditor extends GuiSection {
             .templates( "SHRINE_", jsonUiTemplate -> {
                 JsonUITemplates.roomHead(jsonUiTemplate);
                 jsonUiTemplate.dropDown("RELIGION", GameResources.getReligions());
-                jsonUiTemplate.selectS("FLOOR", GameResources.getFloors());
+                jsonUiTemplate.multiDropDown("FLOOR", GameResources.getFloors());
                 jsonUiTemplate.separator();
 
                 JsonUITemplates.upgrades(jsonUiTemplate, 3);

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// todo maxHeight / width and make scrollable
 public class ButtonMenu<Key> extends GuiSection {
 
     @Getter
@@ -66,9 +65,9 @@ public class ButtonMenu<Key> extends GuiSection {
             newButton.clickable(!notClickable);
             newButton.hoverable(!notHoverable);
             if (buttonColor != null) newButton.bg(buttonColor);
-            if (clickAction != null) {
+            if (this.clickAction != null) {
                 newButton.clickActionSet(() -> {
-                    clickAction.accept(key);
+                    if (this.clickAction != null) this.clickAction.accept(key);
                 });
             }
         }

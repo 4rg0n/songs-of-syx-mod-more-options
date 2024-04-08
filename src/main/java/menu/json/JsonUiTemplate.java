@@ -49,6 +49,30 @@ public class JsonUiTemplate {
         return factory.selectS(key, options, new JsonArray(), 0, false);
     }
 
+    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String key, List<String> options, boolean maxSelected) {
+        return factory.multiDropDown(key, key, options, new JsonArray(), 0, maxSelected);
+    }
+
+    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String key, String title, List<String> options, boolean maxSelected) {
+        return factory.multiDropDown(key, title, options, new JsonArray(), 0, maxSelected);
+    }
+
+    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String key, List<String> options, int maxSelect) {
+        return factory.multiDropDown(key, key, options, new JsonArray(), maxSelect, false);
+    }
+
+    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String key, String title, List<String> options, int maxSelect) {
+        return factory.multiDropDown(key, title, options, new JsonArray(), maxSelect, false);
+    }
+
+    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String key, List<String> options) {
+        return factory.multiDropDown(key, key, options, new JsonArray(), 0, false);
+    }
+
+    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String key, String title, List<String> options) {
+        return factory.multiDropDown(key, title, options, new JsonArray(), 0, false);
+    }
+
     public JsonUiElement<JsonString, DropDown<String>> dropDown(String key, List<String> options) {
         return factory.dropDown(key, options, new JsonString(""));
     }

@@ -163,6 +163,35 @@ public class JsonUiElementFactory implements Resettable<Void>{
         return select;
     }
 
+    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String key, String title, List<String> options, JsonArray defaultValue, int maxSelect, boolean maxSelected) {
+        JsonUiElement<JsonArray, MultiDropDown<String>> select = JsonUiElement.from(
+                key,
+                config,
+                defaultValue,
+                JsonArray.class,
+                value -> JsonUiFactory.multiDropDown(title, value, options, maxSelect, maxSelected))
+            .path(path)
+            .valueSupplier(stringSelect -> {
+                JsonArray jsonValue = new JsonArray();
+                stringSelect.getValue().forEach(entry -> {
+                    jsonValue.add(new JsonString(entry));
+                });
+
+                return jsonValue;
+            })
+            .valueConsumer((stringSelect, jsonArray) -> {
+                List<String> selected = jsonArray.as(JsonString.class).stream()
+                    .map(JsonString::getValue)
+                    .collect(Collectors.toList());
+
+                stringSelect.setValue(selected);
+            })
+            .build();
+
+        all.put(key, select);
+        return select;
+    }
+
     public JsonUiElement<JsonBoolean, Checkbox> checkbox(String key, JsonBoolean defaultValue) {
         JsonUiElement<JsonBoolean, Checkbox> checkbox = JsonUiElement.from(
                 key,

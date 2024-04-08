@@ -39,6 +39,11 @@ public class Select<Key> extends GuiSection implements
     @Setter
     @Accessors(fluent = true, chain = false)
     private Action<Select<Key>> refreshAction = o -> {};
+
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private Action<Key> toggleAction = o -> {};
+
     @Getter
     private final ButtonMenu<Key> menu;
 
@@ -83,6 +88,7 @@ public class Select<Key> extends GuiSection implements
         } else {
             select(key);
         }
+        toggleAction.accept(key);
     }
 
     public void clearSelection() {
@@ -142,5 +148,13 @@ public class Select<Key> extends GuiSection implements
     @Override
     public void refresh() {
         refreshAction.accept(this);
+    }
+
+    public Integer getMaxSelect() {
+        if (maxSelect > 0) {
+            return maxSelect;
+        }
+
+        return menu.getButtons().size();
     }
 }

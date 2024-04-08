@@ -30,12 +30,21 @@ public class JsonUiFactory {
             .clickAction(dropDown -> Ui.getInstance().popup().show(dropDown.getMenu(), dropDown))
             .closeAction(dropDown -> Ui.getInstance().popup().close())
             .menu(Toggle.<String>builder()
+                .highlight(true)
                 .menu(ButtonMenu.<String>builder()
                     .sameWidth(true)
                     .buttons(options)
                     .build())
                 .aktiveKey(jsonString.getValue())
                 .build())
+            .build();
+    }
+
+    public static MultiDropDown<String> multiDropDown(String title, JsonArray jsonArray, List<String> options, int maxSelect, boolean maxSelected) {
+        return MultiDropDown.<String>builder()
+            .label(title)
+            .clickAction(dropDown -> Ui.getInstance().popup().show(dropDown.getSelect(), dropDown))
+            .select(selectS(jsonArray,options, maxSelect, maxSelected))
             .build();
     }
 
@@ -46,16 +55,6 @@ public class JsonUiFactory {
     public static ColorPicker color(JsonObject json) {
         Integer[] colors = JsonUiMapper.colors(json);
         return new ColorPicker(colors);
-    }
-
-    public static Slider slider(JsonElement jsonElement, int min, int max, int step) {
-        if (jsonElement instanceof JsonDouble) {
-            return slider((JsonDouble) jsonElement, min, max, step);
-        } else if (jsonElement instanceof JsonLong) {
-            return slider((JsonLong) jsonElement, min, max, step);
-        } else {
-            throw new RuntimeException("TODO");
-        }
     }
 
     @Nullable

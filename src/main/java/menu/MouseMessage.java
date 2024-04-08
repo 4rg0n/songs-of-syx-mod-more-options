@@ -6,7 +6,7 @@ import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.datatypes.Coo;
 import util.gui.misc.GBox;
 
-public class IMouseMessage {
+public class MouseMessage {
 	
 	private final GBox timed = new GBox();
 	private final GBox normal = new GBox();

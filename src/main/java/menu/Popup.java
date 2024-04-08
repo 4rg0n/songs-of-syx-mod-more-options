@@ -1,6 +1,7 @@
 package menu;
 
 import init.C;
+import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.clickable.CLICKABLE;
@@ -14,6 +15,7 @@ public class Popup extends GuiSection {
 
 	protected final GPanel panel = new GPanel();
 
+	@Nullable
 	private CLICKABLE trigger;
 
 	public Popup() {
@@ -37,13 +39,17 @@ public class Popup extends GuiSection {
 
 	public void close() {
 		visableSet(false);
+		if (trigger != null) {
+			trigger.selectedSet(false);
+			trigger = null;
+		}
 	}
 
 	@Override
 	public void render(SPRITE_RENDERER r, float ds) {
 		super.render(r, ds);
 		if (trigger != null) {
-			trigger.selectTmp();
+			trigger.selectedSet(true);
 		}
 	}
 

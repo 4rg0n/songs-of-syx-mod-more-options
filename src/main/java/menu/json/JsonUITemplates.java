@@ -1,4 +1,4 @@
-package menu;
+package menu.json;
 
 import com.github.argon.sos.moreoptions.game.GameResources;
 import com.github.argon.sos.moreoptions.game.json.GameJsonService;
@@ -7,7 +7,6 @@ import com.github.argon.sos.moreoptions.util.Lists;
 import init.paths.PATHS;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import menu.json.JsonUiTemplate;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonUITemplates {
@@ -21,7 +20,7 @@ public class JsonUITemplates {
 
     public static void roomHeadIconSFloors(JsonUiTemplate jsonUiTemplate) {
         roomHeadIconS(jsonUiTemplate);
-        jsonUiTemplate.selectS("FLOOR", GameResources.getFloors());
+        jsonUiTemplate.multiDropDown("FLOOR", GameResources.getFloors());
     }
 
     public static void roomHeadIconSFloor(JsonUiTemplate jsonUiTemplate) {
@@ -228,7 +227,7 @@ public class JsonUITemplates {
 
     private static void items(JsonUiTemplate jsonUiTemplate, int itemsAmount, int resourcesAmount, int statsAmount) {
         jsonUiTemplate.header("ITEMS");
-        jsonUiTemplate.selectS("RESOURCES", GameResources.getResources(), true);
+        jsonUiTemplate.multiDropDown("RESOURCES", GameResources.getResources(), true);
 
         for (int i = 0; i < itemsAmount; i++) {
             for (int j = 0; j < resourcesAmount; j++) {

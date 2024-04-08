@@ -97,6 +97,15 @@ class ScMain implements SC{
 			}
 		});
 		current.addDown(8, text);
+
+		text = getNavButt("More Options");
+		text.clickActionSet(new ACTION() {
+			@Override
+			public void exe() {
+				menu.switchScreen(menu.moreOptions);
+			}
+		});
+		current.addDown(8, text);
 		
 		text = getNavButt(ScCredits.¤¤name);
 		text.clickActionSet(new ACTION() {
@@ -158,15 +167,6 @@ class ScMain implements SC{
 		});
 		current.addDown(8, text);
 
-		text = getNavButt("More Options");
-		text.clickActionSet(new ACTION() {
-			@Override
-			public void exe() {
-				menu.switchScreen(menu.moreOptions);
-			}
-		});
-		current.addDown(8, text);
-		
 		text = getNavButt(¤¤scenario);
 		text.clickActionSet(new ACTION() {
 			@Override
