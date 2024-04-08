@@ -75,4 +75,38 @@ class JsonPathTest {
             .extracting(JsonLong::getValue)
             .isEqualTo(3L);
     }
+
+    @Test
+    void putArrayNested() {
+        JsonPath jsonPath = JsonPath.get("TEST.TEST[1].TEST.TEST[2]");
+
+        JsonArray jsonArray = new JsonArray();
+        jsonArray.add(JsonLong.of(1));
+        jsonArray.add(JsonLong.of(2));
+        jsonArray.add(JsonLong.of(3));
+
+        JsonObject json = JsonObject.of(Maps.of("TEST",
+            JsonArray.of(
+                JsonObject.of(Maps.of("TEST", jsonArray)),
+                JsonObject.of(Maps.of("TEST", jsonArray)),
+                JsonObject.of(Maps.of("TEST", jsonArray))
+            )));
+
+        jsonPath.put(json, JsonLong.of(1337));
+        Assertions.assertThat(jsonArray.get(2)).isEqualTo(JsonLong.of(1337));
+    }
+
+    @Test
+    void putSimple() {
+        JsonPath jsonPath = JsonPath.get("TEST.TEST");
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.put("TEST", JsonBoolean.of(true));
+
+        JsonObject json = new JsonObject();
+        json.put("TEST", jsonObject);
+
+        jsonPath.put(json, JsonBoolean.of(false));
+        Assertions.assertThat(jsonObject.get("TEST")).isEqualTo(JsonBoolean.of(false));
+    }
 }

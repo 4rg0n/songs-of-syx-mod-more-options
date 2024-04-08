@@ -57,14 +57,14 @@ public class JsonPath {
     }
 
     public <T extends JsonElement> Optional<T> get(JsonObject json, Class<T> clazz) {
-        return get(json, clazz, 0);
+        return get(json, clazz, 0, getKeys().size());
     }
 
-    private  <T extends JsonElement> Optional<T> get(JsonObject json, Class<T> clazz, int pos) {
+    private  <T extends JsonElement> Optional<T> get(JsonObject json, Class<T> clazz, int pos, int maxPos) {
         JsonElement element = null;
         List<String> jsonKeys = getKeys();
 
-        for (int i = pos, size = jsonKeys.size(); i < size; i++) {
+        for (int i = pos; i < maxPos; i++) {
             String key = jsonKeys.get(i);
             Integer index = parseIndex(key);
             String arrayKey = parseKey(key);
@@ -88,9 +88,9 @@ public class JsonPath {
                     element = (jsonArray).get(index);
                 }
 
-                if (i < size - 1 && element instanceof JsonObject) {
+                if (i < maxPos - 1 && element instanceof JsonObject) {
                     json = (JsonObject) element;
-                    element = get(json, clazz, i).orElse(null);
+                    element = get(json, clazz, i, maxPos).orElse(null);
                 }
             }
         }
@@ -116,9 +116,17 @@ public class JsonPath {
     }
 
     public void put(JsonObject json, JsonElement value) {
-        get(json).ifPresent(jsonElement -> {
-            if (jsonElement instanceof JsonObject) {
-                ((JsonObject) jsonElement).put(last(), value);
+        get(json, JsonElement.class, 0, getKeys().size() - 1).ifPresent(jsonElement -> {
+            if (jsonElement instanceof JsonArray) {
+                String lastKey = last();
+                Integer index = parseIndex(lastKey);
+
+                if (index != null) {
+                    ((JsonArray) jsonElement).add(index, value);
+                }
+            } else if (jsonElement instanceof JsonObject) {
+                String lastKey = last();
+                ((JsonObject) jsonElement).put(lastKey, value);
             }
         });
     }

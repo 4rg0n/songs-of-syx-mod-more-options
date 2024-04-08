@@ -22,6 +22,10 @@ public class JsonArray implements JsonElement {
         return elements.add(jsonElement);
     }
 
+    public void add(int index, JsonElement element) {
+        elements.add(index, element);
+    }
+
     @Override
     public String toString() {
         return elements.toString();
