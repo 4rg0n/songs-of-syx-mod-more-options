@@ -2,8 +2,8 @@ package com.github.argon.sos.moreoptions.config.domain;
 
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.json.Json;
-import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.JsonWriter;
+import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.moreoptions.log.Level;
 import lombok.*;
 
@@ -35,7 +35,7 @@ public class MoreOptionsV4Config {
     private RacesConfig races = RacesConfig.builder().build();
 
     public String toJson() {
-        Json json = new Json(JsonMapper.mapObject(this), JsonWriter.jsonE());
-        return json.toString();
+        Json json = new Json(JsonMapper.mapObject(this), JsonWriters.jsonEPretty());
+        return json.write();
     }
 }

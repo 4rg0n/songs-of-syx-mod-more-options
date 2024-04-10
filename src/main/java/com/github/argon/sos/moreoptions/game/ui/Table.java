@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.util.Lists;
 import init.sprite.UI.UI;
@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Builder
-public class Table<Value> extends GuiSection implements
+public class Table<Value> extends Section implements
     Searchable<String, List<String>>,
     Selectable<Integer, ColumnRow<Value>>,
-    Valuable<Map<String, Value>, Table<Value>> {
+    Valuable<Map<String, Value>> {
 
     private final Map<String, ColumnRow<Value>> rows;
     @Builder.Default
@@ -130,9 +130,9 @@ public class Table<Value> extends GuiSection implements
 
             // unselect other rows on click?
             if (selectable && !multiselect) {
-                columnRow.clickAction(clickedRow -> {
+                columnRow.clickAction(() -> {
                     rows.stream()
-                        .filter(row -> !row.equals(clickedRow))
+                        .filter(row -> !row.equals(columnRow))
                         // unselect
                         .forEach(notClickedRow -> notClickedRow.selectedSet(false));
                 });
@@ -204,6 +204,13 @@ public class Table<Value> extends GuiSection implements
         }
     }
 
+    public void display(String key, boolean display) {
+        rows.computeIfPresent(key, (s, row) -> {
+            row.visableSet(display);
+            return row;
+        });
+    }
+
     @Override
     public List<String> search(String term) {
         return rows.values().stream()
@@ -232,7 +239,7 @@ public class Table<Value> extends GuiSection implements
         rows.forEach((key, row) -> row.doubleClickAction(doubleClickAction));
     }
 
-    public void clickAction(Action<ColumnRow<Value>> clickAction) {
+    public void clickAction(VoidAction clickAction) {
         rows.forEach((key, row) -> row.clickAction(clickAction));
     }
 

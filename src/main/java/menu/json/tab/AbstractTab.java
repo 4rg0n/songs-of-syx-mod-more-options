@@ -40,6 +40,6 @@ public abstract class AbstractTab extends GuiSection {
 
     public String getTitle() {
         String parent = path.getParent().getFileName().toString();
-        return parent + "/" + path.getFileName().toString();
+        return  parent + "/" + path.getFileName().toString();
     }
 }

@@ -1,7 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
-import com.github.argon.sos.moreoptions.game.BiAction;
+import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.C;
@@ -25,10 +24,10 @@ import view.main.VIEW;
  * @param <Section> ui element to display
  */
 public class Window<Section extends GuiSection> extends Interrupter implements
-    Showable<Window<Section>>,
-    Hideable<Window<Section>>,
-    Refreshable<Window<Section>>,
-    Renderable<Window<Section>>
+    Showable,
+    Hideable,
+    Refreshable,
+    Renderable
 {
     private final static Logger log = Loggers.getLogger(Window.class);
 

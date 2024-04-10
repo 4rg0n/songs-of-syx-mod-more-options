@@ -6,7 +6,6 @@ import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.element.*;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.StringUtil;
-import menu.IconView;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.nio.file.Path;
@@ -16,21 +15,20 @@ import java.util.stream.Collectors;
 public class JsonUiTemplate {
     private final JsonUiElementFactory factory;
 
-
     private JsonUiTemplate(Path path, JsonObject jsonConfig) {
         this.factory = new JsonUiElementFactory(path, jsonConfig);
+    }
+
+    public JsonObject getConfig() {
+        return factory.getConfig();
     }
 
     public void reset() {
         factory.reset();
     }
 
-    public JsonUiElement<JsonString, IconView> icon(String key) {
-        return factory.icon(key, JsonString.of(""));
-    }
-
-    public JsonUiElement<JsonObject, IconView> iconO(String key) {
-        return factory.icon(key, new JsonObject());
+    public List<JsonUiElement<?, ?>> getOrphans() {
+        return factory.getOrphans();
     }
 
     public JsonUiElement<JsonString, GInput> text(String key) {

@@ -2,9 +2,10 @@ package com.github.argon.sos.moreoptions.config.json;
 
 import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.json.Json;
-import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.JsonWriter;
+import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriter;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.AccessLevel;
@@ -22,7 +23,7 @@ import java.util.Optional;
 public class JsonService {
     @Getter(lazy = true)
     private final static JsonService instance = new JsonService(
-        JsonWriter.jsonE(),
+        JsonWriters.jsonEPretty(),
         FileService.getInstance()
     );
     private final static Logger log = Loggers.getLogger(JsonService.class);
@@ -59,7 +60,7 @@ public class JsonService {
         }
 
         try {
-            return fileService.write(path, json.toString());
+            return fileService.write(path, json.write());
         } catch (Exception e) {
             log.warn("Could not write json from object %s into %s",
                 path, object.getClass().getSimpleName(), e);

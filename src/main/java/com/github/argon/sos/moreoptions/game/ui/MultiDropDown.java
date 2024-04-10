@@ -1,6 +1,8 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Action;
+import com.github.argon.sos.moreoptions.game.action.Refreshable;
+import com.github.argon.sos.moreoptions.game.action.VoidAction;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import init.sprite.UI.UI;
 import lombok.Builder;
@@ -15,7 +17,9 @@ import util.gui.misc.GText;
 import java.util.List;
 
 
-public class MultiDropDown<Key> extends AbstractButton<List<Key>, MultiDropDown<Key>> implements Refreshable<MultiDropDown<Key>> {
+public class MultiDropDown<Key> extends AbstractButton<List<Key>, MultiDropDown<Key>>
+    implements Refreshable
+{
     @Getter
     private final Select<Key> select;
 
@@ -23,7 +27,7 @@ public class MultiDropDown<Key> extends AbstractButton<List<Key>, MultiDropDown<
 
     @Setter
     @Accessors(fluent = true, chain = false)
-    private Action<MultiDropDown<Key>> refreshAction = o -> {};
+    private VoidAction refreshAction = () -> {};
 
     @Builder
     public MultiDropDown(
@@ -81,6 +85,6 @@ public class MultiDropDown<Key> extends AbstractButton<List<Key>, MultiDropDown<
         String title = this.label + " " +  getAmount();
         GText gText = new GText(UI.FONT().M, title);
         replaceLabel(gText, DIR.C);
-        refreshAction.accept(this);
+        refreshAction.accept();
     }
 }

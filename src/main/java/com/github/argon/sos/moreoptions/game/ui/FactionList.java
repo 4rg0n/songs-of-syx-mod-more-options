@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Action;
 import game.faction.FACTIONS;
 import game.faction.Faction;
 import game.faction.diplomacy.DIP;

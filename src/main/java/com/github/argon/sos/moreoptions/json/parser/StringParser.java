@@ -12,6 +12,10 @@ public class StringParser extends Parser {
         String value = json.getNextValue('\"');
         // skip "
         json.indexMove();
-        return new JsonString(value);
+        return parseString(value);
+    }
+
+    public static JsonString parseString(String value) {
+        return JsonString.of(value);
     }
 }

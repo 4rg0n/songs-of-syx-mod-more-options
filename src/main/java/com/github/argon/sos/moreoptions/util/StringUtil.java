@@ -8,6 +8,8 @@ import snake2d.util.sprite.text.Str;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -135,8 +137,8 @@ public class StringUtil {
         return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
 
-    public static @Nullable String unwrap(@Nullable String string, char prefix, char suffix) {
-        if (string == null || string.isEmpty()) {
+    public static String unwrap(String string, char prefix, char suffix) {
+        if (string.isEmpty()) {
             return string;
         }
 
@@ -157,12 +159,12 @@ public class StringUtil {
         return "\"" + string + "\"";
     }
 
-    public static @Nullable String unquote(@Nullable String string) {
+    public static String unquote(String string) {
         return unwrap(string, '"', '"');
     }
 
-    public static @Nullable String toScreamingSnakeCase(@Nullable String text) {
-        if (text == null || text.isEmpty()) {
+    public static String toScreamingSnakeCase(String text) {
+        if (text.isEmpty()) {
             return text;
         }
 
@@ -184,5 +186,83 @@ public class StringUtil {
         }
 
         return tmp.toString();
+    }
+
+    public static String removeFileExtension(String fileName) {
+        String[] parts = fileName.split("\\.");
+
+        if (parts.length < 2) {
+            return fileName;
+        }
+
+        return Arrays.stream(parts, 0, parts.length - 2)
+            .collect(Collectors.joining("."));
+    }
+
+    public static String removeBeginning(String resource, String startString) {
+        if (resource.startsWith(startString)) {
+            return resource.substring(startString.length());
+        }
+
+        return resource;
+    }
+
+    public static String wrap(String string, String wrap) {
+        return wrap + string + wrap;
+    }
+
+    private static Pattern numericPattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+    private static Pattern integerPattern = Pattern.compile("-?\\d+?");
+
+    public static int countLines(@Nullable String string) {
+        if (string == null) {
+            return 0;
+        }
+
+        Matcher m = Pattern.compile("\r\n|\r|\n").matcher(string);
+        int lines = 1;
+        while (m.find())
+        {
+            lines ++;
+        }
+
+        return lines;
+    }
+
+    public static int countChar(@Nullable String string, char character) {
+        int count = 0;
+        if (string == null) {
+            return count;
+        }
+
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) == character) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public static boolean isNumeric(@Nullable String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        return numericPattern.matcher(strNum).matches();
+    }
+
+    public static boolean isNumeric(@Nullable Character character) {
+        if (character == null) {
+            return false;
+        }
+
+        return isInteger(character.toString());
+    }
+
+    public static boolean isInteger(@Nullable String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        return integerPattern.matcher(strNum).matches();
     }
 }

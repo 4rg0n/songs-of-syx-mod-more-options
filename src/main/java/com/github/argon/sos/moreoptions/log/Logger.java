@@ -4,12 +4,11 @@ package com.github.argon.sos.moreoptions.log;
 import com.github.argon.sos.moreoptions.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
-import snake2d.LOG;
 
 import java.time.LocalTime;
 import java.util.Arrays;
 
-import static com.github.argon.sos.moreoptions.util.StringUtil.*;
+import static com.github.argon.sos.moreoptions.util.StringUtil.stringifyValues;
 
 /**
  * For printing messages with different log {@link Level}s to the system output
@@ -88,18 +87,18 @@ public class Logger {
 
     private void doLog(String levelText, String formatMsg, Object[] args) {
         try {
-            LOG.ln(String.format(LOG_MSG_FORMAT,
+            System.out.printf(LOG_MSG_FORMAT,
                 PREFIX_MOD,
                 timestamp(),
                 displayName,
                 levelText,
-                String.format(formatMsg, StringUtil.stringifyValues(args))));
+                String.format(formatMsg, StringUtil.stringifyValues(args)));
         } catch (Exception e) {
             System.err.println("PROBLEM WHILE LOGGING!");
             System.err.println("formatMsg: " + formatMsg);
             System.err.println(StringUtil.toString(StringUtil.stringifyValues(args)));
 
-            e.printStackTrace();
+            printException(e);
         }
     }
 
@@ -121,25 +120,25 @@ public class Logger {
 
     private void doLogErr(String msgPrefix, String formatMsg, Object[] args) {
         try {
-            LOG.err((String.format(LOG_MSG_FORMAT,
+            System.err.printf(LOG_MSG_FORMAT,
                 PREFIX_MOD,
                 timestamp(),
                 displayName,
                 msgPrefix,
-                String.format(formatMsg, stringifyValues(args)))));
+                String.format(formatMsg, stringifyValues(args)));
         } catch (Exception e) {
             System.err.println("PROBLEM WHILE LOGGING!");
             System.err.println("formatMsg: " + formatMsg);
             System.err.println(StringUtil.toString(StringUtil.stringifyValues(args)));
 
-            e.printStackTrace();
+            printException(e);
         }
     }
 
     private void printException(Throwable ex) {
-        System.out.println("\n" + ex.getMessage());
-        ex.printStackTrace(System.out);
-        System.out.println();
+        System.err.println("\n" + ex.getMessage());
+        ex.printStackTrace(System.err);
+        System.err.println();
     }
 
     private String levelText(Level level) {

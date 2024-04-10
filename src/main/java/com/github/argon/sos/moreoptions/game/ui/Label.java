@@ -1,18 +1,17 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Action;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.gui.GUI_BOX;
-import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.Font;
 import util.gui.misc.GText;
 
 @Builder
-public class Label extends GuiSection {
+public class Label extends Section {
 
     private String name;
     @Builder.Default

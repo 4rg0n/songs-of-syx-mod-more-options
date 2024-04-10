@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.domain.*;
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Action;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;

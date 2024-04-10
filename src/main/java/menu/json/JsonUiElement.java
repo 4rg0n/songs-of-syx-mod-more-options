@@ -1,11 +1,17 @@
 package menu.json;
 
-import com.github.argon.sos.moreoptions.game.BiAction;
+import com.github.argon.sos.moreoptions.game.CacheValue;
+import com.github.argon.sos.moreoptions.game.action.BiAction;
+import com.github.argon.sos.moreoptions.game.action.Resettable;
+import com.github.argon.sos.moreoptions.game.action.Valuable;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.json.JsonPath;
+import com.github.argon.sos.moreoptions.json.element.JsonDouble;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
+import com.github.argon.sos.moreoptions.json.element.JsonLong;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
+import com.github.argon.sos.moreoptions.util.ClassUtil;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;
@@ -21,7 +27,7 @@ import java.util.function.Function;
 
 @Getter
 public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
-    implements Valuable<Value, Element>, Resettable<Element>
+    implements Valuable<Value>, Resettable
 {
     private final Element element;
     private final Value defaultValue;
@@ -34,19 +40,24 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
     private final Path path;
     @Setter
     @Accessors(chain = true, fluent = true)
-    private boolean optional;
+    private boolean orphan;
     @Setter
     @Accessors(chain = true, fluent = true)
-    private Function<Element, Value> valueSupplier;
+    private Function<JsonUiElement<Value, Element>, Value> valueSupplier;
     @Setter
     @Accessors(chain = true, fluent = true)
-    private BiAction<Element, Value> valueConsumer;
+    private BiAction<JsonUiElement<Value, Element>, Value> valueConsumer;
+    @Setter
+    @Accessors(chain = true, fluent = true)
+    private BiAction<JsonUiElement<Value, Element>, Value> valueChangeAction;
     @Nullable
     private final JsonPath jsonPathObject;
     @Nullable
     @Setter
     @Accessors(chain = true, fluent = true)
     private String description;
+
+    private final CacheValue<Value> valueCache;
 
     @Builder
     public JsonUiElement(
@@ -57,9 +68,10 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
         @Nullable String description,
         JsonObject config,
         Path path,
-        boolean optional,
-        Function<Element, Value> valueSupplier,
-        BiAction<Element, Value> valueConsumer
+        boolean orphan,
+        @Nullable Function<JsonUiElement<Value, Element>, Value> valueSupplier,
+        @Nullable BiAction<JsonUiElement<Value, Element>, Value> valueConsumer,
+        @Nullable BiAction<JsonUiElement<Value, Element>, Value> valueChangeAction
     ) {
         this.element = element;
         this.defaultValue = defaultValue;
@@ -68,20 +80,30 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
         this.description = description;
         this.config = config;
         this.path = path;
-        this.optional = optional;
+        this.orphan = orphan;
         this.valueSupplier = (valueSupplier != null) ? valueSupplier : o -> null;
         this.valueConsumer = (valueConsumer != null) ? valueConsumer : (o1, o2) -> {};
+        this.valueChangeAction = (valueChangeAction != null) ? valueChangeAction : (o1, o2) -> {};
         this.jsonPathObject = (jsonPath != null) ? JsonPath.get(jsonPath) : null;
+        this.valueCache = CacheValue.of(500, () -> this.valueSupplier.apply(this));
+    }
+
+    public boolean isDirty() {
+        return !initValue.equals(valueCache.get());
     }
 
     @Override
     public Value getValue() {
-        return valueSupplier.apply(element);
+        return valueSupplier.apply(this);
     }
 
     @Override
     public void setValue(Value value) {
-        valueConsumer.accept(element, value);
+        if (!value.equals(getValue())) {
+            valueChangeAction.accept(this, value);
+        }
+
+        valueConsumer.accept(this, value);
     }
 
     public ColumnRow<Void> toColumnRow() {
@@ -96,19 +118,30 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
         ColumnRow.ColumnRowBuilder<Void> columnRowBuilder = ColumnRow.builder();
         if (jsonPath != null) {
             columnRowBuilder
+                .key(jsonPath)
                 .searchTerm(jsonPath)
                 .column(Label.builder()
                     .name(jsonPath)
                     .font(UI.FONT().S)
                     .build());
 
-            if (optional) {
+            if (orphan) {
                 GuiSection optionalIcon = UiUtil.toGuiSection(SPRITES.icons().m.cancel)
                     .hoverInfoSet("Not present in vanilla game config.");
                 columnRowBuilder.column(optionalIcon);
             } else {
                 columnRowBuilder.column(spacer);
             }
+
+            Section dirtyFlag = UiUtil.toSection(SPRITES.icons().m.workshop);
+            dirtyFlag.hoverInfoSet("Setting has changed.");
+
+            // only show when value has changed
+            dirtyFlag.renderAction(ds -> {
+                dirtyFlag.visableSet(isDirty());
+            });
+
+            columnRowBuilder.column(dirtyFlag);
         } else {
             columnRowBuilder.isHeader(true);
         }
@@ -125,28 +158,6 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
         return columnRowBuilder.build();
     }
 
-    public static <Value extends JsonElement, Element extends RENDEROBJ> JsonUiElementBuilder<Value, Element> from(
-        String jsonPath,
-        JsonObject config,
-        Value defaultValue,
-        Class<Value> clazz,
-        Function<Value, Element> elementProvider
-    ) {
-        JsonUiElementBuilder<Value, Element> builder = JsonUiElement.builder();
-        JsonPath jsonPathO = JsonPath.get(jsonPath);
-        Value value = jsonPathO.get(config, clazz)
-            .orElseGet(() -> {
-                builder.optional(true);
-                return defaultValue;
-            });
-
-        return builder
-            .config(config)
-            .element(elementProvider.apply(value))
-            .jsonPath(jsonPath)
-            .initValue(value)
-            .defaultValue(defaultValue);
-    }
     public void writeInto(JsonObject config) {
         if (jsonPathObject == null) {
             return;
@@ -159,5 +170,43 @@ public class JsonUiElement<Value extends JsonElement, Element extends RENDEROBJ>
     @Override
     public void reset() {
         setValue(initValue);
+    }
+
+    public static <Value extends JsonElement, Element extends RENDEROBJ> JsonUiElementBuilder<Value, Element> from(
+        String jsonPath,
+        JsonObject config,
+        Value defaultValue,
+        Class<Value> clazz,
+        Function<Value, Element> elementProvider
+    ) {
+        JsonUiElementBuilder<Value, Element> builder = JsonUiElement.builder();
+        JsonPath jsonPathO = JsonPath.get(jsonPath);
+        Value value = jsonPathO.get(config)
+            .map(jsonElement -> {
+                    // convert JsonDouble and JsonLong
+                    if (ClassUtil.instanceOf(clazz, JsonDouble.class) && jsonElement instanceof JsonLong) {
+                        return JsonDouble.of((JsonLong) jsonElement);
+                    } else if (ClassUtil.instanceOf(clazz, JsonLong.class) && jsonElement instanceof JsonDouble) {
+                        return JsonLong.of((JsonDouble) jsonElement);
+                    }
+
+                return jsonElement;
+            })
+            .filter(clazz::isInstance)
+            .map(clazz::cast)
+            .orElseGet(() -> {
+                builder.orphan(true);
+                return defaultValue;
+            });
+
+        return builder
+            .config(config)
+            .element(elementProvider.apply(value))
+            .jsonPath(jsonPath)
+            .initValue(value)
+            .defaultValue(defaultValue)
+            .valueChangeAction((element, changedValue) -> {
+                element.writeInto(config);
+            });
     }
 }

@@ -35,7 +35,7 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
     private final Button gameLogsFolderButton;
     @Getter
     private final Button copyWorldSeedButton;
-    private final UISwitcher saveStampView;
+    private final ViewSwitcher saveStampView;
     @Getter
     private final Button copySaveStampButton;
 
@@ -63,7 +63,7 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
             .label(i18n.t("AdvancedTab.dropDown.log.level.name"))
             .description(i18n.t("AdvancedTab.dropDown.log.level.desc"))
             .closeOnSelect(true)
-            .menu(Toggle.<Level>builder()
+            .menu(Switcher.<Level>builder()
                 .menu(UiFactory.buildLogLevelButtonMenu()
                     .sameWidth(true)
                     .build())
@@ -119,7 +119,7 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
                 .build())
             .build();
 
-        this.saveStampView = new UISwitcher(saveStamp(saveStamp), false);
+        this.saveStampView = new ViewSwitcher(saveStamp(saveStamp), false);
         this.copySaveStampButton = new Button(
             i18n.t("AdvancedPanel.button.mod.saveStamp.copy.name"),
             i18n.t("AdvancedPanel.button.mod.saveStamp.copy.desc"));

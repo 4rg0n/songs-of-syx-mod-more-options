@@ -2,7 +2,6 @@ package com.github.argon.sos.moreoptions.ui.tab.metrics;
 
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
 import com.github.argon.sos.moreoptions.config.domain.Range;
-import com.github.argon.sos.moreoptions.game.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
 import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
@@ -12,6 +11,8 @@ import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Sets;
 import init.sprite.UI.UI;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.DIR;
@@ -24,6 +25,7 @@ import util.gui.misc.GTextR;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -33,10 +35,10 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
     private final static I18n i18n = I18n.get(MetricsTab.class);
 
-    private final Toggle<Boolean> onOffToggle;
+    private final Switcher<Boolean> onOffSwitcher;
     private final Slider collectionRate;
     private final Slider exportRate;
-    private final UISwitcher exportFilePathView;
+    private final ViewSwitcher exportFilePathView;
     @Getter
     private final StringInputSprite searchInput;
     private final Map<String, Checkbox> statsCheckboxes = new HashMap<>();
@@ -50,8 +52,11 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
     @Getter
     private final Button exportFolderButton;
     @Getter
-    private final Toggle<Boolean> checkToggle;
-    private BiAction<MetricsConfig, MetricsTab> afterSetValueAction = (o1, o2)  -> {};
+    private final Switcher<Boolean> checkSwitcher;
+
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private Consumer<MetricsConfig> valueConsumer = o -> {};
 
     public MetricsTab(
         String title,
@@ -67,7 +72,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         this.exportFolderPath = exportFolderPath;
 
         // Started / Stopped toggle
-        Toggle<Boolean> toggle = Toggle.<Boolean>builder()
+        Switcher<Boolean> switcher = Switcher.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
                 .button(true, new Button(i18n.t("MetricsTab.toggle.start.name"), i18n.t("MetricsTab.toggle.start.desc")))
                 .button(false, new Button(i18n.t("MetricsTab.toggle.stop.name"), i18n.t("MetricsTab.toggle.stop.desc")))
@@ -82,7 +87,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
                 .name(i18n.t("MetricsTab.toggle.label.name"))
                 .description(i18n.t("MetricsTab.toggle.label.desc"))
                 .build())
-            .column(toggle)
+            .column(switcher)
             .build();
 
         // Collection rate slider
@@ -119,7 +124,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         GuiSection exportFilePathSection = exportFilePath(exportFolderPath.toString(), exportFilePath.getFileName().toString());
 
         // Export file path with folder button
-        this.exportFilePathView = new UISwitcher(exportFilePathSection, false);
+        this.exportFilePathView = new ViewSwitcher(exportFilePathSection, false);
         this.exportFolderButton = new Button(i18n.t("MetricsPanel.button.folder.name"), i18n.t("MetricsPanel.button.folder.desc", exportFolderPath));
         this.copyExportFileButton = new Button(i18n.t("MetricsPanel.button.copy.name"), i18n.t("MetricsPanel.button.copy.desc"));
 
@@ -140,7 +145,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         GuiSection searchBar = new GuiSection();
         this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("MetricsPanel.search.input.name"));
         searchBar.addRightC(0, new GInput(searchInput));
-        this.checkToggle = Toggle.<Boolean>builder()
+        this.checkSwitcher = Switcher.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
                 .button(true, new Button(i18n.t("MetricsPanel.search.check.name"), i18n.t("MetricsPanel.search.check.desc")))
                 .button(false, new Button(i18n.t("MetricsPanel.search.uncheck.name"), i18n.t("MetricsPanel.search.uncheck.desc")))
@@ -148,7 +153,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
                 .build())
             .highlight(false)
             .build();
-        searchBar.addRightC(10, checkToggle);
+        searchBar.addRightC(10, checkSwitcher);
 
         // Export stats section
         SortedSet<String> sortedAvailableStats = Sets.sort(availableStats);
@@ -167,8 +172,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
                 .build();
         }).collect(Collectors.toList());
 
-        this.onOffToggle = toggle;
-        this.onOffToggle.toggle(metricsConfig.isEnabled());
+        this.onOffSwitcher = switcher;
+        this.onOffSwitcher.switch_(metricsConfig.isEnabled());
 
         List<ColumnRow<Void>> rows = Lists.of(
             onOffToggleRow,
@@ -207,7 +212,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         Table<Boolean> exportStats = scalables.getAs(0);
 
         // Actions
-        checkToggle.clickAction(aBoolean -> {
+        checkSwitcher.clickAction(aBoolean -> {
             List<String> resultList = exportStats
                 .search(searchInput.text().toString());
             resultList.forEach(result -> statsCheckboxes.get(result).setValue(aBoolean));
@@ -227,17 +232,17 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
             .collectionRateSeconds(Range.fromSlider(collectionRate))
             .exportRateMinutes(Range.fromSlider(exportRate))
             .stats(getCheckedStats())
-            .enabled(onOffToggle.getValue())
+            .enabled(onOffSwitcher.getValue())
             .build();
     }
 
     @Override
     public void setValue(MetricsConfig metricsConfig) {
-        onOffToggle.toggle(metricsConfig.isEnabled());
+        onOffSwitcher.switch_(metricsConfig.isEnabled());
         collectionRate.setValue(metricsConfig.getCollectionRateSeconds().getValue());
         exportRate.setValue(metricsConfig.getExportRateMinutes().getValue());
         setCheckedStats(metricsConfig.getStats());
-        afterSetValueAction.accept(metricsConfig, this);
+        valueConsumer.accept(metricsConfig);
     }
 
     private static GuiSection exportFilePath(Path exportFilePath) {
@@ -279,12 +284,6 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         } else { // enable only when in stats
             statsCheckboxes.forEach((key, checkbox) -> checkbox.setValue(stats.contains(key)));
         }
-    }
-
-
-    @Override
-    public void afterValueSetAction(BiAction<MetricsConfig, MetricsTab> afterValueSetAction) {
-        this.afterSetValueAction = afterValueSetAction;
     }
 
     protected MetricsTab element() {

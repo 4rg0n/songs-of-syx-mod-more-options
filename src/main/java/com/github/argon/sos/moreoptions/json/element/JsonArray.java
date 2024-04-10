@@ -54,4 +54,13 @@ public class JsonArray implements JsonElement {
 
         return jsonArray;
     }
+
+    @Override
+    public JsonArray copy() {
+        List<JsonElement> clonedElements = elements.stream()
+            .map(JsonElement::copy)
+            .collect(Collectors.toList());
+
+        return JsonArray.of(clonedElements);
+    }
 }

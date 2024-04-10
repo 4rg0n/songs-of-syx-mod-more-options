@@ -12,4 +12,8 @@ public class JsonNull implements JsonElement {
     public static JsonNull of() {
         return new JsonNull();
     }
+
+    public JsonNull copy() {
+        return JsonNull.of();
+    }
 }

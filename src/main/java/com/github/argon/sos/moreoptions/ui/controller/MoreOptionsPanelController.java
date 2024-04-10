@@ -15,8 +15,8 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
         this.moreOptionsWindow = moreOptionsWindow;
 
         // update Notificator queue when More Options Modal is rendered
-        moreOptionsWindow.renderAction((modal, seconds) -> notificator.update(seconds));
-        moreOptionsWindow.hideAction(modal -> notificator.close());
+        moreOptionsWindow.renderAction(notificator::update);
+        moreOptionsWindow.hideAction(notificator::close);
 
         moreOptionsPanel.getCancelButton().clickActionSet(this::cancelAndUndo);
         moreOptionsPanel.getApplyButton().clickActionSet(this::applyAndSave);

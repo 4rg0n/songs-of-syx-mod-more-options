@@ -3,7 +3,7 @@ package menu.json.tab;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.ButtonMenu;
 import com.github.argon.sos.moreoptions.game.ui.Tabulator;
-import com.github.argon.sos.moreoptions.game.ui.Toggle;
+import com.github.argon.sos.moreoptions.game.ui.Switcher;
 import init.paths.PATH;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
@@ -56,7 +56,7 @@ public class MultiTab<Tab extends AbstractTab> extends AbstractTab {
 
         tabulator = Tabulator.<String, Tab, Void>builder()
             .tabs(new TreeMap<>(tabMap)) // sort by title
-            .tabMenu(Toggle.<String>builder()
+            .tabMenu(Switcher.<String>builder()
                 .menu(ButtonMenu.<String>builder()
                     .displaySearch(true)
                     .maxHeight(availableHeight)

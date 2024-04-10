@@ -10,6 +10,7 @@ import init.D;
 import init.paths.PATHS;
 import init.settings.S;
 import init.sprite.UI.UI;
+import menu.ui.MouseMessage;
 import snake2d.*;
 import snake2d.KeyBoard.KeyEvent;
 import snake2d.util.datatypes.COORDINATE;
@@ -90,7 +91,7 @@ public class Menu extends CORE_STATE{
 		GUI.init(bounds);
 
 		this.mouseMessage = new MouseMessage();
-		moreOptions = UiFactory.moreOptionsFullsWindow();
+		moreOptions = Ui.moreOptionsFullsWindow();
 
 		bg = new Background(this, bounds);
 		

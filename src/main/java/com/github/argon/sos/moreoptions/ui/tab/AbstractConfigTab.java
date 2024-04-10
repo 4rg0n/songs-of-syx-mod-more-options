@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.ui.tab;
 
-import com.github.argon.sos.moreoptions.game.Action;
-import com.github.argon.sos.moreoptions.game.ui.Refreshable;
-import com.github.argon.sos.moreoptions.game.ui.Valuable;
+import com.github.argon.sos.moreoptions.game.action.Action;
+import com.github.argon.sos.moreoptions.game.action.Refreshable;
+import com.github.argon.sos.moreoptions.game.action.Valuable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -10,8 +10,8 @@ import snake2d.util.gui.GuiSection;
 
 
 public abstract class AbstractConfigTab<Config, Element> extends GuiSection implements
-    Valuable<Config, Element>,
-    Refreshable<Element> {
+    Valuable<Config>,
+    Refreshable {
 
     protected final Config defaultConfig;
     @Getter

@@ -6,9 +6,9 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Lists;
 import init.paths.PATH;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,7 +28,7 @@ public class GameJsonService {
 
     private final GameJsonStore gameJsonStore;
 
-    public List<GameJsonResource> get(PATH filePath) {
+    public List<JsonObject> get(PATH filePath) {
         try (Stream<Path> stream = Files.list(filePath.get())) {
             return stream
                 .filter(file -> !Files.isDirectory(file))
@@ -41,18 +41,11 @@ public class GameJsonService {
         }
     }
 
-    public Optional<GameJsonResource> get(Path filePath) {
-        return gameJsonStore.getJsonObject(filePath)
-            .map(jsonObject -> GameJsonResource.builder()
-                .json(jsonObject)
-                .path(filePath)
-                .build());
-    }
+    public Optional<JsonObject> get(@Nullable Path filePath) {
+        if (filePath == null) {
+            return Optional.empty();
+        }
 
-    @Getter
-    @Builder
-    public static class GameJsonResource {
-        private final Path path;
-        private final JsonObject json;
+        return gameJsonStore.getJsonObject(filePath);
     }
 }

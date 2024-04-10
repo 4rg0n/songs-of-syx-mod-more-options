@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -32,7 +31,7 @@ public class ResourceService extends AbstractIOService {
         });
     }
 
-    public Optional<String> readResource(String path) throws IOException {
+    public Optional<String> readResource(String path) {
         ClassLoader classLoader = getClass().getClassLoader();
 
         try (InputStream inputStream = classLoader.getResourceAsStream(path)) {
@@ -41,6 +40,8 @@ public class ResourceService extends AbstractIOService {
             }
 
             return Optional.of(readFromInputStream(inputStream));
+        } catch (Exception e) {
+            return Optional.empty();
         }
     }
 }

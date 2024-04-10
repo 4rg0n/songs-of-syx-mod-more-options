@@ -1,7 +1,9 @@
 package menu;
 
-import com.github.argon.sos.moreoptions.game.Action;
-import com.github.argon.sos.moreoptions.game.BiAction;
+import com.github.argon.sos.moreoptions.game.action.Action;
+import com.github.argon.sos.moreoptions.game.action.BiAction;
+import com.github.argon.sos.moreoptions.game.action.Refreshable;
+import com.github.argon.sos.moreoptions.game.action.Renderable;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import init.C;
 import init.sprite.SPRITES;
@@ -16,11 +18,11 @@ import snake2d.util.gui.GuiSection;
 import util.gui.misc.GButt;
 
 public class FullWindow<Section extends GuiSection> extends ColorBox implements
-    Refreshable<FullWindow<Section>>,
-    Renderable<FullWindow<Section>>,
+    Refreshable,
+    Renderable,
     SC
 {
-    public static final int TOP_HEIGHT = 40;
+    public static final int TOP_HEIGHT = 80;
 
     public static final int AVAILABLE_HEIGHT = C.HEIGHT() - TOP_HEIGHT - 10;
 
@@ -44,7 +46,7 @@ public class FullWindow<Section extends GuiSection> extends ColorBox implements
     protected BiAction<FullWindow<Section>, Float> renderAction = (o1, o2) -> {};
 
     @Builder
-    public FullWindow(String name, Section section, @Nullable Toggle<String> topMenu) {
+    public FullWindow(@Nullable String name, Section section, @Nullable Switcher<String> topMenu) {
         super(COLOR.WHITE20);
         body().setDim(C.DIM());
         this.section = section;
@@ -55,23 +57,29 @@ public class FullWindow<Section extends GuiSection> extends ColorBox implements
             @Override
             protected void clickA() {
                 Menu menu = Ui.getInstance().getMenu();
-                menu.switchScreen(menu.sandbox);
+                menu.switchScreen(menu.main);
             }
         };
 
-        Label title = Label.builder()
-            .name(name)
-            .font(UI.FONT().H2)
-            .style(Label.Style.LABEL)
-            .build();
+        int titleWidth = 0;
+        if (name != null) {
+            Label title = Label.builder()
+                .name(name)
+                .font(UI.FONT().H2)
+                .style(Label.Style.LABEL)
+                .build();
+
+            title.body().moveX1(8);
+            title.body().centerY(top);
+            top.add(title);
+            titleWidth = title.body().width();
+        }
 
         exit.body.moveX2(C.WIDTH() - 8);
         exit.body.centerY(top);
-        title.body().moveX1(8);
-        title.body().centerY(top);
 
         if (topMenu != null) {
-            topMenu.body().centerX(title.body().x1(), exit.body.x1());
+            topMenu.body().centerX(titleWidth, exit.body.x1());
             topMenu.body().centerY(top);
             top.add(topMenu);
         }
@@ -79,7 +87,7 @@ public class FullWindow<Section extends GuiSection> extends ColorBox implements
         add(top);
         add(section);
 
-        top.add(title);
+
         top.add(exit);
         top.body().moveY1(0);
         top.body().centerX(C.DIM());

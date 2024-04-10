@@ -2,7 +2,8 @@ package com.github.argon.sos.moreoptions.game.json;
 
 import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.json.Json;
-import com.github.argon.sos.moreoptions.json.JsonWriter;
+import com.github.argon.sos.moreoptions.json.parser.JsonParseException;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -65,13 +66,16 @@ public class GameJsonStore implements Phases {
         }
     }
 
-    public Optional<JsonObject> getJsonObject(Path filePath) {
+    public Optional<JsonObject> getJsonObject(@Nullable Path filePath) {
         return Optional.ofNullable(getJson(filePath))
             .map(Json::getRoot);
     }
 
     @Nullable
-    public Json getJson(Path filePath) {
+    public Json getJson(@Nullable Path filePath) {
+        if (filePath == null) {
+            return null;
+        }
 
         String content = getContent(filePath);
 
@@ -94,7 +98,11 @@ public class GameJsonStore implements Phases {
     public void put(Path filePath, String content) {
         log.debug("Adding json content for %s", filePath);
         jsonContent.put(filePath, content);
-        jsonObjects.put(filePath, new Json(content, JsonWriter.jsonE()));
+        try {
+            jsonObjects.put(filePath, new Json(content, JsonWriters.jsonEPretty()));
+        } catch (JsonParseException e) {
+            log.error("BOCKWURST", e.getMessage());
+        }
     }
 
     @Nullable

@@ -2,13 +2,14 @@ package menu.json;
 
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.json.element.*;
+import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Lists;
 import init.sprite.UI.UI;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import menu.IconView;
+import menu.ui.IconView;
 import menu.Ui;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;
@@ -29,7 +30,7 @@ public class JsonUiFactory {
             .label(jsonString.getValue())
             .clickAction(dropDown -> Ui.getInstance().popup().show(dropDown.getMenu(), dropDown))
             .closeAction(dropDown -> Ui.getInstance().popup().close())
-            .menu(Toggle.<String>builder()
+            .menu(Switcher.<String>builder()
                 .highlight(true)
                 .menu(ButtonMenu.<String>builder()
                     .sameWidth(true)
@@ -121,7 +122,7 @@ public class JsonUiFactory {
     @Nullable
     public static IconView icon(JsonObject jsonObject) {
         try {
-            JsonE jsonE = com.github.argon.sos.moreoptions.json.JsonMapper.mapJson(jsonObject);
+            JsonE jsonE = JsonMapper.mapJson(jsonObject);
             Json json = new Json(jsonE.toString(), "");
             return new IconView(UI.icons().get(json), null, json, jsonObject);
         } catch (Exception e) {

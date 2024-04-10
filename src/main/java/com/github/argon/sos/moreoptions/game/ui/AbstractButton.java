@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.moreoptions.game.action.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -11,7 +12,11 @@ import snake2d.util.misc.ACTION;
 import snake2d.util.sprite.SPRITE;
 import util.gui.misc.GButt;
 
-public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> extends GButt.ButtPanel implements Valuable<Value, Element>, Searchable<Value, Boolean> {
+public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> extends GButt.ButtPanel
+    implements Valuable<Value>,
+    Searchable<Value, Boolean>,
+    Toggleable<Boolean>
+{
     @Getter
     protected COLOR color = COLOR.WHITE35;
 
@@ -20,6 +25,10 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
 
     private double markUpdateTimerSeconds = 0d;
     private final static int MARK_DURATION_SECONDS = 1;
+
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private Action<Boolean> toggleAction = o -> {};
 
     @Getter
     @Setter
@@ -114,6 +123,12 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
                 markUpdateTimerSeconds += seconds;
             }
         }
+    }
+
+    @Override
+    public void toggle() {
+        selectedToggle();
+        toggleAction.accept(selectedIs());
     }
 
     /**

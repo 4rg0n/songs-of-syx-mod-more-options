@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.phase;
 
 import com.github.argon.sos.moreoptions.game.DumpLogsException;
-import com.github.argon.sos.moreoptions.game.VoidAction;
+import com.github.argon.sos.moreoptions.game.action.VoidAction;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.Getter;

@@ -1,0 +1,299 @@
+ICON: {
+	BG: 32->BG->4,
+	FG: 24->resource->Gem->0,
+	SHADOW: 2,
+},
+MINABLE: GEM,
+FLOOR: MINE,
+SPRITE: MINE_TYPE_STONE,
+YEILD_WORKER_DAILY: 0.15,
+WORK: {
+	SHIFT_OFFSET: 0.125,
+	SOUND: impact->Mine*,
+	USES_TOOL: true,
+	FULFILLMENT: 0,
+	HEALTH_FACTOR: 0.75,
+	ACCIDENTS_PER_YEAR: 0.0075,
+},
+DEGRADE_RATE: 0.5,
+RESOURCES: [STONE,FURNITURE,METAL,MACHINERY,],
+AREA_COSTS: [0.25,0.25,0.25,0.25,],
+MINI_COLOR: 80_80_80,
+ENVIRONMENT_EMIT: {
+	_NOISE: {
+		VALUE: 1,
+		RADIUS: 1,
+	},
+},
+ITEMS: [
+	{
+		COSTS: [1,1,1,1,],
+		STATS: [0,0,0,0,],
+	},
+		{
+		COSTS: [1,1,1,1,],
+		STATS: [0,0,1.5,0,],
+	},
+],
+UPGRADES: [
+	{
+		RESOURCE_MASK: [1,1,0,0,],
+		BOOST: 0,
+	},
+	{
+		RESOURCE_MASK: [1,1,1,0,],
+		BOOST: 0.25,
+	},
+	{
+		RESOURCE_MASK: [1,1,3,1,],
+		BOOST: 0.5,
+	},
+],
+SPRITES: {
+	CONVEYOR_1X1: [
+		{
+			ROTATES: true,
+			FPS: 0,
+			SHADOW_LENGTH: 8,
+			FRAMES: [
+				STORAGE: 6,
+				STORAGE: 8,
+			],
+		},
+		{
+			ROTATES: true,
+			FPS: 10,
+			CIRCULAR: true,
+			SHADOW_LENGTH: 8,
+			FRAMES: [
+				MECH_CONVEYOR: 0,
+			],
+		},
+		{
+			ROTATES: true,
+			FPS: 10,
+			CIRCULAR: true,
+			SHADOW_LENGTH: 8,
+			FRAMES: [
+				MECH_CONVEYOR: 1,
+			],
+		},
+	],
+	STORAGE_1X1_TOP: [
+		{
+			ROTATES: true,
+			SHADOW_HEIGHT: 2,
+			FRAMES: [
+				STORAGEx3: 0,
+			],
+		},
+		{
+			ROTATES: true,
+			SHADOW_HEIGHT: 2,
+			FRAMES: [
+				STORAGEx3: 3,
+			],
+		},
+		{
+			ROTATES: true,
+			SHADOW_LENGTH: 5,
+			FRAMES: [
+				STORAGEx3: 6,
+			],
+		},
+	],
+	STORAGE_1X1_MID: [
+		{
+			ROTATES: true,
+			SHADOW_HEIGHT: 2,
+			FRAMES: [
+				STORAGEx3: 1,
+			],
+		},
+		{
+			ROTATES: true,
+			SHADOW_HEIGHT: 2,
+			FRAMES: [
+				STORAGEx3: 4,
+			],
+		},
+		{
+			ROTATES: true,
+			SHADOW_LENGTH: 5,
+			FRAMES: [
+				STORAGEx3: 7,
+			],
+		},
+	],
+	STORAGE_1X1_END: [
+		{
+			ROTATES: true,
+			SHADOW_HEIGHT: 2,
+			FRAMES: [
+				STORAGEx3: 2,
+			],
+		},
+		{
+			ROTATES: true,
+			SHADOW_HEIGHT: 2,
+			FRAMES: [
+				STORAGEx3: 5,
+			],
+		},
+		{
+			ROTATES: true,
+			SHADOW_LENGTH: 5,
+			FRAMES: [
+				STORAGEx3: 8,
+			],
+		},
+	],
+	SLAB_1X1: [
+		{
+			ROTATES: false,
+			SHADOW_LENGTH: 4,
+			FRAMES: [
+				STORAGE: 6,
+			],
+		},
+		{
+			ROTATES: false,
+			SHADOW_LENGTH: 4,
+			FRAMES: [
+				STORAGE: 8,
+			],
+		},
+	],
+	AUX_1X1: [
+		{
+			ROTATES: false,
+			SHADOW_LENGTH: 4,
+			FRAMES: [
+				STORAGE: 0,
+				STORAGE: 1,
+				STORAGE: 2,
+				STORAGE: 5,
+				STORAGE: 6,
+				STORAGE: 10,
+			],
+		},
+		{
+			ROTATES: false,
+			FPS: 15,
+			SHADOW_LENGTH: 4,
+			CIRCULAR: true,
+			FRAMES: [
+				MECH: 0,
+				MECH: 1,
+				MECH: 2,
+				MECH: 3,
+				MECH: 4,
+				MECH: 5,
+			],
+		},
+		{
+			ROTATES: false,
+			FPS: 15,
+			SHADOW_LENGTH: 4,
+			CIRCULAR: true,
+			FRAMES: [
+				MECH: 6,
+				MECH: 7,
+				MECH: 8,
+				MECH: 9,
+				MECH: 10,
+				MECH: 11,
+			],
+		},
+	],
+	AUX_MEDIUM_A_1X1: [
+		{
+			ROTATES: true,
+			SHADOW_LENGTH: 4,
+			FRAMES: [
+				2xROOF: 1,
+			],
+		},
+		{
+			ROTATES: true,
+			FPS: 8,
+			SHADOW_LENGTH: 4,
+			CIRCULAR: true,
+			FRAMES: [
+				MECHx2: 0,
+				MECHx2: 2,
+			],
+		},
+	],
+	AUX_MEDIUM_B_1X1: [
+		{
+			ROTATES: true,
+			SHADOW_LENGTH: 4,
+			FRAMES: [
+				2xROOF: 0,
+			],
+		},
+		{
+			ROTATES: true,
+			FPS: 8,
+			SHADOW_LENGTH: 4,
+			CIRCULAR: true,
+			FRAMES: [
+				MECHx2: 1,
+				MECHx2: 3,
+			],
+		},
+	],
+	AUX_BIG_2X2: [
+		{
+			ROTATES: false,
+			SHADOW_LENGTH: 8,
+			FRAMES: [
+				HUT: 0,
+			],
+		},
+		{
+			ROTATES: false,
+			FPS: 4,
+			SHADOW_LENGTH: 8,
+			CIRCULAR: true,
+			FRAMES: [
+				MECH_MACHINE: 0,
+				MECH_MACHINE: 1,
+			],
+		},
+		{
+			ROTATES: false,
+			FPS: 4,
+			SHADOW_LENGTH: 8,
+			CIRCULAR: true,
+			FRAMES: [
+				MECH_MACHINE: 2,
+				MECH_MACHINE: 3,
+			],
+		},
+	],
+	WORK_1X1: [
+		{
+			ROTATES: false,
+			SHADOW_LENGTH: 2,
+			FRAMES: [
+				STORAGE: 5,
+			],
+		},
+		{
+			ROTATES: false,
+			FPS: 15,
+			SHADOW_LENGTH: 4,
+			CIRCULAR: true,
+			FRAMES: [
+				MECH_WORK: 0,
+				MECH_WORK: 1,
+				MECH_WORK: 2,
+				MECH_WORK: 3,
+			],
+		},
+	],
+	
+},
+

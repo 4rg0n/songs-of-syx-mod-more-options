@@ -1,46 +1,53 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.*;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import snake2d.SPRITE_RENDERER;
 import util.gui.misc.GButt;
 
 /**
- * Adds some basic toggle functionality to {@link Checkbox}
+ * Adds some basic toggle functionality to
  */
-public class Checkbox extends GButt.Checkbox implements Valuable<Boolean, Checkbox> {
+public class Checkbox extends GButt.Checkbox implements Valuable<Boolean>, Toggleable<Boolean> {
 
-    private Action<Checkbox> clickAction = o -> {};
-    private Action<Checkbox> renderObjectAction = o -> {};
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private VoidAction clickAction = () -> {};
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private VoidAction renderObjectAction = () -> {};
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private Action<Boolean> toggleAction = o -> {};
 
     public Checkbox(boolean selected) {
         selectedSet(selected);
     }
 
     @Override
+    public void toggle() {
+        selectedToggle();
+        toggleAction.accept(selectedIs());
+    }
+
+    @Override
     protected void clickA() {
         super.clickA();
-        selectedToggle();
-        clickAction.accept(this);
+        toggle();
+        clickAction.accept();
     }
 
     @Override
     protected void renAction() {
         super.renAction();
-        renderObjectAction.accept(this);
+        renderObjectAction.accept();
     }
 
     @Override
     protected void render(SPRITE_RENDERER r, float ds, boolean isActive, boolean isSelected, boolean isHovered) {
         selectedSet(isSelected);
         super.render(r, ds, isActive, isSelected, isHovered);
-    }
-
-    public void onClick(Action<Checkbox> action) {
-        clickAction = action;
-    }
-
-    public void onRender(Action<Checkbox> action) {
-        renderObjectAction = action;
     }
 
     @Override

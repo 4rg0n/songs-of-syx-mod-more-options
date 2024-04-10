@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.game.util;
 
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
+import com.github.argon.sos.moreoptions.game.ui.Section;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -191,23 +192,29 @@ public class UiUtil {
         return maxHeight;
     }
 
-    public static @Nullable GuiSection toGuiSection(Object renderobj) {
-        if (renderobj instanceof RENDEROBJ) {
-            return toGuiSection((RENDEROBJ) renderobj);
-        } else if (renderobj instanceof SPRITE) {
-            return toGuiSection((SPRITE) renderobj);
-        }
-
-        return null;
+    public static Section toSection(SPRITE sprite) {
+        RENDEROBJ renderobj = toRender(sprite);
+        return toSection(renderobj);
     }
 
     public static GuiSection toGuiSection(SPRITE sprite) {
-        RENDEROBJ.Sprite renderobj = new RENDEROBJ.Sprite(sprite);
+        RENDEROBJ renderobj = toRender(sprite);
         return toGuiSection(renderobj);
     }
 
     public static RENDEROBJ toRender(SPRITE sprite) {
         return new RENDEROBJ.Sprite(sprite);
+    }
+
+    public static Section toSection(RENDEROBJ renderobj) {
+        if (renderobj instanceof Section) {
+            return (Section) renderobj;
+        } else {
+            Section section = new Section();
+            section.add(renderobj);
+
+            return section;
+        }
     }
 
     public static GuiSection toGuiSection(RENDEROBJ renderobj) {

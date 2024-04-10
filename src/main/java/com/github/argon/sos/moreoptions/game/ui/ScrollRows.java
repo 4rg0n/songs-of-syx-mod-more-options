@@ -23,12 +23,17 @@ public class ScrollRows extends GScrollRows {
 
     @Override
     protected boolean passesFilter(int i, RENDEROBJ o) {
+        if (!o.visableIs()) {
+            return false;
+        }
+
         if (search == null) {
             return true;
         }
         if (search.text().length() == 0) {
             return true;
         }
+
         if (o instanceof ColumnRow) {
             ColumnRow<?> columnRow = (ColumnRow<?>) o;
             return columnRow.search(search.text().toString());

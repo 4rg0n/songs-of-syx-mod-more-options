@@ -1,6 +1,9 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.moreoptions.game.action.Action;
+import com.github.argon.sos.moreoptions.game.action.Resettable;
+import com.github.argon.sos.moreoptions.game.action.Valuable;
 import com.github.argon.sos.moreoptions.game.util.TextFormatUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
@@ -46,7 +49,7 @@ import java.util.stream.Collectors;
 /**
  * Uses mostly code from {@link GSliderInt} and adds handling for negative values.
  */
-public class Slider extends GuiSection implements Valuable<Integer, Slider>, Resettable<Slider> {
+public class Slider extends GuiSection implements Valuable<Integer>, Resettable {
 
     private static final I18n i18n = I18n.get(Slider.class);
 
@@ -94,9 +97,12 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
     private Supplier<Integer> valueSupplier;
 
     @Setter
-    @Nullable
     @Accessors(fluent = true, chain = false)
-    private Consumer<Integer> valueConsumer;
+    private Consumer<Integer> valueConsumer = o -> {};
+
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private Action<Integer> valueChangeAction = o -> {};
 
     @Setter
     @Nullable
@@ -205,7 +211,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
                                 }
 
                                 Integer value = allowedValues.get(index);
-                                in.set(value);
+                                setValue(value);
                             }
                         }
                     }else {
@@ -255,7 +261,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
                                 }
 
                                 Integer value = allowedValues.get(index);
-                                in.set(value);
+                                setValue(value);
                             }
                         }
 
@@ -338,20 +344,22 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
     }
 
     public Double getValueD() {
-        return (double) (in.get() / resolutionMulti / 100);
+        return (double) in.get() / 100 / resolutionMulti;
     }
 
     @Override
     public void setValue(Integer value) {
-        if (valueConsumer != null) {
-            valueConsumer.accept(value);
+        valueConsumer.accept(value);
+
+        if (in.get() != value) {
+            valueChangeAction.accept(value);
         }
 
         in.set(value);
     }
 
     public void setValueD(Double value) {
-        in.set((int) (value * resolutionMulti * 100));
+        setValue((int) (value * resolutionMulti * 100));
     }
 
     private final STRING_RECIEVER rec = new STRING_RECIEVER() {
@@ -372,7 +380,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
                     value = MathUtil.nearest(value, allowedValues);
                 }
 
-                in.set(value);
+                setValue(value);
             }catch(Exception e) {
 
             }
@@ -435,8 +443,8 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
     }
 
     public void reset() {
-        in.set(initialValue);
         in.setD(initialDValue);
+        setValue(initialValue);
     }
 
     private class Mid extends ClickableAbs {
@@ -477,7 +485,7 @@ public class Slider extends GuiSection implements Valuable<Integer, Slider>, Res
             if (!allowedValues.isEmpty()) {
                 intValue = MathUtil.nearest(intValue, allowedValues);
             }
-            in.set(intValue);
+            setValue(intValue);
         }
 
         private double getClickPos() {

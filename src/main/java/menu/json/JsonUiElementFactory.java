@@ -1,11 +1,11 @@
 package menu.json;
 
+import com.github.argon.sos.moreoptions.game.action.Resettable;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.json.element.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import menu.IconView;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import util.gui.misc.GHeader;
@@ -18,8 +18,9 @@ import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
-public class JsonUiElementFactory implements Resettable<Void>{
+public class JsonUiElementFactory implements Resettable {
     protected final Path path;
+    @Getter
     protected final JsonObject config;
     protected final Map<String, JsonUiElement<?, ?>> all = new LinkedHashMap<>();
 
@@ -58,8 +59,8 @@ public class JsonUiElementFactory implements Resettable<Void>{
             JsonString.class,
             JsonUiFactory::color)
         .path(path)
-        .valueSupplier(colorPicker -> new JsonString(colorPicker.to("_")))
-        .valueConsumer((colorPicker, jsonString) -> colorPicker.set(jsonString.getValue(), "_"))
+        .valueSupplier(colorPicker -> new JsonString(colorPicker.getElement().to("_")))
+        .valueConsumer((colorPicker, jsonString) -> colorPicker.getElement().set(jsonString.getValue(), "_"))
         .build();
 
         all.put(key, color);
@@ -75,10 +76,10 @@ public class JsonUiElementFactory implements Resettable<Void>{
                 JsonUiFactory::color)
             .path(path)
             .valueSupplier(colorPicker -> JsonUiMapper.colors(
-                colorPicker.getRed(),
-                colorPicker.getGreen(),
-                colorPicker.getBlue()))
-            .valueConsumer((colorPicker, json) -> colorPicker.set(
+                colorPicker.getElement().getRed(),
+                colorPicker.getElement().getGreen(),
+                colorPicker.getElement().getBlue()))
+            .valueConsumer((colorPicker, json) -> colorPicker.getElement().set(
                 JsonUiMapper.colors(json)))
             .build();
 
@@ -94,8 +95,8 @@ public class JsonUiElementFactory implements Resettable<Void>{
                 JsonDouble.class,
                 value -> JsonUiFactory.slider(value, min, max, step, resolution))
             .path(path)
-            .valueConsumer((slider1, jsonDouble) -> slider1.setValueD(jsonDouble.getValue()))
-            .valueSupplier(slider1 -> new JsonDouble(slider1.getValueD()))
+            .valueConsumer((slider1, jsonDouble) -> slider1.getElement().setValueD(jsonDouble.getValue()))
+            .valueSupplier(slider1 -> new JsonDouble(slider1.getElement().getValueD()))
             .build();
 
         all.put(key, slider);
@@ -110,8 +111,8 @@ public class JsonUiElementFactory implements Resettable<Void>{
             JsonLong.class,
             value -> JsonUiFactory.slider(value, min, max, step, allowedValues))
         .path(path)
-        .valueConsumer((slider1, jsonLong) -> slider1.setValue(jsonLong.getValue().intValue()))
-        .valueSupplier(slider1 -> new JsonLong(Long.valueOf(slider1.getValue())))
+        .valueConsumer((slider1, jsonLong) -> slider1.getElement().setValue(jsonLong.getValue().intValue()))
+        .valueSupplier(slider1 -> new JsonLong(Long.valueOf(slider1.getElement().getValue())))
         .build();
 
         all.put(key, slider);
@@ -128,7 +129,7 @@ public class JsonUiElementFactory implements Resettable<Void>{
             .path(path)
             .valueSupplier(stringSelect -> {
                 JsonArray jsonValue = new JsonArray();
-                stringSelect.getSelectedKeys().forEach(entry -> {
+                stringSelect.getElement().getSelectedKeys().forEach(entry -> {
                     jsonValue.add(new JsonString(entry));
                 });
 
@@ -139,7 +140,7 @@ public class JsonUiElementFactory implements Resettable<Void>{
                     .map(JsonString::getValue)
                     .collect(Collectors.toList());
 
-                stringSelect.setValue(selected);
+                stringSelect.getElement().setValue(selected);
             })
             .build();
 
@@ -155,8 +156,8 @@ public class JsonUiElementFactory implements Resettable<Void>{
                 JsonString.class,
                 value -> JsonUiFactory.dropDown(value, options))
             .path(path)
-            .valueSupplier(dropDown -> new JsonString(dropDown.getValue()))
-            .valueConsumer((dropDown, jsonString) -> dropDown.setValue(jsonString.getValue()))
+            .valueSupplier(dropDown -> new JsonString(dropDown.getElement().getValue()))
+            .valueConsumer((dropDown, jsonString) -> dropDown.getElement().setValue(jsonString.getValue()))
             .build();
 
         all.put(key, select);
@@ -173,7 +174,7 @@ public class JsonUiElementFactory implements Resettable<Void>{
             .path(path)
             .valueSupplier(stringSelect -> {
                 JsonArray jsonValue = new JsonArray();
-                stringSelect.getValue().forEach(entry -> {
+                stringSelect.getElement().getValue().forEach(entry -> {
                     jsonValue.add(new JsonString(entry));
                 });
 
@@ -184,7 +185,7 @@ public class JsonUiElementFactory implements Resettable<Void>{
                     .map(JsonString::getValue)
                     .collect(Collectors.toList());
 
-                stringSelect.setValue(selected);
+                stringSelect.getElement().setValue(selected);
             })
             .build();
 
@@ -200,28 +201,12 @@ public class JsonUiElementFactory implements Resettable<Void>{
                 JsonBoolean.class,
                 JsonUiFactory::checkbox)
             .path(path)
-            .valueSupplier(checkbox1 -> new JsonBoolean(checkbox1.selectedIs()))
-            .valueConsumer((checkbox1, jsonBoolean) -> checkbox1.selectedSet(jsonBoolean.getValue()))
+            .valueSupplier(checkbox1 -> new JsonBoolean(checkbox1.getElement().selectedIs()))
+            .valueConsumer((checkbox1, jsonBoolean) -> checkbox1.getElement().selectedSet(jsonBoolean.getValue()))
             .build();
 
         all.put(key, checkbox);
         return checkbox;
-    }
-
-    public JsonUiElement<JsonString, IconView> icon(String key, JsonString defaultValue) {
-        JsonUiElement<JsonString, IconView> icon = JsonUiElement.from(
-                key,
-                config,
-                defaultValue,
-                JsonString.class,
-                JsonUiFactory::icon)
-            .path(path)
-            .valueSupplier(icon1 -> JsonString.of(icon1.getIconPath()))
-            .valueConsumer((icon1, jsonString) -> JsonUiFactory.icon(jsonString))
-            .build();
-
-        all.put(key, icon);
-        return icon;
     }
 
     public JsonUiElement<JsonString, GInput> text(String key, JsonString defaultValue) {
@@ -232,27 +217,11 @@ public class JsonUiElementFactory implements Resettable<Void>{
                 JsonString.class,
                 JsonUiFactory::text)
             .path(path)
-            .valueSupplier(text1 -> JsonString.of(text1.text().toString()))
+            .valueSupplier(text1 -> JsonString.of(text1.getElement().text().toString()))
             .valueConsumer((text1, jsonString) -> {
-                text1.text().clear();
-                text1.text().add(jsonString.getValue());
+                text1.getElement().text().clear();
+                text1.getElement().text().add(jsonString.getValue());
             })
-            .build();
-
-        all.put(key, icon);
-        return icon;
-    }
-
-    public JsonUiElement<JsonObject, IconView> icon(String key, JsonObject defaultValue) {
-        JsonUiElement<JsonObject, IconView> icon = JsonUiElement.from(
-                key,
-                config,
-                defaultValue,
-                JsonObject.class,
-                JsonUiFactory::icon)
-            .path(path)
-            .valueSupplier(IconView::getJsonObject)
-            .valueConsumer((icon1, jsonString) -> JsonUiFactory.icon(jsonString))
             .build();
 
         all.put(key, icon);
@@ -264,5 +233,11 @@ public class JsonUiElementFactory implements Resettable<Void>{
             .filter(element -> element.getJsonPath() != null)
             .forEach(element -> element.writeInto(config));
         return config;
+    }
+
+    public List<JsonUiElement<?, ?>> getOrphans() {
+        return all.values().stream()
+            .filter(JsonUiElement::orphan)
+            .collect(Collectors.toList());
     }
 }

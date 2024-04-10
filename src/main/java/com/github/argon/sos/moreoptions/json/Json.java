@@ -2,8 +2,13 @@ package com.github.argon.sos.moreoptions.json;
 
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
+import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
+import com.github.argon.sos.moreoptions.json.parser.JsonParser;
 import com.github.argon.sos.moreoptions.json.util.JsonUtil;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriter;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Can process and produce the games json format.
@@ -20,12 +25,14 @@ import lombok.Getter;
  * }</pre>
  */
 public class Json {
+    @Getter
     private final String rawJson;
 
     /**
      * For parsing the json with {@link JsonParser}.
      * Points to the current character in {@link this#rawJson} to parse.
      */
+    @Setter
     @Getter
     private int index;
 
@@ -42,7 +49,7 @@ public class Json {
     private final JsonWriter writer;
 
     public Json(JsonElement root) {
-        this(root, new JsonWriter());
+        this(root, JsonWriters.jsonEPretty());
     }
 
     public Json(JsonElement root, JsonWriter writer) {
@@ -56,7 +63,7 @@ public class Json {
     }
 
     public Json(JsonObject root) {
-        this(root, new JsonWriter());
+        this(root, JsonWriters.jsonEPretty());
     }
 
     public Json(JsonObject root, JsonWriter writer) {
@@ -66,7 +73,7 @@ public class Json {
     }
 
     public Json(String rawJson) {
-        this(rawJson, new JsonWriter());
+        this(rawJson, JsonWriters.jsonEPretty());
     }
 
     public Json(String rawJson, JsonWriter writer) {
@@ -103,15 +110,21 @@ public class Json {
         }
     }
 
+    public String getNextValue() {
+        return getNextValue(false);
+    }
+
     /**
      * Returns the string until a stop character is reached.
      * See {@link this#isEndOfValue(char)}
+     *
+     * @param checkWhitespace whether whitespaces shall be included or not
      */
-    public String getNextValue() {
+    public String getNextValue(boolean checkWhitespace) {
         StringBuilder sb = new StringBuilder();
         while (true) {
             char c = currentChar();
-            if (isEndOfValue(c))
+            if ((checkWhitespace && isWhiteSpace(c)) || isEndOfValue(c))
                 break;
             sb.append(c);
             indexMove();
@@ -140,11 +153,11 @@ public class Json {
      * @return whether the end of the json string is reached
      */
     public boolean atEnd(){
-        return getIndex() == rawJson.length();
+        return getIndex() >= rawJson.length() - 1; // FIXME -1 or not?
     }
 
     private boolean isEndOfValue(char c) {
-        return isWhiteSpace(c) || c == ',' || c == '}' || c == ']';
+        return c == ',' || c == '}' || c == ']';
     }
 
     private boolean isWhiteSpace(char c) {
@@ -161,8 +174,9 @@ public class Json {
      *
      * @return objects as readable json string
      */
-    @Override
-    public String toString() {
+    public String write() {
         return writer.write(this.getRoot());
     }
+
+
 }

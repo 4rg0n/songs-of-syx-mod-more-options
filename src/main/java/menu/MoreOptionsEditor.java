@@ -1,11 +1,11 @@
 package menu;
 
-import com.github.argon.sos.moreoptions.game.GameResources;
 import com.github.argon.sos.moreoptions.game.Wildcard;
+import com.github.argon.sos.moreoptions.game.data.GameResources;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.ButtonMenu;
 import com.github.argon.sos.moreoptions.game.ui.Tabulator;
-import com.github.argon.sos.moreoptions.game.ui.Toggle;
+import com.github.argon.sos.moreoptions.game.ui.Switcher;
 import init.C;
 import init.paths.PATHS;
 import lombok.Getter;
@@ -17,9 +17,7 @@ import menu.json.tab.SimpleTab;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MoreOptionsEditor extends GuiSection {
@@ -31,6 +29,9 @@ public class MoreOptionsEditor extends GuiSection {
         
         List<AbstractTab> tabs = new ArrayList<>();
         tabs.add(world(availableHeight));
+        tabs.add(structures(availableHeight));
+        tabs.add(fortifications(availableHeight));
+        tabs.add(floors(availableHeight));
         tabs.add(settlement(availableHeight));
         tabs.add(races(availableHeight));
         tabs.add(rooms(availableHeight));
@@ -46,16 +47,15 @@ public class MoreOptionsEditor extends GuiSection {
                 tab -> new Button(tab.getTitle(), tab.getPath().toString())));
 
         tabulator = Tabulator.<String, AbstractTab, Void>builder()
-            .tabs(tabsMap)
-            .tabMenu(Toggle.<String>builder()
+            .tabs(new TreeMap<>(tabsMap))
+            .tabMenu(Switcher.<String>builder()
                 .menu(ButtonMenu.<String>builder()
                     .maxHeight(FullWindow.TOP_HEIGHT)
-                    .maxWidth(C.WIDTH() - 200)
-                    .buttons(buttonMap)
+                    .maxWidth(C.WIDTH() - 50)
+                    .buttons(new TreeMap<>(buttonMap))
                     .sameWidth(true)
                     .horizontal(true)
-                    .margin(21)
-                    .spacer(true)
+                    .margin(3)
                     .buttonColor(COLOR.WHITE25)
                     .build())
                 .highlight(true)
@@ -65,6 +65,73 @@ public class MoreOptionsEditor extends GuiSection {
             .build();
 
         addDownC(0, tabulator);
+    }
+
+    private AbstractTab environments(int availableHeight) {
+        return JsonUi.builder(PATHS.SETT().init.getFolder("environment"))
+            .templates(jsonUiTemplate -> {
+                jsonUiTemplate.sliderD("DECLINE_VALUE", 0, 100);
+                JsonUITemplates.standing(jsonUiTemplate);
+            }).build().folder(availableHeight);
+    }
+
+    private AbstractTab floors(int availableHeight) {
+        return JsonUi.builder(PATHS.SETT().init.getFolder("floor"))
+            .templates(jsonUiTemplate -> {
+                jsonUiTemplate.header("GAME_TEXTURE");
+                jsonUiTemplate.dropDown("GAME_TEXTURE.FILE", GameResources.sprite().textures().fileTitles());
+                jsonUiTemplate.slider("GAME_TEXTURE.ROW", 0, 7);
+
+                jsonUiTemplate.header("ROAD");
+                jsonUiTemplate.dropDown("ROAD.RESOURCE", GameResources.getResources());
+                jsonUiTemplate.slider("ROAD.RESOURCE_AMOUNT", 0, 1000);
+                jsonUiTemplate.slider("ROAD.SPEED", 0, 4);
+                jsonUiTemplate.sliderD("ROAD.DURABILITY", 0, 100);
+
+                jsonUiTemplate.header("ROAD.ENVIRONMENT");
+                Wildcard.from(GameResources.getEnvironments()).forEach(s -> {
+                    jsonUiTemplate.sliderD("ROAD.ENVIRONMENT." + s, 0, 100);
+                });
+
+                jsonUiTemplate.header("ROAD.PREFERENCE");
+                Wildcard.from(GameResources.init().race().fileTitles()).forEach(s -> {
+                    jsonUiTemplate.sliderD("ROAD.PREFERENCE." + s, 0, 100);
+                });
+            }).build().folder(availableHeight);
+    }
+
+    private AbstractTab fortifications(int availableHeight) {
+        return JsonUi.builder(PATHS.SETT().init.getFolder("fortification"))
+            .templates(jsonUiTemplate -> {
+                jsonUiTemplate.dropDown("SPRITE", GameResources.sprite().settlement().fortification().fileTitles());
+                jsonUiTemplate.color("COLOR");
+                jsonUiTemplate.color("MINIMAP_COLOR");
+                jsonUiTemplate.text("BUILD_SOUND");
+                jsonUiTemplate.dropDown("RESOURCE", GameResources.getResources());
+                jsonUiTemplate.slider("RESOURCE_AMOUNT", 1, 1000);
+                jsonUiTemplate.slider("HEIGHT", 1, 20);
+                jsonUiTemplate.sliderD("BUILD_TIME", 0, 100);
+                jsonUiTemplate.sliderD("DURABILITY", 0, 100);
+            }).build().folder(availableHeight);
+    }
+
+    private AbstractTab structures(int availableHeight) {
+        return JsonUi.builder(PATHS.SETT().init.getFolder("structure"))
+            .templates(jsonUiTemplate -> {
+                jsonUiTemplate.dropDown("SPRITE", GameResources.sprite().settlement().structure().fileTitles());
+                jsonUiTemplate.color("COLOR");
+                jsonUiTemplate.color("MINIMAP_COLOR");
+                jsonUiTemplate.text("BUILD_SOUND");
+                jsonUiTemplate.dropDown("RESOURCE", GameResources.getResources());
+                jsonUiTemplate.slider("RESOURCE_AMOUNT", 1, 1000);
+                jsonUiTemplate.sliderD("BUILD_TIME", 0, 100);
+                jsonUiTemplate.sliderD("DURABILITY", 0, 100);
+
+                jsonUiTemplate.header("PREFERENCE");
+                Wildcard.from(GameResources.getRaces()).forEach(s -> {
+                    jsonUiTemplate.sliderD("PREFERENCE." + s, 0, 100);
+                });
+            }).build().folder(availableHeight);
     }
 
     private static MultiTab<SimpleTab> races(int availableHeight) {
@@ -111,16 +178,16 @@ public class MoreOptionsEditor extends GuiSection {
                     jsonUiTemplate.sliderD("PREFERRED.OTHER_RACES_REVERSE." + s, 0, 100);
                 });
                 jsonUiTemplate.header("PREFERRED.TRAITS");
-                Wildcard.from(GameResources.getRaceTraits()).forEach(s -> {
+                Wildcard.from(GameResources.init().race().trait().fileTitles()).forEach(s -> {
                     jsonUiTemplate.sliderD("PREFERRED.TRAITS." + s, 0, 100);
                 });
 
                 jsonUiTemplate.header("MILITARY_EQUIPMENT_EFFICIENCY");
-                Wildcard.from(GameResources.getEquipBattle()).forEach(s -> {
+                Wildcard.from(GameResources.init().stats().folder("equip").fileTitles()).forEach(s -> {
                     jsonUiTemplate.slider("MILITARY_EQUIPMENT_EFFICIENCY." + s, 0, 100);
                 });
                 jsonUiTemplate.header("MILITARY_SUPPLY_USE");
-                Wildcard.from(GameResources.getArmySupplies()).forEach(s -> {
+                Wildcard.from(GameResources.init().resource().armySupply().fileTitles()).forEach(s -> {
                     jsonUiTemplate.slider("MILITARY_SUPPLY_USE." + s, 0, 100);
                 });
 
@@ -161,7 +228,7 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.checkbox("EPIDEMIC");
                 jsonUiTemplate.checkbox("REGULAR");
                 jsonUiTemplate.sliderD("FATALITY_RATE", 0, 100);
-                jsonUiTemplate.sliderD("SPREAD", 0, 100);
+                jsonUiTemplate.sliderD("SPREAD", 0, 100, 3);
                 jsonUiTemplate.slider("INFECTION_DAYS", 0, 100);
                 Wildcard.from(GameResources.getClimates()).forEach(s -> {
                     jsonUiTemplate.sliderD("OCCURRENCE_CLIMATE." + s, 0, 100);
@@ -197,7 +264,7 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.dropDown("MONUMENT", GameResources.getMonuments());
                 jsonUiTemplate.separator();
 
-                JsonUITemplates.standing(jsonUiTemplate);
+                JsonUITemplates.standingWithDefault(jsonUiTemplate);
                 JsonUITemplates.room(jsonUiTemplate);
             })
             .templates( "TEMPLE_", jsonUiTemplate -> {
@@ -311,7 +378,7 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.checkbox("SOLID");
                 jsonUiTemplate.separator();
 
-                JsonUITemplates.standing(jsonUiTemplate);
+                JsonUITemplates.standingWithDefault(jsonUiTemplate);
                 JsonUITemplates.room(jsonUiTemplate);
             })
             .templates( "MINE_", jsonUiTemplate -> {
@@ -323,7 +390,7 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.separator();
 
                 JsonUITemplates.upgrades(jsonUiTemplate, 3);
-                JsonUITemplates.standing(jsonUiTemplate);
+                JsonUITemplates.standingWithDefault(jsonUiTemplate);
                 JsonUITemplates.room(jsonUiTemplate);
             })
             .templates( "MARKET_", jsonUiTemplate -> {
@@ -367,7 +434,7 @@ public class MoreOptionsEditor extends GuiSection {
                 JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
                 jsonUiTemplate.separator();
 
-                JsonUITemplates.standing(jsonUiTemplate);
+                JsonUITemplates.standingWithDefault(jsonUiTemplate);
                 JsonUITemplates.room(jsonUiTemplate);
             })
             .templates( "GATEHOUSE_", jsonUiTemplate -> {

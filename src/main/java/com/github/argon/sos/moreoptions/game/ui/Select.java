@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.util.Lists;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
-import snake2d.util.gui.GuiSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +19,11 @@ import java.util.Optional;
  * When a button is clicked it will be marked "active".
  * Only one button can be active.
  */
-public class Select<Key> extends GuiSection implements
-    Valuable<List<Key>, Select<Key>>,
-    Resettable<Select<Key>>,
-    Refreshable<Select<Key>> {
+public class Select<Key> extends Section implements
+    Valuable<List<Key>>,
+    Resettable,
+    Refreshable
+{
 
     @Getter
     private final List<Key> selectedKeys;
@@ -38,7 +38,7 @@ public class Select<Key> extends GuiSection implements
 
     @Setter
     @Accessors(fluent = true, chain = false)
-    private Action<Select<Key>> refreshAction = o -> {};
+    private VoidAction refreshAction = () -> {};
 
     @Setter
     @Accessors(fluent = true, chain = false)
@@ -147,7 +147,7 @@ public class Select<Key> extends GuiSection implements
 
     @Override
     public void refresh() {
-        refreshAction.accept(this);
+        refreshAction.accept();
     }
 
     public Integer getMaxSelect() {

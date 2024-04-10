@@ -8,7 +8,7 @@ import snake2d.util.color.ColorImp;
 import snake2d.util.gui.GuiSection;
 import util.data.INT;
 
-public class ColorPicker extends GuiSection {
+public class ColorPicker extends Section {
     private final INT.INTE red;
     private final INT.INTE green;
     private final INT.INTE blue;

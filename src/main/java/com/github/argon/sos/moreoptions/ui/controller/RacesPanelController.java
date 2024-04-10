@@ -4,8 +4,8 @@ import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.json.Json;
-import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.JsonWriter;
+import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
@@ -57,9 +57,9 @@ public class RacesPanelController extends AbstractUiController<RacesTab> {
         try {
             RacesConfig racesConfig = element.getValue();
             JsonElement jsonElement = JsonMapper.mapObject(racesConfig);
-            Json json = new Json(jsonElement, JsonWriter.jsonE());
+            Json json = new Json(jsonElement, JsonWriters.jsonEPretty());
 
-            if (Clipboard.write(json.toString())) {
+            if (Clipboard.write(json.write())) {
                 notificator.notifySuccess(i18n.t("notification.races.config.copy"));
             } else {
                 notificator.notifyError(i18n.t("notification.races.config.not.copy"));
@@ -72,7 +72,7 @@ public class RacesPanelController extends AbstractUiController<RacesTab> {
     public void importRacesConfigFromClipboard() {
         try {
             Clipboard.read().ifPresent(s -> {
-                Json json = new Json(s, JsonWriter.jsonE());
+                Json json = new Json(s, JsonWriters.jsonEPretty());
                 RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), RacesConfig.class);
 
                 element.setValue(racesConfig);

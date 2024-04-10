@@ -1,6 +1,5 @@
 package com.github.argon.sos.moreoptions.json.mapper;
 
-import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.annotation.JsonIgnore;
 import com.github.argon.sos.moreoptions.json.annotation.JsonProperty;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
@@ -99,14 +98,14 @@ public class ObjectMapper implements Mapper<JsonObject> {
                 .map(JsonProperty::key)
                 .orElse(toJsonKey(method));
 
-            if (!jsonObject.getMap().containsKey(jsonKey)) {
+            if (!jsonObject.containsKey(jsonKey)) {
                 log.debug("Json does not contain key %s for %s", jsonKey, method.getName());
                 continue;
             }
 
             Type fieldType = field.getGenericType();
             TypeInfo<?> fieldTypeInfo = TypeInfo.get(fieldType);
-            JsonElement jsonElement = jsonObject.getMap().get(jsonKey);
+            JsonElement jsonElement = jsonObject.get(jsonKey);
 
             Object mappedObject = JsonMapper.mapJson(jsonElement, fieldTypeInfo);
             try {

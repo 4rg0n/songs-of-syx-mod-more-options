@@ -18,4 +18,8 @@ public class JsonBoolean implements JsonElement {
     public static JsonBoolean of(Boolean value) {
         return new JsonBoolean(value);
     }
+
+    public JsonBoolean copy() {
+        return JsonBoolean.of(getValue());
+    }
 }

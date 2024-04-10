@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
@@ -22,6 +22,8 @@ import init.paths.ModInfo;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
@@ -40,9 +42,9 @@ import java.util.Set;
  * Will pop up in the middle of the game and pauses the game.
  */
 public class MoreOptionsPanel extends GuiSection implements
-    Showable<MoreOptionsPanel>,
-    Refreshable<MoreOptionsPanel>,
-    Valuable<MoreOptionsV4Config, MoreOptionsPanel> {
+    Showable,
+    Refreshable,
+    Valuable<MoreOptionsV4Config> {
 
     private static final I18n i18n = I18n.get(WeatherTab.class);
 
@@ -85,8 +87,12 @@ public class MoreOptionsPanel extends GuiSection implements
     @Getter
     private final Tabulator<String, AbstractConfigTab<?, ?>, Void> tabulator;
 
-    private Action<MoreOptionsPanel> showAction = o -> {};
-    private Action<MoreOptionsPanel> refreshAction = o -> {};
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private VoidAction showAction = () -> {};
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private VoidAction refreshAction = () -> {};
 
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
@@ -192,7 +198,7 @@ public class MoreOptionsPanel extends GuiSection implements
                 "races", racesTab,
                 "advanced", advancedTab
             ))
-            .tabMenu(Toggle.<String>builder()
+            .tabMenu(Switcher.<String>builder()
                 .menu(ButtonMenu.<String>builder()
                     .button("sounds", new Button(
                         i18n.t("MoreOptionsPanel.tab.sounds.name"),
@@ -314,21 +320,11 @@ public class MoreOptionsPanel extends GuiSection implements
 
     @Override
     public void show() {
-        showAction.accept(this);
-    }
-
-    @Override
-    public void showAction(Action<MoreOptionsPanel> showAction) {
-        this.showAction = showAction;
+        showAction.accept();
     }
 
     @Override
     public void refresh() {
-        refreshAction.accept(this);
-    }
-
-    @Override
-    public void refreshAction(Action<MoreOptionsPanel> refreshAction) {
-        this.refreshAction = refreshAction;
+        refreshAction.accept();
     }
 }

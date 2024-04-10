@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import menu.ui.Popup;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.Coo;
 
@@ -40,5 +41,10 @@ public class Ui {
     public void init(Menu menu) {
         log.debug("init");
         this.menu = menu;
+    }
+
+    public static FullWindow<MoreOptionsEditor> moreOptionsFullsWindow() {
+        MoreOptionsEditor moreOptionsEditor = new MoreOptionsEditor();
+        return new FullWindow<>(null, moreOptionsEditor, moreOptionsEditor.getTabulator().getMenu());
     }
 }

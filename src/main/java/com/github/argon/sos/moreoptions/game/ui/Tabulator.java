@@ -1,6 +1,9 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Refreshable;
+import com.github.argon.sos.moreoptions.game.action.Resettable;
+import com.github.argon.sos.moreoptions.game.action.Valuable;
+import com.github.argon.sos.moreoptions.game.action.VoidAction;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +12,6 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.datatypes.DIR;
-import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.Map;
@@ -23,19 +25,20 @@ import java.util.stream.Collectors;
  * @param <Element> type of the shown element when tab is active
  * @param <Value> type of the returned and set value
  */
-public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection implements
-    Valuable<Value, Tabulator<Key, Element, Value>>,
-    Resettable<Tabulator<Key, Element, Value>>,
-    Refreshable<Tabulator<Key, Element, Value>> {
+public class Tabulator<Key, Element extends RENDEROBJ, Value> extends Section implements
+    Valuable<Value>,
+    Resettable,
+    Refreshable
+{
 
     private final Map<Key, Element> tabs;
     private final boolean resetOnToggle;
     @Getter
-    private final Toggle<Key> menu;
+    private final Switcher<Key> menu;
 
     @Setter
     @Accessors(fluent = true, chain = false)
-    private Action<Tabulator<Key, Element, Value>> refreshAction = o -> {};
+    private VoidAction refreshAction = () -> {};
 
     @Getter
     private Element activeTab;
@@ -49,7 +52,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
      * @param resetOnToggle whether elements shall be reset when toggling
      */
     @Builder
-    public Tabulator(Map<Key, Element> tabs, Toggle<Key> tabMenu, int margin, boolean center, boolean resetOnToggle, @Nullable DIR direction) {
+    public Tabulator(Map<Key, Element> tabs, Switcher<Key> tabMenu, int margin, boolean center, boolean resetOnToggle, @Nullable DIR direction) {
         assert !tabs.isEmpty() : "tabs must not be empty";
         this.tabs = tabs;
         this.resetOnToggle = resetOnToggle;
@@ -107,7 +110,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
             .ifPresent(element -> {
                 if (resetOnToggle) reset();
                 activeTab = element.getValue();
-                menu.toggle(key);
+                menu.switch_(key);
             });
     }
 
@@ -121,8 +124,8 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
     public Value getValue() {
         if (activeTab instanceof Valuable) {
             @SuppressWarnings("unchecked")
-            Valuable<Value, Tabulator<Key, Element, Value>> valuable
-                = (Valuable<Value, Tabulator<Key, Element, Value>>) activeTab;
+            Valuable<Value> valuable
+                = (Valuable<Value>) activeTab;
             return valuable.getValue();
         } else {
             return null;
@@ -133,8 +136,8 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
     public void setValue(Value value) {
         if (activeTab instanceof Valuable) {
             @SuppressWarnings("unchecked")
-            Valuable<Value, Tabulator<Key, Element, Value>> valuable
-                = (Valuable<Value, Tabulator<Key, Element, Value>>) activeTab;
+            Valuable<Value> valuable
+                = (Valuable<Value>) activeTab;
             valuable.setValue(value);
         }
     }
@@ -150,7 +153,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends GuiSection
     @Override
     public void refresh() {
         view.dirty = true;
-        refreshAction.accept(this);
+        refreshAction.accept();
 
         // refresh tabs if possible
         tabs.values().stream()

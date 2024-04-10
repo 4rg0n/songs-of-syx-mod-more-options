@@ -4,8 +4,8 @@ import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.json.Json;
-import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.JsonWriter;
+import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.mapper.TypeInfo;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
@@ -125,9 +125,9 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
                 try {
                     Map<String, Range> boostersPreset = presets.get(key);
                     JsonElement jsonElement = JsonMapper.mapObject(boostersPreset, new TypeInfo<Map<String, Range>>(){});
-                    Json json = new Json(jsonElement, JsonWriter.jsonE());
+                    Json json = new Json(jsonElement, JsonWriters.jsonEPretty());
 
-                    if (Clipboard.write(json.toString())) {
+                    if (Clipboard.write(json.write())) {
                         notificator.notifySuccess(i18n.t("notification.boosters.preset.copy", key));
                     } else {
                         notificator.notifyError(i18n.t("notification.boosters.preset.not.copy", key));

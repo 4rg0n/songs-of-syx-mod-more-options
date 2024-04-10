@@ -18,7 +18,6 @@ import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.ui.controller.*;
-import com.github.argon.sos.moreoptions.ui.controller.*;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
@@ -199,9 +198,7 @@ public class UiConfig implements Phases {
         BoostersTab boostersTab = moreOptionsPanel.getBoostersTab();
         new BoostersPanelController(boostersTab);
 
-        moreOptionsPanel.showAction(panel -> {
-            boostersTab.refresh();
-        });
+        moreOptionsPanel.showAction(boostersTab::refresh);
 
         // METRICS
         MetricsTab metricsTab = moreOptionsPanel.getMetricsTab();

@@ -33,7 +33,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
         this.backupMoreOptionsWindow = backupMoreOptionsWindow;
         this.backupConfig = configStore.getBackup().orElse(null);
 
-        backupMoreOptionsWindow.hideAction(panel -> this.closeWindow());
+        backupMoreOptionsWindow.hideAction(this::closeWindow);
         backupMoreOptionsPanel.getCancelButton().clickActionSet(this::cancelAndUndo);
         backupMoreOptionsPanel.getOkButton().clickActionSet(this::applyAndSaveAndExit);
 

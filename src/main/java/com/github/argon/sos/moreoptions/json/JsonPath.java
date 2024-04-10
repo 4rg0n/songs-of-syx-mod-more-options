@@ -1,13 +1,14 @@
 package com.github.argon.sos.moreoptions.json;
 
-import com.github.argon.sos.moreoptions.json.element.*;
+import com.github.argon.sos.moreoptions.json.element.JsonArray;
+import com.github.argon.sos.moreoptions.json.element.JsonElement;
+import com.github.argon.sos.moreoptions.json.element.JsonObject;
+import com.github.argon.sos.moreoptions.json.element.JsonTuple;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.ClassUtil;
 import com.github.argon.sos.moreoptions.util.Lists;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import snake2d.util.file.Json;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,34 +23,23 @@ public class JsonPath {
 
     public final static String DELIMITER = "\\.";
 
+    private int pathPos;
+
     public JsonPath(List<String> keys) {
         this.keys = keys;
     }
 
-    public String last() {
+    public String lastKey() {
         return keys.get(keys.size() - 1);
     }
 
-    public Optional<Json> extractJsonE(Json json) {
-        return extractJsonE(json, 0);
-    }
-
-    private Optional<Json> extractJsonE(Json json, int pos) {
-        Json element = null;
-
-        List<String> jsonKeys = getKeys();
-        for (int i = pos, stringsSize = jsonKeys.size(); i < stringsSize; i++) {
-            String key = jsonKeys.get(i);
-            if (json.has(key)) {
-                if (i < stringsSize - 1 && json.jsonIs(key)) {
-                    element = extractJsonE(json.json(key), i).orElse(null);
-                } else if (json.jsonIs(key)){
-                    element = json.json(key);
-                }
-            }
+    @Nullable
+    public String nextKey(int index) {
+        if (index + 1 > keys.size() - 1) {
+            return null;
         }
 
-        return Optional.ofNullable(element);
+        return keys.get(index + 1);
     }
 
     public Optional<JsonElement> get(JsonObject json) {
@@ -57,10 +47,11 @@ public class JsonPath {
     }
 
     public <T extends JsonElement> Optional<T> get(JsonObject json, Class<T> clazz) {
-        return get(json, clazz, 0, getKeys().size());
+
+        return get(json, clazz, 0, getKeys().size(), true);
     }
 
-    private  <T extends JsonElement> Optional<T> get(JsonObject json, Class<T> clazz, int pos, int maxPos) {
+    private <T extends JsonElement> Optional<T> get(JsonObject json, Class<T> clazz, int pos, int maxPos, boolean extractTuple) {
         JsonElement element = null;
         List<String> jsonKeys = getKeys();
 
@@ -86,27 +77,33 @@ public class JsonPath {
                     }
 
                     element = (jsonArray).get(index);
+
+                    if (extractTuple && element instanceof JsonTuple) {
+                        String nextKey = nextKey(i);
+
+                        // only extract value when there is no next key; or when the key matches with the one in tuple
+                        if (nextKey == null) {
+                            element = ((JsonTuple) element).getValue();
+                        } else if (nextKey.equals(((JsonTuple) element).getKey())) {
+                            element = ((JsonTuple) element).getValue();
+                            i++;
+                        } else {
+                            return Optional.empty();
+                        }
+                    }
                 }
 
                 if (i < maxPos - 1 && element instanceof JsonObject) {
-                    json = (JsonObject) element;
-                    element = get(json, clazz, i, maxPos).orElse(null);
+                    i++;
+                    element = get((JsonObject) element, clazz, i, maxPos, extractTuple).orElse(null);
                 }
             }
         }
 
+
+
         try {
             return Optional.ofNullable(element)
-                .map(jsonElement -> {
-                    // convert JsonDouble and JsonLong
-                    if (ClassUtil.instanceOf(clazz, JsonDouble.class) && jsonElement instanceof JsonLong) {
-                        return JsonDouble.of((JsonLong) jsonElement);
-                    } else if (ClassUtil.instanceOf(clazz, JsonLong.class) && jsonElement instanceof JsonDouble) {
-                        return JsonLong.of((JsonDouble) jsonElement);
-                    }
-
-                    return jsonElement;
-                })
                 .filter(clazz::isInstance)
                 .map(clazz::cast);
         } catch (Exception e) {
@@ -116,16 +113,18 @@ public class JsonPath {
     }
 
     public void put(JsonObject json, JsonElement value) {
-        get(json, JsonElement.class, 0, getKeys().size() - 1).ifPresent(jsonElement -> {
-            if (jsonElement instanceof JsonArray) {
-                String lastKey = last();
+        get(json, JsonElement.class, 0, getKeys().size() - 1, false).ifPresent(jsonElement -> {
+            if (jsonElement instanceof JsonTuple) {
+                ((JsonTuple) jsonElement).setValue(value);
+            } else if (jsonElement instanceof JsonArray) {
+                String lastKey = lastKey();
                 Integer index = parseIndex(lastKey);
 
                 if (index != null) {
                     ((JsonArray) jsonElement).add(index, value);
                 }
             } else if (jsonElement instanceof JsonObject) {
-                String lastKey = last();
+                String lastKey = lastKey();
                 ((JsonObject) jsonElement).put(lastKey, value);
             }
         });

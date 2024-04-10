@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Action;
 import com.github.argon.sos.moreoptions.game.ui.layout.Layouts;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import init.sprite.UI.UI;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ButtonMenu<Key> extends GuiSection {
+public class ButtonMenu<Key> extends Section {
 
     @Getter
     private final Map<Key, Button> buttons;

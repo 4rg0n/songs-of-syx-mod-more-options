@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.moreoptions.game.action.Valuable;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BoostersSection extends GuiSection implements Valuable<Map<String, Range>, BoostersSection> {
+public class BoostersSection extends GuiSection implements Valuable<Map<String, Range>> {
     private static final I18n i18n = I18n.get(BoostersTab.class);
 
     private final Table<Range> boosterTable;
@@ -133,7 +134,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
                 Range.ApplyMode.PERCENT, multiSlider,
                 Range.ApplyMode.ADD, additiveSlider
             ))
-            .tabMenu(Toggle.<Range.ApplyMode>builder()
+            .tabMenu(Switcher.<Range.ApplyMode>builder()
                 .menu(ButtonMenu.<Range.ApplyMode>builder()
                     .button(Range.ApplyMode.ADD, new Button(i18n.t("BoostersTab.booster.toggle.add.name"), i18n.t("BoostersTab.booster.toggle.add.desc")))
                     .button(Range.ApplyMode.PERCENT, new Button(i18n.t("BoostersTab.booster.toggle.perc.name"), i18n.t("BoostersTab.booster.toggle.perc.desc")))

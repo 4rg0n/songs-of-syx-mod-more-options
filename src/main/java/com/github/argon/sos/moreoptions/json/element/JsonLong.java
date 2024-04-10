@@ -26,4 +26,8 @@ public class JsonLong implements JsonElement {
     public static JsonLong of(JsonDouble value) {
         return new JsonLong(value.getValue().longValue());
     }
+
+    public JsonLong copy() {
+        return JsonLong.of(getValue());
+    }
 }

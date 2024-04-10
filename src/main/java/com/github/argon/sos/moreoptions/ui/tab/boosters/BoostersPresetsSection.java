@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
 import com.github.argon.sos.moreoptions.config.domain.Range;
-import com.github.argon.sos.moreoptions.game.Action;
-import com.github.argon.sos.moreoptions.game.BiAction;
+import com.github.argon.sos.moreoptions.game.action.Action;
+import com.github.argon.sos.moreoptions.game.action.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Table;

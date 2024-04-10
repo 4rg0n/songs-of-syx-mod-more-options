@@ -62,7 +62,7 @@ public class UiFactory {
             .availableWidth(FullWindow.FullView.WIDTH)
             .availableHeight(FullWindow.FullView.HEIGHT)
             .build();
-        Toggle<String> buttonMenu = moreOptionsPanel.getTabulator().getMenu();
+        Switcher<String> buttonMenu = moreOptionsPanel.getTabulator().getMenu();
 
         return new FullWindow<>(title, moreOptionsPanel, buttonMenu);
     }

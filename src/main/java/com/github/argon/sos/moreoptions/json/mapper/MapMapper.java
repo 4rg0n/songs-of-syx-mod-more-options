@@ -1,6 +1,5 @@
 package com.github.argon.sos.moreoptions.json.mapper;
 
-import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import com.github.argon.sos.moreoptions.util.ClassCastUtil;
 import com.github.argon.sos.moreoptions.util.ClassUtil;
@@ -38,17 +37,17 @@ public class MapMapper implements Mapper<JsonObject> {
         if (isAssignableFrom(keyType, CharSequence.class)) {
             // do string key mapping
             HashMap<String, Object> map = new HashMap<>();
-            json.getMap().forEach((key, jsonElement) -> {
-                map.put(key, JsonMapper.mapJson(jsonElement, valueTypeInfo));
+            json.entries().forEach(tuple -> {
+                map.put(tuple.getKey(), JsonMapper.mapJson(tuple.getValue(), valueTypeInfo));
             });
 
             return map;
         } else if (isAssignableFrom(keyType, Enum.class)) {
             // do enum key mapping
             HashMap<Enum<?>, Object> map = new HashMap<>();
-            json.getMap().forEach((key, jsonElement) -> {
-                Enum<?> keyEnum = ClassCastUtil.toEnum(key, getRawType(keyType));
-                map.put(keyEnum, JsonMapper.mapJson(jsonElement, valueTypeInfo));
+            json.entries().forEach(tuple -> {
+                Enum<?> keyEnum = ClassCastUtil.toEnum(tuple.getKey(), getRawType(keyType));
+                map.put(keyEnum, JsonMapper.mapJson(tuple.getValue(), valueTypeInfo));
             });
 
             return map;

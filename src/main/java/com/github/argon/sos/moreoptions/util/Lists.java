@@ -12,7 +12,11 @@ public class Lists {
         return Collections.emptyList();
     }
 
-    public static <E> List<E> of(E e1) {
+    public static <E> List<E> of(Collection<E> e1) {
+        return new ArrayList<>(e1);
+    }
+
+    public static <E> List<E> ofSingle(E e1) {
         return Collections.singletonList(e1);
     }
 
@@ -131,7 +135,7 @@ public class Lists {
             case 0:
                 return Lists.of();
             case 1:
-                return Lists.of(elements[0]);
+                return Lists.ofSingle(elements[0]);
             case 2:
                 return Lists.of(elements[0], elements[1]);
             default:

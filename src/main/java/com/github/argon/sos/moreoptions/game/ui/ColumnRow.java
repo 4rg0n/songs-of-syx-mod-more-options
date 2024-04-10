@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.util.ClassUtil;
 import com.github.argon.sos.moreoptions.util.Lists;
@@ -27,9 +27,11 @@ import java.util.function.Supplier;
  * Used by the {@link Table} element.
  */
 @Builder
-public class ColumnRow<Value> extends GuiSection implements
+public class ColumnRow<Value> extends Section implements
     Searchable<String, Boolean>,
-    Valuable<Value, ColumnRow<Value>> {
+    Valuable<Value>,
+    Toggleable<String>
+{
 
     @Getter
     @Builder.Default
@@ -105,12 +107,12 @@ public class ColumnRow<Value> extends GuiSection implements
     @Setter
     @Builder.Default
     @Accessors(fluent = true, chain = false)
-    private Action<ColumnRow<Value>> clickAction = o -> {};
+    private VoidAction clickAction = () -> {};
 
 
 
     public void init() {
-        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(Lists.of(columns));
+        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(Lists.ofSingle(columns));
         init(maxWidths);
     }
 
@@ -178,7 +180,7 @@ public class ColumnRow<Value> extends GuiSection implements
     public boolean click() {
         if (!activeIs() || !visableIs())
             return false;
-        clickAction.accept(this);
+        clickAction.accept();
         if (selectable) selectedToggle();
 
 

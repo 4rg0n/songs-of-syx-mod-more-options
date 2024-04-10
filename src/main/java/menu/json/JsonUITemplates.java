@@ -1,12 +1,14 @@
 package menu.json;
 
-import com.github.argon.sos.moreoptions.game.GameResources;
+import com.github.argon.sos.moreoptions.game.data.GameResources;
 import com.github.argon.sos.moreoptions.game.json.GameJsonService;
 import com.github.argon.sos.moreoptions.json.element.JsonArray;
 import com.github.argon.sos.moreoptions.util.Lists;
 import init.paths.PATHS;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonUITemplates {
@@ -33,14 +35,13 @@ public class JsonUITemplates {
         roomHead(jsonUiTemplate);
     }
 
-    public static void roomHeadIconO(JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.iconO("ICON");
-        roomHead(jsonUiTemplate);
-    }
-
     public static void standing(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("STANDING");
         standing("STANDING.", jsonUiTemplate);
+    }
+
+    public static void standingWithDefault(JsonUiTemplate jsonUiTemplate) {
+        standing(jsonUiTemplate);
         defaultStanding(jsonUiTemplate);
     }
 
@@ -68,6 +69,22 @@ public class JsonUITemplates {
         standing("SERVICE.STANDING.", jsonUiTemplate);
     }
 
+    public static void sheet(String key, List<String> frames, JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header(key);
+        jsonUiTemplate.color(key + ".COLOR");
+        jsonUiTemplate.slider(key + ".FPS", 0, 100000);
+        jsonUiTemplate.sliderD(key + ".FPS_INTERVAL", 0, 100);
+        jsonUiTemplate.slider(key + ".SHADOW_LENGTH", 0, 100);
+        jsonUiTemplate.slider(key + ".SHADOW_HEIGHT", 0, 100);
+        jsonUiTemplate.checkbox(key + ".TINT");
+        jsonUiTemplate.checkbox(key + ".CIRCULAR");
+        jsonUiTemplate.checkbox(key + ".ROTATES");
+
+        jsonUiTemplate.checkbox(key + ".OVERWRITE");
+
+        jsonUiTemplate.slider(key + ".FRAMES[0].FENCE", 0, 8);
+    }
+
     public static void service(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("SERVICE");
         jsonUiTemplate.sliderD("SERVICE.DEFAULT_ACCESS", 0, 10000);
@@ -80,7 +97,7 @@ public class JsonUITemplates {
 
     public static void work(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("WORK");
-        jsonUiTemplate.sliderD("WORK.SHIFT_OFFSET", 0, 100);
+        jsonUiTemplate.sliderD("WORK.SHIFT_OFFSET", 0, 100, 3);
         jsonUiTemplate.text("WORK.SOUND");
         jsonUiTemplate.checkbox("WORK.USES_TOOL");
         jsonUiTemplate.slider("WORK.LARGE_WORKFORCE", 0, 10000);
@@ -127,7 +144,7 @@ public class JsonUITemplates {
 
     public static void serviceRoom(JsonUiTemplate jsonUiTemplate) {
         service(jsonUiTemplate);
-        standing(jsonUiTemplate);
+        standingWithDefault(jsonUiTemplate);
         room(jsonUiTemplate);
     }
 
@@ -190,7 +207,7 @@ public class JsonUITemplates {
     public static void upgrades(JsonUiTemplate jsonUiTemplate, int amount) {
         Integer resourcesAmount = jsonService.get(PATHS.TEXT().getFolder("room").get(jsonUiTemplate.getName()))
             .flatMap(gameJsonResource -> jsonService.get(PATHS.INIT().getFolder("room").get(jsonUiTemplate.getName()))
-            .flatMap(gameJsonResource1 -> gameJsonResource1.getJson().extract("RESOURCES", JsonArray.class).map(JsonArray::size)))
+            .flatMap(gameJsonResource1 -> gameJsonResource1.extract("RESOURCES", JsonArray.class).map(JsonArray::size)))
             .orElse(0);
 
         upgrades(jsonUiTemplate, amount, resourcesAmount);
@@ -209,16 +226,16 @@ public class JsonUITemplates {
 
     public static void items(JsonUiTemplate jsonUiTemplate) {
         jsonService.get(PATHS.TEXT().getFolder("room").get(jsonUiTemplate.getName())).ifPresent(gameJsonResource -> {
-            Integer statsAmount = gameJsonResource.getJson().extract("STATS", JsonArray.class)
+            Integer statsAmount = gameJsonResource.extract("STATS", JsonArray.class)
                 .map(JsonArray::size)
                 .orElse(0);
 
-            Integer itemsAmount = gameJsonResource.getJson().extract("ITEMS", JsonArray.class)
+            Integer itemsAmount = gameJsonResource.extract("ITEMS", JsonArray.class)
                 .map(JsonArray::size)
                 .orElse(0);
 
             Integer resourcesAmount = jsonService.get(PATHS.INIT().getFolder("room").get(jsonUiTemplate.getName()))
-                .flatMap(gameJsonResource1 -> gameJsonResource1.getJson().extract("RESOURCES", JsonArray.class)
+                .flatMap(gameJsonResource1 -> gameJsonResource1.extract("RESOURCES", JsonArray.class)
                     .map(JsonArray::size)).orElse(0);
 
             items(jsonUiTemplate, itemsAmount, resourcesAmount, statsAmount);

@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Action;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,13 +11,13 @@ import snake2d.util.sprite.SPRITE;
 
 public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
     @Getter
-    private final Toggle<Key> menu;
+    private final Switcher<Key> menu;
 
     @Builder
     public DropDown(
         CharSequence label,
         CharSequence description,
-        Toggle<Key> menu,
+        Switcher<Key> menu,
         boolean closeOnSelect,
         @Nullable Action<DropDown<Key>> clickAction,
         @Nullable Action<DropDown<Key>> closeAction
@@ -48,7 +48,7 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
             });
         }
 
-        menu.onToggle(key -> {
+        menu.switchAction(key -> {
             menu.get(key).ifPresent(selectedButton -> {
                 replaceLabel(selectedButton.getLabel(), DIR.C);
                 bg(selectedButton.getColor());
