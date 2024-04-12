@@ -77,6 +77,7 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
                     Slider likingsSlider = Slider.SliderBuilder
                         .fromRange(range)
                         .width(300)
+                        .controls(true)
                         .input(true)
                         .lockScroll(true)
                         .threshold(0, COLOR.RED100.shade(0.5d))

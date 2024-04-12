@@ -35,7 +35,7 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
             SPRITE activeLabel = activeButton.getLabel();
 
             replaceLabel(activeLabel.twin(activeLabel, DIR.C, 1), DIR.C);
-            bg(activeButton.getColor());
+            bg(activeButton.getBgColor());
         }
 
         if (clickAction != null) {
@@ -51,7 +51,7 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
         menu.switchAction(key -> {
             menu.get(key).ifPresent(selectedButton -> {
                 replaceLabel(selectedButton.getLabel(), DIR.C);
-                bg(selectedButton.getColor());
+                bg(selectedButton.getBgColor());
 
                 if (closeOnSelect) {
                     if (closeAction != null) {

@@ -33,7 +33,9 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends Section im
 
     private final Map<Key, Element> tabs;
     private final boolean resetOnToggle;
+
     @Getter
+    @Nullable
     private final Switcher<Key> menu;
 
     @Setter
@@ -52,14 +54,14 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends Section im
      * @param resetOnToggle whether elements shall be reset when toggling
      */
     @Builder
-    public Tabulator(Map<Key, Element> tabs, Switcher<Key> tabMenu, int margin, boolean center, boolean resetOnToggle, @Nullable DIR direction) {
+    public Tabulator(Map<Key, Element> tabs, @Nullable Switcher<Key> tabMenu, int margin, boolean center, boolean resetOnToggle, @Nullable DIR direction) {
         assert !tabs.isEmpty() : "tabs must not be empty";
         this.tabs = tabs;
         this.resetOnToggle = resetOnToggle;
         this.menu = tabMenu;
         // activate first element in map
         tab(tabs.keySet().iterator().next());
-        tabMenu.clickAction(this::tab);
+        if (tabMenu != null) tabMenu.clickAction(this::tab);
 
         // guarantee same width
         int maxWidth = UiUtil.getMaxWidth(tabs.values());
@@ -76,19 +78,19 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends Section im
             switch (direction) {
                 case N:
                     addDownC(0, view);
-                    addDownC(margin, tabMenu);
+                    if (tabMenu != null) addDownC(margin, tabMenu);
                     break;
                 case S:
-                    addDownC(0, tabMenu);
+                    if (tabMenu != null) addDownC(0, tabMenu);
                     addDownC(margin, view);
                     break;
                 case E:
-                    addRightC(0, tabMenu);
+                    if (tabMenu != null) addRightC(0, tabMenu);
                     addRightC(margin, view);
                     break;
                 case W:
                     addRightC(0, view);
-                    addRightC(margin, tabMenu);
+                    if (tabMenu != null) addRightC(margin, tabMenu);
                     break;
                 default:
                     addDownC(0, view);
@@ -110,7 +112,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends Section im
             .ifPresent(element -> {
                 if (resetOnToggle) reset();
                 activeTab = element.getValue();
-                menu.switch_(key);
+                if (menu != null) menu.switch_(key);
             });
     }
 

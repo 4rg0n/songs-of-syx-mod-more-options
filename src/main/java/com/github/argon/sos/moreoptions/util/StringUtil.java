@@ -195,7 +195,7 @@ public class StringUtil {
             return fileName;
         }
 
-        return Arrays.stream(parts, 0, parts.length - 2)
+        return Arrays.stream(parts, 0, parts.length - 1)
             .collect(Collectors.joining("."));
     }
 

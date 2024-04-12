@@ -7,6 +7,7 @@ import com.github.argon.sos.moreoptions.game.data.text.Text;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.StringUtil;
+import init.paths.PATH;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameResources {
+
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final static Init init = new Init();
@@ -28,7 +30,8 @@ public class GameResources {
     private final static Text text = new Text();
 
     @Getter(lazy = true)
-    private final static List<String> resources = init().resource().fileTitles().stream()
+    private final static List<String> resources = init().resource()
+        .fileTitles().stream()
         .map(resource -> StringUtil.removeBeginning(resource, "_"))
         .collect(Collectors.toList());
 
@@ -89,4 +92,19 @@ public class GameResources {
     private final static List<String> stats = init().stats().json("NAMES")
         .map(JsonObject::keys)
         .orElse(Lists.of());
+
+    public static GameFolder get(PATH path) {
+        if (path.get().startsWith(init().getFolder().path().get())) {
+            // init?
+            return init().getFolder().folder(path);
+        } else if (path.get().startsWith(sprite().getFolder().path().get())) {
+            // sprite?
+            return sprite().getFolder().folder(path);
+        } else if (path.get().startsWith(text().getFolder().path().get())) {
+            // text?
+            return text().getFolder().folder(path);
+        } else {
+            return GameFolder.of(path);
+        }
+    }
 }

@@ -64,7 +64,7 @@ public class Layouts {
 
         Integer maxWidths = UiUtil.getMaxWidths(elements, margin);
         if (maxWidths > maxWidth) {
-            Layouts.flow(elements, section, maxWidth, maxHeight, margin);
+            Layouts.flow(elements, section,  null, maxWidth, maxHeight, margin);
         } else {
             int pos = 0;
             for (RENDEROBJ element : elements) {
@@ -81,7 +81,7 @@ public class Layouts {
         return section;
     }
 
-    public static GuiSection flow(Collection<? extends RENDEROBJ> elements, @Nullable GuiSection section, int maxWidth, int maxHeight, int margin) {
+    public static GuiSection flow(Collection<? extends RENDEROBJ> elements, @Nullable GuiSection section, @Nullable StringInputSprite search, int maxWidth, int maxHeight, int margin) {
         if (section == null) {
             section = new GuiSection();
         }
@@ -107,6 +107,7 @@ public class Layouts {
         if (maxHeight > 0 && currentHeight > maxHeight) {
             ScrollRows scrollRows = ScrollRows.builder()
                 .height(maxHeight)
+                .search(search)
                 .rows(rows)
                 .slide(true)
                 .build();

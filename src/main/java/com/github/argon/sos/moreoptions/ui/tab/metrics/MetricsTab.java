@@ -93,6 +93,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         // Collection rate slider
         this.collectionRate = Slider.SliderBuilder
             .fromRange(metricsConfig.getCollectionRateSeconds())
+            .controls(true)
             .input(true)
             .width(200)
             .build();
@@ -108,6 +109,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         // Export rate slider
         this.exportRate = Slider.SliderBuilder
             .fromRange(metricsConfig.getExportRateMinutes())
+            .controls(true)
             .input(true)
             .width(200)
             .build();

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class MultiTab<Tab extends AbstractTab> extends AbstractTab {
 
     private final Tabulator<String, Tab, Void> tabulator;
+    private Map<String, Tab> tabMap;
 
     public MultiTab(PATH path, int availableHeight, Function<Path, Tab> tabSupplier) {
         this(path, availableHeight, tabSupplier, null);
@@ -40,7 +41,7 @@ public class MultiTab<Tab extends AbstractTab> extends AbstractTab {
             tabs = paths.stream().map(tabSupplier).collect(Collectors.toList());
         }
 
-        Map<String, Tab> tabMap = tabs.stream().collect(Collectors.toMap(
+        tabMap = tabs.stream().collect(Collectors.toMap(
             AbstractTab::getTitle,
             tab -> tab
         ));
@@ -74,8 +75,18 @@ public class MultiTab<Tab extends AbstractTab> extends AbstractTab {
         addDownC(0, tabulator);
     }
 
+    public List<Tab> tabs() {
+        return new ArrayList<>(tabMap.values());
+    }
+
     public String getTitle() {
         String parent = path.getParent().getFileName().toString();
         return parent + "/" + path.getFileName().toString();
+    }
+
+    @Override
+    public boolean isDirty() {
+        return tabMap.values().stream()
+            .anyMatch(AbstractTab::isDirty);
     }
 }

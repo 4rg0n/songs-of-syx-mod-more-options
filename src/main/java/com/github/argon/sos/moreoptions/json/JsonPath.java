@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class JsonPath {
     private final static Logger log = Loggers.getLogger(JsonPath.class);
@@ -31,6 +32,10 @@ public class JsonPath {
 
     public String lastKey() {
         return keys.get(keys.size() - 1);
+    }
+
+    public int size() {
+        return keys.size();
     }
 
     @Nullable
@@ -169,6 +174,25 @@ public class JsonPath {
             return null;
         }
     }
+
+    public List<String> getKeysWithoutIndexes() {
+        return keys.stream()
+            .map(s -> {
+                String key = parseKey(s);
+
+                if (key != null) {
+                    return key;
+                }
+
+                return s;
+            }).collect(Collectors.toList());
+    }
+
+    public String toStringWithoutIndexes() {
+        return String.join(".", getKeysWithoutIndexes());
+    }
+
+
 
     @Override
     public String toString() {

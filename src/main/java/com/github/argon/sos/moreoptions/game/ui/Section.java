@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.renderable.RENDEROBJ;
 
 public class Section extends GuiSection implements Hideable, Showable, Renderable {
     @Setter
@@ -44,5 +45,10 @@ public class Section extends GuiSection implements Hideable, Showable, Renderabl
     public void render(SPRITE_RENDERER r, float ds) {
         renderAction.accept(ds);
         super.render(r, ds);
+    }
+
+    public Section addCenter(RENDEROBJ render) {
+        addCentredX(render, body().cX());
+        return this;
     }
 }

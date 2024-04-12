@@ -1,6 +1,9 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.action.*;
+import com.github.argon.sos.moreoptions.game.action.Action;
+import com.github.argon.sos.moreoptions.game.action.Searchable;
+import com.github.argon.sos.moreoptions.game.action.Toggleable;
+import com.github.argon.sos.moreoptions.game.action.Valuable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,13 +21,7 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
     Toggleable<Boolean>
 {
     @Getter
-    protected COLOR color = COLOR.WHITE35;
-
-    private boolean markSuccess = false;
-    private boolean markError = false;
-
-    private double markUpdateTimerSeconds = 0d;
-    private final static int MARK_DURATION_SECONDS = 1;
+    protected COLOR bgColor = COLOR.WHITE35;
 
     @Setter
     @Accessors(fluent = true, chain = false)
@@ -58,10 +55,10 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
         this(label, COLOR.WHITE35, description);
     }
 
-    public AbstractButton(CharSequence label, COLOR color, @Nullable CharSequence description) {
+    public AbstractButton(CharSequence label, COLOR bgColor, @Nullable CharSequence description) {
         super(label);
-        this.color = color;
-        bg(color);
+        this.bgColor = bgColor;
+        bg(bgColor);
         hoverInfoSet(description);
     }
 
@@ -74,22 +71,14 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
         hoverInfoSet(description);
     }
 
-    public AbstractButton(SPRITE label, COLOR color) {
+    public AbstractButton(SPRITE label, COLOR bgColor) {
         super(label);
-        this.color = color;
-        bg(color);
+        this.bgColor = bgColor;
+        bg(bgColor);
     }
 
     public SPRITE getLabel() {
         return label;
-    }
-
-    public void markApplied(boolean applied) {
-        if (applied) {
-            bgClear();
-        } else {
-            bg(COLOR.WHITE15WHITE50);
-        }
     }
 
     @Override
@@ -106,22 +95,10 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
 
     @Override
     protected void render(SPRITE_RENDERER r, float seconds, boolean isActive, boolean isSelected, boolean isHovered) {
-        if (!activeIs()) {
+        if (!isActive) {
             super.render(r, seconds, false, false, false);
         } else {
             super.render(r, seconds, isActive, isSelected, isHovered);
-        }
-
-        // clear error or success mark after duration
-        if (markError || markSuccess) {
-            if (markUpdateTimerSeconds >= MARK_DURATION_SECONDS) {
-                markUpdateTimerSeconds = 0d;
-                markSuccess = false;
-                markError = false;
-                bgClear();
-            } else {
-                markUpdateTimerSeconds += seconds;
-            }
         }
     }
 
@@ -129,19 +106,6 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
     public void toggle() {
         selectedToggle();
         toggleAction.accept(selectedIs());
-    }
-
-    /**
-     * Let the button blink red or green for ~1 second
-     */
-    public void markSuccess(boolean success) {
-        if (success) {
-            bg(COLOR.GREEN40);
-            markSuccess = true;
-        } else {
-            bg(COLOR.RED50);
-            markError = true;
-        }
     }
 
     @Override
@@ -152,7 +116,7 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
 
     @Override
     public Element bg(COLOR c) {
-        color = c;
+        bgColor = c;
         super.bg(c);
         return element();
     }

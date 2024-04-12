@@ -1,14 +1,13 @@
 package com.github.argon.sos.moreoptions.log;
 
 
+import com.github.argon.sos.moreoptions.log.writer.LogWriter;
+import com.github.argon.sos.moreoptions.log.writer.StdOut;
 import com.github.argon.sos.moreoptions.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalTime;
 import java.util.Arrays;
-
-import static com.github.argon.sos.moreoptions.util.StringUtil.stringifyValues;
 
 /**
  * For printing messages with different log {@link Level}s to the system output
@@ -27,6 +26,8 @@ public class Logger {
 
     @Setter
     private Level level;
+    @Setter
+    private LogWriter writer;
 
     public Logger(Class<?> clazz) {
         this(clazz, DEFAULT_LEVEL);
@@ -37,6 +38,7 @@ public class Logger {
         this.shortName = StringUtil.shortenName(clazz);
         this.displayName = StringUtil.cutOrFill(shortName, NAME_DISPLAY_MAX_LENGTH, false);
         this.level = level;
+        this.writer = new StdOut(PREFIX_MOD, LOG_MSG_FORMAT, displayName);
     }
 
     public boolean isLevel(Level level) {
@@ -79,26 +81,9 @@ public class Logger {
             args = Arrays.copyOf(args, args.length - 1);
 
             doLog(levelText(level), formatMsg, args);
-            printException(ex);
+            writer.exception(ex);
         } else {
             doLog(levelText(level), formatMsg, args);
-        }
-    }
-
-    private void doLog(String levelText, String formatMsg, Object[] args) {
-        try {
-            System.out.printf(LOG_MSG_FORMAT,
-                PREFIX_MOD,
-                timestamp(),
-                displayName,
-                levelText,
-                String.format(formatMsg, StringUtil.stringifyValues(args)));
-        } catch (Exception e) {
-            System.err.println("PROBLEM WHILE LOGGING!");
-            System.err.println("formatMsg: " + formatMsg);
-            System.err.println(StringUtil.toString(StringUtil.stringifyValues(args)));
-
-            printException(e);
         }
     }
 
@@ -112,37 +97,21 @@ public class Logger {
         if (ex != null) {
             args = Arrays.copyOf(args, args.length - 1);
             doLogErr(levelText(level), formatMsg, args);
-            printException(ex);
+            writer.exception(ex);
         } else {
             doLogErr(levelText(level), formatMsg, args);
         }
     }
 
     private void doLogErr(String msgPrefix, String formatMsg, Object[] args) {
-        try {
-            System.err.printf(LOG_MSG_FORMAT,
-                PREFIX_MOD,
-                timestamp(),
-                displayName,
-                msgPrefix,
-                String.format(formatMsg, stringifyValues(args)));
-        } catch (Exception e) {
-            System.err.println("PROBLEM WHILE LOGGING!");
-            System.err.println("formatMsg: " + formatMsg);
-            System.err.println(StringUtil.toString(StringUtil.stringifyValues(args)));
-
-            printException(e);
-        }
+        writer.error(msgPrefix, formatMsg, args);
     }
 
-    private void printException(Throwable ex) {
-        System.err.println("\n" + ex.getMessage());
-        ex.printStackTrace(System.err);
-        System.err.println();
+    private void doLog(String prefix, String formatMsg, Object[] args) {
+        writer.log(prefix, formatMsg, args);
     }
 
     private String levelText(Level level) {
-
         return level.getName();
     }
 
@@ -159,9 +128,5 @@ public class Logger {
         }
 
         return null;
-    }
-
-    private String timestamp() {
-        return LocalTime.now().toString();
     }
 }

@@ -1,7 +1,5 @@
 package com.github.argon.sos.moreoptions.game.action;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -12,7 +10,7 @@ import java.util.function.Consumer;
  * @param <Param> type of parameter handed to the action function
  */
 public interface Action<Param>  {
-    void accept(@Nullable Param param);
+    void accept(Param param);
 
     default Consumer<Param> andThen(Consumer<? super Param> after) {
         Objects.requireNonNull(after);

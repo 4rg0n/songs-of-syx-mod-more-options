@@ -177,4 +177,23 @@ public class Lists {
 
         return toCompare.containsAll(list);
     }
+
+    public static <T> List<T> copy(List<T> list, int from, int to) {
+        List<T> copy = new ArrayList<>();
+        int max = list.size() - 1;
+
+        if (from > max) {
+            return Lists.of();
+        }
+
+        if (to > max) {
+            to = max;
+        }
+
+        for (int i = from; i < to; i++) {
+            copy.add(list.get(i));
+        }
+
+        return copy;
+    }
 }

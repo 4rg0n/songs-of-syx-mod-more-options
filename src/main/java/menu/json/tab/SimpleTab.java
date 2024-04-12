@@ -9,8 +9,8 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
-import menu.json.JsonUiSection;
-import menu.json.JsonUiTemplate;
+import menu.json.JsonUi;
+import menu.json.factory.JsonUiTemplate;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GInput;
@@ -22,24 +22,26 @@ public class SimpleTab extends AbstractTab {
 
     private final static Logger log = Loggers.getLogger(SimpleTab.class);
 
+    private JsonUiTemplate jsonUiTemplate;
+
     private Table<Void> table;
 
     public SimpleTab(Path path, int availableHeight, JsonUiTemplate jsonUiTemplate) {
         super(path, availableHeight);
+        this.jsonUiTemplate = jsonUiTemplate;
 
         GuiSection bar = new GuiSection();
         StringInputSprite search = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
         GInput searchField = new GInput(search);
         Button resetButton = new Button(SPRITES.icons().m.arrow_left);
-        resetButton.hoverInfoSet("Reset " + getTitle());
+        resetButton.hoverInfoSet("Reset " + getTitle() + " to initially loaded from file.");
         resetButton.clickActionSet(jsonUiTemplate::reset);
 
         Button toggleOrphansButton = new Button(SPRITES.icons().m.clear_structure);
         toggleOrphansButton.hoverInfoSet("Hide elements without config present in files.");
-        toggleOrphansButton.selectedSet(true);
         toggleOrphansButton.clickActionSet(toggleOrphansButton::toggle);
         toggleOrphansButton.toggleAction(enabled -> {
-            displayOrphans(jsonUiTemplate, !enabled);
+            hideOrphans(jsonUiTemplate, enabled);
         });
 
         Button exportButton = new Button(SPRITES.icons().m.for_muster);
@@ -49,12 +51,13 @@ public class SimpleTab extends AbstractTab {
             Clipboard.write(json.write());
         });
 
-        this.table = JsonUiSection.builder()
+        this.table = JsonUi.builder()
             .template(jsonUiTemplate)
-            .build().table(this.availableHeight - 10, search);
+            .build()
+            .table(this.availableHeight - 10, search);
 
         // hide elements not present in game files per default
-        displayOrphans(jsonUiTemplate, false);
+        hideOrphans(jsonUiTemplate, false);
 
         bar.addRightC(0, searchField);
         bar.addRightC(100, resetButton);
@@ -64,18 +67,18 @@ public class SimpleTab extends AbstractTab {
         addDownC(10, table);
     }
 
-    private void displayOrphans(JsonUiTemplate jsonUiTemplate, Boolean enabled) {
+    private void hideOrphans(JsonUiTemplate jsonUiTemplate, Boolean enabled) {
         jsonUiTemplate.getOrphans().forEach(jsonUiElement -> {
             String jsonPath = jsonUiElement.getJsonPath();
             if (jsonPath != null) {
-                table.display(jsonPath, enabled);
+                table.display(jsonPath, !enabled);
             }
         });
     }
 
     public SimpleTab(Path path, int availableHeight, Consumer<JsonUiTemplate> factoryConsumer) {
         super(path, availableHeight);
-        Table<Void> table = JsonUiSection.builder()
+        Table<Void> table = JsonUi.builder()
             .template(path, factoryConsumer)
             .build().table(this.availableHeight - 10);
         addDownC(10, table);
@@ -84,5 +87,10 @@ public class SimpleTab extends AbstractTab {
     @Override
     public String getTitle() {
         return path.getFileName().toString();
+    }
+
+    @Override
+    public boolean isDirty() {
+        return jsonUiTemplate.isDirty();
     }
 }

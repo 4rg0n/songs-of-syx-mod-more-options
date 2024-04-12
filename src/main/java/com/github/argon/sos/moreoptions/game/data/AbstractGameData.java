@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.game.data;
 
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import init.paths.PATH;
+import lombok.Getter;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -9,10 +10,11 @@ import java.util.Map;
 import java.util.Optional;
 
 public abstract class AbstractGameData {
+    @Getter
     private final GameFolder folder;
 
     public AbstractGameData(PATH path) {
-        this.folder = GameFolder.get(path);
+        this.folder = GameFolder.of(path);
     }
 
     public List<Path> paths() {

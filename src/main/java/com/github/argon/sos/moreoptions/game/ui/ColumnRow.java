@@ -287,4 +287,16 @@ public class ColumnRow<Value> extends Section implements
             return this;
         }
     }
+
+    @Override
+    public String toString() {
+        return "ColumnRow{" +
+            "key='" + key + '\'' +
+            ", searchTerm='" + searchTerm + '\'' +
+            ", highlightable=" + highlightable +
+            ", isHeader=" + isHeader +
+            ", selectable=" + selectable +
+            ", visible=" + visableIs() +
+            '}';
+    }
 }

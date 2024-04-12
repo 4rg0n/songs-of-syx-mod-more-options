@@ -22,6 +22,10 @@ public class JsonDouble implements JsonElement {
         return new JsonDouble(value.getValue().doubleValue());
     }
 
+    public static JsonDouble of(Long value) {
+        return new JsonDouble(value.doubleValue());
+    }
+
     public JsonDouble copy() {
         return JsonDouble.of(getValue());
     }

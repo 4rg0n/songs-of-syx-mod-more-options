@@ -110,6 +110,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         }
 
         Slider multiSlider = Slider.SliderBuilder.fromRange(rangePerc)
+            .controls(true)
             .input(true)
             .lockScroll(true)
             .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))
@@ -119,6 +120,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             .width(300)
             .build();
         Slider additiveSlider = Slider.SliderBuilder.fromRange(rangeAdd)
+            .controls(true)
             .input(true)
             .lockScroll(true)
             .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))

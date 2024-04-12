@@ -1,6 +1,8 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import lombok.Builder;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sets.LinkedList;
@@ -8,6 +10,7 @@ import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.table.GScrollRows;
 
 import java.util.Collection;
+import java.util.function.Function;
 
 
 public class ScrollRows extends GScrollRows {
@@ -15,10 +18,22 @@ public class ScrollRows extends GScrollRows {
     @Nullable
     private StringInputSprite search;
 
+
+    @Setter
+    @Nullable
+    @Accessors(fluent = true, chain = false)
+    private Function<String, Boolean> searchAction;
+
     @Builder
-    public ScrollRows(Iterable<RENDEROBJ> rows, int height, int width, boolean slide, StringInputSprite search) {
+    public ScrollRows(
+        Iterable<RENDEROBJ> rows,
+        int height,
+        int width,
+        boolean slide,
+        @Nullable StringInputSprite search
+    ) {
         super(rows, height, width, slide);
-         if (search != null) this.search = search;
+        this.search = search;
     }
 
     @Override
@@ -32,6 +47,10 @@ public class ScrollRows extends GScrollRows {
         }
         if (search.text().length() == 0) {
             return true;
+        }
+
+        if (searchAction != null) {
+            return searchAction.apply(search.text().toString());
         }
 
         if (o instanceof ColumnRow) {
@@ -49,8 +68,7 @@ public class ScrollRows extends GScrollRows {
         private Iterable<RENDEROBJ> rows;
 
         public ScrollRowsBuilder rows(Collection<? extends RENDEROBJ> rows) {
-            LinkedList<RENDEROBJ> rowsLinked = new LinkedList<>(rows);
-            this.rows = rowsLinked;
+            this.rows = new LinkedList<>(rows);
 
             return this;
         }

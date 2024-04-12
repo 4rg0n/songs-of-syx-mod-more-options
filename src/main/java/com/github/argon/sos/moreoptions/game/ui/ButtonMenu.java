@@ -92,7 +92,7 @@ public class ButtonMenu<Key> extends Section {
         if (horizontal) {
             Integer maxWidths = UiUtil.getMaxWidths(renders, margin);
             if (maxWidths > maxWidth) {
-                Layouts.flow(renders, this, maxWidth, maxHeight, margin);
+                Layouts.flow(renders, this, search, maxWidth, maxHeight, margin);
             } else {
                 Layouts.horizontal(renders, this, margin, maxWidth, maxHeight, true);
             }

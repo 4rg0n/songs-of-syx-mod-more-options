@@ -41,7 +41,7 @@ public class UiShowroom extends GuiSection {
                 section.hoverInfoSet("SPRITES.icons().s." + entry.getKey().getName());
                 return section;
             }).collect(Collectors.toList());
-        GuiSection iconsSmallSection = Layouts.flow(iconsSmall, null, width, 100, 0);
+        GuiSection iconsSmallSection = Layouts.flow(iconsSmall, null, null, width, 100, 0);
 
         // Medium Icons
         List<GuiSection> iconsMedium = ReflectionUtil.<Icon>getDeclaredFieldValuesMap(Icon.class, SPRITES.icons().m)
@@ -51,7 +51,7 @@ public class UiShowroom extends GuiSection {
                 section.hoverInfoSet("SPRITES.icons().m." + entry.getKey().getName());
                 return section;
             }).collect(Collectors.toList());
-        GuiSection iconsMediumSection = Layouts.flow(iconsMedium, null, width, 150, 0);
+        GuiSection iconsMediumSection = Layouts.flow(iconsMedium, null, null, width,150, 0);
 
         // Large Icons
         List<GuiSection> iconsLarge = ReflectionUtil.<Icon>getDeclaredFieldValuesMap(Icon.class, SPRITES.icons().l)
@@ -61,7 +61,7 @@ public class UiShowroom extends GuiSection {
                 section.hoverInfoSet("SPRITES.icons().l." + entry.getKey().getName());
                 return section;
             }).collect(Collectors.toList());
-        GuiSection iconsLargeSection = Layouts.flow(iconsLarge, null, width, 100, 0);
+        GuiSection iconsLargeSection = Layouts.flow(iconsLarge, null, null, width, 100, 0);
 
         // COLOR
         List<ColorBox> colors = ReflectionUtil.<COLOR>getDeclaredFieldValuesMap(COLOR.class, COLOR.class)
@@ -73,7 +73,7 @@ public class UiShowroom extends GuiSection {
                 colorBox.hoverInfoSet("COLOR." + entry.getKey().getName());
                 return colorBox;
             }).collect(Collectors.toList());
-        GuiSection colorsSection = Layouts.flow(colors, null, width, 100, 0);
+        GuiSection colorsSection = Layouts.flow(colors, null, null, width, 100, 0);
 
         // COLOR.UNIQUE
         List<ColorBox> colorsUnique = new ArrayList<>();
@@ -83,7 +83,7 @@ public class UiShowroom extends GuiSection {
             colorBox.hoverInfoSet("COLOR.UNIQUE[" + i  + "]");
             colorsUnique.add(colorBox);
         }
-        GuiSection colorsUniqueSection = Layouts.flow(colorsUnique, null, width, 100, 0);
+        GuiSection colorsUniqueSection = Layouts.flow(colorsUnique, null, null, width, 100, 0);
 
         // GCOLOR.T()
         List<ColorBox> gColorsText = ReflectionUtil.<COLOR>getDeclaredFieldValuesMap(COLOR.class, GCOLOR.T())
@@ -95,7 +95,7 @@ public class UiShowroom extends GuiSection {
                 colorBox.hoverInfoSet("GCOLOR.T()." + entry.getKey().getName());
                 return colorBox;
             }).collect(Collectors.toList());
-        GuiSection gColorsTextSection = Layouts.flow(gColorsText, null, width, 100, 0);
+        GuiSection gColorsTextSection = Layouts.flow(gColorsText, null, null, width, 100, 0);
 
         // GCOLOR.UI()
         List<ColorBox> gColorsUI = ReflectionUtil.<COLOR>getDeclaredFieldValuesMap(COLOR.class, GCOLOR.UI())
@@ -107,7 +107,7 @@ public class UiShowroom extends GuiSection {
                 colorBox.hoverInfoSet("GCOLOR.UI()." + entry.getKey().getName());
                 return colorBox;
             }).collect(Collectors.toList());
-        GuiSection gColorsUISection = Layouts.flow(gColorsUI, null, width, 100, 0);
+        GuiSection gColorsUISection = Layouts.flow(gColorsUI, null, null, width, 100, 0);
 
         // simple button with description
         Button button = new Button("Button", "A button.");
@@ -180,10 +180,11 @@ public class UiShowroom extends GuiSection {
             dropDown,
             notificationButtons
         );
-        GuiSection buttonElementsSection = Layouts.flow(buttonElements, null, width, 200, 20);
+        GuiSection buttonElementsSection = Layouts.flow(buttonElements, null, null, width, 200, 20);
 
         // Slider with negative values
         Slider slider = Slider.builder()
+            .controls(true)
             .input(true)
             .min(-1337)
             .max(1337)
@@ -206,7 +207,7 @@ public class UiShowroom extends GuiSection {
             checkbox,
             slider
         );
-        GuiSection otherElementsSection = Layouts.flow(otherElements, null, width, 200, 20);
+        GuiSection otherElementsSection = Layouts.flow(otherElements, null, null, width, 200, 20);
 
         // Table with searchable rows
         GuiSection tableWithSearch = new GuiSection();

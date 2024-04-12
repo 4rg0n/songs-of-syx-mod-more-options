@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Wildcard {
@@ -47,9 +48,9 @@ public class Wildcard {
         return new Wildcard(Lists.of(parts));
     }
 
-    public static List<String> from(List<String> paths) {
+    public static Set<String> from(List<String> paths) {
         return paths.stream()
             .flatMap(path -> Wildcard.of(path).get().stream())
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
 }

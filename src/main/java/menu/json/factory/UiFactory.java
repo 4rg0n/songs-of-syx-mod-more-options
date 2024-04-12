@@ -1,6 +1,7 @@
-package menu.json;
+package menu.json.factory;
 
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.json.element.*;
 import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -9,21 +10,24 @@ import com.github.argon.sos.moreoptions.util.Lists;
 import init.sprite.UI.UI;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import menu.ui.IconView;
 import menu.Ui;
+import menu.json.JsonUiMapper;
+import menu.ui.IconView;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
+import snake2d.util.gui.renderable.RENDEROBJ;
+import snake2d.util.sprite.text.Font;
 import snake2d.util.sprite.text.StringInputSprite;
+import util.gui.misc.GHeader;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class JsonUiFactory {
-
-    private final static Logger log = Loggers.getLogger(JsonUiFactory.class);
+public class UiFactory {
+    private final static Logger log = Loggers.getLogger(UiFactory.class);
 
     public static DropDown<String> dropDown(JsonString jsonString, List<String> options) {
         return DropDown.<String>builder()
@@ -40,6 +44,26 @@ public class JsonUiFactory {
                 .build())
             .build();
     }
+
+    public static Section indent(int indents, RENDEROBJ render) {
+        Section indentRow = new Section();
+        indentRow.addRightC(0, UiFactory.indent(indents));
+        indentRow.addRightC(0, render);
+        return indentRow;
+    }
+
+    public static RENDEROBJ indent(int indents) {
+        return new Spacer(30 * indents, 1);
+    }
+
+    public static Section header(String text, Font font) {
+        GHeader gHeader = new GHeader(text, font);
+        Section section = UiUtil.toSection(gHeader);
+        section.pad(0, 5);
+
+        return section;
+    }
+
 
     public static MultiDropDown<String> multiDropDown(String title, JsonArray jsonArray, List<String> options, int maxSelect, boolean maxSelected) {
         return MultiDropDown.<String>builder()
@@ -114,7 +138,7 @@ public class JsonUiFactory {
             .max(max)
             .step(step)
             .width(400)
-            .input(true)
+            .controls(true)
             .lockScroll(true)
             .allowedValues(allowedValues);
     }

@@ -7,11 +7,13 @@ import com.github.argon.sos.moreoptions.util.Lists;
 import init.paths.PATHS;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import menu.json.factory.JsonUiTemplate;
 
-import java.util.List;
-
+/**
+ * Some more often occurring fragments of configuration
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class JsonUITemplates {
+public class JsonUIBlueprints {
 
     private final static GameJsonService jsonService = GameJsonService.getInstance();
 
@@ -69,7 +71,7 @@ public class JsonUITemplates {
         standing("SERVICE.STANDING.", jsonUiTemplate);
     }
 
-    public static void sheet(String key, List<String> frames, JsonUiTemplate jsonUiTemplate) {
+    public static void sheet(String key, JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header(key);
         jsonUiTemplate.color(key + ".COLOR");
         jsonUiTemplate.slider(key + ".FPS", 0, 100000);
@@ -82,6 +84,12 @@ public class JsonUITemplates {
 
         jsonUiTemplate.checkbox(key + ".OVERWRITE");
 
+
+        // TODO
+        //  * This would be a very long list... too much noise. Needs a better solution
+        //  * FRAMES are basically sprite files from e.g. sprite/game/
+        //  * There's a semantic with the SPRITE name e.g. STORAGE_1X1 and the folder
+        //  * FRAMES can come from sprite/game/, sprite/resource/ sprite/world/
         jsonUiTemplate.slider(key + ".FRAMES[0].FENCE", 0, 8);
     }
 
@@ -161,9 +169,7 @@ public class JsonUITemplates {
         });
 
         jsonUiTemplate.header("INDUSTRY.OUT");
-        GameResources.getResources().forEach(s -> {
-            jsonUiTemplate.sliderD("INDUSTRY.OUT." + s, 0, 1000);
-        });
+        jsonUiTemplate.slidersD("INDUSTRY.OUT", GameResources.getResources(), 0, 1000);
     }
 
     public static void projectile(JsonUiTemplate jsonUiTemplate) {
@@ -172,29 +178,27 @@ public class JsonUITemplates {
         jsonUiTemplate.text("PROJECTILE.SPRITE_FILE");
         jsonUiTemplate.text("PROJECTILE.SOUND_RELEASE");
         jsonUiTemplate.text("PROJECTILE.SOUND_HIT");
-        jsonUiTemplate.separator();
+        jsonUiTemplate.space();
 
-        jsonUiTemplate.sliderD("PROJECTILE.FROM.TILE_SPEED", 1, 250);
+        jsonUiTemplate.header("PROJECTILE.FROM");
         jsonUiTemplate.slider("PROJECTILE.FROM.MASS", 1, 250);
-        jsonUiTemplate.sliderD("PROJECTILE.FROM.TILE_SPEED", 1, 100000);
+        jsonUiTemplate.sliderD("PROJECTILE.FROM.TILE_SPEED", 1, 250);
         jsonUiTemplate.sliderD("PROJECTILE.FROM.ACCURACY", 1, 100);
         jsonUiTemplate.slider("PROJECTILE.FROM.TILE_RADIUS_DAMAGE", 1, 10000);
         jsonUiTemplate.slider("PROJECTILE.FROM.RELOAD_SECONDS", 1, 10000);
         jsonUiTemplate.slider("PROJECTILE.FROM.MAX_ARCH_ANGLE_DEGREES", 0, 75);
-        jsonUiTemplate.separator();
+        jsonUiTemplate.space();
 
+        jsonUiTemplate.header("PROJECTILE.TO");
         jsonUiTemplate.sliderD("PROJECTILE.TO.TILE_SPEED", 1, 250);
         jsonUiTemplate.slider("PROJECTILE.TO.MASS", 1, 250);
-        jsonUiTemplate.sliderD("PROJECTILE.TO.TILE_SPEED", 1, 100000);
         jsonUiTemplate.sliderD("PROJECTILE.TO.ACCURACY", 1, 100);
         jsonUiTemplate.slider("PROJECTILE.TO.TILE_RADIUS_DAMAGE", 1, 10000);
         jsonUiTemplate.slider("PROJECTILE.TO.RELOAD_SECONDS", 1, 10000);
         jsonUiTemplate.slider("PROJECTILE.TO.MAX_ARCH_ANGLE_DEGREES", 0, 75);
-        jsonUiTemplate.separator();
+        jsonUiTemplate.space();
 
-        GameResources.getDamages().forEach(s -> {
-            jsonUiTemplate.sliderD("PROJECTILE.FROM.DAMAGE." + s, 1, 100);
-        });
+        jsonUiTemplate.slidersD("PROJECTILE.FROM.DAMAGE", GameResources.getDamages(), 1, 100);
     }
 
     public static void stats(JsonUiTemplate jsonUiTemplate) {

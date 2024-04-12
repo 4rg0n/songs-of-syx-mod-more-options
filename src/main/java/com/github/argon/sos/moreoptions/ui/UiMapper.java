@@ -120,6 +120,7 @@ public class UiMapper {
                 .fromRange(config.getValue())
                 .lockScroll(true)
                 .input(true)
+                .controls(true)
                 .width(300)
                 .build()));
     }
@@ -129,6 +130,7 @@ public class UiMapper {
             .fromRange(range)
             .lockScroll(true)
             .input(true)
+            .controls(true)
             .width(300)
             .build();
     }
@@ -179,7 +181,7 @@ public class UiMapper {
                 Element element = entry.getValue();
 
                 String name = key;
-                SPRITE sprite = SPRITES.icons().m.cancel;
+                SPRITE sprite = SPRITES.icons().m.clear_structure;
                 Optional<RoomBlueprintImp> bySound = gameApis.rooms().getBySound(key);
 
                 if (bySound.isPresent()) {

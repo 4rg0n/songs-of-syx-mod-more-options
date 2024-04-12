@@ -118,8 +118,9 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
         int height,
         int step,
         int resolution,
-        boolean input,
+        boolean controls,
         boolean lockScroll,
+        boolean input,
         ValueDisplay valueDisplay,
         Map<Integer, COLOR> thresholds,
         List<Integer> allowedValues
@@ -165,7 +166,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
         setLockScroll(lockScroll);
 
-        if (input) {
+        if (controls) {
             sliderWidth -= (Icon.S+2)*3;
         }
 
@@ -174,7 +175,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
         if (sliderWidth < 0)
             sliderWidth = 0;
 
-        if (input) {
+        if (controls) {
             addRightC(0, new GButt.ButtPanel(SPRITES.icons().s.minifier) {
                 private double clickSpeed;
 
@@ -225,7 +226,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
         addRightC(4, new Mid(sliderWidth, sliderHeight));
 
-        if (input) {
+        if (controls) {
             addRightC(4, new GButt.ButtPanel(SPRITES.icons().s.magnifier) {
                 private double clickSpeed;
 
@@ -272,17 +273,16 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
                 }
             });
 
-            addRightC(0, new GButt.ButtPanel(SPRITES.icons().s.pluses) {
+            if (input) {
+                addRightC(0, new GButt.ButtPanel(SPRITES.icons().s.pluses) {
 
-                @Override
-                protected void clickA() {
-                    Str.TMP.clear().add(setAmountD).insert(0, in.min()).insert(1, in.max());
-                    VIEW.inters().input.requestInput(rec, Str.TMP);
-                }
-
-
-            }.hoverInfoSet(setAmount));
-
+                    @Override
+                    protected void clickA() {
+                        Str.TMP.clear().add(setAmountD).insert(0, in.min()).insert(1, in.max());
+                        VIEW.inters().input.requestInput(rec, Str.TMP);
+                    }
+                }.hoverInfoSet(setAmount));
+            }
         }
 
         if (valueDisplay != ValueDisplay.NONE) {

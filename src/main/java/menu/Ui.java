@@ -44,7 +44,12 @@ public class Ui {
     }
 
     public static FullWindow<MoreOptionsEditor> moreOptionsFullsWindow() {
-        MoreOptionsEditor moreOptionsEditor = new MoreOptionsEditor();
-        return new FullWindow<>(null, moreOptionsEditor, moreOptionsEditor.getTabulator().getMenu());
+//        StringInputSprite searchInput = new StringInputSprite(8, UI.FONT().S).placeHolder("Search");
+        MoreOptionsEditor moreOptionsEditor = new MoreOptionsEditor(null);
+        return new FullWindow<>("More Options",
+            moreOptionsEditor,
+            moreOptionsEditor.getTabulator().getMenu(),
+            null
+        );
     }
 }

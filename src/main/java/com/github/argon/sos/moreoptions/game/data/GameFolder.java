@@ -25,6 +25,10 @@ import java.util.stream.Stream;
 public class GameFolder {
     private final static Logger log = Loggers.getLogger(GameFolder.class);
 
+    private final GameJsonService gameJsonService = GameJsonService.getInstance();
+
+    @Getter
+    @Accessors(fluent = true, chain = false)
     private final PATH path;
 
     @Getter(lazy = true)
@@ -52,18 +56,45 @@ public class GameFolder {
 
     @Getter(lazy = true)
     @Accessors(fluent = true, chain = false)
-    private final List<String> fileTitles = fileNames().stream()
-        .map(StringUtil::removeFileExtension)
-        .collect(Collectors.toList());
-
-    @Getter(lazy = true)
-    @Accessors(fluent = true, chain = false)
     private final List<String> fileNames = filePaths().stream()
         .map(Path::getFileName)
         .map(Path::toString)
         .collect(Collectors.toList());
 
+    @Getter(lazy = true)
+    @Accessors(fluent = true, chain = false)
+    private final List<String> fileTitles = fileNames().stream()
+        .map(StringUtil::removeFileExtension)
+        .collect(Collectors.toList());
+
     private final Map<String, GameFolder> folders = new HashMap<>();
+
+    public GameFolder folder(PATH path) {
+        return folder(path.get());
+    }
+
+    public GameFolder folder(Path path) {
+        if (path.startsWith(this.path.get())) {
+            path = this.path.get().relativize(path);
+        }
+
+        GameFolder currentFolder = this;
+        for (Path element : path) {
+            String elementName = element.toString();
+
+            if (isFileName(elementName)) {
+                return currentFolder;
+            }
+
+            currentFolder = currentFolder.folder(elementName);
+        }
+
+        return currentFolder;
+    }
+
+    private boolean isFileName(String elementName) {
+        return elementName.contains("."); //fishy :x
+    }
 
     public Map<String, GameFolder> folders() {
         return folderNames().stream()
@@ -75,7 +106,7 @@ public class GameFolder {
             return folders.get(name);
         }
 
-        GameFolder gameFolder = GameFolder.get(path.getFolder(name));
+        GameFolder gameFolder = GameFolder.of(path.getFolder(name));
 
         store(name, gameFolder);
         return gameFolder;
@@ -94,12 +125,12 @@ public class GameFolder {
         return json(path.get(title));
     }
 
-    public static GameFolder get(PATH path) {
+    public static GameFolder of(PATH path) {
         return new GameFolder(path);
     }
 
-    private static Optional<JsonObject> json(@Nullable Path filePath) {
-        return GameJsonService.getInstance().get(filePath);
+    private Optional<JsonObject> json(@Nullable Path filePath) {
+        return gameJsonService.get(filePath);
     }
 
     private static List<Path> readPaths(PATH path) {
