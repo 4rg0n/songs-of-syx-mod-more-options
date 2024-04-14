@@ -33,9 +33,9 @@ public class ColorPicker extends Section {
         setGreen(green);
         setBlue(blue);
 
-        GInputInt redInput = new GInputInt(this.red, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
-        GInputInt greenInput = new GInputInt(this.green, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
-        GInputInt blueInput = new GInputInt(this.blue, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
+        InputInt redInput = new InputInt(this.red, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
+        InputInt greenInput = new InputInt(this.green, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
+        InputInt blueInput = new InputInt(this.blue, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
 
         GuiSection colorInputs = new GuiSection();
 

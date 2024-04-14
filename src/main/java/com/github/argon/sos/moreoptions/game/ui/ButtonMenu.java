@@ -13,9 +13,7 @@ import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.text.StringInputSprite;
-import util.gui.misc.GInput;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +76,7 @@ public class ButtonMenu<Key> extends Section {
             if (search == null) {
                 search = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
             }
-            GInput searchField = new GInput(search);
+            Input searchField = new Input(search);
             addDownC(0, searchField);
             searchBarHeight = searchField.body().height();
             searchBarMargin = 10;
@@ -124,12 +122,15 @@ public class ButtonMenu<Key> extends Section {
         }
 
         public ButtonMenuBuilder<Key> buttons(List<Key> names) {
-            Map<Key, Button> buttonMap = new HashMap<>();
+            Map<Key, Button> buttonMap = new LinkedHashMap<>();
             for (Key name : names) {
 
                 if (name instanceof String) {
                     String key = (String) name;
-                    buttonMap.put(name, new Button(key));
+                    Button button = new Button(key);
+                    button.setValue(key);
+                    button.searchTerm(key);
+                    buttonMap.put(name, button);
                 }
             }
 

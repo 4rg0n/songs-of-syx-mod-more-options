@@ -4,6 +4,7 @@ package com.github.argon.sos.moreoptions.game.data;
 import com.github.argon.sos.moreoptions.game.data.init.Init;
 import com.github.argon.sos.moreoptions.game.data.sprite.Sprite;
 import com.github.argon.sos.moreoptions.game.data.text.Text;
+import com.github.argon.sos.moreoptions.io.ResourceService;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.StringUtil;
@@ -33,13 +34,14 @@ public class GameResources {
     private final static List<String> resources = init().resource()
         .fileTitles().stream()
         .map(resource -> StringUtil.removeBeginning(resource, "_"))
+        .sorted()
         .collect(Collectors.toList());
 
     @Getter(lazy = true)
     private final static List<String> races = init().race().fileTitles();
 
     @Getter(lazy = true)
-    private final static List<String> humanClasses = Lists.of("CITIZEN", "SLAVE", "NOBLE", "CHILD", "OTHER");
+    private final static List<String> humanClasses = Lists.of("CITIZEN", "CHILD", "NOBLE", "OTHER", "SLAVE");
 
     @Getter(lazy = true)
     private final static List<String> edibles = init().resource().edible().fileTitles();
@@ -81,17 +83,26 @@ public class GameResources {
     private final static List<String> damages = init().stats().folder("damage").fileTitles();
 
     @Getter(lazy = true)
-    private final static List<String> climates = Lists.of("COLD", "TEMPERATE", "HOT");
+    private final static List<String> boosters = readResourceLines("game/boosters.txt").stream()
+        .sorted()
+        .collect(Collectors.toList());
+
+    @Getter(lazy = true)
+    private final static List<String> climates = Lists.of("COLD", "HOT", "TEMPERATE");
 
     @Getter(lazy = true)
     private static final List<String> monuments = getRooms().stream()
         .filter(name -> name.startsWith("MONUMENT_"))
+        .sorted()
         .collect(Collectors.toList());
 
     @Getter(lazy = true)
-    private final static List<String> stats = init().stats().json("NAMES")
+    private final static List<String> stats = text().stats().json("NAMES")
         .map(JsonObject::keys)
-        .orElse(Lists.of());
+        .orElse(Lists.of())
+        .stream()
+        .sorted()
+        .collect(Collectors.toList());
 
     public static GameFolder get(PATH path) {
         if (path.get().startsWith(init().getFolder().path().get())) {
@@ -106,5 +117,9 @@ public class GameResources {
         } else {
             return GameFolder.of(path);
         }
+    }
+
+    private static List<String> readResourceLines(String path) {
+        return ResourceService.getInstance().readResourceLines(path);
     }
 }

@@ -12,7 +12,7 @@ import util.gui.misc.GButt;
 
 import java.util.function.Supplier;
 
-public class GInputInt extends GuiSection {
+public class InputInt extends GuiSection {
 
 	private final INTE in;
 	
@@ -41,14 +41,14 @@ public class GInputInt extends GuiSection {
 
 	}.placeHolder("0");
 	
-	public GInputInt(INTE in) {
+	public InputInt(INTE in) {
 		this(in, false, false, null, 0);
 	}
 	
-	public GInputInt(INTE in, boolean butts, boolean doublebutts, @Nullable Supplier<Coo> mouseCooSupplier, int inputWidth){
+	public InputInt(INTE in, boolean butts, boolean doublebutts, @Nullable Supplier<Coo> mouseCooSupplier, int inputWidth){
 		this.in = in;
 		
-		GInput inn = new GInput(sp, mouseCooSupplier, inputWidth);
+		Input inn = new Input(sp, mouseCooSupplier, inputWidth);
 		
 		if (doublebutts) {
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.minifierBig) {

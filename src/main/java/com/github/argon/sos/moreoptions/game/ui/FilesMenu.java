@@ -80,7 +80,7 @@ public class FilesMenu extends Section {
                     continue;
                 }
 
-                currentPathNode = currentPathNode.add(absolutePath);
+                currentPathNode = currentPathNode.node(absolutePath);
                 add(currentPathNode);
             }
         }
@@ -98,12 +98,13 @@ public class FilesMenu extends Section {
                 selectNode(fileNode, true);
             }
 
-            int indents = node.getDepth() - 1;
+            int depth = node.depth();
+            int indents = depth - 1;
             ColumnRow<FileNode> buttonRow = buildRow(indents, fileNode, availableWidth);
             buttonRow.init();
             rows.add(buttonRow);
 
-            if (indents > 0) {
+            if (depth > 1) {
                 buttonRow.visableSet(!collapsed);
             }
 
@@ -149,7 +150,7 @@ public class FilesMenu extends Section {
                 row.visableSet(false);
             }
         } else {
-            for (TreeNode<Path> pathTreeNode : toCollapse.children()) {
+            for (TreeNode<Path> pathTreeNode : toCollapse.nodes()) {
                 ColumnRow<FileNode> row = rows.get(pathTreeNode.get());
                 if (row == null) {
                     continue;
@@ -161,7 +162,7 @@ public class FilesMenu extends Section {
     }
 
     private void add(TreeNode<Path> pathNode) {
-        files.put(pathNode.get(), buildFile(pathNode));
+        files.put(pathNode.get(), buildFileNode(pathNode));
     }
 
     private void selectNode(FileNode node, boolean select) {
@@ -173,7 +174,7 @@ public class FilesMenu extends Section {
     }
 
     @NonNull
-    private FileNode buildFile(TreeNode<Path> pathNode) {
+    private FileNode buildFileNode(TreeNode<Path> pathNode) {
         Path path = pathNode.get();
         String name = path.getFileName().toString();
         COLOR color = COLOR.WHITE10;
@@ -228,13 +229,15 @@ public class FilesMenu extends Section {
             row.addRightC(0, new ColorBox(buttonHeight, bgColor));
         }
 
+        // set folder or file icon
+        ColorBox colorBox;
         if (!fileNode.isFolder()) {
-            ColorBox colorBox = ColorBox.of(UiUtil.toRender(SPRITES.icons().m.minus), buttonHeight, bgColor);
-            row.addRightC(0, colorBox);
-        } else if (indents > 0) {
-            ColorBox colorBox = ColorBox.of(UiUtil.toRender(SPRITES.icons().m.menu2), buttonHeight, bgColor);
-            row.addRightC(0, colorBox);
+            colorBox = ColorBox.of(UiUtil.toRender(SPRITES.icons().m.minus), buttonHeight, bgColor);
+        } else {
+            colorBox = ColorBox.of(UiUtil.toRender(SPRITES.icons().m.menu2), buttonHeight, bgColor);
         }
+
+        row.addRightC(0, colorBox);
         RENDEROBJ iconsWithBackground = null;
         if (iconsProvider != null) {
             RENDEROBJ icons = iconsProvider.apply(fileNode);

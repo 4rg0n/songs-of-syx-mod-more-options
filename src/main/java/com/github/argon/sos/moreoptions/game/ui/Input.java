@@ -13,18 +13,18 @@ import util.colors.GCOLOR;
 
 import java.util.function.Supplier;
 
-public class GInput extends CLICKABLE.ClickableAbs {
+public class Input extends CLICKABLE.ClickableAbs {
 
 	private final StringInputSprite input;
 	private boolean dragging = false;
 
 	private Supplier<Coo> mouseCooSupplier = UiUtil.MOUSE_COO_SUPPLIER;
 
-	public GInput(StringInputSprite input) {
+	public Input(StringInputSprite input) {
 		this(input, null, 0);
 	}
 	
-	public GInput(StringInputSprite input, @Nullable Supplier<Coo> mouseCooSupplier, int inputWidth) {
+	public Input(StringInputSprite input, @Nullable Supplier<Coo> mouseCooSupplier, int inputWidth) {
 		this.input = input;
 		if (mouseCooSupplier != null) this.mouseCooSupplier = mouseCooSupplier;
 		

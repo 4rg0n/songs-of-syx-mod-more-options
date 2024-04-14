@@ -5,9 +5,8 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class TreeNode<T> implements Iterable<TreeNode<T>> {
     private final T data;
@@ -16,7 +15,7 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
     private TreeNode<T> parent;
     @Getter
     @Accessors(fluent = true)
-    private final List<TreeNode<T>> children;
+    private final List<TreeNode<T>> nodes;
 
     public T get() {
         return data;
@@ -24,18 +23,18 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
 
     public TreeNode(T data) {
         this.data = data;
-        this.children = new LinkedList<>();
+        this.nodes = new LinkedList<>();
     }
 
     public boolean has(T child) {
         return get(child) != null;
     }
 
-    public int getDepth() {
+    public int depth() {
         if (this.isRoot())
             return 0;
         else
-            return parent.getDepth() + 1;
+            return parent.depth() + 1;
     }
 
     public boolean isRoot() {
@@ -43,12 +42,12 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
     }
 
     public boolean isLeaf() {
-        return children.isEmpty();
+        return nodes.isEmpty();
     }
 
     @Nullable
     public TreeNode<T> get(T child) {
-        for (TreeNode<T> node : children) {
+        for (TreeNode<T> node : nodes) {
             if (node.is(child)) {
                 return node;
             }
@@ -61,15 +60,24 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
         return this.data.equals(child);
     }
 
-    public TreeNode<T> add(TreeNode<T> child) {
+    public TreeNode<T> node(TreeNode<T> child) {
         child.parent = this;
-        this.children.add(child);
+        this.nodes.add(child);
         return child;
     }
 
-    public TreeNode<T> add(T child) {
+    public TreeNode<T> node(T child) {
         TreeNode<T> childNode = new TreeNode<>(child);
-        return add(childNode);
+        return node(childNode);
+    }
+
+    public TreeNode<T> nodes(Collection<T> childs) {
+        childs.forEach(this::node);
+        return this;
+    }
+
+    public Stream<TreeNode<T>> stream() {
+        return Stream.of(this);
     }
 
     @Override
@@ -81,20 +89,4 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
     public @NotNull Iterator<TreeNode<T>> iterator() {
         return new TreeNodeIterator<>(this);
     }
-
-//    public static <T> TreeNode<T> of(List<T> things) {
-//        assert !things.isEmpty() : "given things must not be empty";
-//        TreeNode<T> currentNode = null;
-//        TreeNode<T> rootNode = null;
-//        for (T thing : things) {
-//            if (rootNode == null) {
-//                rootNode = new TreeNode<>(thing);
-//                currentNode = rootNode;
-//            } else {
-//                currentNode.add(thing);
-//            }
-//        }
-//
-//        return rootNode;
-//    }
 }

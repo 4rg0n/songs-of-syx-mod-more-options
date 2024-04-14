@@ -1,9 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.tab.races;
 
-import com.github.argon.sos.moreoptions.game.ui.Button;
-import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
-import com.github.argon.sos.moreoptions.game.ui.Spacer;
-import com.github.argon.sos.moreoptions.game.ui.Table;
+import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
@@ -18,7 +15,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
-import util.gui.misc.GInput;
 import util.gui.misc.GText;
 import util.save.SaveFile;
 
@@ -125,7 +121,7 @@ public class RacesSelectionPanel extends GuiSection {
             .rowPadding(5)
             .build();
 
-        addDownC(0, new GInput(searchInput));
+        addDownC(0, new Input(searchInput));
         addDownC(10, racesConfigTable);
     }
 

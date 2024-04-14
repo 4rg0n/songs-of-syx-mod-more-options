@@ -18,7 +18,6 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.colors.GCOLOR;
 import util.gui.misc.GHeader;
-import util.gui.misc.GInput;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -212,7 +211,7 @@ public class UiShowroom extends GuiSection {
         // Table with searchable rows
         GuiSection tableWithSearch = new GuiSection();
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
-        GInput search = new GInput(searchInput);
+        Input search = new Input(searchInput);
         Table<Object> table = Table.builder()
             .row(ColumnRow.builder()
                 .searchTerm("row 1")

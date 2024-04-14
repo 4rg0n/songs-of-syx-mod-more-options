@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.game.action;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -10,6 +12,7 @@ import java.util.function.Supplier;
  * @param <Element> type of source object triggered the setting or getting
  */
 public interface Valuable<Value> {
+    @Nullable
     Value getValue();
     void setValue(Value value);
 

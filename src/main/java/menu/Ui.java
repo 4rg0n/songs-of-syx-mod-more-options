@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
-import menu.ui.Popup;
+import menu.ui.Popups;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.Coo;
 
@@ -22,7 +22,7 @@ public class Ui {
 
     @Getter(lazy = true)
     @Accessors(fluent = true, chain = false)
-    private final Popup popup = new Popup();
+    private final Popups popups = new Popups();
 
     public final static Supplier<Coo> MOUSE_COO_SUPPLIER = () -> getInstance().getMouseCoo();
 

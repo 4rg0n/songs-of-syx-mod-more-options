@@ -8,7 +8,7 @@ import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.datatypes.Coo;
 import util.gui.misc.GBox;
 
-public class MouseMessage {
+public class MouseHoverMessage {
 	
 	private final GBox timed = new GBox();
 	private final GBox normal = new GBox();
@@ -25,9 +25,7 @@ public class MouseMessage {
 			timed.clear();
 			box = normal;
 		}
-		
-	
-		
+
 		timer -= ds;
 		
 		if (!box.emptyIs()) {

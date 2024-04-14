@@ -481,6 +481,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
             if (rest != 0) {
                 intValue = intValue - rest;
             }
+
             List<Integer> allowedValues = Slider.this.allowedValues;
             if (!allowedValues.isEmpty()) {
                 intValue = MathUtil.nearest(intValue, allowedValues);

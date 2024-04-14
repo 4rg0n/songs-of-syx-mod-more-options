@@ -1,6 +1,5 @@
 package menu.json.factory;
 
-import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.json.element.JsonArray;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
@@ -9,18 +8,21 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
+import menu.ui.UiFactory;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder
-public class JsonUiElementArray<Value extends JsonElement, Element extends RENDEROBJ> {
+public class JsonUiElementList<Value extends JsonElement, Element extends RENDEROBJ> implements JsonUiElement<JsonArray, Element> {
     private final static Logger log = Loggers.getLogger(UiFactory.class);
 
     @Singular
     private List<JsonUiElement<Value, Element>> elements;
+
+    @Getter
+    private final String jsonPath;
 
     public boolean isDirty() {
         return elements.stream().anyMatch(JsonUiElement::isDirty);
@@ -58,11 +60,11 @@ public class JsonUiElementArray<Value extends JsonElement, Element extends RENDE
         }
     }
 
-    public List<ColumnRow<Void>> toColumnRows() {
-        return elements.stream()
-            .map(JsonUiElement::toColumnRow)
-            .collect(Collectors.toList());
-    }
+//    public List<ColumnRow<JsonUiElement<? extends JsonElement, ? extends RENDEROBJ>>> toColumnRows() {
+//        return elements.stream()
+//            .map(JsonUiElement::toColumnRow)
+//            .collect(Collectors.toList());
+//    }
 
     public void writeInto(JsonObject config) {
         elements.forEach(element -> element.writeInto(config));
@@ -70,5 +72,10 @@ public class JsonUiElementArray<Value extends JsonElement, Element extends RENDE
 
     public void reset() {
         elements.forEach(JsonUiElement::reset);
+    }
+
+    @Override
+    public boolean isOrphan() {
+        return elements.stream().anyMatch(JsonUiElement::isOrphan);
     }
 }

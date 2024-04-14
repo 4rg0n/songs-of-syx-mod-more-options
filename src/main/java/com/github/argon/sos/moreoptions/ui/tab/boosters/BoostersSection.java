@@ -21,7 +21,6 @@ import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GHeader;
-import util.gui.misc.GInput;
 
 import java.util.Comparator;
 import java.util.List;
@@ -50,7 +49,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             ));
 
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("BoostersTab.search.input.name"));
-        GInput search = new GInput(searchInput);
+        Input search = new Input(searchInput);
 
         GHeader titleHeader = new GHeader(faction.name, UI.FONT().H1);
         GuiSection header = new GuiSection();

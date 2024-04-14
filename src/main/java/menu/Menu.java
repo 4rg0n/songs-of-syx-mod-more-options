@@ -10,7 +10,7 @@ import init.D;
 import init.paths.PATHS;
 import init.settings.S;
 import init.sprite.UI.UI;
-import menu.ui.MouseMessage;
+import menu.ui.MouseHoverMessage;
 import snake2d.*;
 import snake2d.KeyBoard.KeyEvent;
 import snake2d.util.datatypes.COORDINATE;
@@ -52,7 +52,7 @@ public class Menu extends CORE_STATE{
 	private final Intro intro;
 	private static boolean hasIntro = true;
 	private float fadeLight = 0;
-	private final MouseMessage mouseMessage;
+	private final MouseHoverMessage mouseHoverMessage;
 
 	private double hoverTimer = 0;
 	
@@ -90,7 +90,7 @@ public class Menu extends CORE_STATE{
 		bounds.centerIn(C.DIM());
 		GUI.init(bounds);
 
-		this.mouseMessage = new MouseMessage();
+		this.mouseHoverMessage = new MouseHoverMessage();
 		moreOptions = Ui.moreOptionsFullsWindow();
 
 		bg = new Background(this, bounds);
@@ -150,12 +150,12 @@ public class Menu extends CORE_STATE{
 			hoverTimer = 0;
 		}
 
-		if (!Ui.getInstance().popup().hover(mCoo))
+		if (!Ui.getInstance().popups().hover(mCoo))
 			current.hover(mCoo);
 		mouseLight.set(mCoo);
 
 		if (hoverTimer >= 0.4) {
-			moreOptions.hoverInfoGet(mouseMessage.get());
+			moreOptions.hoverInfoGet(mouseHoverMessage.get());
 		}
 	}
 
@@ -169,7 +169,7 @@ public class Menu extends CORE_STATE{
 		
 		res.sound().play();
 		hoverTimer += ds;
-		mouseMessage.update(this.mCoo);
+		mouseHoverMessage.update(this.mCoo);
 		
 		hasIntro = hasIntro && intro.update(ds);
 		if (!hasIntro && fadeLight < 1) {
@@ -204,8 +204,8 @@ public class Menu extends CORE_STATE{
 		mouseLight.register();
 
 		current.render(rr, ds);
-		Ui.getInstance().popup().render(rr, ds);
-		mouseMessage.render(r, ds);
+		Ui.getInstance().popups().render(rr, ds);
+		mouseHoverMessage.render(r, ds);
 
 		r.newLayer(false, 0);
 		
@@ -227,17 +227,17 @@ public class Menu extends CORE_STATE{
 		
 		
 		if (button == MButt.LEFT) {
-			if (!Ui.getInstance().popup().click()) {
-				if (Ui.getInstance().popup().visableIs()) {
-					Ui.getInstance().popup().close();
+			if (!Ui.getInstance().popups().click()) {
+				if (Ui.getInstance().popups().visableIs()) {
+					Ui.getInstance().popups().close();
 				}
 				current.click();
 			}
 
 		}
 		if (button == MButt.RIGHT) {
-			if (Ui.getInstance().popup().visableIs()) {
-				Ui.getInstance().popup().close();
+			if (Ui.getInstance().popups().visableIs()) {
+				Ui.getInstance().popups().close();
 			} else {
 				current.back(this);
 			}

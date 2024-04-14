@@ -7,10 +7,10 @@ import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import init.paths.PATH;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
+import menu.ui.MenuInput;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
-import util.gui.misc.GInput;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -37,7 +37,7 @@ public class FilesTab<Tab extends AbstractTab> extends AbstractTab {
 
         GuiSection searchBar = new GuiSection();
         StringInputSprite search = new StringInputSprite(24, UI.FONT().S).placeHolder("Search");
-        GInput searchField = new GInput(search);
+        MenuInput searchField = new MenuInput(search);
 
         Button collapseButton = new Button(SPRITES.icons().m.menu2);
         collapseButton.hoverInfoSet("Collapse / Expand all");

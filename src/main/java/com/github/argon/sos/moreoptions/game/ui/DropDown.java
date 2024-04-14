@@ -2,11 +2,13 @@ package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.action.Action;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
+import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.sprite.SPRITE;
+import snake2d.util.sprite.text.Font;
 
 
 public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
@@ -17,12 +19,13 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
     public DropDown(
         CharSequence label,
         CharSequence description,
+        Font font,
         Switcher<Key> menu,
         boolean closeOnSelect,
         @Nullable Action<DropDown<Key>> clickAction,
         @Nullable Action<DropDown<Key>> closeAction
     ) {
-        super(label, description);
+        super(label, description, (font != null) ? font : UI.FONT().H2);
         this.menu = menu;
         Button activeButton = menu.getActiveButton();
 
@@ -52,6 +55,16 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
             menu.get(key).ifPresent(selectedButton -> {
                 replaceLabel(selectedButton.getLabel(), DIR.C);
                 bg(selectedButton.getBgColor());
+
+                String value = selectedButton.getValue();
+                if (value != null) {
+                    try {
+                        //noinspection unchecked
+                        setValue((Key) value);
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
 
                 if (closeOnSelect) {
                     if (closeAction != null) {

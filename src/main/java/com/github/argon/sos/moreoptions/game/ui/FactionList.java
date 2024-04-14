@@ -131,7 +131,7 @@ public class FactionList extends GuiSection {
 		};
 
 		filter.placeHolder(DicMisc.¤¤Search);
-		GInput search = new GInput(filter);
+		Input search = new Input(filter);
 
 
 		builder = new GTableBuilder() {

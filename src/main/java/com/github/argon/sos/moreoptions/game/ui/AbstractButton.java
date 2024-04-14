@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.game.action.Action;
 import com.github.argon.sos.moreoptions.game.action.Searchable;
 import com.github.argon.sos.moreoptions.game.action.Toggleable;
 import com.github.argon.sos.moreoptions.game.action.Valuable;
+import init.sprite.UI.UI;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -13,6 +14,7 @@ import snake2d.util.color.COLOR;
 import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.misc.ACTION;
 import snake2d.util.sprite.SPRITE;
+import snake2d.util.sprite.text.Font;
 import util.gui.misc.GButt;
 
 public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> extends GButt.ButtPanel
@@ -46,17 +48,31 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
     @Getter
     @Accessors(fluent = true)
     protected Value searchTerm;
+    
+    public final static COLOR DEFAULT_COLOR = COLOR.WHITE35;
 
-    public AbstractButton(CharSequence label) {
-        this(label, COLOR.WHITE35, null);
+    public AbstractButton(CharSequence label, Font font) {
+        this(label, DEFAULT_COLOR, font, null);
     }
 
-    public AbstractButton(CharSequence label, CharSequence description) {
-        this(label, COLOR.WHITE35, description);
+    public AbstractButton(CharSequence label) {
+        this(label, DEFAULT_COLOR, UI.FONT().H2, null);
+    }
+
+    public AbstractButton(CharSequence label, @Nullable CharSequence description, Font font) {
+        this(label, DEFAULT_COLOR, font , description);
     }
 
     public AbstractButton(CharSequence label, COLOR bgColor, @Nullable CharSequence description) {
-        super(label);
+        this(label, bgColor, UI.FONT().H2, description);
+    }
+
+    public AbstractButton(CharSequence label, @Nullable CharSequence description) {
+        this(label, DEFAULT_COLOR, UI.FONT().H2, description);
+    }
+
+    public AbstractButton(CharSequence label, COLOR bgColor, Font font, @Nullable CharSequence description) {
+        super(font.getText(label));
         this.bgColor = bgColor;
         bg(bgColor);
         hoverInfoSet(description);

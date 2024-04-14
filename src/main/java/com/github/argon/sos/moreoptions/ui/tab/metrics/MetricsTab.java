@@ -19,7 +19,6 @@ import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GHeader;
-import util.gui.misc.GInput;
 import util.gui.misc.GText;
 import util.gui.misc.GTextR;
 
@@ -146,7 +145,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         // Search Bar with uncheck and check buttons
         GuiSection searchBar = new GuiSection();
         this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("MetricsPanel.search.input.name"));
-        searchBar.addRightC(0, new GInput(searchInput));
+        searchBar.addRightC(0, new Input(searchInput));
         this.checkSwitcher = Switcher.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
                 .button(true, new Button(i18n.t("MetricsPanel.search.check.name"), i18n.t("MetricsPanel.search.check.desc")))

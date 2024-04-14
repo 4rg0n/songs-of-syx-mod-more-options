@@ -2,16 +2,17 @@ package menu.json;
 
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.game.ui.Table;
+import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import init.paths.PATH;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import menu.json.factory.JsonUiElementSingle;
 import menu.json.factory.JsonUiTemplate;
 import menu.json.tab.FilesTab;
 import menu.json.tab.MultiTab;
 import menu.json.tab.SimpleTab;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.text.StringInputSprite;
 
 import java.nio.file.Path;
@@ -20,7 +21,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Builder
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonUi {
     @Getter
     private final List<JsonUiTemplate> templates;
@@ -38,28 +38,27 @@ public class JsonUi {
             .pin(path);
     }
 
-    public Table<Void> table(int height) {
+    public Table<JsonUiElementSingle<? extends JsonElement, ? extends RENDEROBJ>> table(int height) {
         return table(height, null);
     }
 
-    public Table<Void> table(int height, @Nullable StringInputSprite search) {
-        Map<String, List<ColumnRow<Void>>> rowMap = templates.stream().collect(Collectors.toMap(
-            JsonUiTemplate::getFileName,
-            JsonUiTemplate::toColumnRows,
-            (e1, e2) -> {throw new RuntimeException("Duplicate key");},
-            LinkedHashMap::new
-        ));
-        boolean displaySearch = (search == null);
+    public Table<JsonUiElementSingle<? extends JsonElement, ? extends RENDEROBJ>> table(int height, @Nullable StringInputSprite search) {
+        Map<String, List<ColumnRow<JsonUiElementSingle<? extends JsonElement, ? extends RENDEROBJ>>>> rowMap = new LinkedHashMap<>();
 
-        return Table.<Void>builder()
-            .displaySearch(displaySearch)
+        for (JsonUiTemplate template : templates) {
+            rowMap.put(template.getFileName(), template.toColumnRows());
+        }
+
+        Table.TableBuilder<JsonUiElementSingle<? extends JsonElement, ? extends RENDEROBJ>> builder = Table.builder();
+        return builder
+            .displaySearch(search == null)
             .search(search)
             .displayHeight(height)
             .rowPadding(3)
             .columnMargin(5)
             .rowsCategorized(rowMap)
+            .evenOdd(false)
             .highlight(true)
-            .evenOdd(true)
             .scrollable(true)
             .build();
     }

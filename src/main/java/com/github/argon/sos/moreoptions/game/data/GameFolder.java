@@ -7,6 +7,7 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.StringUtil;
 import init.paths.PATH;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -21,11 +22,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameFolder {
     private final static Logger log = Loggers.getLogger(GameFolder.class);
 
     private final GameJsonService gameJsonService = GameJsonService.getInstance();
+
+    private final static Map<PATH, GameFolder> gameFolderStore = new HashMap<>();
 
     @Getter
     @Accessors(fluent = true, chain = false)
@@ -59,6 +62,7 @@ public class GameFolder {
     private final List<String> fileNames = filePaths().stream()
         .map(Path::getFileName)
         .map(Path::toString)
+        .sorted()
         .collect(Collectors.toList());
 
     @Getter(lazy = true)
@@ -126,7 +130,16 @@ public class GameFolder {
     }
 
     public static GameFolder of(PATH path) {
-        return new GameFolder(path);
+        GameFolder gameFolder = gameFolderStore.get(path);
+
+        if (gameFolder != null) {
+            return gameFolder;
+        }
+
+        gameFolder = new GameFolder(path);
+        gameFolderStore.put(path, gameFolder);
+
+        return gameFolder;
     }
 
     private Optional<JsonObject> json(@Nullable Path filePath) {

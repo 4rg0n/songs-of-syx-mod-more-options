@@ -86,6 +86,7 @@ public class ColumnRow<Value> extends Section implements
 
     private float doubleClickTimer;
 
+    @Nullable
     private Value value;
     private boolean isSelected;
 

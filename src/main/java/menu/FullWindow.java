@@ -14,12 +14,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import menu.ui.MenuInput;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GButt;
-import util.gui.misc.GInput;
 
 public class FullWindow<Section extends GuiSection> extends ColorBox implements
     Refreshable,
@@ -80,7 +80,7 @@ public class FullWindow<Section extends GuiSection> extends ColorBox implements
         }
 
         if (searchInput != null) {
-            GInput searchField = new GInput(searchInput);
+            MenuInput searchField = new MenuInput(searchInput);
             searchField.body().moveX1(width + 8);
             searchField.body().centerY(top);
             top.add(searchField);

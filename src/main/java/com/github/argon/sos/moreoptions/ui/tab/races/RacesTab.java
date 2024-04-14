@@ -21,7 +21,6 @@ import lombok.Getter;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
-import util.gui.misc.GInput;
 import util.gui.misc.GText;
 
 import java.util.*;
@@ -98,7 +97,7 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
 
         // Race Likings table with search
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("RacesTab.search.input.name"));
-        GInput search = new GInput(searchInput);
+        Input search = new Input(searchInput);
 
         // menu with buttons
         this.folderButton = new Button(i18n.t("RacesTab.button.folder.name"), i18n.t("RacesTab.button.folder.desc"));

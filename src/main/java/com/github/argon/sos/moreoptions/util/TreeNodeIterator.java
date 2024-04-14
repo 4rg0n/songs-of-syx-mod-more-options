@@ -15,7 +15,7 @@ public class TreeNodeIterator<T> implements Iterator<TreeNode<T>> {
     public TreeNodeIterator(TreeNode<T> treeNode) {
         this.treeNode = treeNode;
         this.doNext = ProcessStages.ProcessParent;
-        this.childrenCurNodeIter = treeNode.children().iterator();
+        this.childrenCurNodeIter = treeNode.nodes().iterator();
     }
 
     @Nullable

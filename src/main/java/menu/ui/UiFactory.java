@@ -1,4 +1,4 @@
-package menu.json.factory;
+package menu.ui;
 
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
@@ -12,7 +12,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import menu.Ui;
 import menu.json.JsonUiMapper;
-import menu.ui.IconView;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
@@ -32,8 +31,8 @@ public class UiFactory {
     public static DropDown<String> dropDown(JsonString jsonString, List<String> options) {
         return DropDown.<String>builder()
             .label(jsonString.getValue())
-            .clickAction(dropDown -> Ui.getInstance().popup().show(dropDown.getMenu(), dropDown))
-            .closeAction(dropDown -> Ui.getInstance().popup().close())
+            .clickAction(dropDown -> Ui.getInstance().popups().show(dropDown.getMenu(), dropDown))
+            .closeAction(dropDown -> Ui.getInstance().popups().close(dropDown))
             .menu(Switcher.<String>builder()
                 .highlight(true)
                 .menu(ButtonMenu.<String>builder()
@@ -64,12 +63,37 @@ public class UiFactory {
         return section;
     }
 
+    public static Section label(String text, Font font) {
+        return Label.builder()
+            .name(text)
+            .font(font)
+            .style(Label.Style.LABEL)
+            .build();
+    }
+
 
     public static MultiDropDown<String> multiDropDown(String title, JsonArray jsonArray, List<String> options, int maxSelect, boolean maxSelected) {
         return MultiDropDown.<String>builder()
             .label(title)
-            .clickAction(dropDown -> Ui.getInstance().popup().show(dropDown.getSelect(), dropDown))
+            .clickAction(dropDown -> Ui.getInstance().popups().show(dropDown.getSelect(), dropDown))
             .select(selectS(jsonArray,options, maxSelect, maxSelected))
+            .build();
+    }
+
+    public static DropDownList dropDownList(String title, JsonArray jsonArray, List<String> options) {
+        List<String> values = jsonArray.getElements().stream()
+            .filter(element -> element instanceof JsonString)
+            .map(JsonString.class::cast)
+            .map(JsonString::getValue).collect(Collectors.toList());
+
+        return DropDownList.builder()
+            .values(values)
+            .label(title)
+            .possibleValues(options)
+            .clickAction(dropDownList -> Ui.getInstance().popups().show(dropDownList.getUiList(), dropDownList))
+            .optionClickAction(dropDown -> Ui.getInstance().popups().show(dropDown.getMenu(), dropDown))
+            .optionCloseAction(dropDown -> Ui.getInstance().popups().close(dropDown))
+            .height(400)
             .build();
     }
 
@@ -136,8 +160,8 @@ public class UiFactory {
         return Slider.builder()
             .min(min)
             .max(max)
-            .step(step)
             .width(400)
+            .step(step)
             .controls(true)
             .lockScroll(true)
             .allowedValues(allowedValues);
@@ -177,12 +201,12 @@ public class UiFactory {
         return null;
     }
 
-    public static GInput text(JsonString jsonString) {
+    public static Input text(JsonString jsonString) {
         StringInputSprite inputSprite = new StringInputSprite(32, UI.FONT().S);
-        GInput gInput = new GInput(inputSprite, Ui.MOUSE_COO_SUPPLIER, 0);
-        gInput.text().add(jsonString.getValue());
+        MenuInput input = new MenuInput(inputSprite);
+        input.text().add(jsonString.getValue());
 
-        return gInput;
+        return input;
     }
 
     @Nullable
