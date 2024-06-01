@@ -13,7 +13,7 @@
             <id>windows</id>
             <properties>
                 <game.mod.directory>${user.home}/AppData/Roaming/songsofsyx/mods</game.mod.directory>
-                <game.install.directory>C:/Program Files (x86)/Steam/steamapps/common/Songs of Syx Alpha</game.install.directory>
+                <game.install.directory>C:/Program Files (x86)/Steam/steamapps/common/Songs of Syx</game.install.directory>
                 <game.mod.uploader.directory>${user.home}/AppData/Roaming/songsofsyx/mods-uploader</game.mod.uploader.directory>
             </properties>
             <activation>
@@ -110,7 +110,7 @@
         <mod.author>4rg0n and Senso</mod.author>
         <mod.info></mod.info>
         <game.version.major>66</game.version.major>
-        <game.version.minor>0</game.version.minor>
+        <game.version.minor>48</game.version.minor>
 
         <!-- Build settings -->
         <game.version.directory>V${game.version.major}</game.version.directory>

@@ -1,5 +1,6 @@
 package menu.json.factory;
 
+import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.json.element.JsonArray;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
@@ -14,15 +15,22 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 import java.util.List;
 
 @Getter
-@Builder
 public class JsonUiElementList<Value extends JsonElement, Element extends RENDEROBJ> implements JsonUiElement<JsonArray, Element> {
     private final static Logger log = Loggers.getLogger(UiFactory.class);
 
-    @Singular
-    private List<JsonUiElement<Value, Element>> elements;
+    private final List<JsonUiElement<Value, Element>> elements;
 
     @Getter
     private final String jsonPath;
+
+    @Builder
+    public JsonUiElementList(
+        @Singular List<JsonUiElement<Value, Element>> elements,
+        String jsonPath
+    ) {
+        this.elements = elements;
+        this.jsonPath = jsonPath;
+    }
 
     public boolean isDirty() {
         return elements.stream().anyMatch(JsonUiElement::isDirty);
@@ -60,11 +68,12 @@ public class JsonUiElementList<Value extends JsonElement, Element extends RENDER
         }
     }
 
-//    public List<ColumnRow<JsonUiElement<? extends JsonElement, ? extends RENDEROBJ>>> toColumnRows() {
-//        return elements.stream()
+    public List<ColumnRow<JsonUiElement<? extends JsonElement, ? extends RENDEROBJ>>> toColumnRows() {
+        return null;
+        //        return elements.stream()
 //            .map(JsonUiElement::toColumnRow)
 //            .collect(Collectors.toList());
-//    }
+    }
 
     public void writeInto(JsonObject config) {
         elements.forEach(element -> element.writeInto(config));

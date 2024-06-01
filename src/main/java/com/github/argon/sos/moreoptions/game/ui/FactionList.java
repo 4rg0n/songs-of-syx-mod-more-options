@@ -28,8 +28,11 @@ import util.colors.GCOLOR;
 import util.data.DOUBLE;
 import util.data.GETTER;
 import util.data.GETTER.GETTER_IMP;
-import util.dic.DicMisc;
-import util.gui.misc.*;
+import util.dic.Dic;
+import util.gui.misc.GButt;
+import util.gui.misc.GMeter;
+import util.gui.misc.GStat;
+import util.gui.misc.GText;
 import util.gui.table.GTableBuilder;
 import util.gui.table.GTableBuilder.GRowBuilder;
 import util.info.GFORMAT;
@@ -130,7 +133,7 @@ public class FactionList extends GuiSection {
 
 		};
 
-		filter.placeHolder(DicMisc.¤¤Search);
+		filter.placeHolder(Dic.¤¤Search);
 		Input search = new Input(filter);
 
 

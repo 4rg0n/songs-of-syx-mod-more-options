@@ -1,6 +1,5 @@
 package menu;
 
-
 import game.battle.BattleResult;
 import game.battle.BattleState;
 import game.battle.PlayerBattleSpec;
@@ -25,46 +24,46 @@ import world.battle.spec.WBattleResult.BATTLE_RESULT;
 
 import java.nio.file.Path;
 
-public class Menu extends CORE_STATE{
-	
+public class Menu extends CORE_STATE {
+
 	final ScMain main;
 	final ScOptions options;
 	final ScLoad load;
-	final ScLoader [] loads;
+	final ScLoader[] loads;
 	final ScRandom sandbox;
 	final ScCredits credits;
 	final ScCampaign campaigns;
 
+	// MODDED
+	private final MouseHoverMessage mouseHoverMessage;
 	final FullWindow<MoreOptionsEditor> moreOptions;
+	private double hoverTimer = 0;
+
 
 	private SC current;
 
 	private Coo mCoo = new Coo();
-	
-	
+
 	private final Background bg;
-	
+
 	private final PointLight mouseLight;
-	
+
 	private final Logo logo;
 	private static boolean hasLogo = true;
-	
+
 	private final Intro intro;
 	private static boolean hasIntro = true;
 	private float fadeLight = 0;
-	private final MouseHoverMessage mouseHoverMessage;
 
-	private double hoverTimer = 0;
-	
 	private final CharSequence ¤¤loading = "¤loading...";
 	private final CharSequence ¤¤showCases = "¤showcases";
 	private final CharSequence ¤¤custom = "¤custom games";
 	private final CharSequence ¤¤battles = "¤battles";
-	
+
 	public final RESOURCES res;
 
-	public static void start(){
-		
+	public static void start() {
+
 		CORE.create(S.get().make());
 		CORE.getInput().getMouse().showCusor(false);
 		CORE.start(new Constructor() {
@@ -73,79 +72,86 @@ public class Menu extends CORE_STATE{
 				return make();
 			}
 		});
-		
+
 	}
-	
+
 	public static Menu make() {
+
 		Menu menu = new Menu();
+
+		// MODDED
 		Ui.getInstance().init(menu);
+
 		PreLoader.exit();
 		return menu;
 	}
-	
-	private Menu(){
+
+	private Menu() {
+
 		res = new RESOURCES();
 		D.t(this);
-		final Rec bounds = new Rec(0, C.MIN_WIDTH, 0, 2*256);
+		final Rec bounds = new Rec(0, C.MIN_WIDTH, 0, 2 * 256);
 		bounds.centerIn(C.DIM());
+
 		GUI.init(bounds);
 
+		// MODDED
 		this.mouseHoverMessage = new MouseHoverMessage();
-		moreOptions = Ui.moreOptionsFullsWindow();
+		this.moreOptions = Ui.moreOptionsFullsWindow();
 
 		bg = new Background(this, bounds);
-		
-		
+
 		options = new ScOptions(this);
 		sandbox = new ScRandom(this);
 		load = new ScLoad(this);
-		
-		loads = new ScLoader[] {
-			new ScLoader(this, ¤¤custom, PATHS.MISC().CUSTOM, true),
-			new ScLoader(this, ¤¤battles, PATHS.MISC().BATTLE, true) {
-				@Override
-				protected void afterSet(Path path) {
-					BattleState.setLoaded(new PlayerBattleSpec() {
-						
-						@Override
-						public void exit(BATTLE_RESULT res) {
-							Menu.start();
-							super.exit(res);
-						}
-						
-						@Override
-						public void afterExit(BattleResult res) {
+
+		loads = new ScLoader[] { new ScLoader(this, ¤¤custom, PATHS.MISC().CUSTOM, true),
+				new ScLoader(this, ¤¤battles, PATHS.MISC().BATTLE, true) {
+					@Override
+					protected void afterSet(Path path) {
+						BattleState.setLoaded(new PlayerBattleSpec() {
 							
-						}
-					}, path);
-				}
-			},
-			new ScLoader(this, ¤¤showCases, PATHS.MISC().EXAMPLES, false)
-		};
+							@Override
+							public void exit(BATTLE_RESULT res, int plosses, int elosses) {
+								CORE.setCurrentState(new Constructor() {
+									@Override
+									public CORE_STATE getState() {
+										return make();
+									}
+								});
+							}
+
+							@Override
+							public void afterExit(BattleResult res) {
+
+							}
+						}, path);
+					}
+				}, new ScLoader(this, ¤¤showCases, PATHS.MISC().EXAMPLES, false) };
 		credits = new ScCredits(this);
 		main = new ScMain(this);
 		campaigns = new ScCampaign(this);
 		current = main;
-		
+
 		mouseLight = new PointLight(1.0f, 1.0f, 1.3f, 0, 0, 15);
 		mouseLight.setFalloff(1);
-		
+
 		intro = new Intro(main, bg);
-		
+
 		logo = new Logo(this);
 
 		S.get().applyRuntimeConfigs();
 		PTitles.achieve();
-		
+
 	}
 
-
 	private void hover(COORDINATE mCoo, boolean mouseHasMoved) {
-		
+
 		this.mCoo.set(mCoo);
 		if (hasIntro || hasLogo)
 			return;
 
+		// MODDED
 		if (mouseHasMoved){
 			hoverTimer = 0;
 		}
@@ -157,6 +163,7 @@ public class Menu extends CORE_STATE{
 		if (hoverTimer >= 0.4) {
 			moreOptions.hoverInfoGet(mouseHoverMessage.get());
 		}
+		// MODDED
 	}
 
 	@Override
@@ -166,11 +173,13 @@ public class Menu extends CORE_STATE{
 			hasLogo = logo.update(ds);
 			return;
 		}
-		
+
 		res.sound().play();
+
+		// MODDED
 		hoverTimer += ds;
 		mouseHoverMessage.update(this.mCoo);
-		
+
 		hasIntro = hasIntro && intro.update(ds);
 		if (!hasIntro && fadeLight < 1) {
 			fadeLight += ds;
@@ -178,8 +187,7 @@ public class Menu extends CORE_STATE{
 				fadeLight = 1;
 		}
 	}
-	
-	
+
 	@Override
 	public void render(Renderer r, float ds) {
 		CORE.renderer().shadeLight(true);
@@ -188,44 +196,47 @@ public class Menu extends CORE_STATE{
 			logo.render(r, ds);
 			return;
 		}
-		
+
 		if (hasIntro) {
 			intro.render(r, ds);
 			return;
 		}
-		
+
 		AmbientLight.Strongmoonlight.register(C.DIM());
 		UI.decor().mouse.render(r, mCoo.x(), mCoo.y());
 		r.newLayer(true, 0);
-		
+
 		mouseLight.setRed(fadeLight);
 		mouseLight.setGreen(fadeLight);
-		mouseLight.setBlue(fadeLight*1.3);
-		mouseLight.register();
+		mouseLight.setBlue(fadeLight * 1.3);
 
+		mouseLight.register();
 		current.render(rr, ds);
+
+		// MODDED
 		Ui.getInstance().popups().render(rr, ds);
 		mouseHoverMessage.render(r, ds);
 
 		r.newLayer(false, 0);
-		
+
 		current.renderBackground(bg, ds, mCoo);
+
 	}
 
 	@Override
 	public void mouseClick(MButt button) {
-		
+
 		if (hasLogo) {
 			hasLogo = false;
 			return;
 		}
-		
+
 		if (hasIntro) {
 			hasIntro = false;
 			return;
 		}
-		
-		
+
+		// MODDED
 		if (button == MButt.LEFT) {
 			if (!Ui.getInstance().popups().click()) {
 				if (Ui.getInstance().popups().visableIs()) {
@@ -242,25 +253,25 @@ public class Menu extends CORE_STATE{
 				current.back(this);
 			}
 		}
+		// MODDED
 	}
 
-	void switchScreen(SC screen){
+	void switchScreen(SC screen) {
 		current = screen;
 		current.hover(mCoo);
 	}
-	
+
 	SC screen() {
 		return current;
 	}
-	
-	Coo getMCoo(){
+
+	Coo getMCoo() {
 		return mCoo;
 	}
-	
-	void start(Constructor state){
+
+	void start(Constructor state) {
 		CORE.renderer().clear();
-		
-		
+
 		GuiSection s = new GuiSection();
 		GUI.addTitleText(s, ¤¤loading);
 		s.body().centerIn(C.DIM());
@@ -268,7 +279,7 @@ public class Menu extends CORE_STATE{
 		AmbientLight.Strongmoonlight.register(C.DIM());
 		CORE.renderer().newLayer(false, 0);
 		bg.render(CORE.renderer(), 0);
-		
+
 		CORE.swapAndPoll();
 		CORE.setCurrentState(state);
 	}
@@ -281,7 +292,7 @@ public class Menu extends CORE_STATE{
 				hasLogo = false;
 				return;
 			}
-			
+
 			if (hasIntro) {
 				hasIntro = false;
 				return;
@@ -291,16 +302,16 @@ public class Menu extends CORE_STATE{
 					return;
 				}
 				break;
-			}else {
+			} else {
 				current.poll(key);
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	private final SPRITE_RENDERER rr = new SPRITE_RENDERER() {
-		
+
 		private final int ss = 4;
 		private final int si = 8;
 
@@ -308,8 +319,8 @@ public class Menu extends CORE_STATE{
 		public void renderSprite(int x1, int x2, int y1, int y2, TextureCoords texture) {
 			CORE.renderer().renderSprite(x1, x2, y1, y2, texture);
 			for (int i = 0; i < si; i++)
-				CORE.renderer().renderShadow(x1+ss+i, x2+ss+i, y1-ss-i, y2-ss-i, texture, (byte)0);
+				CORE.renderer().renderShadow(x1 + ss + i, x2 + ss + i, y1 - ss - i, y2 - ss - i, texture, (byte) 0);
 		}
 	};
-	
+
 }

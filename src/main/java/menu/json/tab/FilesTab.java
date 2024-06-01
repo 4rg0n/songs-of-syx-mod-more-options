@@ -32,7 +32,9 @@ public class FilesTab<Tab extends AbstractTab> extends AbstractTab {
 
         tabMap = tabs.stream().collect(Collectors.toMap(
             AbstractTab::getPath,
-            tab -> tab
+            tab -> tab,
+            (tab1, tab2) -> { throw new IllegalStateException(
+                String.format("Duplicate path %s in tabs %s and %s", tab1.getPath(), tab1.getTitle(), tab2.getTitle())); }
         ));
 
         GuiSection searchBar = new GuiSection();

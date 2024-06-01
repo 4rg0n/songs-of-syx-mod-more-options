@@ -12,6 +12,7 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -27,7 +28,11 @@ public class UiList<Value, Element extends RENDEROBJ> extends Section implements
     @Accessors(fluent = true, chain = false)
     private Consumer<List<Value>> valueChangeAction = o -> {};
 
+    @Getter
+    private final List<Element> elements;
+
     public UiList(List<Element> elements, int height, Function<@Nullable Value, Element> elementSupplier) {
+        this.elements = elements;
         List<ColumnRow<Value>> rows = elements.stream()
             .map(this::listEntry)
             .collect(Collectors.toList());
@@ -45,8 +50,15 @@ public class UiList<Value, Element extends RENDEROBJ> extends Section implements
         this.addButton.hoverInfoSet("Add new");
 
         this.addButton.clickActionSet(() -> {
-            ColumnRow<Value> row = listEntry(elementSupplier.apply(null));
+            Element element = elementSupplier.apply(null);
+
+            if (element == null) {
+                return;
+            }
+
+            ColumnRow<Value> row = listEntry(element);
             addRow(row);
+            elements.add(element);
             valueChangeAction.accept(getValue());
         });
 
@@ -55,7 +67,7 @@ public class UiList<Value, Element extends RENDEROBJ> extends Section implements
     }
 
     @Override
-    public @Nullable List<Value> getValue() {
+    public List<Value> getValue() {
         Map<String, @Nullable Value> values = table.getValue();
 
         if (values == null) {
@@ -71,7 +83,10 @@ public class UiList<Value, Element extends RENDEROBJ> extends Section implements
     public void setValue(List<Value> values) {
         table.clearRows();
         values.stream()
-            .map(value -> listEntry(elementSupplier.apply(value)))
+            .map(elementSupplier)
+            .filter(Objects::nonNull)
+            .peek(elements::add)
+            .map(this::listEntry)
             .forEach(this::addRow);
         valueChangeAction.accept(values);
     }

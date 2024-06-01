@@ -1,14 +1,18 @@
-package menu.json.factory;
+package menu.json.factory.builder;
 
 import com.github.argon.sos.moreoptions.game.Wildcard;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import menu.json.factory.JsonUiElementList;
+import menu.json.factory.JsonUiElementSingle;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.List;
 import java.util.function.Function;
 
+@Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonUiElementListBuilder<Value extends JsonElement, Element extends RENDEROBJ> {
 
@@ -17,11 +21,11 @@ public class JsonUiElementListBuilder<Value extends JsonElement, Element extends
 
     public JsonUiElementList<Value, Element> asTuples(String name, int amount) {
         JsonUiElementList.JsonUiElementListBuilder<Value, Element> builder = JsonUiElementList.builder();
-        builder.jsonPath(jsonPath);
+        builder
+            .jsonPath(jsonPath);
 
         for (int i = 0; i < amount; i++) {
-            String jsonTuplePath = jsonTuplePath(jsonPath, i, name);
-            builder.element(elementProvider.apply(jsonTuplePath));
+            builder.element(asTupleElement(i, name));
         }
 
         return builder.build();
@@ -33,17 +37,16 @@ public class JsonUiElementListBuilder<Value extends JsonElement, Element extends
      */
     public JsonUiElementList<Value, Element> asObject(List<String> names, boolean asWildcards) {
         JsonUiElementList.JsonUiElementListBuilder<Value, Element> builder = JsonUiElementList.builder();
-        builder.jsonPath(jsonPath);
+        builder
+            .jsonPath(jsonPath);
         
         if (asWildcards) {
             Wildcard.from(names).forEach(name -> {
-                String jsonObjectPath = jsonObjectPath(jsonPath, name);
-                builder.element(elementProvider.apply(jsonObjectPath));
+                builder.element(asObjectElement(name));
             });
         } else {
             names.forEach(name -> {
-                String jsonObjectPath = jsonObjectPath(jsonPath, name);
-                builder.element(elementProvider.apply(jsonObjectPath));
+                builder.element(asObjectElement(name));
             });
         }
 
@@ -52,24 +55,35 @@ public class JsonUiElementListBuilder<Value extends JsonElement, Element extends
 
     public JsonUiElementList<Value, Element> asArray(int amount) {
         JsonUiElementList.JsonUiElementListBuilder<Value, Element> builder = JsonUiElementList.builder();
-        builder.jsonPath(jsonPath);
+        builder
+            .jsonPath(jsonPath);
 
         for (int i = 0; i < amount; i++) {
-            String jsonArrayPath = jsonArrayPath(jsonPath, i);
-            builder.element(elementProvider.apply(jsonArrayPath));
+            builder.element(asArrayElement(i));
         }
 
         return builder.build();
+    }
+
+    public JsonUiElementSingle<Value, Element> asTupleElement(int index, String name) {
+        String jsonTuplePath = jsonTuplePath(jsonPath, index, name);
+        return elementProvider.apply(jsonTuplePath);
+    }
+
+    public JsonUiElementSingle<Value, Element> asObjectElement(String name) {
+        String jsonObjectPath = jsonObjectPath(jsonPath, name);
+        return elementProvider.apply(jsonObjectPath);
+    }
+
+    public JsonUiElementSingle<Value, Element> asArrayElement(int index) {
+        String jsonArrayPath = jsonArrayPath(jsonPath, index);
+        return elementProvider.apply(jsonArrayPath);
     }
     
     public JsonUiElementSingle<Value, Element> asElement() {
         return elementProvider.apply(jsonPath);
     }
     
-    public static <Value extends JsonElement, Element extends RENDEROBJ> JsonUiElementListBuilder<Value, Element> of(String jsonPath, Function<String, JsonUiElementSingle<Value, Element>> elementProvider) {
-        return new JsonUiElementListBuilder<>(jsonPath, elementProvider);
-    }
-
     private String jsonTuplePath(String jsonPath, int index, String name) {
         return jsonObjectPath(jsonArrayPath(jsonPath, index), name);
     }

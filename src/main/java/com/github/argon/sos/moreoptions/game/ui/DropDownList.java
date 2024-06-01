@@ -39,7 +39,7 @@ public class DropDownList extends AbstractButton<List<String>, DropDownList> imp
     @Builder
     public DropDownList(
         CharSequence label,
-        CharSequence description,
+        @Nullable CharSequence description,
         List<String> values,
         List<String> possibleValues,
         int height,

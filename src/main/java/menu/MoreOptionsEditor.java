@@ -29,6 +29,7 @@ public class MoreOptionsEditor extends GuiSection {
         FilesTab<SimpleTab> filesTab = JsonUi.builder(PATHS.INIT())
             .templates(settlement())
             .templates(environments())
+            .templates(animals())
             .templates(fences())
             .templates(floors())
             .templates(fortifications())
@@ -67,23 +68,27 @@ public class MoreOptionsEditor extends GuiSection {
     }
 
     private JsonUi animals() {
-        return JsonUi.builder(PATHS.SETT().init.getFolder("fence"))
+        return JsonUi.builder(PATHS.INIT().getFolder("animal"))
             .templates(jsonUiTemplate -> {
-                jsonUiTemplate.dropDown("RESOURCE", GameResources.getResources());
-                jsonUiTemplate.slider("RESOURCE_AMOUNT", 0, 1000);
                 jsonUiTemplate.slider("HEIGHT", 0, 10);
                 jsonUiTemplate.slider("SPEED", 0, 10);
-                jsonUiTemplate.slider("MASS", 0, 10);
+                jsonUiTemplate.slider("MASS", 0, 1000);
                 jsonUiTemplate.sliderD("DANGER", 0, 100);
                 jsonUiTemplate.color("COLOR");
                 jsonUiTemplate.text("ICON");
                 jsonUiTemplate.dropDown("SPRITE", GameResources.sprite().animal().fileTitles());
                 jsonUiTemplate.sliderD("LIVES_IN_CAVES", 0, 100);
                 jsonUiTemplate.checkbox("CARAVAN");
+                jsonUiTemplate.checkbox("PACK");
+                jsonUiTemplate.checkbox("GRAZES");
+                JsonUITemplates.resources(jsonUiTemplate);
+                // todo
+                //  slider list for RESOURCE_AMOUNT
+                //  list of string inputs for SOUND
 
-
-
-                JsonUITemplates.standing(jsonUiTemplate);
+                JsonUITemplates.climate(jsonUiTemplate);
+                JsonUITemplates.terrain(jsonUiTemplate);
+                JsonUITemplates.damage("", jsonUiTemplate);
             }).build();
     }
 
@@ -556,7 +561,7 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.sliderD("HAPPINESS_EXPONENT", 0, 100);
                 jsonUiTemplate.slider("TOURIST_PER_YEAR_MAX", 0, 4096, 32);
                 jsonUiTemplate.slider("TOURIST_CRETIDS", 0, 10000);
-                jsonUiTemplate.slider("DIMENSION", 0, 2048, 32);
+                jsonUiTemplate.slider("DIMENSION", 64, 2048, 64);
             })
             .template("Battle", jsonUiTemplate -> {
                 jsonUiTemplate.sliderD("DAMAGE", 0, 1000000);

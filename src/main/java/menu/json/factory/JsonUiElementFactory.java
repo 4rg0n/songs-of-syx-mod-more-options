@@ -7,6 +7,7 @@ import init.sprite.UI.UI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import menu.json.JsonUiMapper;
+import menu.json.factory.builder.JsonUiElementListBuilder;
 import menu.ui.UiFactory;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.text.Font;
@@ -27,21 +28,32 @@ public class JsonUiElementFactory implements Resettable {
     protected final Path path;
     protected final JsonObject config;
 
-
     /**
      * Creates a list of {@link JsonUiElementSingle}s and wraps it into {@link JsonUiElementList}.
      * It will therefor extend the json path by the names of the given list.
      */
     public <Value extends JsonElement, Element extends RENDEROBJ> JsonUiElementList<Value, Element> asObject(String jsonPath, List<String> names, boolean asWildcards, Function<String, JsonUiElementSingle<Value, Element>> elementProvider) {
-        return JsonUiElementListBuilder.of(jsonPath, elementProvider).asObject(names, asWildcards);
+        return JsonUiElementListBuilder.<Value, Element>builder()
+            .jsonPath(jsonPath)
+            .elementProvider(elementProvider)
+            .build()
+            .asObject(names, asWildcards);
     }
 
     public <Value extends JsonElement, Element extends RENDEROBJ> JsonUiElementList<Value, Element> asArray(String jsonPath, int amount, Function<String, JsonUiElementSingle<Value, Element>> elementProvider) {
-        return JsonUiElementListBuilder.of(jsonPath, elementProvider).asArray(amount);
+        return JsonUiElementListBuilder.<Value, Element>builder()
+            .jsonPath(jsonPath)
+            .elementProvider(elementProvider)
+            .build()
+            .asArray(amount);
     }
 
     public <Value extends JsonElement, Element extends RENDEROBJ> JsonUiElementList<Value, Element> asTuples(String jsonPath, String name, int amount, Function<String, JsonUiElementSingle<Value, Element>> elementProvider) {
-        return JsonUiElementListBuilder.of(jsonPath, elementProvider).asTuples(name, amount);
+        return JsonUiElementListBuilder.<Value, Element>builder()
+            .jsonPath(jsonPath)
+            .elementProvider(elementProvider)
+            .build()
+            .asTuples(name, amount);
     }
 
     public JsonUiElementSingle<JsonNull, Section> header(String text, int indents) {
@@ -200,13 +212,13 @@ public class JsonUiElementFactory implements Resettable {
             .build();
     }
 
-    public JsonUiElementSingle<JsonArray, DropDownList> dropDownList(String jsonPath, String title, List<String> options, JsonArray defaultValue) {
+    public JsonUiElementSingle<JsonArray, DropDownList> dropDownList(String jsonPath, String buttonTitle, List<String> options, JsonArray defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
                 config,
                 defaultValue,
                 JsonArray.class,
-                value -> UiFactory.dropDownList(title, value, options))
+                value -> UiFactory.dropDownList(buttonTitle, value, options))
             .path(path)
             .valueSupplier(stringSelect -> {
                 JsonArray jsonValue = new JsonArray();
@@ -219,6 +231,38 @@ public class JsonUiElementFactory implements Resettable {
             .valueConsumer((stringSelect, jsonArray) -> {
                 List<String> selected = jsonArray.as(JsonString.class).stream()
                     .map(JsonString::getValue)
+                    .collect(Collectors.toList());
+
+                stringSelect.getElement().setValue(selected);
+            })
+            .build();
+    }
+
+    public JsonUiElementSingle<JsonArray, SliderDoubleList> sliderDList(String jsonPath, String buttonTitle, int min, int max, int step, int resolution, JsonArray defaultValue) {
+        return JsonUiElementSingle.from(
+                jsonPath,
+                config,
+                defaultValue,
+                JsonArray.class,
+                value -> UiFactory.sliderDList(buttonTitle, value, value1 -> {
+                    if (value1 == null) {
+                        return null;
+                    }
+
+                    return UiFactory.slider(JsonDouble.of(value1), min, max, step, resolution);
+                }))
+            .path(path)
+            .valueSupplier(sliders -> {
+                JsonArray jsonValue = new JsonArray();
+                Objects.requireNonNull(sliders.getElement().getValue()).forEach(entry -> {
+                    jsonValue.add(new JsonDouble(entry));
+                });
+
+                return jsonValue;
+            })
+            .valueConsumer((stringSelect, jsonArray) -> {
+                List<Double> selected = jsonArray.as(JsonDouble.class).stream()
+                    .map(JsonDouble::getValue)
                     .collect(Collectors.toList());
 
                 stringSelect.getElement().setValue(selected);

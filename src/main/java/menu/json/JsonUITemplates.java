@@ -147,7 +147,8 @@ public class JsonUITemplates {
         jsonUiTemplate.space();
         environmentEmit(jsonUiTemplate);
         jsonUiTemplate.space();
-        boosters("BONUS", jsonUiTemplate);
+        // fixme these are not boosters
+        //boosters("BONUS", jsonUiTemplate);
     }
 
     public static void industryServiceRoom(JsonUiTemplate jsonUiTemplate) {
@@ -212,7 +213,7 @@ public class JsonUITemplates {
         jsonUiTemplate.space(10);
 
         jsonUiTemplate.header("PROJECTILE.FROM.DAMAGE");
-        jsonUiTemplate.slidersD("PROJECTILE.FROM.DAMAGE", GameResources.getDamages(), 1, 100);
+        damage("PROJECTILE.FROM.", jsonUiTemplate);
     }
 
     public static void stats(JsonUiTemplate jsonUiTemplate) {
@@ -275,6 +276,16 @@ public class JsonUITemplates {
             jsonUiTemplate.space(10);
         }
     }
+
+    public static void climate(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header("CLIMATE");
+        jsonUiTemplate.slidersD("CLIMATE", GameResources.getClimates(), 1, 100);
+    }
+
+    public static void terrain(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header("TERRAIN");
+        jsonUiTemplate.slidersD("TERRAIN", GameResources.getTerrains(), 1, 100);
+    }
     
     public static void floor(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.dropDown("FLOOR", GameResources.getFloors());
@@ -291,5 +302,10 @@ public class JsonUITemplates {
     public static void training(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.slider("TRAINING.FULL_TRAINING_IN_DAYS", 0, 1000);
         boosters("BOOST", jsonUiTemplate);
+    }
+
+    public static void damage(String prefix, JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.slidersD(prefix + "DAMAGE", GameResources.getDamages(), 0, 100);
+
     }
 }

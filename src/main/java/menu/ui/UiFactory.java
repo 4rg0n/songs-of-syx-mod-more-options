@@ -22,6 +22,7 @@ import util.gui.misc.GHeader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -72,15 +73,15 @@ public class UiFactory {
     }
 
 
-    public static MultiDropDown<String> multiDropDown(String title, JsonArray jsonArray, List<String> options, int maxSelect, boolean maxSelected) {
+    public static MultiDropDown<String> multiDropDown(String buttonTitle, JsonArray jsonArray, List<String> options, int maxSelect, boolean maxSelected) {
         return MultiDropDown.<String>builder()
-            .label(title)
+            .label(buttonTitle)
             .clickAction(dropDown -> Ui.getInstance().popups().show(dropDown.getSelect(), dropDown))
             .select(selectS(jsonArray,options, maxSelect, maxSelected))
             .build();
     }
 
-    public static DropDownList dropDownList(String title, JsonArray jsonArray, List<String> options) {
+    public static DropDownList dropDownList(String buttonTitle, JsonArray jsonArray, List<String> options) {
         List<String> values = jsonArray.getElements().stream()
             .filter(element -> element instanceof JsonString)
             .map(JsonString.class::cast)
@@ -88,11 +89,46 @@ public class UiFactory {
 
         return DropDownList.builder()
             .values(values)
-            .label(title)
+            .label(buttonTitle)
             .possibleValues(options)
             .clickAction(dropDownList -> Ui.getInstance().popups().show(dropDownList.getUiList(), dropDownList))
             .optionClickAction(dropDown -> Ui.getInstance().popups().show(dropDown.getMenu(), dropDown))
             .optionCloseAction(dropDown -> Ui.getInstance().popups().close(dropDown))
+            .height(400)
+            .build();
+    }
+
+    public static SliderDoubleList sliderDList(String buttonTitle, JsonArray jsonArray, Function<@Nullable Double, Slider> elementSupplier) {
+        List<Slider> sliders = jsonArray.getElements().stream()
+            .filter(element -> element instanceof JsonDouble)
+            .map(JsonDouble.class::cast)
+            .map(JsonDouble::getValue)
+            .map(elementSupplier)
+            .collect(Collectors.toList());
+
+        return SliderDoubleList.builder()
+            .label(buttonTitle)
+            .sliders(sliders)
+            .elementSupplier(elementSupplier)
+            .clickAction(sliderList -> Ui.getInstance().popups().show(sliderList.getUiList(), sliderList))
+            .height(400)
+            .build();
+    }
+
+    public static SliderIntegerList sliderList(String buttonTitle, JsonArray jsonArray, Function<@Nullable Integer, Slider> elementSupplier) {
+        List<Slider> sliders = jsonArray.getElements().stream()
+            .filter(element -> element instanceof JsonLong)
+            .map(JsonLong.class::cast)
+            .map(JsonLong::getValue)
+            .map(Long::intValue)
+            .map(elementSupplier)
+            .collect(Collectors.toList());
+
+        return SliderIntegerList.builder()
+            .label(buttonTitle)
+            .sliders(sliders)
+            .elementSupplier(elementSupplier)
+            .clickAction(sliderList -> Ui.getInstance().popups().show(sliderList.getUiList(), sliderList))
             .height(400)
             .build();
     }

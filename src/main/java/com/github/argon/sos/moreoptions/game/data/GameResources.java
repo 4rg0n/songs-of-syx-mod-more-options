@@ -17,6 +17,9 @@ import lombok.experimental.Accessors;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Main access to game resources like config files, folders  or sprites.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameResources {
 
@@ -40,6 +43,9 @@ public class GameResources {
     @Getter(lazy = true)
     private final static List<String> races = init().race().fileTitles();
 
+    /**
+     * Hardcoded by the game
+     */
     @Getter(lazy = true)
     private final static List<String> humanClasses = Lists.of("CITIZEN", "CHILD", "NOBLE", "OTHER", "SLAVE");
 
@@ -87,6 +93,9 @@ public class GameResources {
         .sorted()
         .collect(Collectors.toList());
 
+    /**
+     * Hardcoded by the game
+     */
     @Getter(lazy = true)
     private final static List<String> climates = Lists.of("COLD", "HOT", "TEMPERATE");
 
@@ -103,6 +112,12 @@ public class GameResources {
         .stream()
         .sorted()
         .collect(Collectors.toList());
+
+    /**
+     * Hardcoded by the game
+     */
+    @Getter(lazy = true)
+    private final static List<String> terrains = Lists.of("OCEAN", "WET", "MOUNTAIN", "FOREST", "NONE");
 
     public static GameFolder get(PATH path) {
         if (path.get().startsWith(init().getFolder().path().get())) {
