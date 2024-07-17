@@ -12,6 +12,7 @@ import init.paths.PATHS;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.color.COLOR;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GText;
@@ -45,7 +46,7 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
     @Getter
     private final int worldSeed;
 
-
+    // TODO add UiShowRoom button
     public AdvancedTab(
         String title,
         String saveStamp,
@@ -103,12 +104,12 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
             i18n.t("AdvancedTab.button.reset.name"),
             i18n.t("AdvancedTab.button.reset.desc"));
         this.folderButton = new Button(
-            i18n.t("AdvancedPanel.button.folder.name"),
-            i18n.t("AdvancedPanel.button.folder.desc"));
+            i18n.t("AdvancedTab.button.folder.name"),
+            i18n.t("AdvancedTab.button.folder.desc"));
         ColumnRow<Void> modFunctions = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.t("AdvancedPanel.label.mod.functions.name"))
-                .description(i18n.t("AdvancedPanel.label.mod.functions.desc"))
+                .name(i18n.t("AdvancedTab.label.mod.functions.name"))
+                .description(i18n.t("AdvancedTab.label.mod.functions.desc"))
                 .build())
             .column(ButtonMenu.builder()
                 .button("resetMod", resetButton)
@@ -121,34 +122,35 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
 
         this.saveStampView = new ViewSwitcher(saveStamp(saveStamp), false);
         this.copySaveStampButton = new Button(
-            i18n.t("AdvancedPanel.button.mod.saveStamp.copy.name"),
-            i18n.t("AdvancedPanel.button.mod.saveStamp.copy.desc"));
+            i18n.t("AdvancedTab.button.mod.saveStamp.copy.name"),
+            i18n.t("AdvancedTab.button.mod.saveStamp.copy.desc"));
         ColumnRow<Void> saveStampRow = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.t("AdvancedPanel.label.mod.saveStamp.name"))
-                .description(i18n.t("AdvancedPanel.label.mod.saveStamp.desc"))
+                .name(i18n.t("AdvancedTab.label.mod.saveStamp.name"))
+                .description(i18n.t("AdvancedTab.label.mod.saveStamp.desc"))
                 .build())
             .column(saveStampView)
             .column(copySaveStampButton)
             .build();
 
         this.copyWorldSeedButton = new Button(
-            i18n.t("AdvancedPanel.button.world.seed.copy.name"),
-            i18n.t("AdvancedPanel.button.world.seed.copy.desc", worldSeed));
+            i18n.t("AdvancedTab.button.world.seed.copy.name"),
+            i18n.t("AdvancedTab.button.world.seed.copy.desc", worldSeed));
         ColumnRow<Void> worldFunctions = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.t("AdvancedPanel.label.world.seed.name"))
-                .description(i18n.t("AdvancedPanel.label.world.seed.desc"))
+                .name(i18n.t("AdvancedTab.label.world.seed.name"))
+                .description(i18n.t("AdvancedTab.label.world.seed.desc"))
                 .build())
             .column(new GTextR(UI.FONT().M, String.valueOf(worldSeed)))
             .column(copyWorldSeedButton)
             .build();
 
         Table<Void> settings = Table.<Void>builder()
-            .category(i18n.t("AdvancedPanel.header.log.name"), Lists.of(logLevelSelect, logFunctions))
-            .category(i18n.t("AdvancedPanel.header.mod.name"), Lists.of(modFunctions, saveStampRow))
-            .category(i18n.t("AdvancedPanel.header.world.name"), Lists.of(worldFunctions))
+            .category(i18n.t("AdvancedTab.header.log.name"), Lists.of(logLevelSelect, logFunctions))
+            .category(i18n.t("AdvancedTab.header.mod.name"), Lists.of(modFunctions, saveStampRow))
+            .category(i18n.t("AdvancedTab.header.world.name"), Lists.of(worldFunctions))
             .displayHeight(availableHeight)
+            .backgroundColor(COLOR.WHITE10)
             .columnMargin(20)
             .evenOdd(true)
             .rowPadding(10)

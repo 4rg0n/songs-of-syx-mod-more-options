@@ -8,7 +8,7 @@ public class NullParser extends Parser {
     @Override
     public JsonElement parse(Json json) {
         // should contain the "null" string; not needed
-        json.getNextValue();
+        json.getNextValue(true);
         return new JsonNull();
     }
 }

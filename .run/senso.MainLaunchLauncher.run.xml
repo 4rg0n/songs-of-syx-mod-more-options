@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="senso.Main" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="init.Main" />
+  <configuration default="false" name="senso.MainLaunchLauncher" type="Application" factoryName="Application" folderName="senso">
+    <option name="MAIN_CLASS_NAME" value="init.MainLaunchLauncher" />
     <module name="songs-of-syx-mod-more-options" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../SteamLibrary/steamapps/common/Songs of Syx" />
     <extension name="coverage">
@@ -11,7 +11,6 @@
     </extension>
     <method v="2">
       <option name="Make" enabled="true" />
-      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="install" />
     </method>
   </configuration>
 </component>

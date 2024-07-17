@@ -11,7 +11,14 @@ public class ValueParser extends Parser {
     public JsonElement parse(Json json) {
         int startIndex = json.getIndex();
         String value = json.getNextValue();
+        json.setIndex(startIndex);
 
+        if (value.contains(":")) {
+            String key = TupleParser.parseKey(json);
+            return TupleParser.parse(key, json);
+        }
+
+        value = json.getNextValue(true);
         if (StringUtil.isNumeric(value)) {
             // decimal?
             if (value.contains(".") || value.contains(",")) {
@@ -21,12 +28,6 @@ public class ValueParser extends Parser {
             }
         }
 
-        if (value.contains(":")) {
-            json.setIndex(startIndex);
-            String key = TupleParser.parseKey(json);
-            return TupleParser.parse(key, json);
-        } else {
-            return StringParser.parseString(value);
-        }
+        return StringParser.parseString(value);
     }
 }

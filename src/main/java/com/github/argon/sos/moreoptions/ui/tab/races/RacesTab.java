@@ -103,8 +103,8 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
         this.folderButton = new Button(i18n.t("RacesTab.button.folder.name"), i18n.t("RacesTab.button.folder.desc"));
         this.fileButton = new Button(i18n.t("RacesTab.button.file.name"), i18n.t("RacesTab.button.file.desc"));
         this.loadButton = new Button(i18n.t("RacesTab.button.load.name"), i18n.t("RacesTab.button.load.desc"));
-        this.exportButton = new Button(i18n.t("RacesPanel.button.export.name"), i18n.t("RacesPanel.button.export.desc"));
-        this.importButton = new Button(i18n.t("RacesPanel.button.import.name"), i18n.t("RacesPanel.button.import.desc"));
+        this.exportButton = new Button(i18n.t("RacesTab.button.export.name"), i18n.t("RacesTab.button.export.desc"));
+        this.importButton = new Button(i18n.t("RacesTab.button.import.name"), i18n.t("RacesTab.button.import.desc"));
         ButtonMenu<String> buttonMenu = ButtonMenu.<String>builder()
             .buttons(Maps.ofLinked(
                 "load", loadButton,
@@ -115,14 +115,15 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
             .horizontal(true)
             .spacer(true)
             .margin(21)
+            .maxWidth(availableWidth)
             .build();
 
         // header with info text
         GuiSection searchBar = new GuiSection();
-        GText raceLikingsHeader = new GText(UI.FONT().H2, i18n.t("RacesPanel.search.header.name"));
+        GText raceLikingsHeader = new GText(UI.FONT().H2, i18n.t("RacesTab.search.header.name"));
         searchBar.addRightC(0, raceLikingsHeader);
         searchBar.addRightC(20, search);
-        searchBar.hoverInfoSet(i18n.t("RacesPanel.search.header.desc"));
+        searchBar.hoverInfoSet(i18n.t("RacesTab.search.header.desc"));
 
         Layout.vertical(availableHeight)
             .addDownC(0, buttonMenu)
@@ -134,6 +135,7 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
                 .search(searchInput)
                 .rowPadding(5)
                 .columnMargin(5)
+                .backgroundColor(COLOR.WHITE10)
                 .rowsCategorized(raceLikingsRowMap)
                 .displayHeight(height)
                 .build()))

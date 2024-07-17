@@ -222,6 +222,7 @@ public class MoreOptionsPanel extends GuiSection implements
                         i18n.t("MoreOptionsPanel.tab.advanced.name"),
                         i18n.t("MoreOptionsPanel.tab.advanced.desc")))
                     .sameWidth(true)
+                    .maxWidth(availableWidth)
                     .horizontal(true)
                     .margin(21)
                     .spacer(true)

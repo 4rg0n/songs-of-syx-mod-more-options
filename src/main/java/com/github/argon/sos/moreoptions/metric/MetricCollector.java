@@ -58,6 +58,7 @@ public class MetricCollector {
             stats.putAll(statsExtractor.getStat(stat));
         }
 
+        // FIXME
 //        stats.putAll(statsExtractor.getStat(STATS.POP().key, STATS.POP().));
 //        stats.putAll(statsExtractor.getRaceStats(STATS.POP().key, STATS.POP()));
 //

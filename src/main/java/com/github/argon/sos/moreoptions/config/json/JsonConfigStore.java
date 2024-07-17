@@ -455,10 +455,15 @@ public class JsonConfigStore {
             return Optional.empty();
         }
 
-        return jsonService.load(path, configClass).map(config -> ConfigObject.<T>builder()
-            .config(config)
-            .path(path)
-            .build());
+        try {
+            return jsonService.load(path, configClass).map(config -> ConfigObject.<T>builder()
+                .config(config)
+                .path(path)
+                .build());
+        } catch (Exception e) {
+            log.error("Could not load config from %", path);
+            throw e;
+        }
     }
 
     /**

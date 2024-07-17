@@ -107,7 +107,15 @@ public class ObjectMapper implements Mapper<JsonObject> {
             TypeInfo<?> fieldTypeInfo = TypeInfo.get(fieldType);
             JsonElement jsonElement = jsonObject.get(jsonKey);
 
-            Object mappedObject = JsonMapper.mapJson(jsonElement, fieldTypeInfo);
+            Object mappedObject;
+
+            try {
+                mappedObject = JsonMapper.mapJson(jsonElement, fieldTypeInfo);
+            } catch (JsonMapperException e) {
+                log.error("Could not map field %s#%s", clazz.getSimpleName(), fieldName);
+                throw e;
+            }
+
             try {
                 // call setter method
                 ReflectionUtil.invokeMethodOneArgument(method, instance, mappedObject);

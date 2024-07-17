@@ -101,7 +101,7 @@ public class GameJsonStore implements Phases {
         try {
             jsonObjects.put(filePath, new Json(content, JsonWriters.jsonEPretty()));
         } catch (JsonParseException e) {
-            log.error("BOCKWURST", e.getMessage());
+            log.error("Could not add json %s to store", filePath, e);
         }
     }
 

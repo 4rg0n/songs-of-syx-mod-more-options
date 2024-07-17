@@ -62,6 +62,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             .evenOdd(true)
             .highlight(true)
             .search(searchInput)
+            .backgroundColor(COLOR.WHITE10)
             .displayHeight(tableHeight)
             .build();
 

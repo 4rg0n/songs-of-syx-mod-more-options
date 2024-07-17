@@ -11,6 +11,7 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
+import snake2d.util.color.COLOR;
 import util.gui.misc.GHeader;
 
 import java.util.Map;
@@ -60,6 +61,7 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
                 .rowPadding(5)
                 .columnMargin(5)
                 .highlight(true)
+                .backgroundColor(COLOR.WHITE10)
                 .displayHeight(height)
                 .build()))
             .build(this);
@@ -71,6 +73,8 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
                 .rowPadding(5)
                 .columnMargin(5)
                 .highlight(true)
+                .scrollable(true)
+                .backgroundColor(COLOR.WHITE10)
                 .displayHeight(height)
                 .build()))
             .build(this);

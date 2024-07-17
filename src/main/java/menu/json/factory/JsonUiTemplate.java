@@ -201,7 +201,7 @@ public class JsonUiTemplate extends AbstractJsonUiTemplate {
     public static JsonUiTemplate from(Path path) {
         Json json = GameJsonStore.getInstance().getJson(path);
         if (json == null || json.getRoot() == null) {
-            throw new JsonUiException("No or empty json for path " + path);
+            throw new JsonUiException("No or empty json for file path " + path);
         }
 
         JsonObject jsonConfig = json.getRoot();

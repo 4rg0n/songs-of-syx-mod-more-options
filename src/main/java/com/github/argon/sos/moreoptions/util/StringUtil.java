@@ -245,9 +245,10 @@ public class StringUtil {
     }
 
     public static boolean isNumeric(@Nullable String strNum) {
-        if (strNum == null) {
+        if (strNum == null || strNum.isEmpty()) {
             return false;
         }
+
         return numericPattern.matcher(strNum).matches();
     }
 

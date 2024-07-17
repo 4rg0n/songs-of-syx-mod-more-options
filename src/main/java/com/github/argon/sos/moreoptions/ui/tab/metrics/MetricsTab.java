@@ -15,6 +15,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.color.COLOR;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
@@ -114,11 +115,11 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
             .build();
         ColumnRow<Void> exportRateRow = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.t("MetricsPanel.exportRate.label.name"))
-                .description(i18n.t("MetricsPanel.exportRate.label.desc"))
+                .name(i18n.t("MetricsTab.exportRate.label.name"))
+                .description(i18n.t("MetricsTab.exportRate.label.desc"))
                 .build())
             .column(exportRate)
-            .column(new GTextR(UI.FONT().S, i18n.t("MetricsPanel.text.minutes")))
+            .column(new GTextR(UI.FONT().S, i18n.t("MetricsTab.text.minutes")))
             .build();
 
 
@@ -126,8 +127,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
         // Export file path with folder button
         this.exportFilePathView = new ViewSwitcher(exportFilePathSection, false);
-        this.exportFolderButton = new Button(i18n.t("MetricsPanel.button.folder.name"), i18n.t("MetricsPanel.button.folder.desc", exportFolderPath));
-        this.copyExportFileButton = new Button(i18n.t("MetricsPanel.button.copy.name"), i18n.t("MetricsPanel.button.copy.desc"));
+        this.exportFolderButton = new Button(i18n.t("MetricsTab.button.folder.name"), i18n.t("MetricsTab.button.folder.desc", exportFolderPath));
+        this.copyExportFileButton = new Button(i18n.t("MetricsTab.button.copy.name"), i18n.t("MetricsTab.button.copy.desc"));
 
         GuiSection exportButtons = new GuiSection();
         exportButtons.addRightC(0, exportFolderButton);
@@ -135,8 +136,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
         ColumnRow<Void> exportFileRow = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.t("MetricsPanel.exportFile.label.name"))
-                .description(i18n.t("MetricsPanel.exportFile.label.desc"))
+                .name(i18n.t("MetricsTab.exportFile.label.name"))
+                .description(i18n.t("MetricsTab.exportFile.label.desc"))
                 .build())
             .column(exportFilePathView)
             .column(exportButtons)
@@ -144,12 +145,12 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
         // Search Bar with uncheck and check buttons
         GuiSection searchBar = new GuiSection();
-        this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("MetricsPanel.search.input.name"));
+        this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("MetricsTab.search.input.name"));
         searchBar.addRightC(0, new Input(searchInput));
         this.checkSwitcher = Switcher.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
-                .button(true, new Button(i18n.t("MetricsPanel.search.check.name"), i18n.t("MetricsPanel.search.check.desc")))
-                .button(false, new Button(i18n.t("MetricsPanel.search.uncheck.name"), i18n.t("MetricsPanel.search.uncheck.desc")))
+                .button(true, new Button(i18n.t("MetricsTab.search.check.name"), i18n.t("MetricsTab.search.check.desc")))
+                .button(false, new Button(i18n.t("MetricsTab.search.uncheck.name"), i18n.t("MetricsTab.search.uncheck.desc")))
                 .horizontal(true)
                 .build())
             .highlight(false)
@@ -187,13 +188,14 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
             .evenOdd(true)
             .scrollable(false)
             .rows(rows)
+            .backgroundColor(COLOR.WHITE10)
             .rowPadding(5)
             .columnMargin(5)
             .displayHeight(200)
             .build();
 
-        GHeader statsHeader = new GHeader(i18n.t("MetricsPanel.stats.header.name"));
-        statsHeader.hoverInfoSet(i18n.t("MetricsPanel.stats.header.desc"));
+        GHeader statsHeader = new GHeader(i18n.t("MetricsTab.stats.header.name"));
+        statsHeader.hoverInfoSet(i18n.t("MetricsTab.stats.header.desc"));
 
         VerticalLayout.Scalables scalables = Layout.vertical(availableHeight)
             .addDownC(0, configTable)

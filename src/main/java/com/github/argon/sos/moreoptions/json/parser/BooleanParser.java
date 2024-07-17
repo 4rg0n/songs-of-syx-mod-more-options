@@ -7,7 +7,7 @@ import com.github.argon.sos.moreoptions.json.element.JsonElement;
 public class BooleanParser extends Parser {
     @Override
     public JsonElement parse(Json json) {
-        String value = json.getNextValue();
+        String value = json.getNextValue(true);
 
         switch (value) {
             case "true":

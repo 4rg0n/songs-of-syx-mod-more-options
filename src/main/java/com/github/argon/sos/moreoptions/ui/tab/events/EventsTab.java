@@ -10,6 +10,7 @@ import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.util.Maps;
 import init.sprite.UI.UI;
+import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GHeader;
 
@@ -56,6 +57,7 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
             .rows(evenChanceRows)
             .rowPadding(5)
             .columnMargin(5)
+            .backgroundColor(COLOR.WHITE10)
             .highlight(true)
             .build();
         GHeader eventChancesHeader = new GHeader(i18n.t("EventsTab.header.chance.name"));
@@ -76,6 +78,7 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
             .rows(tributeRows)
             .rowPadding(5)
             .columnMargin(5)
+            .backgroundColor(COLOR.WHITE10)
             .highlight(true)
             .build();
         tributeSection.addDown(0, tributeHeader);

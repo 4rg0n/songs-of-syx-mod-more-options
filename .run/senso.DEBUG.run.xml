@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="senso.DEBUG" type="Application" factoryName="Application">
+  <configuration default="false" name="senso.DEBUG" type="Application" factoryName="Application" folderName="senso">
     <classpathModifications>
       <entry path="F:\SteamLibrary\steamapps\common\Songs of Syx\base\script\jar\Example.jar" />
       <entry path="F:\songs-of-syx-mod-more-options-fork\target\More Options.jar" />

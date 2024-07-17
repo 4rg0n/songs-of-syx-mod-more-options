@@ -131,7 +131,7 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
             presetButtons,
             copyPasteButtons,
             resetButtons
-        ), null, 20, 0, 0,true);
+        ), null, 20, availableWidth, 0,true);
 
         ColorBox buttonBox = new ColorBox(COLOR.WHITE15);
         buttonBox.add(buttons);

@@ -13,6 +13,7 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import lombok.Getter;
+import snake2d.util.color.COLOR;
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class WeatherTab extends AbstractConfigTab<WeatherConfig, WeatherTab> {
                 .evenOdd(true)
                 .highlight(true)
                 .displayHeight(height)
+                .backgroundColor(COLOR.WHITE10)
                 .rowPadding(5)
                 .columnMargin(5)
                 .build()))
