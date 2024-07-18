@@ -109,7 +109,7 @@ public abstract class AbstractJsonWriter implements JsonWriter {
         }
 
         sb.append(stringJoiner);
-        sb.append(comma).append(lineBreak);
+        if (!elements.isEmpty()) sb.append(comma).append(lineBreak);
 
         // reset indent and close
         indent = endIndention();

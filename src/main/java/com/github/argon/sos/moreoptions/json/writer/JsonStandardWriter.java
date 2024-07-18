@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.json.writer;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 
 /**
- * For printing {@link JsonElement}s as string
+ * For printing {@link JsonElement}s as JSON Standard string
  */
 public class JsonStandardWriter extends AbstractJsonWriter {
 

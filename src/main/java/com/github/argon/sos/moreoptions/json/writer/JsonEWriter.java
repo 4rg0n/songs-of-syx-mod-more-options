@@ -1,5 +1,10 @@
 package com.github.argon.sos.moreoptions.json.writer;
 
+import com.github.argon.sos.moreoptions.json.element.JsonElement;
+
+/**
+ * For printing {@link JsonElement}s as Songs of Syx JSON string
+ */
 public class JsonEWriter extends AbstractJsonWriter {
 
     public JsonEWriter() {

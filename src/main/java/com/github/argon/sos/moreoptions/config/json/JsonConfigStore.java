@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.config.json;
 
 import com.github.argon.sos.moreoptions.game.api.GameSaveApi;
 import com.github.argon.sos.moreoptions.io.FileService;
+import com.github.argon.sos.moreoptions.json.JsonService;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Lists;

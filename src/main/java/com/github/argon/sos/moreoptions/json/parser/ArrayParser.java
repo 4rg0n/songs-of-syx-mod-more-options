@@ -4,7 +4,10 @@ import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.element.JsonArray;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 
-public class ArrayParser extends Parser {
+/**
+ * For parsing array structures e.g. [TEXT,TEXT,]
+ */
+public class ArrayParser implements Parser {
     @Override
     public JsonElement parse(Json json) {
         JsonArray jsonArray = new JsonArray();
@@ -18,7 +21,7 @@ public class ArrayParser extends Parser {
                 break;
             }
 
-            JsonElement element = JsonParser.delegate(json);
+            JsonElement element = JsonParser.parse(json);
             jsonArray.add(element);
 
             json.skipBlank();

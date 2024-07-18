@@ -1,9 +1,7 @@
-package com.github.argon.sos.moreoptions.json.mapper;
+package com.github.argon.sos.moreoptions.json;
 
-import com.github.argon.sos.moreoptions.json.Json;
-import com.github.argon.sos.moreoptions.json.element.JsonElement;
-import com.github.argon.sos.moreoptions.json.element.JsonNull;
-import com.github.argon.sos.moreoptions.json.element.JsonObject;
+import com.github.argon.sos.moreoptions.json.element.*;
+import com.github.argon.sos.moreoptions.json.mapper.*;
 import com.github.argon.sos.moreoptions.json.mapper.jsone.JsonEMapper;
 import com.github.argon.sos.moreoptions.json.mapper.jsone.JsonEMappers;
 import snake2d.util.file.JsonE;
@@ -63,9 +61,24 @@ public class JsonMapper {
         Mapper mapper = mappers.findOne(typeClass)
             .orElseThrow(() -> new JsonMapperException("No mapper found for json element " + typeClass.getTypeName()));
 
+        JsonElement toMap = json;
+
+        /*
+         This is a somewhat ugly fix for a nasty problem I made my self.
+         The game json allows for key value structures in an array, which isn't valid in standard json.
+         A key value pair is identified by containing a ":".
+         And guess who added keys as Strings in a list, which contain a ":" as some kind of delimiter in their own config...
+         Now this stuff get's interpreted as a key value pair... this circumvents the issue for now :x
+         */
+        if (mapper instanceof StringMapper && json instanceof JsonTuple) {
+            JsonTuple jsonTuple = (JsonTuple) json;
+            // just rebuild the original value as string
+            toMap = new JsonString(jsonTuple.getKey() + ":" + jsonTuple.getValue());
+        }
+
         try {
             //noinspection unchecked
-            return (T) mapper.mapJson(json, typeInfo);
+            return (T) mapper.mapJson(toMap, typeInfo);
         } catch (RuntimeException e) {
             throw new JsonMapperException(
                 "Could not map " + json.getClass().getSimpleName() + " to " +

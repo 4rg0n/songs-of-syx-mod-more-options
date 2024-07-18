@@ -39,6 +39,8 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
     private final ViewSwitcher saveStampView;
     @Getter
     private final Button copySaveStampButton;
+    @Getter
+    private final Button uiShowRoomButton;
 
     @Getter
     private String saveStamp;
@@ -46,7 +48,6 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
     @Getter
     private final int worldSeed;
 
-    // TODO add UiShowRoom button
     public AdvancedTab(
         String title,
         String saveStamp,
@@ -106,6 +107,10 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
         this.folderButton = new Button(
             i18n.t("AdvancedTab.button.folder.name"),
             i18n.t("AdvancedTab.button.folder.desc"));
+        this.uiShowRoomButton = new Button(
+            i18n.t("AdvancedTab.button.uiShowRoom.name"),
+            i18n.t("AdvancedTab.button.uiShowRoom.desc"));
+
         ColumnRow<Void> modFunctions = ColumnRow.<Void>builder()
             .column(Label.builder()
                 .name(i18n.t("AdvancedTab.label.mod.functions.name"))
@@ -114,6 +119,7 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
             .column(ButtonMenu.builder()
                 .button("resetMod", resetButton)
                 .button("folderMod", folderButton)
+                .button("folderMod", uiShowRoomButton)
                 .horizontal(true)
                 .sameWidth(true)
                 .margin(10)

@@ -4,10 +4,12 @@ import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonNull;
 
-public class NullParser extends Parser {
+/**
+ * For parsing null values: null
+ */
+public class NullParser implements Parser {
     @Override
     public JsonElement parse(Json json) {
-        // should contain the "null" string; not needed
         json.getNextValue(true);
         return new JsonNull();
     }

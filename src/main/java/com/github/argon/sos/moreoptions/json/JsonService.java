@@ -1,8 +1,6 @@
-package com.github.argon.sos.moreoptions.config.json;
+package com.github.argon.sos.moreoptions.json;
 
 import com.github.argon.sos.moreoptions.io.FileService;
-import com.github.argon.sos.moreoptions.json.Json;
-import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.writer.JsonWriter;
 import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
@@ -38,12 +36,28 @@ public class JsonService {
             return Optional.empty();
         }
 
+        return load(path)
+            .map(json -> {
+                try {
+                    return JsonMapper.mapJson(json.getRoot(), clazz);
+                }  catch (Exception e) {
+                    log.warn("Could not map json from %s for %s", path, clazz.getSimpleName(), e);
+                    return null;
+                }
+            });
+    }
+
+    public Optional<Json> load(Path path) {
+        String jsonString = fileService.read(path);
+
+        if (jsonString == null) {
+            return Optional.empty();
+        }
+
         try {
-            Json json = new Json(jsonString, jsonWriter);
-            T object = JsonMapper.mapJson(json.getRoot(), clazz);
-            return Optional.of(object);
+            return Optional.of(new Json(jsonString, jsonWriter));
         }  catch (Exception e) {
-            log.warn("Could not parse json from %s for %s", path, clazz.getSimpleName(), e);
+            log.warn("Could not load json from %s", path, e);
             return Optional.empty();
         }
     }
@@ -59,11 +73,19 @@ public class JsonService {
             return false;
         }
 
+        boolean success = save(path, json);
+        if (!success) {
+            log.warn("Could not write json from object %s", object.getClass().getSimpleName());
+        }
+
+        return success;
+    }
+
+    public boolean save(Path path, Json json) {
         try {
             return fileService.write(path, json.write());
         } catch (Exception e) {
-            log.warn("Could not write json from object %s into %s",
-                path, object.getClass().getSimpleName(), e);
+            log.warn("Could not write json to into %s", path, e);
             return false;
         }
     }

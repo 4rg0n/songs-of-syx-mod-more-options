@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.json.mapper;
 
+import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.element.JsonArray;
 import com.github.argon.sos.moreoptions.util.ClassUtil;
 

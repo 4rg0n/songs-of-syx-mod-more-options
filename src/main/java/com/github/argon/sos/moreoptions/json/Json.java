@@ -2,7 +2,6 @@ package com.github.argon.sos.moreoptions.json;
 
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
-import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
 import com.github.argon.sos.moreoptions.json.parser.JsonParser;
 import com.github.argon.sos.moreoptions.json.util.JsonUtil;
 import com.github.argon.sos.moreoptions.json.writer.JsonWriter;

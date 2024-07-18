@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.json.mapper.jsone;
 
-import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
+import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import com.github.argon.sos.moreoptions.util.ClassUtil;
 import snake2d.util.file.JsonE;

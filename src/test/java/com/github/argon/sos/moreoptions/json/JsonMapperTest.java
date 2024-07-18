@@ -3,7 +3,6 @@ package com.github.argon.sos.moreoptions.json;
 import com.github.argon.sos.moreoptions.io.ResourceService;
 import com.github.argon.sos.moreoptions.json.annotation.JsonProperty;
 import com.github.argon.sos.moreoptions.json.element.*;
-import com.github.argon.sos.moreoptions.json.mapper.JsonMapper;
 import com.github.argon.sos.moreoptions.json.mapper.TypeInfo;
 import com.github.argon.sos.moreoptions.util.Maps;
 import lombok.Data;

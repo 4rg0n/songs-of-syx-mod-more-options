@@ -4,14 +4,24 @@ import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonTuple;
 
-public class TupleParser {
-    public static JsonTuple parse(String key, Json json) {
+/**
+ * For parsing a single key value pair e.g. NAME: FOO,
+ */
+public class TupleParser implements Parser {
+
+    @Override
+    public JsonElement parse(Json json) {
+        String key = parseKey(json);
+        return parse(key, json);
+    }
+
+    private JsonTuple parse(String key, Json json) {
         json.skipBlank();
-        JsonElement element = JsonParser.delegate(json);
+        JsonElement element = JsonParser.parse(json);
         return new JsonTuple(key, element);
     }
 
-    public static String parseKey(Json json) {
+    private String parseKey(Json json) {
         json.skipBlank();
         String key = json.getNextValue(':');
         if (key.isEmpty()) {

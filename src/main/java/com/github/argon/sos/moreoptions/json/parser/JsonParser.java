@@ -29,21 +29,47 @@ public class JsonParser {
     /**
      * Delegates to responsible parser when at certain character
      */
-    static JsonElement delegate(Json json) {
-        char c = json.currentChar();
+    private static JsonElement delegate(Json json) {
+        char currentChar = json.currentChar();
+        int startIndex = json.getIndex();
+        String value;
 
-        switch (c) {
+        switch (currentChar) {
             case '[':
                 return arrayParser.parse(json);
             case '\"':
                 return stringParser.parse(json);
             case '{':
                 return objectParser.parse(json);
+
             case 'n': // null
+                value = json.getNextValue(true);
+                json.setIndex(startIndex);
+
+                if (!"null".equals(value)) {
+                    return valueParser.parse(json);
+                }
+
                 return nullParser.parse(json);
+
             case 't': // true
-            case 'f': // false
+                value = json.getNextValue(true);
+                json.setIndex(startIndex);
+
+                if (!"true".equals(value)) {
+                    return valueParser.parse(json);
+                }
                 return booleanParser.parse(json);
+
+            case 'f': // false
+                value = json.getNextValue(true);
+                json.setIndex(startIndex);
+
+                if (!"false".equals(value)) {
+                    return valueParser.parse(json);
+                }
+                return booleanParser.parse(json);
+
             default:
                 return valueParser.parse(json);
         }

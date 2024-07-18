@@ -31,7 +31,10 @@ public class JsonUtil {
         return jsonString;
     }
 
-    public static @Nullable String toJsonKey(Method method) {
+    /**
+     * @return e.g. a method name like getBioFile will be BIO_FILE
+     */
+    public static String toJsonEKey(Method method) {
         String name = MethodUtil.extractSetterGetterFieldName(method);
         return StringUtil.toScreamingSnakeCase(name);
     }

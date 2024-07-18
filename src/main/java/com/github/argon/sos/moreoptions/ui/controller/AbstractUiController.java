@@ -78,13 +78,16 @@ public abstract class AbstractUiController<Element> implements Phases {
             }
         }
 
+        boolean success = false;
         try {
-            return configApplier.applyToGameAndSave(config);
+            success = configApplier.applyToGameAndSave(config);
         } catch (Exception e) {
             log.error("Could not apply config to game.", e);
         }
 
-        return false;
+        log.debug("Config applied? %s", success);
+
+        return success;
     }
 
     protected void undo(MoreOptionsPanel moreOptionsPanel) {

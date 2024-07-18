@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.ui.controller;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
+import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
 import init.paths.PATHS;
 import snake2d.Errors;
@@ -24,6 +25,7 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedTab> {
         advancedTab.getFolderButton().clickActionSet(this::openModConfigFolder);
         advancedTab.getCopySaveStampButton().clickActionSet(this::copySaveStamp);
         advancedTab.getCopyWorldSeedButton().clickActionSet(this::copyWorldSeed);
+        advancedTab.getUiShowRoomButton().clickActionSet(this::openUiShowRoom);
     }
 
     @Override
@@ -91,5 +93,9 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedTab> {
             i18n.t("notification.advanced.worldSeed.copy", worldSeed),
             i18n.t("notification.advanced.worldSeed.not.copy")
         );
+    }
+
+    public void openUiShowRoom() {
+        UiFactory.buildUiShowRoom().show();
     }
 }

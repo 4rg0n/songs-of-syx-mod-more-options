@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.json.mapper;
 
+import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.annotation.JsonIgnore;
 import com.github.argon.sos.moreoptions.json.annotation.JsonProperty;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import static com.github.argon.sos.moreoptions.json.util.JsonUtil.toJsonKey;
+import static com.github.argon.sos.moreoptions.json.util.JsonUtil.toJsonEKey;
 import static com.github.argon.sos.moreoptions.util.MethodUtil.*;
 import static com.github.argon.sos.moreoptions.util.ReflectionUtil.getAnnotation;
 
@@ -96,7 +97,7 @@ public class ObjectMapper implements Mapper<JsonObject> {
             // read json key from annotation or generate from method name
             String jsonKey = getAnnotation(field, JsonProperty.class)
                 .map(JsonProperty::key)
-                .orElse(toJsonKey(method));
+                .orElse(toJsonEKey(method));
 
             if (!jsonObject.containsKey(jsonKey)) {
                 log.debug("Json does not contain key %s for %s", jsonKey, method.getName());
@@ -168,7 +169,7 @@ public class ObjectMapper implements Mapper<JsonObject> {
             // read json key from annotation or generate from method name
             String jsonKey = getAnnotation(field, JsonProperty.class)
                 .map(JsonProperty::key)
-                .orElse(toJsonKey(method));
+                .orElse(toJsonEKey(method));
 
             Type fieldType = field.getGenericType();
             TypeInfo<?> fieldTypeInfo = TypeInfo.get(fieldType);

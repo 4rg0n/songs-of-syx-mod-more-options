@@ -150,8 +150,8 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
             }
         });
 
-        tributeSliders.get("EventsPanel.battle.loot.enemy").setValue(eventsConfig.getEnemyBattleLoot().getValue());
-        tributeSliders.get("EventsPanel.battle.loot.player").setValue(eventsConfig.getPlayerBattleLoot().getValue());
+        tributeSliders.get("EventsTab.battle.loot.enemy").setValue(eventsConfig.getEnemyBattleLoot().getValue());
+        tributeSliders.get("EventsTab.battle.loot.player").setValue(eventsConfig.getPlayerBattleLoot().getValue());
     }
 
     protected EventsTab element() {

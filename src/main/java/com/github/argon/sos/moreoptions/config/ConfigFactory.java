@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.config.json.JsonConfigStore;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
-import com.github.argon.sos.moreoptions.config.json.JsonService;
+import com.github.argon.sos.moreoptions.json.JsonService;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonMoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonRacesV2Config;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonBoostersV3Config;

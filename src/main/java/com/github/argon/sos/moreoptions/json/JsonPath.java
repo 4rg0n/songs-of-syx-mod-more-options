@@ -16,6 +16,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * A json path describes a way to find a value in a json tree.
+ * e.g. for:
+ * <pre>
+ *     PROPERTIES: {
+ *         WIDTH: 4,
+ *     },
+ * </pre>
+ * The json path to read the 4 would be "PROPERTIES.WIDTH"
+ *
+ * e.g. for a list:
+ * <pre>
+ *     TECH: [
+ *         *,
+ *     ],
+ * </pre>
+ * The json path for reading the "*" would be "TECH[0]"
+ * It's also possible to combine both e.g. "STATS[1].NAME".
+ * Would read the value in NAME of the second entry in STATS.
+ */
 public class JsonPath {
     private final static Logger log = Loggers.getLogger(JsonPath.class);
 
@@ -23,8 +43,6 @@ public class JsonPath {
     private final List<String> keys;
 
     public final static String DELIMITER = "\\.";
-
-    private int pathPos;
 
     public JsonPath(List<String> keys) {
         this.keys = keys;

@@ -5,7 +5,10 @@ import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import com.github.argon.sos.moreoptions.json.element.JsonTuple;
 
-public class ObjectParser extends Parser {
+/**
+ * For parsing key value pairs present in objects e.g. {NAME: FOO, SIZE: 1,}
+ */
+public class ObjectParser implements Parser {
     @Override
     public JsonElement parse(Json json) {
         JsonObject jsonObject = new JsonObject();
@@ -18,7 +21,7 @@ public class ObjectParser extends Parser {
                 break;
             }
 
-            JsonElement element = JsonParser.delegate(json);
+            JsonElement element = JsonParser.parse(json);
             if (!(element instanceof JsonTuple)) {
                 throw new JsonParseException("Received a " + element.getClass().getSimpleName() + " instead of JsonTuple");
             }
