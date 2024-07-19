@@ -54,9 +54,9 @@ public class BoostersPresetsSection extends GuiSection {
         List<ColumnRow<String>> rows = presetButtons.entrySet().stream().map(entry -> {
             String key = entry.getKey();
             Button presetButton = entry.getValue();
-            presetButton.hoverInfoSet(i18n.t("BoostersPanel.button.preset.desc", key));
-            Button deleteButton = new Button(SPRITES.icons().m.trash, i18n.t("BoostersPanel.button.preset.delete.desc", key));
-            Button shareButton = new Button(SPRITES.icons().m.openscroll, i18n.t("BoostersPanel.button.preset.share.desc", key));
+            presetButton.hoverInfoSet(i18n.t("BoostersTab.button.preset.desc", key));
+            Button deleteButton = new Button(SPRITES.icons().m.trash, i18n.t("BoostersTab.button.preset.delete.desc", key));
+            Button shareButton = new Button(SPRITES.icons().m.openscroll, i18n.t("BoostersTab.button.preset.share.desc", key));
             presetButton.body().setWidth(presetButtonsWidth);
 
             deleteButton.bg(COLOR.RED50);
@@ -79,6 +79,7 @@ public class BoostersPresetsSection extends GuiSection {
 
         Table<String> buttonTable = Table.<String>builder()
             .rows(rows)
+            .backgroundColor(COLOR.WHITE10)
             .displayHeight(300)
             .evenOdd(false)
             .build();

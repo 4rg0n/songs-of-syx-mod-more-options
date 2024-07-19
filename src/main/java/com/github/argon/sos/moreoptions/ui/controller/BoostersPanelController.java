@@ -116,7 +116,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
                 notificator.notifySuccess(i18n.t("notification.boosters.preset.load", key));
             })
             .deleteAction((key, panel) -> {
-                gameApis.ui().inters().yesNo.activate(i18n.t("BoostersPanel.text.yesNo.preset.delete", key), () -> {
+                gameApis.ui().inters().yesNo.activate(i18n.t("BoostersTab.text.yesNo.preset.delete", key), () -> {
                     presets.remove(key);
                     panel.disableButtons(key);
                 }, () -> {}, true);

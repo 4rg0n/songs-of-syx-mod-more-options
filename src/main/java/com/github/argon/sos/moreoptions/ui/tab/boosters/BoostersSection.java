@@ -60,6 +60,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         this.boosterTable = Table.<Range>builder()
             .rowsCategorized(boosterRows)
             .evenOdd(true)
+            .scrollable(true)
             .highlight(true)
             .search(searchInput)
             .backgroundColor(COLOR.WHITE10)
