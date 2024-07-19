@@ -96,6 +96,8 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
             .rowPadding(5)
             .columnMargin(20)
             .highlight(true)
+            .scrollable(true)
+            .backgroundColor(COLOR.WHITE10)
             .displayHeight(tableHeight)
             .build();
 

@@ -96,8 +96,7 @@ public class MoreOptionsConfigurator implements Phases {
             .orElse(true);
     }
 
-    private boolean applySoundsConfig(SoundsConfig sounds) {
-
+    public boolean applySoundsConfig(SoundsConfig sounds) {
         try {
             Map<String, Ambiance> ambienceSounds = gameApis.sounds().getAmbienceSounds();
 
@@ -115,11 +114,10 @@ public class MoreOptionsConfigurator implements Phases {
             return false;
         }
 
-        return false;
+        return true;
     }
 
-
-    private boolean applyRacesConfig(RacesConfig races) {
+    public boolean applyRacesConfig(RacesConfig races) {
         try {
             races.getLikings().forEach(liking -> gameApis.race().setLiking(
                 liking.getRace(),
@@ -133,7 +131,7 @@ public class MoreOptionsConfigurator implements Phases {
         return true;
     }
 
-    private boolean applyMetricsConfig(MetricsConfig metricsConfig) {
+    public boolean applyMetricsConfig(MetricsConfig metricsConfig) {
         try {
             Set<String> metricStats = metricsConfig.getStats();
 
@@ -184,7 +182,7 @@ public class MoreOptionsConfigurator implements Phases {
         return true;
     }
 
-    private boolean applyBoostersConfig(BoostersConfig boostersConfig) {
+    public boolean applyBoostersConfig(BoostersConfig boostersConfig) {
         try {
             gameApis.booster().setBoosters(boostersConfig);
         } catch (Exception e) {
@@ -195,7 +193,7 @@ public class MoreOptionsConfigurator implements Phases {
         return true;
     }
 
-    private boolean applyEventsConfig(EventsConfig eventsConfig) {
+    public boolean applyEventsConfig(EventsConfig eventsConfig) {
         try {
             eventsConfig.getChance().forEach((key, range) -> {
                 Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChance();
@@ -241,7 +239,7 @@ public class MoreOptionsConfigurator implements Phases {
         return true;
     }
 
-    private boolean applyWeatherConfig(WeatherConfig weatherConfig) {
+    public boolean applyWeatherConfig(WeatherConfig weatherConfig) {
         try {
             Map<String, Integer> weatherEffects = ConfigUtil.extractValues(weatherConfig.getEffects());
             Map<String, WeatherThing> weatherThings = gameApis.weather().getWeatherThings();

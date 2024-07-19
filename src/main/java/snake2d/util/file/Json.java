@@ -17,8 +17,9 @@ public class Json {
 
 	private final GameJsonStore gameJsonStore = GameJsonStore.getInstance();
 
+	// TODO storing is disabled for now
 	public Json(String content, String path) {
-		this(content, path, true);
+		this(content, path, false);
 	}
 	
 	public Json(String content, String path, boolean doStore) {
@@ -33,8 +34,9 @@ public class Json {
 		parser = new JsonParser(content, path);
 	}
 
+	// TODO storing is disabled for now
 	public Json(Path p) {
-		this(p, true);
+		this(p, false);
 	}
 	
 	public Json(Path p, boolean doStore) {

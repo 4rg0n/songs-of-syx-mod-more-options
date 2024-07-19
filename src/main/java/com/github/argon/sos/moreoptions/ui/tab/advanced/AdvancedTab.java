@@ -97,6 +97,7 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
                 .button("gameLogsFolder", gameLogsFolderButton)
                 .horizontal(true)
                 .sameWidth(true)
+
                 .margin(10)
                 .build())
             .build();
@@ -119,7 +120,7 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
             .column(ButtonMenu.builder()
                 .button("resetMod", resetButton)
                 .button("folderMod", folderButton)
-                .button("folderMod", uiShowRoomButton)
+                .button("uiShowRoom", uiShowRoomButton)
                 .horizontal(true)
                 .sameWidth(true)
                 .margin(10)

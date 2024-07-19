@@ -71,11 +71,6 @@ public final class MoreOptionsScript extends AbstractScript {
 		super.initBeforeGameCreated();
 		// force the use of the environment log level when present
 		configApplier.setEnvLogLevel(getEnvLogLevel());
-
-//		Json json = gameJsonStore.getJson(PATHS.INIT().getFolder("race").get("HUMAN"));
-//		json.getRoot().put("PLAYABLE", new JsonBoolean(false));
-//
-//		gameJsonStore.put(PATHS.INIT().getFolder("race").get("HUMAN"), json.toString());
 	}
 
 	@Override
