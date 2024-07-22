@@ -4,6 +4,9 @@ import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.sprite.SPRITE;
 
+/**
+ * A simple button with a text or icon and a description.
+ */
 public class Button extends AbstractButton<String, Button> {
 
     public Button(CharSequence label) {

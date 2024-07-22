@@ -7,7 +7,7 @@ import snake2d.SPRITE_RENDERER;
 import util.gui.misc.GButt;
 
 /**
- * Adds some basic toggle functionality to
+ * Adds some basic toggle functionality to {@link GButt.Checkbox}
  */
 public class Checkbox extends GButt.Checkbox implements Valuable<Boolean>, Toggleable<Boolean> {
 

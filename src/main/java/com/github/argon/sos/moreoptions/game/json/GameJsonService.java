@@ -17,6 +17,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Gives access to the game JSON configuration
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameJsonService {
     private final static Logger log = Loggers.getLogger(GameJsonService.class);
@@ -28,6 +31,10 @@ public class GameJsonService {
 
     private final GameJsonStore gameJsonStore;
 
+    /**
+     * @param filePath game path of the json config to read
+     * @return parsed {@link JsonObject} when file was readable
+     */
     public List<JsonObject> get(PATH filePath) {
         try (Stream<Path> stream = Files.list(filePath.get())) {
             return stream
@@ -41,6 +48,10 @@ public class GameJsonService {
         }
     }
 
+    /**
+     * @param filePath of the json config to read
+     * @return parsed {@link JsonObject} when file was readable
+     */
     public Optional<JsonObject> get(@Nullable Path filePath) {
         if (filePath == null) {
             return Optional.empty();

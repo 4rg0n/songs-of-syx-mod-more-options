@@ -22,6 +22,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Represents a folder in the game data.
+ * It gives access to files in the folder.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameFolder {
     private final static Logger log = Loggers.getLogger(GameFolder.class);

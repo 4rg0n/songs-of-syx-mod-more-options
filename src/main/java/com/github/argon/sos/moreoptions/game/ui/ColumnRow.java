@@ -32,7 +32,9 @@ public class ColumnRow<Value> extends Section implements
     Valuable<Value>,
     Toggleable<String>
 {
-
+    /**
+     * Used to identify the row
+     */
     @Getter
     @Builder.Default
     private String key = UUID.randomUUID().toString();
@@ -42,11 +44,17 @@ public class ColumnRow<Value> extends Section implements
     @Accessors(fluent = true)
     private COLOR backgroundColor;
 
+    /**
+     * Color when moving the mouse over row
+     */
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
     private COLOR hoverColor = COLOR.WHITE35;
 
+    /**
+     * Color after clicking on the row
+     */
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
@@ -55,29 +63,45 @@ public class ColumnRow<Value> extends Section implements
     @Getter
     private final List<GuiSection> columns;
 
+    /**
+     * Used for searching through a list of rows e.g. in a {@link Table}
+     */
     @Nullable
     @Setter
     @Getter
     @Accessors(fluent = true)
     private String searchTerm;
 
+    /**
+     * Whether row shall be highlighted when moving mouse over it
+     */
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
     private boolean highlightable = false;
 
+    /**
+     * Whether this row shall be treated as header.
+     * The row will be ignored by the search e.g.
+     */
     @Getter
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
     private boolean isHeader = false;
 
+    /**
+     * Whether this row is selectable by clicking with  the mouse on it
+     */
     @Getter
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
     private boolean selectable = false;
 
+    /**
+     * Space between in row in pixels
+     */
     @Getter
     @Setter
     @Builder.Default
@@ -86,31 +110,44 @@ public class ColumnRow<Value> extends Section implements
 
     private float doubleClickTimer;
 
+    /**
+     * Possible value for this row.
+     */
     @Nullable
     private Value value;
     private boolean isSelected;
 
+    /**
+     * A place where this row could read their value from.
+     */
     @Setter
     @Nullable
     @Accessors(fluent = true, chain = false)
     private Supplier<Value> valueSupplier;
 
+    /**
+     * When ever something is setting a value into this row. This gets called.
+     */
     @Setter
     @Nullable
     @Accessors(fluent = true, chain = false)
     private Consumer<Value> valueConsumer;
 
+    /**
+     * What shall happen when you doubleclick the row.
+     */
     @Setter
     @Nullable
     @Accessors(fluent = true, chain = false)
     private Action<ColumnRow<Value>> doubleClickAction;
 
+    /**
+     * What shall happen when you do a single click on this row
+     */
     @Setter
     @Builder.Default
     @Accessors(fluent = true, chain = false)
     private VoidAction clickAction = () -> {};
-
-
 
     public void init() {
         List<Integer> maxWidths = UiUtil.getMaxColumnWidths(Lists.ofSingle(columns));

@@ -7,6 +7,9 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
+/**
+ * Adds some common used functionality to the games default {@link GuiSection}
+ */
 public class Section extends GuiSection implements Hideable, Showable, Renderable {
     @Setter
     @Accessors(fluent = true, chain = false)

@@ -50,6 +50,14 @@ public class FullWindow<Section extends GuiSection> extends Interrupter implemen
     @Accessors(fluent = true, chain = false)
     protected Action<Float> renderAction = o -> {};
 
+    /**
+     * Displays any {@link GuiSection} as a full screen element.
+     * Provides a header with the window name, an optional menu bar and a close button.
+     *
+     * @param name of the window
+     * @param section to display
+     * @param menu optionally rendered menu in the header
+     */
     @Builder
     public FullWindow(String name, Section section, @Nullable Switcher<String> menu) {
         this.view = new FullView<>(name, section);

@@ -36,6 +36,18 @@ public class DropDownList extends AbstractButton<List<String>, DropDownList> imp
     @Accessors(fluent = true, chain = false)
     private VoidAction refreshAction = () -> {};
 
+    /**
+     * A list with multiple dropdowns.
+     *
+     * @param label name of the select button
+     * @param description description text when hovering the select button
+     * @param values names for each drop down
+     * @param possibleValues which values are possible for each drop down
+     * @param height height of the dropdown list
+     * @param clickAction what happens when you click the select button
+     * @param optionClickAction what happens if you click an option
+     * @param optionCloseAction what happens when an option menu closes
+     */
     @Builder
     public DropDownList(
         CharSequence label,

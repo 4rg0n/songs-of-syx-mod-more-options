@@ -15,10 +15,21 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
     @Getter
     private final Switcher<Key> menu;
 
+    /**
+     * Builds a button which opens a menu when clicked.
+     *
+     * @param label name of the select button
+     * @param description description text when hovering the select button
+     * @param font which font to use for the select button
+     * @param menu contains the manu to display
+     * @param closeOnSelect whether the menu shall close after clicking on an option
+     * @param clickAction what shall happen when you click an option
+     * @param closeAction what shall happen when the menu closes
+     */
     @Builder
     public DropDown(
         CharSequence label,
-        CharSequence description,
+        @Nullable CharSequence description,
         Font font,
         Switcher<Key> menu,
         boolean closeOnSelect,

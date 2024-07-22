@@ -16,6 +16,9 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * Can hold the game JSON configuration
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameJsonStore implements Phases {
     private final static Logger log = Loggers.getLogger(GameJsonStore.class);

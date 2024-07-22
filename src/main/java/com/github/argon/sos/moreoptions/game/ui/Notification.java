@@ -31,6 +31,14 @@ public class Notification extends Section {
     @Accessors(fluent = true, chain = false)
     protected Action<Notification> hideAction = o -> {};
 
+    /**
+     * @param text which text to display as notification
+     * @param width of the content area
+     * @param height of the content area
+     * @param title to display in the head of the notification
+     * @param titleBackground color used to highlight the title
+     * @param textColor for the displayed notification text
+     */
     @Builder
     public Notification(
         String text,

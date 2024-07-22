@@ -6,6 +6,9 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
+/**
+ * Simple box which can have a colored background
+ */
 public class ColorBox extends Section {
 
     @Setter

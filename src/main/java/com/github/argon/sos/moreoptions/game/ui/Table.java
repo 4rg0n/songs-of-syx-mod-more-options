@@ -15,9 +15,6 @@ import util.gui.misc.GHeader;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * A table with a scrollbar
- */
 @Getter
 public class Table<Value> extends ColorBox implements
     Searchable<String, List<String>>,
@@ -44,6 +41,24 @@ public class Table<Value> extends ColorBox implements
     private StringInputSprite search;
     private int evenOddCounter;
 
+    /**
+     * Builds a table with rows and columns.
+     *
+     * @param rows key value map containing the rows to display
+     * @param displayHeight max available height for displaying
+     * @param evenColumnWidth whether each column shall get the same size; determined by the widest
+     * @param evenOdd whether each second row shall get another color
+     * @param scrollable whether the table shall display a scrollbar
+     * @param selectable whether rows in this table shall be selectable
+     * @param multiselect whether selecting multiple rows is allowed
+     * @param highlight whether a row shall get another color when hovered with a mouse
+     * @param displaySearch whether a default search bar shall be displayed
+     * @param rowPadding used as framed space around each row in pixel
+     * @param columnMargin space between each row
+     * @param backgroundColor of each row
+     * @param headerButtons list of buttons used as header for columns
+     * @param search optional custom search bar
+     */
     @Builder
     public Table(
         Map<String, ColumnRow<Value>> rows,

@@ -45,6 +45,18 @@ public class FilesMenu extends Section {
     @Accessors(fluent = true, chain = false)
     private Function<FileNode, RENDEROBJ> iconsProvider;
 
+    /**
+     * A menu with a file tree showing folders and files.
+     *
+     * @param root base path of the folder to display in the menu
+     * @param paths which paths shall be displayed in the menu
+     * @param availableHeight max height for the menu
+     * @param availableWidth max width for the menu
+     * @param collapsed whether all folders shall be rendered collapsed as default
+     * @param search an optional search bar to search for file and folder names
+     * @param selectedPath an optional path, which shall be open as default
+     * @param iconsProvider a way to mark certain entries with icons
+     */
     @Builder
     public FilesMenu(
         GameFolder root,

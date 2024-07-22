@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.game;
+package com.github.argon.sos.moreoptions.json;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;

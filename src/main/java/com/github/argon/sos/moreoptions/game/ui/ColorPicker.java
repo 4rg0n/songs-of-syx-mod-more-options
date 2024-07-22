@@ -8,6 +8,9 @@ import snake2d.util.color.ColorImp;
 import snake2d.util.gui.GuiSection;
 import util.data.INT;
 
+/**
+ * Component to select RGB color values via sliders with a color preview.
+ */
 public class ColorPicker extends Section {
     private final INT.INTE red;
     private final INT.INTE green;

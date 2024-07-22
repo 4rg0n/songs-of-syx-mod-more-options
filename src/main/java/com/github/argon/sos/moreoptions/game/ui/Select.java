@@ -51,11 +51,24 @@ public class Select<Key> extends Section implements
 
     private final List<Key> initActiveKeys;
 
+    /**
+     * Displays multiple buttons, which can be selected.
+     *
+     * @param menu containing the selectable buttons
+     * @param selectedKeys which shall be selected by default
+     * @param maxSelect amount of max available selectable options; 0 for all
+     */
     @Builder
     public Select(ButtonMenu<Key> menu, List<Key> selectedKeys, int maxSelect) {
         this.selectedKeys = new ArrayList<>(menu.getButtons().size());
         this.menu = menu;
-        this.maxSelect = maxSelect;
+
+        if (maxSelect > 0) {
+            this.maxSelect = maxSelect;
+        } else {
+            this.maxSelect = menu.getButtons().size();
+        }
+
         if (selectedKeys == null) {
             selectedKeys = Lists.of();
         }

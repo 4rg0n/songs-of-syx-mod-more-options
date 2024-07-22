@@ -33,6 +33,26 @@ public class ButtonMenu<Key> extends Section {
         this(buttons, false, true, false, false, false, false, 0, 0, 0, 0, 0, COLOR.WHITE35, null, null, null);
     }
 
+    /**
+     * Builds a menu out of buttons. The menu can be vertically or horizontally aligned.
+     *
+     * @param buttons key value list with the buttons of the menu
+     * @param horizontal whether the menu shall be displayed horizontal (depends on maxWidth)
+     * @param sameWidth whether each button shall have the same width. Determined by the biggest button width.
+     * @param notClickable whether buttons shall be not clickable
+     * @param notHoverable whether buttons shall be not hoverable
+     * @param spacer whether buttons shall have a spacer rendered between them
+     * @param displaySearch whether a default search bar shall be displayed
+     * @param margin space between each button in px
+     * @param width fixed with for each button; 0 ignores this
+     * @param minWidth min width of buttons
+     * @param maxWidth max width of the whole button menu
+     * @param maxHeight max height of the whole button menu
+     * @param buttonColor color for all buttons
+     * @param widths list of widths for each button
+     * @param clickAction register an action when the button is clicked
+     * @param search custom search bar to use
+     */
     @Builder
     public ButtonMenu(
         Map<Key, Button> buttons,

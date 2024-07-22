@@ -60,6 +60,10 @@ public class Window<Section extends GuiSection> extends Interrupter implements
     @Accessors(fluent = true, chain = false)
     protected BiAction<Window<Section>, Float> renderAction = (o1, o2) -> {};
 
+    /**
+     * @param title of the window
+     * @param section to display in the window as content
+     */
     public Window(@Nullable String title, Section section) {
         this.section = section;
         this.panel = new GPanel();

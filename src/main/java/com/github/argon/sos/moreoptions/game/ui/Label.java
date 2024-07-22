@@ -28,6 +28,17 @@ public class Label extends Section {
     @Builder.Default
     private Style style = Style.NORMAL;
 
+    /**
+     * A label is a text element for describing something else.
+     * e.g. "Name: Jake"
+     *
+     * @param name what the label shall be called
+     * @param maxWidth available width for displaying the label; 0 will be ignored
+     * @param font which font to use
+     * @param description when hovering the label with the mouse
+     * @param hoverGuiAction a way to display a custom rendered box when hovering
+     * @param style which style (color) to use
+     */
     public Label(
         String name,
         int maxWidth,

@@ -17,6 +17,12 @@ import snake2d.util.sprite.SPRITE;
 import snake2d.util.sprite.text.Font;
 import util.gui.misc.GButt;
 
+/**
+ * Basic functionality shared between buttons.
+ *
+ * @param <Value> a button can hold a value
+ * @param <Element> the button class type itself
+ */
 public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> extends GButt.ButtPanel
     implements Valuable<Value>,
     Searchable<Value, Boolean>,

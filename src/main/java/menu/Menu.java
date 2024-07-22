@@ -97,7 +97,9 @@ public class Menu extends CORE_STATE {
 
 		// MODDED
 		this.mouseHoverMessage = new MouseHoverMessage();
-		this.moreOptions = Ui.moreOptionsFullsWindow();
+		// TODO disabled
+		this.moreOptions = null;
+//		this.moreOptions = Ui.moreOptionsFullsWindow();
 
 		bg = new Background(this, bounds);
 
@@ -160,10 +162,12 @@ public class Menu extends CORE_STATE {
 			current.hover(mCoo);
 		mouseLight.set(mCoo);
 
-		if (hoverTimer >= 0.4) {
-			moreOptions.hoverInfoGet(mouseHoverMessage.get());
-		}
 		// MODDED
+		if (hoverTimer >= 0.4) {
+			// todo disabled
+//			moreOptions.hoverInfoGet(mouseHoverMessage.get());
+		}
+
 	}
 
 	@Override
