@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -15,7 +15,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
     private final static Logger log = Loggers.getLogger(BackupPanelController.class);
 
     @Nullable
-    private final MoreOptionsV3Config backupConfig;
+    private final MoreOptionsV4Config backupConfig;
     private final Modal<BackupDialog> backupDialog;
     private final MoreOptionsPanel backupMoreOptionsPanel;
     private final MoreOptionsPanel moreOptionsPanel;
@@ -33,7 +33,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
         this.backupMoreOptionsWindow = backupMoreOptionsWindow;
         this.backupConfig = configStore.getBackup().orElse(null);
 
-        backupMoreOptionsWindow.hideAction(panel -> this.closeWindow());
+        backupMoreOptionsWindow.hideAction(this::closeWindow);
         backupMoreOptionsPanel.getCancelButton().clickActionSet(this::cancelAndUndo);
         backupMoreOptionsPanel.getOkButton().clickActionSet(this::applyAndSaveAndExit);
 
@@ -56,7 +56,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
     public void closeDialog() {
         try {
             configStore.deleteBackups();
-            MoreOptionsV3Config defaultConfig = configStore.getDefaultConfig();
+            MoreOptionsV4Config defaultConfig = configStore.getDefaultConfig();
             moreOptionsPanel.setValue(defaultConfig);
             configApplier.applyToGameAndSave(defaultConfig);
         } catch (Exception e) {
@@ -77,7 +77,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
     }
 
     public void applyAndSaveAndExit() {
-        MoreOptionsV3Config readConfig = backupMoreOptionsPanel.getValue();
+        MoreOptionsV4Config readConfig = backupMoreOptionsPanel.getValue();
 
         // fallback
         if (readConfig == null) {

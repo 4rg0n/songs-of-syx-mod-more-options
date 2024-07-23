@@ -1,13 +1,13 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
-import com.github.argon.sos.moreoptions.game.BiAction;
+import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import init.C;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 import snake2d.MButt;
 import snake2d.Renderer;
 import snake2d.util.datatypes.COORDINATE;
@@ -24,10 +24,10 @@ import view.main.VIEW;
  * @param <Section> ui element to display
  */
 public class Window<Section extends GuiSection> extends Interrupter implements
-    Showable<Window<Section>>,
-    Hideable<Window<Section>>,
-    Refreshable<Window<Section>>,
-    Renderable<Window<Section>>
+    Showable,
+    Hideable,
+    Refreshable,
+    Renderable
 {
     private final static Logger log = Loggers.getLogger(Window.class);
 
@@ -60,7 +60,11 @@ public class Window<Section extends GuiSection> extends Interrupter implements
     @Accessors(fluent = true, chain = false)
     protected BiAction<Window<Section>, Float> renderAction = (o1, o2) -> {};
 
-    public Window(String title, Section section) {
+    /**
+     * @param title of the window
+     * @param section to display in the window as content
+     */
+    public Window(@Nullable String title, Section section) {
         this.section = section;
         this.panel = new GPanel();
         this.panel.setTitle(title);

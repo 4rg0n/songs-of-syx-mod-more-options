@@ -33,6 +33,7 @@ public class HorizontalLine extends AbstractRender {
 
     @Override
     public void render(SPRITE_RENDERER spriteRenderer, float v) {
+        super.render(spriteRenderer, v);
         GCOLOR.UI().border().render(spriteRenderer, body().x1(), body().x2(), body().cY() + thickness, body().cY() + 1 - thickness);
 
         if (shadow) {

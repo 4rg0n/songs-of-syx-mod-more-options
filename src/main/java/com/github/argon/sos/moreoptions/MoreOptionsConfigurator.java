@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.domain.*;
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Action;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -13,9 +13,8 @@ import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.MathUtil;
+import game.audio.Ambiance;
 import game.events.EVENTS;
-import init.sound.SoundAmbience;
-import init.sound.SoundSettlement;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * For manipulating game classes by given config {@link MoreOptionsV3Config}
+ * For manipulating game classes by given config {@link MoreOptionsV4Config}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsConfigurator implements Phases {
@@ -54,9 +53,9 @@ public class MoreOptionsConfigurator implements Phases {
     @Setter
     private Level envLogLevel;
     private Set<String> lastMetricStats = new HashSet<>();
-    private Action<MoreOptionsV3Config> afterApplyAction = o -> {};
+    private Action<MoreOptionsV4Config> afterApplyAction = o -> {};
 
-    public void onAfterApplyAction(Action<MoreOptionsV3Config> afterApplyAction) {
+    public void onAfterApplyAction(Action<MoreOptionsV4Config> afterApplyAction) {
         this.afterApplyAction = afterApplyAction;
     }
 
@@ -65,7 +64,7 @@ public class MoreOptionsConfigurator implements Phases {
      *
      * @param config to apply
      */
-    public boolean applyConfig(@Nullable MoreOptionsV3Config config) {
+    public boolean applyConfig(@Nullable MoreOptionsV4Config config) {
         if (config == null) {
             return false;
         }
@@ -75,12 +74,8 @@ public class MoreOptionsConfigurator implements Phases {
 
         Loggers.setLevels((envLogLevel == null) ? config.getLogLevel() : envLogLevel);
         List<Boolean> results = Lists.of(
-            applyEventsBattleTribute(config.getEvents()),
-            applyWorldEventsConfig(config.getEvents().getWorld()),
-            applyEventsChanceConfig(config.getEvents().getChance()),
-            applySoundsAmbienceConfig(config.getSounds().getAmbience()),
-            applySoundsSettlementConfig(config.getSounds().getSettlement()),
-            applySoundsRoomConfig(config.getSounds().getRoom()),
+            applyEventsConfig(config.getEvents()),
+            applySoundsConfig(config.getSounds()),
             applyWeatherConfig(config.getWeather()),
             applyBoostersConfig(config.getBoosters()),
             applyMetricsConfig(config.getMetrics()),
@@ -101,13 +96,28 @@ public class MoreOptionsConfigurator implements Phases {
             .orElse(true);
     }
 
-    private boolean applyEventsBattleTribute(EventsConfig config) {
-        AC_Resolver.setEnemyLootMulti(MathUtil.toPercentage(config.getEnemyBattleLoot().getValue()));
-        AC_Resolver.setPlayerLootMulti(MathUtil.toPercentage(config.getPlayerBattleLoot().getValue()));
+    public boolean applySoundsConfig(SoundsConfig sounds) {
+        try {
+            Map<String, Ambiance> ambienceSounds = gameApis.sounds().getAmbienceSounds();
+
+            sounds.getAmbience().forEach((key, range) -> {
+                if (ambienceSounds.containsKey(key)) {
+                    Ambiance ambienceSound = ambienceSounds.get(key);
+                    gameApis.sounds().setSoundGainLimiter(ambienceSound, range.getValue());
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", ambienceSounds);
+                }
+            });
+        } catch (Exception e) {
+            log.error("Could not apply sound ambience config to game", e);
+            return false;
+        }
+
         return true;
     }
 
-    private boolean applyRacesConfig(RacesConfig races) {
+    public boolean applyRacesConfig(RacesConfig races) {
         try {
             races.getLikings().forEach(liking -> gameApis.race().setLiking(
                 liking.getRace(),
@@ -121,7 +131,7 @@ public class MoreOptionsConfigurator implements Phases {
         return true;
     }
 
-    private boolean applyMetricsConfig(MetricsConfig metricsConfig) {
+    public boolean applyMetricsConfig(MetricsConfig metricsConfig) {
         try {
             Set<String> metricStats = metricsConfig.getStats();
 
@@ -172,7 +182,7 @@ public class MoreOptionsConfigurator implements Phases {
         return true;
     }
 
-    private boolean applyBoostersConfig(BoostersConfig boostersConfig) {
+    public boolean applyBoostersConfig(BoostersConfig boostersConfig) {
         try {
             gameApis.booster().setBoosters(boostersConfig);
         } catch (Exception e) {
@@ -183,9 +193,9 @@ public class MoreOptionsConfigurator implements Phases {
         return true;
     }
 
-    private boolean applyEventsChanceConfig(Map<String, Range> eventsChanceConfig) {
+    public boolean applyEventsConfig(EventsConfig eventsConfig) {
         try {
-            eventsChanceConfig.forEach((key, range) -> {
+            eventsConfig.getChance().forEach((key, range) -> {
                 Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChance();
 
                 if (eventsChance.containsKey(key)) {
@@ -201,43 +211,12 @@ public class MoreOptionsConfigurator implements Phases {
             return false;
         }
 
-        return true;
-    }
-
-    private boolean applySettlementEventsConfig(Map<String, Boolean> eventsConfig) {
         try {
-            Map<String, EVENTS.EventResource> settlementEvents = gameApis.events().getSettlementEvents();
+            Map<String, EVENTS.EventResource> gameEvents = gameApis.events().getEvents();
 
-            eventsConfig.forEach((key, enabled) -> {
-                if (settlementEvents.containsKey(key)) {
-                    EVENTS.EventResource event = settlementEvents.get(key);
-                    log.trace("Setting event %s enabled = %s", key, enabled);
-                    gameApis.events().enableEvent(event, enabled);
-
-                    if (!enabled) {
-                        gameApis.events().reset(event);
-                    }
-
-                } else {
-                    log.warn("Could not find entry %s in game api result.", key);
-                    log.trace("API Result: %s", settlementEvents);
-                }
-            });
-        } catch (Exception e) {
-            log.error("Could not apply settlement events config to game", e);
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean applyWorldEventsConfig(Map<String, Boolean> eventsConfig) {
-        try {
-            Map<String, EVENTS.EventResource> worldEvents = gameApis.events().getWorldEvents();
-
-            eventsConfig.forEach((key, enabled) -> {
-                if (worldEvents.containsKey(key)) {
-                    EVENTS.EventResource event = worldEvents.get(key);
+            eventsConfig.getEvents().forEach((key, enabled) -> {
+                if (gameEvents.containsKey(key)) {
+                    EVENTS.EventResource event = gameEvents.get(key);
                     log.trace("Setting event %s enabled = %s", event.getClass().getSimpleName(), enabled);
                     gameApis.events().enableEvent(event, enabled);
 
@@ -246,81 +225,21 @@ public class MoreOptionsConfigurator implements Phases {
                     }
                 } else {
                     log.warn("Could not find entry %s in game api result.", key);
-                    log.trace("API Result: %s", worldEvents);
+                    log.trace("API Result: %s", gameEvents);
                 }
             });
         } catch (Exception e) {
-            log.error("Could not apply world events config to game", e);
+            log.error("Could not apply events config to game", e);
             return false;
         }
+
+        AC_Resolver.setEnemyLootMulti(MathUtil.toPercentage(eventsConfig.getEnemyBattleLoot().getValue()));
+        AC_Resolver.setPlayerLootMulti(MathUtil.toPercentage(eventsConfig.getPlayerBattleLoot().getValue()));
 
         return true;
     }
 
-    private boolean applySoundsAmbienceConfig(Map<String, Range> soundsConfig) {
-        try {
-            Map<String, SoundAmbience.Ambience> ambienceSounds = gameApis.sounds().getAmbienceSounds();
-
-            soundsConfig.forEach((key, range) -> {
-                if (ambienceSounds.containsKey(key)) {
-                    SoundAmbience.Ambience ambienceSound = ambienceSounds.get(key);
-                    gameApis.sounds().setSoundGainLimiter(ambienceSound, range.getValue());
-                } else {
-                    log.warn("Could not find entry %s in game api result.", key);
-                    log.trace("API Result: %s", ambienceSounds);
-                }
-            });
-        } catch (Exception e) {
-            log.error("Could not apply sound ambience config to game", e);
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean applySoundsSettlementConfig(Map<String, Range> soundsConfig) {
-        try {
-            Map<String, SoundSettlement.Sound> settlementSounds = gameApis.sounds().getSettlementSounds();
-
-            soundsConfig.forEach((key, range) -> {
-                if (settlementSounds.containsKey(key)) {
-                    SoundSettlement.Sound settlementSound = settlementSounds.get(key);
-                    gameApis.sounds().setSoundsGainLimiter(settlementSound, range.getValue());
-                } else {
-                    log.warn("Could not find entry %s in game api result.", key);
-                    log.trace("API Result: %s", settlementSounds);
-                }
-            });
-        } catch (Exception e) {
-            log.error("Could not apply sounds settlement config to game", e);
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean applySoundsRoomConfig(Map<String, Range> soundsConfig) {
-        try {
-            Map<String, SoundSettlement.Sound> roomSounds = gameApis.sounds().getRoomSounds();
-
-            soundsConfig.forEach((key, range) -> {
-                if (roomSounds.containsKey(key)) {
-                    SoundSettlement.Sound roomeSound = roomSounds.get(key);
-                    gameApis.sounds().setSoundsGainLimiter(roomeSound, range.getValue());
-                } else {
-                    log.warn("Could not find entry %s in game api result.", key);
-                    log.trace("API Result: %s", roomSounds);
-                }
-            });
-        } catch (Exception e) {
-            log.error("Could not apply sounds room config to game", e);
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean applyWeatherConfig(WeatherConfig weatherConfig) {
+    public boolean applyWeatherConfig(WeatherConfig weatherConfig) {
         try {
             Map<String, Integer> weatherEffects = ConfigUtil.extractValues(weatherConfig.getEffects());
             Map<String, WeatherThing> weatherThings = gameApis.weather().getWeatherThings();

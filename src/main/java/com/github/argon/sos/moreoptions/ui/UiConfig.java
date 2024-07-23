@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
@@ -18,11 +18,11 @@ import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.ui.controller.*;
-import com.github.argon.sos.moreoptions.ui.panel.advanced.AdvancedPanel;
-import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.metrics.MetricsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
-import com.github.argon.sos.moreoptions.ui.panel.weather.WeatherPanel;
+import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
+import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
+import com.github.argon.sos.moreoptions.ui.tab.weather.WeatherTab;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 import static java.time.temporal.ChronoField.*;
 
 /**
- * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsV3Config}.
+ * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsV4Config}.
  * So when a new entry is added, a new UI element like e.g. an additional slider will also be visible.
  * For setting up the UI and adding functionality to buttons.
  */
@@ -58,7 +58,7 @@ public class UiConfig implements Phases {
         PhaseManager.getInstance()
     );
 
-    private static final I18n i18n = I18n.get(WeatherPanel.class);
+    private static final I18n i18n = I18n.get(WeatherTab.class);
     private final static Logger log = Loggers.getLogger(UiConfig.class);
 
     /**
@@ -107,7 +107,7 @@ public class UiConfig implements Phases {
      */
     @Override
     public void initSettlementUiPresent() {
-        MoreOptionsV3Config moreOptionsConfig = configStore.getCurrentConfig();
+        MoreOptionsV4Config moreOptionsConfig = configStore.getCurrentConfig();
 
         if (moreOptionsConfig == null) {
             throw new UninitializedException("Configuration is not initialized.");
@@ -116,7 +116,7 @@ public class UiConfig implements Phases {
         // create More Options ui
         moreOptionsFull = uiFactory.buildMoreOptionsFullScreen(MOD_INFO.name.toString(), moreOptionsConfig);
         initControls(moreOptionsFull);
-        injectMoreOptionsButton(moreOptionsFull);
+        injectIntoUITopPanel(moreOptionsFull);
 
         // create backup configuration dialog if needed
         configStore.getBackup().ifPresent(backupConfig -> {
@@ -130,15 +130,15 @@ public class UiConfig implements Phases {
             initBackupControls(backupDialog, backupMoreOptionsModal, moreOptionsFull.getSection());
         });
 
-        MetricsPanel metricsPanel = moreOptionsFull.getSection().getMetricsPanel();
+        MetricsTab metricsTab = moreOptionsFull.getSection().getMetricsTab();
         // after config is applied to game
         configurator.onAfterApplyAction(config -> {
             Path exportFile = metricExporter.getExportFile();
-            Path currentExportFile = metricsPanel.getExportFilePath();
+            Path currentExportFile = metricsTab.getExportFilePath();
 
             // export file changed?
             if (!exportFile.equals(currentExportFile)) {
-                metricsPanel.refresh(exportFile);
+                metricsTab.refresh(exportFile);
 
                 // don't notify for initial files
                 if (currentExportFile != null) {
@@ -146,15 +146,26 @@ public class UiConfig implements Phases {
                 }
             }
         });
+
+        // inject Stats UI
+        StatsUi statsUi = StatsUi.getInstance();
+        injectStatsUI(statsUi);
     }
 
-    public void injectMoreOptionsButton(FullWindow<MoreOptionsPanel> moreOptionsModal) {
+    public void injectStatsUI(StatsUi statsUi) {
+        try {
+            gameApis.ui().injectIntoUITopPanels(statsUi);
+        } catch (Exception e) {
+            log.error("Could not inject Stats ui ", e);
+        }
+    }
+
+    public void injectIntoUITopPanel(FullWindow<MoreOptionsPanel> moreOptionsModal) {
         log.debug("Injecting %s buttons into game ui", MOD_INFO.name);
         GButt.ButtPanel moreOptionsButton = UiFactory.buildMoreOptionsButton(moreOptionsModal);
 
         try {
-            gameApis.ui().injectIntoWorldUITopPanel(moreOptionsButton);
-            gameApis.ui().injectIntoSettlementUITopPanel(moreOptionsButton);
+            gameApis.ui().injectIntoUITopPanels(moreOptionsButton);
         } catch (Exception e) {
             log.error("Could not inject %s buttons into game ui", MOD_INFO.name, e);
         }
@@ -184,24 +195,22 @@ public class UiConfig implements Phases {
         new MoreOptionsPanelController(moreOptionsPanel, moreOptionsWindow);
 
         // BOOSTERS
-        BoostersPanel boostersPanel = moreOptionsPanel.getBoostersPanel();
-        new BoostersPanelController(boostersPanel);
+        BoostersTab boostersTab = moreOptionsPanel.getBoostersTab();
+        new BoostersPanelController(boostersTab);
 
-        moreOptionsPanel.showAction(panel -> {
-            boostersPanel.refresh();
-        });
+        moreOptionsPanel.showAction(boostersTab::refresh);
 
         // METRICS
-        MetricsPanel metricsPanel = moreOptionsPanel.getMetricsPanel();
-        new MetricsPanelController(metricsPanel);
+        MetricsTab metricsTab = moreOptionsPanel.getMetricsTab();
+        new MetricsPanelController(metricsTab);
 
         // RACES
-        RacesPanel racesPanel = moreOptionsPanel.getRacesPanel();
-        new RacesPanelController(racesPanel);
+        RacesTab racesTab = moreOptionsPanel.getRacesTab();
+        new RacesPanelController(racesTab);
 
         // ADVANCED
-        AdvancedPanel advancedPanel = moreOptionsPanel.getAdvancedPanel();
-        phaseManager.register(Phase.ON_GAME_SAVED, new AdvancedPanelController(advancedPanel, moreOptionsPanel));
+        AdvancedTab advancedTab = moreOptionsPanel.getAdvancedTab();
+        phaseManager.register(Phase.ON_GAME_SAVED, new AdvancedPanelController(advancedTab, moreOptionsPanel));
     }
 
     public void initBackupControls(

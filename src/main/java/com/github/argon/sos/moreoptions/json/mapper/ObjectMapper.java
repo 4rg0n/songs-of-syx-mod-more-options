@@ -9,6 +9,7 @@ import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.ClassUtil;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import static com.github.argon.sos.moreoptions.json.util.JsonUtil.toJsonKey;
+import static com.github.argon.sos.moreoptions.json.util.JsonUtil.toJsonEKey;
 import static com.github.argon.sos.moreoptions.util.MethodUtil.*;
 import static com.github.argon.sos.moreoptions.util.ReflectionUtil.getAnnotation;
 
@@ -96,18 +97,26 @@ public class ObjectMapper implements Mapper<JsonObject> {
             // read json key from annotation or generate from method name
             String jsonKey = getAnnotation(field, JsonProperty.class)
                 .map(JsonProperty::key)
-                .orElse(toJsonKey(method));
+                .orElse(toJsonEKey(method));
 
-            if (!jsonObject.getMap().containsKey(jsonKey)) {
+            if (!jsonObject.containsKey(jsonKey)) {
                 log.debug("Json does not contain key %s for %s", jsonKey, method.getName());
                 continue;
             }
 
             Type fieldType = field.getGenericType();
             TypeInfo<?> fieldTypeInfo = TypeInfo.get(fieldType);
-            JsonElement jsonElement = jsonObject.getMap().get(jsonKey);
+            JsonElement jsonElement = jsonObject.get(jsonKey);
 
-            Object mappedObject = JsonMapper.mapJson(jsonElement, fieldTypeInfo);
+            Object mappedObject;
+
+            try {
+                mappedObject = JsonMapper.mapJson(jsonElement, fieldTypeInfo);
+            } catch (JsonMapperException e) {
+                log.error("Could not map field %s#%s", clazz.getSimpleName(), fieldName);
+                throw e;
+            }
+
             try {
                 // call setter method
                 ReflectionUtil.invokeMethodOneArgument(method, instance, mappedObject);
@@ -123,7 +132,17 @@ public class ObjectMapper implements Mapper<JsonObject> {
     @Override
     public JsonObject mapObject(Object object, TypeInfo<?> typeInfo) {
         Class<?> clazz = typeInfo.getTypeClass();
+        MapMapper mapMapper = new MapMapper();
 
+        if (mapMapper.supports(object.getClass())) {
+            return mapMapper.mapObject(object, TypeInfo.get(typeInfo.getType()));
+        } else {
+            return mapObject(object, clazz);
+        }
+    }
+
+    @NotNull
+    private static JsonObject mapObject(Object object, Class<?> clazz) {
         JsonObject jsonObject = new JsonObject();
         for (Method method : clazz.getDeclaredMethods()) {
             if (!isGetterMethod(method)) {
@@ -150,7 +169,7 @@ public class ObjectMapper implements Mapper<JsonObject> {
             // read json key from annotation or generate from method name
             String jsonKey = getAnnotation(field, JsonProperty.class)
                 .map(JsonProperty::key)
-                .orElse(toJsonKey(method));
+                .orElse(toJsonEKey(method));
 
             Type fieldType = field.getGenericType();
             TypeInfo<?> fieldTypeInfo = TypeInfo.get(fieldType);
@@ -162,4 +181,5 @@ public class ObjectMapper implements Mapper<JsonObject> {
 
         return jsonObject;
     }
+
 }

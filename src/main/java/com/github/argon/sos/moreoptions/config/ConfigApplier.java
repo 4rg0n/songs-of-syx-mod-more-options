@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -29,11 +29,11 @@ public class ConfigApplier implements Phases {
         configurator.setEnvLogLevel(envLogLevel);
     }
 
-    public boolean applyToGame(@Nullable MoreOptionsV3Config config) {
+    public boolean applyToGame(@Nullable MoreOptionsV4Config config) {
         return configurator.applyConfig(config);
     }
 
-    public boolean applyToGameAndSave(@Nullable MoreOptionsV3Config config) {
+    public boolean applyToGameAndSave(@Nullable MoreOptionsV4Config config) {
         if (applyToGame(config)) {
             return configStore.save(config);
         }

@@ -1,29 +1,31 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.advanced.AdvancedPanel;
+import com.github.argon.sos.moreoptions.ui.UiFactory;
+import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
 import init.paths.PATHS;
 import snake2d.Errors;
 import snake2d.util.file.FileManager;
 
 import java.nio.file.Path;
 
-public class AdvancedPanelController extends AbstractUiController<AdvancedPanel> {
+public class AdvancedPanelController extends AbstractUiController<AdvancedTab> {
 
     private final MoreOptionsPanel moreOptionsPanel;
 
-    public AdvancedPanelController(AdvancedPanel advancedPanel, MoreOptionsPanel moreOptionsPanel) {
-        super(advancedPanel);
+    public AdvancedPanelController(AdvancedTab advancedTab, MoreOptionsPanel moreOptionsPanel) {
+        super(advancedTab);
         this.moreOptionsPanel = moreOptionsPanel;
 
-        advancedPanel.getDumpLogsButton().clickActionSet(this::dumpLogs);
-        advancedPanel.getGameLogsFolderButton().clickActionSet(this::openGameLogsFolder);
-        advancedPanel.getResetButton().clickActionSet(this::resetModConfig);
-        advancedPanel.getFolderButton().clickActionSet(this::openModConfigFolder);
-        advancedPanel.getCopySaveStampButton().clickActionSet(this::copySaveStamp);
-        advancedPanel.getCopyWorldSeedButton().clickActionSet(this::copyWorldSeed);
+        advancedTab.getDumpLogsButton().clickActionSet(this::dumpLogs);
+        advancedTab.getGameLogsFolderButton().clickActionSet(this::openGameLogsFolder);
+        advancedTab.getResetButton().clickActionSet(this::resetModConfig);
+        advancedTab.getFolderButton().clickActionSet(this::openModConfigFolder);
+        advancedTab.getCopySaveStampButton().clickActionSet(this::copySaveStamp);
+        advancedTab.getCopyWorldSeedButton().clickActionSet(this::copyWorldSeed);
+        advancedTab.getUiShowRoomButton().clickActionSet(this::openUiShowRoom);
     }
 
     @Override
@@ -59,7 +61,7 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedPanel>
     public void resetModConfig() {
         // are you sure message
         gameApis.ui().inters().yesNo.activate(i18n.t("MoreOptionsPanel.text.yesNo.reset"), () -> {
-            MoreOptionsV3Config defaultConfig = configStore.getDefaultConfig();
+            MoreOptionsV4Config defaultConfig = configStore.getDefaultConfig();
             try {
                 moreOptionsPanel.setValue(defaultConfig);
                 configStore.clear();
@@ -91,5 +93,9 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedPanel>
             i18n.t("notification.advanced.worldSeed.copy", worldSeed),
             i18n.t("notification.advanced.worldSeed.not.copy")
         );
+    }
+
+    public void openUiShowRoom() {
+        UiFactory.buildUiShowRoom().show();
     }
 }

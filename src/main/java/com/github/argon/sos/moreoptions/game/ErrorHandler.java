@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import snake2d.Errors;
 
 /**
- * For custom handling game crashes
+ * For custom handling of game crashes
  *
  * @param <Script> type of the mod script
  */

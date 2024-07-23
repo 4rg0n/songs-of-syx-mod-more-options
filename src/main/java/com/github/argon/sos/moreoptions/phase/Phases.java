@@ -77,11 +77,21 @@ public interface Phases {
 
     /**
      * 9. PHASE
+     * When the game ui being initialized
+     */
+    default void onViewSetup() {
+        throw new PhaseNotImplemented(Phase.ON_VIEW_SETUP);
+    }
+
+    /**
+     * 10. PHASE
      * When the settlement ui is loaded for the first time
      */
     default void initSettlementUiPresent() {
         throw new PhaseNotImplemented(Phase.INIT_SETTLEMENT_UI_PRESENT);
     }
+
+
 
     /**
      * When the game saves

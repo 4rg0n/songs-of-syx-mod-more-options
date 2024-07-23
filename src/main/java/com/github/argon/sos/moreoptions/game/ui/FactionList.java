@@ -1,13 +1,11 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Action;
 import game.faction.FACTIONS;
 import game.faction.Faction;
+import game.faction.diplomacy.DIP;
 import game.faction.npc.FactionNPC;
-import game.faction.npc.ruler.ROpinions;
-import game.faction.npc.ruler.Royalty;
-import game.faction.player.emissary.EMission;
-import game.faction.player.emissary.EMissionType;
+import game.faction.royalty.Royalty;
 import init.C;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
@@ -30,18 +28,19 @@ import util.colors.GCOLOR;
 import util.data.DOUBLE;
 import util.data.GETTER;
 import util.data.GETTER.GETTER_IMP;
-import util.dic.DicMisc;
-import util.gui.misc.*;
+import util.dic.Dic;
+import util.gui.misc.GButt;
+import util.gui.misc.GMeter;
+import util.gui.misc.GStat;
+import util.gui.misc.GText;
 import util.gui.table.GTableBuilder;
 import util.gui.table.GTableBuilder.GRowBuilder;
 import util.info.GFORMAT;
 import view.main.VIEW;
 import world.WORLD;
 import world.WorldMinimap;
-import world.regions.Region;
-import world.regions.data.RD;
-
-import java.util.Arrays;
+import world.map.regions.Region;
+import world.region.RD;
 
 public class FactionList extends GuiSection {
 
@@ -66,13 +65,15 @@ public class FactionList extends GuiSection {
 		}
 		
 		private int value(Faction f) {
-			if (FACTIONS.DIP().war.is(FACTIONS.player(), f))
+			if (DIP.WAR().is(FACTIONS.player(), f))
 				return 0+f.index();
-			if (FACTIONS.DIP().trades(FACTIONS.player(), f))
+			if (DIP.TRADE().is(FACTIONS.player(), f))
 				return FACTIONS.MAX+f.index();
-			if (RD.DIST().factionIsAlmostReachable(f))
+			if (RD.DIST().reachable(f))
 				return FACTIONS.MAX*2+f.index();
-			return FACTIONS.MAX*3+f.index();
+			if (RD.DIST().neighbours(f))
+				return FACTIONS.MAX*3+f.index();
+			return FACTIONS.MAX*4+f.index();
 		}
 		
 	};
@@ -132,8 +133,8 @@ public class FactionList extends GuiSection {
 
 		};
 
-		filter.placeHolder(DicMisc.¤¤Search);
-		GInput search = new GInput(filter);
+		filter.placeHolder(Dic.¤¤Search);
+		Input search = new Input(filter);
 
 
 		builder = new GTableBuilder() {
@@ -188,14 +189,8 @@ public class FactionList extends GuiSection {
 			}else
 				sorted.add(f);
 		}
-		Arrays.fill(emmi, 0);
-		for (EMission e : FACTIONS.player().emissaries.all()) {
-			for (EMissionType m : EMissionType.ALL()) {
-				if (e.mission() == m && m.faction(e) != null)
-					emmi[m.faction(e).index()] ++;
-			}
-		}
-		
+
+
 		super.render(r, ds);
 	}
 	
@@ -270,7 +265,7 @@ public class FactionList extends GuiSection {
 					FactionNPC f = getFactionNPC();
 					if (f == null)
 						return 0;
-					return ROpinions.current(f.court().king().roy());
+					return RD.RACES().population.faction().get(f)/(10*RD.RACES().maxPop());
 				}
 				
 			}, 100, 12), o.body().x1(), getLastY2()+1);
@@ -289,25 +284,25 @@ public class FactionList extends GuiSection {
 			
 			pad(8, 6);
 			body().setWidth(width);
-			
+
 			o = new RENDEROBJ.Sprite(UI.icons().s.money) {
-				
+
 				@Override
 				public void render(SPRITE_RENDERER r, float ds) {
 					Faction f = getFaction();
 					if (f == null)
 						return;
-					if (!FACTIONS.DIP().trades(FACTIONS.player(), f)) {
+					if (!DIP.TRADE().is(FACTIONS.player(), f)) {
 						return;
 					}
-					
-					if (!RD.DIST().factionBordersPlayer(f)) {
+
+					if (!RD.DIST().reachable(f)) {
 						OPACITY.O50.bind();
 					}
 					super.render(r, ds);
 					OPACITY.unbind();
 				}
-				
+
 			};
 			o.body().moveX2(body().x2()-8);
 			o.body().moveY1(8);
@@ -317,31 +312,33 @@ public class FactionList extends GuiSection {
 		
 		@Override
 		public void render(SPRITE_RENDERER r, float ds) {
-			
+
 			boolean hovered = hoveredIs();
-			Faction faction = getFaction();
-			boolean selected = getter.get() == faction;
-			boolean active = faction.capitolRegion() != null;
-			
+			FactionNPC f = getFactionNPC();
+			boolean selected = getter.get() == f;
+			boolean active = f.capitolRegion() != null;
+
 			if (hovered || selected)
-				WORLD.MINIMAP().hilight(faction);
-			
+				WORLD.MINIMAP().hilight(f);
+
 			GButt.ButtPanel.renderBG(r, active, selected, hovered, body());
-			
-			if (FACTIONS.DIP().war.is(FACTIONS.player(), faction)) {
+
+			if (DIP.WAR().is(FACTIONS.player(), f)) {
 				OPACITY.O25.bind();
 				COLOR.RED100.render(r, body(),-4);
 				OPACITY.unbind();
 			}
-			
+
 			super.render(r, ds);
-			
-			if (!RD.DIST().factionBordersPlayer(faction)) {
+
+			if (!RD.DIST().reachable(f)) {
 				OPACITY.O50.bind();
 				COLOR.BLACK.render(r, body(),-4);
 				OPACITY.unbind();
+			}else {
+				DIP.get(f).icon.render(r, body().x2()-18, body().y1()+2);
 			}
-			
+
 			GButt.ButtPanel.renderFrame(r, body());
 			
 			
@@ -369,6 +366,6 @@ public class FactionList extends GuiSection {
 				VIEW.UI().factions.hover(text, getFaction());
 			
 		}
-		
+
 	}
 }

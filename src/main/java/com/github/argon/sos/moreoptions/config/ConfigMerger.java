@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Can merge two {@link MoreOptionsV3Config}s while one serves as target and the other source of the data.
+ * Can merge two {@link MoreOptionsV4Config}s while one serves as target and the other source of the data.
  * Will fill empty fields. Used for e.g. merging default configs into loaded configs.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigMerger {
-    public static void merge(MoreOptionsV3Config target, @Nullable MoreOptionsV3Config source) {
+    public static void merge(MoreOptionsV4Config target, @Nullable MoreOptionsV4Config source) {
         if (source == null) {
             return;
         }
@@ -141,16 +141,10 @@ public class ConfigMerger {
             addMissing(target.getChance(), source.getChance());
         }
 
-        if (target.getWorld() == null || target.getWorld().isEmpty()) {
-            target.setWorld(source.getWorld());
+        if (target.getEvents() == null || target.getEvents().isEmpty()) {
+            target.setEvents(source.getEvents());
         } else {
-            addMissing(target.getWorld(), source.getWorld());
-        }
-
-        if (target.getSettlement() == null || target.getSettlement().isEmpty()) {
-            target.setSettlement(source.getSettlement());
-        } else {
-            addMissing(target.getSettlement(), source.getSettlement());
+            addMissing(target.getEvents(), source.getEvents());
         }
     }
 
@@ -159,22 +153,10 @@ public class ConfigMerger {
             return;
         }
 
-        if (target.getRoom() == null || target.getRoom().isEmpty()) {
-            target.setRoom(source.getRoom());
-        } else {
-            addMissing(target.getRoom(), source.getRoom());
-        }
-
         if (target.getAmbience() == null || target.getAmbience().isEmpty()) {
             target.setAmbience(source.getAmbience());
         } else {
             addMissing(target.getAmbience(), source.getAmbience());
-        }
-
-        if (target.getSettlement() == null || target.getSettlement().isEmpty()) {
-            target.setSettlement(source.getSettlement());
-        } else {
-            addMissing(target.getSettlement(), source.getSettlement());
         }
     }
 

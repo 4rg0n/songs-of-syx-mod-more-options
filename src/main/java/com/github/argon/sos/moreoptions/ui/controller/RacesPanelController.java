@@ -5,25 +5,25 @@ import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.JsonWriter;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesSelectionPanel;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import snake2d.util.file.FileManager;
 
 import java.nio.file.Path;
 import java.util.Objects;
 
-public class RacesPanelController extends AbstractUiController<RacesPanel> {
-    public RacesPanelController(RacesPanel racesPanel) {
-        super(racesPanel);
+public class RacesPanelController extends AbstractUiController<RacesTab> {
+    public RacesPanelController(RacesTab racesTab) {
+        super(racesTab);
 
-        racesPanel.getFileButton().clickActionSet(this::openCurrentRacesConfigFile);
-        racesPanel.getFolderButton().clickActionSet(this::openRacesConfigFolder);
-        racesPanel.getExportButton().clickActionSet(this::exportRacesConfigToClipboard);
-        racesPanel.getImportButton().clickActionSet(this::importRacesConfigFromClipboard);
-        racesPanel.getLoadButton().clickActionSet(this::openRacesConfigSelection);
+        racesTab.getFileButton().clickActionSet(this::openCurrentRacesConfigFile);
+        racesTab.getFolderButton().clickActionSet(this::openRacesConfigFolder);
+        racesTab.getExportButton().clickActionSet(this::exportRacesConfigToClipboard);
+        racesTab.getImportButton().clickActionSet(this::importRacesConfigFromClipboard);
+        racesTab.getLoadButton().clickActionSet(this::openRacesConfigSelection);
     }
 
     public void openCurrentRacesConfigFile() {
@@ -57,9 +57,9 @@ public class RacesPanelController extends AbstractUiController<RacesPanel> {
         try {
             RacesConfig racesConfig = element.getValue();
             JsonElement jsonElement = JsonMapper.mapObject(racesConfig);
-            Json json = new Json(jsonElement, JsonWriter.jsonE());
+            Json json = new Json(jsonElement, JsonWriters.jsonEPretty());
 
-            if (Clipboard.write(json.toString())) {
+            if (Clipboard.write(json.write())) {
                 notificator.notifySuccess(i18n.t("notification.races.config.copy"));
             } else {
                 notificator.notifyError(i18n.t("notification.races.config.not.copy"));
@@ -72,7 +72,7 @@ public class RacesPanelController extends AbstractUiController<RacesPanel> {
     public void importRacesConfigFromClipboard() {
         try {
             Clipboard.read().ifPresent(s -> {
-                Json json = new Json(s, JsonWriter.jsonE());
+                Json json = new Json(s, JsonWriters.jsonEPretty());
                 RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), RacesConfig.class);
 
                 element.setValue(racesConfig);

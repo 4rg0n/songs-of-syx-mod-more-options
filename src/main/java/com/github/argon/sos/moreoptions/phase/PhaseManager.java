@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.phase;
 
 import com.github.argon.sos.moreoptions.game.DumpLogsException;
-import com.github.argon.sos.moreoptions.game.VoidAction;
+import com.github.argon.sos.moreoptions.game.action.VoidAction;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.Getter;
@@ -39,12 +39,14 @@ public class PhaseManager implements Phases {
         }
     }
 
-    public void register(Phase phase, Phases init) {
+    public PhaseManager register(Phase phase, Phases init) {
         if (phases.get(phase).contains(init)) {
-            return;
+            return this;
         }
 
         phases.get(phase).add(init);
+
+        return this;
     }
 
     private void execute(Phases phases, VoidAction action) {
@@ -113,6 +115,12 @@ public class PhaseManager implements Phases {
     public void initSettlementUiPresent() {
         log.debug("PHASE: initSettlementUiPresent");
         phases.get(Phase.INIT_SETTLEMENT_UI_PRESENT).forEach(init -> execute(init, init::initSettlementUiPresent));
+    }
+
+    @Override
+    public void onViewSetup() {
+        log.debug("PHASE: initSettlementUiPresent");
+        phases.get(Phase.ON_VIEW_SETUP).forEach(init -> execute(init, init::onViewSetup));
     }
 
     @Override

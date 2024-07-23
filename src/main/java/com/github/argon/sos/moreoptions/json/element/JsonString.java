@@ -1,6 +1,5 @@
 package com.github.argon.sos.moreoptions.json.element;
 
-import com.github.argon.sos.moreoptions.util.StringUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +12,14 @@ public class JsonString implements JsonElement {
 
     @Override
     public String toString() {
-        return StringUtil.quote(value);
+        return value;
+    }
+
+    public static JsonString of(String value) {
+        return new JsonString(value);
+    }
+
+    public JsonString copy() {
+        return JsonString.of(getValue());
     }
 }

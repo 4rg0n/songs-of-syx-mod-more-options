@@ -1,7 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
-import com.github.argon.sos.moreoptions.game.BiAction;
+import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -25,12 +24,11 @@ import view.interrupter.Interrupter;
 import view.main.VIEW;
 
 public class FullWindow<Section extends GuiSection> extends Interrupter implements
-    Showable<FullWindow<Section>>,
-    Hideable<FullWindow<Section>>,
-    Refreshable<FullWindow<Section>>,
-    Renderable<FullWindow<Section>>
+    Showable,
+    Hideable,
+    Refreshable,
+    Renderable
 {
-
     private final static Logger log = Loggers.getLogger(FullWindow.class);
 
     public static final int TOP_HEIGHT = 40;
@@ -41,19 +39,27 @@ public class FullWindow<Section extends GuiSection> extends Interrupter implemen
 
     @Setter
     @Accessors(fluent = true, chain = false)
-    protected Action<FullWindow<Section>> showAction = o -> {};
+    protected VoidAction showAction = () -> {};
     @Setter
     @Accessors(fluent = true, chain = false)
-    protected Action<FullWindow<Section>> hideAction = o -> {};
+    protected VoidAction hideAction = () -> {};
     @Setter
     @Accessors(fluent = true, chain = false)
-    protected Action<FullWindow<Section>> refreshAction = o -> {};
+    protected VoidAction refreshAction = () -> {};
     @Setter
     @Accessors(fluent = true, chain = false)
-    protected BiAction<FullWindow<Section>, Float> renderAction = (o1, o2) -> {};
+    protected Action<Float> renderAction = o -> {};
 
+    /**
+     * Displays any {@link GuiSection} as a full screen element.
+     * Provides a header with the window name, an optional menu bar and a close button.
+     *
+     * @param name of the window
+     * @param section to display
+     * @param menu optionally rendered menu in the header
+     */
     @Builder
-    public FullWindow(String name, Section section, @Nullable Toggler<String> menu) {
+    public FullWindow(String name, Section section, @Nullable Switcher<String> menu) {
         this.view = new FullView<>(name, section);
         top.body().setHeight(TOP_HEIGHT);
         top.body().setWidth(C.WIDTH());
@@ -98,20 +104,20 @@ public class FullWindow<Section extends GuiSection> extends Interrupter implemen
     public void show() {
         view.getSection().body().moveY1(FullView.TOP_HEIGHT);
         view.getSection().body().centerX(C.DIM());
-        showAction.accept(this);
+        showAction.accept();
 
         if (view.getSection() instanceof Showable) {
-            ((Showable<?>) view.getSection()).show();
+            ((Showable) view.getSection()).show();
         }
 
         super.show(VIEW.inters().manager);
     }
 
     public void hide() {
-        hideAction.accept(this);
+        hideAction.accept();
 
         if (view.getSection() instanceof Hideable) {
-            ((Hideable<?>) view.getSection()).hide();
+            ((Hideable) view.getSection()).hide();
         }
 
         super.hide();
@@ -154,7 +160,7 @@ public class FullWindow<Section extends GuiSection> extends Interrupter implemen
         GCOLOR.UI().panBG.render(r, top.body());
         GCOLOR.UI().border().render(r, top.body().x1(), top.body().x2(), top.body().y2(), top.body().y2() + 1);
         top.render(r, ds);
-        renderAction.accept(this, ds);
+        renderAction.accept(ds);
         return false;
     }
 

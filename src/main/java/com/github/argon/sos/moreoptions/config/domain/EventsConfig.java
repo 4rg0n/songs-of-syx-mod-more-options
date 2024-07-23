@@ -13,9 +13,7 @@ import java.util.Map;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventsConfig {
     @Builder.Default
-    private Map<String, Boolean> settlement = new HashMap<>();
-    @Builder.Default
-    private Map<String, Boolean> world = new HashMap<>();
+    private Map<String, Boolean> events = new HashMap<>();
     @Builder.Default
     private Map<String, Range> chance = new HashMap<>();
 
@@ -23,11 +21,11 @@ public class EventsConfig {
      * Influences the amount of loot and slaves the player gets when winning a battle
      */
     @Builder.Default
-    private Range playerBattleLoot = ConfigDefaults.battleLoot();
+    private Range playerBattleLoot = ConfigDefaults.battleLootPlayer();
 
     /**
      * Influences the amount of loot and slaves the enemy gets when losing a battle
      */
     @Builder.Default
-    private Range enemyBattleLoot = ConfigDefaults.battleLoot();
+    private Range enemyBattleLoot = ConfigDefaults.battleLootEnemy();
 }

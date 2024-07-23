@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 
 public class MoreOptionsPanelController extends AbstractUiController<MoreOptionsPanel> {
@@ -15,8 +15,8 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
         this.moreOptionsWindow = moreOptionsWindow;
 
         // update Notificator queue when More Options Modal is rendered
-        moreOptionsWindow.renderAction((modal, seconds) -> notificator.update(seconds));
-        moreOptionsWindow.hideAction(modal -> notificator.close());
+        moreOptionsWindow.renderAction(notificator::update);
+        moreOptionsWindow.hideAction(notificator::close);
 
         moreOptionsPanel.getCancelButton().clickActionSet(this::cancelAndUndo);
         moreOptionsPanel.getApplyButton().clickActionSet(this::applyAndSave);
@@ -58,7 +58,7 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
     }
 
     public void reloadAndApply() {
-        MoreOptionsV3Config moreOptionsConfig = configStore.reloadConfig().orElse(null);
+        MoreOptionsV4Config moreOptionsConfig = configStore.reloadConfig().orElse(null);
         if (moreOptionsConfig != null) {
             element.setValue(moreOptionsConfig);
             notificator.notifySuccess(i18n.t("notification.config.reload"));
@@ -68,7 +68,7 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
     }
 
     public void copyMoreOptionsConfigToClipboard() {
-        MoreOptionsV3Config moreOptionsConfig = element.getValue();
+        MoreOptionsV4Config moreOptionsConfig = element.getValue();
         try {
             if (moreOptionsConfig != null) {
                 boolean written = Clipboard.write(moreOptionsConfig.toJson());
@@ -88,10 +88,10 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
 
     public void resetTabToDefaultConfig() {
         try {
-            AbstractConfigPanel<?, ?> abstractConfigPanel = element.getTabulator().getActiveTab();
-            if (abstractConfigPanel != null) {
-                abstractConfigPanel.resetToDefault();
-                notificator.notifySuccess(i18n.t("notification.config.default.tab.apply", abstractConfigPanel.getTitle()));
+            AbstractConfigTab<?, ?> abstractConfigTab = element.getTabulator().getActiveTab();
+            if (abstractConfigTab != null) {
+                abstractConfigTab.resetToDefault();
+                notificator.notifySuccess(i18n.t("notification.config.default.tab.apply", abstractConfigTab.getTitle()));
             } else {
                 notificator.notifyError(i18n.t("notification.config.default.tab.not.apply"));
             }

@@ -4,7 +4,10 @@ import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonString;
 
-public class StringParser extends Parser {
+/**
+ * For parsing a string value e.g. FOO
+ */
+public class StringParser implements Parser {
     @Override
     public JsonElement parse(Json json) {
         // skip "
@@ -12,6 +15,10 @@ public class StringParser extends Parser {
         String value = json.getNextValue('\"');
         // skip "
         json.indexMove();
-        return new JsonString(value);
+        return parseString(value);
+    }
+
+    public static JsonString parseString(String value) {
+        return JsonString.of(value);
     }
 }

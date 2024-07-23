@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.util.Lists;
 import init.sprite.UI.UI;
@@ -15,74 +15,86 @@ import util.gui.misc.GHeader;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * A table with a scrollbar
- */
 @Getter
-@Builder
-public class Table<Value> extends GuiSection implements
+public class Table<Value> extends ColorBox implements
     Searchable<String, List<String>>,
-    Selectable<Integer, ColumnRow<Value>>,
-    Valuable<Map<String, Value>, Table<Value>> {
+    Selectable<String, ColumnRow<Value>>,
+    Valuable<Map<String, Value>> {
 
-    private final Map<String, ColumnRow<Value>> rows;
-    @Builder.Default
-    private int displayHeight = 100;
-    @Builder.Default
-    private boolean evenColumnWidth = false;
-    @Builder.Default
-    private boolean evenOdd = true;
-    @Builder.Default
-    private boolean scrollable = false;
-    @Builder.Default
-    private boolean selectable = false;
-    @Builder.Default
-    private boolean multiselect = false;
-    @Builder.Default
-    private boolean highlight = false;
-    @Builder.Default
-    private int rowPadding = 0;
-    @Builder.Default
-    private int columnMargin = 0;
+    private final LinkedHashMap<String, ColumnRow<Value>> rows;
+    private final int displayHeight;
+    private final boolean evenColumnWidth;
+    private final boolean evenOdd;
+    private final boolean scrollable;
+    private final boolean selectable;
+    private final boolean multiselect;
+    private final boolean highlight;
+    private final boolean displaySearch;
+    private final int rowPadding;
+    private final int columnMargin;
 
+    private final ScrollRows scrollRows;
     @Nullable
-    @Builder.Default
-    private Map<String, Button> headerButtons = null;
-
+    private final Map<String, Button> headerButtons;
+    private final List<Integer> maxColumnWidths;
     @Nullable
-    @Builder.Default
-    private StringInputSprite search = null;
+    private StringInputSprite search;
+    private int evenOddCounter;
 
+    /**
+     * Builds a table with rows and columns.
+     *
+     * @param rows key value map containing the rows to display
+     * @param displayHeight max available height for displaying
+     * @param evenColumnWidth whether each column shall get the same size; determined by the widest
+     * @param evenOdd whether each second row shall get another color
+     * @param scrollable whether the table shall display a scrollbar
+     * @param selectable whether rows in this table shall be selectable
+     * @param multiselect whether selecting multiple rows is allowed
+     * @param highlight whether a row shall get another color when hovered with a mouse
+     * @param displaySearch whether a default search bar shall be displayed
+     * @param rowPadding used as framed space around each row in pixel
+     * @param columnMargin space between each row
+     * @param backgroundColor of each row
+     * @param headerButtons list of buttons used as header for columns
+     * @param search optional custom search bar
+     */
+    @Builder
     public Table(
-        List<ColumnRow<Value>> rows,
+        Map<String, ColumnRow<Value>> rows,
         int displayHeight,
-        boolean evenColumnWidth,
-        boolean evenOdd,
-        boolean scrollable,
-        boolean selectable,
-        boolean multiselect,
-        boolean highlight,
+        @Nullable Boolean evenColumnWidth,
+        @Nullable Boolean evenOdd,
+        @Nullable Boolean scrollable,
+        @Nullable Boolean selectable,
+        @Nullable Boolean multiselect,
+        @Nullable Boolean highlight,
+        @Nullable Boolean displaySearch,
         int rowPadding,
         int columnMargin,
+        @Nullable COLOR backgroundColor,
         @Nullable Map<String, Button> headerButtons,
         @Nullable StringInputSprite search
     ) {
+        super((backgroundColor != null) ? backgroundColor : COLOR.WHITE20);
         assert (!rows.isEmpty()) : "rows must not be empty";
-        this.rows = rows.stream().collect(Collectors.toMap(ColumnRow::getKey, row -> row));
-        this.displayHeight = displayHeight;
-        this.scrollable = scrollable;
-        this.evenOdd = evenOdd;
-        this.evenColumnWidth = evenColumnWidth;
-        this.multiselect = multiselect;
-        this.selectable = selectable;
-        this.highlight = highlight;
+        this.rows = new LinkedHashMap<>(rows);
+        this.displayHeight = (displayHeight > 0) ? displayHeight : 150;
+        this.scrollable = (scrollable != null) ? scrollable : false;
+        this.evenOdd = (evenOdd != null) ? evenOdd : true;
+        this.evenColumnWidth = (evenColumnWidth != null) ? evenColumnWidth : false;
+        this.multiselect = (multiselect != null) ? multiselect : false;
+        this.selectable = (selectable != null) ? selectable : false;
+        this.highlight = (highlight != null) ? highlight : false;
+        this.displaySearch = (displaySearch != null) ? displaySearch : false;
         this.headerButtons = headerButtons;
         this.search = search;
         this.rowPadding = rowPadding;
         this.columnMargin = columnMargin;
 
+
         // max width and margin for each column
-        final List<Integer> maxWidths = UiUtil.getMaxColumnWidths(rows);
+        maxColumnWidths = UiUtil.getMaxColumnWidths(rows.values());
 
         // prepare header if present
         if (headerButtons != null) {
@@ -92,8 +104,8 @@ public class Table<Value> extends GuiSection implements
             for (int i = 0, headerButtonWidthsSize = headerButtonWidths.size(); i < headerButtonWidthsSize; i++) {
                 Integer buttonWith = headerButtonWidths.get(i);
 
-                if (i < maxWidths.size() && buttonWith > maxWidths.get(i)) {
-                    maxWidths.set(i, buttonWith);
+                if (i < maxColumnWidths.size() && buttonWith > maxColumnWidths.get(i)) {
+                    maxColumnWidths.set(i, buttonWith);
                 }
             }
 
@@ -101,60 +113,31 @@ public class Table<Value> extends GuiSection implements
         }
 
         // make every column the same with?
-        if (evenColumnWidth) {
-            Integer maxWidth = maxWidths.stream().max(Comparator.naturalOrder())
+        if (this.evenColumnWidth) {
+            Integer maxWidth = maxColumnWidths.stream().max(Comparator.naturalOrder())
                 .orElse(null);
 
             if (maxWidth != null) {
-                Integer[] newMaxWidths = new Integer[maxWidths.size()];
+                Integer[] newMaxWidths = new Integer[maxColumnWidths.size()];
                 Arrays.fill(newMaxWidths, maxWidth);
 
-                maxWidths.clear();
-                maxWidths.addAll(Arrays.asList(newMaxWidths));
+                maxColumnWidths.clear();
+                maxColumnWidths.addAll(Arrays.asList(newMaxWidths));
             }
         }
 
-        int evenOddCounter = 0;
-        boolean lastWasHeader = false;
         // initialize rows
-        for (int i = 0, rowsSize = rows.size(); i < rowsSize; i++) {
-            ColumnRow<Value> columnRow = rows.get(i);
-            columnRow.margin(columnMargin);
-            columnRow.init(maxWidths);
-            columnRow.pad(rowPadding);
-            columnRow.selectable(selectable);
-            if (!columnRow.isHeader()) columnRow.highlightable(highlight);
-
-            // unselect other rows on click?
-            if (selectable && !multiselect) {
-                columnRow.clickAction(clickedRow -> {
-                    rows.stream()
-                        .filter(row -> !row.equals(clickedRow))
-                        // unselect
-                        .forEach(notClickedRow -> notClickedRow.selectedSet(false));
-                });
-            }
-
-            // make sure next row after header will be colored and don't color header
-            if (evenOdd && columnRow.isHeader()) {
-                if (evenOddCounter % 2 == 0) {
-                    evenOddCounter -= 1;
-                }
-            }
-
-            if (evenOdd && evenOddCounter % 2 == 0) {
-                columnRow.backgroundColor(COLOR.WHITE15);
-            }
-
-            evenOddCounter++;
+        for (Map.Entry<String, ColumnRow<Value>> entry : this.rows.entrySet()) {
+            ColumnRow<Value> columnRow = entry.getValue();
+            prepareColumnRow(columnRow);
         }
 
         // add header if needed
         if (headerButtons != null) {
-            List<Integer> buttonMaxWidths = maxWidths;
+            List<Integer> buttonMaxWidths = maxColumnWidths;
             // compensate button width with padding
             if (rowPadding > 0) {
-                buttonMaxWidths = maxWidths.stream().map(maxWidth -> {
+                buttonMaxWidths = maxColumnWidths.stream().map(maxWidth -> {
                     int rowPaddingAdj = (int) Math.ceil((double) rowPadding * 2 / headerButtons.size()) + columnMargin;
                     return rowPaddingAdj + maxWidth;
                 }).collect(Collectors.toList());
@@ -171,22 +154,73 @@ public class Table<Value> extends GuiSection implements
             addDown(0, header);
         }
 
-        // add the rows and scrollbar if needed
-        int currentHeight = UiUtil.sumHeights(rows);
-        if (search != null || scrollable || (displayHeight > 0 && currentHeight > displayHeight)) {
-            ScrollRows scrollRows = ScrollRows.builder()
-                .height(displayHeight)
-                .rows(rows)
-                .slide(true)
-                .search(search)
-                .build();
+        int searchBarMargin = 0;
+        int searchBarHeight = 0;
+        if (this.displaySearch) {
+            if (this.search == null) {
+                this.search = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
+            }
+            Input searchField = new Input(this.search);
+            addDown(0, searchField);
+            searchBarMargin = 10;
+            searchBarHeight = searchField.body().height();
+        }
 
-            addDown(0, scrollRows.view());
-        } else {
-            for (ColumnRow<Value> row : rows) {
-                addDown(0, row);
+        // add the rows and scrollbar if needed
+        scrollRows = ScrollRows.builder()
+            .height(this.displayHeight - searchBarHeight - searchBarMargin)
+            .rows(this.rows.values())
+            .slide(this.scrollable)
+            .search(this.search)
+            .build();
+
+        addDown(searchBarMargin, scrollRows.view());
+    }
+
+    private void prepareColumnRow(ColumnRow<Value> columnRow) {
+        columnRow.margin(columnMargin);
+        columnRow.init(maxColumnWidths);
+        columnRow.pad(rowPadding);
+        columnRow.selectable(selectable);
+        if (!columnRow.isHeader()) columnRow.highlightable(highlight);
+
+        // unselect other rows on click?
+        if (selectable && !multiselect) {
+            columnRow.clickAction(() -> {
+                this.rows.values().stream()
+                    .filter(row -> !row.equals(columnRow))
+                    // unselect
+                    .forEach(notClickedRow -> notClickedRow.selectedSet(false));
+            });
+        }
+
+        // make sure next row after header will be colored and don't color header
+        if (evenOdd && columnRow.isHeader()) {
+            if (evenOddCounter % 2 == 0) {
+                evenOddCounter -= 1;
             }
         }
+
+        if (evenOdd && evenOddCounter % 2 == 0) {
+            columnRow.backgroundColor(COLOR.WHITE15);
+        }
+
+        evenOddCounter++;
+    }
+
+    public void display(Value value, boolean display) {
+        rows.forEach((s, row) -> {
+            if (value.equals(row.getValue())) {
+                row.visableSet(display);
+            }
+        });
+    }
+
+    public void display(String key, boolean display) {
+        rows.computeIfPresent(key, (s, row) -> {
+            row.visableSet(display);
+            return row;
+        });
     }
 
     @Override
@@ -198,10 +232,12 @@ public class Table<Value> extends GuiSection implements
     }
 
     @Override
-    public void select(List<Integer> keys) {
-        for (Integer index : keys) {
-            if (index >= keys.size() - 1) {
-                rows.get(index).selectedSet(true);
+    public void select(List<String> keys) {
+        for (String index : keys) {
+            ColumnRow<Value> row = rows.get(index);
+
+            if (row != null) {
+                row.selectedSet(true);
             }
         }
     }
@@ -217,18 +253,20 @@ public class Table<Value> extends GuiSection implements
         rows.forEach((key, row) -> row.doubleClickAction(doubleClickAction));
     }
 
-    public void clickAction(Action<ColumnRow<Value>> clickAction) {
+    public void clickAction(VoidAction clickAction) {
         rows.forEach((key, row) -> row.clickAction(clickAction));
     }
 
     @Override
-    public Map<String, Value> getValue() {
-        return rows.values().stream()
-            .filter(row -> !row.isHeader())
-            .collect(Collectors.toMap(
-                ColumnRow::getKey,
-                ColumnRow::getValue
-            ));
+    public Map<String, @Nullable Value> getValue() {
+        LinkedHashMap<String, Value> map = new LinkedHashMap<>();
+        for (Map.Entry<String, ColumnRow<Value>> entry : rows.entrySet()) {
+            if (!entry.getValue().isHeader()) {
+                map.put(entry.getKey(), entry.getValue().getValue());
+            }
+        }
+
+        return map;
     }
 
     @Override
@@ -242,9 +280,50 @@ public class Table<Value> extends GuiSection implements
         });
     }
 
+    @Nullable
+    public ColumnRow<Value> addRow(ColumnRow<Value> row) {
+        String key = row.getKey();
+        if (key == null) {
+            key = String.valueOf(row.hashCode());
+        }
+
+        ColumnRow<Value> result = rows.put(key, row);
+        if (result == null) {
+            prepareColumnRow(row);
+            scrollRows.addRow(row);
+        }
+
+        return result;
+    }
+
+    @Nullable
+    public ColumnRow<Value> removeRow(ColumnRow<Value> row) {
+        String key = row.getKey();
+        if (key == null) {
+            key = rows.entrySet().stream()
+                .filter(stringColumnRowEntry -> stringColumnRowEntry.getValue().equals(row))
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElse(String.valueOf(row.hashCode()));
+        }
+
+        ColumnRow<Value> result = rows.remove(key);
+        if (result != null) {
+            evenOddCounter--;
+            scrollRows.removeRow(row);
+        }
+
+        return result;
+    }
+
+    public void clearRows() {
+        rows.clear();
+        scrollRows.clearRows();
+    }
+
     public static class TableBuilder<Value> {
 
-        private List<ColumnRow<Value>> rows = new ArrayList<>();
+        private Map<String, ColumnRow<Value>> rows = new LinkedHashMap<>();
 
         public TableBuilder<Value> category(String title, List<ColumnRow<Value>> rows) {
             GHeader header = new GHeader(title, UI.FONT().H2);
@@ -254,8 +333,8 @@ public class Table<Value> extends GuiSection implements
                 .columns(Lists.of(headerSection))
                 .build();
             headerRow.isHeader(true);
-            this.rows.add(headerRow);
-            this.rows.addAll(rows);
+            add(headerRow);
+            rows.forEach(this::add);
 
             return this;
         }
@@ -266,25 +345,32 @@ public class Table<Value> extends GuiSection implements
         }
 
         public TableBuilder<Value> rowsWithColumns(List<List<GuiSection>> rows) {
-            this.rows = rows.stream()
-                .map((List<GuiSection> row) -> {
-                    return ColumnRow.<Value>builder()
-                        .columns(row)
-                        .build();
-                })
-                .collect(Collectors.toList());
+            rows.stream()
+                .map(guiSections -> ColumnRow.<Value>builder()
+                    .columns(guiSections)
+                    .build())
+                .forEach(this::add);
 
             return this;
         }
 
         public TableBuilder<Value> rows(List<ColumnRow<Value>> rows) {
-            this.rows = rows;
+            rows.forEach(this::add);
             return this;
         }
 
         public TableBuilder<Value> row(ColumnRow<Value> row) {
-            this.rows.add(row);
+            add(row);
             return this;
+        }
+
+        private void add(ColumnRow<Value> row) {
+            String key = row.getKey();
+            if (key == null) {
+                key = String.valueOf(row.hashCode());
+            }
+
+            rows.put(key, row);
         }
     }
 }

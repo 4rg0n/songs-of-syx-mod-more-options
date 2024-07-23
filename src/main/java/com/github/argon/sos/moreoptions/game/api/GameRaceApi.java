@@ -1,22 +1,23 @@
 package com.github.argon.sos.moreoptions.game.api;
 
 
-import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import init.race.RACES;
 import init.race.Race;
+import init.type.HCLASS;
+import init.type.HCLASSES;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import settlement.entity.humanoid.HCLASS;
 import settlement.stats.STATS;
 import settlement.stats.standing.STANDINGS;
 import settlement.stats.standing.StandingCitizen;
-import world.WORLD;
+import world.army.AD;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -202,8 +203,8 @@ public class GameRaceApi implements Phases {
     }
 
     public int citizenCount(Race race) {
-        HCLASS cl = HCLASS.CITIZEN;
-        return STATS.POP().POP.data(cl).get(race, 0) + WORLD.ARMIES().cityDivs().total(race);
+        HCLASS cl = HCLASSES.CITIZEN();
+        return STATS.POP().POP.data(cl).get(race, 0) + AD.cityDivs().total(race);
     }
 
     /**
@@ -248,7 +249,7 @@ public class GameRaceApi implements Phases {
 
     public int countCitizen(Race race) {
         return STATS.POP().POP
-            .data(HCLASS.CITIZEN)
+            .data(HCLASSES.CITIZEN())
             .get(race, 0);
     }
 

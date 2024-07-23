@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.config.json;
 
 import com.github.argon.sos.moreoptions.game.api.GameSaveApi;
 import com.github.argon.sos.moreoptions.io.FileService;
+import com.github.argon.sos.moreoptions.json.JsonService;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Lists;
@@ -455,10 +456,15 @@ public class JsonConfigStore {
             return Optional.empty();
         }
 
-        return jsonService.load(path, configClass).map(config -> ConfigObject.<T>builder()
-            .config(config)
-            .path(path)
-            .build());
+        try {
+            return jsonService.load(path, configClass).map(config -> ConfigObject.<T>builder()
+                .config(config)
+                .path(path)
+                .build());
+        } catch (Exception e) {
+            log.error("Could not load config from %", path);
+            throw e;
+        }
     }
 
     /**

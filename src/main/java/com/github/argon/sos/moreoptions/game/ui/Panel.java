@@ -12,7 +12,7 @@ import snake2d.util.datatypes.*;
 import snake2d.util.gui.clickable.CLICKABLE;
 import snake2d.util.misc.ACTION;
 import snake2d.util.sprite.text.Font;
-import util.dic.DicMisc;
+import util.dic.Dic;
 import util.gui.misc.GText;
 
 public class Panel extends CLICKABLE.ClickableAbs {
@@ -141,7 +141,7 @@ public class Panel extends CLICKABLE.ClickableAbs {
 
 	public Panel setCloseAction(ACTION action) {
 		this.clickAction = action;
-		hoverInfoSet(DicMisc.¤¤Close);
+		hoverInfoSet(Dic.¤¤Close);
 		return this;
 	}
 

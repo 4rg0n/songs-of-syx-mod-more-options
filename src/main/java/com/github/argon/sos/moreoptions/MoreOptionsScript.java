@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.game.AbstractScript;
+import com.github.argon.sos.moreoptions.game.json.GameJsonStore;
 import com.github.argon.sos.moreoptions.game.ui.Modal;
 import com.github.argon.sos.moreoptions.i18n.I18nMessages;
 import com.github.argon.sos.moreoptions.log.Level;
@@ -49,18 +50,20 @@ public final class MoreOptionsScript extends AbstractScript {
 
 	@Override
 	protected void registerPhases(PhaseManager phaseManager) {
-		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, MetricExporter.getInstance());
-		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, I18nMessages.getInstance());
-		phaseManager.register(Phase.INIT_BEFORE_GAME_CREATED, ConfigStore.getInstance());
-		phaseManager.register(Phase.INIT_MOD_CREATE_INSTANCE, UiConfig.getInstance());
-		phaseManager.register(Phase.INIT_SETTLEMENT_UI_PRESENT, ConfigStore.getInstance());
-		phaseManager.register(Phase.INIT_SETTLEMENT_UI_PRESENT, UiConfig.getInstance());
+        phaseManager
+            .register(Phase.INIT_BEFORE_GAME_CREATED, GameJsonStore.getInstance())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, MetricExporter.getInstance())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, I18nMessages.getInstance())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, ConfigStore.getInstance())
+            .register(Phase.INIT_MOD_CREATE_INSTANCE, UiConfig.getInstance())
+            .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ConfigStore.getInstance())
+            .register(Phase.INIT_SETTLEMENT_UI_PRESENT, UiConfig.getInstance())
 
-		phaseManager.register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance());
-		phaseManager.register(Phase.ON_GAME_SAVED, ConfigStore.getInstance());
-		phaseManager.register(Phase.ON_GAME_SAVE_RELOADED, MetricExporter.getInstance());
-		phaseManager.register(Phase.ON_CRASH, MetricScheduler.getInstance());
-		phaseManager.register(Phase.ON_CRASH, ConfigStore.getInstance());
+            .register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance())
+            .register(Phase.ON_GAME_SAVED, ConfigStore.getInstance())
+            .register(Phase.ON_GAME_SAVE_RELOADED, MetricExporter.getInstance())
+            .register(Phase.ON_CRASH, MetricScheduler.getInstance())
+            .register(Phase.ON_CRASH, ConfigStore.getInstance());
 	}
 
 	@Override
@@ -78,19 +81,22 @@ public final class MoreOptionsScript extends AbstractScript {
 	}
 
 	@Override
-	public void initSettlementUiPresent() {
-		// initialize other ui stuff
-		super.initSettlementUiPresent();
-		Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
-		// show backup dialog?
-		if (backupDialog != null) {
-			backupDialog.show();
-		} else {
-			// apply loaded config
-			configApplier.applyToGame(configStore.getCurrentConfig());
-		}
+	public void onViewSetup() {
+		super.onViewSetup();
 
-		// TODO experimental
-//		gameApis.weatherApi().lockDayCycle(1, true);
+        Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
+        // show backup dialog?
+        if (backupDialog != null) {
+            backupDialog.show();
+        } else {
+            // apply loaded config
+            configApplier.applyToGame(configStore.getCurrentConfig());
+        }
+    }
+
+	@Override
+	public boolean forceInit() {
+		return true;
 	}
 }
+

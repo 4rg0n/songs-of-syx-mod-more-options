@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigMeta {
     @Builder.Default
-    private int version = MoreOptionsV3Config.VERSION;
+    private int version = MoreOptionsV4Config.VERSION;
     @Builder.Default
     private Level logLevel = Loggers.LOG_LEVEL_DEFAULT;
 }

@@ -1,18 +1,17 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Action;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.gui.GUI_BOX;
-import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.Font;
 import util.gui.misc.GText;
 
 @Builder
-public class Label extends GuiSection {
+public class Label extends Section {
 
     private String name;
     @Builder.Default
@@ -29,6 +28,17 @@ public class Label extends GuiSection {
     @Builder.Default
     private Style style = Style.NORMAL;
 
+    /**
+     * A label is a text element for describing something else.
+     * e.g. "Name: Jake"
+     *
+     * @param name what the label shall be called
+     * @param maxWidth available width for displaying the label; 0 will be ignored
+     * @param font which font to use
+     * @param description when hovering the label with the mouse
+     * @param hoverGuiAction a way to display a custom rendered box when hovering
+     * @param style which style (color) to use
+     */
     public Label(
         String name,
         int maxWidth,

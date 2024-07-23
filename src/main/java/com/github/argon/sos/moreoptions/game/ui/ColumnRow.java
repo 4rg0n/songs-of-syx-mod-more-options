@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.util.ClassUtil;
 import com.github.argon.sos.moreoptions.util.Lists;
@@ -27,10 +27,14 @@ import java.util.function.Supplier;
  * Used by the {@link Table} element.
  */
 @Builder
-public class ColumnRow<Value> extends GuiSection implements
+public class ColumnRow<Value> extends Section implements
     Searchable<String, Boolean>,
-    Valuable<Value, ColumnRow<Value>> {
-
+    Valuable<Value>,
+    Toggleable<String>
+{
+    /**
+     * Used to identify the row
+     */
     @Getter
     @Builder.Default
     private String key = UUID.randomUUID().toString();
@@ -40,11 +44,17 @@ public class ColumnRow<Value> extends GuiSection implements
     @Accessors(fluent = true)
     private COLOR backgroundColor;
 
+    /**
+     * Color when moving the mouse over row
+     */
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
     private COLOR hoverColor = COLOR.WHITE35;
 
+    /**
+     * Color after clicking on the row
+     */
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
@@ -53,64 +63,94 @@ public class ColumnRow<Value> extends GuiSection implements
     @Getter
     private final List<GuiSection> columns;
 
+    /**
+     * Used for searching through a list of rows e.g. in a {@link Table}
+     */
     @Nullable
     @Setter
     @Getter
     @Accessors(fluent = true)
     private String searchTerm;
 
+    /**
+     * Whether row shall be highlighted when moving mouse over it
+     */
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
     private boolean highlightable = false;
 
+    /**
+     * Whether this row shall be treated as header.
+     * The row will be ignored by the search e.g.
+     */
     @Getter
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
     private boolean isHeader = false;
 
+    /**
+     * Whether this row is selectable by clicking with  the mouse on it
+     */
     @Getter
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
     private boolean selectable = false;
 
+    /**
+     * Space between in row in pixels
+     */
     @Getter
     @Setter
     @Builder.Default
     @Accessors(fluent = true)
     private int margin = 0;
 
-    private float doubleClickTimer = 0.0f;
+    private float doubleClickTimer;
 
+    /**
+     * Possible value for this row.
+     */
+    @Nullable
     private Value value;
     private boolean isSelected;
 
+    /**
+     * A place where this row could read their value from.
+     */
     @Setter
     @Nullable
     @Accessors(fluent = true, chain = false)
     private Supplier<Value> valueSupplier;
 
+    /**
+     * When ever something is setting a value into this row. This gets called.
+     */
     @Setter
     @Nullable
     @Accessors(fluent = true, chain = false)
     private Consumer<Value> valueConsumer;
 
+    /**
+     * What shall happen when you doubleclick the row.
+     */
     @Setter
     @Nullable
     @Accessors(fluent = true, chain = false)
     private Action<ColumnRow<Value>> doubleClickAction;
 
+    /**
+     * What shall happen when you do a single click on this row
+     */
     @Setter
     @Builder.Default
     @Accessors(fluent = true, chain = false)
-    private Action<ColumnRow<Value>> clickAction = o -> {};
-
-
+    private VoidAction clickAction = () -> {};
 
     public void init() {
-        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(Lists.of(columns));
+        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(Lists.ofSingle(columns));
         init(maxWidths);
     }
 
@@ -178,7 +218,7 @@ public class ColumnRow<Value> extends GuiSection implements
     public boolean click() {
         if (!activeIs() || !visableIs())
             return false;
-        clickAction.accept(this);
+        clickAction.accept();
         if (selectable) selectedToggle();
 
 
@@ -204,6 +244,7 @@ public class ColumnRow<Value> extends GuiSection implements
         return super.hover(mCoo);
     }
 
+    @Override
     public Value getValue() {
         if (valueSupplier != null) {
             return valueSupplier.get();
@@ -283,5 +324,17 @@ public class ColumnRow<Value> extends GuiSection implements
             columns.add(UiUtil.toGuiSection(column));
             return this;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ColumnRow{" +
+            "key='" + key + '\'' +
+            ", searchTerm='" + searchTerm + '\'' +
+            ", highlightable=" + highlightable +
+            ", isHeader=" + isHeader +
+            ", selectable=" + selectable +
+            ", visible=" + visableIs() +
+            '}';
     }
 }

@@ -21,6 +21,7 @@ public class VerticalLine extends AbstractRender {
 
     @Override
     public void render(SPRITE_RENDERER spriteRenderer, float v) {
+        super.render(spriteRenderer, v);
         GCOLOR.UI().border().render(spriteRenderer, body().cX() + thickness, body().cX() + 1 - thickness, body().y1() , body().y2());
     }
 }

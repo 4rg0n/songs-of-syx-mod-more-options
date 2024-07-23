@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.game.action.Action;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import util.gui.misc.GText;
  * Serves as container for displaying in game notification popups.
  */
 @Getter
-public class Notification extends GuiSection implements Hideable<Notification> {
+public class Notification extends Section {
 
     @Getter
     private final String text;
@@ -31,6 +31,14 @@ public class Notification extends GuiSection implements Hideable<Notification> {
     @Accessors(fluent = true, chain = false)
     protected Action<Notification> hideAction = o -> {};
 
+    /**
+     * @param text which text to display as notification
+     * @param width of the content area
+     * @param height of the content area
+     * @param title to display in the head of the notification
+     * @param titleBackground color used to highlight the title
+     * @param textColor for the displayed notification text
+     */
     @Builder
     public Notification(
         String text,
@@ -69,13 +77,5 @@ public class Notification extends GuiSection implements Hideable<Notification> {
         textContainer.add(displayText, 0,0);
         add(textContainer);
         textContainer.body().centerIn(body());
-    }
-
-    @Override
-    public void hide() {
-        if (visableIs()) {
-            hideAction.accept(this);
-            visableSet(false);
-        }
     }
 }

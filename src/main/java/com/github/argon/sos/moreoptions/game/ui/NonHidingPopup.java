@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import init.C;
+import org.jetbrains.annotations.Nullable;
 import snake2d.MButt;
 import snake2d.Renderer;
 import snake2d.util.datatypes.COORDINATE;
@@ -18,22 +19,25 @@ import view.main.VIEW;
  * Used for showing any kind of ui as popup on the screen.
  * Will not close other popups when shown.
  */
-public final class NonHidingPopup {
+public class NonHidingPopup {
 	
 	private final GuiSection s = new GuiSection();
 	private final Inter inter = new Inter(s);
-	private final InterManager m;
+	@Nullable
+	private final InterManager manager;
 	private CLICKABLE trigger;
+
+	public NonHidingPopup() {
+		this(null);
+	}
 	
-	
-	public NonHidingPopup(InterManager manager){
-		this.m = manager;
+	public NonHidingPopup(@Nullable InterManager manager){
+		this.manager = manager;
 	}
 
 	
 	public void show(RENDEROBJ s, CLICKABLE trigger) {
 		show(s, trigger, false);
-		
 	}
 	
 	public void show(RENDEROBJ s, CLICKABLE trigger, boolean centreAtMouse) {
@@ -63,8 +67,8 @@ public final class NonHidingPopup {
 		
 		if (centre) {
 			s.body().moveC(VIEW.mouse());
-			if (!inter.isActivated()) {
-				m.add(inter);
+			if (manager != null && !inter.isActivated()) {
+				manager.add(inter);
 			}
 		}else {
 			s.body().moveCX(x);
@@ -74,9 +78,7 @@ public final class NonHidingPopup {
 				s.body().moveY1(y+M);
 			}
 		}
-		
-		
-		
+
 		if (s.body().x2()+M >= C.WIDTH()) {
 			s.body().moveX2(C.WIDTH()-M);
 		}
@@ -93,8 +95,8 @@ public final class NonHidingPopup {
 			s.body().moveY1(M);
 		}
 		
-		if (!inter.isActivated()) {
-			m.add(inter);
+		if (manager != null && !inter.isActivated()) {
+			manager.add(inter);
 		}
 	}
 
@@ -170,9 +172,6 @@ public final class NonHidingPopup {
 //			}
 			return true;
 		}
-		
-		
-		
 	}
 
 }

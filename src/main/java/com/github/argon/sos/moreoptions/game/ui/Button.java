@@ -4,7 +4,10 @@ import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.sprite.SPRITE;
 
-public class Button extends AbstractButton<Void, Button> {
+/**
+ * A simple button with a text or icon and a description.
+ */
+public class Button extends AbstractButton<String, Button> {
 
     public Button(CharSequence label) {
         super(label);
@@ -33,5 +36,14 @@ public class Button extends AbstractButton<Void, Button> {
     @Override
     protected Button element() {
         return this;
+    }
+
+    @Override
+    public Boolean search(String s) {
+        if (searchTerm == null) {
+            return true;
+        }
+
+        return searchTerm.toLowerCase().contains(s.toLowerCase());
     }
 }

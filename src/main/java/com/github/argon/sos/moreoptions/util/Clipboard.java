@@ -23,7 +23,7 @@ public class Clipboard {
 
             clipboard.setContents(stringSelection, stringSelection);
         } catch (Exception e) {
-            log.info("Could not write to system clipboard: %s", e.getMessage());
+            log.warn("Could not write to system clipboard: %s", e.getMessage());
             log.trace("", e);
             return false;
         }

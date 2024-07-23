@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.util;
 
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
-import game.boosting.BoostSpec;
 import game.boosting.Boostable;
+import game.boosting.Booster;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -13,17 +13,10 @@ public class BoosterUtil {
      * Checks whether a game booster already contains a "More Options" booster
      */
     public static boolean alreadyExtended(Boostable booster, boolean isMul) {
-        if (isMul) {
-            for (BoostSpec mul : booster.muls()) {
-                if (mul.tName.toString().contains(MoreOptionsScript.MOD_INFO.name)) {
-                    return true;
-                }
-            }
-        } else {
-            for (BoostSpec add : booster.adds()) {
-                if (add.tName.toString().contains(MoreOptionsScript.MOD_INFO.name)) {
-                    return true;
-                }
+
+        for (Booster booster1 : booster.all()) {
+            if (booster1.isMul == isMul && booster1.info.name.toString().contains(MoreOptionsScript.MOD_INFO.name)) {
+                return true;
             }
         }
 

@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.api;
 
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.Lists;
@@ -9,7 +10,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,17 +27,11 @@ public class GameModApi {
         return Lists.fromGameLIST(PATHS.currentMods());
     }
 
-    public Path getCurrentModPath() {
-        Path path = PATHS.SCRIPT().jar.get().toAbsolutePath();
-        return path.getParent().getParent();
-    }
-
     public Optional<ModInfo> getCurrentMod() {
         return getCurrentMods().stream().filter(modInfo -> {
             log.trace("Checking mod %s in %s", modInfo.name, modInfo.absolutePath);
 
-            Path currentModPath = getCurrentModPath();
-            return currentModPath.startsWith(modInfo.absolutePath);
+            return modInfo.name.contains(MoreOptionsScript.MOD_INFO.name);
         }).findFirst();
     }
 }

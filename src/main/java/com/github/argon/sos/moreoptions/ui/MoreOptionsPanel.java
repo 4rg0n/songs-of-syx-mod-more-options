@@ -1,19 +1,19 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
-import com.github.argon.sos.moreoptions.game.Action;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
-import com.github.argon.sos.moreoptions.ui.panel.AbstractConfigPanel;
-import com.github.argon.sos.moreoptions.ui.panel.advanced.AdvancedPanel;
-import com.github.argon.sos.moreoptions.ui.panel.boosters.BoostersPanel;
-import com.github.argon.sos.moreoptions.ui.panel.events.EventsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.metrics.MetricsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.races.RacesPanel;
-import com.github.argon.sos.moreoptions.ui.panel.sounds.SoundsPanel;
-import com.github.argon.sos.moreoptions.ui.panel.weather.WeatherPanel;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
+import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
+import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.events.EventsTab;
+import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
+import com.github.argon.sos.moreoptions.ui.tab.sounds.SoundsTab;
+import com.github.argon.sos.moreoptions.ui.tab.weather.WeatherTab;
 import com.github.argon.sos.moreoptions.util.Lists;
 import com.github.argon.sos.moreoptions.util.Maps;
 import game.VERSION;
@@ -22,6 +22,8 @@ import init.paths.ModInfo;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
@@ -40,27 +42,27 @@ import java.util.Set;
  * Will pop up in the middle of the game and pauses the game.
  */
 public class MoreOptionsPanel extends GuiSection implements
-    Showable<MoreOptionsPanel>,
-    Refreshable<MoreOptionsPanel>,
-    Valuable<MoreOptionsV3Config, MoreOptionsPanel> {
+    Showable,
+    Refreshable,
+    Valuable<MoreOptionsV4Config> {
 
-    private static final I18n i18n = I18n.get(WeatherPanel.class);
+    private static final I18n i18n = I18n.get(WeatherTab.class);
 
     private final ConfigStore configStore;
     @Getter
-    private final EventsPanel eventsPanel;
+    private final EventsTab eventsTab;
     @Getter
-    private final SoundsPanel soundsPanel;
+    private final SoundsTab soundsTab;
     @Getter
-    private final WeatherPanel weatherPanel;
+    private final WeatherTab weatherTab;
     @Getter
-    private final BoostersPanel boostersPanel;
+    private final BoostersTab boostersTab;
     @Getter
-    private final MetricsPanel metricsPanel;
+    private final MetricsTab metricsTab;
     @Getter
-    private final RacesPanel racesPanel;
+    private final RacesTab racesTab;
     @Getter
-    private final AdvancedPanel advancedPanel;
+    private final AdvancedTab advancedTab;
 
     @Getter
     private final Button cancelButton;
@@ -83,10 +85,14 @@ public class MoreOptionsPanel extends GuiSection implements
     @Getter
     private final ButtonMenu<String> moreButtonMenu;
     @Getter
-    private final Tabulator<String, AbstractConfigPanel<?, ?>, Void> tabulator;
+    private final Tabulator<String, AbstractConfigTab<?, ?>, Void> tabulator;
 
-    private Action<MoreOptionsPanel> showAction = o -> {};
-    private Action<MoreOptionsPanel> refreshAction = o -> {};
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private VoidAction showAction = () -> {};
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private VoidAction refreshAction = () -> {};
 
     private double updateTimerSeconds = 0d;
     private final static int UPDATE_INTERVAL_SECONDS = 1;
@@ -97,10 +103,10 @@ public class MoreOptionsPanel extends GuiSection implements
      */
     @Builder
     public MoreOptionsPanel(
-        MoreOptionsV3Config config,
+        MoreOptionsV4Config config,
         ConfigStore configStore,
-        Map<Faction, List<BoostersPanel.Entry>> boosterEntries,
-        Map<String, List<RacesPanel.Entry>> raceEntries,
+        Map<Faction, List<BoostersTab.Entry>> boosterEntries,
+        Map<String, List<RacesTab.Entry>> raceEntries,
         Set<String> availableStats,
         Path exportFolder,
         Path exportFile,
@@ -172,27 +178,27 @@ public class MoreOptionsPanel extends GuiSection implements
         HorizontalLine horizontalLine = new HorizontalLine(footer.body().width(), 20, 1);
         availableHeight = availableHeight - footer.body().height() - horizontalLine.body().height() - 40;
 
-        MoreOptionsV3Config defaultConfig = configStore.getDefaultConfig();
+        MoreOptionsV4Config defaultConfig = configStore.getDefaultConfig();
 
-        soundsPanel = new SoundsPanel(i18n.t("MoreOptionsPanel.tab.sounds.name"), config.getSounds(), defaultConfig.getSounds(), availableWidth, availableHeight);
-        eventsPanel = new EventsPanel(i18n.t("MoreOptionsPanel.tab.events.name"), config.getEvents(), defaultConfig.getEvents(), availableWidth, availableHeight);
-        weatherPanel = new WeatherPanel(i18n.t("MoreOptionsPanel.tab.weather.name"), config.getWeather(), defaultConfig.getWeather(), availableWidth, availableHeight);
-        boostersPanel = new BoostersPanel(i18n.t("MoreOptionsPanel.tab.boosters.name"), boosterEntries, config.getBoosters().getPresets(), defaultConfig.getBoosters(), availableWidth, availableHeight);
-        metricsPanel = new MetricsPanel(i18n.t("MoreOptionsPanel.tab.metrics.name"), config.getMetrics(), defaultConfig.getMetrics(), availableStats, exportFolder, exportFile, availableWidth, availableHeight);
-        racesPanel = new RacesPanel(i18n.t("MoreOptionsPanel.tab.races.name"), raceEntries, defaultConfig.getRaces(), availableWidth, availableHeight);
-        advancedPanel = new AdvancedPanel(i18n.t("MoreOptionsPanel.tab.advanced.name"), saveStamp, WORLD.GEN().seed, config.getLogLevel(), defaultConfig.getLogLevel(), availableWidth, availableHeight);
+        soundsTab = new SoundsTab(i18n.t("MoreOptionsPanel.tab.sounds.name"), config.getSounds(), defaultConfig.getSounds(), availableWidth, availableHeight);
+        eventsTab = new EventsTab(i18n.t("MoreOptionsPanel.tab.events.name"), config.getEvents(), defaultConfig.getEvents(), availableWidth, availableHeight);
+        weatherTab = new WeatherTab(i18n.t("MoreOptionsPanel.tab.weather.name"), config.getWeather(), defaultConfig.getWeather(), availableWidth, availableHeight);
+        boostersTab = new BoostersTab(i18n.t("MoreOptionsPanel.tab.boosters.name"), boosterEntries, config.getBoosters().getPresets(), defaultConfig.getBoosters(), availableWidth, availableHeight);
+        metricsTab = new MetricsTab(i18n.t("MoreOptionsPanel.tab.metrics.name"), config.getMetrics(), defaultConfig.getMetrics(), availableStats, exportFolder, exportFile, availableWidth, availableHeight);
+        racesTab = new RacesTab(i18n.t("MoreOptionsPanel.tab.races.name"), raceEntries, defaultConfig.getRaces(), availableWidth, availableHeight);
+        advancedTab = new AdvancedTab(i18n.t("MoreOptionsPanel.tab.advanced.name"), saveStamp, WORLD.GEN().seed, config.getLogLevel(), defaultConfig.getLogLevel(), availableWidth, availableHeight);
 
-        tabulator = Tabulator.<String, AbstractConfigPanel<?, ?>, Void>builder()
+        tabulator = Tabulator.<String, AbstractConfigTab<?, ?>, Void>builder()
             .tabs(Maps.ofLinked(
-                "sounds", soundsPanel,
-                "events", eventsPanel,
-                "weather", weatherPanel,
-                "boosters", boostersPanel,
-                "metrics", metricsPanel,
-                "races", racesPanel,
-                "advanced", advancedPanel
+                "sounds", soundsTab,
+                "events", eventsTab,
+                "weather", weatherTab,
+                "boosters", boostersTab,
+                "metrics", metricsTab,
+                "races", racesTab,
+                "advanced", advancedTab
             ))
-            .tabMenu(Toggler.<String>builder()
+            .tabMenu(Switcher.<String>builder()
                 .menu(ButtonMenu.<String>builder()
                     .button("sounds", new Button(
                         i18n.t("MoreOptionsPanel.tab.sounds.name"),
@@ -216,6 +222,7 @@ public class MoreOptionsPanel extends GuiSection implements
                         i18n.t("MoreOptionsPanel.tab.advanced.name"),
                         i18n.t("MoreOptionsPanel.tab.advanced.desc")))
                     .sameWidth(true)
+                    .maxWidth(availableWidth)
                     .horizontal(true)
                     .margin(21)
                     .spacer(true)
@@ -233,43 +240,43 @@ public class MoreOptionsPanel extends GuiSection implements
     }
 
     @Override
-    public MoreOptionsV3Config getValue() {
-        return MoreOptionsV3Config.builder()
-            .logLevel(advancedPanel.getValue())
-            .events(eventsPanel.getValue())
-            .sounds(soundsPanel.getValue())
-            .weather(weatherPanel.getValue())
-            .boosters(boostersPanel.getValue())
-            .metrics(metricsPanel.getValue())
-            .races(racesPanel.getValue())
+    public MoreOptionsV4Config getValue() {
+        return MoreOptionsV4Config.builder()
+            .logLevel(advancedTab.getValue())
+            .events(eventsTab.getValue())
+            .sounds(soundsTab.getValue())
+            .weather(weatherTab.getValue())
+            .boosters(boostersTab.getValue())
+            .metrics(metricsTab.getValue())
+            .races(racesTab.getValue())
             .build();
     }
 
     @Override
-    public void setValue(@Nullable MoreOptionsV3Config config) {
+    public void setValue(@Nullable MoreOptionsV4Config config) {
         if (config == null) {
             return;
         }
 
-        eventsPanel.setValue(config.getEvents());
-        soundsPanel.setValue(config.getSounds());
-        weatherPanel.setValue(config.getWeather());
-        boostersPanel.setValue(config.getBoosters());
-        metricsPanel.setValue(config.getMetrics());
-        racesPanel.setValue(config.getRaces());
-        advancedPanel.setValue(config.getLogLevel());
+        eventsTab.setValue(config.getEvents());
+        soundsTab.setValue(config.getSounds());
+        weatherTab.setValue(config.getWeather());
+        boostersTab.setValue(config.getBoosters());
+        metricsTab.setValue(config.getMetrics());
+        racesTab.setValue(config.getRaces());
+        advancedTab.setValue(config.getLogLevel());
     }
 
     /**
      * @return whether panel configuration is different from {@link ConfigStore#getCurrentConfig()} ()}
      */
     public boolean isDirty() {
-        MoreOptionsV3Config currentConfig = configStore.getCurrentConfig();
+        MoreOptionsV4Config currentConfig = configStore.getCurrentConfig();
         return isDirty(currentConfig);
     }
 
-    public boolean isDirty(@Nullable MoreOptionsV3Config config) {
-        MoreOptionsV3Config uiConfig = getValue();
+    public boolean isDirty(@Nullable MoreOptionsV4Config config) {
+        MoreOptionsV4Config uiConfig = getValue();
 
         if (uiConfig == null) {
             return false;
@@ -314,21 +321,11 @@ public class MoreOptionsPanel extends GuiSection implements
 
     @Override
     public void show() {
-        showAction.accept(this);
-    }
-
-    @Override
-    public void showAction(Action<MoreOptionsPanel> showAction) {
-        this.showAction = showAction;
+        showAction.accept();
     }
 
     @Override
     public void refresh() {
-        refreshAction.accept(this);
-    }
-
-    @Override
-    public void refreshAction(Action<MoreOptionsPanel> refreshAction) {
-        this.refreshAction = refreshAction;
+        refreshAction.accept();
     }
 }

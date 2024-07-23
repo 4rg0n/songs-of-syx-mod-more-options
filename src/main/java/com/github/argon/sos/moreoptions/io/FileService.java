@@ -31,8 +31,8 @@ public class FileService extends AbstractIOService {
     @Nullable
     public String read(Path path) {
         log.debug("Reading from file %s", path);
-        File file = path.toFile();
-        if (!file.isFile() || !file.exists() || !file.canRead()) {
+
+        if (!Files.exists(path)) {
             // do not load what's not there
             log.info("%s is not a file, does not exists or is not readable", path);
             return null;

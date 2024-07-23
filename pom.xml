@@ -6,7 +6,7 @@
 
     <groupId>com.argon.sos</groupId>
     <artifactId>songs-of-syx-mod-more-options</artifactId>
-    <version>1.10.1</version>
+    <version>2.0.0</version>
 
     <profiles>
         <profile>
@@ -109,8 +109,8 @@
         <mod.description>Adds more options to the game :)</mod.description>
         <mod.author>4rg0n and Senso</mod.author>
         <mod.info></mod.info>
-        <game.version.major>65</game.version.major>
-        <game.version.minor>65</game.version.minor>
+        <game.version.major>66</game.version.major>
+        <game.version.minor>49</game.version.minor>
 
         <!-- Build settings -->
         <game.version.directory>V${game.version.major}</game.version.directory>
@@ -124,7 +124,7 @@
         <mod.dependency.lib.directory>${project.basedir}/lib</mod.dependency.lib.directory>
         <mod.build.output.directory>${basedir}/target/out/${mod.name}</mod.build.output.directory>
         <mod.files.build.output.directory>${mod.build.output.directory}/${game.version.directory}</mod.files.build.output.directory>
-        <mod.script.output.directory>${mod.files.build.output.directory}/script/jar</mod.script.output.directory>
+        <mod.script.output.directory>${mod.files.build.output.directory}/script</mod.script.output.directory>
         <mod.source.output.directory>${mod.files.build.output.directory}/script/_src</mod.source.output.directory>
         <mod.files.directory>${project.basedir}/src/main/resources/${mod.files.name}</mod.files.directory>
 

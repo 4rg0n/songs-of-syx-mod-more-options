@@ -1,40 +1,39 @@
 package com.github.argon.sos.moreoptions.json.parser;
 
 import com.github.argon.sos.moreoptions.json.Json;
-import com.github.argon.sos.moreoptions.json.JsonParser;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
-import com.github.argon.sos.moreoptions.util.StringUtil;
+import com.github.argon.sos.moreoptions.json.element.JsonTuple;
 
-public class ObjectParser extends Parser {
+/**
+ * For parsing key value pairs present in objects e.g. {NAME: FOO, SIZE: 1,}
+ */
+public class ObjectParser implements Parser {
     @Override
     public JsonElement parse(Json json) {
         JsonObject jsonObject = new JsonObject();
         // skip {
         json.indexMove();
-        try {
-            while (true){
-                json.skipBlank();
-                if (isEnd(json.currentChar())) {
-                    break;
-                }
 
-                String key = json.getNextValue(':');
-                // skip :
-                json.indexMove();
-                json.skipBlank();
-
-                JsonElement element = JsonParser.parse(json);
-                jsonObject.put(StringUtil.unquote(key), element);
-
-                json.skipBlank();
-                if (json.currentChar() == ','){
-                    json.indexMove();
-                }
+        while (true){
+            json.skipBlank();
+            if (isEnd(json.currentChar())) {
+                break;
             }
-        } catch (RuntimeException e) {
-            throw new JsonParseException("Could not parse object at position " + json.getIndex(), e);
+
+            JsonElement element = JsonParser.parse(json);
+            if (!(element instanceof JsonTuple)) {
+                throw new JsonParseException("Received a " + element.getClass().getSimpleName() + " instead of JsonTuple");
+            }
+
+            jsonObject.put(element);
+
+            json.skipBlank();
+            if (json.currentChar() == ','){
+                json.indexMove();
+            }
         }
+
         // skip }
         json.indexMove();
 

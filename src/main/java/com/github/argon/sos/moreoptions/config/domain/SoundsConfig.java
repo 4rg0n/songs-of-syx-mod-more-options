@@ -13,8 +13,4 @@ import java.util.Map;
 public class SoundsConfig {
     @Builder.Default
     private Map<String, Range> ambience = new HashMap<>();
-    @Builder.Default
-    private Map<String, Range> settlement = new HashMap<>();
-    @Builder.Default
-    private Map<String, Range> room = new HashMap<>();
 }

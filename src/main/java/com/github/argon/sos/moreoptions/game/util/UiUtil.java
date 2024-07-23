@@ -1,23 +1,29 @@
 package com.github.argon.sos.moreoptions.game.util;
 
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
+import com.github.argon.sos.moreoptions.game.ui.Section;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.datatypes.Coo;
 import snake2d.util.datatypes.RECTANGLEE;
 import snake2d.util.datatypes.Rec;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.SPRITE;
+import view.main.VIEW;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiUtil {
+
+    public final static Supplier<Coo> MOUSE_COO_SUPPLIER = () -> new Coo(VIEW.mouse().x(), VIEW.mouse().y());
 
     /**
      * @return width of widest ui element in list
@@ -186,19 +192,29 @@ public class UiUtil {
         return maxHeight;
     }
 
-    public static @Nullable GuiSection toGuiSection(Object renderobj) {
-        if (renderobj instanceof RENDEROBJ) {
-            return toGuiSection((RENDEROBJ) renderobj);
-        } else if (renderobj instanceof SPRITE) {
-            return toGuiSection((SPRITE) renderobj);
-        }
-
-        return null;
+    public static Section toSection(SPRITE sprite) {
+        RENDEROBJ renderobj = toRender(sprite);
+        return toSection(renderobj);
     }
 
     public static GuiSection toGuiSection(SPRITE sprite) {
-        RENDEROBJ.Sprite renderobj = new RENDEROBJ.Sprite(sprite);
+        RENDEROBJ renderobj = toRender(sprite);
         return toGuiSection(renderobj);
+    }
+
+    public static RENDEROBJ toRender(SPRITE sprite) {
+        return new RENDEROBJ.Sprite(sprite);
+    }
+
+    public static Section toSection(RENDEROBJ renderobj) {
+        if (renderobj instanceof Section) {
+            return (Section) renderobj;
+        } else {
+            Section section = new Section();
+            section.add(renderobj);
+
+            return section;
+        }
     }
 
     public static GuiSection toGuiSection(RENDEROBJ renderobj) {
@@ -210,6 +226,11 @@ public class UiUtil {
 
             return section;
         }
+    }
+
+    public static Integer getMaxWidths(Collection<? extends RENDEROBJ> renderobjs, int margin) {
+        return getWidths(renderobjs).stream().mapToInt(Integer::intValue).sum()
+            + (renderobjs.size() - 1) * margin;
     }
 
     public static List<Integer> getWidths(Collection<? extends RENDEROBJ> renderobjs) {

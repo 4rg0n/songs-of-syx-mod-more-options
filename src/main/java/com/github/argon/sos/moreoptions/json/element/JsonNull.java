@@ -8,4 +8,12 @@ public class JsonNull implements JsonElement {
     public String toString() {
         return "null";
     }
+
+    public static JsonNull of() {
+        return new JsonNull();
+    }
+
+    public JsonNull copy() {
+        return JsonNull.of();
+    }
 }

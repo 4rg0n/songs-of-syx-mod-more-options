@@ -1,0 +1,25 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="senso.DEBUG" type="Application" factoryName="Application" folderName="senso">
+    <classpathModifications>
+      <entry path="F:\SteamLibrary\steamapps\common\Songs of Syx\base\script\jar\Example.jar" />
+      <entry path="F:\songs-of-syx-mod-more-options-fork\target\More Options.jar" />
+    </classpathModifications>
+    <envs>
+      <env name="MO.LOG_LEVEL" value="trace" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="init.MainProcess" />
+    <module name="songs-of-syx-mod-more-options" />
+    <option name="PROGRAM_PARAMETERS" value="-Xms512m -Xmx1024m -XX:+UseCompressedOops" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../SteamLibrary/steamapps/common/Songs of Syx" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.github.argon.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="clean install" />
+    </method>
+  </configuration>
+</component>

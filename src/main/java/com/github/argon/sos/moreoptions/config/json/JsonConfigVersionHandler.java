@@ -3,12 +3,15 @@ package com.github.argon.sos.moreoptions.config.json;
 import com.github.argon.sos.moreoptions.config.ConfigFactory;
 import com.github.argon.sos.moreoptions.config.ConfigMapper;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV3Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonMoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonRacesV2Config;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonBoostersV3Config;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonMoreOptionsV3Config;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
+import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
+import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import org.jetbrains.annotations.Nullable;
@@ -27,29 +30,45 @@ public class JsonConfigVersionHandler {
     }
 
     @Nullable
-    public MoreOptionsV3Config handleMapping(ConfigMeta configMeta) {
+    public MoreOptionsV4Config handleMapping(ConfigMeta configMeta) {
         return handleMapping(configMeta.getVersion());
     }
 
     @Nullable
-    public MoreOptionsV3Config handleMapping(int version) {
+    public MoreOptionsV4Config handleMapping(int version) {
         log.debug("Handling version mapping for V%s", version);
-        MoreOptionsV3Config moreOptionsConfig = null;
+        MoreOptionsV4Config moreOptionsConfig = null;
 
         switch (version) {
-            case MoreOptionsV3Config.VERSION:
+            case MoreOptionsV4Config.VERSION:
                 if (jsonConfigStore.getVersion() != version) {
                     log.error("Can not handle mapping to current version %s, because given json config store has different version %s.",
-                        MoreOptionsV3Config.VERSION, jsonConfigStore.getVersion());
+                        MoreOptionsV4Config.VERSION, jsonConfigStore.getVersion());
                     break;
                 }
-                moreOptionsConfig = jsonConfigStore.get(JsonMoreOptionsV3Config.class)
+                moreOptionsConfig = jsonConfigStore.get(JsonMoreOptionsV4Config.class)
                     .map(ConfigMapper::mapConfig)
                     // add other configs
                     .map(domainConfig -> {
-                        jsonConfigStore.get(JsonRacesV3Config.class)
+                        jsonConfigStore.get(JsonRacesV4Config.class)
                             .ifPresent(racesConfig -> ConfigMapper.mapInto(racesConfig, domainConfig));
-                        jsonConfigStore.get(JsonBoostersV3Config.class)
+                        jsonConfigStore.get(JsonBoostersV4Config.class)
+                            .ifPresent(boostersConfig -> ConfigMapper.mapInto(boostersConfig, domainConfig));
+                        return domainConfig;
+                    }).orElse(null);
+                break;
+            case 3:
+                JsonConfigStore jsonConfigStoreV3 = configFactory.newJsonConfigStoreV3();
+                moreOptionsConfig = jsonConfigStoreV3.get(JsonMoreOptionsV3Config.class)
+                    .map(JsonConfigV4Mapper::map)
+                    .map(ConfigMapper::mapConfig)
+                    // add other configs
+                    .map(domainConfig -> {
+                        jsonConfigStoreV3.get(JsonRacesV3Config.class)
+                            .map(JsonConfigV4Mapper::map)
+                            .ifPresent(racesConfig -> ConfigMapper.mapInto(racesConfig, domainConfig));
+                        jsonConfigStoreV3.get(JsonBoostersV3Config.class)
+                            .map(JsonConfigV4Mapper::map)
                             .ifPresent(boostersConfig -> ConfigMapper.mapInto(boostersConfig, domainConfig));
                         return domainConfig;
                     }).orElse(null);
@@ -58,11 +77,13 @@ public class JsonConfigVersionHandler {
                 JsonConfigStore jsonConfigStoreV2 = configFactory.newJsonConfigStoreV2();
                 moreOptionsConfig = jsonConfigStoreV2.get(JsonMoreOptionsV2Config.class)
                     .map(JsonConfigV3Mapper::map)
+                    .map(JsonConfigV4Mapper::map)
                     .map(ConfigMapper::mapConfig)
                     .map(config -> {
                         jsonConfigStoreV2.get(JsonRacesV2Config.class).ifPresent(racesConfig -> {
                             JsonRacesV3Config racesV3Config = JsonConfigV3Mapper.map(racesConfig);
-                            ConfigMapper.mapInto(racesV3Config, config);
+                            JsonRacesV4Config racesV4Config = JsonConfigV4Mapper.map(racesV3Config);
+                            ConfigMapper.mapInto(racesV4Config, config);
                         });
 
                         return config;

@@ -1,15 +1,16 @@
 package com.github.argon.sos.moreoptions.io;
 
+import com.github.argon.sos.moreoptions.util.Lists;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,7 +33,7 @@ public class ResourceService extends AbstractIOService {
         });
     }
 
-    public Optional<String> readResource(String path) throws IOException {
+    public Optional<String> readResource(String path) {
         ClassLoader classLoader = getClass().getClassLoader();
 
         try (InputStream inputStream = classLoader.getResourceAsStream(path)) {
@@ -41,6 +42,22 @@ public class ResourceService extends AbstractIOService {
             }
 
             return Optional.of(readFromInputStream(inputStream));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public List<String> readResourceLines(String path) {
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        try (InputStream inputStream = classLoader.getResourceAsStream(path)) {
+            if (inputStream == null) {
+                return Lists.of();
+            }
+
+            return readLinesFromInputStream(inputStream);
+        } catch (Exception e) {
+            return Lists.of();
         }
     }
 }

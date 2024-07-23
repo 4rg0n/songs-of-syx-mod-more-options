@@ -12,7 +12,6 @@ import snake2d.util.file.FilePutter;
 import view.main.VIEW;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  * Represents one instance of the "script".
@@ -56,14 +55,14 @@ public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 	public void save(FilePutter filePutter) {
 		State state = stateManager.getState();
 		state.setGameSaved(true);
-		scriptPhases.onGameSaved(filePutter.getPath());
+		scriptPhases.onGameSaved(filePutter.path);
 	}
 
 	@Override
 	public void load(FileGetter fileGetter) throws IOException {
 		State state = stateManager.getState();
 		state.setGameSaveLoaded(true);
-		scriptPhases.onGameSaveLoaded(Paths.get(fileGetter.getPath()));
+		scriptPhases.onGameSaveLoaded(fileGetter.path);
 
 		if (state.isNewGameSession()) {
 			state.setNewGameSession(false);

@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import snake2d.SPRITE_RENDERER;
 import snake2d.util.datatypes.Rec;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
@@ -19,5 +20,10 @@ public abstract class AbstractRender extends RENDEROBJ.RenderImp {
     @Override
     public Rec body() {
         return body;
+    }
+
+    @Override
+    public void render(SPRITE_RENDERER r, float ds) {
+
     }
 }
