@@ -21,6 +21,7 @@ Adds a menu with more options for the game:
 ![Metrics](doc/img/metrics.png)
 ![Races](doc/img/races.png)
 ![Advanced](doc/img/advanced.png)
+![Editor](doc/img/editor.png)
 ![Backup](doc/img/backup.png)
 
 
