@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * TODO: this fails if you don't have a simple row layout, but rows with multiple scalable columns in it too
+ * TODO: PoC this fails if you don't have a simple row layout, but rows with multiple scalable columns in it too
  */
 public class VerticalLayout {
     private final int maxHeight;

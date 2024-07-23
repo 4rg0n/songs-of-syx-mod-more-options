@@ -97,9 +97,7 @@ public class Menu extends CORE_STATE {
 
 		// MODDED
 		this.mouseHoverMessage = new MouseHoverMessage();
-		// TODO disabled
-		this.moreOptions = null;
-//		this.moreOptions = Ui.moreOptionsFullsWindow();
+		this.moreOptions = Ui.moreOptionsFullsWindow();
 
 		bg = new Background(this, bounds);
 

@@ -1,7 +1,6 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.game.ui.ColorBox;
-import com.github.argon.sos.moreoptions.i18n.I18n;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Getter;
@@ -21,9 +20,6 @@ import util.info.GFORMAT;
 public class StatsUi extends ColorBox {
     @Getter(lazy = true)
     private final static StatsUi instance = new StatsUi();
-
-    // TODO implement me
-    private static final I18n i18n = I18n.get(StatsUi.class);
 
     @Setter
     private boolean visible = true;

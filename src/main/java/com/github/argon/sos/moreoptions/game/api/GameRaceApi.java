@@ -102,7 +102,6 @@ public class GameRaceApi implements Phases {
 
         // initialize vanilla race likings
         if (vanillaLikings == null) {
-            // todo do I need to clear and reload this on game save reload?
             vanillaLikings = getAllLikings();
         }
 

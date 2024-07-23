@@ -99,15 +99,14 @@ class ScMain implements SC{
 		current.addDown(8, text);
 
 		// MODDED
-		// TODO disabled for now
-//		text = getNavButt("More Options Editor");
-//		text.clickActionSet(new ACTION() {
-//			@Override
-//			public void exe() {
-//				menu.switchScreen(menu.moreOptions);
-//			}
-//		});
-//		current.addDown(8, text);
+		text = getNavButt("More Options Editor");
+		text.clickActionSet(new ACTION() {
+			@Override
+			public void exe() {
+				menu.switchScreen(menu.moreOptions);
+			}
+		});
+		current.addDown(8, text);
 
 		text = getNavButt(ScCredits.¤¤name);
 		text.clickActionSet(new ACTION() {
