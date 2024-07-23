@@ -27,7 +27,7 @@ public class GameFactionApi implements Phases {
 
     @Getter(lazy = true)
     private final static GameFactionApi instance = new GameFactionApi();
-
+    @Getter
     private final Map<String, Faction> factions = new HashMap<>(FACTIONS.MAX);
     @Getter
     private final Map<String, FactionNPC> factionNPCs = new HashMap<>(FACTIONS.NPCS_MAX);
@@ -47,14 +47,6 @@ public class GameFactionApi implements Phases {
         return faction.equals(getPlayer());
     }
 
-    public Map<String, Faction> getFactions() {
-        if (factions.isEmpty()) {
-            throw new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT);
-        }
-
-        return factions;
-    }
-
     @Nullable
     public Faction getByName(String name) {
         return getFactions().get(name);
@@ -67,7 +59,7 @@ public class GameFactionApi implements Phases {
     }
 
     @Override
-    public void initSettlementUiPresent() {
+    public void onViewSetup() {
         reloadFactions();
     }
 

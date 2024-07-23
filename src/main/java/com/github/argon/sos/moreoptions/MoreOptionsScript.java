@@ -82,7 +82,8 @@ public final class MoreOptionsScript extends AbstractScript {
 
 	@Override
 	public void onViewSetup() {
-		log.debug("onViewSetup");
+		super.onViewSetup();
+
         Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
         // show backup dialog?
         if (backupDialog != null) {

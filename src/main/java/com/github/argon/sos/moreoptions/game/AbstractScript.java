@@ -113,6 +113,11 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     }
 
     @Override
+    public void onViewSetup() {
+        phaseManager.onViewSetup();
+    }
+
+    @Override
     public void initSettlementUiPresent() {
         phaseManager.initSettlementUiPresent();
     }
@@ -132,7 +137,6 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         phaseManager.initNewGameSession();
     }
 
-
     @Override
     public void onGameSaveReloaded() {
         phaseManager.onGameSaveReloaded();
@@ -142,8 +146,6 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     public void onGameUpdate(double seconds) {
         phaseManager.onGameUpdate(seconds);
     }
-
-
 
     @Override
     public void onCrash(Throwable throwable) {

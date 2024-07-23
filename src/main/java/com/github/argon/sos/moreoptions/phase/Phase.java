@@ -10,16 +10,18 @@ public enum Phase {
     INIT_MOD_CREATE_INSTANCE,
     // 3. Phase
     ON_GAME_SAVE_LOADED,
-    // 5. Phase
+    // 4. Phase
     ON_GAME_SAVE_RELOADED,
-    // 6. Phase
+    // 5. Phase
     INIT_NEW_GAME_SESSION,
-    // 7. Phase
+    // 6. Phase
     INIT_GAME_UPDATING,
-    // 8. Phase
+    // 7. Phase
     ON_GAME_UPDATE,
-    // 9. Phase
+    // 8. Phase
     INIT_GAME_UI_PRESENT,
+    // 9. Phase
+    ON_VIEW_SETUP,
     // 10. Phase
     INIT_SETTLEMENT_UI_PRESENT,
     ON_GAME_SAVED,
