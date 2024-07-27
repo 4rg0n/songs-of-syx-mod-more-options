@@ -1,20 +1,18 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import menu.Ui;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.color.ColorImp;
 import snake2d.util.gui.GuiSection;
-import util.data.INT;
 
 /**
  * Component to select RGB color values via sliders with a color preview.
  */
 public class ColorPicker extends Section {
-    private final INT.INTE red;
-    private final INT.INTE green;
-    private final INT.INTE blue;
+    private final InputInt redInput;
+    private final InputInt greenInput;
+    private final InputInt blueInput;
     private final ColorBox colorBox;
 
     public final static COLOR DUMMY_COLOR = new ColorImp(255, 0, 255);
@@ -28,18 +26,33 @@ public class ColorPicker extends Section {
     }
 
     public ColorPicker(Integer red, Integer green, Integer blue, boolean horizontal) {
-        this.red = new INT.INTE.IntImp(0, 255);
-        this.green = new INT.INTE.IntImp(0, 255);
-        this.blue = new INT.INTE.IntImp(0, 255);
-
         setRed(red);
         setGreen(green);
         setBlue(blue);
 
-        InputInt redInput = new InputInt(this.red, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
-        InputInt greenInput = new InputInt(this.green, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
-        InputInt blueInput = new InputInt(this.blue, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
+        this.redInput = InputInt.builder()
+            .max(0)
+            .max(255)
+            .showButtons(true)
+            .showDoubleButtons(true)
+            .inputWidth(40)
+            .build();
 
+        this.greenInput = InputInt.builder()
+            .max(0)
+            .max(255)
+            .showButtons(true)
+            .showDoubleButtons(true)
+            .inputWidth(40)
+            .build();
+
+        this.blueInput = InputInt.builder()
+            .max(0)
+            .max(255)
+            .showButtons(true)
+            .showDoubleButtons(true)
+            .inputWidth(40)
+            .build();
         GuiSection colorInputs = new GuiSection();
 
         if (horizontal) {
@@ -65,15 +78,15 @@ public class ColorPicker extends Section {
     }
 
     public void setRed(int value) {
-        red.set(value);
+        redInput.setValue(value);
     }
 
     public void setGreen(int value) {
-        green.set(value);
+        greenInput.setValue(value);
     }
 
     public void setBlue(int value) {
-        blue.set(value);
+        blueInput.setValue(value);
     }
 
     public COLOR color() {
@@ -89,15 +102,15 @@ public class ColorPicker extends Section {
     }
 
     public int getRed() {
-        return this.red.get();
+        return this.redInput.getValue();
     }
 
     public int getGreen() {
-        return this.green.get();
+        return this.greenInput.getValue();
     }
 
     public int getBlue() {
-        return this.blue.get();
+        return this.blueInput.getValue();
     }
 
     public String to(String delimiter) {

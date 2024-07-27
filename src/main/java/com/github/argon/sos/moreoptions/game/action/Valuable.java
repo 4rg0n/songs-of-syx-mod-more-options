@@ -9,7 +9,6 @@ import java.util.function.Supplier;
  * For ui elements where you can get and set values
  *
  * @param <Value> type of set and returned value
- * @param <Element> type of source object triggered the setting or getting
  */
 public interface Valuable<Value> {
     @Nullable

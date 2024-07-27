@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.action.Action;
+import com.github.argon.sos.moreoptions.game.action.Refreshable;
 import com.github.argon.sos.moreoptions.game.action.Resettable;
 import com.github.argon.sos.moreoptions.game.action.Valuable;
 import com.github.argon.sos.moreoptions.game.util.TextFormatUtil;
@@ -40,6 +41,7 @@ import view.main.VIEW;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -49,7 +51,7 @@ import java.util.stream.Collectors;
 /**
  * Uses mostly code from {@link GSliderInt} and adds handling for negative values.
  */
-public class Slider extends GuiSection implements Valuable<Integer>, Resettable {
+public class Slider extends GuiSection implements Valuable<Integer>, Resettable, Refreshable {
 
     private static final I18n i18n = I18n.get(Slider.class);
 
@@ -123,7 +125,10 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
         boolean input,
         ValueDisplay valueDisplay,
         Map<Integer, COLOR> thresholds,
-        List<Integer> allowedValues
+        List<Integer> allowedValues,
+        @Nullable Supplier<Integer> valueSupplier,
+        @Nullable Consumer<Integer> valueConsumer,
+        @Nullable Action<Integer> valueChangeAction
     ){
         this.allowedValues = (allowedValues != null) ? allowedValues : Lists.of();
         this.resolution = (resolution > 0) ? resolution : 1;
@@ -140,6 +145,10 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
         this.setAmount = i18n.t("Slider.amount.set");
         this.setAmountD = i18n.t("Slider.amount.range.set");
+
+        if (valueSupplier != null) this.valueSupplier = valueSupplier;
+        if (valueConsumer != null) this.valueConsumer = valueConsumer;
+        if (valueChangeAction != null) this.valueChangeAction = valueChangeAction;
 
         int sliderWidth = (Math.abs(min) + Math.abs(max)) * 2;
         int sliderHeight = 24;
@@ -351,11 +360,11 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     public void setValue(Integer value) {
         valueConsumer.accept(value);
 
-        if (in.get() != value) {
+        if (!Objects.equals(getValue(), value)) {
             valueChangeAction.accept(value);
         }
 
-        in.set(value);
+        in.set(CLAMP.i(value, in.min(), in.max()));
     }
 
     public void setValueD(Double value) {
@@ -598,6 +607,11 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
             return hover;
         }
+    }
+
+    @Override
+    public void refresh() {
+        setValue(getValue());
     }
 
     public enum ValueDisplay {

@@ -100,7 +100,7 @@ public class ColumnRow<Value> extends Section implements
     private boolean selectable = false;
 
     /**
-     * Space between in row in pixels
+     * Space between each column in pixels
      */
     @Getter
     @Setter
