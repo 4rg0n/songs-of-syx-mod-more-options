@@ -74,6 +74,13 @@ public class JsonMapper {
             JsonTuple jsonTuple = (JsonTuple) json;
             // just rebuild the original value as string
             toMap = new JsonString(jsonTuple.getKey() + ":" + jsonTuple.getValue());
+        // Values may be read as
+        } else if (mapper instanceof StringMapper && json instanceof JsonLong) {
+            toMap = new JsonString(json.toString());
+        } else if (mapper instanceof StringMapper && json instanceof JsonDouble) {
+            toMap = new JsonString(json.toString());
+        } else if (mapper instanceof StringMapper && json instanceof JsonNull) {
+            toMap = new JsonString(json.toString());
         }
 
         try {
