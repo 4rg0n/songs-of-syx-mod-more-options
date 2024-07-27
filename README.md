@@ -12,6 +12,7 @@ Adds a menu with more options for the game:
 * Change the likings between your races
 * Game crash detection and backup mechanism
 
+![Enable Script](doc/img/enable_script.png)
 ![Button](doc/img/button.png)
 ![Stats Widget](doc/img/stats_widget.png)
 ![Sounds](doc/img/sounds.png)
