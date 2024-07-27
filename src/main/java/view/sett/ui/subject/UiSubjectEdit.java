@@ -1,7 +1,10 @@
 package view.sett.ui.subject;
 
 import com.github.argon.sos.moreoptions.game.ui.*;
+import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.util.Lists;
+import game.boosting.BOOSTABLES;
+import game.boosting.Boostable;
 import settlement.entity.humanoid.Humanoid;
 import settlement.stats.Induvidual;
 import settlement.stats.STATS;
@@ -27,7 +30,11 @@ public class UiSubjectEdit extends GuiSection {
         GHeader header = new GHeader("Edit: " + name);
         addDownC(0, header);
 
-        ColumnRow<Object> nameEdit = ColumnRow.builder()
+        List<ColumnRow<Integer>> settingRows = new ArrayList<>();
+        List<ColumnRow<Void>> propertyRows = new ArrayList<>();
+
+        // NAME
+        settingRows.add(ColumnRow.<Integer>builder()
             .column(Label.builder()
                 .name("Name")
                 .build())
@@ -37,51 +44,49 @@ public class UiSubjectEdit extends GuiSection {
                 .valueSupplier(() -> STATS.APPEARANCE().name(humanoid.indu()).toString())
                 .build())
             .margin(10)
-            .build();
-        addDownC(10, nameEdit);
-
-        List<ColumnRow<Integer>> rows = new ArrayList<>();
+            .build());
 
         // BATTLE
-        rows.add(header("Battle"));
-        rows.add(slider(STATS.BATTLE().basicTraining));
+        settingRows.add(header("Battle"));
+        settingRows.add(slider(STATS.BATTLE().basicTraining));
         Lists.fromGameLIST(STATS.BATTLE().TRAINING_ALL).stream()
             .map(statTraining -> statTraining.stat)
             .filter(stat -> stat.info() != null && stat.indu() != null)
-            .forEach(stat -> rows.add(slider(stat)));
+            .forEach(stat -> settingRows.add(slider(stat)));
+
+        propertyRows.add(header("Battle"));
+        propertyRows.addAll(properties(Lists.fromGameLIST(BOOSTABLES.BATTLE().all())));
 
         // NEEDS
-        rows.add(header("Needs"));
+        settingRows.add(header("Needs"));
         Lists.fromGameLIST(STATS.NEEDS().SNEEDS).stream()
             .map(StatsNeeds.StatNeed::stat)
             .filter(stat -> stat.info() != null && stat.indu() != null)
-            .forEach(stat -> rows.add(slider(stat)));
+            .forEach(stat -> settingRows.add(slider(stat)));
+
+        propertyRows.add(header("Needs"));
+        Lists.fromGameLIST(STATS.NEEDS().SNEEDS)
+            .forEach(need -> propertyRows.add(need(need)));
 
         // OTHER NEEDS
-        rows.add(header("Other Needs"));
+        settingRows.add(header("Other Needs"));
         Lists.fromGameLIST(STATS.NEEDS().OTHERS).stream()
             .filter(stat -> stat.info() != null && stat.indu() != null)
-            .forEach(stat -> rows.add(slider(stat)));
+            .forEach(stat -> settingRows.add(slider(stat)));
+
+        propertyRows.add(header("Other Needs"));
+        Lists.fromGameLIST(STATS.NEEDS().OTHERS)
+            .forEach(need -> propertyRows.add(need(need)));
 
         // EDUCATION
-        rows.add(header("Education"));
+        // FIXME EDUCATION wont be saved correctly
+        settingRows.add(header("Education"));
         Lists.fromGameLIST(STATS.EDUCATION().all()).stream()
             .filter(stat -> stat.info() != null && stat.indu() != null)
-            .forEach(stat -> rows.add(slider(stat)));
+            .forEach(stat -> settingRows.add(slider(stat)));
 
-        // WORK
-        rows.add(header("Work"));
-        Lists.fromGameLIST(STATS.WORK().all()).stream()
-            .filter(stat -> stat.info() != null && stat.indu() != null)
-            .forEach(stat -> rows.add(slider(stat)));
-
-        // NOBLE
-//        rows.add(header("Noble Personality"));
-//        Lists.fromGameLIST(BOOSTABLES.NOBLE().all()).stream()
-//            .map(booster -> booster)
-
-        Table<Integer> table = Table.<Integer>builder()
-            .rows(rows)
+        Table<Integer> settingsTable = Table.<Integer>builder()
+            .rows(settingRows)
             .displayHeight(500)
             .highlight(true)
             .evenOdd(true)
@@ -90,8 +95,60 @@ public class UiSubjectEdit extends GuiSection {
             .displaySearch(true)
             .build();
 
+        Table<Void> propertiesTable = Table.<Void>builder()
+            .rows(propertyRows)
+            .displayHeight(500)
+            .highlight(true)
+            .evenOdd(true)
+            .scrollable(true)
+            .displaySearch(true)
+            .build();
 
-        addDownC(10, table);
+        GuiSection section = new GuiSection();
+        section.addRight(0, settingsTable);
+        section.addRight(20, propertiesTable);
+
+        addDownC(10, section);
+    }
+
+    private ColumnRow<Void> need(StatsNeeds.StatNeed need) {
+        return ColumnRow.<Void>builder()
+            .column(UiUtil.toGuiSection(new NeedBox(humanoid, need)))
+            .build();
+    }
+
+    private ColumnRow<Void> need(STAT stat) {
+        return ColumnRow.<Void>builder()
+            .column(UiUtil.toGuiSection(new NeedBox(humanoid, stat)))
+            .build();
+    }
+
+    private List<ColumnRow<Void>> properties(List<Boostable> boostables) {
+        List<ColumnRow<Void>> rows = new ArrayList<>();
+        List<List<Boostable>> boostableChunks = Lists.chunk(boostables, 5);
+
+        for (List<Boostable> boostableChunk : boostableChunks) {
+            if (boostableChunk.isEmpty()) {
+                continue;
+            }
+
+            GuiSection row = new GuiSection();
+            List<String> searchTerms = new ArrayList<>();
+
+            for (Boostable boostable : boostableChunk) {
+                BoosterBox boosterBox = new BoosterBox(boostable, humanoid);
+                row.addRight(2, boosterBox);
+                searchTerms.add(boostable.name.toString());
+            }
+
+            ColumnRow<Void> columnRow = ColumnRow.<Void>builder()
+                .column(row)
+                .searchTerm(String.join(":", searchTerms))
+                .build();
+            rows.add(columnRow);
+        }
+
+        return rows;
     }
 
     private static <T> ColumnRow<T> header(String name) {
@@ -128,7 +185,6 @@ public class UiSubjectEdit extends GuiSection {
             stat.indu().min(humanoid.indu()),
             stat.indu().max(humanoid.indu()),
             () -> stat.indu().get(humanoid.indu()),
-            // fixme setting the stat, will not necessary influence any outcome calculations
             value -> stat.indu().set(humanoid.indu(), value)
         );
     }
@@ -140,7 +196,6 @@ public class UiSubjectEdit extends GuiSection {
             stat.min(humanoid.indu()),
             stat.max(humanoid.indu()),
             () -> stat.get(humanoid.indu()),
-            // fixme setting the stat, will not necessary influence any outcome calculations
             value -> stat.set(humanoid.indu(), value)
         );
     }
@@ -160,6 +215,9 @@ public class UiSubjectEdit extends GuiSection {
             .max(max)
             .min(min)
             .value(value)
+            .lockScroll(true)
+            .controls(true)
+            .input(true)
             .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
             .valueSupplier(valueSupplier)
             .valueConsumer(valueConsumer)
@@ -171,7 +229,7 @@ public class UiSubjectEdit extends GuiSection {
                 .description(description)
                 .build())
             .column(slider)
-            .margin(10)
+            .margin(20)
             .searchTerm(name)
             .value(value)
             .valueSupplier(valueSupplier)

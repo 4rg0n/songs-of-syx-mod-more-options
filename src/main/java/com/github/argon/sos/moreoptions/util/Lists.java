@@ -196,4 +196,19 @@ public class Lists {
 
         return copy;
     }
+
+    public static <T> List<List<T>> chunk(List<T> list, int chunkSize) {
+        int numOfChunks = (int) Math.ceil((double) list.size() / chunkSize);
+        List<List<T>> chunks = new ArrayList<>(numOfChunks);
+
+        for (int i = 0; i < numOfChunks; ++i) {
+            int offset = i * chunkSize;
+            int limit = Math.min(offset + chunkSize, list.size());
+
+            List<T> chunk = list.subList(offset, limit);
+            chunks.add(chunk);
+        }
+
+        return chunks;
+    }
 }
