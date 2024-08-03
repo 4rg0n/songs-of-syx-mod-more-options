@@ -1,10 +1,12 @@
 package menu;
 
+import com.github.argon.sos.moreoptions.util.Lists;
 import game.GAME;
 import game.VERSION;
 import init.C;
 import init.D;
 import init.sprite.UI.UI;
+import script.ScriptEngine;
 import snake2d.CORE;
 import snake2d.CORE_STATE;
 import snake2d.CORE_STATE.Constructor;
@@ -222,7 +224,13 @@ class ScMain implements SC{
 					
 					@Override
 					public CORE_STATE getState() {
-						new GAME();
+						// MODDED add forceInit() true scripts for scenario editor
+						String[] scripts = Lists.fromGameLIST(ScriptEngine.getAll()).stream()
+							.filter(scriptLoad -> scriptLoad.script.forceInit())
+							.map(scriptLoad -> scriptLoad.key)
+							.toArray(String[]::new);
+
+						new GAME(scripts);
 						CORE_STATE s = new VIEW();
 						
 						VIEW.world().editor.activate();
