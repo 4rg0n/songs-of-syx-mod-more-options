@@ -295,7 +295,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable,
         }
 
         if (valueDisplay != ValueDisplay.NONE) {
-            GuiSection section = new GuiSection();
+            GuiSection valueSection = new GuiSection();
             int maxValue = Math.max(Math.abs(in.min()), Math.abs(in.max()));
             String maxString = Integer.toString(maxValue);
             if (in.min() < 0) {
@@ -334,12 +334,11 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable,
 
             int valueWidth = UI.FONT().S.width(maxString, 0, maxString.length() - 1, 1.4);
 
-            section.body().setWidth(valueWidth);
-            body().setWidth(valueWidth);
-            section.body().setHeight(body().height());
+            valueSection.body().setWidth(valueWidth);
+            valueSection.body().setHeight(body().height());
 
-            section.addCentredX(valueText, 0);
-            addRight(5, section);
+            valueSection.addCentredX(valueText, 0);
+            addRight(5, valueSection);
         }
     }
 

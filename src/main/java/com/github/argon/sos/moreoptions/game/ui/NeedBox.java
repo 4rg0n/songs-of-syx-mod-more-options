@@ -23,7 +23,7 @@ public class NeedBox extends CLICKABLE.ClickableAbs {
     private final GText work = new GText(UI.FONT().S, 32);
 
     public NeedBox(Humanoid humanoid, StatsNeeds.StatNeed need) {
-        super(500, 32);
+        super(400, 32);
 
         this.humanoid = humanoid;
         this.need = need;
@@ -31,7 +31,7 @@ public class NeedBox extends CLICKABLE.ClickableAbs {
     }
 
     public NeedBox(Humanoid humanoid, STAT stat) {
-        super(500, 32);
+        super(400, 32);
 
         this.humanoid = humanoid;
         this.need = null;
@@ -60,7 +60,7 @@ public class NeedBox extends CLICKABLE.ClickableAbs {
         work.add(stat.info().name);
         work.lablify();
         work.renderCY(r, x1, body().cY());
-        x1+= 280;
+        x1+= 180;
 
         int i = stat.indu().get(humanoid.indu());
         double m = stat.indu().max(humanoid.indu());

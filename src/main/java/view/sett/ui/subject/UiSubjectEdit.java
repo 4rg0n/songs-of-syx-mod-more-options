@@ -5,6 +5,7 @@ import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.util.Lists;
 import game.boosting.BOOSTABLES;
 import game.boosting.Boostable;
+import init.sprite.UI.UI;
 import settlement.entity.humanoid.Humanoid;
 import settlement.stats.Induvidual;
 import settlement.stats.STATS;
@@ -30,8 +31,11 @@ public class UiSubjectEdit extends GuiSection {
         GHeader header = new GHeader("Edit: " + name);
         addDownC(0, header);
 
+        List<Boostable> boosters = Lists.fromGameLIST(BOOSTABLES.BATTLE().all());
+        boosters.add(BOOSTABLES.PHYSICS().STAMINA);
+        addDownC(15, boosters(boosters));
+
         List<ColumnRow<Integer>> settingRows = new ArrayList<>();
-        List<ColumnRow<Void>> propertyRows = new ArrayList<>();
 
         // NAME
         settingRows.add(ColumnRow.<Integer>builder()
@@ -48,46 +52,34 @@ public class UiSubjectEdit extends GuiSection {
 
         // BATTLE
         settingRows.add(header("Battle"));
-        settingRows.add(slider(STATS.BATTLE().basicTraining));
         Lists.fromGameLIST(STATS.BATTLE().TRAINING_ALL).stream()
             .map(statTraining -> statTraining.stat)
             .filter(stat -> stat.info() != null && stat.indu() != null)
-            .forEach(stat -> settingRows.add(slider(stat)));
-
-        propertyRows.add(header("Battle"));
-        propertyRows.addAll(properties(Lists.fromGameLIST(BOOSTABLES.BATTLE().all())));
+            .forEach(stat -> settingRows.add(slider(stat, Lists.of())));
 
         // NEEDS
         settingRows.add(header("Needs"));
         Lists.fromGameLIST(STATS.NEEDS().SNEEDS).stream()
-            .map(StatsNeeds.StatNeed::stat)
-            .filter(stat -> stat.info() != null && stat.indu() != null)
-            .forEach(stat -> settingRows.add(slider(stat)));
-
-        propertyRows.add(header("Needs"));
-        Lists.fromGameLIST(STATS.NEEDS().SNEEDS)
-            .forEach(need -> propertyRows.add(need(need)));
+            .filter(need -> need.stat().info() != null && need.stat().indu() != null)
+            .forEach(need -> settingRows.add(slider(need)));
 
         // OTHER NEEDS
-        settingRows.add(header("Other Needs"));
         Lists.fromGameLIST(STATS.NEEDS().OTHERS).stream()
             .filter(stat -> stat.info() != null && stat.indu() != null)
-            .forEach(stat -> settingRows.add(slider(stat)));
-
-        propertyRows.add(header("Other Needs"));
-        Lists.fromGameLIST(STATS.NEEDS().OTHERS)
-            .forEach(need -> propertyRows.add(need(need)));
+            .forEach(stat -> settingRows.add(slider(stat, Lists.of(
+                UiUtil.toGuiSection(new NeedBox(humanoid, stat))
+            ))));
 
         // EDUCATION
-        // FIXME EDUCATION wont be saved correctly
-        settingRows.add(header("Education"));
         Lists.fromGameLIST(STATS.EDUCATION().all()).stream()
             .filter(stat -> stat.info() != null && stat.indu() != null)
-            .forEach(stat -> settingRows.add(slider(stat)));
+            .forEach(stat -> settingRows.add(slider(stat, Lists.of(
+                UiUtil.toGuiSection(new StatBar(humanoid, stat))
+            ))));
 
         Table<Integer> settingsTable = Table.<Integer>builder()
             .rows(settingRows)
-            .displayHeight(500)
+            .displayHeight(600)
             .highlight(true)
             .evenOdd(true)
             .rowPadding(5)
@@ -95,20 +87,7 @@ public class UiSubjectEdit extends GuiSection {
             .displaySearch(true)
             .build();
 
-        Table<Void> propertiesTable = Table.<Void>builder()
-            .rows(propertyRows)
-            .displayHeight(500)
-            .highlight(true)
-            .evenOdd(true)
-            .scrollable(true)
-            .displaySearch(true)
-            .build();
-
-        GuiSection section = new GuiSection();
-        section.addRight(0, settingsTable);
-        section.addRight(20, propertiesTable);
-
-        addDownC(10, section);
+        addDownC(10, settingsTable);
     }
 
     private ColumnRow<Void> need(StatsNeeds.StatNeed need) {
@@ -123,9 +102,9 @@ public class UiSubjectEdit extends GuiSection {
             .build();
     }
 
-    private List<ColumnRow<Void>> properties(List<Boostable> boostables) {
-        List<ColumnRow<Void>> rows = new ArrayList<>();
-        List<List<Boostable>> boostableChunks = Lists.chunk(boostables, 5);
+    private GuiSection boosters(List<Boostable> boostables) {
+        GuiSection section = new GuiSection();
+        List<List<Boostable>> boostableChunks = Lists.chunk(boostables, 8);
 
         for (List<Boostable> boostableChunk : boostableChunks) {
             if (boostableChunk.isEmpty()) {
@@ -133,31 +112,25 @@ public class UiSubjectEdit extends GuiSection {
             }
 
             GuiSection row = new GuiSection();
-            List<String> searchTerms = new ArrayList<>();
-
             for (Boostable boostable : boostableChunk) {
                 BoosterBox boosterBox = new BoosterBox(boostable, humanoid);
                 row.addRight(2, boosterBox);
-                searchTerms.add(boostable.name.toString());
             }
 
-            ColumnRow<Void> columnRow = ColumnRow.<Void>builder()
-                .column(row)
-                .searchTerm(String.join(":", searchTerms))
-                .build();
-            rows.add(columnRow);
+            section.addDown(0, row);
         }
 
-        return rows;
+        return section;
     }
 
     private static <T> ColumnRow<T> header(String name) {
-        ColumnRow<T> row = ColumnRow.<T>builder()
-            .column(new GHeader(name))
+        GuiSection header = UiUtil.toGuiSection(new GHeader(name));
+        header.pad(0, 20);
+
+        return ColumnRow.<T>builder()
+            .column(header)
             .isHeader(true)
             .build();
-        row.pad(5);
-        return row;
     }
 
 //    private ColumnRow<Integer> slider(Boostable boostable) {
@@ -178,25 +151,42 @@ public class UiSubjectEdit extends GuiSection {
 //        );
 //    }
 
-    private ColumnRow<Integer> slider(STAT stat) {
+    private ColumnRow<Integer> slider(StatsNeeds.StatNeed need) {
         return slider(
-            stat.info().name.toString(),
-            stat.info().desc.toString(),
-            stat.indu().min(humanoid.indu()),
-            stat.indu().max(humanoid.indu()),
-            () -> stat.indu().get(humanoid.indu()),
-            value -> stat.indu().set(humanoid.indu(), value)
+            need.stat().info().name.toString(),
+            need.stat().info().desc.toString(),
+            need.stat().indu().min(humanoid.indu()),
+            need.stat().indu().max(humanoid.indu()),
+            () -> need.stat().indu().get(humanoid.indu()),
+            value -> need.stat().indu().set(humanoid.indu(), value),
+            Lists.of(
+                UiUtil.toGuiSection(new NeedBox(humanoid, need)),
+                UiUtil.toGuiSection(new StatBar(humanoid, need.stat()))
+            )
         );
     }
 
-    private ColumnRow<Integer> slider(INT_O.INT_OE<Induvidual> stat) {
+    private ColumnRow<Integer> slider(STAT stat, List<GuiSection> extraColumns) {
+        return slider(
+            stat.info().name.toString(),
+            stat.key() + ": " + stat.info().desc.toString(),
+            stat.indu().min(humanoid.indu()),
+            stat.indu().max(humanoid.indu()),
+            () -> stat.indu().get(humanoid.indu()),
+            value -> stat.indu().set(humanoid.indu(), value),
+            extraColumns
+        );
+    }
+
+    private ColumnRow<Integer> slider(INT_O.INT_OE<Induvidual> stat, List<GuiSection> extraColumns) {
         return slider(
             stat.info().name.toString(),
             stat.info().desc.toString(),
             stat.min(humanoid.indu()),
             stat.max(humanoid.indu()),
             () -> stat.get(humanoid.indu()),
-            value -> stat.set(humanoid.indu(), value)
+            value -> stat.set(humanoid.indu(), value),
+            extraColumns
         );
     }
 
@@ -206,7 +196,8 @@ public class UiSubjectEdit extends GuiSection {
         int min,
         int max,
         Supplier<Integer> valueSupplier,
-        Consumer<Integer> valueConsumer
+        Consumer<Integer> valueConsumer,
+        List<GuiSection> extraColumns
     ) {
         int value = valueSupplier.get();
 
@@ -223,18 +214,22 @@ public class UiSubjectEdit extends GuiSection {
             .valueConsumer(valueConsumer)
             .build();
 
-        return ColumnRow.<Integer>builder()
+        ColumnRow.ColumnRowBuilder<Integer> columnRowBuilder = ColumnRow.<Integer>builder()
             .column(Label.builder()
                 .name(name)
+                .font(UI.FONT().M)
                 .description(description)
                 .build())
             .column(slider)
-            .margin(20)
+            .margin(10)
             .searchTerm(name)
             .value(value)
             .valueSupplier(valueSupplier)
-            .valueConsumer(valueConsumer)
-            .build();
+            .valueConsumer(valueConsumer);
+
+        extraColumns.forEach(columnRowBuilder::column);
+
+        return columnRowBuilder.build();
     }
 
 
