@@ -177,7 +177,7 @@ public class GameRaceApi implements Phases {
      */
     public void setLiking(Race race, Race otherRace, double liking) {
         try {
-            ReflectionUtil.getDeclaredField("others", race.pref())
+            ReflectionUtil.getDeclaredFieldValue("others", race.pref())
                 .map(o -> (double[]) o)
                 .ifPresent(racePrefs -> {
                     Integer otherRaceIdx = raceIndexMap.get(otherRace.key);
