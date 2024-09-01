@@ -8,11 +8,11 @@ import com.github.argon.sos.moreoptions.json.element.JsonElement;
 public class JsonEWriter extends AbstractJsonWriter {
 
     public JsonEWriter() {
-        super(true, 0);
+        this(0);
     }
 
     public JsonEWriter(int indent) {
-        super(true, indent);
+        super(false, false, true, indent);
     }
 
     @Override

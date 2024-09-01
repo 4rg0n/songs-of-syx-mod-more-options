@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config.json.v4;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import lombok.*;
@@ -13,6 +14,7 @@ import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config
 @Builder
 @EqualsAndHashCode
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonMoreOptionsV4Config {
     @Builder.Default
