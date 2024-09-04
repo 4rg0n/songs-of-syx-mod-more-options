@@ -17,6 +17,8 @@ import com.github.argon.sos.moreoptions.util.Clipboard;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+import java.net.URI;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -93,5 +95,17 @@ public abstract class AbstractUiController<Element> implements Phases {
     protected void undo(MoreOptionsPanel moreOptionsPanel) {
         MoreOptionsV4Config currentConfig = configStore.getCurrentConfig();
         moreOptionsPanel.setValue(currentConfig);
+    }
+
+    protected void openWebsite(String url) {
+        Desktop desktop = java.awt.Desktop.getDesktop();
+
+        try {
+            URI uri = new URI(url);
+            desktop.browse(uri);
+        } catch (Exception e) {
+            notificator.notifyError(i18n.t("notification.website.not.open"));
+            log.warn("Could not open website %s", url, e);
+        }
     }
 }

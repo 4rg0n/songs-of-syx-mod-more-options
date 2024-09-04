@@ -5,7 +5,7 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.game.AbstractScript;
 import com.github.argon.sos.moreoptions.game.json.GameJsonStore;
-import com.github.argon.sos.moreoptions.game.ui.Modal;
+import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.i18n.I18nMessages;
 import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -84,7 +84,7 @@ public final class MoreOptionsScript extends AbstractScript {
 	public void onViewSetup() {
 		super.onViewSetup();
 
-        Modal<BackupDialog> backupDialog = uiConfig.getBackupDialog();
+        Window<BackupDialog> backupDialog = uiConfig.getBackupDialog();
         // show backup dialog?
         if (backupDialog != null) {
             backupDialog.show();

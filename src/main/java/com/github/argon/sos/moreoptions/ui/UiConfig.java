@@ -5,7 +5,7 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
-import com.github.argon.sos.moreoptions.game.ui.Modal;
+import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.i18n.I18nMessages;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -95,7 +95,7 @@ public class UiConfig implements Phases {
     private FullWindow<MoreOptionsPanel> backupMoreOptionsModal;
     @Getter
     @Nullable
-    private Modal<BackupDialog> backupDialog;
+    private Window<BackupDialog> backupDialog;
 
     @Override
     public void initModCreateInstance() {
@@ -120,7 +120,7 @@ public class UiConfig implements Phases {
 
         // create backup configuration dialog if needed
         configStore.getBackup().ifPresent(backupConfig -> {
-            backupDialog = new Modal<>(MOD_INFO.name.toString(), new BackupDialog());
+            backupDialog = new Window<>(MOD_INFO.name.toString(), new BackupDialog(), true);
             backupMoreOptionsModal = uiFactory.buildMoreOptionsFullScreen(
                 MOD_INFO.name + " " + i18n.t("MoreOptionsPanel.backup.title.suffix"),
                 backupConfig);
@@ -214,7 +214,7 @@ public class UiConfig implements Phases {
     }
 
     public void initBackupControls(
-        Modal<BackupDialog> backupDialog,
+        Window<BackupDialog> backupDialog,
         FullWindow<MoreOptionsPanel> backupMoreOptionsModal,
         MoreOptionsPanel moreOptionsPanel
     ) {

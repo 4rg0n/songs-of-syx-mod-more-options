@@ -46,30 +46,36 @@ public class Window<Section extends GuiSection> extends Interrupter implements
     private int showSeconds = 0;
 
     private boolean hide = false;
+    private boolean isModal = false;
 
     @Setter
     @Accessors(fluent = true, chain = false)
-    protected Action<Window<Section>> showAction = o -> {};
+    protected VoidAction showAction = () -> {};
     @Setter
     @Accessors(fluent = true, chain = false)
-    protected Action<Window<Section>> hideAction = o -> {};
+    protected VoidAction hideAction = () -> {};
     @Setter
     @Accessors(fluent = true, chain = false)
-    protected Action<Window<Section>> refreshAction = o -> {};
+    protected VoidAction refreshAction = () -> {};
     @Setter
     @Accessors(fluent = true, chain = false)
-    protected BiAction<Window<Section>, Float> renderAction = (o1, o2) -> {};
+    protected Action<Float> renderAction = o -> {};
+
+    public Window(@Nullable String title, Section section) {
+        this(title, section, false);
+    }
 
     /**
      * @param title of the window
      * @param section to display in the window as content
      */
-    public Window(@Nullable String title, Section section) {
+    public Window(@Nullable String title, Section section, boolean isModal) {
         this.section = section;
         this.panel = new GPanel();
         this.panel.setTitle(title);
         this.panel.setCloseAction(this::hide);
         this.panelSection = new GuiSection();
+        this.isModal = isModal;
 
         panelSection.add(panel);
         panelSection.add(section);
@@ -82,6 +88,10 @@ public class Window<Section extends GuiSection> extends Interrupter implements
             section.body().width(),
             section.body().height()
         );
+
+        if (isModal) {
+            center();
+        }
     }
 
     /**
@@ -105,7 +115,7 @@ public class Window<Section extends GuiSection> extends Interrupter implements
 
     public void hide() {
         hide = true;
-        hideAction.accept(this);
+        hideAction.accept();
         super.hide();
     }
 
@@ -139,19 +149,19 @@ public class Window<Section extends GuiSection> extends Interrupter implements
         }
 
         panelSection.render(renderer, v);
-        renderAction.accept(this, v);
-        return true;
+        renderAction.accept(v);
+        return !isModal;
     }
 
     @Override
     public void refresh() {
-       refreshAction.accept(this);
+       refreshAction.accept();
     }
 
     public void show() {
         hide = false;
         show(VIEW.inters().manager);
-        showAction.accept(this);
+        showAction.accept();
     }
 
     @Override

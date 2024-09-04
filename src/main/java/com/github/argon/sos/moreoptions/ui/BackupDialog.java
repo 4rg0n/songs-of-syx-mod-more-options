@@ -36,19 +36,20 @@ public class BackupDialog extends GuiSection {
         addDownC(10, new HorizontalLine(text2.width(), 14, 1));
         addDownC(10, buttons);
     }
+
     private GuiSection buttons() {
         GuiSection section = new GuiSection();
 
-        this.applyButton = new Button("Apply", COLOR.WHITE15,
-            "Apply the loaded backup. This could crash the game again.");
+        this.applyButton = new Button(i18n.t("BackupDialog.button.apply.name"), COLOR.WHITE15,
+            i18n.t("BackupDialog.button.apply.desc"));
         section.addRight(0, applyButton);
 
-        this.editButton = new Button("Edit", COLOR.WHITE15,
-            "Edit the loaded backup before applying it.");
+        this.editButton = new Button(i18n.t("BackupDialog.button.edit.name"), COLOR.WHITE15,
+            i18n.t("BackupDialog.button.edit.desc"));
         section.addRight(20, editButton);
 
-        this.discardButton = new Button("Discard", COLOR.WHITE15,
-            "Delete the the loaded backup and use default configs.");
+        this.discardButton = new Button(i18n.t("BackupDialog.button.discard.name"), COLOR.WHITE15,
+            i18n.t("BackupDialog.button.discard.desc"));
         section.addRight(20, discardButton);
 
         return section;

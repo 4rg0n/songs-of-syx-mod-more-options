@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
-import com.github.argon.sos.moreoptions.game.ui.Modal;
+import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
@@ -16,14 +16,14 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
 
     @Nullable
     private final MoreOptionsV4Config backupConfig;
-    private final Modal<BackupDialog> backupDialog;
+    private final Window<BackupDialog> backupDialog;
     private final MoreOptionsPanel backupMoreOptionsPanel;
     private final MoreOptionsPanel moreOptionsPanel;
     private final FullWindow<MoreOptionsPanel> backupMoreOptionsWindow;
 
     public BackupPanelController(
         FullWindow<MoreOptionsPanel> backupMoreOptionsWindow,
-        Modal<BackupDialog> backupDialog,
+        Window<BackupDialog> backupDialog,
         MoreOptionsPanel moreOptionsPanel
     ) {
         super(backupMoreOptionsWindow.getSection());

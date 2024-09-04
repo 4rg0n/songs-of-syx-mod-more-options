@@ -11,6 +11,7 @@ import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
+import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogController;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
@@ -175,5 +176,19 @@ public class UiFactory {
         Window<UiShowroom> uiShowRoom = new Window<>("UI Showroom", new UiShowroom());
         uiShowRoom.center();
         return uiShowRoom;
+    }
+
+    public static Window<ErrorDialog> buildErrorDialog(Throwable exception) {
+        Window<ErrorDialog> errorDialog = new Window<>(
+            i18n.t("ErrorDialog.title"),
+            new ErrorDialog(exception),
+            true);
+
+        // FIXME this is dirty: controller should not live here; url shouldn't be here ^^
+        new ErrorDialogController(
+            errorDialog,
+            "https://steamcommunity.com/workshop/filedetails/discussion/3044071344/3881597531957490419/");
+
+        return errorDialog;
     }
 }
