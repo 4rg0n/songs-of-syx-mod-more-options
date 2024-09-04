@@ -1,0 +1,8 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.github.argon.sos.moreoptions.aspect.PresentErrorAspect"/>
+        <weaver options="-verbose -showWeaveInfo">
+            <include within="com.github.argon.sos.moreoptions.*"/>
+        </weaver>
+    </aspects>
+</aspectj>
