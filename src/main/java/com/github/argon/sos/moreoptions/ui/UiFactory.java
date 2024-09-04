@@ -11,6 +11,8 @@ import com.github.argon.sos.moreoptions.log.Level;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
+import com.github.argon.sos.moreoptions.properties.ModProperties;
+import com.github.argon.sos.moreoptions.properties.PropertiesStore;
 import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogController;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
@@ -46,6 +48,7 @@ public class UiFactory {
     private final static UiFactory instance = new UiFactory(
         GameApis.getInstance(),
         ConfigStore.getInstance(),
+        PropertiesStore.getInstance(),
         MetricExporter.getInstance(),
         UiMapper.getInstance()
     );
@@ -54,6 +57,7 @@ public class UiFactory {
 
     private final GameApis gameApis;
     private final ConfigStore configStore;
+    private final PropertiesStore propertiesStore;
     private final MetricExporter metricExporter;
     private final UiMapper uiMapper;
 
@@ -178,16 +182,18 @@ public class UiFactory {
         return uiShowRoom;
     }
 
-    public static Window<ErrorDialog> buildErrorDialog(Throwable exception) {
+    public Window<ErrorDialog> buildErrorDialog(Throwable exception) {
         Window<ErrorDialog> errorDialog = new Window<>(
             i18n.t("ErrorDialog.title"),
             new ErrorDialog(exception),
             true);
 
-        // FIXME this is dirty: controller should not live here; url shouldn't be here ^^
-        new ErrorDialogController(
-            errorDialog,
-            "https://steamcommunity.com/workshop/filedetails/discussion/3044071344/3881597531957490419/");
+        String errorReportUrl = propertiesStore.getModProperties()
+            .map(ModProperties::getErrorReportUrl)
+            .orElse("https://example.com/");
+
+        // add functionality to error dialog
+        new ErrorDialogController(errorDialog, errorReportUrl);
 
         return errorDialog;
     }

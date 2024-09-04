@@ -20,7 +20,7 @@ public class OnErrorShowDialogAspect {
         try {
             return pjp.proceed();
         } catch (Exception e) {
-            Window<ErrorDialog> errorDialog = UiFactory.buildErrorDialog(e);
+            Window<ErrorDialog> errorDialog = UiFactory.getInstance().buildErrorDialog(e);
             errorDialog.show();
             throw e;
         }

@@ -35,7 +35,7 @@ public class Logger {
 
     public Logger(Class<?> clazz, Level level) {
         this.name = clazz.getCanonicalName();
-        this.shortName = StringUtil.shortenName(clazz);
+        this.shortName = StringUtil.shortenClassName(clazz);
         this.displayName = StringUtil.cutOrFill(shortName, NAME_DISPLAY_MAX_LENGTH, false);
         this.level = level;
         this.writer = new StdOut(PREFIX_MOD, LOG_MSG_FORMAT, displayName);

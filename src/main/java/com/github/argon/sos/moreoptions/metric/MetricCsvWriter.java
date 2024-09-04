@@ -121,7 +121,7 @@ public class MetricCsvWriter {
             return escapedData;
         }
 
-        return StringUtil.stringifyValue(data);
+        return StringUtil.stringify(data);
     }
 
     public List<String> headersStats(Metric metric) {

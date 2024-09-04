@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.sprite.text.Str;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -76,13 +78,13 @@ public class StringUtil {
 
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];
-            stringArgs[i] = stringifyValue(arg);
+            stringArgs[i] = stringify(arg);
         }
 
         return stringArgs;
     }
 
-    public static String stringifyValue(@Nullable Object arg) {
+    public static String stringify(@Nullable Object arg) {
         if (arg == null) {
             return "null";
         } else if (arg instanceof String) {
@@ -100,7 +102,15 @@ public class StringUtil {
         }
     }
 
-    public static String shortenName(Class<?> clazz) {
+    public static String stringify(Throwable throwable) {
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        throwable.printStackTrace(printWriter);
+
+        return stringWriter.toString();
+    }
+
+    public static String shortenClassName(Class<?> clazz) {
         return shortenPackageName(clazz.getPackage().getName()) + '.' + clazz.getSimpleName();
     }
 
@@ -182,7 +192,7 @@ public class StringUtil {
         Str tmp = Str.TMP.clear().add(template);
         for (int i = 0, argsLength = args.length; i < argsLength; i++) {
             Object arg = args[i];
-            tmp.insert(i, stringifyValue(arg));
+            tmp.insert(i, stringify(arg));
         }
 
         return tmp.toString();

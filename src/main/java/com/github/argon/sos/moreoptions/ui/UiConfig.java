@@ -177,6 +177,7 @@ public class UiConfig implements Phases {
     public void initDebugControls() {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":uiShowRoom", () -> UiFactory.buildUiShowRoom().show());
+        IDebugPanel.add(MOD_INFO.name + ":errorDialog", () -> UiFactory.getInstance().buildErrorDialog(new RuntimeException("Test Error Message")).show());
         IDebugPanel.add(MOD_INFO.name + ":phases:" + Phase.ON_GAME_SAVE_LOADED, () -> PhaseManager.getInstance().onGameSaveReloaded());
         IDebugPanel.add(MOD_INFO.name + ":fullScreen", () -> UiFactory.getInstance().buildMoreOptionsFullScreen("More Options", configStore.getDefaultConfig()).show());
         IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());

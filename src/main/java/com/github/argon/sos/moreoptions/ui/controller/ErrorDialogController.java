@@ -4,6 +4,7 @@ import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.ErrorDialog;
+import com.github.argon.sos.moreoptions.util.StringUtil;
 
 public class ErrorDialogController extends AbstractUiController<ErrorDialog> {
     private final static Logger log = Loggers.getLogger(ErrorDialogController.class);
@@ -29,8 +30,10 @@ public class ErrorDialogController extends AbstractUiController<ErrorDialog> {
     }
 
     public void copy() {
+        Throwable exception = errorDialog.getSection().getException();
+
         copyToClipboard(
-            errorDialog.getSection().getException().toString(),
+            StringUtil.stringify(exception),
             i18n.t("notification.error.copy"),
             i18n.t("notification.error.not.copy")
         );
