@@ -407,11 +407,15 @@ public class JsonConfigStore {
      * @return whether deletion of all backups was successful
      */
     public boolean deleteBackups(boolean removeFromStore) {
-        Boolean success = backupConfigStore.keySet().stream()
-            .map(configClass -> deleteBackup(configClass, removeFromStore))
-            .filter(aBoolean -> !aBoolean)
-            .findFirst()
-            .orElse(true);
+        boolean success = false;
+        HashSet<Class<?>> configClasses = new HashSet<>(backupConfigStore.keySet());
+
+        for (Class<?> configClass : configClasses) {
+            success = deleteBackup(configClass, removeFromStore);
+            if (!success) {
+                break;
+            }
+        }
 
         log.debug("Deleted backups: %s", success);
         return success;

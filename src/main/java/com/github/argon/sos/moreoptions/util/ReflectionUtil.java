@@ -42,10 +42,10 @@ public class ReflectionUtil {
         field.set(instance, newValue);
     }
 
-    public static <T> Optional<T> getDeclaredField(String fieldName, Object instance)  {
+    public static Optional<Field> getDeclaredField(String fieldName, Object instance)  {
         try {
             Field field = instance.getClass().getDeclaredField(fieldName);
-            return getDeclaredFieldValue(field, instance);
+            return Optional.of(field);
         } catch (NoSuchFieldException e) {
             log.error("Field %s does not exist", fieldName, e);
             return Optional.empty();

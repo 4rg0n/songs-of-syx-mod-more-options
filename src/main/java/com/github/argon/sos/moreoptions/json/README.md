@@ -31,6 +31,7 @@ TECH: [
 
 ```java
 
+import com.github.argon.sos.moreoptions.json.JasonService;
 import com.github.argon.sos.moreoptions.json.JsonService;
 import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.json.Json;
@@ -80,7 +81,7 @@ public class MyJsonService {
 
     public Optional<Race> readHumanRace2() {
         // the JsonService can do the heavy lifting for you =)
-        return JsonService.getInstance().load(PATHS.RACE().init.get("HUMAN"), Race.class);
+        return JasonService.getInstance().load(PATHS.RACE().init.get("HUMAN"), Race.class);
     }
 
     public void writeHumanRace2() {
@@ -119,7 +120,7 @@ public class MyJsonService {
             .build();
 
         // the JsonService can do the heavy lifting for you =)
-        JsonService.getInstance().save(PATHS.RACE().init.get("HUMAN"), race);
+        JasonService.getInstance().save(PATHS.RACE().init.get("HUMAN"), race);
     }
 }
 ```
@@ -147,7 +148,7 @@ TECH: [
 ```java
 
 import com.github.argon.sos.moreoptions.json.JsonPath;
-import com.github.argon.sos.moreoptions.json.JsonService;
+import com.github.argon.sos.moreoptions.json.JasonService;
 import com.github.argon.sos.moreoptions.json.element.JsonLong;
 
 import java.util.Optional;
@@ -155,7 +156,7 @@ import java.util.Optional;
 public class MyJsonExtractor {
     public Long readHumanRaceWidth() {
         // read the games init/race/HUMAN.txt file as Json
-        return JsonService.getInstance().load(PATHS.RACE().init.get("HUMAN"))
+        return JasonService.getInstance().load(PATHS.RACE().init.get("HUMAN"))
             // extract the json element via JsonPath when present
             .flatMap(json -> {
                 JsonPath jsonPath = JsonPath.get("PROPERTIES.WIDTH");
@@ -170,17 +171,17 @@ public class MyJsonExtractor {
 
     public void writeHumanRaceWidth(Long width) {
         // read the games init/race/HUMAN.txt file as Json
-        JsonService.getInstance().load(PATHS.RACE().init.get("HUMAN"))
+        JasonService.getInstance().load(PATHS.RACE().init.get("HUMAN"))
             .ifPresent(json -> {
                 // put the Long value into the fitting JsonElement
                 JsonLong jsonLong = new JsonLong(width);
-                
+
                 // insert the value into the read json object
                 JsonPath jsonPath = JsonPath.get("PROPERTIES.WIDTH");
                 jsonPath.put(json, jsonLong);
-                
+
                 // save the new changed object into init/race/HUMAN.txt json file
-                JsonService.getInstance().save(PATHS.RACE().init.get("HUMAN"), json);
+                JasonService.getInstance().save(PATHS.RACE().init.get("HUMAN"), json);
             });
     }
 }

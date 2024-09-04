@@ -83,17 +83,17 @@ public class GameUiApi implements Phases {
     }
 
     public <T> Optional<T> findUIElementInSettlementView(Class<T> clazz) {
-        return ReflectionUtil.getDeclaredField("inters", settlement().uiManager)
+        return ReflectionUtil.getDeclaredFieldValue("inters", settlement().uiManager)
                 .flatMap(inters -> extractFromIterable((Iterable<?>) inters, clazz));
     }
 
     public <T> Optional<T> findUIElementInWorldView(Class<T> clazz) {
-        return ReflectionUtil.getDeclaredField("inters", world().uiManager)
+        return ReflectionUtil.getDeclaredFieldValue("inters", world().uiManager)
             .flatMap(inters -> extractFromIterable((Iterable<?>) inters, clazz));
     }
 
     public <T> Optional<T> findUIElementInBattleView(Class<T> clazz) {
-        return ReflectionUtil.getDeclaredField("inters", battle().uiManager)
+        return ReflectionUtil.getDeclaredFieldValue("inters", battle().uiManager)
             .flatMap(inters -> extractFromIterable((Iterable<?>) inters, clazz));
     }
 
@@ -136,7 +136,7 @@ public class GameUiApi implements Phases {
 
         try {
             object = findUIElementInWorldView(UIPanelTop.class)
-                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
+                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredFieldValue("right", uiPanelTop))
                 .orElse(null);
         } catch (Exception e) {
             throw new ApiException("Could not inject ui element into World UIPanelTop#right", e);
@@ -156,7 +156,7 @@ public class GameUiApi implements Phases {
 
         try {
             object = findUIElementInSettlementView(UIPanelTop.class)
-                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
+                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredFieldValue("right", uiPanelTop))
                 .orElse(null);
         } catch (Exception e) {
             throw new ApiException("Could not inject ui element into Settlement UIPanelTop#right", e);
@@ -176,7 +176,7 @@ public class GameUiApi implements Phases {
 
         try {
             object = findUIElementInBattleView(UIPanelTop.class)
-                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredField("right", uiPanelTop))
+                .flatMap(uiPanelTop -> ReflectionUtil.getDeclaredFieldValue("right", uiPanelTop))
                 .orElse(null);
         } catch (Exception e) {
             throw new ApiException("Could not inject ui element into Battle UIPanelTop#right", e);

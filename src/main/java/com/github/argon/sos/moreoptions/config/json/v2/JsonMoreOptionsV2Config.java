@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config.json.v2;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
 import com.github.argon.sos.moreoptions.config.domain.Range;
@@ -14,6 +15,7 @@ import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config
 @Builder
 @EqualsAndHashCode
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonMoreOptionsV2Config {
     @Builder.Default

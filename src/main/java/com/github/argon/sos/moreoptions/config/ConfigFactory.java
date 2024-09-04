@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.config.json.JsonConfigStore;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
-import com.github.argon.sos.moreoptions.json.JsonService;
+import com.github.argon.sos.moreoptions.json.JacksonService;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonMoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonRacesV2Config;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonBoostersV3Config;
@@ -25,14 +25,13 @@ public class ConfigFactory implements Phases {
     @Getter(lazy = true)
     private final static ConfigFactory instance = new ConfigFactory(
         GameSaveApi.getInstance(),
-        JsonService.getInstance(),
+        JacksonService.getInstance(),
         FileService.getInstance()
     );
 
     private final GameSaveApi gameSaveApi;
-    private final JsonService jsonService;
+    private final JacksonService jsonService;
     private final FileService fileService;
-
 
     public JsonConfigStore newJsonConfigStoreV2() {
         // bind older v2 config classes for backwards compatibility

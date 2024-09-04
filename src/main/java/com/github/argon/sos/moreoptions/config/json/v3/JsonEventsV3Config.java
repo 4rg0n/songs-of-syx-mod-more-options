@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config.json.v3;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import lombok.*;
@@ -11,6 +12,7 @@ import java.util.Map;
 @Builder
 @EqualsAndHashCode
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonEventsV3Config {
     @Builder.Default
