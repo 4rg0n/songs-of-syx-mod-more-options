@@ -67,7 +67,7 @@ public class FilesTab<Tab extends AbstractTab> extends AbstractTab {
 
                 Tab tab = tabMap.get(fileNode.getPath().get());
 
-                Section section = UiUtil.toSection(SPRITES.icons().m.job_awake);
+                Section section = UiUtil.toSection(SPRITES.icons().m.cancel);
                 section.hoverInfoSet("Settings changed.");
                 // only show when values has changed
                 section.renderAction(ds -> {

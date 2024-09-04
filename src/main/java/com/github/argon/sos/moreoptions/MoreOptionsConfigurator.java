@@ -196,7 +196,7 @@ public class MoreOptionsConfigurator implements Phases {
     public boolean applyEventsConfig(EventsConfig eventsConfig) {
         try {
             eventsConfig.getChance().forEach((key, range) -> {
-                Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChance();
+                Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChances();
 
                 if (eventsChance.containsKey(key)) {
                     log.trace("Setting %s chance to %s%%", key, range.getValue());

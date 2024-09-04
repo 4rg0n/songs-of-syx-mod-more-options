@@ -6,6 +6,7 @@ import game.faction.Faction;
 import game.faction.diplomacy.DIP;
 import game.faction.npc.FactionNPC;
 import game.faction.royalty.Royalty;
+import game.faction.royalty.opinion.ROPINIONS;
 import init.C;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
@@ -16,15 +17,14 @@ import settlement.stats.STATS;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.color.OPACITY;
-import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GUI_BOX;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sets.ArrayList;
 import snake2d.util.sets.Tree;
+import snake2d.util.sprite.SPRITE;
 import snake2d.util.sprite.text.StringInputSprite;
-import util.colors.GCOLOR;
 import util.data.DOUBLE;
 import util.data.GETTER;
 import util.data.GETTER.GETTER_IMP;
@@ -38,8 +38,6 @@ import util.gui.table.GTableBuilder.GRowBuilder;
 import util.info.GFORMAT;
 import view.main.VIEW;
 import world.WORLD;
-import world.WorldMinimap;
-import world.map.regions.Region;
 import world.region.RD;
 
 public class FactionList extends GuiSection {
@@ -67,7 +65,7 @@ public class FactionList extends GuiSection {
 		private int value(Faction f) {
 			if (DIP.WAR().is(FACTIONS.player(), f))
 				return 0+f.index();
-			if (DIP.TRADE().is(FACTIONS.player(), f))
+			if (DIP.get(FACTIONS.player(), f).trades)
 				return FACTIONS.MAX+f.index();
 			if (RD.DIST().reachable(f))
 				return FACTIONS.MAX*2+f.index();
@@ -83,55 +81,6 @@ public class FactionList extends GuiSection {
 		this.getter = getter;
 		// default player
 		getter.set(FACTIONS.player());
-
-		ClickableAbs minimap = new ClickableAbs(WorldMinimap.WIDTH + 6, WorldMinimap.HEIGHT + 6) {
-
-			private Faction hf;
-
-			@Override
-			protected void render(SPRITE_RENDERER r, float ds, boolean isActive, boolean isSelected, boolean isHovered) {
-				GCOLOR.UI().borderH(r, body, 0);
-				WORLD.MINIMAP().render(r, body().x1() + 3, body.y1() + 3);
-			}
-
-			@Override
-			public boolean hover(COORDINATE mCoo) {
-				hf = null;
-				if (super.hover(mCoo)) {
-					int x = mCoo.x() - body.x1() - 3;
-					int y = mCoo.y() - body.y1() - 3;
-					x = (WORLD.TWIDTH() * x) / WorldMinimap.WIDTH;
-					y = (WORLD.THEIGHT() * y) / WorldMinimap.HEIGHT;
-					if (WORLD.TBOUNDS().holdsPoint(x, y)) {
-						Region reg = WORLD.REGIONS().map.get(x, y);
-						if (reg != null && reg.faction() != null) {
-							hf = reg.faction();
-							WORLD.MINIMAP().hilight(hf);
-						}
-					}
-					return true;
-				}
-				return false;
-			}
-
-			@Override
-			public void hoverInfoGet(GUI_BOX text) {
-				if (hf != null) {
-					VIEW.UI().factions.hover(text, hf);
-
-				}
-			}
-
-			@Override
-			protected void clickA() {
-				if (hf != null && hf instanceof FactionNPC) {
-					getter.set((FactionNPC) hf);
-					builder.set(sorted.indexOf(getter.get()));
-				}
-				super.clickA();
-			}
-
-		};
 
 		filter.placeHolder(Dic.¤¤Search);
 		Input search = new Input(filter);
@@ -165,12 +114,11 @@ public class FactionList extends GuiSection {
 
 
 		GuiSection factionList = builder.createHeight(
-			HEIGHT - 40 - minimap.body().height() - search.body.height() - playerButton.body.height(),
+			HEIGHT - 40 - search.body.height() - playerButton.body.height(),
 			false);
 
 		playerButton.body().setWidth(factionList.body().width());
 
-		addDownC(0, minimap);
 		addDownC(8, search);
 		addDownC(16, playerButton);
 		addDownC(16, factionList);
@@ -216,7 +164,7 @@ public class FactionList extends GuiSection {
 					int x1 = body().x1()+Icon.L+Icon.L/2;
 					int y1 = body().y1()+16;
 					STATS.APPEARANCE().portraitRender(r, ro.induvidual, x1, y1, 1);
-					ro.induvidual.race().appearance().crown.all().get(0).renderScaled(r, x1, y1, 1);
+					ro.induvidual.race().appearance().crown.crowns().get(0).renderScaled(r, x1, y1, 1);
 				}
 			};
 
@@ -250,25 +198,26 @@ public class FactionList extends GuiSection {
 				
 				@Override
 				public void update(GText text) {
-					Faction f = getFaction();
-					if (f == null)
-						return;
-					GFORMAT.i(text, emmi[f.index()]);
-				}
-			}.hh(UI.icons().s.flags));
-			
-			
-			add(GMeter.sprite(GMeter.C_REDGREEN, new DOUBLE() {
-
-				@Override
-				public double getD() {
 					FactionNPC f = getFactionNPC();
 					if (f == null)
-						return 0;
-					return RD.RACES().population.faction().get(f)/(10*RD.RACES().maxPop());
+						return;
+					GFORMAT.i(text, FACTIONS.player().emissaries.spent(f));
 				}
-				
-			}, 100, 12), o.body().x1(), getLastY2()+1);
+			}.hh(UI.icons().s.flags));
+
+
+			add(new SPRITE.Imp(100, 12) {
+
+				@Override
+				public void render(SPRITE_RENDERER r, int X1, int X2, int Y1, int Y2) {
+					FactionNPC f = getFactionNPC();
+					if (f == null)
+						return;
+					double c = 0.5 + ROPINIONS.current(f.court().king().roy())/8.0;
+					GMeter.renderC(r, c, c, X1, X2, Y1, Y2);// TODO Auto-generated method stub
+
+				}
+			}, o.body().x1(), getLastY2()+1);
 			
 			add(GMeter.sprite(GMeter.C_ORANGE, new DOUBLE() {
 
@@ -363,7 +312,7 @@ public class FactionList extends GuiSection {
 		public void hoverInfoGet(GUI_BOX text) {
 			super.hoverInfoGet(text);
 			if (text.emptyIs())
-				VIEW.UI().factions.hover(text, getFaction());
+				VIEW.world().UI.factions.hover(text, getFaction());
 			
 		}
 

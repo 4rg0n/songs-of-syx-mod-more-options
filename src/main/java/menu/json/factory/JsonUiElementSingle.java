@@ -196,7 +196,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
             }
 
             // dirty icon
-            Section dirtyIcon = UiUtil.toSection(SPRITES.icons().m.job_awake);
+            Section dirtyIcon = UiUtil.toSection(SPRITES.icons().m.cancel);
             dirtyIcon.hoverInfoSet("Setting changed.");
 
             // only show when value has changed

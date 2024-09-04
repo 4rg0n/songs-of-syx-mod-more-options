@@ -2,12 +2,9 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.MathUtil;
 import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import game.GAME;
 import game.events.EVENTS;
-import game.events.disaster.EventDisease;
-import init.type.DISEASES;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -22,9 +19,8 @@ public class GameEventsApi {
 
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
-    private Map<String, EVENTS.EventResource> settlementEvents;
     private Map<String, EVENTS.EventResource> events;
-    private Map<String, EVENTS.EventResource> eventsChance;
+    private Map<String, EVENTS.EventResource> eventsChances;
 
     public final static String KEY_PREFIX = "event";
 
@@ -33,7 +29,7 @@ public class GameEventsApi {
 
     public void clearCached() {
         events = null;
-        eventsChance = null;
+        eventsChances = null;
     }
 
 
@@ -58,12 +54,12 @@ public class GameEventsApi {
         return worldEvents;
     }
 
-    public Map<String, EVENTS.EventResource> getEventsChance() {
-        if (eventsChance == null) {
-            eventsChance = readEventsChance();
+    public Map<String, EVENTS.EventResource> getEventsChances() {
+        if (eventsChances == null) {
+            eventsChances = readEventsChance();
         }
 
-        return eventsChance;
+        return eventsChances;
     }
 
     public Map<String, EVENTS.EventResource> readEventsChance() {
@@ -76,13 +72,14 @@ public class GameEventsApi {
     }
 
     public boolean setChance(String eventKey, int chance) {
-        EVENTS.EventResource event = eventsChance.get(eventKey);
+        EVENTS.EventResource event = eventsChances.get(eventKey);
 
-        if (event instanceof EventDisease) {
-            double current = DISEASES.EPIDEMIC_CHANCE;
-            DISEASES.EPIDEMIC_CHANCE = current * MathUtil.toPercentage(chance);
-            return true;
-        }
+        // FIXME there are now multiple DISEASES.all()
+//        if (event instanceof EventDisease) {
+//            double current = DISEASES.EPIDEMIC_CHANCE;
+//            DISEASES.EPIDEMIC_CHANCE = current * MathUtil.toPercentage(chance);
+//            return true;
+//        }
 
         log.warn("Could not set chance for %s", event.getClass().getSimpleName());
         return false;

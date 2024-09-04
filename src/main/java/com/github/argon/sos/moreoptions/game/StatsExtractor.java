@@ -83,10 +83,6 @@ public class StatsExtractor {
         String key = stat.religion.key;
 
         stats.putAll(getRaceStats(key, stat.followers));
-        stats.putAll(getRaceStats(key, stat.shrine_access));
-        stats.putAll(getRaceStats(key, stat.shrine_quality));
-        stats.putAll(getRaceStats(key, stat.temple_access));
-        stats.putAll(getRaceStats(key, stat.temple_quality));
 
         return stats;
     }
@@ -96,10 +92,6 @@ public class StatsExtractor {
         String key = stat.religion.key;
 
         stats.putAll(getStat(key, stat.followers));
-        stats.putAll(getStat(key, stat.shrine_access));
-        stats.putAll(getStat(key, stat.shrine_quality));
-        stats.putAll(getStat(key, stat.temple_access));
-        stats.putAll(getStat(key, stat.temple_quality));
 
         return stats;
     }

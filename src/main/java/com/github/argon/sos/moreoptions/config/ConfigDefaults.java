@@ -145,7 +145,7 @@ public class ConfigDefaults {
 
     public EventsConfig newEvents() {
         // Events Chance
-        Map<String, Range> eventChances = gameApis.events().getEventsChance().keySet().stream()
+        Map<String, Range> eventChances = gameApis.events().getEventsChances().keySet().stream()
             .collect(Collectors.toMap(key -> key, key -> ConfigDefaults.eventChance()));
 
         // Events
