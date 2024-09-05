@@ -12,9 +12,9 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MoreOptionsV4Config {
+public class MoreOptionsV5Config {
 
-    public final static int VERSION = 4;
+    public final static int VERSION = 5;
 
     @Builder.Default
     private int version = VERSION;

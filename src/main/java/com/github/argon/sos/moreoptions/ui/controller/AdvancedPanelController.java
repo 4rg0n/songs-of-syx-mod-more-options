@@ -1,10 +1,12 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
+import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
+import com.github.argon.sos.moreoptions.util.Clipboard;
 import init.paths.PATHS;
 import snake2d.Errors;
 import snake2d.util.file.FileManager;
@@ -36,9 +38,9 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedTab> {
     public void dumpLogs() {
         try {
             Errors.forceDump(i18n.t("MoreOptionsPanel.text.logs.dump"));
-            notificator.notifySuccess(i18n.t("notification.logs.dump"));
+            Message.notifySuccess("notification.logs.dump");
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.logs.not.dump"), e);
+            Message.errorDialog(e, "notification.logs.not.dump");
         }
     }
 
@@ -46,7 +48,7 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedTab> {
         try {
             FileManager.openDesctop(PATHS.local().LOGS.get().toString());
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.logs.folder.not.open"), e);
+            Message.errorDialog(e, "notification.logs.folder.not.open");
         }
     }
 
@@ -54,45 +56,47 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedTab> {
         try {
             FileManager.openDesctop(ConfigDefaults.CONFIGE_PATH.toString());
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.config.folder.not.open", ConfigDefaults.CONFIGE_PATH), e);
+            Message.errorDialog(e, "notification.config.folder.not.open", ConfigDefaults.CONFIGE_PATH);
         }
     }
 
     public void resetModConfig() {
         // are you sure message
         gameApis.ui().inters().yesNo.activate(i18n.t("MoreOptionsPanel.text.yesNo.reset"), () -> {
-            MoreOptionsV4Config defaultConfig = configStore.getDefaultConfig();
+            MoreOptionsV5Config defaultConfig = configStore.getDefaultConfig();
             try {
                 moreOptionsPanel.setValue(defaultConfig);
                 configStore.clear();
                 if (applyAndSave(moreOptionsPanel)) {
-                    notificator.notifySuccess(i18n.t("notification.config.reset"));
+                    Message.notifySuccess("notification.config.reset");
                 } else {
-                    notificator.notifyError(i18n.t("notification.config.not.reset"));
+                    Message.notifyError("notification.config.not.reset");
                 }
 
             } catch (Exception e) {
-                notificator.notifyError(i18n.t("notification.config.not.reset"), e);
+                Message.errorDialog(e, "notification.config.not.reset");
             }
         }, () -> {}, true);
     }
 
     public void copySaveStamp() {
         String saveStamp = element.getSaveStamp();
-        copyToClipboard(
-            saveStamp,
-            i18n.t("notification.advanced.saveStamp.copy", saveStamp),
-            i18n.t("notification.advanced.saveStamp.not.copy")
-        );
+        try {
+            Clipboard.write(saveStamp);
+            Message.notifySuccess("notification.advanced.saveStamp.copy", saveStamp);
+        } catch (Exception e) {
+            Message.errorDialog(e, "notification.advanced.saveStamp.not.copy");
+        }
     }
 
     public void copyWorldSeed() {
         int worldSeed = element.getWorldSeed();
-        copyToClipboard(
-            String.valueOf(worldSeed),
-            i18n.t("notification.advanced.worldSeed.copy", worldSeed),
-            i18n.t("notification.advanced.worldSeed.not.copy")
-        );
+        try {
+            Clipboard.write(String.valueOf(worldSeed));
+            Message.notifySuccess("notification.advanced.worldSeed.copy", worldSeed);
+        } catch (Exception e) {
+            Message.errorDialog(e, "notification.advanced.worldSeed.not.copy");
+        }
     }
 
     public void openUiShowRoom() {

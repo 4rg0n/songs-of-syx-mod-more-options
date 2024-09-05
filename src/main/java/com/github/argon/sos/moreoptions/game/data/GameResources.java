@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -135,6 +136,10 @@ public class GameResources {
     }
 
     private static List<String> readResourceLines(String path) {
-        return ResourceService.getInstance().readResourceLines(path);
+        try {
+            return ResourceService.getInstance().readResourceLines(path);
+        } catch (IOException e) {
+            return Lists.of();
+        }
     }
 }

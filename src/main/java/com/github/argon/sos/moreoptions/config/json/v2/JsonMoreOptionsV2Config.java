@@ -9,7 +9,7 @@ import lombok.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config.VERSION;
+import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config.VERSION;
 
 @Data
 @Builder

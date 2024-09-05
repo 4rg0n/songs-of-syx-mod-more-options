@@ -6,13 +6,14 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public class PropertiesStore {
 
     private final static Logger log = Loggers.getLogger(PropertiesStore.class);
 
-    public final static String MOD_PROPERTIES_FILENAME = "mod.properties";
+    public final static String MOD_PROPERTIES_PATH = "mod.properties";
 
     @Getter(lazy = true)
     private final static PropertiesStore instance = new PropertiesStore(
@@ -30,11 +31,15 @@ public class PropertiesStore {
 
     public Optional<ModProperties> getModProperties() {
         if (modProperties == null) {
-            this.modProperties = resourceService.readProperties(MOD_PROPERTIES_FILENAME)
-                .map(properties -> ModProperties.builder()
-                    .errorReportUrl(properties.getProperty("error.report.url"))
-                    .build()
-                ).orElse(null);
+            try {
+                this.modProperties = resourceService.readProperties(MOD_PROPERTIES_PATH)
+                    .map(properties -> ModProperties.builder()
+                        .errorReportUrl(properties.getProperty("error.report.url"))
+                        .build()
+                    ).orElse(null);
+            } catch (IOException e) {
+                throw new PropertiesException(String.format("Could not load properties from %s", MOD_PROPERTIES_PATH), e);
+            }
         }
 
         return Optional.ofNullable(modProperties);

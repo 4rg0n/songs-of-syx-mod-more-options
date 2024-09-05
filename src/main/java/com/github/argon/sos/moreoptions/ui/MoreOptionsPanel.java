@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.game.action.*;
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.*;
@@ -44,7 +44,7 @@ import java.util.Set;
 public class MoreOptionsPanel extends GuiSection implements
     Showable,
     Refreshable,
-    Valuable<MoreOptionsV4Config> {
+    Valuable<MoreOptionsV5Config> {
 
     private static final I18n i18n = I18n.get(WeatherTab.class);
 
@@ -103,7 +103,7 @@ public class MoreOptionsPanel extends GuiSection implements
      */
     @Builder
     public MoreOptionsPanel(
-        MoreOptionsV4Config config,
+        MoreOptionsV5Config config,
         ConfigStore configStore,
         Map<Faction, List<BoostersTab.Entry>> boosterEntries,
         Map<String, List<RacesTab.Entry>> raceEntries,
@@ -178,7 +178,7 @@ public class MoreOptionsPanel extends GuiSection implements
         HorizontalLine horizontalLine = new HorizontalLine(footer.body().width(), 20, 1);
         availableHeight = availableHeight - footer.body().height() - horizontalLine.body().height() - 40;
 
-        MoreOptionsV4Config defaultConfig = configStore.getDefaultConfig();
+        MoreOptionsV5Config defaultConfig = configStore.getDefaultConfig();
 
         soundsTab = new SoundsTab(i18n.t("MoreOptionsPanel.tab.sounds.name"), config.getSounds(), defaultConfig.getSounds(), availableWidth, availableHeight);
         eventsTab = new EventsTab(i18n.t("MoreOptionsPanel.tab.events.name"), config.getEvents(), defaultConfig.getEvents(), availableWidth, availableHeight);
@@ -240,8 +240,8 @@ public class MoreOptionsPanel extends GuiSection implements
     }
 
     @Override
-    public MoreOptionsV4Config getValue() {
-        return MoreOptionsV4Config.builder()
+    public MoreOptionsV5Config getValue() {
+        return MoreOptionsV5Config.builder()
             .logLevel(advancedTab.getValue())
             .events(eventsTab.getValue())
             .sounds(soundsTab.getValue())
@@ -253,7 +253,7 @@ public class MoreOptionsPanel extends GuiSection implements
     }
 
     @Override
-    public void setValue(@Nullable MoreOptionsV4Config config) {
+    public void setValue(@Nullable MoreOptionsV5Config config) {
         if (config == null) {
             return;
         }
@@ -271,12 +271,12 @@ public class MoreOptionsPanel extends GuiSection implements
      * @return whether panel configuration is different from {@link ConfigStore#getCurrentConfig()} ()}
      */
     public boolean isDirty() {
-        MoreOptionsV4Config currentConfig = configStore.getCurrentConfig();
+        MoreOptionsV5Config currentConfig = configStore.getCurrentConfig();
         return isDirty(currentConfig);
     }
 
-    public boolean isDirty(@Nullable MoreOptionsV4Config config) {
-        MoreOptionsV4Config uiConfig = getValue();
+    public boolean isDirty(@Nullable MoreOptionsV5Config config) {
+        MoreOptionsV5Config uiConfig = getValue();
 
         if (uiConfig == null) {
             return false;

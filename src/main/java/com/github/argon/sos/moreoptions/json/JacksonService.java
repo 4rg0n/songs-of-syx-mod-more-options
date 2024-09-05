@@ -1,33 +1,37 @@
 package com.github.argon.sos.moreoptions.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.argon.sos.moreoptions.io.FileService;
+import com.github.argon.sos.moreoptions.json.writer.JacksonWriter;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
 /**
  * Uses Jackson as JSON parser and writer.
  */
+@RequiredArgsConstructor
 public class JacksonService implements JsonService {
     @Getter(lazy = true)
     private final static JacksonService instance = new JacksonService(
-        new ObjectMapper(),
+        new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT),
+        new JacksonWriter(),
         FileService.getInstance()
     );
     private final static Logger log = Loggers.getLogger(JacksonService.class);
 
     private final ObjectMapper objectMapper;
+    private final PrettyPrinter prettyPrinter;
     private final FileService fileService;
-
-    public JacksonService(ObjectMapper objectMapper, FileService fileService) {
-        this.objectMapper = objectMapper;
-        this.fileService = fileService;
-    }
 
     public <T> Optional<T> load(Path path, Class<T> clazz) {
         return load(path)
@@ -35,46 +39,46 @@ public class JacksonService implements JsonService {
                 try {
                     return objectMapper.readValue(json, clazz);
                 } catch (JsonProcessingException e) {
-                    log.warn("Could not map json from %s for %s", path, clazz.getSimpleName(), e);
-                    return null;
+                    throw new JsonException(String.format("Could not map json from %s for %s", path, clazz.getSimpleName()), e);
                 }
             });
     }
 
     public Optional<String> load(Path path) {
-        return Optional.ofNullable(fileService.read(path));
+        try {
+            return Optional.ofNullable(fileService.read(path));
+        } catch (IOException e) {
+            throw new JsonException(String.format("Could not rad json file %s", path), e);
+        }
     }
 
-    public boolean save(Path path, Object object) {
+    public void save(Path path, Object object) {
         String jsonString;
         try {
             jsonString = objectMapper
-                .writerWithDefaultPrettyPrinter() // pretty print
+                .writer(prettyPrinter)
                 .writeValueAsString(object);
         } catch (Exception e) {
-            log.warn("Could not create json from object %s for saving in %s",
-                path, object.getClass().getSimpleName(), e);
-            return false;
+            throw new JsonException(String.format("Could not create json from object %s for saving in %s",
+                path, object.getClass().getSimpleName()), e);
         }
 
-        boolean success = save(path, jsonString);
-        if (!success) {
-            log.warn("Could not write json from object %s", object.getClass().getSimpleName());
-        }
-
-        return success;
+        save(path, jsonString);
     }
 
-    public boolean save(Path path, String json) {
+    public void save(Path path, String json) {
         try {
-            return fileService.write(path, json);
+            fileService.write(path, json);
         } catch (Exception e) {
-            log.warn("Could not write json to into %s", path, e);
-            return false;
+            throw new JsonException(String.format("Could not write json file %s", path), e);
         }
     }
 
     public boolean delete(Path path) {
-        return fileService.delete(path);
+        try {
+            return fileService.delete(path);
+        } catch (Exception e) {
+            throw new JsonException(String.format("Could not delete json file %s", path), e);
+        }
     }
 }

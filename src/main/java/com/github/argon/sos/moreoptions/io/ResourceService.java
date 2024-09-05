@@ -36,12 +36,13 @@ public class ResourceService extends AbstractIOService {
             try {
                 return Paths.get(url1.toURI());
             } catch (URISyntaxException e) {
+                log.warn("Invalid path %s", path, e);
                 return null;
             }
         });
     }
 
-    public Optional<String> readResource(String path) {
+    public Optional<String> readResource(String path) throws IOException {
         try (InputStream inputStream = getInputStream(path)) {
             if (inputStream == null) {
                 return Optional.empty();
@@ -49,8 +50,8 @@ public class ResourceService extends AbstractIOService {
 
             return Optional.of(readFromInputStream(inputStream));
         } catch (Exception e) {
-            log.warn("Could not read resource from path %s", path, e);
-            return Optional.empty();
+            log.warn("Could not read resource from path %s", path);
+            throw e;
         }
     }
 
@@ -60,7 +61,7 @@ public class ResourceService extends AbstractIOService {
         return classLoader.getResourceAsStream(path);
     }
 
-    public List<String> readResourceLines(String path) {
+    public List<String> readResourceLines(String path) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
 
         try (InputStream inputStream = classLoader.getResourceAsStream(path)) {
@@ -70,20 +71,20 @@ public class ResourceService extends AbstractIOService {
 
             return readLinesFromInputStream(inputStream);
         } catch (Exception e) {
-            log.warn("Could not read lines from file %s", path, e);
-            return Lists.of();
+            log.warn("Could not read lines from file %s", path);
+            throw e;
         }
     }
 
-    public Optional<Properties> readProperties(String path) {
+    public Optional<Properties> readProperties(String path) throws IOException {
         InputStream inputStream = getInputStream(path);
         Properties properties = new Properties();
 
         try {
             properties.load(inputStream);
         } catch (IOException e) {
-            log.warn("Could not read properties from file %s", path, e);
-            return Optional.empty();
+            log.warn("Could not read properties from file %s", path);
+            throw e;
         }
 
         return Optional.of(properties);

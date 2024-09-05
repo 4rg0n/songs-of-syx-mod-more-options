@@ -489,12 +489,9 @@ public class JsonConfigStore {
         }
 
         // store newly saved config
-        if (jsonService.save(savePath, config)) {
-            store(config.getClass(), config, savePath);
-            return savePath;
-        }
-
-        return null;
+        jsonService.save(savePath, config);
+        store(config.getClass(), config, savePath);
+        return savePath;
     }
 
     private boolean delete(ConfigDefinition configDefinition, boolean removeFromStore) {

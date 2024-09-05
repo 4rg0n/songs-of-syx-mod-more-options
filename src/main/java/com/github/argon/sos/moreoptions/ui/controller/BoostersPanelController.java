@@ -1,16 +1,17 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.mapper.TypeInfo;
-import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
+import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersPresetsSection;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersSection;
+import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import game.faction.Faction;
 import snake2d.util.misc.STRING_RECIEVER;
@@ -50,7 +51,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
             boostersSection.setValue(boosterValues);
         });
 
-        notificator.notifySuccess(i18n.t("notification.boosters.factions.reset"));
+        Message.notifySuccess("notification.boosters.factions.reset");
     }
 
     public void resetCurrentBoosters() {
@@ -61,29 +62,29 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
         ));
         currentBoosterSection.setValue(boosterValues);
 
-        notificator.notifySuccess(i18n.t("notification.boosters.reset", currentBoosterSection.getFaction().name.toString()));
+        Message.notifySuccess("notification.boosters.reset", currentBoosterSection.getFaction().name.toString());
     }
 
     public void copyBoostersConfig() {
         Faction copiedFaction = element.copyBoosters();
-        notificator.notifySuccess(i18n.t("notification.boosters.copy", copiedFaction.name.toString()));
+        Message.notifySuccess("notification.boosters.copy", copiedFaction.name.toString());
     }
 
     public void pasteBoostersConfigToAllNPCFactions() {
         int amount = element.pasteBoostersToNPCFactions();
 
         if (amount > 0) {
-            notificator.notifySuccess(i18n.t("notification.boosters.factions.paste", amount));
+            Message.notifySuccess("notification.boosters.factions.paste", amount);
         } else {
-            notificator.notifyError(i18n.t("notification.boosters.factions.not.paste"));
+            Message.notifyError("notification.boosters.factions.not.paste");
         }
     }
 
     public void pasteBoostersConfig() {
         if (element.pasteBoosters()) {
-            notificator.notifySuccess(i18n.t("notification.boosters.paste"));
+            Message.notifySuccess("notification.boosters.paste");
         } else {
-            notificator.notifyError(i18n.t("notification.boosters.not.paste"));
+            Message.notifyError("notification.boosters.not.paste");
         }
     }
 
@@ -92,14 +93,14 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
         STRING_RECIEVER r = presetName -> {
             if (presetName != null && presetName.length() > 0) {
                 element.getBoosterPresets().put(presetName.toString(), preset);
-                MoreOptionsV4Config currentConfig = configStore.getCurrentConfig();
+                MoreOptionsV5Config currentConfig = configStore.getCurrentConfig();
 
                 if (currentConfig != null) {
                     currentConfig.getBoosters().setPresets(element.getValue().getPresets());
                     configStore.save(currentConfig);
                 }
 
-                notificator.notifySuccess(i18n.t("notification.boosters.preset.save", presetName.toString()));
+                Message.notifySuccess("notification.boosters.preset.save", presetName.toString());
             }
         };
 
@@ -113,7 +114,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
             .clickAction(key -> {
                 Map<String, Range> boostersPreset = presets.get(key);
                 element.getCurrentBoosterSection().setValue(boostersPreset);
-                notificator.notifySuccess(i18n.t("notification.boosters.preset.load", key));
+                Message.notifySuccess("notification.boosters.preset.load", key);
             })
             .deleteAction((key, panel) -> {
                 gameApis.ui().inters().yesNo.activate(i18n.t("BoostersTab.text.yesNo.preset.delete", key), () -> {
@@ -127,13 +128,10 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
                     JsonElement jsonElement = JsonMapper.mapObject(boostersPreset, new TypeInfo<Map<String, Range>>(){});
                     Json json = new Json(jsonElement, JsonWriters.jsonEPretty());
 
-                    if (Clipboard.write(json.write())) {
-                        notificator.notifySuccess(i18n.t("notification.boosters.preset.copy", key));
-                    } else {
-                        notificator.notifyError(i18n.t("notification.boosters.preset.not.copy", key));
-                    }
+                    Clipboard.write(json.write());
+                    Message.notifySuccess("notification.boosters.preset.copy", key);
                 } catch (Exception e) {
-                    notificator.notifyError(i18n.t("notification.boosters.preset.not.copy", key), e);
+                    Message.errorDialog(e, "notification.boosters.preset.not.copy");
                 }
             })
             .build();
@@ -145,7 +143,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
         configDefaults.newBoostersConfig();
         Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(configDefaults.newBoostersConfig());
         element.refresh(boosterEntries);
-        MoreOptionsV4Config currentConfig = configStore.getCurrentConfig();
+        MoreOptionsV5Config currentConfig = configStore.getCurrentConfig();
         Objects.requireNonNull(currentConfig);
         element.setValue(currentConfig.getBoosters());
     }

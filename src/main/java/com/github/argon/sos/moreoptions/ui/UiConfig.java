@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.game.ui.Window;
@@ -18,6 +18,7 @@ import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.ui.controller.*;
+import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
@@ -40,7 +41,7 @@ import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 import static java.time.temporal.ChronoField.*;
 
 /**
- * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsV4Config}.
+ * Most UI elements are generated dynamically dictated by the given config {@link MoreOptionsV5Config}.
  * So when a new entry is added, a new UI element like e.g. an additional slider will also be visible.
  * For setting up the UI and adding functionality to buttons.
  */
@@ -107,7 +108,7 @@ public class UiConfig implements Phases {
      */
     @Override
     public void initSettlementUiPresent() {
-        MoreOptionsV4Config moreOptionsConfig = configStore.getCurrentConfig();
+        MoreOptionsV5Config moreOptionsConfig = configStore.getCurrentConfig();
 
         if (moreOptionsConfig == null) {
             throw new UninitializedException("Configuration is not initialized.");
@@ -177,7 +178,7 @@ public class UiConfig implements Phases {
     public void initDebugControls() {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":uiShowRoom", () -> UiFactory.buildUiShowRoom().show());
-        IDebugPanel.add(MOD_INFO.name + ":errorDialog", () -> UiFactory.getInstance().buildErrorDialog(new RuntimeException("Test Error Message")).show());
+        IDebugPanel.add(MOD_INFO.name + ":errorDialog", () -> UiFactory.getInstance().buildErrorDialog(new RuntimeException("Test Exception Message"), "Test Error Message").show());
         IDebugPanel.add(MOD_INFO.name + ":phases:" + Phase.ON_GAME_SAVE_LOADED, () -> PhaseManager.getInstance().onGameSaveReloaded());
         IDebugPanel.add(MOD_INFO.name + ":fullScreen", () -> UiFactory.getInstance().buildMoreOptionsFullScreen("More Options", configStore.getDefaultConfig()).show());
         IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());

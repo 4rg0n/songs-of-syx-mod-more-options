@@ -1,7 +1,8 @@
-package com.github.argon.sos.moreoptions.ui;
+package com.github.argon.sos.moreoptions.ui.msg;
 
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.Notification;
+import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.Updateable;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
@@ -25,7 +26,7 @@ import java.util.List;
  * Notifications will be queued and shown in order.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class Notificator implements Updateable {
+public class Notificator implements Updateable, Phases {
     private final static Logger log = Loggers.getLogger(Notificator.class);
 
     @Getter(lazy = true)
@@ -88,7 +89,7 @@ public class Notificator implements Updateable {
     }
 
 
-    public void notifyError(String text, Exception e) {
+    public void notifyError(String text, Throwable e) {
         log.error("[NOTIFY] " + text, e);
         notifyError(text);
     }
@@ -122,7 +123,7 @@ public class Notificator implements Updateable {
      * Controls the showing and hiding of {@link Notification}s.
      */
     @Override
-    public void update(float seconds) {
+    public void update(double seconds) {
         // wait until showSeconds for next
         if (current != null) {
             Instant now = Instant.now();
@@ -169,5 +170,10 @@ public class Notificator implements Updateable {
         }
 
         return showSeconds;
+    }
+
+    @Override
+    public void onGameUpdate(double seconds) {
+        update(seconds);
     }
 }

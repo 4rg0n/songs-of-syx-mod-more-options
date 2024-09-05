@@ -1,10 +1,11 @@
-package com.github.argon.sos.moreoptions.ui;
+package com.github.argon.sos.moreoptions.ui.msg;
 
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import init.sprite.UI.UI;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GText;
@@ -21,17 +22,26 @@ public class ErrorDialog extends GuiSection {
     private Button closeButton;
     @Getter
     private final Throwable exception;
+    @Getter
+    @Nullable
+    private final String errorMessage;
 
-    public ErrorDialog(Throwable exception) {
+    public ErrorDialog(Throwable exception, @Nullable String errorMessage) {
         this.exception = exception;
+        this.errorMessage = errorMessage;
 
         GText text1 = new GText(UI.FONT().M, i18n.t("ErrorDialog.text.line1"));
         GText text2 = new GText(UI.FONT().M, i18n.t("ErrorDialog.text.line2"));
-        GText errorMessage = new GText(UI.FONT().M, exception.getMessage()).errorify();
+        GText exceptionMessage = new GText(UI.FONT().M, exception.getMessage()).errorify();
 
         addDownC(0, text1);
         addDownC(5, text2);
-        addDownC(10, errorMessage);
+
+        if (errorMessage != null) {
+            addDownC(10, new GText(UI.FONT().M, errorMessage).warnify());
+        }
+
+        addDownC(10, exceptionMessage);
         GuiSection buttons = buttons();
 
         addDownC(10, new HorizontalLine(buttons.body().width(), 14, 1));

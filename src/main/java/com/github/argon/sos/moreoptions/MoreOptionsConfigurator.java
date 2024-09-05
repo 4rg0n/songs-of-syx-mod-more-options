@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * For manipulating game classes by given config {@link MoreOptionsV4Config}
+ * For manipulating game classes by given config {@link MoreOptionsV5Config}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsConfigurator implements Phases {
@@ -53,9 +53,9 @@ public class MoreOptionsConfigurator implements Phases {
     @Setter
     private Level envLogLevel;
     private Set<String> lastMetricStats = new HashSet<>();
-    private Action<MoreOptionsV4Config> afterApplyAction = o -> {};
+    private Action<MoreOptionsV5Config> afterApplyAction = o -> {};
 
-    public void onAfterApplyAction(Action<MoreOptionsV4Config> afterApplyAction) {
+    public void onAfterApplyAction(Action<MoreOptionsV5Config> afterApplyAction) {
         this.afterApplyAction = afterApplyAction;
     }
 
@@ -64,7 +64,7 @@ public class MoreOptionsConfigurator implements Phases {
      *
      * @param config to apply
      */
-    public boolean applyConfig(@Nullable MoreOptionsV4Config config) {
+    public boolean applyConfig(@Nullable MoreOptionsV5Config config) {
         if (config == null) {
             return false;
         }

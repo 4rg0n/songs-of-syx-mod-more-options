@@ -1,9 +1,8 @@
 package com.github.argon.sos.moreoptions.aspect;
 
 import com.github.argon.sos.moreoptions.aspect.annotation.OnErrorShowDialog;
-import com.github.argon.sos.moreoptions.game.ui.Window;
-import com.github.argon.sos.moreoptions.ui.ErrorDialog;
-import com.github.argon.sos.moreoptions.ui.UiFactory;
+import com.github.argon.sos.moreoptions.ui.msg.Message;
+import com.github.argon.sos.moreoptions.util.ExceptionUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -11,18 +10,24 @@ import org.aspectj.lang.annotation.Pointcut;
 
 @Aspect
 public class OnErrorShowDialogAspect {
+
+    private Throwable lastException;
+
     @Pointcut("@annotation(showError)")
-    public void callAt(OnErrorShowDialog showError) {
-    }
+    public void callAt(OnErrorShowDialog showError) {}
 
     @Around("callAt(showError)")
     public Object around(ProceedingJoinPoint pjp, OnErrorShowDialog showError) throws Throwable {
         try {
             return pjp.proceed();
         } catch (Exception e) {
-            Window<ErrorDialog> errorDialog = UiFactory.getInstance().buildErrorDialog(e);
-            errorDialog.show();
-            throw e;
+            // prevent chaining: first shown error dialog in exception chain wins
+            if (!ExceptionUtil.contains(e, lastException)) {
+                Message.errorDialog(e);
+            }
+
+            lastException = e;
+            return e;
         }
     }
 }

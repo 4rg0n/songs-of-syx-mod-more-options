@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Can merge two {@link MoreOptionsV4Config}s while one serves as target and the other source of the data.
+ * Can merge two {@link MoreOptionsV5Config}s while one serves as target and the other source of the data.
  * Will fill empty fields. Used for e.g. merging default configs into loaded configs.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigMerger {
-    public static void merge(MoreOptionsV4Config target, @Nullable MoreOptionsV4Config source) {
+    public static void merge(MoreOptionsV5Config target, @Nullable MoreOptionsV5Config source) {
         if (source == null) {
             return;
         }

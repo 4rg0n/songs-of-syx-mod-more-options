@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config.*;
+import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config.*;
 
 /**
  * Provides default configuration partially gathered from the game.
@@ -44,10 +44,10 @@ public class ConfigDefaults {
 
     private final GameApis gameApis;
 
-    public MoreOptionsV4Config newConfig() {
+    public MoreOptionsV5Config newConfig() {
         log.debug("Creating new default config");
 
-        MoreOptionsV4Config defaultConfig = builder()
+        MoreOptionsV5Config defaultConfig = builder()
             .events(newEvents())
             .sounds(newSounds())
             .weather(newWeather())

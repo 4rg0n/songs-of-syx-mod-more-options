@@ -5,10 +5,11 @@ import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
-import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
+import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
+import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
+import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import snake2d.util.file.FileManager;
 
@@ -29,27 +30,27 @@ public class RacesPanelController extends AbstractUiController<RacesTab> {
     public void openCurrentRacesConfigFile() {
         Path path = configStore.getRacesConfigPath().orElse(null);
         if (path == null || !path.toFile().exists()) {
-            notificator.notify(i18n.t("notification.races.file.not.exists", path));
+            Message.notify("notification.races.file.not.exists", path);
             return;
         }
 
         try {
             FileManager.openDesctop(path.toString());
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.races.file.not.open", path), e);
+            Message.errorDialog(e, "notification.races.file.not.open", path);
         }
     }
 
     public void openRacesConfigFolder() {
         if (!ConfigDefaults.RACES_CONFIG_FOLDER_PATH.toFile().exists()) {
-            notificator.notifyError(i18n.t("notification.races.folder.not.exists", ConfigDefaults.RACES_CONFIG_FOLDER_PATH));
+            Message.notifyError("notification.races.folder.not.exists", ConfigDefaults.RACES_CONFIG_FOLDER_PATH);
             return;
         }
 
         try {
             FileManager.openDesctop(ConfigDefaults.RACES_CONFIG_FOLDER_PATH.toString());
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.races.folder.not.open", ConfigDefaults.RACES_CONFIG_FOLDER_PATH), e);
+            Message.errorDialog(e, "notification.races.folder.not.open", ConfigDefaults.RACES_CONFIG_FOLDER_PATH);
         }
     }
 
@@ -59,13 +60,10 @@ public class RacesPanelController extends AbstractUiController<RacesTab> {
             JsonElement jsonElement = JsonMapper.mapObject(racesConfig);
             Json json = new Json(jsonElement, JsonWriters.jsonEPretty());
 
-            if (Clipboard.write(json.write())) {
-                notificator.notifySuccess(i18n.t("notification.races.config.copy"));
-            } else {
-                notificator.notifyError(i18n.t("notification.races.config.not.copy"));
-            }
+            Clipboard.write(json.write());
+            Message.notifySuccess("notification.races.config.copy");
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.races.config.not.copy"), e);
+            Message.errorDialog(e, "notification.races.config.not.copy");
         }
     }
 
@@ -76,10 +74,10 @@ public class RacesPanelController extends AbstractUiController<RacesTab> {
                 RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), RacesConfig.class);
 
                 element.setValue(racesConfig);
-                notificator.notifySuccess(i18n.t("notification.races.config.import"));
+                Message.notifySuccess("notification.races.config.import");
             });
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.races.config.not.import"));
+            Message.errorDialog(e, "notification.races.config.not.import");
         }
     }
 
@@ -95,13 +93,13 @@ public class RacesPanelController extends AbstractUiController<RacesTab> {
 
                 if (racesConfig != null) {
                     element.setValue(racesConfig);
-                    notificator.notifySuccess(i18n.t("notification.races.config.load"));
+                    Message.notifySuccess("notification.races.config.load");
                     racesConfigsSelection.hide();
                 } else {
-                    notificator.notifyError(i18n.t("notification.races.config.not.load"));
+                    Message.notifyError("notification.races.config.not.load");
                 }
             } catch (Exception e) {
-                notificator.notifyError(i18n.t("notification.races.config.not.load"), e);
+                Message.errorDialog(e, "notification.races.config.not.load");
             }
         });
 

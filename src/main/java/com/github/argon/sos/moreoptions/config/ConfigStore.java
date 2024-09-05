@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Handles loading and saving of {@link MoreOptionsV4Config}
+ * Handles loading and saving of {@link MoreOptionsV5Config}
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigStore implements Phases {
@@ -38,9 +38,9 @@ public class ConfigStore implements Phases {
     private final StateManager stateManager;
 
     @Nullable
-    private MoreOptionsV4Config currentConfig;
+    private MoreOptionsV5Config currentConfig;
     @Nullable
-    private MoreOptionsV4Config defaultConfig;
+    private MoreOptionsV5Config defaultConfig;
     @Nullable
     private ConfigMeta configMeta;
 
@@ -52,9 +52,9 @@ public class ConfigStore implements Phases {
 
     @Override
     public void initSettlementUiPresent() {
-        MoreOptionsV4Config defaultConfig = configDefaults.newConfig();
+        MoreOptionsV5Config defaultConfig = configDefaults.newConfig();
         setDefaultConfig(defaultConfig);
-        MoreOptionsV4Config config = configService.getConfig()
+        MoreOptionsV5Config config = configService.getConfig()
             .map(loadedConfig -> {
                 ConfigMerger.merge(loadedConfig, defaultConfig);
                 return loadedConfig;
@@ -73,7 +73,7 @@ public class ConfigStore implements Phases {
 
     @Override
     public void onGameSaved(Path saveFilePath) {
-        MoreOptionsV4Config currentConfig = getCurrentConfig();
+        MoreOptionsV5Config currentConfig = getCurrentConfig();
         if (currentConfig != null && !stateManager.getState().isNewGame()) {
             save(currentConfig);
         }
@@ -85,7 +85,7 @@ public class ConfigStore implements Phases {
         }
     }
 
-    public boolean save(@Nullable MoreOptionsV4Config config) {
+    public boolean save(@Nullable MoreOptionsV5Config config) {
         if (config == null) {
             return false;
         }
@@ -99,7 +99,7 @@ public class ConfigStore implements Phases {
         return false;
     }
 
-    public Optional<MoreOptionsV4Config> getBackup() {
+    public Optional<MoreOptionsV5Config> getBackup() {
         return configService.getBackup();
     }
 
@@ -111,18 +111,18 @@ public class ConfigStore implements Phases {
     /**
      * Used by the mod as current configuration to apply and use
      */
-    public void setCurrentConfig(MoreOptionsV4Config currentConfig) {
+    public void setCurrentConfig(MoreOptionsV5Config currentConfig) {
         log.debug("Setting Current Config");
         log.trace("Config: %s", currentConfig);
         this.currentConfig = currentConfig;
     }
 
     @Nullable
-    public MoreOptionsV4Config getCurrentConfig() {
+    public MoreOptionsV5Config getCurrentConfig() {
         return currentConfig;
     }
 
-    public void setDefaultConfig(MoreOptionsV4Config defaultConfig) {
+    public void setDefaultConfig(MoreOptionsV5Config defaultConfig) {
         log.debug("Setting Default Config");
         log.trace("Config: %s", defaultConfig);
         this.defaultConfig = defaultConfig;
@@ -131,7 +131,7 @@ public class ConfigStore implements Phases {
     /**
      * Accessing defaults before the "INIT_GAME_UPDATING" phase can cause problems.
      */
-    public MoreOptionsV4Config getDefaultConfig() {
+    public MoreOptionsV5Config getDefaultConfig() {
         return Optional.ofNullable(defaultConfig)
             .orElseThrow(() -> new UninitializedException(Phase.INIT_GAME_UPDATING));
     }
@@ -148,7 +148,7 @@ public class ConfigStore implements Phases {
         return configService.getRacesConfigPath();
     }
 
-    public Optional<MoreOptionsV4Config> reloadConfig() {
+    public Optional<MoreOptionsV5Config> reloadConfig() {
         return configService.reloadAll();
     }
 

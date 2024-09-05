@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.log;
 
 import com.github.argon.sos.moreoptions.log.writer.LogWriter;
 import com.github.argon.sos.moreoptions.log.writer.StdOut;
+import com.github.argon.sos.moreoptions.util.ExceptionUtil;
 import com.github.argon.sos.moreoptions.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -75,7 +76,7 @@ public class Logger {
             return;
         }
 
-        Throwable ex = extractThrowable(args);
+        Throwable ex = ExceptionUtil.extractThrowable(args);
 
         if (ex != null) {
             args = Arrays.copyOf(args, args.length - 1);
@@ -92,7 +93,7 @@ public class Logger {
             return;
         }
 
-        Throwable ex = extractThrowable(args);
+        Throwable ex = ExceptionUtil.extractThrowable(args);
 
         if (ex != null) {
             args = Arrays.copyOf(args, args.length - 1);
@@ -113,20 +114,5 @@ public class Logger {
 
     private String levelText(Level level) {
         return level.getName();
-    }
-
-    private Throwable extractThrowable(Object[] args) {
-        Object lastArg = null;
-        int lastPos = args.length - 1;
-
-        if (lastPos >= 0) {
-            lastArg = args[lastPos];
-        }
-
-        if (lastArg instanceof Throwable) {
-            return (Throwable) lastArg;
-        }
-
-        return null;
     }
 }

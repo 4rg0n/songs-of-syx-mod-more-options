@@ -1,12 +1,13 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
+import com.github.argon.sos.moreoptions.ui.msg.Message;
 import org.jetbrains.annotations.Nullable;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
@@ -15,7 +16,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
     private final static Logger log = Loggers.getLogger(BackupPanelController.class);
 
     @Nullable
-    private final MoreOptionsV4Config backupConfig;
+    private final MoreOptionsV5Config backupConfig;
     private final Window<BackupDialog> backupDialog;
     private final MoreOptionsPanel backupMoreOptionsPanel;
     private final MoreOptionsPanel moreOptionsPanel;
@@ -47,7 +48,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
         try {
             configStore.deleteBackups();
         } catch (Exception e) {
-            log.error("Could not delete backup config", e);
+            Message.errorDialog(e, "notification.backup.config.not.delete");
         }
 
         backupDialog.show();
@@ -56,11 +57,11 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
     public void closeDialog() {
         try {
             configStore.deleteBackups();
-            MoreOptionsV4Config defaultConfig = configStore.getDefaultConfig();
+            MoreOptionsV5Config defaultConfig = configStore.getDefaultConfig();
             moreOptionsPanel.setValue(defaultConfig);
             configApplier.applyToGameAndSave(defaultConfig);
         } catch (Exception e) {
-            log.error("Could not apply default config via backup dialog", e);
+            Message.errorDialog(e, "notification.backup.config.not.applyDefault");
         }
 
         backupDialog.hide();
@@ -69,7 +70,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
         try {
             undo(backupMoreOptionsPanel);
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.config.not.undo"), e);
+            Message.errorDialog(e, "notification.config.not.undo");
             return;
         }
 
@@ -77,7 +78,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
     }
 
     public void applyAndSaveAndExit() {
-        MoreOptionsV4Config readConfig = backupMoreOptionsPanel.getValue();
+        MoreOptionsV5Config readConfig = backupMoreOptionsPanel.getValue();
 
         // fallback
         if (readConfig == null) {
@@ -88,7 +89,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
             moreOptionsPanel.setValue(readConfig);
             configStore.deleteBackups();
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.backup.config.not.apply", MOD_INFO.name), e);
+            Message.errorDialog(e, "notification.backup.config.not.apply", MOD_INFO.name);
             return;
         }
 
@@ -101,7 +102,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
         try {
             backupMoreOptionsPanel.setValue(backupConfig);
         } catch (Exception e) {
-            log.error("Could not apply backup config for editing", e);
+            Message.errorDialog(e, "notification.backup.config.not.edit", MOD_INFO.name);
             return;
         }
 
@@ -119,7 +120,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
             moreOptionsPanel.setValue(backupConfig);
             configStore.deleteBackups();
         } catch (Exception e) {
-            log.error("Could not apply backup config", e);
+            Message.errorDialog(e, "notification.backup.config.not.apply", MOD_INFO.name);
         }
 
         backupDialog.hide();

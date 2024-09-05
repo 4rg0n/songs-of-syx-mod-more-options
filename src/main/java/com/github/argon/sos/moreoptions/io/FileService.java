@@ -29,7 +29,7 @@ public class FileService extends AbstractIOService {
     public final static Charset CHARSET = StandardCharsets.UTF_8;
 
     @Nullable
-    public String read(Path path) {
+    public String read(Path path) throws IOException {
         log.debug("Reading from file %s", path);
 
         if (!Files.exists(path)) {
@@ -41,12 +41,12 @@ public class FileService extends AbstractIOService {
         try (InputStream inputStream = Files.newInputStream(path)) {
             return readFromInputStream(inputStream);
         } catch (Exception e) {
-            log.error("Could not read file content from %s", path, e);
-            return null;
+            log.error("Could not read from file %s", path, e);
+            throw e;
         }
     }
 
-    public boolean write(Path path, String content) {
+    public void write(Path path, String content) throws IOException {
         log.debug("Writing into file %s", path);
         File parentDirectory = path.getParent().toFile();
 
@@ -54,22 +54,20 @@ public class FileService extends AbstractIOService {
             try {
                 Files.createDirectories(path.getParent());
             } catch (Exception e) {
-                log.info("Could not create directories for %s", path, e);
-                return false;
+                log.error("Could not create directories for %s", path);
+                throw e;
             }
         }
 
         try {
             Files.write(path, content.getBytes(CHARSET), StandardOpenOption.CREATE);
         } catch (IOException e) {
-            log.error("Could not write into %s", path, e);
-            return false;
+            log.error("Could not write into %s", path);
+            throw e;
         }
-
-        return true;
     }
 
-    public boolean delete(Path path) {
+    public boolean delete(Path path) throws IOException {
         log.debug("Deleting file %s", path);
         try {
             Files.delete(path);
@@ -77,7 +75,7 @@ public class FileService extends AbstractIOService {
             return true;
         } catch (Exception e) {
             log.error("Could not delete file %s", path, e);
-            return false;
+            throw e;
         }
 
         return true;

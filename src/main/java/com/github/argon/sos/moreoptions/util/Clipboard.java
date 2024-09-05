@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.util;
 
 import com.github.argon.sos.moreoptions.log.Logger;
 import com.github.argon.sos.moreoptions.log.Loggers;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -16,18 +17,15 @@ public class Clipboard {
 
     private final static Logger log = Loggers.getLogger(Clipboard.class);
 
-    public static boolean write(String string) {
-        try {
-            java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            StringSelection stringSelection = new StringSelection(string);
-
-            clipboard.setContents(stringSelection, stringSelection);
-        } catch (Exception e) {
-            log.warn("Could not write to system clipboard: %s", e.getMessage());
-            log.trace("", e);
-            return false;
+    public static void write(@Nullable String string) {
+        if (string == null) {
+            return;
         }
-        return true;
+
+        java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        StringSelection stringSelection = new StringSelection(string);
+
+        clipboard.setContents(stringSelection, stringSelection);
     }
 
     public static Optional<String> read() {

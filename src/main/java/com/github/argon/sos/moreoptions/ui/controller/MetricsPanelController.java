@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
+import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 import snake2d.util.file.FileManager;
@@ -17,34 +18,30 @@ public class MetricsPanelController extends AbstractUiController<MetricsTab> {
     public void openMetricsExportFolder() {
         Path exportFolderPath = element.getExportFolderPath();
         if (!exportFolderPath.toFile().exists()) {
-            notificator.notifyError(i18n.t("notification.metrics.folder.not.exists", exportFolderPath));
+            Message.notifyError("notification.metrics.folder.not.exists", exportFolderPath);
             return;
         }
 
         try {
             FileManager.openDesctop(exportFolderPath.toString());
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.metrics.folder.not.open", exportFolderPath), e);
+            Message.errorDialog(e, "notification.metrics.folder.not.open", exportFolderPath);
         }
     }
 
     public void copyMetricExportFilename() {
         Path exportFilePath = element.getExportFilePath();
 
-        try {
-            if (exportFilePath != null) {
-                boolean written = Clipboard.write(exportFilePath.toString());
+        if (exportFilePath == null) {
+            Message.notifyError("notification.metrics.file.path.not.copy");
+            return;
+        }
 
-                if (written) {
-                    notificator.notifySuccess(i18n.t("notification.metrics.file.path.copy", exportFilePath));
-                } else {
-                    notificator.notifyError(i18n.t("notification.metrics.file.path.not.copy"));
-                }
-            } else {
-                notificator.notifyError(i18n.t("notification.metrics.file.path.not.copy"));
-            }
+        try {
+            Clipboard.write(exportFilePath.toString());
+            Message.notifySuccess("notification.metrics.file.path.copy", exportFilePath);
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.metrics.file.path.not.copy"), e);
+            Message.errorDialog(e, "notification.metrics.file.path.not.copy");
         }
     }
 }

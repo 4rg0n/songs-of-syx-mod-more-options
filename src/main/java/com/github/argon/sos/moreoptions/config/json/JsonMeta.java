@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.config.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import lombok.*;
 
 @Data
@@ -13,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonMeta {
     @Builder.Default
-    private int version = MoreOptionsV4Config.VERSION;
+    private int version = MoreOptionsV5Config.VERSION;
     @Builder.Default
     private String logLevel = ConfigDefaults.LOG_LEVEL.getName();
 }

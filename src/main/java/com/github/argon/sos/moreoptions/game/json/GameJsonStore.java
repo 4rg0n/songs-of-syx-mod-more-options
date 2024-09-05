@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -115,7 +116,12 @@ public class GameJsonStore implements Phases {
 
     @Nullable
     private String load(Path filePath) {
-        String content = fileService.read(filePath);
+        String content = null;
+        try {
+            content = fileService.read(filePath);
+        } catch (IOException e) {
+            // ignore
+        }
 
         if (content != null) {
             put(filePath, content);

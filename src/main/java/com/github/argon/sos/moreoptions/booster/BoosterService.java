@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.booster;
 
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.api.GameFactionApi;
 import com.github.argon.sos.moreoptions.log.Logger;
@@ -49,7 +49,7 @@ public class BoosterService {
         return Optional.ofNullable(boosterCategories);
     }
 
-    public void setBoosterValues(MoreOptionsV4Config config) {
+    public void setBoosterValues(MoreOptionsV5Config config) {
        setBoosterValues(config.getBoosters());
     }
 
@@ -97,7 +97,7 @@ public class BoosterService {
         });
     }
 
-    public void reset(MoreOptionsV4Config config) {
+    public void reset(MoreOptionsV5Config config) {
         reset();
         setBoosterValues(config);
     }

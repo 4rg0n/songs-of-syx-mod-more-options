@@ -1,8 +1,9 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
+import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.util.Clipboard;
 
@@ -13,10 +14,6 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
     public MoreOptionsPanelController(MoreOptionsPanel moreOptionsPanel, FullWindow<MoreOptionsPanel> moreOptionsWindow) {
         super(moreOptionsPanel);
         this.moreOptionsWindow = moreOptionsWindow;
-
-        // update Notificator queue when More Options Modal is rendered
-        moreOptionsWindow.renderAction(notificator::update);
-        moreOptionsWindow.hideAction(notificator::close);
 
         moreOptionsPanel.getCancelButton().clickActionSet(this::cancelAndUndo);
         moreOptionsPanel.getApplyButton().clickActionSet(this::applyAndSave);
@@ -32,7 +29,7 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
         try {
             undo(element);
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.config.not.undo"), e);
+            Message.errorDialog(e, "notification.config.not.undo");
             return;
         }
 
@@ -42,10 +39,10 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
     public void applyAndSave() {
         try {
             if (!applyAndSave(element)) {
-                notificator.notifyError(i18n.t("notification.config.not.apply"));
+                Message.notifyError("notification.config.not.apply");
             }
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.config.not.apply"), e);
+            Message.errorDialog(e, "notification.config.not.apply");
         }
     }
 
@@ -53,36 +50,33 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
         try {
             undo(element);
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.config.not.undo"), e);
+            Message.errorDialog(e, "notification.config.not.undo");
         }
     }
 
     public void reloadAndApply() {
-        MoreOptionsV4Config moreOptionsConfig = configStore.reloadConfig().orElse(null);
+        MoreOptionsV5Config moreOptionsConfig = configStore.reloadConfig().orElse(null);
         if (moreOptionsConfig != null) {
             element.setValue(moreOptionsConfig);
-            notificator.notifySuccess(i18n.t("notification.config.reload"));
+            Message.notifySuccess(i18n.t("notification.config.reload"));
         } else {
-            notificator.notifyError(i18n.t("notification.config.not.reload"));
+            Message.notifyError("notification.config.not.reload");
         }
     }
 
     public void copyMoreOptionsConfigToClipboard() {
-        MoreOptionsV4Config moreOptionsConfig = element.getValue();
-        try {
-            if (moreOptionsConfig != null) {
-                boolean written = Clipboard.write(moreOptionsConfig.toJson());
+        MoreOptionsV5Config moreOptionsConfig = element.getValue();
 
-                if (written) {
-                    notificator.notifySuccess(i18n.t("notification.config.copy"));
-                } else {
-                    notificator.notifyError(i18n.t("notification.config.not.copy"));
-                }
-            } else {
-                notificator.notifyError(i18n.t("notification.config.not.copy"));
-            }
+        if (moreOptionsConfig == null) {
+            Message.notifyError("notification.config.not.copy");
+            return;
+        }
+
+        try {
+            Clipboard.write(moreOptionsConfig.toJson());
+            Message.notifySuccess("notification.config.copy");
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.config.not.copy"), e);
+            Message.errorDialog(e, "notification.config.not.copy");
         }
     }
 
@@ -91,21 +85,21 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
             AbstractConfigTab<?, ?> abstractConfigTab = element.getTabulator().getActiveTab();
             if (abstractConfigTab != null) {
                 abstractConfigTab.resetToDefault();
-                notificator.notifySuccess(i18n.t("notification.config.default.tab.apply", abstractConfigTab.getTitle()));
+                Message.notifySuccess("notification.config.default.tab.apply", abstractConfigTab.getTitle());
             } else {
-                notificator.notifyError(i18n.t("notification.config.default.tab.not.apply"));
+                Message.notifyError("notification.config.default.tab.not.apply");
             }
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.config.default.tab.not.apply"), e);
+            Message.errorDialog(e, "notification.config.default.tab.not.apply");
         }
     }
 
     public void resetEverythingToDefaultConfig() {
         try {
             element.setValue(configStore.getDefaultConfig());
-            notificator.notifySuccess(i18n.t("notification.config.default.all.apply"));
+            Message.notifySuccess("notification.config.default.all.apply");
         } catch (Exception e) {
-            notificator.notifyError(i18n.t("notification.config.default.all.not.apply"), e);
+            Message.errorDialog(e, "notification.config.default.all.not.apply");
         }
     }
 

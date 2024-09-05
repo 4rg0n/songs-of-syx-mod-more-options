@@ -110,7 +110,7 @@ public class I18n {
      * @return found translation for key or null
      */
     @Nullable
-    public String tn(String key, Object... args) {
+    public String tn(@Nullable String key, Object... args) {
         return translateNullable(key, args);
     }
     private String translate(String key, Object[] args) {
@@ -124,7 +124,11 @@ public class I18n {
     }
 
     @Nullable
-    private String translateNullable(String key, Object[] args) {
+    private String translateNullable(@Nullable String key, Object[] args) {
+        if (key == null) {
+            return null;
+        }
+
         ResourceBundle messages = i18nMessages.getMessages();
 
         if (messages == null) {

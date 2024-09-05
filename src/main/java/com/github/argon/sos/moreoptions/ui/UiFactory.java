@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui;
 
 
 import com.github.argon.sos.moreoptions.config.ConfigStore;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV4Config;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.i18n.I18n;
@@ -14,6 +14,7 @@ import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.properties.ModProperties;
 import com.github.argon.sos.moreoptions.properties.PropertiesStore;
 import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogController;
+import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
@@ -23,6 +24,7 @@ import init.sprite.SPRITES;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import util.gui.misc.GButt;
 import util.save.SaveFile;
@@ -61,7 +63,7 @@ public class UiFactory {
     private final MetricExporter metricExporter;
     private final UiMapper uiMapper;
 
-    public FullWindow<MoreOptionsPanel> buildMoreOptionsFullScreen(String title, MoreOptionsV4Config config) {
+    public FullWindow<MoreOptionsPanel> buildMoreOptionsFullScreen(String title, MoreOptionsV5Config config) {
         log.debug("Building '%s' full screen", title);
         MoreOptionsPanel moreOptionsPanel = buildMoreOptionsPanel(config)
             .availableWidth(FullWindow.FullView.WIDTH)
@@ -72,7 +74,7 @@ public class UiFactory {
         return new FullWindow<>(title, moreOptionsPanel, buttonMenu);
     }
 
-    public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV4Config config) {
+    public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV5Config config) {
         Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(config.getBoosters());
         Map<String, List<RacesTab.Entry>> raceEntries = uiMapper.toRacePanelEntries(config.getRaces().getLikings());
 
@@ -182,10 +184,10 @@ public class UiFactory {
         return uiShowRoom;
     }
 
-    public Window<ErrorDialog> buildErrorDialog(Throwable exception) {
+    public Window<ErrorDialog> buildErrorDialog(Throwable exception, @Nullable String message) {
         Window<ErrorDialog> errorDialog = new Window<>(
             i18n.t("ErrorDialog.title"),
-            new ErrorDialog(exception),
+            new ErrorDialog(exception, message),
             true);
 
         String errorReportUrl = propertiesStore.getModProperties()

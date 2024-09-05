@@ -9,11 +9,12 @@ import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
 /**
- * Uses custom JSON implementation
+ * Uses custom game JSON implementation
  *
  * Manages loading, saving and deleting of json files.
  * Serves as a layer for parsing raw json strings into objects.
@@ -36,14 +37,18 @@ public class JasonService implements JsonService {
                 try {
                     return JsonMapper.mapJson(json.getRoot(), clazz);
                 }  catch (Exception e) {
-                    log.warn("Could not map json from %s for %s", path, clazz.getSimpleName(), e);
-                    return null;
+                    throw new JsonException(String.format("Could not map json from %s for %s", path, clazz.getSimpleName()), e);
                 }
             });
     }
 
     public Optional<Json> load(Path path) {
-        String jsonString = fileService.read(path);
+        String jsonString;
+        try {
+            jsonString = fileService.read(path);
+        } catch (IOException e) {
+            throw new JsonException(String.format("Could not rad json file %s", path), e);
+        }
 
         if (jsonString == null) {
             return Optional.empty();
@@ -52,40 +57,36 @@ public class JasonService implements JsonService {
         try {
             return Optional.of(new Json(jsonString, jsonWriter));
         }  catch (Exception e) {
-            log.warn("Could not load json from %s", path, e);
-            return Optional.empty();
+            throw new JsonException(String.format("Could not load json from %s", path), e);
         }
     }
 
-    public boolean save(Path path, Object object) {
+    public void save(Path path, Object object) {
         Json json;
         try {
             JsonElement jsonElement = JsonMapper.mapObject(object);
             json = new Json(jsonElement, jsonWriter);
         } catch (Exception e) {
-            log.warn("Could not create json from object %s for saving in %s",
-                path, object.getClass().getSimpleName(), e);
-            return false;
+            throw new JsonException(String.format("Could not create json from object %s for saving in %s",
+                path, object.getClass().getSimpleName()), e);
         }
 
-        boolean success = save(path, json);
-        if (!success) {
-            log.warn("Could not write json from object %s", object.getClass().getSimpleName());
-        }
-
-        return success;
+        save(path, json);
     }
 
-    public boolean save(Path path, Json json) {
+    public void save(Path path, Json json) {
         try {
-            return fileService.write(path, json.write());
+            fileService.write(path, json.write());
         } catch (Exception e) {
-            log.warn("Could not write json to into %s", path, e);
-            return false;
+            throw new JsonException(String.format("Could not write json file %s", path), e);
         }
     }
 
     public boolean delete(Path path) {
-        return fileService.delete(path);
+        try {
+            return fileService.delete(path);
+        } catch (Exception e) {
+            throw new JsonException(String.format("Could not delete json file %s", path), e);
+        }
     }
 }

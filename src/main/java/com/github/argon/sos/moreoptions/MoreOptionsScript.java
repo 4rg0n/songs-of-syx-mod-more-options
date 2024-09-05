@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.moreoptions.aspect.annotation.OnErrorShowDialog;
 import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
@@ -15,6 +16,7 @@ import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
+import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
 import init.paths.PATHS;
 import lombok.NoArgsConstructor;
@@ -62,6 +64,7 @@ public final class MoreOptionsScript extends AbstractScript {
             .register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance())
             .register(Phase.ON_GAME_SAVED, ConfigStore.getInstance())
             .register(Phase.ON_GAME_SAVE_RELOADED, MetricExporter.getInstance())
+			.register(Phase.ON_GAME_UPDATE, Notificator.getInstance())
             .register(Phase.ON_CRASH, MetricScheduler.getInstance())
             .register(Phase.ON_CRASH, ConfigStore.getInstance());
 	}
@@ -80,6 +83,7 @@ public final class MoreOptionsScript extends AbstractScript {
 			.orElse(Loggers.LOG_LEVEL_DEFAULT);
 	}
 
+	@OnErrorShowDialog
 	@Override
 	public void onViewSetup() {
 		super.onViewSetup();

@@ -1,3 +1,4 @@
+<!-- This is required for making Aspect Oriented Programming work. It defines all "aspects" with their class name.  -->
 <aspectj>
     <aspects>
         <aspect name="com.github.argon.sos.moreoptions.aspect.OnErrorShowDialogAspect"/>

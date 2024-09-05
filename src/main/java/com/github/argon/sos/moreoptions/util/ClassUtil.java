@@ -1,7 +1,10 @@
 package com.github.argon.sos.moreoptions.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClassUtil {
     public static boolean instanceOf(Object object, Class<?> clazz) {
         return instanceOf(object.getClass(), clazz);
