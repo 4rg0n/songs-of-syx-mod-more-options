@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.argon.sos</groupId>
+        <artifactId>songs-of-syx-mod-more-options</artifactId>
+        <version>3.0.0</version>
+    </parent>
+
+    <artifactId>mod</artifactId>
+
+    <properties>
+        <mod.name>More Options</mod.name>
+        <mod.description>Adds more options to the game :)</mod.description>
+        <mod.author>4rg0n and Senso</mod.author>
+        <mod.info></mod.info>
+    </properties>
+
+    <dependencies>
+        <!-- Lazy Developer -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
+
+        <!-- Data -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
