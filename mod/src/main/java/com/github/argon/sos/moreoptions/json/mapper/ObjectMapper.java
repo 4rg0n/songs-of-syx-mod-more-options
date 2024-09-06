@@ -1,14 +1,14 @@
 package com.github.argon.sos.moreoptions.json.mapper;
 
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.annotation.JsonIgnore;
 import com.github.argon.sos.moreoptions.json.annotation.JsonProperty;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.ClassUtil;
-import com.github.argon.sos.moreoptions.util.ReflectionUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -20,10 +20,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import static com.github.argon.sos.mod.sdk.util.MethodUtil.*;
+import static com.github.argon.sos.mod.sdk.util.ReflectionUtil.getAnnotation;
 import static com.github.argon.sos.moreoptions.json.util.JsonUtil.toJsonEKey;
-import static com.github.argon.sos.moreoptions.util.MethodUtil.*;
-import static com.github.argon.sos.moreoptions.util.ReflectionUtil.getAnnotation;
-
 public class ObjectMapper implements Mapper<JsonObject> {
 
     private final static Logger log = Loggers.getLogger(ObjectMapper.class);

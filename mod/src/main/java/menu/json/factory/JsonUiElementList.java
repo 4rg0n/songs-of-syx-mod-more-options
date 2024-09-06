@@ -1,22 +1,21 @@
 package menu.json.factory;
 
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.json.element.JsonArray;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
-import menu.ui.UiFactory;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.List;
 
 @Getter
 public class JsonUiElementList<Value extends JsonElement, Element extends RENDEROBJ> implements JsonUiElement<JsonArray, Element> {
-    private final static Logger log = Loggers.getLogger(UiFactory.class);
+    private final static Logger log = Loggers.getLogger(JsonUiElementList.class);
 
     private final List<JsonUiElement<Value, Element>> elements;
 

@@ -3,7 +3,7 @@ package menu.json;
 import com.github.argon.sos.moreoptions.game.data.GameResources;
 import com.github.argon.sos.moreoptions.game.json.GameJsonService;
 import com.github.argon.sos.moreoptions.json.element.JsonArray;
-import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.mod.sdk.util.Lists;
 import init.paths.PATHS;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

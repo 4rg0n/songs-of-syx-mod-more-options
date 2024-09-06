@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.json;
 
 import com.github.argon.sos.moreoptions.io.ResourceService;
 import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
-import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.mod.sdk.util.Lists;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

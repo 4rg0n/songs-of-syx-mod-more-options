@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.json.element;
 
 import com.github.argon.sos.moreoptions.json.JsonPath;
-import com.github.argon.sos.moreoptions.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.ClassUtil;
 import lombok.EqualsAndHashCode;
 
 import java.util.*;

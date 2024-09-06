@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.json.util;
 
 import com.github.argon.sos.moreoptions.json.parser.JsonParser;
-import com.github.argon.sos.moreoptions.util.MethodUtil;
-import com.github.argon.sos.moreoptions.util.StringUtil;
+import com.github.argon.sos.mod.sdk.util.MethodUtil;
+import com.github.argon.sos.mod.sdk.util.StringUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;

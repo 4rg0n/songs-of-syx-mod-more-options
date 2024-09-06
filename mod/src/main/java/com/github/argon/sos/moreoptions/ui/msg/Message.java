@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.ui.msg;
 import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
-import com.github.argon.sos.moreoptions.util.ExceptionUtil;
+import com.github.argon.sos.mod.sdk.util.ExceptionUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ public class Message {
     }
 
     public static void notifyError(String translationKey, Object... args) {
-        Throwable ex = ExceptionUtil.extractThrowable(args);
+        Throwable ex = ExceptionUtil.extractThrowableLast(args);
 
         if (ex != null) {
             args = Arrays.copyOf(args, args.length - 1);

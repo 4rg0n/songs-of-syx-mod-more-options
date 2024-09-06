@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.json.mapper.jsone;
 
 import com.github.argon.sos.moreoptions.json.element.JsonString;
-import com.github.argon.sos.moreoptions.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.ClassUtil;
 import snake2d.util.file.JsonE;
 
 public class JsonEStringMapper implements JsonEMapper<JsonString> {

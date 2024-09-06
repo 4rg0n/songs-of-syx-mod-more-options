@@ -1,15 +1,15 @@
 package com.github.argon.sos.moreoptions.json.mapper;
 
 import com.github.argon.sos.moreoptions.json.element.JsonLong;
-import com.github.argon.sos.moreoptions.util.ClassCastUtil;
-import com.github.argon.sos.moreoptions.util.ClassUtil;
-import com.github.argon.sos.moreoptions.util.TypeUtil;
+import com.github.argon.sos.mod.sdk.util.ClassCastUtil;
+import com.github.argon.sos.mod.sdk.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.TypeUtil;
 
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import static com.github.argon.sos.moreoptions.util.TypeUtil.isAssignableFrom;
+import static com.github.argon.sos.mod.sdk.util.TypeUtil.isAssignableFrom;
 
 public class LongMapper implements Mapper<JsonLong> {
     @Override

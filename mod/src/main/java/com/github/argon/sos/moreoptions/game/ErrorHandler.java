@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.game;
 
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.phase.Phases;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.RequiredArgsConstructor;
 import snake2d.Errors;
 

@@ -1,6 +1,6 @@
 package menu;
 
-import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.mod.sdk.util.Lists;
 import game.GAME;
 import game.VERSION;
 import init.C;

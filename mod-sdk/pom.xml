@@ -4,12 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.argon.sos</groupId>
-        <artifactId>songs-of-syx-mod-more-options</artifactId>
-        <version>3.0.0</version>
+        <groupId>com.github.argon.sos</groupId>
+        <artifactId>songs-of-syx-mod-parent</artifactId>
+        <version>local</version>
     </parent>
 
-    <artifactId>mod-sdk</artifactId>
+    <version>0.1.0</version>
+    <artifactId>sos-mod-sdk</artifactId>
 
     <properties>
         <mod.version>${project.version}</mod.version>
@@ -18,4 +19,28 @@
         <mod.author>4rg0n</mod.author>
         <mod.info></mod.info>
     </properties>
+
+    <dependencies>
+        <!-- Lazy Developer -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+        <!-- Lazy Developer -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Data -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
 </project>

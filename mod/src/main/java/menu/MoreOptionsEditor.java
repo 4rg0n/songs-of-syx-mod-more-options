@@ -5,7 +5,7 @@ import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.ButtonMenu;
 import com.github.argon.sos.moreoptions.game.ui.Switcher;
 import com.github.argon.sos.moreoptions.game.ui.Tabulator;
-import com.github.argon.sos.moreoptions.util.Maps;
+import com.github.argon.sos.mod.sdk.util.Maps;
 import init.C;
 import init.paths.PATHS;
 import lombok.Getter;

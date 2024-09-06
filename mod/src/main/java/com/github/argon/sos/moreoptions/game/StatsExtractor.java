@@ -1,11 +1,11 @@
 package com.github.argon.sos.moreoptions.game;
 
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.util.Lists;
+import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.metric.Metric;
 import com.github.argon.sos.moreoptions.metric.MetricCollector;
-import com.github.argon.sos.moreoptions.util.Lists;
-import com.github.argon.sos.moreoptions.util.Maps;
 import init.race.RACES;
 import init.race.Race;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,10 @@ import settlement.stats.stat.SETT_STATISTICS;
 import settlement.stats.stat.STAT;
 import snake2d.util.sets.LIST;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * For collecting game stats.

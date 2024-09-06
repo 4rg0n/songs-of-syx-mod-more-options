@@ -12,7 +12,7 @@ import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersPresetsSection;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersSection;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
-import com.github.argon.sos.moreoptions.util.Clipboard;
+import com.github.argon.sos.mod.sdk.util.Clipboard;
 import game.faction.Faction;
 import snake2d.util.misc.STRING_RECIEVER;
 

@@ -1,14 +1,14 @@
 package com.github.argon.sos.moreoptions.json.mapper;
 
 import com.github.argon.sos.moreoptions.json.element.JsonDouble;
-import com.github.argon.sos.moreoptions.util.ClassCastUtil;
-import com.github.argon.sos.moreoptions.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.ClassCastUtil;
+import com.github.argon.sos.mod.sdk.util.ClassUtil;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import static com.github.argon.sos.moreoptions.util.TypeUtil.isAssignableFrom;
+import static com.github.argon.sos.mod.sdk.util.TypeUtil.isAssignableFrom;
 
 public class DoubleMapper implements Mapper<JsonDouble> {
     @Override

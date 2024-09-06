@@ -3,7 +3,7 @@ package menu.json.factory;
 import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
-import com.github.argon.sos.moreoptions.util.StringUtil;
+import com.github.argon.sos.mod.sdk.util.StringUtil;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.nio.file.Path;

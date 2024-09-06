@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
 import com.github.argon.sos.moreoptions.game.action.*;
-import com.github.argon.sos.moreoptions.log.Level;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.mod.sdk.log.Level;
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import game.GAME;
 import init.C;
 import init.sprite.SPRITES;

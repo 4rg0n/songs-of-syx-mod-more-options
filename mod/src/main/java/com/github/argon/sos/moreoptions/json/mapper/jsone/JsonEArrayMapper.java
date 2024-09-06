@@ -3,8 +3,8 @@ package com.github.argon.sos.moreoptions.json.mapper.jsone;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.element.*;
 import com.github.argon.sos.moreoptions.json.mapper.JsonMapperException;
-import com.github.argon.sos.moreoptions.util.ClassUtil;
-import com.github.argon.sos.moreoptions.util.PrimitivesCastUtil;
+import com.github.argon.sos.mod.sdk.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.PrimitivesCastUtil;
 import snake2d.util.file.JsonE;
 
 import java.util.Collections;

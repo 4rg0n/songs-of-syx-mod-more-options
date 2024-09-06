@@ -4,7 +4,7 @@ import com.github.argon.sos.moreoptions.game.json.GameJsonStore;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.element.*;
-import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.mod.sdk.util.Lists;
 import menu.json.JsonUiException;
 
 import java.nio.file.Path;

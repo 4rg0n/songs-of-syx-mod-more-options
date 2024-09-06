@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.booster;
 
 import com.github.argon.sos.moreoptions.config.domain.Range;
-import com.github.argon.sos.moreoptions.util.MathUtil;
+import com.github.argon.sos.mod.sdk.util.MathUtil;
 import game.boosting.BSourceInfo;
 import game.boosting.Boostable;
 import lombok.AccessLevel;

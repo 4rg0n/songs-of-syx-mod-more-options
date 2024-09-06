@@ -2,13 +2,13 @@ package com.github.argon.sos.moreoptions.json.mapper;
 
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.element.JsonArray;
-import com.github.argon.sos.moreoptions.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.ClassUtil;
 
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.github.argon.sos.moreoptions.util.TypeUtil.isAssignableFrom;
+import static com.github.argon.sos.mod.sdk.util.TypeUtil.isAssignableFrom;
 
 public class ListMapper implements Mapper<JsonArray> {
     @Override

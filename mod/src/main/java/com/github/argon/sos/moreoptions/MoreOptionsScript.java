@@ -1,5 +1,8 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.mod.sdk.log.Level;
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.aspect.annotation.OnErrorShowDialog;
 import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
@@ -8,16 +11,13 @@ import com.github.argon.sos.moreoptions.game.AbstractScript;
 import com.github.argon.sos.moreoptions.game.json.GameJsonStore;
 import com.github.argon.sos.moreoptions.game.ui.Window;
 import com.github.argon.sos.moreoptions.i18n.I18nMessages;
-import com.github.argon.sos.moreoptions.log.Level;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
-import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
+import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import init.paths.PATHS;
 import lombok.NoArgsConstructor;
 import util.info.INFO;
@@ -31,7 +31,9 @@ import java.nio.file.Path;
 @NoArgsConstructor
 @SuppressWarnings("unused") // used by the game via reflection
 public final class MoreOptionsScript extends AbstractScript {
+
 	private final static Logger log = Loggers.getLogger(MoreOptionsScript.class);
+
 	public final static INFO MOD_INFO = new INFO("More Options", "Adds more options to the game :)");
 	private final ConfigStore configStore = ConfigStore.getInstance();
 	private final ConfigApplier configApplier = ConfigApplier.getInstance();
@@ -83,8 +85,8 @@ public final class MoreOptionsScript extends AbstractScript {
 			.orElse(Loggers.LOG_LEVEL_DEFAULT);
 	}
 
-	@OnErrorShowDialog
 	@Override
+	@OnErrorShowDialog
 	public void onViewSetup() {
 		super.onViewSetup();
 

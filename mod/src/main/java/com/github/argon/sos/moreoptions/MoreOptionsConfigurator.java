@@ -1,24 +1,21 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.mod.sdk.log.Level;
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.util.Lists;
+import com.github.argon.sos.mod.sdk.util.MathUtil;
 import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.game.action.Action;
 import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.log.Level;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.phase.Phases;
-import com.github.argon.sos.moreoptions.util.Lists;
-import com.github.argon.sos.moreoptions.util.MathUtil;
 import game.audio.Ambiance;
 import game.events.EVENTS;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
 import settlement.weather.WeatherThing;
 import world.battle.AC_Resolver;
@@ -32,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MoreOptionsConfigurator implements Phases {
 
+    private final static Logger log = Loggers.getLogger(MoreOptionsConfigurator.class);
+
     @Getter(lazy = true)
     private final static MoreOptionsConfigurator instance = new MoreOptionsConfigurator(
         GameApis.getInstance(),
@@ -39,8 +38,6 @@ public class MoreOptionsConfigurator implements Phases {
         MetricExporter.getInstance(),
         MetricScheduler.getInstance()
     );
-
-    private final static Logger log = Loggers.getLogger(MoreOptionsConfigurator.class);
 
     private final GameApis gameApis;
 

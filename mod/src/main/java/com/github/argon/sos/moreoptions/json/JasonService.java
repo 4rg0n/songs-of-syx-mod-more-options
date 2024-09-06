@@ -1,11 +1,11 @@
 package com.github.argon.sos.moreoptions.json;
 
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.writer.JsonWriter;
 import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

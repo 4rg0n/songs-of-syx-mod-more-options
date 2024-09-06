@@ -4,7 +4,7 @@ import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
-import com.github.argon.sos.moreoptions.log.Level;
+import com.github.argon.sos.mod.sdk.log.Level;
 import lombok.*;
 
 @Data

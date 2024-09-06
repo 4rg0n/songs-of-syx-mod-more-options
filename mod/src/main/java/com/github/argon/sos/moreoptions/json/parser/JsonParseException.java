@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.json.parser;
 
 import com.github.argon.sos.moreoptions.json.Json;
-import com.github.argon.sos.moreoptions.util.StringUtil;
+import com.github.argon.sos.mod.sdk.util.StringUtil;
 
 public class JsonParseException extends RuntimeException {
     public JsonParseException() {

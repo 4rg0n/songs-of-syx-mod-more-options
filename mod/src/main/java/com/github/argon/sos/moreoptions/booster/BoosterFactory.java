@@ -1,13 +1,13 @@
 package com.github.argon.sos.moreoptions.booster;
 
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.i18n.I18n;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
-import com.github.argon.sos.moreoptions.util.Lists;
 import game.boosting.BOOSTING;
 import game.boosting.BSourceInfo;
 import game.boosting.BoostSpec;

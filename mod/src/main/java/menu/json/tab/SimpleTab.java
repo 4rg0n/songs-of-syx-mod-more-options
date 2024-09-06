@@ -1,14 +1,12 @@
 package menu.json.tab;
 
+import com.github.argon.sos.mod.sdk.util.Clipboard;
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.Spacer;
 import com.github.argon.sos.moreoptions.game.ui.Table;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.Clipboard;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import menu.json.JsonUi;
@@ -24,8 +22,6 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public class SimpleTab extends AbstractTab {
-
-    private final static Logger log = Loggers.getLogger(SimpleTab.class);
 
     private JsonUiTemplate jsonUiTemplate;
 

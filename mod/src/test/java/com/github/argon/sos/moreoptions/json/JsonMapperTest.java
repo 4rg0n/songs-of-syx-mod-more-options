@@ -4,7 +4,7 @@ import com.github.argon.sos.moreoptions.io.ResourceService;
 import com.github.argon.sos.moreoptions.json.annotation.JsonProperty;
 import com.github.argon.sos.moreoptions.json.element.*;
 import com.github.argon.sos.moreoptions.json.mapper.TypeInfo;
-import com.github.argon.sos.moreoptions.util.Maps;
+import com.github.argon.sos.mod.sdk.util.Maps;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 import snake2d.util.file.JsonE;

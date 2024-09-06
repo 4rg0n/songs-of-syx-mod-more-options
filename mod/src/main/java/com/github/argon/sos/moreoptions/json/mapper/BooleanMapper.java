@@ -4,7 +4,7 @@ import com.github.argon.sos.moreoptions.json.element.JsonBoolean;
 
 import java.util.Arrays;
 
-import static com.github.argon.sos.moreoptions.util.ClassUtil.sameAs;
+import static com.github.argon.sos.mod.sdk.util.ClassUtil.sameAs;
 
 public class BooleanMapper implements Mapper<JsonBoolean> {
     @Override

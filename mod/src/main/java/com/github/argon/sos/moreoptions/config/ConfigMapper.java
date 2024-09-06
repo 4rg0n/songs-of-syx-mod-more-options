@@ -7,7 +7,7 @@ import com.github.argon.sos.moreoptions.config.json.JsonMeta;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
-import com.github.argon.sos.moreoptions.log.Level;
+import com.github.argon.sos.mod.sdk.log.Level;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 

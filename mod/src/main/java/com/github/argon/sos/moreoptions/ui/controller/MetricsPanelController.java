@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
-import com.github.argon.sos.moreoptions.util.Clipboard;
+import com.github.argon.sos.mod.sdk.util.Clipboard;
 import snake2d.util.file.FileManager;
 
 import java.nio.file.Path;

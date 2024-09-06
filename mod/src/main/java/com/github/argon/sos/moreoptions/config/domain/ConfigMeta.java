@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.config.domain;
 
-import com.github.argon.sos.moreoptions.log.Level;
-import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.mod.sdk.log.Level;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import lombok.*;
 
 @Data

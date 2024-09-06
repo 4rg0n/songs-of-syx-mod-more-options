@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.aspect;
 
 import com.github.argon.sos.moreoptions.aspect.annotation.OnErrorShowDialog;
 import com.github.argon.sos.moreoptions.ui.msg.Message;
-import com.github.argon.sos.moreoptions.util.ExceptionUtil;
+import com.github.argon.sos.mod.sdk.util.ExceptionUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

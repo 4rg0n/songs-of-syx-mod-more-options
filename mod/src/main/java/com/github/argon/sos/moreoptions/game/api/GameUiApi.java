@@ -2,12 +2,12 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.moreoptions.game.ui.NonHidingPopup;
 import com.github.argon.sos.moreoptions.game.ui.NotificationPopup;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.phase.Phase;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.UninitializedException;
-import com.github.argon.sos.moreoptions.util.ReflectionUtil;
+import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

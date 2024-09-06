@@ -2,15 +2,15 @@ package com.github.argon.sos.moreoptions.json.mapper;
 
 import com.github.argon.sos.moreoptions.json.JsonMapper;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
-import com.github.argon.sos.moreoptions.util.ClassCastUtil;
-import com.github.argon.sos.moreoptions.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.ClassCastUtil;
+import com.github.argon.sos.mod.sdk.util.ClassUtil;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.argon.sos.moreoptions.util.TypeUtil.getRawType;
-import static com.github.argon.sos.moreoptions.util.TypeUtil.isAssignableFrom;
+import static com.github.argon.sos.mod.sdk.util.TypeUtil.getRawType;
+import static com.github.argon.sos.mod.sdk.util.TypeUtil.isAssignableFrom;
 
 public class MapMapper implements Mapper<JsonObject> {
     @Override

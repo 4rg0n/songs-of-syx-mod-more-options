@@ -1,10 +1,8 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
-import com.github.argon.sos.moreoptions.log.Level;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,8 +16,6 @@ public class ConfigApplier implements Phases {
         ConfigStore.getInstance(),
         MoreOptionsConfigurator.getInstance()
     );
-
-    private final static Logger log = Loggers.getLogger(ConfigApplier.class);
 
     private final ConfigStore configStore;
 

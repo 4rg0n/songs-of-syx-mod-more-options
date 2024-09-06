@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.config.json;
 
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.config.ConfigFactory;
 import com.github.argon.sos.moreoptions.config.ConfigMapper;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
@@ -12,10 +14,7 @@ import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import org.jetbrains.annotations.Nullable;
-
 
 public class JsonConfigVersionHandler {
     private final static Logger log = Loggers.getLogger(JsonConfigVersionHandler.class);

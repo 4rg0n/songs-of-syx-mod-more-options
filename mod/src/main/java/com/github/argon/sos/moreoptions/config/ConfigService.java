@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
@@ -14,8 +16,6 @@ import com.github.argon.sos.moreoptions.io.FileService;
 import com.github.argon.sos.moreoptions.json.JasonService;
 import com.github.argon.sos.moreoptions.json.JsonException;
 import com.github.argon.sos.moreoptions.json.parser.JsonParseException;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import lombok.Getter;
 
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 
 public class ConfigService implements Phases {
     private final static Logger log = Loggers.getLogger(ConfigService.class);

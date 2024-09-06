@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game;
 
-import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.mod.sdk.util.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 public class Wildcard {
     private final List<String> parts;
-
     private final static String DELIMITER = "_";
     private final static String WILDCARD = "*";
 

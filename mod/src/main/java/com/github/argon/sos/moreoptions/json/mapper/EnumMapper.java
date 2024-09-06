@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.json.mapper;
 
 import com.github.argon.sos.moreoptions.json.element.JsonString;
 
-import static com.github.argon.sos.moreoptions.util.ClassCastUtil.toEnum;
+import static com.github.argon.sos.mod.sdk.util.ClassCastUtil.toEnum;
 
 public class EnumMapper implements Mapper<JsonString> {
     @Override

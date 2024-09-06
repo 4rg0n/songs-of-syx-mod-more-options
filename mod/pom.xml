@@ -4,12 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.argon.sos</groupId>
-        <artifactId>songs-of-syx-mod-more-options</artifactId>
-        <version>3.0.0</version>
+        <groupId>com.github.argon.sos</groupId>
+        <artifactId>songs-of-syx-mod-parent</artifactId>
+        <version>local</version>
     </parent>
 
-    <artifactId>mod</artifactId>
+    <version>3.0.0</version>
+    <artifactId>sos-mod-more-options</artifactId>
 
     <properties>
         <mod.name>More Options</mod.name>
@@ -19,6 +20,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.github.argon.sos</groupId>
+            <artifactId>sos-mod-sdk</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+
         <!-- Lazy Developer -->
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -28,12 +35,91 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
         </dependency>
-
-        <!-- Data -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+
+            <!-- Build a fat / uber jar containing all dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <!-- These dependencies have to be excluded, because they are provided by the sos-mod-sdk -->
+                                <excludes>
+                                    <exclude>com.songsofsyx:*</exclude>
+                                    <exclude>org.jetbrains:*</exclude>
+                                    <exclude>org.mapstruct:*</exclude>
+                                    <exclude>com.fasterxml.jackson.core:*</exclude>
+                                    <exclude>com.github.argon.sos:sos-mod-sdk</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- AspectJ -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.14.0</version>
+                <configuration>
+                    <complianceLevel>1.8</complianceLevel>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <showWeaveInfo>true</showWeaveInfo>
+                    <verbose>true</verbose>
+                    <Xlint>ignore</Xlint>
+                    <encoding>UTF-8 </encoding>
+
+                    <!-- IMPORTANT for Lombok -->
+                    <excludes>
+                        <exclude>**/*.java</exclude>
+                    </excludes>
+                    <forceAjcCompile>true</forceAjcCompile>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <weaveDirectories>
+                                <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
+                            </weaveDirectories>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <weaveDirectories>
+                                <weaveDirectory>${project.build.directory}/test-classes</weaveDirectory>
+                            </weaveDirectories>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

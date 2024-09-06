@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.json.writer;
 
 import com.github.argon.sos.moreoptions.json.element.*;
-import com.github.argon.sos.moreoptions.util.StringUtil;
+import com.github.argon.sos.mod.sdk.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

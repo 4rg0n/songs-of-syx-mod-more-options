@@ -7,7 +7,7 @@ import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
-import com.github.argon.sos.moreoptions.util.Maps;
+import com.github.argon.sos.mod.sdk.util.Maps;
 import game.boosting.BOOSTABLE_O;
 import game.boosting.Boostable;
 import game.faction.FACTIONS;

@@ -10,7 +10,7 @@ import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
-import com.github.argon.sos.moreoptions.util.Clipboard;
+import com.github.argon.sos.mod.sdk.util.Clipboard;
 import snake2d.util.file.FileManager;
 
 import java.nio.file.Path;

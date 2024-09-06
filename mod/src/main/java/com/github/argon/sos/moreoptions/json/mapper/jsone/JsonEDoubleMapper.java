@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.json.mapper.jsone;
 
 import com.github.argon.sos.moreoptions.json.element.JsonDouble;
-import com.github.argon.sos.moreoptions.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.ClassUtil;
 import snake2d.util.file.JsonE;
 
 public class JsonEDoubleMapper implements JsonEMapper<JsonDouble> {

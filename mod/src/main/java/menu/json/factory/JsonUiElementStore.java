@@ -3,7 +3,7 @@ package menu.json.factory;
 import com.github.argon.sos.moreoptions.game.action.Resettable;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
-import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.mod.sdk.util.Lists;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import snake2d.util.gui.renderable.RENDEROBJ;

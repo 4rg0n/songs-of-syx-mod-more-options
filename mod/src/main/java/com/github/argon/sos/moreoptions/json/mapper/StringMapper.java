@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.json.mapper;
 
 import com.github.argon.sos.moreoptions.json.element.JsonString;
 
-import static com.github.argon.sos.moreoptions.util.ClassUtil.instanceOf;
+import static com.github.argon.sos.mod.sdk.util.ClassUtil.instanceOf;
 
 public class StringMapper implements Mapper<JsonString> {
 

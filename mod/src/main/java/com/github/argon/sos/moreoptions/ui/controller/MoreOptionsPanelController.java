@@ -5,7 +5,7 @@ import com.github.argon.sos.moreoptions.game.ui.FullWindow;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
-import com.github.argon.sos.moreoptions.util.Clipboard;
+import com.github.argon.sos.mod.sdk.util.Clipboard;
 
 public class MoreOptionsPanelController extends AbstractUiController<MoreOptionsPanel> {
 

@@ -4,7 +4,7 @@ import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.element.JsonDouble;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.json.element.JsonLong;
-import com.github.argon.sos.moreoptions.util.StringUtil;
+import com.github.argon.sos.mod.sdk.util.StringUtil;
 
 /**
  * For parsing any kind of simple values: Double, Long, Tuple, String

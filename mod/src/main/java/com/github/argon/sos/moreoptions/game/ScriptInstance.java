@@ -1,7 +1,5 @@
 package com.github.argon.sos.moreoptions.game;
 
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
 import com.github.argon.sos.moreoptions.phase.Phases;
 import com.github.argon.sos.moreoptions.phase.state.State;
 import com.github.argon.sos.moreoptions.phase.state.StateManager;
@@ -23,8 +21,6 @@ import java.io.IOException;
  */
 @RequiredArgsConstructor
 public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
-
-	private final static Logger log = Loggers.getLogger(ScriptInstance.class);
 
 	private final Phases scriptPhases;
 	private final StateManager stateManager = StateManager.getInstance();

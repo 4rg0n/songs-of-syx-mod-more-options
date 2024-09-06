@@ -1,11 +1,11 @@
 package com.github.argon.sos.moreoptions.game.data;
 
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.util.Lists;
+import com.github.argon.sos.mod.sdk.util.StringUtil;
 import com.github.argon.sos.moreoptions.game.json.GameJsonService;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
-import com.github.argon.sos.moreoptions.log.Logger;
-import com.github.argon.sos.moreoptions.log.Loggers;
-import com.github.argon.sos.moreoptions.util.Lists;
-import com.github.argon.sos.moreoptions.util.StringUtil;
 import init.paths.PATH;
 import lombok.AccessLevel;
 import lombok.Getter;

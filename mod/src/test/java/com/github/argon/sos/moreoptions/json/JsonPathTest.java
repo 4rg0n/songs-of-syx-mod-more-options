@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.json;
 
 import com.github.argon.sos.moreoptions.json.element.*;
-import com.github.argon.sos.moreoptions.util.Maps;
+import com.github.argon.sos.mod.sdk.util.Maps;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.json.mapper;
 
-import com.github.argon.sos.moreoptions.util.ReflectionUtil;
-import com.github.argon.sos.moreoptions.util.TypeUtil;
+import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
+import com.github.argon.sos.mod.sdk.util.TypeUtil;
 import lombok.Getter;
 
 import java.lang.reflect.ParameterizedType;

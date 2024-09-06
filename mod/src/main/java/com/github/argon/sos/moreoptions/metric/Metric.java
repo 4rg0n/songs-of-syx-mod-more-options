@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.metric;
 
-import com.github.argon.sos.moreoptions.util.Lists;
+import com.github.argon.sos.mod.sdk.util.Lists;
 import game.time.TIME;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
