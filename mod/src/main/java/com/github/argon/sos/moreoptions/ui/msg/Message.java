@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.msg;
 
 import com.github.argon.sos.moreoptions.game.ui.Window;
-import com.github.argon.sos.moreoptions.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.mod.sdk.util.ExceptionUtil;
 import lombok.AccessLevel;

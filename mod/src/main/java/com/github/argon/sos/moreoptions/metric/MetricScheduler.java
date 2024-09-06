@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.metric;
 
-import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import lombok.*;

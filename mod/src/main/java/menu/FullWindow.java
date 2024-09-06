@@ -1,9 +1,9 @@
 package menu;
 
-import com.github.argon.sos.moreoptions.game.action.Action;
-import com.github.argon.sos.moreoptions.game.action.BiAction;
-import com.github.argon.sos.moreoptions.game.action.Refreshable;
-import com.github.argon.sos.moreoptions.game.action.Renderable;
+import com.github.argon.sos.mod.sdk.game.action.Action;
+import com.github.argon.sos.mod.sdk.game.action.BiAction;
+import com.github.argon.sos.mod.sdk.game.action.Refreshable;
+import com.github.argon.sos.mod.sdk.game.action.Renderable;
 import com.github.argon.sos.moreoptions.game.ui.ColorBox;
 import com.github.argon.sos.moreoptions.game.ui.Label;
 import com.github.argon.sos.moreoptions.game.ui.Switcher;

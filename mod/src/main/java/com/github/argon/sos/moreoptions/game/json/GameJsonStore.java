@@ -2,12 +2,12 @@ package com.github.argon.sos.moreoptions.game.json;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.moreoptions.io.FileService;
+import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.moreoptions.json.Json;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import com.github.argon.sos.moreoptions.json.parser.JsonParseException;
 import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
-import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package menu.ui;
 
-import com.github.argon.sos.moreoptions.game.action.Hideable;
-import com.github.argon.sos.moreoptions.game.action.Showable;
+import com.github.argon.sos.mod.sdk.game.action.Hideable;
+import com.github.argon.sos.mod.sdk.game.action.Showable;
 import init.C;
 import lombok.Getter;
 import lombok.Setter;

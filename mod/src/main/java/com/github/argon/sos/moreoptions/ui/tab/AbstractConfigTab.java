@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.ui.tab;
 
-import com.github.argon.sos.moreoptions.game.action.Action;
-import com.github.argon.sos.moreoptions.game.action.Refreshable;
-import com.github.argon.sos.moreoptions.game.action.Valuable;
+import com.github.argon.sos.mod.sdk.game.action.Action;
+import com.github.argon.sos.mod.sdk.game.action.Refreshable;
+import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

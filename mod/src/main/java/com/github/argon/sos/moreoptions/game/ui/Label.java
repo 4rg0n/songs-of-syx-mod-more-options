@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.action.Action;
+import com.github.argon.sos.mod.sdk.game.action.Action;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Setter;

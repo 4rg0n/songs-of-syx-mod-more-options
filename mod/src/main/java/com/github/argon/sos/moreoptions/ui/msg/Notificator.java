@@ -2,8 +2,8 @@ package com.github.argon.sos.moreoptions.ui.msg;
 
 import com.github.argon.sos.moreoptions.game.api.GameUiApi;
 import com.github.argon.sos.moreoptions.game.ui.Notification;
-import com.github.argon.sos.moreoptions.phase.Phases;
-import com.github.argon.sos.moreoptions.phase.Updateable;
+import com.github.argon.sos.mod.sdk.phase.Phases;
+import com.github.argon.sos.mod.sdk.phase.Updateable;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import init.C;

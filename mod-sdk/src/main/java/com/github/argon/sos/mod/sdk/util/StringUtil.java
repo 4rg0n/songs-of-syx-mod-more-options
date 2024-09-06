@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,27 +18,53 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StringUtil {
 
+    private static final Pattern numericPattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+    private static final Pattern integerPattern = Pattern.compile("-?\\d+?");
+    private static final Pattern decimalPattern = Pattern.compile("-?\\d+\\.\\d+?");
+
+    /**
+     * Transforms multiple objects into a string.
+     *
+     * @param objects to transform into a string
+     * @return build string
+     */
     public static String toString(Object[] objects) {
         return Arrays.toString(objects);
     }
 
+    /**
+     * Transforms a key value map into a string.
+     *
+     * @param map to transform into a string
+     * @return build string
+     */
     public static String toString(Map<?, ?> map) {
         return map.keySet().stream()
             .map(key -> key + "=" + map.get(key))
             .collect(Collectors.joining(", ", "{", "}"));
     }
 
-    public static String removeTrailing(final String str, String toRemove) {
-        if (!str.endsWith(toRemove)) {
-            return str;
+    /**
+     * Removes a given part from the end of a string
+     *
+     * @param string to remove from the end
+     * @param toRemove the part to remove
+     * @return string with removed part
+     */
+    public static String removeTrailing(final String string, String toRemove) {
+        if (!string.endsWith(toRemove)) {
+            return string;
         }
 
-        return str.substring(0, str.length() - toRemove.length());
+        return string.substring(0, string.length() - toRemove.length());
     }
 
+    /**
+     * @return e.g. Test to test
+     */
     public static String unCapitalize(String text) {
         if (text.isEmpty()) {
-            return "";
+            return text;
         }
 
         if (text.length() == 1) {
@@ -47,6 +74,14 @@ public class StringUtil {
         return Character.toLowerCase(text.charAt(0)) + text.substring(1);
     }
 
+    /**
+     * Extracts the last part of a segmented string.
+     * E.g. for "test.foo.bar" and "\\." as delimiter it would return "bar".
+     *
+     * @param text to extract the last part from
+     * @param delimiterRegex to split the text
+     * @return last part split by the delimiter
+     */
     public static String extractTail(String text, String delimiterRegex) {
         String[] split = text.split(delimiterRegex);
 
@@ -57,6 +92,12 @@ public class StringUtil {
         return split[split.length - 1];
     }
 
+    /**
+     * Will transform primitive array types into strings.
+     *
+     * @param arg the primitive array
+     * @return built string
+     */
     public static String toStringPrimitiveArray(@Nullable Object arg) {
         if (arg == null) {
             return "null";
@@ -81,6 +122,12 @@ public class StringUtil {
         return arg.toString();
     }
 
+    /**
+     * Will transform an array of any object to a string.
+     *
+     * @param args array with object to transform
+     * @return built string
+     */
     public static Object[] stringifyValues(Object[] args) {
         Object[] stringArgs = new Object[args.length];
 
@@ -92,13 +139,21 @@ public class StringUtil {
         return stringArgs;
     }
 
+    /**
+     * Will transform a single value into a string.
+     *
+     * @param arg to transform
+     * @return built string
+     */
     public static String stringify(@Nullable Object arg) {
         if (arg == null) {
             return "null";
         } else if (arg instanceof String) {
             return (String) arg;
         } if (arg instanceof Double) {
-            return String.format("%1$,.4f", (Double) arg);
+            return String.format(Locale.US, "%.4f", (Double) arg);
+        } else if (arg instanceof Float) {
+            return String.format(Locale.US, "%.4f", (Float) arg);
         } else if (arg instanceof Map) {
             return StringUtil.toString((Map<?, ?>) arg);
         } else if (arg instanceof Object[]) {
@@ -110,6 +165,12 @@ public class StringUtil {
         }
     }
 
+    /**
+     * Will transform a {@link Throwable} into a string with stacktrace.
+     *
+     * @param throwable to transform
+     * @return built string
+     */
     public static String stringify(Throwable throwable) {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
@@ -118,16 +179,44 @@ public class StringUtil {
         return stringWriter.toString();
     }
 
+    /**
+     * Will replace the packages with a single character in a class name.
+     * E.g. "java.lang.String" will be transformed to "j.l.String"
+     *
+     * @param clazz to read the class name from
+     * @return shortened class name
+     */
     public static String shortenClassName(Class<?> clazz) {
         return shortenPackageName(clazz.getPackage().getName()) + '.' + clazz.getSimpleName();
     }
 
+    /**
+     * Will replace the packages with a single character in a package name.
+     * E.g. "java.lang" will be transformed to "j.l"
+     *
+     * @param packageName to shorten
+     * @return shortened class name
+     */
     public static String shortenPackageName(String packageName) {
+        if (packageName.isEmpty()) {
+            return packageName;
+        }
+
         return Arrays.stream(packageName.split("\\."))
+            .filter(string -> !string.isEmpty())
             .map(segment -> Character.toString(segment.charAt(0)))
             .collect(Collectors.joining("."));
     }
 
+    /**
+     * Cuts a given text to a max length or fills it up with spaces to the max length.
+     *
+     *
+     * @param string to cut to max length or fill with spaces
+     * @param maxLength to fill or cut
+     * @param cutTail whether to cut from the start or the end
+     * @return cur ot filled string
+     */
     public static String cutOrFill(String string, int maxLength, boolean cutTail) {
         if (string.length() == maxLength) {
             return string;
@@ -144,43 +233,97 @@ public class StringUtil {
         return string + spacesString;
     }
 
-    public static String repeat(char character, int length) {
-        char[] chars = new char[length];
+    /**
+     * E.g. 'a' with amount 3 would be "aaa".
+     *
+     * @param character to repeat
+     * @param amount how often to repeat
+     * @return repeated character
+     */
+    public static String repeat(char character, int amount) {
+        char[] chars = new char[amount];
         Arrays.fill(chars, character);
 
         return new String(chars);
     }
 
+    /**
+     * E.g. "test" will be "Test"
+     *
+     * @param text to make the first character uppercase
+     * @return text with first character uppercase
+     */
     public static String capitalize(String text) {
+        if (text.isEmpty()) {
+            return text;
+        }
+
         return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
 
+    /**
+     * Removes certain parts in front and behind a string.
+     * E.g. "{test}", "{", "}" would be "test".
+     *
+     * @param string to remove from
+     * @param prefix to remove from start
+     * @param suffix to remove from end
+     * @return string with removed parts
+     */
     public static String unwrap(String string, char prefix, char suffix) {
         if (string.isEmpty()) {
             return string;
         }
 
-        if (string.charAt(0) == prefix && string.charAt(string.length() - 1) == suffix) {
-            string = string.substring(1, string.length() - 1);
+        if (string.charAt(0) == prefix) {
+            string = string.substring(1);
+        }
+
+        if (string.charAt(string.length() - 1) == suffix) {
+            string = string.substring(0, string.length() - 1);
         }
 
         return string;
     }
 
+    /**
+     * Will put a list of strings in ""
+     *
+     * @param strings to quote
+     * @return list with quoted strings
+     */
     public static List<String> quote(List<String> strings) {
         return strings.stream()
             .map(StringUtil::quote)
             .collect(Collectors.toList());
     }
 
+    /**
+     * Will put a string in ""
+     *
+     * @param string to quote
+     * @return quoted string
+     */
     public static String quote(String string) {
         return "\"" + string + "\"";
     }
 
+    /**
+     * Will remove "" from a string when present
+     *
+     * @param string to remove quotes from
+     * @return string with removed quotes
+     */
     public static String unquote(String string) {
         return unwrap(string, '"', '"');
     }
 
+    /**
+     * Will transform "camelCase" to "CAMEL_CASE"
+     *
+     * @param text to transform
+     * @return text written in screaming snake case
+     */
     public static String toScreamingSnakeCase(String text) {
         if (text.isEmpty()) {
             return text;
@@ -206,6 +349,13 @@ public class StringUtil {
         return tmp.toString();
     }
 
+    /**
+     * Cuts a file extension from a name.
+     * E.g. "test.txt" will be "test".
+     *
+     * @param fileName to cut the extension from
+     * @return file name without extension
+     */
     public static String removeFileExtension(String fileName) {
         String[] parts = fileName.split("\\.");
 
@@ -217,21 +367,39 @@ public class StringUtil {
             .collect(Collectors.joining("."));
     }
 
-    public static String removeBeginning(String resource, String startString) {
-        if (resource.startsWith(startString)) {
-            return resource.substring(startString.length());
+    /**
+     * Will remove a certain part of the string from the start.
+     *
+     * @param string to remove from
+     * @param toRemove part to remove at the start
+     * @return string with removed part
+     */
+    public static String removeBeginning(String string, String toRemove) {
+        if (string.startsWith(toRemove)) {
+            return string.substring(toRemove.length());
         }
 
-        return resource;
+        return string;
     }
 
+    /**
+     * Will put a string between the given "wrap".
+     * E.g. "test", "'" would be "'test'"
+     *
+     * @param string to wrap around
+     * @param wrap to put around the string
+     * @return wrapped string
+     */
     public static String wrap(String string, String wrap) {
         return wrap + string + wrap;
     }
 
-    private static Pattern numericPattern = Pattern.compile("-?\\d+(\\.\\d+)?");
-    private static Pattern integerPattern = Pattern.compile("-?\\d+?");
-
+    /**
+     * Will count the lines of string.
+     *
+     * @param string to count lines
+     * @return number of lines
+     */
     public static int countLines(@Nullable String string) {
         if (string == null) {
             return 0;
@@ -247,6 +415,13 @@ public class StringUtil {
         return lines;
     }
 
+    /**
+     * Will count the appearance of a certain character in a string.
+     *
+     * @param string to look into
+     * @param character to count
+     * @return amount of characters in string
+     */
     public static int countChar(@Nullable String string, char character) {
         int count = 0;
         if (string == null) {
@@ -262,6 +437,9 @@ public class StringUtil {
         return count;
     }
 
+    /**
+     * @return whether the given string is a number
+     */
     public static boolean isNumeric(@Nullable String strNum) {
         if (strNum == null || strNum.isEmpty()) {
             return false;
@@ -270,6 +448,9 @@ public class StringUtil {
         return numericPattern.matcher(strNum).matches();
     }
 
+    /**
+     * @return whether the given character is a number
+     */
     public static boolean isNumeric(@Nullable Character character) {
         if (character == null) {
             return false;
@@ -278,10 +459,23 @@ public class StringUtil {
         return isInteger(character.toString());
     }
 
+    /**
+     * @return whether the given character is an integer
+     */
     public static boolean isInteger(@Nullable String strNum) {
         if (strNum == null) {
             return false;
         }
         return integerPattern.matcher(strNum).matches();
+    }
+
+    /**
+     * @return whether the given string is a decimal number
+     */
+    public static boolean isDecimal(@Nullable String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        return decimalPattern.matcher(strNum).matches();
     }
 }

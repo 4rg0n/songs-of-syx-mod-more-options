@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.action.Action;
-import com.github.argon.sos.moreoptions.game.action.Searchable;
-import com.github.argon.sos.moreoptions.game.action.Toggleable;
-import com.github.argon.sos.moreoptions.game.action.Valuable;
+import com.github.argon.sos.mod.sdk.game.action.Action;
+import com.github.argon.sos.mod.sdk.game.action.Searchable;
+import com.github.argon.sos.mod.sdk.game.action.Toggleable;
+import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import lombok.Setter;

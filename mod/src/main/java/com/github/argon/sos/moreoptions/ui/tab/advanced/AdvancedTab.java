@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.tab.advanced;
 
 import com.github.argon.sos.moreoptions.game.ui.*;
-import com.github.argon.sos.moreoptions.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;

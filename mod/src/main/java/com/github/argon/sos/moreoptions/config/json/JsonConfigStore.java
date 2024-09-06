@@ -4,7 +4,7 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.game.api.GameSaveApi;
-import com.github.argon.sos.moreoptions.io.FileService;
+import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.moreoptions.json.JsonService;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;

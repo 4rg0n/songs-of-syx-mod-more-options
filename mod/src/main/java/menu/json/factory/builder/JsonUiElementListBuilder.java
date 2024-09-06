@@ -1,6 +1,6 @@
 package menu.json.factory.builder;
 
-import com.github.argon.sos.moreoptions.game.Wildcard;
+import com.github.argon.sos.mod.sdk.game.Wildcard;
 import com.github.argon.sos.moreoptions.json.element.JsonElement;
 import lombok.AccessLevel;
 import lombok.Builder;

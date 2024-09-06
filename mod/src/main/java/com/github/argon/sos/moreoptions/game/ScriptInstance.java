@@ -1,8 +1,9 @@
 package com.github.argon.sos.moreoptions.game;
 
-import com.github.argon.sos.moreoptions.phase.Phases;
-import com.github.argon.sos.moreoptions.phase.state.State;
-import com.github.argon.sos.moreoptions.phase.state.StateManager;
+import com.github.argon.sos.mod.sdk.phase.PhaseManager;
+import com.github.argon.sos.mod.sdk.phase.Phases;
+import com.github.argon.sos.mod.sdk.phase.state.State;
+import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import lombok.RequiredArgsConstructor;
 import script.SCRIPT;
 import snake2d.util.file.FileGetter;
@@ -15,7 +16,7 @@ import java.io.IOException;
  * Represents one instance of the "script".
  * See {@link SCRIPT.SCRIPT_INSTANCE} for some documentation
  *
- * Some calls for the {@link com.github.argon.sos.moreoptions.phase.PhaseManager} originate from here.
+ * Some calls for the {@link PhaseManager} originate from here.
  *
  * todo add game state object: containing flags from here; save info; mod info;... (how refresh state? o.o)
  */

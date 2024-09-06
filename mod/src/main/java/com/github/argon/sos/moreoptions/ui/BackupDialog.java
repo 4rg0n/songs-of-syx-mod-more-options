@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.moreoptions.game.ui.Button;
 import com.github.argon.sos.moreoptions.game.ui.HorizontalLine;
-import com.github.argon.sos.moreoptions.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18n;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import snake2d.util.color.COLOR;

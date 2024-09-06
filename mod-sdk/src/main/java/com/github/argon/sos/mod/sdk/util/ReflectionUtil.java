@@ -46,9 +46,10 @@ public class ReflectionUtil {
      * @param instance containing the field
      * @param newValue to set into the field
      *
-     * @throws NoSuchFieldException if the field does not exist
+     * @throws IllegalAccessException when the field can not be accessed e.g. when it is final
+     * @throws NoSuchFieldException when the field does not exist
      */
-    public static void setField(String fieldName, Object instance, Object newValue) throws NoSuchFieldException {
+    public static void setField(String fieldName, Object instance, Object newValue) throws IllegalAccessException, NoSuchFieldException {
         Field field = instance.getClass().getDeclaredField(fieldName);
         setField(field, instance, newValue);
     }
@@ -59,18 +60,25 @@ public class ReflectionUtil {
      * @param field to set the value in
      * @param instance containing the field
      * @param newValue to set into the field
+     *
+     * @throws IllegalAccessException when the field can not be accessed e.g. when it is final
      */
-    public static void setField(Field field, Object instance, Object newValue) {
-        boolean accessible = field.isAccessible();
-        field.setAccessible(true);
-        try {
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            field.set(instance, newValue);
-        } catch (Exception e) {
-            log.warn("Could not set value into field %s in %s", field.getName(), instance.getClass().getName(), e);
+    public static void setField(Field field, Object instance, Object newValue) throws IllegalAccessException {
+        if (Modifier.isFinal(field.getModifiers())) {
+            throw new IllegalAccessException(String.format("Cannot set values into FINAL field %s in %s", field.getName(), instance.getClass().getName()));
         }
 
+        boolean accessible = field.isAccessible();
+        field.setAccessible(true);
+
+        try {
+            field.set(instance, newValue);
+        } catch (IllegalAccessException e) {
+            log.warn("Could not set value into field %s in %s", field.getName(), instance.getClass().getName());
+            throw e;
+        }
+
+        // reset access
         field.setAccessible(accessible);
     }
 
@@ -162,13 +170,19 @@ public class ReflectionUtil {
     public static <T> Optional<T> getDeclaredFieldValue(String fieldName, Class<?> clazz) {
 
         return getDeclaredField(fieldName, clazz).map(field -> {
+            if (!Modifier.isStatic(field.getModifiers())) {
+                log.error("Can not access non static field %s in class %s.",
+                    field.getName(), clazz.getSimpleName());
+                return null;
+            }
+
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
                 try {
                     //noinspection unchecked
                     return (T) field.get(null);
                 } catch (Exception e) {
-                    log.error("Can not access field %s in %s.",
+                    log.error("Can not access field %s in class %s.",
                         field.getName(), clazz.getSimpleName(), e);
                     return null;
                 } finally {
@@ -238,6 +252,16 @@ public class ReflectionUtil {
         return fieldValues;
     }
 
+    public static Optional<Method> getMethod(Class<?> clazz, String methodName, Class<?>... parameters) {
+        try {
+            return Optional.of(clazz.getDeclaredMethod(methodName, parameters));
+        } catch (NoSuchMethodException e) {
+            log.error("No method %s found in class %s matching given parameters",
+                methodName, clazz.getSimpleName());
+            return Optional.empty();
+        }
+    }
+
     /**
      * Read an {@link Annotation} from a {@link Field}
      *
@@ -246,13 +270,38 @@ public class ReflectionUtil {
      * @return found annotation matching the given class
      */
     public static <T extends Annotation> Optional<T> getAnnotation(Field field, Class<T> annotationClass) {
+        boolean accessible = field.isAccessible();
         field.setAccessible(true);
 
         if (!field.isAnnotationPresent(annotationClass)) {
             return Optional.empty();
         }
 
-        return Optional.of(field.getAnnotation(annotationClass));
+        T annotation = field.getAnnotation(annotationClass);
+        field.setAccessible(accessible);
+
+        return Optional.of(annotation);
+    }
+
+    /**
+     * Read an {@link Annotation} from a {@link Method}
+     *
+     * @param method to read annotations from
+     * @param annotationClass which annotation class to look for
+     * @return found annotation matching the given class
+     */
+    public static <T extends Annotation> Optional<T> getAnnotation(Method method, Class<T> annotationClass) {
+        boolean accessible = method.isAccessible();
+        method.setAccessible(true);
+
+        if (!method.isAnnotationPresent(annotationClass)) {
+            return Optional.empty();
+        }
+
+        T annotation = method.getAnnotation(annotationClass);
+        method.setAccessible(accessible);
+
+        return Optional.of(annotation);
     }
 
     /**
@@ -285,17 +334,16 @@ public class ReflectionUtil {
      * Executes a method with multiple arguments on the given target
      *
      * @param methodName of the method to execute
-     * @param clazz containing the method
      * @param instance containing the method
      * @param args arguments of the method
      * @return whatever the method returns
      */
-    public static @Nullable Object invokeMethod(String methodName, Class<?> clazz, Object instance,  Object... args) {
+    public static @Nullable Object invokeMethod(String methodName, Object instance, Object... args) {
         Method method = null;
         Class<?>[] paramTypes = Arrays.stream(args).map(Object::getClass).toArray(Class[]::new);
 
         try {
-            method = clazz.getDeclaredMethod(methodName, paramTypes);
+            method = instance.getClass().getDeclaredMethod(methodName, paramTypes);
         } catch (NoSuchMethodException e) {
             handleReflectionException(e);
         }
@@ -313,6 +361,18 @@ public class ReflectionUtil {
      */
     public static @Nullable Object invokeMethodOneArgument(Method method, Object instance, Object arg) {
         return invokeMethod(method, instance, arg);
+    }
+
+    /**
+     * Executes a method with exactly one argument on the given target
+     *
+     * @param methodName of the method to execute
+     * @param instance containing the method
+     * @param arg of the method
+     * @return whatever the method returns
+     */
+    public static @Nullable Object invokeMethodOneArgument(String methodName, Object instance, Object arg) {
+        return invokeMethod(methodName, instance, arg);
     }
 
     /**
@@ -360,7 +420,7 @@ public class ReflectionUtil {
     public static Optional<Class<?>> getGenericClass(Field field) {
         List<Class<?>> classes = getGenericClasses(field);
 
-        if (classes.isEmpty()) {
+        if (classes.size() != 1) {
             return Optional.empty();
         }
 

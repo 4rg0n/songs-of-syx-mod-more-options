@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.mod.sdk.game.api.GameLangApi;
+import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

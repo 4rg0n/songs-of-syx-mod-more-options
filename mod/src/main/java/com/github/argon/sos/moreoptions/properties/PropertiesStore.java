@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.properties;
 
-import com.github.argon.sos.moreoptions.io.ResourceService;
+import com.github.argon.sos.mod.sdk.file.ResourceService;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import lombok.Getter;

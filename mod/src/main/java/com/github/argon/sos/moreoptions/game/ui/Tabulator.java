@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.action.Refreshable;
-import com.github.argon.sos.moreoptions.game.action.Resettable;
-import com.github.argon.sos.moreoptions.game.action.Valuable;
-import com.github.argon.sos.moreoptions.game.action.VoidAction;
+import com.github.argon.sos.mod.sdk.game.action.Refreshable;
+import com.github.argon.sos.mod.sdk.game.action.Resettable;
+import com.github.argon.sos.mod.sdk.game.action.Valuable;
+import com.github.argon.sos.mod.sdk.game.action.VoidAction;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
 import lombok.Builder;
 import lombok.Getter;

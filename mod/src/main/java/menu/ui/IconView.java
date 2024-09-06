@@ -1,6 +1,6 @@
 package menu.ui;
 
-import com.github.argon.sos.moreoptions.game.action.Valuable;
+import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import init.sprite.UI.Icon;
 import lombok.Getter;

@@ -127,6 +127,6 @@ public class GameEventsApi {
 
     private void _reset(EVENTS.EventResource event) {
         log.trace("Resetting event %s", event.getClass().getSimpleName());
-        ReflectionUtil.invokeMethod("clear", event.getClass(), event);
+        ReflectionUtil.invokeMethod("clear", event);
     }
 }

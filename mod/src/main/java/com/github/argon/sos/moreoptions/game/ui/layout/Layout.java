@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.game.ui.layout;
 
-import com.github.argon.sos.moreoptions.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18n;
 import init.sprite.UI.UI;
 import util.gui.misc.GText;
 

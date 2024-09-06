@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.json;
 
-import com.github.argon.sos.moreoptions.io.ResourceService;
+import com.github.argon.sos.mod.sdk.file.ResourceService;
 import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import org.assertj.core.api.Assertions;

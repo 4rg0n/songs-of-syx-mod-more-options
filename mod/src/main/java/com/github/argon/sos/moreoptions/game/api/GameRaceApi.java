@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.game.api;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import init.race.RACES;

@@ -1,6 +1,6 @@
 package menu.json.factory;
 
-import com.github.argon.sos.moreoptions.game.action.Resettable;
+import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.json.element.*;
 import init.sprite.UI.UI;

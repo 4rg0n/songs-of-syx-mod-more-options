@@ -1,10 +1,10 @@
 package menu.json.factory;
 
 import com.github.argon.sos.moreoptions.game.CacheValue;
-import com.github.argon.sos.moreoptions.game.action.BiAction;
+import com.github.argon.sos.mod.sdk.game.action.BiAction;
 import com.github.argon.sos.moreoptions.game.ui.*;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
-import com.github.argon.sos.moreoptions.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.moreoptions.json.JsonPath;
 import com.github.argon.sos.moreoptions.json.element.*;
 import com.github.argon.sos.mod.sdk.util.ClassUtil;

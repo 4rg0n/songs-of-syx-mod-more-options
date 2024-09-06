@@ -4,7 +4,7 @@ package com.github.argon.sos.moreoptions.game.data;
 import com.github.argon.sos.moreoptions.game.data.init.Init;
 import com.github.argon.sos.moreoptions.game.data.sprite.Sprite;
 import com.github.argon.sos.moreoptions.game.data.text.Text;
-import com.github.argon.sos.moreoptions.io.ResourceService;
+import com.github.argon.sos.mod.sdk.file.ResourceService;
 import com.github.argon.sos.moreoptions.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.StringUtil;

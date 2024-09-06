@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.action.Action;
+import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.moreoptions.game.data.GameFolder;
 import com.github.argon.sos.moreoptions.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.util.TreeNode;
+import com.github.argon.sos.mod.sdk.data.TreeNode;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;

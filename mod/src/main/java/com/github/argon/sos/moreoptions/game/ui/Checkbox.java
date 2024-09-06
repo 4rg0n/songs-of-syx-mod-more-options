@@ -1,6 +1,9 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
-import com.github.argon.sos.moreoptions.game.action.*;
+import com.github.argon.sos.mod.sdk.game.action.Action;
+import com.github.argon.sos.mod.sdk.game.action.Toggleable;
+import com.github.argon.sos.mod.sdk.game.action.Valuable;
+import com.github.argon.sos.mod.sdk.game.action.VoidAction;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import snake2d.SPRITE_RENDERER;

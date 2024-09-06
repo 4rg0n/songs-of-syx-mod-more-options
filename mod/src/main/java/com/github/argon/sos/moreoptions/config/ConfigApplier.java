@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.config;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
-import com.github.argon.sos.moreoptions.phase.Phases;
+import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

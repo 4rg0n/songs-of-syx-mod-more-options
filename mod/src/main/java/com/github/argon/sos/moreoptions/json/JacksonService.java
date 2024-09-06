@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.moreoptions.io.FileService;
+import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.moreoptions.json.writer.JacksonWriter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
