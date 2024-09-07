@@ -1,17 +1,18 @@
 package com.github.argon.sos.moreoptions.ui.tab.races;
 
-import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
-import com.github.argon.sos.moreoptions.config.domain.Range;
-import com.github.argon.sos.moreoptions.game.ui.*;
-import com.github.argon.sos.moreoptions.game.ui.layout.Layout;
-import com.github.argon.sos.moreoptions.game.ui.layout.VerticalLayout;
-import com.github.argon.sos.moreoptions.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.ui.*;
+import com.github.argon.sos.mod.sdk.game.ui.layout.Layout;
+import com.github.argon.sos.mod.sdk.game.ui.layout.VerticalLayout;
+import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
+import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
+import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.race.Race;
 import init.sprite.UI.UI;
 import lombok.Builder;

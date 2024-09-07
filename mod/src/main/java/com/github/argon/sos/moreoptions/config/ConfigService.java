@@ -13,9 +13,9 @@ import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
 import com.github.argon.sos.mod.sdk.file.FileService;
-import com.github.argon.sos.moreoptions.json.JasonService;
-import com.github.argon.sos.moreoptions.json.JsonException;
-import com.github.argon.sos.moreoptions.json.parser.JsonParseException;
+import com.github.argon.sos.mod.sdk.json.JasonService;
+import com.github.argon.sos.mod.sdk.json.JsonException;
+import com.github.argon.sos.mod.sdk.json.parser.JsonParseException;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.Getter;
 

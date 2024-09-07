@@ -1,17 +1,21 @@
 package menu.ui;
 
+import com.github.argon.sos.mod.sdk.game.ui.*;
+import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.json.JsonMapper;
+import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
-import com.github.argon.sos.moreoptions.game.ui.*;
-import com.github.argon.sos.moreoptions.game.util.UiUtil;
-import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.element.*;
+import com.github.argon.sos.moreoptions.game.ui.ColorPicker;
+import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.game.ui.SliderDoubleList;
+import com.github.argon.sos.moreoptions.game.ui.SliderIntegerList;
 import init.sprite.UI.UI;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import menu.Ui;
-import menu.json.JsonUiMapper;
+import com.github.argon.sos.moreoptions.ui.json.JsonUiMapper;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;

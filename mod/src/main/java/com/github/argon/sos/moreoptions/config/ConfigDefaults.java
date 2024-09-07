@@ -1,12 +1,14 @@
 package com.github.argon.sos.moreoptions.config;
 
-import com.github.argon.sos.moreoptions.MoreOptionsScript;
-import com.github.argon.sos.moreoptions.config.domain.*;
-import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.config.domain.*;
+import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
+import com.github.argon.sos.moreoptions.game.api.GameStatsApi;
 import game.faction.Faction;
 import init.paths.PATHS;
 import init.race.Race;
@@ -17,8 +19,6 @@ import lombok.RequiredArgsConstructor;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config.*;
 
 /**
  * Provides default configuration partially gathered from the game.
@@ -39,10 +39,14 @@ public class ConfigDefaults {
 
     @Getter(lazy = true)
     private final static ConfigDefaults instance = new ConfigDefaults(
-        GameApis.getInstance()
+        GameApis.getInstance(),
+        GameBoosterApi.getInstance(),
+        GameStatsApi.getInstance()
     );
 
     private final GameApis gameApis;
+    private final GameBoosterApi gameBoosterApi;
+    private final GameStatsApi gameStatsApi;
 
     public MoreOptionsV5Config newConfig() {
         log.debug("Creating new default config");
@@ -97,7 +101,7 @@ public class ConfigDefaults {
     }
 
     public Map<String, BoostersConfig.Booster> newBoosters() {
-        return gameApis.booster().getBoosters().keySet().stream()
+        return gameBoosterApi.getBoosters().keySet().stream()
             .collect(Collectors.toMap(
                 boosterKey -> boosterKey,
                 boosterKey -> BoostersConfig.Booster.builder()
@@ -163,7 +167,7 @@ public class ConfigDefaults {
     public MetricsConfig newMetrics() {
         // Metrics
         MetricsConfig metricsConfig = ConfigDefaults.metrics();
-        Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
+        Set<String> availableStats = gameStatsApi.getAvailableStatKeys();
         metricsConfig.setStats(availableStats);
 
         return metricsConfig;

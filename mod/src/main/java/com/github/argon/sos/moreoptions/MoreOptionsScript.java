@@ -1,22 +1,23 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.mod.sdk.game.AbstractScript;
+import com.github.argon.sos.mod.sdk.game.ui.Window;
+import com.github.argon.sos.mod.sdk.i18n.I18nMessages;
+import com.github.argon.sos.mod.sdk.json.GameJsonStore;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.moreoptions.aspect.annotation.OnErrorShowDialog;
+import com.github.argon.sos.mod.sdk.phase.Phase;
+import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
-import com.github.argon.sos.moreoptions.game.AbstractScript;
-import com.github.argon.sos.moreoptions.game.json.GameJsonStore;
-import com.github.argon.sos.moreoptions.game.ui.Window;
-import com.github.argon.sos.mod.sdk.i18n.I18nMessages;
+import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
-import com.github.argon.sos.mod.sdk.phase.Phase;
-import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
+import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import init.paths.PATHS;
 import lombok.NoArgsConstructor;
@@ -60,12 +61,14 @@ public final class MoreOptionsScript extends AbstractScript {
             .register(Phase.INIT_BEFORE_GAME_CREATED, I18nMessages.getInstance())
             .register(Phase.INIT_BEFORE_GAME_CREATED, ConfigStore.getInstance())
             .register(Phase.INIT_MOD_CREATE_INSTANCE, UiConfig.getInstance())
+			.register(Phase.INIT_MOD_CREATE_INSTANCE, GameBoosterApi.getInstance())
             .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ConfigStore.getInstance())
             .register(Phase.INIT_SETTLEMENT_UI_PRESENT, UiConfig.getInstance())
 
             .register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance())
             .register(Phase.ON_GAME_SAVED, ConfigStore.getInstance())
             .register(Phase.ON_GAME_SAVE_RELOADED, MetricExporter.getInstance())
+            .register(Phase.ON_GAME_SAVE_RELOADED, GameBoosterApi.getInstance())
 			.register(Phase.ON_GAME_UPDATE, Notificator.getInstance())
             .register(Phase.ON_CRASH, MetricScheduler.getInstance())
             .register(Phase.ON_CRASH, ConfigStore.getInstance());
@@ -86,18 +89,21 @@ public final class MoreOptionsScript extends AbstractScript {
 	}
 
 	@Override
-	@OnErrorShowDialog
 	public void onViewSetup() {
-		super.onViewSetup();
+		try {
+			super.onViewSetup();
 
-        Window<BackupDialog> backupDialog = uiConfig.getBackupDialog();
-        // show backup dialog?
-        if (backupDialog != null) {
-            backupDialog.show();
-        } else {
-            // apply loaded config
-            configApplier.applyToGame(configStore.getCurrentConfig());
-        }
+			Window<BackupDialog> backupDialog = uiConfig.getBackupDialog();
+			// show backup dialog?
+			if (backupDialog != null) {
+				backupDialog.show();
+			} else {
+				// apply loaded config
+				configApplier.applyToGame(configStore.getCurrentConfig());
+			}
+		} catch (Exception e) {
+			Message.errorDialog(e);
+		}
     }
 
 	@Override

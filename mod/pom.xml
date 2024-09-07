@@ -28,16 +28,9 @@
 
         <!-- Lazy Developer -->
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -61,61 +54,11 @@
                                 <excludes>
                                     <exclude>com.songsofsyx:*</exclude>
                                     <exclude>org.jetbrains:*</exclude>
-                                    <exclude>org.mapstruct:*</exclude>
                                     <exclude>com.fasterxml.jackson.core:*</exclude>
                                     <exclude>com.github.argon.sos:sos-mod-sdk</exclude>
                                 </excludes>
                             </artifactSet>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- AspectJ -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.14.0</version>
-                <configuration>
-                    <complianceLevel>1.8</complianceLevel>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <showWeaveInfo>true</showWeaveInfo>
-                    <verbose>true</verbose>
-                    <Xlint>ignore</Xlint>
-                    <encoding>UTF-8 </encoding>
-
-                    <!-- IMPORTANT for Lombok -->
-                    <excludes>
-                        <exclude>**/*.java</exclude>
-                    </excludes>
-                    <forceAjcCompile>true</forceAjcCompile>
-
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <weaveDirectories>
-                                <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
-                            </weaveDirectories>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>process-test-classes</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                        <configuration>
-                            <weaveDirectories>
-                                <weaveDirectory>${project.build.directory}/test-classes</weaveDirectory>
-                            </weaveDirectories>
                         </configuration>
                     </execution>
                 </executions>

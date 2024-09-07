@@ -1,13 +1,13 @@
 package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
-import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.BiAction;
-import com.github.argon.sos.moreoptions.game.ui.Button;
-import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
-import com.github.argon.sos.moreoptions.game.ui.Table;
-import com.github.argon.sos.moreoptions.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.ui.Button;
+import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.game.ui.Table;
+import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.moreoptions.config.domain.Range;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;

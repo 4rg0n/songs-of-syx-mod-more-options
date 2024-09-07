@@ -8,11 +8,12 @@ import com.github.argon.sos.mod.sdk.util.MathUtil;
 import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.mod.sdk.game.action.Action;
-import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.mod.sdk.phase.Phases;
+import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import game.audio.Ambiance;
 import game.events.EVENTS;
 import lombok.*;
@@ -34,12 +35,14 @@ public class MoreOptionsConfigurator implements Phases {
     @Getter(lazy = true)
     private final static MoreOptionsConfigurator instance = new MoreOptionsConfigurator(
         GameApis.getInstance(),
+        GameBoosterApi.getInstance(),
         MetricCollector.getInstance(),
         MetricExporter.getInstance(),
         MetricScheduler.getInstance()
     );
 
     private final GameApis gameApis;
+    private final GameBoosterApi gameBoosterApi;
 
     private final MetricCollector metricCollector;
 
@@ -181,7 +184,7 @@ public class MoreOptionsConfigurator implements Phases {
 
     public boolean applyBoostersConfig(BoostersConfig boostersConfig) {
         try {
-            gameApis.booster().setBoosters(boostersConfig);
+            gameBoosterApi.setBoosters(boostersConfig);
         } catch (Exception e) {
             log.error("Could not apply boosters config to game", e);
             return false;

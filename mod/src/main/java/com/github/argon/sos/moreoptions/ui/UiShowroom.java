@@ -1,12 +1,13 @@
 package com.github.argon.sos.moreoptions.ui;
 
-import com.github.argon.sos.moreoptions.game.ui.*;
-import com.github.argon.sos.moreoptions.game.ui.layout.Layouts;
-import com.github.argon.sos.moreoptions.game.util.UiUtil;
-import com.github.argon.sos.moreoptions.ui.msg.Notificator;
+import com.github.argon.sos.mod.sdk.game.ui.*;
+import com.github.argon.sos.mod.sdk.game.ui.layout.Layouts;
+import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
+import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
 import init.sprite.UI.Icons;

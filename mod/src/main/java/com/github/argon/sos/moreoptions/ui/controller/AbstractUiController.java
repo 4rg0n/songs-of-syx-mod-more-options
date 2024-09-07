@@ -4,7 +4,7 @@ import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
-import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;

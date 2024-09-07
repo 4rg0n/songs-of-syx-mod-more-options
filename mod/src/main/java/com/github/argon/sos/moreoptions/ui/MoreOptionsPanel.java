@@ -4,11 +4,13 @@ import com.github.argon.sos.mod.sdk.game.action.Refreshable;
 import com.github.argon.sos.mod.sdk.game.action.Showable;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
+import com.github.argon.sos.mod.sdk.game.api.GameUiApi;
+import com.github.argon.sos.mod.sdk.game.ui.*;
+import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.util.Lists;
+import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
-import com.github.argon.sos.moreoptions.game.api.GameUiApi;
-import com.github.argon.sos.moreoptions.game.ui.*;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
@@ -17,8 +19,6 @@ import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import com.github.argon.sos.moreoptions.ui.tab.sounds.SoundsTab;
 import com.github.argon.sos.moreoptions.ui.tab.weather.WeatherTab;
-import com.github.argon.sos.mod.sdk.util.Lists;
-import com.github.argon.sos.mod.sdk.util.Maps;
 import game.VERSION;
 import game.faction.Faction;
 import init.paths.ModInfo;
@@ -195,7 +195,7 @@ public class MoreOptionsPanel extends GuiSection implements
             .tabs(Maps.ofLinked(
                 "sounds", soundsTab,
                 "events", eventsTab,
-                "weather", weatherTab,
+                "settlement/weather", weatherTab,
                 "boosters", boostersTab,
                 "metrics", metricsTab,
                 "races", racesTab,
@@ -209,7 +209,7 @@ public class MoreOptionsPanel extends GuiSection implements
                     .button("events", new Button(
                         i18n.t("MoreOptionsPanel.tab.events.name"),
                         i18n.t("MoreOptionsPanel.tab.events.desc")))
-                    .button("weather", new Button(
+                    .button("settlement/weather", new Button(
                         i18n.t("MoreOptionsPanel.tab.weather.name"),
                         i18n.t("MoreOptionsPanel.tab.weather.desc")))
                     .button("boosters", new Button(

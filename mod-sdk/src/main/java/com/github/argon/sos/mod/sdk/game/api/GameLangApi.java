@@ -24,6 +24,9 @@ public class GameLangApi {
     @Getter(lazy = true)
     private final static GameLangApi instance = new GameLangApi();
 
+    /**
+     * @return the current selected language of the game
+     */
     public Locale getCurrent() {
         try {
             LIST<Path> paths = ReflectionUtil.<PATHS>getDeclaredFieldValue("i", PATHS.class)

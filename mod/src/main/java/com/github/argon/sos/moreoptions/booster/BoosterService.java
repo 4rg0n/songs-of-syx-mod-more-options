@@ -1,11 +1,11 @@
 package com.github.argon.sos.moreoptions.booster;
 
+import com.github.argon.sos.mod.sdk.game.api.GameFactionApi;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.Range;
-import com.github.argon.sos.moreoptions.game.api.GameFactionApi;
 import game.boosting.BoostableCat;
 import game.faction.FACTIONS;
 import game.faction.Faction;

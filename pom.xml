@@ -137,9 +137,7 @@
         <junit-jupiter-engine.version>5.9.2</junit-jupiter-engine.version>
         <mockito-core.version>4.11.0</mockito-core.version>
         <assertj-core.version>3.24.2</assertj-core.version>
-        <lombok.version>1.18.30</lombok.version>
-        <org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
-        <aspectj.version>1.9.7</aspectj.version>
+        <lombok.version>1.18.34</lombok.version>
         <jackson.version>2.17.2</jackson.version>
         <jetbrains.annotations.version>24.1.0</jetbrains.annotations.version>
 
@@ -150,40 +148,18 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
-        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <!-- Lazy Developer -->
             <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjweaver</artifactId>
-                <version>${aspectj.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjrt</artifactId>
-                <version>${aspectj.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>${jetbrains.annotations.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct</artifactId>
-                <version>${org.mapstruct.version}</version>
             </dependency>
 
             <!-- Data -->
@@ -202,6 +178,8 @@
             <artifactId>songsofsyx</artifactId>
             <version>${game.version.major}.${game.version.minor}</version>
         </dependency>
+
+
 
         <!-- Testing -->
         <dependency>
@@ -274,54 +252,20 @@
         </pluginManagement>
 
         <plugins>
-            <!-- Mapstruct -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${org.mapstruct.version}</version>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok-mapstruct-binding</artifactId>
-                            <version>${lombok-mapstruct-binding.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.projectlombok</groupId>-->
+<!--                <artifactId>lombok-maven-plugin</artifactId>-->
+<!--                <version>1.18.20.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>generate-sources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>delombok</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
-            <!-- Build a fat / uber jar containing all dependencies -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>com.songsofsyx:*</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>

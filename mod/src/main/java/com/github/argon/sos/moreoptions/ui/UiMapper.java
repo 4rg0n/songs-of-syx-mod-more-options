@@ -1,17 +1,18 @@
 package com.github.argon.sos.moreoptions.ui;
 
-import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
-import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
-import com.github.argon.sos.moreoptions.config.domain.Range;
-import com.github.argon.sos.moreoptions.game.api.GameApis;
-import com.github.argon.sos.moreoptions.game.ui.Checkbox;
-import com.github.argon.sos.moreoptions.game.ui.ColumnRow;
-import com.github.argon.sos.moreoptions.game.ui.Label;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
-import com.github.argon.sos.moreoptions.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.game.ui.Checkbox;
+import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.game.ui.Label;
+import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
+import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
+import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
+import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.faction.Faction;
@@ -36,9 +37,13 @@ public class UiMapper {
     private final static Logger log = Loggers.getLogger(UiMapper.class);
 
     @Getter(lazy = true)
-    private final static UiMapper instance = new UiMapper();
+    private final static UiMapper instance = new UiMapper(
+        GameApis.getInstance(),
+        GameBoosterApi.getInstance()
+    );
 
-    private final GameApis gameApis = GameApis.getInstance();
+    private final GameApis gameApis;
+    private final GameBoosterApi gameBoosterApi;
 
     public Map<String, List<RacesTab.Entry>> toRacePanelEntries(Set<RacesConfig.Liking> raceLikings) {
         Map<String, List<RacesTab.Entry>> entries = new HashMap<>();
@@ -99,11 +104,11 @@ public class UiMapper {
 
     @Nullable
     public BoostersTab.Entry toBoosterPanelEntry(BoostersConfig.Booster booster) {
-        return gameApis.booster().get(booster.getKey()).map(boosters -> BoostersTab.Entry.builder()
+        return gameBoosterApi.get(booster.getKey()).map(boosters -> BoostersTab.Entry.builder()
             .key(booster.getKey())
             .range(booster.getRange())
             .boosters(boosters)
-            .cat(gameApis.booster().getCat(booster.getKey()))
+            .cat(gameBoosterApi.getCat(booster.getKey()))
             .build()
         ).orElse(null);
     }

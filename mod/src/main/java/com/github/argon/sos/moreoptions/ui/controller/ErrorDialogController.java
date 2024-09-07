@@ -1,12 +1,12 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.game.ui.Window;
+import com.github.argon.sos.mod.sdk.game.ui.Window;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
-import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.mod.sdk.util.Clipboard;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
+import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
+import com.github.argon.sos.moreoptions.ui.msg.Message;
 
 public class ErrorDialogController extends AbstractUiController<ErrorDialog> {
     private final static Logger log = Loggers.getLogger(ErrorDialogController.class);

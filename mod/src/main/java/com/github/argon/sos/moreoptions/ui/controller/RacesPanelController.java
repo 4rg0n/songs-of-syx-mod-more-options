@@ -1,16 +1,16 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
+import com.github.argon.sos.mod.sdk.game.ui.Window;
+import com.github.argon.sos.mod.sdk.json.Json;
+import com.github.argon.sos.mod.sdk.json.JsonMapper;
+import com.github.argon.sos.mod.sdk.json.element.JsonElement;
+import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
+import com.github.argon.sos.mod.sdk.util.Clipboard;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
-import com.github.argon.sos.moreoptions.game.ui.Window;
-import com.github.argon.sos.moreoptions.json.Json;
-import com.github.argon.sos.moreoptions.json.JsonMapper;
-import com.github.argon.sos.moreoptions.json.element.JsonElement;
-import com.github.argon.sos.moreoptions.json.writer.JsonWriters;
 import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
-import com.github.argon.sos.mod.sdk.util.Clipboard;
 import snake2d.util.file.FileManager;
 
 import java.nio.file.Path;

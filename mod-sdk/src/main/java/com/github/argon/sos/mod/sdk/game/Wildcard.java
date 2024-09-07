@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * WIP do not use :P
+ */
 public class Wildcard {
     private final List<String> parts;
     private final static String DELIMITER = "_";
