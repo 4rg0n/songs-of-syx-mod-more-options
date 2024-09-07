@@ -51,7 +51,7 @@ public class ConfigDefaults {
     public MoreOptionsV5Config newConfig() {
         log.debug("Creating new default config");
 
-        MoreOptionsV5Config defaultConfig = builder()
+        MoreOptionsV5Config defaultConfig = MoreOptionsV5Config.builder()
             .events(newEvents())
             .sounds(newSounds())
             .weather(newWeather())
