@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.ui;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
 import com.github.argon.sos.mod.sdk.game.ui.FullWindow;
 import com.github.argon.sos.mod.sdk.game.ui.Window;
@@ -14,7 +15,7 @@ import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
-import com.github.argon.sos.moreoptions.metric.MetricExporter;
+import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.ui.controller.*;
 import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
@@ -167,9 +168,9 @@ public class UiConfig implements Phases {
         IDebugPanel.add(MOD_INFO.name + ":errorDialog", () -> ModModule.uiFactory().buildErrorDialog(new RuntimeException("Test Exception Message"), "Test Error Message").show());
         IDebugPanel.add(MOD_INFO.name + ":phases:" + Phase.ON_GAME_SAVE_LOADED, phaseManager::onGameSaveReloaded);
         IDebugPanel.add(MOD_INFO.name + ":fullScreen", () -> ModModule.uiFactory().buildMoreOptionsFullScreen("More Options", configStore.getDefaultConfig()).show());
-        IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> ModModule.metricCollector().flush());
-        IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> ModModule.metricScheduler().stop());
-        IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> ModModule.metricScheduler().start());
+        IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> ModSdkModule.metricCollector().flush());
+        IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> ModSdkModule.metricScheduler().stop());
+        IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> ModSdkModule.metricScheduler().start());
         IDebugPanel.add(MOD_INFO.name + ":log:stats", () -> {
             log.info("Events Status: %s", gameApis.events().readEventsEnabledStatus()
                 .entrySet().stream().map(entry -> entry.getKey() + " enabled: " + entry.getValue() + "\n")

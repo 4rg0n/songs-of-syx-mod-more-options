@@ -1,8 +1,8 @@
-package com.github.argon.sos.moreoptions.game.api;
+package com.github.argon.sos.mod.sdk.game.api;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.moreoptions.metric.MetricCollector;
+import com.github.argon.sos.mod.sdk.metric.MetricCollector;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;

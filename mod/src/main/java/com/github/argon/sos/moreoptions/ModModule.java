@@ -7,10 +7,6 @@ import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import com.github.argon.sos.moreoptions.booster.BoosterService;
 import com.github.argon.sos.moreoptions.config.*;
 import com.github.argon.sos.moreoptions.game.api.GameApiModule;
-import com.github.argon.sos.moreoptions.metric.MetricCollector;
-import com.github.argon.sos.moreoptions.metric.MetricCsvWriter;
-import com.github.argon.sos.moreoptions.metric.MetricExporter;
-import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
@@ -60,7 +56,7 @@ public class ModModule {
             ModSdkModule.gameApis(),
             moreOptionsConfigurator(),
             configStore(),
-            metricExporter(),
+            ModSdkModule.metricExporter(),
             uiFactory(),
             notificator(),
             ModSdkModule.phaseManager()
@@ -92,8 +88,7 @@ public class ModModule {
     private static ConfigDefaults buildConfigDefaults() {
         return new ConfigDefaults(
             ModSdkModule.gameApis(),
-            GameApiModule.boosters(),
-            GameApiModule.stats());
+            GameApiModule.boosters());
     }
 
     @Getter(lazy = true)
@@ -110,9 +105,9 @@ public class ModModule {
         return new MoreOptionsConfigurator(
             ModSdkModule.gameApis(),
             GameApiModule.boosters(),
-            metricCollector(),
-            metricExporter(),
-            metricScheduler());
+            ModSdkModule.metricCollector(),
+            ModSdkModule.metricExporter(),
+            ModSdkModule.metricScheduler());
     }
 
     @Getter(lazy = true)
@@ -128,32 +123,10 @@ public class ModModule {
     private static UiFactory buildUiFactory() {
         return new UiFactory(
             ModSdkModule.gameApis(),
-            GameApiModule.stats(),
             configStore(),
             propertiesStore(),
-            metricExporter(),
+            ModSdkModule.metricExporter(),
             uiMapper());
-    }
-
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
-    private final static MetricCollector metricCollector = buildMetricCollector();
-    private static MetricCollector buildMetricCollector() {
-        return new MetricCollector();
-    }
-
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
-    private final static MetricScheduler metricScheduler = buildMetricScheduler();
-    private static MetricScheduler buildMetricScheduler() {
-        return new MetricScheduler();
-    }
-
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
-    private final static MetricExporter metricExporter = buildMetricExporter();
-    private static MetricExporter buildMetricExporter() {
-        return new MetricExporter(metricCollector(), new MetricCsvWriter());
     }
 
     @Getter(lazy = true)

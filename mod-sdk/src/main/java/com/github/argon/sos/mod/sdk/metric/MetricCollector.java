@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.metric;
+package com.github.argon.sos.mod.sdk.metric;
 
 import com.github.argon.sos.mod.sdk.game.StatsExtractor;
 import com.github.argon.sos.mod.sdk.log.Logger;

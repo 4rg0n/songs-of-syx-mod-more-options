@@ -8,7 +8,6 @@ import com.github.argon.sos.mod.sdk.util.MathUtil;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
-import com.github.argon.sos.moreoptions.game.api.GameStatsApi;
 import game.faction.Faction;
 import init.paths.PATHS;
 import init.race.Race;
@@ -37,7 +36,6 @@ public class ConfigDefaults {
 
     private final GameApiModule gameApis;
     private final GameBoosterApi gameBoosterApi;
-    private final GameStatsApi gameStatsApi;
 
     public MoreOptionsV5Config newConfig() {
         log.debug("Creating new default config");
@@ -158,7 +156,7 @@ public class ConfigDefaults {
     public MetricsConfig newMetrics() {
         // Metrics
         MetricsConfig metricsConfig = ConfigDefaults.metrics();
-        Set<String> availableStats = gameStatsApi.getAvailableStatKeys();
+        Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         metricsConfig.setStats(availableStats);
 
         return metricsConfig;

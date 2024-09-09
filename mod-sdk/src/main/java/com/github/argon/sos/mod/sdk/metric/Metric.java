@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.metric;
+package com.github.argon.sos.mod.sdk.metric;
 
 import com.github.argon.sos.mod.sdk.util.Lists;
 import game.time.TIME;
@@ -38,7 +38,6 @@ public class Metric {
         return headersMetric;
     }
 
-    // todo doesn't scale well and is ugly... but works
     public Object get(String key) {
         switch (key) {
             case "TIMESTAMP":
@@ -62,7 +61,6 @@ public class Metric {
             default:
                 return null;
         }
-
     }
 
     @Getter

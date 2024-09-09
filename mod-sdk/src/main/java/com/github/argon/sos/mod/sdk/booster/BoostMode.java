@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.booster;
+package com.github.argon.sos.mod.sdk.booster;
 
 public enum BoostMode {
     ADD,

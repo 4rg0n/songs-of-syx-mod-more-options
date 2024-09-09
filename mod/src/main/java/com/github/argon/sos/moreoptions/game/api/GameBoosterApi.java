@@ -7,7 +7,7 @@ import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.booster.BoosterService;
-import com.github.argon.sos.moreoptions.booster.Boosters;
+import com.github.argon.sos.mod.sdk.booster.Boosters;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import game.boosting.BoostableCat;
 import lombok.RequiredArgsConstructor;

@@ -1,5 +1,8 @@
 package com.github.argon.sos.moreoptions.booster;
 
+import com.github.argon.sos.mod.sdk.booster.BoostMode;
+import com.github.argon.sos.mod.sdk.booster.Boosters;
+import com.github.argon.sos.mod.sdk.booster.FactionBooster;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -89,7 +92,7 @@ public class BoosterFactory {
             scale = 0.01D;
         }
 
-        FactionBooster factionBooster = BoosterMapper.fromRange(
+        FactionBooster factionBooster = fromRange(
             booster,
             new BSourceInfo(MoreOptionsScript.MOD_INFO.name + suffix, SPRITES.icons().m.cog),
             range,
@@ -130,5 +133,24 @@ public class BoosterFactory {
 
     private static String key(String key) {
         return KEY_PREFIX + "." + key;
+    }
+
+    public static FactionBooster fromRange(
+        Boostable origin,
+        BSourceInfo bSourceInfo,
+        Range range,
+        double scale
+    ) {
+        return FactionBooster.builder()
+            .bSourceInfo(bSourceInfo)
+            .origin(origin)
+//            .from(BoosterUtil.toBoosterValue(range.getMin()))
+//            .to(BoosterUtil.toBoosterValue(range.getMax()))
+//            .value(MathUtil.toPercentage(range.getValue()))
+            .min(range.getMin())
+            .max(range.getMax())
+            .scale(scale)
+            .boostMode(BoostMode.valueOf(range.getApplyMode().name()))
+            .build();
     }
 }

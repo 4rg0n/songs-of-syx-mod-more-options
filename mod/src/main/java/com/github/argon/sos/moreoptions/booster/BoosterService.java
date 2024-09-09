@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.booster;
 
+import com.github.argon.sos.mod.sdk.booster.Boosters;
+import com.github.argon.sos.mod.sdk.booster.FactionBooster;
 import com.github.argon.sos.mod.sdk.game.api.GameFactionApi;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;

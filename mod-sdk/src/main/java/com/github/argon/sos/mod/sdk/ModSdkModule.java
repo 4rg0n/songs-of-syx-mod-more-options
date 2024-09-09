@@ -10,6 +10,10 @@ import com.github.argon.sos.mod.sdk.i18n.I18nMessages;
 import com.github.argon.sos.mod.sdk.json.*;
 import com.github.argon.sos.mod.sdk.json.writer.JacksonWriter;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
+import com.github.argon.sos.mod.sdk.metric.MetricCollector;
+import com.github.argon.sos.mod.sdk.metric.MetricCsvWriter;
+import com.github.argon.sos.mod.sdk.metric.MetricExporter;
+import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
@@ -110,7 +114,8 @@ public class ModSdkModule {
             new GameSaveApi(),
             new GameLangApi(),
             new GameFactionApi(),
-            new GameRoomsApi()
+            new GameRoomsApi(),
+            new GameStatsApi(metricCollector())
         );
     }
 
@@ -126,5 +131,26 @@ public class ModSdkModule {
     private final static I18n i18n = buildI18n();
     private static I18n buildI18n() {
         return new I18n(i18nMessages());
+    }
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static MetricCollector metricCollector = buildMetricCollector();
+    private static MetricCollector buildMetricCollector() {
+        return new MetricCollector();
+    }
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static MetricScheduler metricScheduler = buildMetricScheduler();
+    private static MetricScheduler buildMetricScheduler() {
+        return new MetricScheduler();
+    }
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static MetricExporter metricExporter = buildMetricExporter();
+    private static MetricExporter buildMetricExporter() {
+        return new MetricExporter(metricCollector(), new MetricCsvWriter());
     }
 }

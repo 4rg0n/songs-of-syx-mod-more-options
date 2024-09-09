@@ -8,14 +8,13 @@ import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.properties.ModProperties;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
-import com.github.argon.sos.moreoptions.game.api.GameStatsApi;
-import com.github.argon.sos.moreoptions.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogController;
 import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
@@ -50,7 +49,6 @@ public class UiFactory {
     private final static Logger log = Loggers.getLogger(UiFactory.class);
 
     private final GameApiModule gameApis;
-    private final GameStatsApi gameStatsApi;
     private final ConfigStore configStore;
     private final PropertiesStore propertiesStore;
     private final MetricExporter metricExporter;
@@ -71,7 +69,7 @@ public class UiFactory {
         Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(config.getBoosters());
         Map<String, List<RacesTab.Entry>> raceEntries = uiMapper.toRacePanelEntries(config.getRaces().getLikings());
 
-        Set<String> availableStats = gameStatsApi.getAvailableStatKeys();
+        Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod(MoreOptionsScript.MOD_INFO.name.toString()).orElse(null);
         Path exportFolder = MetricExporter.EXPORT_FOLDER;
         Path exportFile = metricExporter.getExportFile();

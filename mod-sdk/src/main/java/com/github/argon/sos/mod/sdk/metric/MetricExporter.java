@@ -1,9 +1,8 @@
-package com.github.argon.sos.moreoptions.metric;
+package com.github.argon.sos.mod.sdk.metric;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phases;
-import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import init.paths.PATHS;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +20,10 @@ public class MetricExporter implements Phases {
 
     private final static Logger log = Loggers.getLogger(MetricExporter.class);
 
-    public static final Path EXPORT_FOLDER = PATHS.local().PROFILE.get()
-        .resolve(MoreOptionsScript.MOD_INFO.name + "/exports");
+    public final static String EXPORT_FOLDER_NAME = "Metric Exports";
+
+    public final static Path EXPORT_FOLDER = PATHS.local().PROFILE.get()
+        .resolve("/" + EXPORT_FOLDER_NAME);
 
     @Getter
     private Path exportFile = generateExportFile();

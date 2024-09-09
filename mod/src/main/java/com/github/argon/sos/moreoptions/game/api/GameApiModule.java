@@ -10,13 +10,6 @@ import lombok.experimental.Accessors;
 public class GameApiModule {
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static GameStatsApi stats = buildGameStatsApi();
-    private static GameStatsApi buildGameStatsApi() {
-        return new GameStatsApi(ModModule.metricCollector());
-    }
-
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
     private final static GameBoosterApi boosters = buildGameBoosterApi();
     private static GameBoosterApi buildGameBoosterApi() {
         return new GameBoosterApi(ModModule.booster());
