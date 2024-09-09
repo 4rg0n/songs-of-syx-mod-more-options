@@ -8,7 +8,7 @@ import java.util.Properties;
 
 class ResourceServiceTest {
 
-    private final ResourceService resourceService = ResourceService.getInstance();
+    private final ResourceService resourceService = new ResourceService();
 
     @Test
     void getResourcePath() {

@@ -1,7 +1,6 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
 import com.github.argon.sos.mod.sdk.phase.Phases;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -13,21 +12,8 @@ import java.nio.file.Path;
  * Contains all game apis for accessing its functionality.
  */
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GameApis implements Phases {
-    @Getter(lazy = true)
-    private final static GameApis instance = new GameApis(
-        GameEventsApi.getInstance(),
-        GameSoundsApi.getInstance(),
-        GameUiApi.getInstance(),
-        GameWeatherApi.getInstance(),
-        GameModApi.getInstance(),
-        GameRaceApi.getInstance(),
-        GameSaveApi.getInstance(),
-        GameLangApi.getInstance(),
-        GameFactionApi.getInstance(),
-        GameRoomsApi.getInstance()
-    );
+@RequiredArgsConstructor
+public class GameApiModule implements Phases {
 
     @Accessors(fluent = true)
     private final GameEventsApi events;
