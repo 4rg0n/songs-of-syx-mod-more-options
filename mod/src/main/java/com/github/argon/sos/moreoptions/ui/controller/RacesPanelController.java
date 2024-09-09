@@ -8,7 +8,6 @@ import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
 import com.github.argon.sos.mod.sdk.util.Clipboard;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
-import com.github.argon.sos.moreoptions.ui.msg.Message;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import snake2d.util.file.FileManager;
@@ -30,27 +29,27 @@ public class RacesPanelController extends AbstractUiController<RacesTab> {
     public void openCurrentRacesConfigFile() {
         Path path = configStore.getRacesConfigPath().orElse(null);
         if (path == null || !path.toFile().exists()) {
-            Message.notify("notification.races.file.not.exists", path);
+            messages.notify("notification.races.file.not.exists", path);
             return;
         }
 
         try {
             FileManager.openDesctop(path.toString());
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.races.file.not.open", path);
+            messages.errorDialog(e, "notification.races.file.not.open", path);
         }
     }
 
     public void openRacesConfigFolder() {
         if (!ConfigDefaults.RACES_CONFIG_FOLDER_PATH.toFile().exists()) {
-            Message.notifyError("notification.races.folder.not.exists", ConfigDefaults.RACES_CONFIG_FOLDER_PATH);
+            messages.notifyError("notification.races.folder.not.exists", ConfigDefaults.RACES_CONFIG_FOLDER_PATH);
             return;
         }
 
         try {
             FileManager.openDesctop(ConfigDefaults.RACES_CONFIG_FOLDER_PATH.toString());
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.races.folder.not.open", ConfigDefaults.RACES_CONFIG_FOLDER_PATH);
+            messages.errorDialog(e, "notification.races.folder.not.open", ConfigDefaults.RACES_CONFIG_FOLDER_PATH);
         }
     }
 
@@ -61,9 +60,9 @@ public class RacesPanelController extends AbstractUiController<RacesTab> {
             Json json = new Json(jsonElement, JsonWriters.jsonEPretty());
 
             Clipboard.write(json.write());
-            Message.notifySuccess("notification.races.config.copy");
+            messages.notifySuccess("notification.races.config.copy");
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.races.config.not.copy");
+            messages.errorDialog(e, "notification.races.config.not.copy");
         }
     }
 
@@ -74,10 +73,10 @@ public class RacesPanelController extends AbstractUiController<RacesTab> {
                 RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), RacesConfig.class);
 
                 element.setValue(racesConfig);
-                Message.notifySuccess("notification.races.config.import");
+                messages.notifySuccess("notification.races.config.import");
             });
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.races.config.not.import");
+            messages.errorDialog(e, "notification.races.config.not.import");
         }
     }
 
@@ -93,13 +92,13 @@ public class RacesPanelController extends AbstractUiController<RacesTab> {
 
                 if (racesConfig != null) {
                     element.setValue(racesConfig);
-                    Message.notifySuccess("notification.races.config.load");
+                    messages.notifySuccess("notification.races.config.load");
                     racesConfigsSelection.hide();
                 } else {
-                    Message.notifyError("notification.races.config.not.load");
+                    messages.notifyError("notification.races.config.not.load");
                 }
             } catch (Exception e) {
-                Message.errorDialog(e, "notification.races.config.not.load");
+                messages.errorDialog(e, "notification.races.config.not.load");
             }
         });
 

@@ -1,17 +1,15 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
-import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
-import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
-import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.UninitializedException;
 import com.github.argon.sos.mod.sdk.phase.state.StateManager;
-import lombok.AccessLevel;
-import lombok.Getter;
+import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
+import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,16 +20,9 @@ import java.util.Optional;
 /**
  * Handles loading and saving of {@link MoreOptionsV5Config}
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class ConfigStore implements Phases {
     private final static Logger log = Loggers.getLogger(ConfigStore.class);
-
-    @Getter(lazy = true)
-    private final static ConfigStore instance = new ConfigStore(
-        ConfigService.getInstance(),
-        ConfigDefaults.getInstance(),
-        StateManager.getInstance()
-    );
 
     private final ConfigService configService;
     private final ConfigDefaults configDefaults;

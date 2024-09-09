@@ -3,10 +3,11 @@ package com.github.argon.sos.moreoptions.ui.tab.boosters;
 import com.github.argon.sos.mod.sdk.game.ui.*;
 import com.github.argon.sos.mod.sdk.game.ui.layout.Layouts;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.booster.Boosters;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.Range;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
  */
 public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> {
     private static final Logger log = Loggers.getLogger(BoostersTab.class);
-    private final static I18n i18n = I18n.get(BoostersTab.class);
+    private final static I18nTranslator i18n = ModModule.i18n().get(BoostersTab.class);
 
     @Getter
     private final Map<Faction, BoostersSection> boostersSections = new HashMap<>();

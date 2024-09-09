@@ -2,7 +2,8 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.mod.sdk.game.ui.Button;
 import com.github.argon.sos.mod.sdk.game.ui.HorizontalLine;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
+import com.github.argon.sos.moreoptions.ModModule;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
@@ -14,7 +15,7 @@ import util.gui.misc.GText;
  */
 public class BackupDialog extends GuiSection {
 
-    private final static I18n i18n = I18n.get(BackupDialog.class);
+    private final static I18nTranslator i18n = ModModule.i18n().get(BackupDialog.class);
 
     @Getter
     private Button applyButton;

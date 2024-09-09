@@ -5,8 +5,6 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import init.paths.PATH;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,14 +18,9 @@ import java.util.stream.Stream;
 /**
  * Gives access to the game JSON configuration
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class GameJsonService {
     private final static Logger log = Loggers.getLogger(GameJsonService.class);
-
-    @Getter(lazy = true)
-    private final static GameJsonService instance = new GameJsonService(
-        GameJsonStore.getInstance()
-    );
 
     private final GameJsonStore gameJsonStore;
 

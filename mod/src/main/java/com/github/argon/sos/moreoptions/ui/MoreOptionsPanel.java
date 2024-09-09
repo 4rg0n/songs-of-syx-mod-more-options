@@ -1,14 +1,15 @@
 package com.github.argon.sos.moreoptions.ui;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.action.Refreshable;
 import com.github.argon.sos.mod.sdk.game.action.Showable;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
-import com.github.argon.sos.mod.sdk.game.api.GameUiApi;
 import com.github.argon.sos.mod.sdk.game.ui.*;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
@@ -49,7 +50,7 @@ public class MoreOptionsPanel extends GuiSection implements
     Refreshable,
     Valuable<MoreOptionsV5Config> {
 
-    private static final I18n i18n = I18n.get(WeatherTab.class);
+    private static final I18nTranslator i18n = ModModule.i18n().get(WeatherTab.class);
 
     private final ConfigStore configStore;
     @Getter
@@ -175,7 +176,7 @@ public class MoreOptionsPanel extends GuiSection implements
         );
         this.moreButtonMenu = ButtonMenu.ButtonMenuBuilder.fromList(buttons);
         this.moreButton.clickActionSet(() -> {
-            GameUiApi.getInstance().popup().show(this.moreButtonMenu, this.moreButton);
+            ModSdkModule.gameApis().ui().popup().show(this.moreButtonMenu, this.moreButton);
         });
 
         HorizontalLine horizontalLine = new HorizontalLine(footer.body().width(), 20, 1);

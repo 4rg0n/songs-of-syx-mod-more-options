@@ -1,9 +1,8 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.AbstractScript;
 import com.github.argon.sos.mod.sdk.game.ui.Window;
-import com.github.argon.sos.mod.sdk.i18n.I18nMessages;
-import com.github.argon.sos.mod.sdk.json.GameJsonStore;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -12,13 +11,9 @@ import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
-import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
-import com.github.argon.sos.moreoptions.metric.MetricExporter;
-import com.github.argon.sos.moreoptions.metric.MetricScheduler;
+import com.github.argon.sos.moreoptions.game.api.GameApiModule;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
-import com.github.argon.sos.moreoptions.ui.msg.Message;
-import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import init.paths.PATHS;
 import lombok.NoArgsConstructor;
 import util.info.INFO;
@@ -36,9 +31,9 @@ public final class MoreOptionsScript extends AbstractScript {
 	private final static Logger log = Loggers.getLogger(MoreOptionsScript.class);
 
 	public final static INFO MOD_INFO = new INFO("More Options", "Adds more options to the game :)");
-	private final ConfigStore configStore = ConfigStore.getInstance();
-	private final ConfigApplier configApplier = ConfigApplier.getInstance();
-	private final UiConfig uiConfig = UiConfig.getInstance();
+	private final ConfigStore configStore = ModModule.configStore();
+	private final ConfigApplier configApplier = ModModule.configApplier();
+	private final UiConfig uiConfig = ModModule.uiConfig();
 	public final static Path MORE_OPTIONS_PROFILE = PATHS.local().PROFILE.get().resolve(MoreOptionsScript.MOD_INFO.name.toString());
 
 	public final static Path MORE_OPTIONS_CONFIG = PATHS.local().SETTINGS.get().resolve("MoreOptions.txt");
@@ -56,22 +51,22 @@ public final class MoreOptionsScript extends AbstractScript {
 	@Override
 	protected void registerPhases(PhaseManager phaseManager) {
         phaseManager
-            .register(Phase.INIT_BEFORE_GAME_CREATED, GameJsonStore.getInstance())
-            .register(Phase.INIT_BEFORE_GAME_CREATED, MetricExporter.getInstance())
-            .register(Phase.INIT_BEFORE_GAME_CREATED, I18nMessages.getInstance())
-            .register(Phase.INIT_BEFORE_GAME_CREATED, ConfigStore.getInstance())
-            .register(Phase.INIT_MOD_CREATE_INSTANCE, UiConfig.getInstance())
-			.register(Phase.INIT_MOD_CREATE_INSTANCE, GameBoosterApi.getInstance())
-            .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ConfigStore.getInstance())
-            .register(Phase.INIT_SETTLEMENT_UI_PRESENT, UiConfig.getInstance())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.gameJsonStore())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, ModModule.metricExporter())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.i18nMessages())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, ModModule.configStore())
+            .register(Phase.INIT_MOD_CREATE_INSTANCE, ModModule.uiConfig())
+			.register(Phase.INIT_MOD_CREATE_INSTANCE, GameApiModule.boosters())
+            .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ModModule.configStore())
+            .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ModModule.uiConfig())
 
-            .register(Phase.ON_GAME_SAVE_LOADED, ConfigStore.getInstance())
-            .register(Phase.ON_GAME_SAVED, ConfigStore.getInstance())
-            .register(Phase.ON_GAME_SAVE_RELOADED, MetricExporter.getInstance())
-            .register(Phase.ON_GAME_SAVE_RELOADED, GameBoosterApi.getInstance())
-			.register(Phase.ON_GAME_UPDATE, Notificator.getInstance())
-            .register(Phase.ON_CRASH, MetricScheduler.getInstance())
-            .register(Phase.ON_CRASH, ConfigStore.getInstance());
+            .register(Phase.ON_GAME_SAVE_LOADED, ModModule.configStore())
+            .register(Phase.ON_GAME_SAVED, ModModule.configStore())
+            .register(Phase.ON_GAME_SAVE_RELOADED, ModModule.metricExporter())
+            .register(Phase.ON_GAME_SAVE_RELOADED, GameApiModule.boosters())
+			.register(Phase.ON_GAME_UPDATE, ModModule.notificator())
+            .register(Phase.ON_CRASH, ModModule.metricScheduler())
+            .register(Phase.ON_CRASH, ModModule.configStore());
 	}
 
 	@Override
@@ -102,7 +97,7 @@ public final class MoreOptionsScript extends AbstractScript {
 				configApplier.applyToGame(configStore.getCurrentConfig());
 			}
 		} catch (Exception e) {
-			Message.errorDialog(e);
+			ModModule.messages().errorDialog(e);
 		}
     }
 

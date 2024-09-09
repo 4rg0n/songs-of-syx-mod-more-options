@@ -1,10 +1,16 @@
-package com.github.argon.sos.moreoptions.game;
+package com.github.argon.sos.mod.sdk.data;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
+/**
+ * Will hold a value for a certain amount of time.
+ * When the time expired, it will fetch a new value from the supplier.
+ *
+ * @param <Value> type to hold
+ */
 @RequiredArgsConstructor
 public class CacheValue<Value> {
     private final long lifetimeMillis;
@@ -28,6 +34,12 @@ public class CacheValue<Value> {
 
     public void evict() {
         cachedValue = null;
+    }
+
+    public void evictExpired() {
+        if (expired()) {
+            evict();
+        }
     }
 
     private Value readValue() {

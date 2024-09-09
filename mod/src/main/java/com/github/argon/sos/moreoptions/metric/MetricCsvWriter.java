@@ -3,8 +3,6 @@ package com.github.argon.sos.moreoptions.metric;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -21,11 +19,8 @@ import java.util.stream.Collectors;
 /**
  * Writes data in CSV format into a file
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class MetricCsvWriter {
-
-    @Getter(lazy = true)
-    private final static MetricCsvWriter instance = new MetricCsvWriter();
 
     private final static Logger log = Loggers.getLogger(MetricCsvWriter.class);
 

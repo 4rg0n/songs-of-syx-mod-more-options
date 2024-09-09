@@ -3,8 +3,9 @@ package com.github.argon.sos.moreoptions.ui.tab.boosters;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.mod.sdk.game.ui.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.util.Maps;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
@@ -29,7 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BoostersSection extends GuiSection implements Valuable<Map<String, Range>> {
-    private static final I18n i18n = I18n.get(BoostersTab.class);
+    private static final I18nTranslator i18n = ModModule.i18n().get(BoostersTab.class);
 
     private final Table<Range> boosterTable;
 

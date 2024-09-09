@@ -1,5 +1,10 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.mod.sdk.file.FileService;
+import com.github.argon.sos.mod.sdk.game.api.GameSaveApi;
+import com.github.argon.sos.mod.sdk.json.JacksonService;
+import com.github.argon.sos.mod.sdk.json.JasonService;
+import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.moreoptions.config.json.JsonConfigStore;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonMoreOptionsV2Config;
@@ -10,26 +15,12 @@ import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
-import com.github.argon.sos.mod.sdk.game.api.GameSaveApi;
-import com.github.argon.sos.mod.sdk.file.FileService;
-import com.github.argon.sos.mod.sdk.json.JacksonService;
-import com.github.argon.sos.mod.sdk.json.JasonService;
-import com.github.argon.sos.mod.sdk.phase.Phases;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import static com.github.argon.sos.moreoptions.config.ConfigDefaults.*;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class ConfigFactory implements Phases {
-    @Getter(lazy = true)
-    private final static ConfigFactory instance = new ConfigFactory(
-        GameSaveApi.getInstance(),
-        JacksonService.getInstance(),
-        JasonService.getInstance(),
-        FileService.getInstance()
-    );
 
     private final GameSaveApi gameSaveApi;
     private final JacksonService jacksonService;

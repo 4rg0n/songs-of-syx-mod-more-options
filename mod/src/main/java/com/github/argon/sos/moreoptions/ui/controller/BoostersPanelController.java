@@ -8,7 +8,7 @@ import com.github.argon.sos.mod.sdk.json.JsonMapper;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.mapper.TypeInfo;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
-import com.github.argon.sos.moreoptions.ui.msg.Message;
+import com.github.argon.sos.moreoptions.ui.msg.Messages;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersPresetsSection;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersSection;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
@@ -51,7 +51,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
             boostersSection.setValue(boosterValues);
         });
 
-        Message.notifySuccess("notification.boosters.factions.reset");
+        messages.notifySuccess("notification.boosters.factions.reset");
     }
 
     public void resetCurrentBoosters() {
@@ -62,29 +62,29 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
         ));
         currentBoosterSection.setValue(boosterValues);
 
-        Message.notifySuccess("notification.boosters.reset", currentBoosterSection.getFaction().name.toString());
+        messages.notifySuccess("notification.boosters.reset", currentBoosterSection.getFaction().name.toString());
     }
 
     public void copyBoostersConfig() {
         Faction copiedFaction = element.copyBoosters();
-        Message.notifySuccess("notification.boosters.copy", copiedFaction.name.toString());
+        messages.notifySuccess("notification.boosters.copy", copiedFaction.name.toString());
     }
 
     public void pasteBoostersConfigToAllNPCFactions() {
         int amount = element.pasteBoostersToNPCFactions();
 
         if (amount > 0) {
-            Message.notifySuccess("notification.boosters.factions.paste", amount);
+            messages.notifySuccess("notification.boosters.factions.paste", amount);
         } else {
-            Message.notifyError("notification.boosters.factions.not.paste");
+            messages.notifyError("notification.boosters.factions.not.paste");
         }
     }
 
     public void pasteBoostersConfig() {
         if (element.pasteBoosters()) {
-            Message.notifySuccess("notification.boosters.paste");
+            messages.notifySuccess("notification.boosters.paste");
         } else {
-            Message.notifyError("notification.boosters.not.paste");
+            messages.notifyError("notification.boosters.not.paste");
         }
     }
 
@@ -100,7 +100,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
                     configStore.save(currentConfig);
                 }
 
-                Message.notifySuccess("notification.boosters.preset.save", presetName.toString());
+                messages.notifySuccess("notification.boosters.preset.save", presetName.toString());
             }
         };
 
@@ -114,7 +114,7 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
             .clickAction(key -> {
                 Map<String, Range> boostersPreset = presets.get(key);
                 element.getCurrentBoosterSection().setValue(boostersPreset);
-                Message.notifySuccess("notification.boosters.preset.load", key);
+                messages.notifySuccess("notification.boosters.preset.load", key);
             })
             .deleteAction((key, panel) -> {
                 gameApis.ui().inters().yesNo.activate(i18n.t("BoostersTab.text.yesNo.preset.delete", key), () -> {
@@ -129,9 +129,9 @@ public class BoostersPanelController extends AbstractUiController<BoostersTab> {
                     Json json = new Json(jsonElement, JsonWriters.jsonEPretty());
 
                     Clipboard.write(json.write());
-                    Message.notifySuccess("notification.boosters.preset.copy", key);
+                    messages.notifySuccess("notification.boosters.preset.copy", key);
                 } catch (Exception e) {
-                    Message.errorDialog(e, "notification.boosters.preset.not.copy");
+                    messages.errorDialog(e, "notification.boosters.preset.not.copy");
                 }
             })
             .build();

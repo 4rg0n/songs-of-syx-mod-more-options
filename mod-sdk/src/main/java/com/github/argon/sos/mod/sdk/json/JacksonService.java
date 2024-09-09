@@ -3,12 +3,9 @@ package com.github.argon.sos.mod.sdk.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.argon.sos.mod.sdk.file.FileService;
-import com.github.argon.sos.mod.sdk.json.writer.JacksonWriter;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -20,13 +17,6 @@ import java.util.Optional;
  */
 @RequiredArgsConstructor
 public class JacksonService implements JsonService {
-    @Getter(lazy = true)
-    private final static JacksonService instance = new JacksonService(
-        new ObjectMapper()
-            .enable(SerializationFeature.INDENT_OUTPUT),
-        new JacksonWriter(),
-        FileService.getInstance()
-    );
     private final static Logger log = Loggers.getLogger(JacksonService.class);
 
     private final ObjectMapper objectMapper;

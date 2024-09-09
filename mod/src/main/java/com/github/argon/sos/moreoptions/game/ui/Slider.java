@@ -4,9 +4,10 @@ import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.mod.sdk.game.util.TextFormatUtil;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
 import init.sprite.SPRITES;
@@ -51,7 +52,7 @@ import java.util.stream.Collectors;
  */
 public class Slider extends GuiSection implements Valuable<Integer>, Resettable {
 
-    private static final I18n i18n = I18n.get(Slider.class);
+    private static final I18nTranslator i18n = ModModule.i18n().get(Slider.class);
 
     private static final int midWidth = 8;
     private final CharSequence setAmount;

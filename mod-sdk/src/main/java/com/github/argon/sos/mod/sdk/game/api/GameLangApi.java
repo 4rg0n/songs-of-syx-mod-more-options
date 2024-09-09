@@ -4,8 +4,6 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import init.paths.PATHS;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import snake2d.util.sets.LIST;
 
@@ -14,15 +12,11 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class GameLangApi {
-
     private final static Logger log = Loggers.getLogger(GameLangApi.class);
 
     public final static Locale DEFAULT_LOCALE = Locale.ENGLISH;
-
-    @Getter(lazy = true)
-    private final static GameLangApi instance = new GameLangApi();
 
     /**
      * @return the current selected language of the game

@@ -6,7 +6,8 @@ import com.github.argon.sos.mod.sdk.game.ui.Button;
 import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.game.ui.Table;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class BoostersPresetsSection extends GuiSection {
 
-    private final static I18n i18n = I18n.get(BoostersTab.class);
+    private final static I18nTranslator i18n = ModModule.i18n().get(BoostersTab.class);
 
     private final Map<String, Button> presetButtons = new HashMap<>();
     private final Map<String, Button> deleteButtons = new HashMap<>();

@@ -3,9 +3,7 @@ package com.github.argon.sos.mod.sdk.json;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import init.paths.PATH;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import snake2d.Errors;
 import snake2d.util.file.Json;
 import snake2d.util.file.JsonE;
@@ -18,12 +16,9 @@ import java.util.Optional;
  * For saving the data in the games JsonE format
  */
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonEService {
 
     private final static Logger log = Loggers.getLogger(JsonEService.class);
-    @Getter(lazy = true)
-    private final static JsonEService instance = new JsonEService();
 
     public Optional<Json> load(PATH path, String fileName) {
         log.debug("Loading json file %s from %s", fileName, path.get());

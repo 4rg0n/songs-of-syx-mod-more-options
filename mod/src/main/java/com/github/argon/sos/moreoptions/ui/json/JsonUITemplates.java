@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.json;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.data.GameResources;
 import com.github.argon.sos.mod.sdk.json.GameJsonService;
 import com.github.argon.sos.mod.sdk.json.element.JsonArray;
@@ -15,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonUITemplates {
 
-    private final static GameJsonService jsonService = GameJsonService.getInstance();
+    private final static GameJsonService jsonService = ModSdkModule.gameJsonService();
 
     public static void roomHead(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.color("MINI_COLOR");

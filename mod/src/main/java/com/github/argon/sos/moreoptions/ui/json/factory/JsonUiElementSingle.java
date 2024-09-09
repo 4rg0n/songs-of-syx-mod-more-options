@@ -1,9 +1,10 @@
 package com.github.argon.sos.moreoptions.ui.json.factory;
 
+import com.github.argon.sos.mod.sdk.data.CacheValue;
 import com.github.argon.sos.mod.sdk.game.action.BiAction;
 import com.github.argon.sos.mod.sdk.game.ui.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.json.JsonPath;
 import com.github.argon.sos.mod.sdk.json.element.JsonDouble;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
@@ -11,7 +12,8 @@ import com.github.argon.sos.mod.sdk.json.element.JsonLong;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.util.ClassUtil;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
-import com.github.argon.sos.moreoptions.game.CacheValue;
+import com.github.argon.sos.moreoptions.ModModule;
+import com.github.argon.sos.moreoptions.ui.json.JsonUiException;
 import com.github.argon.sos.moreoptions.ui.json.icon.JsonUiElementIcon;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
@@ -19,7 +21,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import com.github.argon.sos.moreoptions.ui.json.JsonUiException;
 import menu.ui.UiFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,7 @@ import java.util.function.Function;
 
 @Getter
 public class JsonUiElementSingle<Value extends JsonElement, Element extends RENDEROBJ> implements JsonUiElement<Value, Element> {
-    private final static I18n i18n = I18n.get(JsonUiElementSingle.class);
+    private final static I18nTranslator i18n = ModModule.i18n().get(JsonUiElementSingle.class);
 
     private final Element element;
     @Nullable

@@ -5,7 +5,6 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import game.GAME;
 import game.events.EVENTS;
-import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,14 +23,10 @@ public class GameEventsApi {
 
     public final static String KEY_PREFIX = "event";
 
-    @Getter(lazy = true)
-    private final static GameEventsApi instance = new GameEventsApi();
-
     public void clearCached() {
         events = null;
         eventsChances = null;
     }
-
 
     public Map<String, EVENTS.EventResource> getEvents() {
         if (events == null) {

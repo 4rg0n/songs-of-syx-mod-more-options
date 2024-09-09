@@ -4,10 +4,11 @@ import com.github.argon.sos.mod.sdk.game.ui.Checkbox;
 import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.game.ui.HorizontalLine;
 import com.github.argon.sos.mod.sdk.game.ui.Table;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Maps;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.EventsConfig;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
 
     private static final Logger log = Loggers.getLogger(EventsTab.class);
-    private final static I18n i18n = I18n.get(EventsTab.class);
+    private final static I18nTranslator i18n = ModModule.i18n().get(EventsTab.class);
 
     private final Map<String, Checkbox> eventsCheckboxes;
     private final Map<String, Slider> eventsChanceSliders;

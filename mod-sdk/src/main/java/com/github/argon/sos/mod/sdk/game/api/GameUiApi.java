@@ -8,7 +8,6 @@ import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.UninitializedException;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -27,13 +26,10 @@ import java.util.Optional;
 /**
  * For hooking into the games UI
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class GameUiApi implements Phases {
 
     private final static Logger log = Loggers.getLogger(GameUiApi.class);
-
-    @Getter(lazy = true)
-    private final static GameUiApi instance = new GameUiApi();
 
     @Getter
     @Accessors(fluent = true)

@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.config;
 
-import com.github.argon.sos.mod.sdk.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -12,8 +12,6 @@ import com.github.argon.sos.moreoptions.game.api.GameStatsApi;
 import game.faction.Faction;
 import init.paths.PATHS;
 import init.race.Race;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.nio.file.Path;
@@ -23,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Provides default configuration partially gathered from the game.
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class ConfigDefaults {
 
     private final static Logger log = Loggers.getLogger(ConfigDefaults.class);
@@ -37,14 +35,7 @@ public class ConfigDefaults {
     public final static Path RACES_CONFIG_FOLDER_PATH = PROFILE_PATH.resolve("races");
     public final static Path BOOSTERS_CONFIG_FOLDER_PATH = PROFILE_PATH.resolve("boosters");
 
-    @Getter(lazy = true)
-    private final static ConfigDefaults instance = new ConfigDefaults(
-        GameApis.getInstance(),
-        GameBoosterApi.getInstance(),
-        GameStatsApi.getInstance()
-    );
-
-    private final GameApis gameApis;
+    private final GameApiModule gameApis;
     private final GameBoosterApi gameBoosterApi;
     private final GameStatsApi gameStatsApi;
 

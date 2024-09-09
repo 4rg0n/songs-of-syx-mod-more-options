@@ -1,9 +1,9 @@
 package com.github.argon.sos.mod.sdk.game.ui;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.Refreshable;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
-import com.github.argon.sos.mod.sdk.game.api.GameUiApi;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,7 +53,7 @@ public class MultiDropDown<Key> extends AbstractButton<List<Key>, MultiDropDown<
             });
         } else {
             clickActionSet(() -> {
-                GameUiApi.getInstance().popup().show(this.select, this);
+                ModSdkModule.gameApis().ui().popup().show(this.select, this);
             });
         }
 

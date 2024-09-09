@@ -10,7 +10,6 @@ import init.race.RACES;
 import init.race.Race;
 import init.type.HCLASS;
 import init.type.HCLASSES;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +25,9 @@ import java.util.stream.Collectors;
 /**
  * Access to the games races
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class GameRaceApi implements Phases {
     private final static Logger log = Loggers.getLogger(GameRaceApi.class);
-
-    @Getter(lazy = true)
-    private final static GameRaceApi instance = new GameRaceApi();
     private List<RaceLiking> vanillaLikings;
     private final Map<String, Integer> raceIndexMap = new HashMap<>();
 
@@ -135,7 +131,7 @@ public class GameRaceApi implements Phases {
      * @return list of custom modded races
      */
     public List<Race> getCustomRaces() {
-        return GameRaceApi.getInstance().getAll().stream()
+        return getAll().stream()
             .filter(race -> !vanillaRaces.contains(race.key))
             .collect(Collectors.toList());
     }

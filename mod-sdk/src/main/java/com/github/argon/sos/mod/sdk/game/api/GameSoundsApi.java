@@ -5,8 +5,6 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
 import game.audio.AUDIO;
 import game.audio.Ambiance;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,13 +14,10 @@ import java.util.Map;
 /**
  * Access to the games sound effects
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class GameSoundsApi {
 
     private final static Logger log = Loggers.getLogger(GameSoundsApi.class);
-
-    @Getter(lazy = true)
-    private final static GameSoundsApi instance = new GameSoundsApi();
 
     @Nullable
     private Map<String, Ambiance> ambienceSounds;

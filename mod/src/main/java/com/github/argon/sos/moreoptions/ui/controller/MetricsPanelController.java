@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.moreoptions.ui.msg.Message;
+import com.github.argon.sos.moreoptions.ui.msg.Messages;
 import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
 import com.github.argon.sos.mod.sdk.util.Clipboard;
 import snake2d.util.file.FileManager;
@@ -18,14 +18,14 @@ public class MetricsPanelController extends AbstractUiController<MetricsTab> {
     public void openMetricsExportFolder() {
         Path exportFolderPath = element.getExportFolderPath();
         if (!exportFolderPath.toFile().exists()) {
-            Message.notifyError("notification.metrics.folder.not.exists", exportFolderPath);
+            messages.notifyError("notification.metrics.folder.not.exists", exportFolderPath);
             return;
         }
 
         try {
             FileManager.openDesctop(exportFolderPath.toString());
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.metrics.folder.not.open", exportFolderPath);
+            messages.errorDialog(e, "notification.metrics.folder.not.open", exportFolderPath);
         }
     }
 
@@ -33,15 +33,15 @@ public class MetricsPanelController extends AbstractUiController<MetricsTab> {
         Path exportFilePath = element.getExportFilePath();
 
         if (exportFilePath == null) {
-            Message.notifyError("notification.metrics.file.path.not.copy");
+            messages.notifyError("notification.metrics.file.path.not.copy");
             return;
         }
 
         try {
             Clipboard.write(exportFilePath.toString());
-            Message.notifySuccess("notification.metrics.file.path.copy", exportFilePath);
+            messages.notifySuccess("notification.metrics.file.path.copy", exportFilePath);
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.metrics.file.path.not.copy");
+            messages.errorDialog(e, "notification.metrics.file.path.not.copy");
         }
     }
 }

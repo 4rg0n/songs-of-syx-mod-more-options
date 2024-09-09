@@ -24,7 +24,7 @@ import java.io.IOException;
 public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 
 	private final Phases scriptPhases;
-	private final StateManager stateManager = StateManager.getInstance();
+	private final StateManager stateManager;
 
 	@Override
 	public void update(double v) {

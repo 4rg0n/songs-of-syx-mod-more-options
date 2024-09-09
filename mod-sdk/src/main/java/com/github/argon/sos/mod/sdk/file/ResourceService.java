@@ -3,9 +3,6 @@ package com.github.argon.sos.mod.sdk.file;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -25,13 +22,9 @@ import java.util.Properties;
  * This is where all the compiled "byte code" of your Java classes lives for example.
  * These files are than called "Resources" and can be accessed through this service.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResourceService extends AbstractFileService {
 
     private final static Logger log = Loggers.getLogger(ResourceService.class);
-
-    @Getter(lazy = true)
-    private final static ResourceService instance = new ResourceService();
 
     /**
      * For getting a {@link Path} of a resource from a path.

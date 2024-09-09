@@ -1,9 +1,13 @@
 package com.github.argon.sos.mod.sdk.log.writer;
 
+import com.github.argon.sos.mod.sdk.util.StringUtil;
 import snake2d.LOG;
 
 import static com.github.argon.sos.mod.sdk.util.StringUtil.stringifyValues;
 
+/**
+ * Writes to the game {@link LOG#ln(Object)} or {@link LOG#err(Object)}
+ */
 public class GameLOG extends AbstractLogWriter {
 
     public GameLOG(String prefix, String messageFormat, String name) {
@@ -36,5 +40,11 @@ public class GameLOG extends AbstractLogWriter {
         } catch (Exception e) {
             problemLogging(formatMsg, args, e);
         }
+    }
+
+    @Override
+    public void exception(Throwable ex) {
+        String exceptionString = StringUtil.stringify(ex);
+        LOG.err(exceptionString);
     }
 }

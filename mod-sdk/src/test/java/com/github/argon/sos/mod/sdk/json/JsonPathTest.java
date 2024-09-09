@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.json;
+package com.github.argon.sos.mod.sdk.json;
 
 import com.github.argon.sos.mod.sdk.json.JsonPath;
 import com.github.argon.sos.mod.sdk.json.element.*;

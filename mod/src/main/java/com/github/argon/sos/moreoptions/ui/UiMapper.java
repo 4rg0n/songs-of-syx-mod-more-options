@@ -1,11 +1,11 @@
 package com.github.argon.sos.moreoptions.ui;
 
-import com.github.argon.sos.mod.sdk.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
 import com.github.argon.sos.mod.sdk.game.ui.Checkbox;
 import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.game.ui.Label;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
@@ -19,7 +19,6 @@ import game.faction.Faction;
 import init.race.Race;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import settlement.room.main.RoomBlueprintImp;
@@ -36,13 +35,7 @@ public class UiMapper {
 
     private final static Logger log = Loggers.getLogger(UiMapper.class);
 
-    @Getter(lazy = true)
-    private final static UiMapper instance = new UiMapper(
-        GameApis.getInstance(),
-        GameBoosterApi.getInstance()
-    );
-
-    private final GameApis gameApis;
+    private final GameApiModule gameApis;
     private final GameBoosterApi gameBoosterApi;
 
     public Map<String, List<RacesTab.Entry>> toRacePanelEntries(Set<RacesConfig.Liking> raceLikings) {
@@ -140,7 +133,7 @@ public class UiMapper {
             .build();
     }
 
-    public static <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toLabeledColumnRows(Map<String, Element> elements, I18n i18n) {
+    public static <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toLabeledColumnRows(Map<String, Element> elements, I18nTranslator i18n) {
         return elements.entrySet().stream()
             .sorted(Map.Entry.comparingByKey())
             .map(entry -> {

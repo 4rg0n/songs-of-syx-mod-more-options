@@ -27,10 +27,7 @@ import java.util.stream.Stream;
  * Simple service for handling file operations, which are not resources.
  * So everything outside the *.jar file.
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileService extends AbstractFileService {
-    @Getter(lazy = true)
-    private final static FileService instance = new FileService();
     private final static Logger log = Loggers.getLogger(FileService.class);
     public final static Charset CHARSET = StandardCharsets.UTF_8;
 

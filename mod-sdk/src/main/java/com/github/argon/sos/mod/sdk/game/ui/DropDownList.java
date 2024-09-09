@@ -1,9 +1,9 @@
 package com.github.argon.sos.mod.sdk.game.ui;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.Refreshable;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
-import com.github.argon.sos.mod.sdk.game.api.GameUiApi;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
@@ -85,7 +85,7 @@ public class DropDownList extends AbstractButton<List<String>, DropDownList> imp
             });
         } else {
             clickActionSet(() -> {
-                GameUiApi.getInstance().popup().show(this.uiList, this);
+                ModSdkModule.gameApis().ui().popup().show(this.uiList, this);
             });
         }
     }

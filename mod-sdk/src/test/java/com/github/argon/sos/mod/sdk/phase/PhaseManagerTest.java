@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 
 class PhaseManagerTest {
 
-    private PhaseManager phaseManager = PhaseManager.getInstance();
+    private final PhaseManager phaseManager = new PhaseManager();
 
     @Test
     void test() {

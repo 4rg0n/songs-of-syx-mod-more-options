@@ -5,7 +5,6 @@ import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phases;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -19,13 +18,9 @@ import java.util.Optional;
 /**
  * For interacting with the games save files and features
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class GameSaveApi implements Phases {
-
     private final static Logger log = Loggers.getLogger(GameSaveApi.class);
-
-    @Getter(lazy = true)
-    private final static GameSaveApi instance = new GameSaveApi();
 
     /**
      * Path to the current game save file

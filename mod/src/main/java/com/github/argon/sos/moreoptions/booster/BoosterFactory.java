@@ -1,12 +1,13 @@
 package com.github.argon.sos.moreoptions.booster;
 
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.Range;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
 import game.boosting.BOOSTING;
 import game.boosting.BSourceInfo;
@@ -31,7 +32,7 @@ import java.util.Map;
 public class BoosterFactory {
 
     private final static Logger log = Loggers.getLogger(BoosterFactory.class);
-    private final static I18n i18n = I18n.get(BoosterFactory.class);
+    private final static I18nTranslator i18n = ModModule.i18n().get(BoosterFactory.class);
 
     public final static String KEY_PREFIX = "booster";
 

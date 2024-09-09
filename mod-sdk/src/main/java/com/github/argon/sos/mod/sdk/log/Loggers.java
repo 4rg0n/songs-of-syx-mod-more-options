@@ -58,8 +58,4 @@ public class Loggers {
             }
         });
     }
-
-    public static boolean isRootLevel(Level level) {
-        return (getRootLevel().getValue() > level.getValue());
-    }
 }

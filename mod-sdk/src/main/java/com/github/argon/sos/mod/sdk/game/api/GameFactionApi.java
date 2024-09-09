@@ -10,7 +10,6 @@ import game.faction.FACTIONS;
 import game.faction.Faction;
 import game.faction.npc.FactionNPC;
 import game.faction.player.Player;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -20,13 +19,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class GameFactionApi implements Phases {
 
     private final Logger log = Loggers.getLogger(GameFactionApi.class);
 
-    @Getter(lazy = true)
-    private final static GameFactionApi instance = new GameFactionApi();
     @Getter
     private final Map<String, Faction> factions = new HashMap<>(FACTIONS.MAX);
     @Getter

@@ -16,11 +16,8 @@ import java.util.concurrent.TimeUnit;
  * For scheduling tasks.
  * Used for collecting and exporting metrics.
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class MetricScheduler implements Phases {
-    @Getter(lazy = true)
-    private final static MetricScheduler instance = new MetricScheduler();
-
     private final static Logger log = Loggers.getLogger(MetricScheduler.class);
     private final Map<Runnable, Trigger> tasks = new HashMap<>();
     @Nullable

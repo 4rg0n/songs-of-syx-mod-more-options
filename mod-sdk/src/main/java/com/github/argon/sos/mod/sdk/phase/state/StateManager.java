@@ -2,16 +2,12 @@ package com.github.argon.sos.mod.sdk.phase.state;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class StateManager {
     private final static Logger log = Loggers.getLogger(StateManager.class);
-
-    @Getter(lazy = true)
-    private final static StateManager instance = new StateManager();
 
     @Getter
     private final State state = new State();

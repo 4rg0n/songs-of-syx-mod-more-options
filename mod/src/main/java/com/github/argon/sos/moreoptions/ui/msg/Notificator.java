@@ -2,13 +2,11 @@ package com.github.argon.sos.moreoptions.ui.msg;
 
 import com.github.argon.sos.mod.sdk.game.api.GameUiApi;
 import com.github.argon.sos.mod.sdk.game.ui.Notification;
-import com.github.argon.sos.mod.sdk.phase.Phases;
-import com.github.argon.sos.mod.sdk.phase.Updateable;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.phase.Phases;
+import com.github.argon.sos.mod.sdk.phase.Updateable;
 import init.C;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -25,12 +23,9 @@ import java.util.List;
  * For displaying notification messages in a little gui box.
  * Notifications will be queued and shown in order.
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class Notificator implements Updateable, Phases {
     private final static Logger log = Loggers.getLogger(Notificator.class);
-
-    @Getter(lazy = true)
-    private final static Notificator instance = new Notificator(GameUiApi.getInstance());
 
     private final GameUiApi gameUiApi;
 
@@ -129,7 +124,7 @@ public class Notificator implements Updateable, Phases {
             Instant now = Instant.now();
             if (showUntil != null && now.isAfter(showUntil)) {
                 // time elapsed, hide notifications!
-                GameUiApi.getInstance().notification().closeSilent();
+                gameUiApi.notification().closeSilent();
                 queue.remove(current);
                 current = null;
             }
@@ -159,7 +154,7 @@ public class Notificator implements Updateable, Phases {
 
     public void close() {
         log.debug("Close notifications");
-        GameUiApi.getInstance().notification().close();
+        gameUiApi.notification().close();
     }
 
     private int calculateShowSeconds(String text) {

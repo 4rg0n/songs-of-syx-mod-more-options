@@ -3,9 +3,7 @@ package com.github.argon.sos.mod.sdk.game.api;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import settlement.main.SETT;
 import settlement.weather.SWEATHER;
@@ -14,13 +12,10 @@ import settlement.weather.WeatherThing;
 import java.util.HashMap;
 import java.util.Map;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class GameWeatherApi {
 
     private final Logger log = Loggers.getLogger(GameWeatherApi.class);
-
-    @Getter(lazy = true)
-    private final static GameWeatherApi instance = new GameWeatherApi();
 
     public final static String KEY_PREFIX = "settlement/weather";
 

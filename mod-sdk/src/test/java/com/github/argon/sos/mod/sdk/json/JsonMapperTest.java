@@ -1,7 +1,6 @@
-package com.github.argon.sos.moreoptions.json;
+package com.github.argon.sos.mod.sdk.json;
 
 import com.github.argon.sos.mod.sdk.file.ResourceService;
-import com.github.argon.sos.mod.sdk.json.JsonMapper;
 import com.github.argon.sos.mod.sdk.json.annotation.JsonProperty;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.json.mapper.TypeInfo;
@@ -473,7 +472,7 @@ class JsonMapperTest {
         complexJsonObject.put("TEST_ARRAY_NULL", jsonNullArray);
 
         JsonE jsonE = JsonMapper.mapJson(complexJsonObject);
-        String expectedJsonE = ResourceService.getInstance().readResource("json/JsonE.txt").orElse("");
+        String expectedJsonE = new ResourceService().readResource("json/JsonE.txt").orElse("");
 
         // compare without whitespaces
         assertThat(jsonE.toString().replaceAll("\\s+",""))

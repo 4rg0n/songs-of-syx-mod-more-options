@@ -2,14 +2,15 @@ package com.github.argon.sos.moreoptions.ui;
 
 
 import com.github.argon.sos.mod.sdk.file.FileService;
-import com.github.argon.sos.mod.sdk.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
 import com.github.argon.sos.mod.sdk.game.ui.*;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.properties.ModProperties;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
@@ -23,8 +24,6 @@ import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.faction.Faction;
 import init.paths.ModInfo;
 import init.sprite.SPRITES;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
@@ -43,24 +42,14 @@ import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 /**
  * Produces new more complex or common UI elements by given configs or from static objects.
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class UiFactory {
 
-    private static final I18n i18n = I18n.get(UiFactory.class);
-
-    @Getter(lazy = true)
-    private final static UiFactory instance = new UiFactory(
-        GameApis.getInstance(),
-        GameStatsApi.getInstance(),
-        ConfigStore.getInstance(),
-        PropertiesStore.getInstance(),
-        MetricExporter.getInstance(),
-        UiMapper.getInstance()
-    );
+    private static final I18nTranslator i18n = ModModule.i18n().get(UiFactory.class);
 
     private final static Logger log = Loggers.getLogger(UiFactory.class);
 
-    private final GameApis gameApis;
+    private final GameApiModule gameApis;
     private final GameStatsApi gameStatsApi;
     private final ConfigStore configStore;
     private final PropertiesStore propertiesStore;

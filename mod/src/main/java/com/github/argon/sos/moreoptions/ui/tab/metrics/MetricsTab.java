@@ -3,9 +3,10 @@ package com.github.argon.sos.moreoptions.ui.tab.metrics;
 import com.github.argon.sos.mod.sdk.game.ui.*;
 import com.github.argon.sos.mod.sdk.game.ui.layout.Layout;
 import com.github.argon.sos.mod.sdk.game.ui.layout.VerticalLayout;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Sets;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
  */
 public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
-    private final static I18n i18n = I18n.get(MetricsTab.class);
+    private final static I18nTranslator i18n = ModModule.i18n().get(MetricsTab.class);
 
     private final Switcher<Boolean> onOffSwitcher;
     private final Slider collectionRate;

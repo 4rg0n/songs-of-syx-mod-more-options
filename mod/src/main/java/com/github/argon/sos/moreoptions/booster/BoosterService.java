@@ -9,8 +9,6 @@ import com.github.argon.sos.moreoptions.config.domain.Range;
 import game.boosting.BoostableCat;
 import game.faction.FACTIONS;
 import game.faction.Faction;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
@@ -21,13 +19,9 @@ import java.util.stream.Collectors;
 /**
  * For accessing the games Booster mechanics with custom {@link FactionBooster}s.
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class BoosterService {
-
     private final static Logger log = Loggers.getLogger(BoosterService.class);
-
-    @Getter(lazy = true)
-    private final static BoosterService instance = new BoosterService(GameFactionApi.getInstance());
 
     private final GameFactionApi factionApi;
 

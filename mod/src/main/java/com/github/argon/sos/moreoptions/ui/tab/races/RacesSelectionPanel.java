@@ -2,9 +2,10 @@ package com.github.argon.sos.moreoptions.ui.tab.races;
 
 import com.github.argon.sos.mod.sdk.game.ui.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
  */
 public class RacesSelectionPanel extends GuiSection {
 
-    private final static I18n i18n = I18n.get(RacesSelectionPanel.class);
+    private final static I18nTranslator i18n = ModModule.i18n().get(RacesSelectionPanel.class);
 
     @Getter
     private final Table<Entry> racesConfigTable;

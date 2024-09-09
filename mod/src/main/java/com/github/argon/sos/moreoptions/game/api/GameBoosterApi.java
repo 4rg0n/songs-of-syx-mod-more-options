@@ -1,17 +1,15 @@
 
 package com.github.argon.sos.moreoptions.game.api;
 
-import com.github.argon.sos.moreoptions.booster.Boosters;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.booster.BoosterService;
+import com.github.argon.sos.moreoptions.booster.Boosters;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import game.boosting.BoostableCat;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
@@ -20,15 +18,10 @@ import java.util.Optional;
 /**
  * Access to the mods custom {@link Boosters}
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class GameBoosterApi implements Phases {
 
     private final static Logger log = Loggers.getLogger(GameBoosterApi.class);
-
-    @Getter(lazy = true)
-    private final static GameBoosterApi instance = new GameBoosterApi(
-        BoosterService.getInstance()
-    );
 
     private final BoosterService boosterService;
 

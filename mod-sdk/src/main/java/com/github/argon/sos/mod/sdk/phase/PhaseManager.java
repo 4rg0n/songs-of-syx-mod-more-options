@@ -4,7 +4,6 @@ import com.github.argon.sos.mod.sdk.game.DumpLogsException;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import lombok.Getter;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -28,17 +27,25 @@ public class PhaseManager implements Phases {
 
     private final static Logger log = Loggers.getLogger(PhaseManager.class);
 
-    @Getter(lazy = true)
-    private final static PhaseManager instance = new PhaseManager();
-
     private final Map<Phase, List<Phases>> phases =new HashMap<>();
 
-    private PhaseManager() {
+    public PhaseManager() {
         for (Phase phase : Phase.values()) {
             phases.put(phase, new ArrayList<>());
         }
     }
 
+    /**
+     * Adds a class implementing the {@link Phases} to a certain phase.
+     * E.g. you can add an object with {@link Phase#ON_VIEW_SETUP}, which would then call
+     * {@link Phases#onViewSetup()} on that object whenever the game builds a completely new UI.
+     *
+     * This is useful when you have to e.g. reset something whenever the game is in a certain phase.
+     *
+     *
+     * @param phase to register the impl for
+     * @param phasesImpl to register
+     */
     public PhaseManager register(Phase phase, Phases phasesImpl) {
         if (this.phases.get(phase).contains(phasesImpl)) {
             return this;

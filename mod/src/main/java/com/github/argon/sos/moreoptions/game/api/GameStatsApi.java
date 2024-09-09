@@ -3,21 +3,14 @@ package com.github.argon.sos.moreoptions.game.api;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.metric.MetricCollector;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class GameStatsApi {
 
     private final static Logger log = Loggers.getLogger(GameStatsApi.class);
-
-    @Getter(lazy = true)
-    private final static GameStatsApi instance = new GameStatsApi(
-        MetricCollector.getInstance()
-    );
 
     private Set<String> availableStatKeys;
 

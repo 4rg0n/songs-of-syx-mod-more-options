@@ -14,7 +14,7 @@
 
     <properties>
         <mod.version>${project.version}</mod.version>
-        <mod.name>Mod SDK</mod.name>
+        <mod.name>Mod SDK 0</mod.name>
         <mod.description>Provides tools for code modding.</mod.description>
         <mod.author>4rg0n</mod.author>
         <mod.info></mod.info>
@@ -37,28 +37,11 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-<!--                <configuration>-->
-<!--                    <source>1.8</source>-->
-<!--                    <target>1.8</target>-->
-<!--                    <annotationProcessorPaths>-->
-<!--                        <path>-->
-<!--                            <groupId>org.projectlombok</groupId>-->
-<!--                            <artifactId>lombok</artifactId>-->
-<!--                            <version>${lombok.version}</version>-->
-<!--                        </path>-->
-<!--                    </annotationProcessorPaths>-->
-<!--                </configuration>-->
-            </plugin>
-
             <!-- Build a fat / uber jar containing all dependencies -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

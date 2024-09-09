@@ -1,5 +1,6 @@
 package com.github.argon.sos.mod.sdk.game.data;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.json.GameJsonService;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.log.Logger;
@@ -30,7 +31,7 @@ import java.util.stream.Stream;
 public class GameFolder {
     private final static Logger log = Loggers.getLogger(GameFolder.class);
 
-    private final GameJsonService gameJsonService = GameJsonService.getInstance();
+    private final GameJsonService gameJsonService = ModSdkModule.gameJsonService();
 
     private final static Map<PATH, GameFolder> gameFolderStore = new HashMap<>();
 

@@ -4,7 +4,7 @@ import com.github.argon.sos.mod.sdk.game.ui.FullWindow;
 import com.github.argon.sos.mod.sdk.util.Clipboard;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
-import com.github.argon.sos.moreoptions.ui.msg.Message;
+import com.github.argon.sos.moreoptions.ui.msg.Messages;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 
 public class MoreOptionsPanelController extends AbstractUiController<MoreOptionsPanel> {
@@ -29,7 +29,7 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
         try {
             undo(element);
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.config.not.undo");
+            messages.errorDialog(e, "notification.config.not.undo");
             return;
         }
 
@@ -39,10 +39,10 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
     public void applyAndSave() {
         try {
             if (!applyAndSave(element)) {
-                Message.notifyError("notification.config.not.apply");
+                messages.notifyError("notification.config.not.apply");
             }
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.config.not.apply");
+            messages.errorDialog(e, "notification.config.not.apply");
         }
     }
 
@@ -50,7 +50,7 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
         try {
             undo(element);
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.config.not.undo");
+            messages.errorDialog(e, "notification.config.not.undo");
         }
     }
 
@@ -58,9 +58,9 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
         MoreOptionsV5Config moreOptionsConfig = configStore.reloadConfig().orElse(null);
         if (moreOptionsConfig != null) {
             element.setValue(moreOptionsConfig);
-            Message.notifySuccess(i18n.t("notification.config.reload"));
+            messages.notifySuccess(i18n.t("notification.config.reload"));
         } else {
-            Message.notifyError("notification.config.not.reload");
+            messages.notifyError("notification.config.not.reload");
         }
     }
 
@@ -68,15 +68,15 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
         MoreOptionsV5Config moreOptionsConfig = element.getValue();
 
         if (moreOptionsConfig == null) {
-            Message.notifyError("notification.config.not.copy");
+            messages.notifyError("notification.config.not.copy");
             return;
         }
 
         try {
             Clipboard.write(moreOptionsConfig.toJson());
-            Message.notifySuccess("notification.config.copy");
+            messages.notifySuccess("notification.config.copy");
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.config.not.copy");
+            messages.errorDialog(e, "notification.config.not.copy");
         }
     }
 
@@ -85,21 +85,21 @@ public class MoreOptionsPanelController extends AbstractUiController<MoreOptions
             AbstractConfigTab<?, ?> abstractConfigTab = element.getTabulator().getActiveTab();
             if (abstractConfigTab != null) {
                 abstractConfigTab.resetToDefault();
-                Message.notifySuccess("notification.config.default.tab.apply", abstractConfigTab.getTitle());
+                messages.notifySuccess("notification.config.default.tab.apply", abstractConfigTab.getTitle());
             } else {
-                Message.notifyError("notification.config.default.tab.not.apply");
+                messages.notifyError("notification.config.default.tab.not.apply");
             }
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.config.default.tab.not.apply");
+            messages.errorDialog(e, "notification.config.default.tab.not.apply");
         }
     }
 
     public void resetEverythingToDefaultConfig() {
         try {
             element.setValue(configStore.getDefaultConfig());
-            Message.notifySuccess("notification.config.default.all.apply");
+            messages.notifySuccess("notification.config.default.all.apply");
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.config.default.all.not.apply");
+            messages.errorDialog(e, "notification.config.default.all.not.apply");
         }
     }
 

@@ -1,12 +1,10 @@
 package com.github.argon.sos.mod.sdk.json;
 
-import com.github.argon.sos.mod.sdk.log.Logger;
-import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriter;
-import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
-import lombok.Getter;
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -21,11 +19,6 @@ import java.util.Optional;
  */
 @RequiredArgsConstructor
 public class JasonService implements JsonService {
-    @Getter(lazy = true)
-    private final static JasonService instance = new JasonService(
-        JsonWriters.jsonEPretty(), // will write game json as default
-        FileService.getInstance()
-    );
     private final static Logger log = Loggers.getLogger(JasonService.class);
 
     private final JsonWriter jsonWriter;

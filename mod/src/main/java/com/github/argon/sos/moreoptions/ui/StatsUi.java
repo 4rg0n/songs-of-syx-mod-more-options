@@ -1,7 +1,8 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.mod.sdk.game.ui.ColorBox;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
+import com.github.argon.sos.moreoptions.ModModule;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class StatsUi extends ColorBox {
     private final static StatsUi instance = new StatsUi();
 
     // TODO implement me
-    private static final I18n i18n = I18n.get(StatsUi.class);
+    private static final I18nTranslator i18n = ModModule.i18n().get(StatsUi.class);
 
     @Setter
     private boolean visible = true;

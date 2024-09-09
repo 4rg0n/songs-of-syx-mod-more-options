@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.json.factory;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.ui.*;
-import com.github.argon.sos.mod.sdk.json.GameJsonStore;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.util.Lists;
@@ -201,7 +201,7 @@ public class JsonUiTemplate extends AbstractJsonUiTemplate {
     }
 
     public static JsonUiTemplate from(Path path) {
-        Json json = GameJsonStore.getInstance().getJson(path);
+        Json json = ModSdkModule.gameJsonStore().getJson(path);
         if (json == null || json.getRoot() == null) {
             throw new JsonUiException("No or empty json for file path " + path);
         }

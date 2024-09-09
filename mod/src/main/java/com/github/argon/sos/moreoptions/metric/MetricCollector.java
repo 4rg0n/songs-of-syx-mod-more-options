@@ -5,8 +5,6 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import game.GAME;
 import game.values.GCOUNTS;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import settlement.stats.STATS;
 import settlement.stats.stat.STAT;
@@ -16,11 +14,8 @@ import java.util.*;
 /**
  * For collecting game stats as {@link Metric}
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class MetricCollector {
-
-    @Getter(lazy = true)
-    private final static MetricCollector instance = new MetricCollector();
 
     private final static Logger log = Loggers.getLogger(MetricCollector.class);
 

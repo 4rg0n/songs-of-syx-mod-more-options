@@ -1,22 +1,20 @@
 package com.github.argon.sos.moreoptions.ui;
 
-import com.github.argon.sos.mod.sdk.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
 import com.github.argon.sos.mod.sdk.game.ui.FullWindow;
 import com.github.argon.sos.mod.sdk.game.ui.Window;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
-import com.github.argon.sos.mod.sdk.i18n.I18nMessages;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.UninitializedException;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
-import com.github.argon.sos.moreoptions.metric.MetricCollector;
 import com.github.argon.sos.moreoptions.metric.MetricExporter;
-import com.github.argon.sos.moreoptions.metric.MetricScheduler;
 import com.github.argon.sos.moreoptions.ui.controller.*;
 import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
@@ -24,7 +22,6 @@ import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import com.github.argon.sos.moreoptions.ui.tab.weather.WeatherTab;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -45,21 +42,10 @@ import static java.time.temporal.ChronoField.*;
  * So when a new entry is added, a new UI element like e.g. an additional slider will also be visible.
  * For setting up the UI and adding functionality to buttons.
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class UiConfig implements Phases {
 
-    @Getter(lazy = true)
-    private final static UiConfig instance = new UiConfig(
-        GameApis.getInstance(),
-        MoreOptionsConfigurator.getInstance(),
-        ConfigStore.getInstance(),
-        MetricExporter.getInstance(),
-        UiFactory.getInstance(),
-        Notificator.getInstance(),
-        PhaseManager.getInstance()
-    );
-
-    private static final I18n i18n = I18n.get(WeatherTab.class);
+    private static final I18nTranslator i18n = ModModule.i18n().get(WeatherTab.class);
     private final static Logger log = Loggers.getLogger(UiConfig.class);
 
     /**
@@ -80,7 +66,7 @@ public class UiConfig implements Phases {
             .toFormatter(Locale.getDefault());
     }
 
-    private final GameApis gameApis;
+    private final GameApiModule gameApis;
     private final MoreOptionsConfigurator configurator;
     private final ConfigStore configStore;
     private final MetricExporter metricExporter;
@@ -178,13 +164,12 @@ public class UiConfig implements Phases {
     public void initDebugControls() {
         log.debug("Initialize %s Debug Commands", MOD_INFO.name);
         IDebugPanel.add(MOD_INFO.name + ":uiShowRoom", () -> UiFactory.buildUiShowRoom().show());
-        IDebugPanel.add(MOD_INFO.name + ":errorDialog", () -> UiFactory.getInstance().buildErrorDialog(new RuntimeException("Test Exception Message"), "Test Error Message").show());
-        IDebugPanel.add(MOD_INFO.name + ":phases:" + Phase.ON_GAME_SAVE_LOADED, () -> PhaseManager.getInstance().onGameSaveReloaded());
-        IDebugPanel.add(MOD_INFO.name + ":fullScreen", () -> UiFactory.getInstance().buildMoreOptionsFullScreen("More Options", configStore.getDefaultConfig()).show());
-        IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> MetricCollector.getInstance().flush());
-        IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> MetricScheduler.getInstance().stop());
-        IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> MetricScheduler.getInstance().start());
-        IDebugPanel.add(MOD_INFO.name + ":i18n:load", I18nMessages.getInstance()::loadWithCurrentGameLocale);
+        IDebugPanel.add(MOD_INFO.name + ":errorDialog", () -> ModModule.uiFactory().buildErrorDialog(new RuntimeException("Test Exception Message"), "Test Error Message").show());
+        IDebugPanel.add(MOD_INFO.name + ":phases:" + Phase.ON_GAME_SAVE_LOADED, phaseManager::onGameSaveReloaded);
+        IDebugPanel.add(MOD_INFO.name + ":fullScreen", () -> ModModule.uiFactory().buildMoreOptionsFullScreen("More Options", configStore.getDefaultConfig()).show());
+        IDebugPanel.add(MOD_INFO.name + ":metrics:flush", () -> ModModule.metricCollector().flush());
+        IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> ModModule.metricScheduler().stop());
+        IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> ModModule.metricScheduler().start());
         IDebugPanel.add(MOD_INFO.name + ":log:stats", () -> {
             log.info("Events Status: %s", gameApis.events().readEventsEnabledStatus()
                 .entrySet().stream().map(entry -> entry.getKey() + " enabled: " + entry.getValue() + "\n")

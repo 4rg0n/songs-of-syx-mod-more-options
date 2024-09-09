@@ -1,18 +1,20 @@
-package com.github.argon.sos.moreoptions.json;
+package com.github.argon.sos.mod.sdk.json;
 
 import com.github.argon.sos.mod.sdk.file.ResourceService;
-import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 class JsonTest {
 
-    private final ResourceService resourceService = ResourceService.getInstance();
+    private final ResourceService resourceService = new ResourceService();
 
     @Test
     void parse_JsonEAndProduceJsonE() throws IOException {

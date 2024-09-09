@@ -7,8 +7,6 @@ import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phases;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,14 +17,9 @@ import java.util.*;
 /**
  * Can hold the game JSON configuration
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class GameJsonStore implements Phases {
     private final static Logger log = Loggers.getLogger(GameJsonStore.class);
-
-    @Getter(lazy = true)
-    private final static GameJsonStore instance = new GameJsonStore(
-        FileService.getInstance()
-    );
 
     private final FileService fileService;
 

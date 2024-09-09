@@ -1,11 +1,12 @@
 package com.github.argon.sos.moreoptions.ui.tab.advanced;
 
 import com.github.argon.sos.mod.sdk.game.ui.*;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.paths.PATHS;
@@ -23,7 +24,7 @@ import util.gui.misc.GTextR;
  */
 public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
     private static final Logger log = Loggers.getLogger(AdvancedTab.class);
-    private static final I18n i18n = I18n.get(AdvancedTab.class);
+    private static final I18nTranslator i18n = ModModule.i18n().get(AdvancedTab.class);
 
     private final DropDown<Level> logLevelDropDown;
     @Getter

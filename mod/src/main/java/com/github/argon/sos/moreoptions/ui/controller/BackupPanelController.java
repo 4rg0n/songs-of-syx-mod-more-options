@@ -7,7 +7,7 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
-import com.github.argon.sos.moreoptions.ui.msg.Message;
+import com.github.argon.sos.moreoptions.ui.msg.Messages;
 import org.jetbrains.annotations.Nullable;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
@@ -48,7 +48,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
         try {
             configStore.deleteBackups();
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.backup.config.not.delete");
+            messages.errorDialog(e, "notification.backup.config.not.delete");
         }
 
         backupDialog.show();
@@ -61,7 +61,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
             moreOptionsPanel.setValue(defaultConfig);
             configApplier.applyToGameAndSave(defaultConfig);
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.backup.config.not.applyDefault");
+            messages.errorDialog(e, "notification.backup.config.not.applyDefault");
         }
 
         backupDialog.hide();
@@ -70,7 +70,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
         try {
             undo(backupMoreOptionsPanel);
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.config.not.undo");
+            messages.errorDialog(e, "notification.config.not.undo");
             return;
         }
 
@@ -89,7 +89,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
             moreOptionsPanel.setValue(readConfig);
             configStore.deleteBackups();
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.backup.config.not.apply", MOD_INFO.name);
+            messages.errorDialog(e, "notification.backup.config.not.apply", MOD_INFO.name);
             return;
         }
 
@@ -102,7 +102,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
         try {
             backupMoreOptionsPanel.setValue(backupConfig);
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.backup.config.not.edit", MOD_INFO.name);
+            messages.errorDialog(e, "notification.backup.config.not.edit", MOD_INFO.name);
             return;
         }
 
@@ -120,7 +120,7 @@ public class BackupPanelController extends AbstractUiController<MoreOptionsPanel
             moreOptionsPanel.setValue(backupConfig);
             configStore.deleteBackups();
         } catch (Exception e) {
-            Message.errorDialog(e, "notification.backup.config.not.apply", MOD_INFO.name);
+            messages.errorDialog(e, "notification.backup.config.not.apply", MOD_INFO.name);
         }
 
         backupDialog.hide();

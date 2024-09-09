@@ -1,7 +1,7 @@
 package com.github.argon.sos.mod.sdk.game.ui;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.action.Action;
-import com.github.argon.sos.mod.sdk.game.api.GameUiApi;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,7 +58,7 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
             });
         } else {
             clickActionSet(() -> {
-                GameUiApi.getInstance().popup().show(this.menu, this);
+                ModSdkModule.gameApis().ui().popup().show(this.menu, this);
             });
         }
 
@@ -81,7 +81,7 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
                     if (closeAction != null) {
                         closeAction.accept(this);
                     } else {
-                        GameUiApi.getInstance().popup().close();
+                        ModSdkModule.gameApis().ui().popup().close();
                     }
                 }
             });

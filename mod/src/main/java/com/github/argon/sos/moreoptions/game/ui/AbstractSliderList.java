@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.game.ui;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.Refreshable;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
-import com.github.argon.sos.mod.sdk.game.api.GameUiApi;
 import com.github.argon.sos.mod.sdk.game.ui.AbstractButton;
 import com.github.argon.sos.mod.sdk.game.ui.UiList;
 import init.sprite.UI.UI;
@@ -51,7 +51,7 @@ public abstract class AbstractSliderList<Value> extends AbstractButton<List<Valu
             });
         } else {
             clickActionSet(() -> {
-                GameUiApi.getInstance().popup().show(this.uiList, this);
+               ModSdkModule.gameApis().ui().popup().show(this.uiList, this);
             });
         }
     }

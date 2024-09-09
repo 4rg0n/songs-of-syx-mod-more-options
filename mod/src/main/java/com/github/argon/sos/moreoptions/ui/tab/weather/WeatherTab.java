@@ -4,9 +4,10 @@ import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.game.ui.Table;
 import com.github.argon.sos.mod.sdk.game.ui.layout.Layout;
 import com.github.argon.sos.mod.sdk.game.ui.layout.VerticalLayout;
-import com.github.argon.sos.mod.sdk.i18n.I18n;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.config.domain.WeatherConfig;
 import com.github.argon.sos.moreoptions.game.ui.Slider;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
  */
 public class WeatherTab extends AbstractConfigTab<WeatherConfig, WeatherTab> {
     private static final Logger log = Loggers.getLogger(WeatherTab.class);
-    private static final I18n i18n = I18n.get(WeatherTab.class);
+    private static final I18nTranslator i18n = ModModule.i18n().get(WeatherTab.class);
 
     @Getter
     private final Map<String, Slider> sliders;

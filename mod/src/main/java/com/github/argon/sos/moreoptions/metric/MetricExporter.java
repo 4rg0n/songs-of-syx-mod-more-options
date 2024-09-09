@@ -1,11 +1,10 @@
 package com.github.argon.sos.moreoptions.metric;
 
-import com.github.argon.sos.moreoptions.MoreOptionsScript;
-import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.phase.Phases;
+import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import init.paths.PATHS;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -17,13 +16,8 @@ import java.util.List;
 /**
  * For exporting game stats as {@link Metric} into a CSV file
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class MetricExporter implements Phases {
-    @Getter(lazy = true)
-    private final static MetricExporter instance = new MetricExporter(
-        MetricCollector.getInstance(),
-        MetricCsvWriter.getInstance()
-    );
 
     private final static Logger log = Loggers.getLogger(MetricExporter.class);
 

@@ -1,5 +1,6 @@
 package snake2d.util.file;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.json.GameJsonStore;
 import snake2d.Errors;
 import snake2d.util.sets.LIST;
@@ -15,7 +16,7 @@ public class Json {
 	
 	private final JsonParser parser;
 
-	private final GameJsonStore gameJsonStore = GameJsonStore.getInstance();
+	private final GameJsonStore gameJsonStore = ModSdkModule.gameJsonStore();
 
 	// TODO storing is disabled for now
 	public Json(String content, String path) {

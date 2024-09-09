@@ -1,10 +1,10 @@
 package com.github.argon.sos.mod.sdk.game.data;
 
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.data.init.Init;
 import com.github.argon.sos.mod.sdk.game.data.sprite.Sprite;
 import com.github.argon.sos.mod.sdk.game.data.text.Text;
-import com.github.argon.sos.mod.sdk.file.ResourceService;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
@@ -137,7 +137,7 @@ public class GameResources {
 
     private static List<String> readResourceLines(String path) {
         try {
-            return ResourceService.getInstance().readResourceLines(path);
+            return ModSdkModule.resourceService().readResourceLines(path);
         } catch (IOException e) {
             return Lists.of();
         }

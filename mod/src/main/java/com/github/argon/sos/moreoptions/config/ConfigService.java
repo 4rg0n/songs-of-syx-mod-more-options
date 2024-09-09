@@ -1,7 +1,12 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.mod.sdk.file.FileService;
+import com.github.argon.sos.mod.sdk.json.JasonService;
+import com.github.argon.sos.mod.sdk.json.JsonException;
+import com.github.argon.sos.mod.sdk.json.parser.JsonParseException;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
@@ -12,12 +17,6 @@ import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
-import com.github.argon.sos.mod.sdk.file.FileService;
-import com.github.argon.sos.mod.sdk.json.JasonService;
-import com.github.argon.sos.mod.sdk.json.JsonException;
-import com.github.argon.sos.mod.sdk.json.parser.JsonParseException;
-import com.github.argon.sos.mod.sdk.phase.Phases;
-import lombok.Getter;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -28,17 +27,15 @@ import java.util.stream.Stream;
 public class ConfigService implements Phases {
     private final static Logger log = Loggers.getLogger(ConfigService.class);
 
-    @Getter(lazy = true)
-    private final static ConfigService instance = new ConfigService(
-        ConfigFactory.getInstance()
-    );
-
     private final JsonConfigStore jsonConfigStore;
+    private final JasonService jasonService;
+
     private final JsonConfigVersionHandler versionHandler;
 
-    public ConfigService(ConfigFactory configFactory) {
+    public ConfigService(ConfigFactory configFactory, JasonService jasonService) {
         this.jsonConfigStore = configFactory.newJsonConfigStoreV5();
         this.versionHandler = new JsonConfigVersionHandler(configFactory, this.jsonConfigStore);
+        this.jasonService = jasonService;
     }
 
     public Optional<ConfigMeta> getMeta() {
@@ -59,8 +56,7 @@ public class ConfigService implements Phases {
      */
     private Optional<ConfigMeta> readMetaLegacy() {
         try {
-            return JasonService.getInstance()
-                .load(ConfigDefaults.CONFIG_FILE_PATH, JsonMeta.class)
+            return jasonService.load(ConfigDefaults.CONFIG_FILE_PATH, JsonMeta.class)
                 .map(ConfigMapper::mapMeta);
         } catch (JsonParseException | JsonException e) {
             // this is expected

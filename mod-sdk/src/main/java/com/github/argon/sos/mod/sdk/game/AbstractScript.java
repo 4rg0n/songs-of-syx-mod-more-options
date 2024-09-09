@@ -1,6 +1,7 @@
 package com.github.argon.sos.mod.sdk.game;
 
-import com.github.argon.sos.mod.sdk.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.ModSdkModule;
+import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -28,8 +29,9 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         Loggers.setLevels(Loggers.LOG_LEVEL_DEFAULT);
     }
 
-    private final PhaseManager phaseManager = PhaseManager.getInstance();
-    private final StateManager stateManager = StateManager.getInstance();
+    protected final PhaseManager phaseManager;
+    protected final StateManager stateManager;
+    protected final GameApiModule gameApis;
 
     @Nullable
     private ScriptInstance scriptInstance;
@@ -39,6 +41,14 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     private final Level envLogLevel;
 
     public AbstractScript() {
+        this(ModSdkModule.phaseManager(), ModSdkModule.stateManager(), ModSdkModule.gameApis());
+    }
+
+    public AbstractScript(PhaseManager phaseManager, StateManager stateManager, GameApiModule gameApis) {
+        this.phaseManager = phaseManager;
+        this.stateManager = stateManager;
+        this.gameApis = gameApis;
+
         // set log level from env variable
         envLogLevel = Optional.ofNullable(System.getenv(LOG_LEVEL_ENV_NAME))
             .flatMap(Level::fromName)
@@ -68,7 +78,6 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         Loggers.setLevels(level);
 
         // initialize game apis first
-        GameApis gameApis = GameApis.getInstance();
         for (Phase phase : Phase.values()) {
             phaseManager.register(phase, gameApis);
         }
@@ -92,7 +101,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
         if (scriptInstance == null) {
             initModCreateInstance();
             log.debug("Creating Instance");
-            scriptInstance = new ScriptInstance(this);
+            scriptInstance = new ScriptInstance(this, stateManager);
         }
 
         log.debug("World Seed: " + WORLD.GEN().seed);
