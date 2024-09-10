@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
- * Access to translated messages.
- * Will look for messages by a given key. See: {@link I18nMessages}
+ * For translating text into different languages.
+ * Provides access to translated messages. See: {@link I18nMessages}
  */
 public class I18nTranslator {
     private final static Logger log = Loggers.getLogger(I18nTranslator.class);

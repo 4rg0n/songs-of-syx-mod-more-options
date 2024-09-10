@@ -1,4 +1,4 @@
-package com.github.argon.sos.mod.sdk.game;
+package com.github.argon.sos.mod.sdk;
 
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.Phases;

@@ -13,8 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * For scheduling tasks.
- * Used for collecting and exporting metrics.
+ * For scheduling metric collection and exporting tasks.
  */
 @RequiredArgsConstructor
 public class MetricScheduler implements Phases {

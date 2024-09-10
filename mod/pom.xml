@@ -25,47 +25,61 @@
             <artifactId>sos-mod-sdk</artifactId>
             <version>0.1.0</version>
         </dependency>
-
-        <!-- Lazy Developer -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.dagger</groupId>
-            <artifactId>dagger</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Remove "installed" mod resources on clean -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+
             <!-- Build a fat / uber jar containing all dependencies -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <!-- These dependencies have to be excluded, because they are provided by the sos-mod-sdk -->
-                                <excludes>
-                                    <exclude>com.songsofsyx:*</exclude>
-                                    <exclude>org.jetbrains:*</exclude>
-                                    <exclude>com.fasterxml.jackson.core:*</exclude>
-                                    <exclude>com.google.dagger:*</exclude>
-                                    <exclude>com.github.argon.sos:sos-mod-sdk</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
+
+            <!-- Attach mod source code -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+            <!-- Build mod files -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+
+            <!-- Build a fat / uber jar containing all dependencies -->
+<!--            <plugin>-->
+<!--                -->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>shade</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <artifactSet>-->
+<!--                                &lt;!&ndash; These dependencies have to be excluded, because they are provided by the sos-mod-sdk &ndash;&gt;-->
+<!--                                <excludes>-->
+<!--                                    <exclude>com.songsofsyx:*</exclude>-->
+<!--                                    &lt;!&ndash; Include mod skd dependencies as long as the Mod Sdk is no standalone mod &ndash;&gt;-->
+<!--&lt;!&ndash;                                    <exclude>org.jetbrains:*</exclude>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <exclude>com.fasterxml.jackson.core:*</exclude>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <exclude>com.google.dagger:*</exclude>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <exclude>com.github.argon.sos:sos-mod-sdk</exclude>&ndash;&gt;-->
+<!--                                </excludes>-->
+<!--                            </artifactSet>-->
+<!--                            <createDependencyReducedPom>false</createDependencyReducedPom>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>

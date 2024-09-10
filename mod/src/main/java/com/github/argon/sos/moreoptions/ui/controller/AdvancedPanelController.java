@@ -4,7 +4,6 @@ import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
-import com.github.argon.sos.moreoptions.ui.msg.Messages;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
 import com.github.argon.sos.mod.sdk.util.Clipboard;
 import init.paths.PATHS;
@@ -54,9 +53,9 @@ public class AdvancedPanelController extends AbstractUiController<AdvancedTab> {
 
     public void openModConfigFolder() {
         try {
-            FileManager.openDesctop(ConfigDefaults.CONFIGE_PATH.toString());
+            FileManager.openDesctop(ConfigDefaults.CONFIG_PATH.toString());
         } catch (Exception e) {
-            messages.errorDialog(e, "notification.config.folder.not.open", ConfigDefaults.CONFIGE_PATH);
+            messages.errorDialog(e, "notification.config.folder.not.open", ConfigDefaults.CONFIG_PATH);
         }
     }
 

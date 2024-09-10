@@ -1,15 +1,15 @@
 package com.github.argon.sos.moreoptions.ui;
 
 
-import com.github.argon.sos.mod.sdk.file.FileService;
-import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
+import com.github.argon.sos.mod.sdk.file.FileMeta;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.game.ui.*;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
-import com.github.argon.sos.mod.sdk.properties.ModProperties;
+import com.github.argon.sos.mod.sdk.properties.ModSdkProperties;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
@@ -48,7 +48,7 @@ public class UiFactory {
 
     private final static Logger log = Loggers.getLogger(UiFactory.class);
 
-    private final GameApiModule gameApis;
+    private final GameApis gameApis;
     private final ConfigStore configStore;
     private final PropertiesStore propertiesStore;
     private final MetricExporter metricExporter;
@@ -96,8 +96,8 @@ public class UiFactory {
 
         // prepare entries
         List<RacesSelectionPanel.Entry> racesConfigs = new ArrayList<>();
-        List<FileService.FileMeta> raceConfigMetas = configStore.readRacesConfigMetas();
-        for (FileService.FileMeta configMeta : raceConfigMetas) {
+        List<FileMeta> raceConfigMetas = configStore.readRacesConfigMetas();
+        for (FileMeta configMeta : raceConfigMetas) {
             SaveFile saveFile = gameApis.save().findByPathContains(configMeta.getPath()).orElse(null);
 
             RacesSelectionPanel.Entry entry = RacesSelectionPanel.Entry.builder()
@@ -181,8 +181,8 @@ public class UiFactory {
             new ErrorDialog(exception, message),
             true);
 
-        String errorReportUrl = propertiesStore.getModProperties()
-            .map(ModProperties::getErrorReportUrl)
+        String errorReportUrl = propertiesStore.getModSdkProperties()
+            .map(ModSdkProperties::getErrorReportUrl)
             .orElse("https://example.com/");
 
         // add functionality to error dialog

@@ -1,12 +1,20 @@
 package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
+import com.github.argon.sos.mod.sdk.config.ConfigVersionHandlers;
+import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.i18n.I18nMessages;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import com.github.argon.sos.moreoptions.booster.BoosterService;
 import com.github.argon.sos.moreoptions.config.*;
-import com.github.argon.sos.moreoptions.game.api.GameApiModule;
+import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
+import com.github.argon.sos.moreoptions.config.json.v2.JsonConfigV2Handler;
+import com.github.argon.sos.moreoptions.config.json.v3.JsonConfigV3Handler;
+import com.github.argon.sos.moreoptions.config.json.v4.JsonConfigV4Handler;
+import com.github.argon.sos.moreoptions.config.json.v5.JsonConfigV5Handler;
+import com.github.argon.sos.moreoptions.game.api.GameApis;
+import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
@@ -19,6 +27,14 @@ import lombok.experimental.Accessors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ModModule {
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static GameApis gameApis = buildGameApis();
+    private static GameApis buildGameApis() {
+        return new GameApis(
+            new GameBoosterApi(booster()));
+    }
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
@@ -45,7 +61,7 @@ public class ModModule {
     @Accessors(fluent = true)
     private final static UiMapper uiMapper = buildUiMapper();
     private static UiMapper buildUiMapper() {
-        return new UiMapper(ModSdkModule.gameApis(), GameApiModule.boosters());
+        return new UiMapper(ModSdkModule.gameApis(), gameApis().boosters());
     }
 
     @Getter(lazy = true)
@@ -77,9 +93,31 @@ public class ModModule {
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
+    private final static JsonConfigStore jsonConfigStore = buildJsonConfigStore();
+    private static JsonConfigStore buildJsonConfigStore() {
+        return configFactory().newJsonConfigStoreV5();
+    }
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static ConfigVersionHandlers<MoreOptionsV5Config> configVersionHandlers = buildConfigVersionHandlers();
+    private static ConfigVersionHandlers<MoreOptionsV5Config> buildConfigVersionHandlers() {
+        return new ConfigVersionHandlers<MoreOptionsV5Config>()
+            .register(5, new JsonConfigV5Handler(jsonConfigStore()))
+            .register(4, new JsonConfigV4Handler(configFactory().newJsonConfigStoreV4()))
+            .register(3, new JsonConfigV3Handler(configFactory().newJsonConfigStoreV3()))
+            .register(2, new JsonConfigV2Handler(configFactory().newJsonConfigStoreV2()));
+    }
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
     private final static ConfigService configService = buildConfigService();
     private static ConfigService buildConfigService() {
-        return new ConfigService(configFactory(), ModSdkModule.jasonService());
+        return new ConfigService(
+            jsonConfigStore(),
+            configVersionHandlers(),
+            ModSdkModule.jasonService()
+        );
     }
 
     @Getter(lazy = true)
@@ -88,7 +126,7 @@ public class ModModule {
     private static ConfigDefaults buildConfigDefaults() {
         return new ConfigDefaults(
             ModSdkModule.gameApis(),
-            GameApiModule.boosters());
+            gameApis().boosters());
     }
 
     @Getter(lazy = true)
@@ -104,7 +142,7 @@ public class ModModule {
     private static MoreOptionsConfigurator buildMoreOptionsConfigurator() {
         return new MoreOptionsConfigurator(
             ModSdkModule.gameApis(),
-            GameApiModule.boosters(),
+            gameApis().boosters(),
             ModSdkModule.metricCollector(),
             ModSdkModule.metricExporter(),
             ModSdkModule.metricScheduler());

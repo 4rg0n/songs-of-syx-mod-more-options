@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Writes data in CSV format into a file
+ * Writes {@link Metric} data in CSV format into a file
  */
 @RequiredArgsConstructor
 public class MetricCsvWriter {

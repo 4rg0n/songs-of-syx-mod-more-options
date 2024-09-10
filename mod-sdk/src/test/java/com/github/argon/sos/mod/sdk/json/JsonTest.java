@@ -18,7 +18,7 @@ class JsonTest {
 
     @Test
     void parse_JsonEAndProduceJsonE() throws IOException {
-        String jsonString = resourceService.readResource("json/JsonE.txt").orElse("");
+        String jsonString = resourceService.read("json/JsonE.txt").orElse("");
         Json json = new Json(jsonString, JsonWriters.jsonEPretty());
 
         String parsedJsonString = json.write();
@@ -28,8 +28,8 @@ class JsonTest {
 
     @Test
     void parse_JsonEAndProduceJson() throws IOException {
-        String jsonEString = resourceService.readResource("json/JsonE.txt").orElse("");
-        String jsonString = resourceService.readResource("json/Json.txt").orElse("");
+        String jsonEString = resourceService.read("json/JsonE.txt").orElse("");
+        String jsonString = resourceService.read("json/Json.txt").orElse("");
         Json json = new Json(jsonEString, JsonWriters.jsonPretty());
 
         String parsedJsonString = json.write();
@@ -48,7 +48,7 @@ class JsonTest {
 
         files.forEach(file -> {
             try {
-                String jsonString = resourceService.readResource(file)
+                String jsonString = resourceService.read(file)
                     .orElseThrow(() -> new AssertionError("No file?" + file));
                 Json json = new Json(jsonString, JsonWriters.jsonEPretty());
                 Assertions.assertThat(json.write()).as(file).isNotEmpty();
@@ -68,7 +68,7 @@ class JsonTest {
 
     @Test
     void prettyPrint_JsonE() throws IOException {
-        String jsonEString = resourceService.readResource("json/MINE_GEM.txt").orElse("");
+        String jsonEString = resourceService.read("json/MINE_GEM.txt").orElse("");
         Json json = new Json(jsonEString, JsonWriters.jsonEPretty());
 
         System.out.println(json.write());

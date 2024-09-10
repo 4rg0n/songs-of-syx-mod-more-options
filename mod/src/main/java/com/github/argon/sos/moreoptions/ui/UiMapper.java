@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui;
 
-import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.game.ui.Checkbox;
 import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.game.ui.Label;
@@ -35,7 +35,7 @@ public class UiMapper {
 
     private final static Logger log = Loggers.getLogger(UiMapper.class);
 
-    private final GameApiModule gameApis;
+    private final GameApis gameApis;
     private final GameBoosterApi gameBoosterApi;
 
     public Map<String, List<RacesTab.Entry>> toRacePanelEntries(Set<RacesConfig.Liking> raceLikings) {

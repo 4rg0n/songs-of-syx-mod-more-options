@@ -13,7 +13,7 @@ import java.nio.file.Path;
  */
 @Getter
 @RequiredArgsConstructor
-public class GameApiModule implements Phases {
+public class GameApis implements Phases {
 
     @Accessors(fluent = true)
     private final GameEventsApi events;

@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.json;
 
-import com.github.argon.sos.mod.sdk.file.FileService;
+import com.github.argon.sos.mod.sdk.file.IOService;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.json.parser.JsonParseException;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
@@ -21,7 +21,7 @@ import java.util.*;
 public class GameJsonStore implements Phases {
     private final static Logger log = Loggers.getLogger(GameJsonStore.class);
 
-    private final FileService fileService;
+    private final IOService ioService;
 
     private final Map<Path, String> jsonContent = new HashMap<>();
     private final Map<Path, Json> jsonObjects = new HashMap<>();
@@ -110,7 +110,7 @@ public class GameJsonStore implements Phases {
     private String load(Path filePath) {
         String content = null;
         try {
-            content = fileService.read(filePath);
+            content = ioService.read(filePath);
         } catch (IOException e) {
             // ignore
         }

@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions;
 
+import com.github.argon.sos.mod.sdk.AbstractScript;
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.game.AbstractScript;
 import com.github.argon.sos.mod.sdk.game.ui.Window;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
@@ -11,7 +11,6 @@ import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
-import com.github.argon.sos.moreoptions.game.api.GameApiModule;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
 import init.paths.PATHS;
@@ -51,21 +50,20 @@ public final class MoreOptionsScript extends AbstractScript {
 	@Override
 	protected void registerPhases(PhaseManager phaseManager) {
         phaseManager
-            .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.gameJsonStore())
-            .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.metricExporter())
-            .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.i18nMessages())
             .register(Phase.INIT_BEFORE_GAME_CREATED, ModModule.configStore())
+			.register(Phase.INIT_MOD_CREATE_INSTANCE, ModModule.gameApis().boosters())
             .register(Phase.INIT_MOD_CREATE_INSTANCE, ModModule.uiConfig())
-			.register(Phase.INIT_MOD_CREATE_INSTANCE, GameApiModule.boosters())
             .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ModModule.configStore())
             .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ModModule.uiConfig())
 
+			.register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.metricExporter())
+			.register(Phase.ON_GAME_SAVE_RELOADED, ModSdkModule.metricExporter())
+			.register(Phase.ON_CRASH, ModSdkModule.metricScheduler())
+
             .register(Phase.ON_GAME_SAVE_LOADED, ModModule.configStore())
             .register(Phase.ON_GAME_SAVED, ModModule.configStore())
-            .register(Phase.ON_GAME_SAVE_RELOADED, ModSdkModule.metricExporter())
-            .register(Phase.ON_GAME_SAVE_RELOADED, GameApiModule.boosters())
+            .register(Phase.ON_GAME_SAVE_RELOADED, ModModule.gameApis().boosters())
 			.register(Phase.ON_GAME_UPDATE, ModModule.notificator())
-            .register(Phase.ON_CRASH, ModSdkModule.metricScheduler())
             .register(Phase.ON_CRASH, ModModule.configStore());
 	}
 

@@ -113,6 +113,23 @@ public class StatsExtractor {
         return stats;
     }
 
+    public Map<String, Integer> getStat(String keyPrefix, SETT_STATISTICS stat) {
+        Map<String, Integer> stats = new HashMap<>();
+        String key = keyPrefix + ":" + stat.info().name + ":" + TOTAL_SUFFIX;
+
+        if (isBlacklisted(key)) {
+            return stats;
+        }
+
+        try {
+            stats.put(key, stat.data().get(null));
+        } catch (Exception e) {
+            log.trace("Could not collect settlement stat %s. Skipping", key, e);
+        }
+
+        return stats;
+    }
+
     public Map<String, Integer> getRaceStats(@Nullable String keyPrefix, SETT_STATISTICS.SettStatistics stat) {
         Map<String, Integer> stats = new HashMap<>();
 

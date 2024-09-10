@@ -7,10 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -26,22 +23,24 @@ public class ResourceService extends AbstractFileService {
 
     private final static Logger log = Loggers.getLogger(ResourceService.class);
 
-    /**
-     * For getting a {@link Path} of a resource from a path.
-     *
-     * @return {@link Path} of a given file, when present
-     */
-    public Optional<Path> getResourcePath(String filePath) {
-        URL url = getClass().getClassLoader().getResource(filePath);
+    @Override
+    public String read(Path path) throws IOException {
+        return read(path.toString()).orElse(null);
+    }
 
-        return Optional.ofNullable(url).map(url1 -> {
-            try {
-                return Paths.get(url1.toURI());
-            } catch (URISyntaxException e) {
-                log.warn("Invalid path %s", filePath, e);
-                return null;
-            }
-        });
+    @Override
+    public List<String> readLines(Path path) throws IOException {
+        return readLines(path.toString());
+    }
+
+    @Override
+    public void write(Path path, String content) throws IOException {
+        throw new UnsupportedOperationException("Can not write into resources");
+    }
+
+    @Override
+    public boolean delete(Path path) throws IOException {
+        throw new UnsupportedOperationException("Can not delete resources");
     }
 
     /**
@@ -49,28 +48,18 @@ public class ResourceService extends AbstractFileService {
      *
      * @return the content of the resource file as string if file is present
      */
-    public Optional<String> readResource(String filePath) throws IOException {
-        try (InputStream inputStream = getInputStream(filePath)) {
+    public Optional<String> read(String filePath) throws IOException {
+        log.debug("Reading from resource file %s", filePath);
+        try (InputStream inputStream = getResourceInputStream(filePath)) {
             if (inputStream == null) {
                 return Optional.empty();
             }
 
             return Optional.of(readFromInputStream(inputStream));
         } catch (Exception e) {
-            log.warn("Could not read resource from path %s", filePath);
+            log.error("Could not read resource from path %s", filePath);
             throw e;
         }
-    }
-
-    /**
-     * For getting a {@link InputStream} from a resource file
-     *
-     * @return an {@link InputStream} for the given file path
-     */
-    @Nullable
-    public InputStream getInputStream(String filePath) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return classLoader.getResourceAsStream(filePath);
     }
 
     /**
@@ -79,9 +68,9 @@ public class ResourceService extends AbstractFileService {
      * @return the lines of the file as list of strings
      * @throws IOException when file is inaccessible
      */
-    public List<String> readResourceLines(String filePath) throws IOException {
+    public List<String> readLines(String filePath) throws IOException {
+        log.debug("Reading from resource file %s", filePath);
         ClassLoader classLoader = getClass().getClassLoader();
-
         try (InputStream inputStream = classLoader.getResourceAsStream(filePath)) {
             if (inputStream == null) {
                 return Lists.of();
@@ -89,7 +78,7 @@ public class ResourceService extends AbstractFileService {
 
             return readLinesFromInputStream(inputStream);
         } catch (Exception e) {
-            log.warn("Could not read lines from file %s", filePath);
+            log.error("Could not read lines from file %s", filePath);
             throw e;
         }
     }
@@ -101,7 +90,8 @@ public class ResourceService extends AbstractFileService {
      * @throws IOException when property file can not be accessed
      */
     public Optional<Properties> readProperties(String filePath) throws IOException {
-        InputStream inputStream = getInputStream(filePath);
+        log.debug("Reading from resource properties file %s", filePath);
+        InputStream inputStream = getResourceInputStream(filePath);
         if (inputStream == null) {
             return Optional.empty();
         }
@@ -115,5 +105,16 @@ public class ResourceService extends AbstractFileService {
         }
 
         return Optional.of(properties);
+    }
+
+    /**
+     * For getting a {@link InputStream} from a resource file
+     *
+     * @return an {@link InputStream} for the given file path
+     */
+    @Nullable
+    private InputStream getResourceInputStream(String filePath) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        return classLoader.getResourceAsStream(filePath);
     }
 }

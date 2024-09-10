@@ -2,8 +2,6 @@ package com.github.argon.sos.mod.sdk.file;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
-import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -15,13 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.BasicFileAttributeView;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Simple service for handling file operations, which are not resources.
@@ -30,6 +22,24 @@ import java.util.stream.Stream;
 public class FileService extends AbstractFileService {
     private final static Logger log = Loggers.getLogger(FileService.class);
     public final static Charset CHARSET = StandardCharsets.UTF_8;
+
+    @Override
+    public List<String> readLines(Path path) throws IOException {
+        log.debug("Reading from file %s", path);
+
+        if (!Files.exists(path)) {
+            // do not load what's not there
+            log.info("%s is not a file, does not exists or is not readable", path);
+            return null;
+        }
+
+        try (InputStream inputStream = Files.newInputStream(path)) {
+            return readLinesFromInputStream(inputStream);
+        } catch (Exception e) {
+            log.error("Could not read from file %s", path, e);
+            throw e;
+        }
+    }
 
     /**
      * @return content of the file as string or null if the file does not exist
@@ -95,71 +105,5 @@ public class FileService extends AbstractFileService {
         }
 
         return true;
-    }
-
-    /**
-     * @return meta information of a file or null if the file does not exist or can not be read
-     */
-    @Nullable
-    public FileMeta readMeta(Path filePath) {
-        log.trace("Loading meta from file %s", filePath);
-        try {
-            BasicFileAttributes fileAttributes = Files.getFileAttributeView(filePath, BasicFileAttributeView.class).readAttributes();
-            return FileMeta.builder()
-                .fromFileAttributes(filePath, fileAttributes)
-                .build();
-        } catch (Exception e) {
-            log.info("Could not read file meta from %s", filePath, e);
-        }
-
-        return null;
-    }
-
-    /**
-     * @return meta information of a folder or null if the file does not exist or can not be read
-     */
-    public List<FileMeta> readMetas(Path folderPath) {
-        try (Stream<Path> stream = Files.list(folderPath)) {
-            List<FileMeta> metas = stream
-                .map(this::readMeta)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-            log.debug("Loaded %s file metas from folder %s", metas.size(), folderPath);
-            return metas;
-        } catch (IOException e) {
-            log.info("Could not load file metas from folder %s", folderPath, e);
-            return Lists.of();
-        }
-    }
-
-    @Getter
-    @Builder
-    @EqualsAndHashCode
-    @NoArgsConstructor
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class FileMeta {
-        private Path path;
-        private boolean isDirectory;
-        private boolean isFile;
-        private boolean isOther;
-        private boolean isLink;
-        private Instant creationTime;
-        private Instant updateTime;
-        private Instant accessTime;
-
-        public static class FileMetaBuilder {
-            public FileMetaBuilder fromFileAttributes(Path path, BasicFileAttributes fileAttributes) {
-                return FileMeta.builder()
-                    .path(path)
-                    .isDirectory(fileAttributes.isDirectory())
-                    .isFile(fileAttributes.isRegularFile())
-                    .isOther(fileAttributes.isOther())
-                    .isLink(fileAttributes.isSymbolicLink())
-                    .accessTime(fileAttributes.lastAccessTime().toInstant())
-                    .updateTime(fileAttributes.lastModifiedTime().toInstant())
-                    .creationTime(fileAttributes.creationTime().toInstant());
-            }
-        }
     }
 }

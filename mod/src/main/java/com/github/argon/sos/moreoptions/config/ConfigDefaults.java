@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.config;
 
-import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -28,13 +28,13 @@ public class ConfigDefaults {
     public final static Level LOG_LEVEL = Level.INFO;
 
     public final static Path PROFILE_PATH = PATHS.local().PROFILE.get().resolve(MoreOptionsScript.MOD_INFO.name.toString());
-    public final static Path CONFIGE_PATH = PATHS.local().SETTINGS.get();
-    public final static Path CONFIG_FILE_PATH = CONFIGE_PATH.resolve("MoreOptions.txt");
+    public final static Path CONFIG_PATH = PATHS.local().SETTINGS.get();
+    public final static Path CONFIG_FILE_PATH = CONFIG_PATH.resolve("MoreOptions.txt");
 
     public final static Path RACES_CONFIG_FOLDER_PATH = PROFILE_PATH.resolve("races");
     public final static Path BOOSTERS_CONFIG_FOLDER_PATH = PROFILE_PATH.resolve("boosters");
 
-    private final GameApiModule gameApis;
+    private final GameApis gameApis;
     private final GameBoosterApi gameBoosterApi;
 
     public MoreOptionsV5Config newConfig() {

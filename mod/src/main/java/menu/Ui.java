@@ -44,9 +44,8 @@ public class Ui {
     }
 
     public static FullWindow<MoreOptionsEditor> moreOptionsFullsWindow() {
-//        StringInputSprite searchInput = new StringInputSprite(8, UI.FONT().S).placeHolder("Search");
         MoreOptionsEditor moreOptionsEditor = new MoreOptionsEditor(null);
-        return new FullWindow<>("More Options",
+        return new FullWindow<>("More Options (Experimental)",
             moreOptionsEditor,
             moreOptionsEditor.getTabulator().getMenu(),
             null

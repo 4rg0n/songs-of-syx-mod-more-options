@@ -1,11 +1,11 @@
 package com.github.argon.sos.moreoptions.config;
 
-import com.github.argon.sos.mod.sdk.file.FileService;
+import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
+import com.github.argon.sos.mod.sdk.file.IOService;
 import com.github.argon.sos.mod.sdk.game.api.GameSaveApi;
 import com.github.argon.sos.mod.sdk.json.JacksonService;
 import com.github.argon.sos.mod.sdk.json.JasonService;
 import com.github.argon.sos.mod.sdk.phase.Phases;
-import com.github.argon.sos.moreoptions.config.json.JsonConfigStore;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonMoreOptionsV2Config;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonRacesV2Config;
@@ -25,11 +25,11 @@ public class ConfigFactory implements Phases {
     private final GameSaveApi gameSaveApi;
     private final JacksonService jacksonService;
     private final JasonService jasonService;
-    private final FileService fileService;
+    private final IOService ioService;
 
     public JsonConfigStore newJsonConfigStoreV2() {
         // bind older v2 config classes for backwards compatibility
-        JsonConfigStore jsonConfigStore = new JsonConfigStore(gameSaveApi, jasonService, fileService,2);
+        JsonConfigStore jsonConfigStore = new JsonConfigStore(gameSaveApi, jasonService, ioService);
 
         jsonConfigStore.bind(JsonMeta.class, CONFIG_FILE_PATH, false);
         jsonConfigStore.bind(JsonMoreOptionsV2Config.class, CONFIG_FILE_PATH, true);
@@ -39,7 +39,7 @@ public class ConfigFactory implements Phases {
     }
 
     public JsonConfigStore newJsonConfigStoreV3() {
-        JsonConfigStore jsonConfigStore = new JsonConfigStore(gameSaveApi, jasonService, fileService, 3);
+        JsonConfigStore jsonConfigStore = new JsonConfigStore(gameSaveApi, jasonService, ioService);
 
         // bind current config classes with file paths to store
         jsonConfigStore.bind(JsonMeta.class, CONFIG_FILE_PATH, false);
@@ -51,7 +51,7 @@ public class ConfigFactory implements Phases {
     }
 
     public JsonConfigStore newJsonConfigStoreV4() {
-        JsonConfigStore jsonConfigStore = new JsonConfigStore(gameSaveApi, jasonService, fileService, 4);
+        JsonConfigStore jsonConfigStore = new JsonConfigStore(gameSaveApi, jasonService, ioService);
 
         // bind current config classes with file paths to store
         jsonConfigStore.bind(JsonMeta.class, CONFIG_FILE_PATH, false);
@@ -63,7 +63,7 @@ public class ConfigFactory implements Phases {
     }
 
     public JsonConfigStore newJsonConfigStoreV5() {
-        JsonConfigStore jsonConfigStore = new JsonConfigStore(gameSaveApi, jacksonService, fileService, 5);
+        JsonConfigStore jsonConfigStore = new JsonConfigStore(gameSaveApi, jacksonService, ioService);
 
         // bind current config classes with file paths to store
         jsonConfigStore.bind(JsonMeta.class, CONFIG_FILE_PATH, false);

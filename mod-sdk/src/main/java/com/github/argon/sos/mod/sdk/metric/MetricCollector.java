@@ -53,12 +53,11 @@ public class MetricCollector {
             stats.putAll(statsExtractor.getStat(stat));
         }
 
-        // FIXME
-//        stats.putAll(statsExtractor.getStat(STATS.POP().key, STATS.POP().));
-//        stats.putAll(statsExtractor.getRaceStats(STATS.POP().key, STATS.POP()));
-//
-//        stats.putAll(statsExtractor.getReligionStats(STATS.RELIGION().ALL));
-//        stats.putAll(statsExtractor.getReligionRaceStats(STATS.RELIGION().ALL));
+        // Population
+        stats.putAll(statsExtractor.getStat(STATS.POP().key, STATS.POP().POP));
+        // Religion
+        stats.putAll(statsExtractor.getReligionStats(STATS.RELIGION().ALL));
+        stats.putAll(statsExtractor.getReligionRaceStats(STATS.RELIGION().ALL));
 
         for (int i = 0; i < GAME.count().ALL.size(); i++) {
             GCOUNTS.SAccumilator accumulator = GAME.count().ALL.get(i);

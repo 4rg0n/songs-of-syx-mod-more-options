@@ -3,7 +3,7 @@ package com.github.argon.sos.mod.sdk.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.argon.sos.mod.sdk.file.FileService;
+import com.github.argon.sos.mod.sdk.file.IOService;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class JacksonService implements JsonService {
 
     private final ObjectMapper objectMapper;
     private final PrettyPrinter prettyPrinter;
-    private final FileService fileService;
+    private final IOService ioService;
 
     public <T> Optional<T> load(Path path, Class<T> clazz) {
         return load(path)
@@ -36,7 +36,7 @@ public class JacksonService implements JsonService {
 
     public Optional<String> load(Path path) {
         try {
-            return Optional.ofNullable(fileService.read(path));
+            return Optional.ofNullable(ioService.read(path));
         } catch (IOException e) {
             throw new JsonException(String.format("Could not rad json file %s", path), e);
         }
@@ -58,7 +58,7 @@ public class JacksonService implements JsonService {
 
     public void save(Path path, String json) {
         try {
-            fileService.write(path, json);
+            ioService.write(path, json);
         } catch (Exception e) {
             throw new JsonException(String.format("Could not write json file %s", path), e);
         }
@@ -66,7 +66,7 @@ public class JacksonService implements JsonService {
 
     public boolean delete(Path path) {
         try {
-            return fileService.delete(path);
+            return ioService.delete(path);
         } catch (Exception e) {
             throw new JsonException(String.format("Could not delete json file %s", path), e);
         }

@@ -8,7 +8,7 @@ import com.github.argon.sos.mod.sdk.util.MathUtil;
 import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.mod.sdk.game.action.Action;
-import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.metric.MetricCollector;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 public class MoreOptionsConfigurator implements Phases {
     private final static Logger log = Loggers.getLogger(MoreOptionsConfigurator.class);
 
-    private final GameApiModule gameApis;
+    private final GameApis gameApis;
     private final GameBoosterApi gameBoosterApi;
     private final MetricCollector metricCollector;
     private final MetricExporter metricExporter;

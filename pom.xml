@@ -115,7 +115,7 @@
         <mod.author>4rg0n</mod.author>
         <mod.info></mod.info>
         <game.version.major>67</game.version.major>
-        <game.version.minor>17</game.version.minor>
+        <game.version.minor>22</game.version.minor>
 
         <!-- Build settings -->
         <game.version.directory>V${game.version.major}</game.version.directory>
@@ -190,6 +190,11 @@
             <artifactId>songsofsyx</artifactId>
             <version>${game.version.major}.${game.version.minor}</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
 
         <!-- Testing -->
@@ -234,16 +239,172 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <!-- Attach mod source code -->
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources-plugin.version}</version>
+                    <executions>
+
+                        <!-- Copy files such as assets from the resources source-->
+                        <execution>
+                            <id>copy-mod-files</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${mod.files.build.output.directory}</outputDirectory>
+                                <includeEmptyDirs>true</includeEmptyDirs>
+                                <resources>
+                                    <resource>
+                                        <directory>${mod.files.directory}</directory>
+                                        <excludes>
+                                            <!-- Everything beginning with a dot -->
+                                            <exclude>**/.*</exclude>
+                                            <exclude>_Info.txt</exclude>
+                                        </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+
+                        <!-- Copy mod _Info.txt file and replace tokens -->
+                        <execution>
+                            <id>copy-mod-info</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${mod.build.output.directory}</outputDirectory>
+                                <includeEmptyDirs>true</includeEmptyDirs>
+                                <resources>
+                                    <resource>
+                                        <directory>${mod.files.directory}</directory>
+                                        <includes>
+                                            <include>_Info.txt</include>
+                                        </includes>
+                                        <filtering>true</filtering>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+
+                        <!-- Copy the actual compiled jar into the correct folder -->
+                        <execution>
+                            <id>copy-mod-script-jar</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${mod.script.output.directory}</outputDirectory>
+                                <includeEmptyDirs>true</includeEmptyDirs>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.directory}</directory>
+                                        <includes>
+                                            <include>${project.build.finalName}.jar</include>
+                                        </includes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+
+                        <!-- Copy source code -->
+                        <execution>
+                            <id>copy-mod-source-code</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${mod.source.output.directory}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.directory}</directory>
+                                        <includes>
+                                            <include>${project.build.finalName}-sources.jar</include>
+                                        </includes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+
+                        <!-- Copy the mod files into the game -->
+                        <execution>
+                            <id>copy-mod-to-game</id>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${mod.install.directory}</outputDirectory>
+                                <includeEmptyDirs>true</includeEmptyDirs>
+                                <overwrite>true</overwrite>
+                                <resources>
+                                    <resource>
+                                        <directory>${mod.build.output.directory}</directory>
+                                        <excludes>
+                                            <exclude>**/_src/**</exclude>
+                                        </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
                     <version>${maven-install-plugin.version}</version>
+                    <executions>
+                        <!-- Install game jar as dependency code -->
+                        <execution>
+                            <id>install-game-jar</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>install-file</goal>
+                            </goals>
+                            <configuration>
+                                <groupId>com.songsofsyx</groupId>
+                                <artifactId>songsofsyx</artifactId>
+                                <version>${game.version.major}.${game.version.minor}</version>
+                                <packaging>jar</packaging>
+                                <file>${game.install.directory}/${game.jar.name}</file>
+                                <generatePom>true</generatePom>
+                            </configuration>
+                        </execution>
+
+                        <!-- Install game source jar as dependency code -->
+                        <execution>
+                            <id>install-game-sources-jar</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>install-file</goal>
+                            </goals>
+                            <configuration>
+                                <groupId>com.songsofsyx</groupId>
+                                <artifactId>songsofsyx</artifactId>
+                                <version>${game.version.major}.${game.version.minor}</version>
+                                <packaging>jar</packaging>
+                                <classifier>sources</classifier>
+                                <file>${game.install.directory}/info/${game.jar.source.name}</file>
+                                <generatePom>false</generatePom>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
@@ -253,11 +414,44 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>${maven-shade-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <!-- Build a fat / uber jar containing all dependencies -->
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                            <configuration>
+                                <artifactSet>
+                                    <excludes>
+                                        <exclude>com.songsofsyx:*</exclude>
+                                    </excludes>
+                                </artifactSet>
+                                <createDependencyReducedPom>false</createDependencyReducedPom>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <configuration>
+                        <filesets>
+                            <fileset>
+                                <!-- Remove installed mod from games mod folder on clean -->
+                                <directory>${mod.install.directory}</directory>
+                                <includes>
+                                    <!-- Deletes mod folder with files -->
+                                    <include>**</include>
+                                </includes>
+                                <followSymlinks>false</followSymlinks>
+                            </fileset>
+                        </filesets>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -270,11 +464,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <annotationProcessorPaths>
-<!--                        <path>-->
-<!--                            <groupId>com.google.dagger</groupId>-->
-<!--                            <artifactId>dagger-compiler</artifactId>-->
-<!--                            <version>${dagger.version}</version>-->
-<!--                        </path>-->
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
@@ -284,194 +473,10 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <!-- Remove installed mod from games mod folder on clean -->
-                            <directory>${mod.install.directory}</directory>
-                            <includes>
-                                <!-- Deletes mod folder with files -->
-                                <include>**</include>
-                            </includes>
-                            <followSymlinks>false</followSymlinks>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-
-            <!-- Prepare game dependencies (thx @ https://github.com/MilanDierick for pointing me to the game source files) -->
+            <!-- Install game as maven artifact -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
-                <executions>
-                    <!-- Install game jar as dependency code -->
-                    <execution>
-                        <id>install-game-jar</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <groupId>com.songsofsyx</groupId>
-                            <artifactId>songsofsyx</artifactId>
-                            <version>${game.version.major}.${game.version.minor}</version>
-                            <packaging>jar</packaging>
-                            <file>${game.install.directory}/${game.jar.name}</file>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                    </execution>
-
-                    <!-- Install game source jar as dependency code -->
-                    <execution>
-                        <id>install-game-sources-jar</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <groupId>com.songsofsyx</groupId>
-                            <artifactId>songsofsyx</artifactId>
-                            <version>${game.version.major}.${game.version.minor}</version>
-                            <packaging>jar</packaging>
-                            <classifier>sources</classifier>
-                            <file>${game.install.directory}/info/${game.jar.source.name}</file>
-                            <generatePom>false</generatePom>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Attach mod source code -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Build mod files -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-
-                    <!-- Copy files such as assets from the resources source-->
-                    <execution>
-                        <id>copy-mod-files</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${mod.files.build.output.directory}</outputDirectory>
-                            <includeEmptyDirs>true</includeEmptyDirs>
-                            <resources>
-                                <resource>
-                                    <directory>${mod.files.directory}</directory>
-                                    <excludes>
-                                        <!-- Everything beginning with a dot -->
-                                        <exclude>**/.*</exclude>
-                                        <exclude>_Info.txt</exclude>
-                                    </excludes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-
-                    <!-- Copy mod _Info.txt file and replace tokens -->
-                    <execution>
-                        <id>copy-mod-info</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${mod.build.output.directory}</outputDirectory>
-                            <includeEmptyDirs>true</includeEmptyDirs>
-                            <resources>
-                                <resource>
-                                    <directory>${mod.files.directory}</directory>
-                                    <includes>
-                                        <include>_Info.txt</include>
-                                    </includes>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-
-                    <!-- Copy the actual compiled jar into the correct folder -->
-                    <execution>
-                        <id>copy-mod-script-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${mod.script.output.directory}</outputDirectory>
-                            <includeEmptyDirs>true</includeEmptyDirs>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.directory}</directory>
-                                    <includes>
-                                        <include>${project.build.finalName}.jar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-
-                    <!-- Copy source code -->
-                    <execution>
-                        <id>copy-mod-source-code</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${mod.source.output.directory}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.directory}</directory>
-                                    <includes>
-                                        <include>${project.build.finalName}-sources.jar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-
-                    <!-- Copy the mod files into the game -->
-                    <execution>
-                        <id>copy-mod-to-game</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${mod.install.directory}</outputDirectory>
-                            <includeEmptyDirs>true</includeEmptyDirs>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>${mod.build.output.directory}</directory>
-                                    <excludes>
-                                        <exclude>**/_src/**</exclude>
-                                    </excludes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- Testing -->

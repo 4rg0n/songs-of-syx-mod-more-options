@@ -41,10 +41,18 @@ public class ModSdkModule {
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
+    private final static ObjectMapper jacksonObjectMapper = buildJacksonObjectMapper();
+    private static ObjectMapper buildJacksonObjectMapper() {
+        return new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT);
+    }
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
     private final static JacksonService jacksonService = buildJacksonService();
     private static JacksonService buildJacksonService() {
-        return new JacksonService(new ObjectMapper()
-                .enable(SerializationFeature.INDENT_OUTPUT),
+        return new JacksonService(
+            jacksonObjectMapper(),
             new JacksonWriter(),
             fileService());
     }
@@ -102,9 +110,9 @@ public class ModSdkModule {
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static GameApiModule gameApis = buildGameApis();
-    private static GameApiModule buildGameApis() {
-        return new GameApiModule(
+    private final static GameApis gameApis = buildGameApis();
+    private static GameApis buildGameApis() {
+        return new GameApis(
             new GameEventsApi(),
             new GameSoundsApi(),
             new GameUiApi(),

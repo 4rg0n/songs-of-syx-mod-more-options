@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.json;
 
-import com.github.argon.sos.mod.sdk.file.FileService;
+import com.github.argon.sos.mod.sdk.file.IOService;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriter;
 import com.github.argon.sos.mod.sdk.log.Logger;
@@ -22,7 +22,7 @@ public class JasonService implements JsonService {
     private final static Logger log = Loggers.getLogger(JasonService.class);
 
     private final JsonWriter jsonWriter;
-    private final FileService fileService;
+    private final IOService ioService;
 
     public <T> Optional<T> load(Path path, Class<T> clazz) {
         return load(path)
@@ -38,7 +38,7 @@ public class JasonService implements JsonService {
     public Optional<Json> load(Path path) {
         String jsonString;
         try {
-            jsonString = fileService.read(path);
+            jsonString = ioService.read(path);
         } catch (IOException e) {
             throw new JsonException(String.format("Could not rad json file %s", path), e);
         }
@@ -69,7 +69,7 @@ public class JasonService implements JsonService {
 
     public void save(Path path, Json json) {
         try {
-            fileService.write(path, json.write());
+            ioService.write(path, json.write());
         } catch (Exception e) {
             throw new JsonException(String.format("Could not write json file %s", path), e);
         }
@@ -77,7 +77,7 @@ public class JasonService implements JsonService {
 
     public boolean delete(Path path) {
         try {
-            return fileService.delete(path);
+            return ioService.delete(path);
         } catch (Exception e) {
             throw new JsonException(String.format("Could not delete json file %s", path), e);
         }

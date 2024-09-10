@@ -14,7 +14,7 @@
 
     <properties>
         <mod.version>${project.version}</mod.version>
-        <mod.name>Mod SDK 0</mod.name>
+        <mod.name>Mod SDK V0</mod.name>
         <mod.description>Provides tools for code modding.</mod.description>
         <mod.author>4rg0n</mod.author>
         <mod.info></mod.info>
@@ -32,36 +32,30 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-
-        <!-- Lazy Developer -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
+            <!-- Remove "installed" mod resources on clean -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+
             <!-- Build a fat / uber jar containing all dependencies -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>com.songsofsyx:*</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
+            </plugin>
+
+            <!-- Attach mod source code -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+            <!-- Build mod files -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

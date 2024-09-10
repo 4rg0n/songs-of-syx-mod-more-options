@@ -1,12 +1,16 @@
-package com.github.argon.sos.moreoptions.config.json;
+package com.github.argon.sos.mod.sdk.config.json;
 
+import com.github.argon.sos.mod.sdk.file.FileMeta;
+import com.github.argon.sos.mod.sdk.file.IOService;
+import com.github.argon.sos.mod.sdk.game.api.GameSaveApi;
+import com.github.argon.sos.mod.sdk.json.JsonService;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
-import com.github.argon.sos.mod.sdk.game.api.GameSaveApi;
-import com.github.argon.sos.mod.sdk.file.FileService;
-import com.github.argon.sos.mod.sdk.json.JsonService;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -30,9 +34,7 @@ public class JsonConfigStore {
 
     private final GameSaveApi gameSaveApi;
     private final JsonService jsonService;
-    private final FileService fileService;
-    @Getter
-    private final int version;
+    private final IOService ioService;
 
     /**
      * Contains definitions on how to handle the config
@@ -114,7 +116,7 @@ public class JsonConfigStore {
         return !backupConfigStore.isEmpty();
     }
 
-    public List<FileService.FileMeta> readMetas(Class<?> configClass) {
+    public List<FileMeta> readMetas(Class<?> configClass) {
         ConfigDefinition configDefinition = this.configDefinitions.get(configClass);
 
         if (configDefinition == null) {
@@ -370,12 +372,12 @@ public class JsonConfigStore {
         });
     }
 
-    private List<FileService.FileMeta> readMetas(ConfigDefinition configDefinition) {
+    private List<FileMeta> readMetas(ConfigDefinition configDefinition) {
         if (!configDefinition.isBoundToSave()) {
             return Lists.of();
         }
 
-        return fileService.readMetas(configDefinition.getPath());
+        return ioService.readMetas(configDefinition.getPath());
     }
 
     /**

@@ -10,6 +10,6 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class ModProperties {
+public class ModSdkProperties {
    private String errorReportUrl;
 }

@@ -1,6 +1,9 @@
 package com.github.argon.sos.moreoptions.config;
 
-import com.github.argon.sos.mod.sdk.file.FileService;
+import com.github.argon.sos.mod.sdk.config.ConfigVersionHandler;
+import com.github.argon.sos.mod.sdk.config.ConfigVersionHandlers;
+import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
+import com.github.argon.sos.mod.sdk.file.FileMeta;
 import com.github.argon.sos.mod.sdk.json.JasonService;
 import com.github.argon.sos.mod.sdk.json.JsonException;
 import com.github.argon.sos.mod.sdk.json.parser.JsonParseException;
@@ -10,8 +13,6 @@ import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
-import com.github.argon.sos.moreoptions.config.json.JsonConfigStore;
-import com.github.argon.sos.moreoptions.config.json.JsonConfigVersionHandler;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
@@ -30,11 +31,15 @@ public class ConfigService implements Phases {
     private final JsonConfigStore jsonConfigStore;
     private final JasonService jasonService;
 
-    private final JsonConfigVersionHandler versionHandler;
+    private final ConfigVersionHandler<MoreOptionsV5Config> versionHandler;
 
-    public ConfigService(ConfigFactory configFactory, JasonService jasonService) {
-        this.jsonConfigStore = configFactory.newJsonConfigStoreV5();
-        this.versionHandler = new JsonConfigVersionHandler(configFactory, this.jsonConfigStore);
+    public ConfigService(
+        JsonConfigStore jsonConfigStore,
+        ConfigVersionHandlers<MoreOptionsV5Config> versionHandler,
+        JasonService jasonService
+    ) {
+        this.jsonConfigStore = jsonConfigStore;
+        this.versionHandler = versionHandler;
         this.jasonService = jasonService;
     }
 
@@ -74,7 +79,12 @@ public class ConfigService implements Phases {
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst()
-            .map(versionHandler::handleMapping);
+            .map(configMeta -> {
+                log.info("Json Config: V%s", configMeta.getVersion());
+                return configMeta;
+            })
+            .map(ConfigMeta::getVersion)
+            .flatMap(versionHandler::handle);
     }
 
     public Optional<MoreOptionsV5Config> getBackup() {
@@ -94,7 +104,7 @@ public class ConfigService implements Phases {
         return jsonConfigStore.saveBackups(true);
     }
 
-    public List<FileService.FileMeta> readRacesConfigMetas() {
+    public List<FileMeta> readRacesConfigMetas() {
         return jsonConfigStore.readMetas(JsonRacesV3Config.class);
     }
 

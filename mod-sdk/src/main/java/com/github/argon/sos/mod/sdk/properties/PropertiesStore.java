@@ -23,7 +23,7 @@ public class PropertiesStore {
     private final ResourceService resourceService;
 
     @Nullable
-    private ModProperties modProperties;
+    private ModSdkProperties modSdkProperties;
 
     @Nullable
     private Properties properties;
@@ -38,19 +38,19 @@ public class PropertiesStore {
     }
 
     /**
-     * @return {@link ModProperties} when present
+     * @return {@link ModSdkProperties} when present
      * @throws PropertiesException when reading the properties fails
      */
-    public Optional<ModProperties> getModProperties() {
-        if (modProperties == null) {
-            this.modProperties = getProperties()
-                .map(properties -> ModProperties.builder()
+    public Optional<ModSdkProperties> getModSdkProperties() {
+        if (modSdkProperties == null) {
+            this.modSdkProperties = getProperties()
+                .map(properties -> ModSdkProperties.builder()
                     .errorReportUrl(properties.getProperty("error.report.url"))
                     .build()
                 ).orElse(null);
         }
 
-        return Optional.ofNullable(modProperties);
+        return Optional.ofNullable(modSdkProperties);
     }
 
     /**

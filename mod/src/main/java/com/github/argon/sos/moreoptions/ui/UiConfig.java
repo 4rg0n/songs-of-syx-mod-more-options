@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.game.ui.FullWindow;
 import com.github.argon.sos.mod.sdk.game.ui.Window;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
@@ -67,7 +67,7 @@ public class UiConfig implements Phases {
             .toFormatter(Locale.getDefault());
     }
 
-    private final GameApiModule gameApis;
+    private final GameApis gameApis;
     private final MoreOptionsConfigurator configurator;
     private final ConfigStore configStore;
     private final MetricExporter metricExporter;

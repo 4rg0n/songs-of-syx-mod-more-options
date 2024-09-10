@@ -137,7 +137,7 @@ public class GameResources {
 
     private static List<String> readResourceLines(String path) {
         try {
-            return ModSdkModule.resourceService().readResourceLines(path);
+            return ModSdkModule.resourceService().readLines(path);
         } catch (IOException e) {
             return Lists.of();
         }

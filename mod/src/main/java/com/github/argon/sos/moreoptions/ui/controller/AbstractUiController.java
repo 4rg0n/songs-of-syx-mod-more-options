@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.game.api.GameApiModule;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -28,7 +28,7 @@ public abstract class AbstractUiController<Element> implements Phases {
 
     private final static Logger log = Loggers.getLogger(AbstractUiController.class);
 
-    protected final GameApiModule gameApis = ModSdkModule.gameApis();
+    protected final GameApis gameApis = ModSdkModule.gameApis();
     protected final ConfigStore configStore = ModModule.configStore();
     protected final ConfigDefaults configDefaults = ModModule.configDefaults();
     protected final UiMapper uiMapper = ModModule.uiMapper();
