@@ -2,7 +2,7 @@ package menu.ui;
 
 import init.C;
 import lombok.Setter;
-import menu.Ui;
+import menu.MenuUi;
 import snake2d.Renderer;
 import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.datatypes.Coo;
@@ -29,7 +29,7 @@ public class MouseHoverMessage {
 		timer -= ds;
 		
 		if (!box.emptyIs()) {
-			COORDINATE mCoo = Ui.getInstance().getMouseCoo();
+			COORDINATE mCoo = MenuUi.getInstance().getMouseCoo();
 			
 			int M = 48*C.SG + distance;
 			

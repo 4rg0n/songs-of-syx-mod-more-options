@@ -2,13 +2,12 @@ package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
-import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.JsonMapper;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.mapper.TypeInfo;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
-import com.github.argon.sos.moreoptions.ui.msg.Messages;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersPresetsSection;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersSection;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;

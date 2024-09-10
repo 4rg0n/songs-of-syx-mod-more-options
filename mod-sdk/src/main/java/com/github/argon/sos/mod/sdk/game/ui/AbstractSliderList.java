@@ -1,11 +1,9 @@
-package com.github.argon.sos.moreoptions.game.ui;
+package com.github.argon.sos.mod.sdk.game.ui;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.Refreshable;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
-import com.github.argon.sos.mod.sdk.game.ui.AbstractButton;
-import com.github.argon.sos.mod.sdk.game.ui.UiList;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;

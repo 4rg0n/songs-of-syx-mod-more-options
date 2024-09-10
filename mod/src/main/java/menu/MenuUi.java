@@ -14,11 +14,11 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class Ui {
-    private final static Logger log = Loggers.getLogger(Ui.class);
+public class MenuUi {
+    private final static Logger log = Loggers.getLogger(MenuUi.class);
 
     @Getter(lazy = true)
-    private final static Ui instance = new Ui();
+    private final static MenuUi instance = new MenuUi();
 
     @Getter(lazy = true)
     @Accessors(fluent = true, chain = false)

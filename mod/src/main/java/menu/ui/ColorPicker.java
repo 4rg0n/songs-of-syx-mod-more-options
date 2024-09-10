@@ -1,9 +1,9 @@
-package com.github.argon.sos.moreoptions.game.ui;
+package menu.ui;
 
 import com.github.argon.sos.mod.sdk.game.ui.ColorBox;
 import com.github.argon.sos.mod.sdk.game.ui.InputInt;
 import com.github.argon.sos.mod.sdk.game.ui.Section;
-import menu.Ui;
+import menu.MenuUi;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
@@ -39,9 +39,9 @@ public class ColorPicker extends Section {
         setGreen(green);
         setBlue(blue);
 
-        InputInt redInput = new InputInt(this.red, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
-        InputInt greenInput = new InputInt(this.green, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
-        InputInt blueInput = new InputInt(this.blue, true, true, Ui.MOUSE_COO_SUPPLIER, 40);
+        InputInt redInput = new InputInt(this.red, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
+        InputInt greenInput = new InputInt(this.green, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
+        InputInt blueInput = new InputInt(this.blue, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
 
         GuiSection colorInputs = new GuiSection();
 

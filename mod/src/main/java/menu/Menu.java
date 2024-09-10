@@ -80,7 +80,7 @@ public class Menu extends CORE_STATE {
 		Menu menu = new Menu();
 
 		// MODDED
-		Ui.getInstance().init(menu);
+		MenuUi.getInstance().init(menu);
 
 		PreLoader.exit();
 		return menu;
@@ -97,7 +97,7 @@ public class Menu extends CORE_STATE {
 
 		// MODDED
 		this.mouseHoverMessage = new MouseHoverMessage();
-		this.moreOptions = Ui.moreOptionsFullsWindow();
+		this.moreOptions = MenuUi.moreOptionsFullsWindow();
 
 		bg = new Background(this, bounds);
 
@@ -156,7 +156,7 @@ public class Menu extends CORE_STATE {
 			hoverTimer = 0;
 		}
 
-		if (!Ui.getInstance().popups().hover(mCoo))
+		if (!MenuUi.getInstance().popups().hover(mCoo))
 			current.hover(mCoo);
 		mouseLight.set(mCoo);
 
@@ -216,7 +216,7 @@ public class Menu extends CORE_STATE {
 		current.render(rr, ds);
 
 		// MODDED
-		Ui.getInstance().popups().render(rr, ds);
+		MenuUi.getInstance().popups().render(rr, ds);
 		mouseHoverMessage.render(r, ds);
 
 		r.newLayer(false, 0);
@@ -240,17 +240,17 @@ public class Menu extends CORE_STATE {
 
 		// MODDED
 		if (button == MButt.LEFT) {
-			if (!Ui.getInstance().popups().click()) {
-				if (Ui.getInstance().popups().visableIs()) {
-					Ui.getInstance().popups().close();
+			if (!MenuUi.getInstance().popups().click()) {
+				if (MenuUi.getInstance().popups().visableIs()) {
+					MenuUi.getInstance().popups().close();
 				}
 				current.click();
 			}
 
 		}
 		if (button == MButt.RIGHT) {
-			if (Ui.getInstance().popups().visableIs()) {
-				Ui.getInstance().popups().close();
+			if (MenuUi.getInstance().popups().visableIs()) {
+				MenuUi.getInstance().popups().close();
 			} else {
 				current.back(this);
 			}

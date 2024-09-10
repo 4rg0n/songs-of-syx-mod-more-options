@@ -7,7 +7,7 @@ import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import com.github.argon.sos.moreoptions.ModModule;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
+import com.github.argon.sos.mod.sdk.game.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;

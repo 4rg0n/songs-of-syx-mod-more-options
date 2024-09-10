@@ -5,8 +5,8 @@ import com.github.argon.sos.mod.sdk.game.ui.*;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.util.Lists;
-import com.github.argon.sos.moreoptions.game.ui.ColorPicker;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
+import menu.ui.ColorPicker;
+import com.github.argon.sos.mod.sdk.game.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.json.JsonUiException;
 
 import java.nio.file.Path;

@@ -1,6 +1,9 @@
 package com.github.argon.sos.moreoptions.ui.tab.weather;
 
+import com.github.argon.sos.mod.sdk.data.domain.Range;
+import com.github.argon.sos.mod.sdk.game.UiMapper;
 import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.game.ui.Slider;
 import com.github.argon.sos.mod.sdk.game.ui.Table;
 import com.github.argon.sos.mod.sdk.game.ui.layout.Layout;
 import com.github.argon.sos.mod.sdk.game.ui.layout.VerticalLayout;
@@ -8,10 +11,7 @@ import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.ModModule;
-import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.config.domain.WeatherConfig;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
-import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import lombok.Getter;
 import snake2d.util.color.COLOR;

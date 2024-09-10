@@ -1,24 +1,19 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
-import com.github.argon.sos.mod.sdk.game.ui.Checkbox;
 import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.game.ui.Label;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
-import com.github.argon.sos.moreoptions.config.domain.Range;
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.faction.Faction;
 import init.race.Race;
 import init.sprite.SPRITES;
-import init.sprite.UI.UI;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import settlement.room.main.RoomBlueprintImp;
@@ -111,66 +106,6 @@ public class UiMapper {
             .collect(groupingBy(entry -> entry.getCat().name.toString()));
     }
 
-    public static Map<String, Slider> toSliders(Map<String, Range> slidersConfig) {
-        return slidersConfig.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            config -> Slider.SliderBuilder
-                .fromRange(config.getValue())
-                .lockScroll(true)
-                .input(true)
-                .controls(true)
-                .width(300)
-                .build()));
-    }
-
-    public static Slider toSlider(Range range) {
-        return Slider.SliderBuilder
-            .fromRange(range)
-            .lockScroll(true)
-            .input(true)
-            .controls(true)
-            .width(300)
-            .build();
-    }
-
-    public static <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toLabeledColumnRows(Map<String, Element> elements, I18nTranslator i18n) {
-        return elements.entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .map(entry -> {
-                String key = entry.getKey();
-                Element element = entry.getValue();
-
-                // label with element
-                return ColumnRow.<Value>builder()
-                    .column(Label.builder()
-                        .name(i18n.n(key))
-                        .description(i18n.dn(key))
-                        .build())
-                    .column(element)
-                    .build();
-            })
-            .collect(Collectors.toList());
-    }
-
-    public static <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toLabeledColumnRows(Map<String, Element> elements) {
-        return elements.entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .map(entry -> {
-                String key = entry.getKey();
-                Element element = entry.getValue();
-
-                // label with element
-                return ColumnRow.<Value>builder()
-                    .column(Label.builder()
-                        .name(key)
-                        .font(UI.FONT().S)
-                        .build())
-                    .column(element)
-                    .build();
-            })
-            .collect(Collectors.toList());
-    }
-
     public <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toRoomSoundLabeledColumnRows(Map<String, Element> elements) {
         return elements.entrySet().stream()
             .sorted(Map.Entry.comparingByKey())
@@ -197,47 +132,5 @@ public class UiMapper {
                     .build();
             })
             .collect(Collectors.toList());
-    }
-
-    public static Map<String, Checkbox> toCheckboxes(Map<String, Boolean> eventConfig) {
-        return eventConfig.entrySet().stream().collect(Collectors.toMap(
-            Map.Entry::getKey,
-            entry -> new Checkbox(entry.getValue())));
-    }
-
-    public static Slider.ValueDisplay toValueDisplay(Range.DisplayMode displayMode) {
-        switch (displayMode) {
-            case PERCENTAGE:
-                return Slider.ValueDisplay.PERCENTAGE;
-            case ABSOLUTE:
-                return Slider.ValueDisplay.ABSOLUTE;
-            default:
-            case NONE:
-                return Slider.ValueDisplay.NONE;
-        }
-    }
-
-    public static Range.ApplyMode toApplyMode(Slider.ValueDisplay valueDisplay) {
-        switch (valueDisplay) {
-            case ABSOLUTE:
-                return Range.ApplyMode.ADD;
-            case PERCENTAGE:
-                return Range.ApplyMode.PERCENT;
-            case NONE:
-            default:
-                return Range.ApplyMode.MULTI;
-        }
-    }
-
-    public static Range.DisplayMode toDisplayMode(Slider.ValueDisplay valueDisplay) {
-        switch (valueDisplay) {
-            case PERCENTAGE:
-                return Range.DisplayMode.PERCENTAGE;
-            case ABSOLUTE:
-                return Range.DisplayMode.ABSOLUTE;
-            default:
-            case NONE:
-                return Range.DisplayMode.NONE;
-        }
     }
 }

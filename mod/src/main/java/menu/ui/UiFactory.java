@@ -7,14 +7,13 @@ import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
-import com.github.argon.sos.moreoptions.game.ui.ColorPicker;
-import com.github.argon.sos.moreoptions.game.ui.Slider;
-import com.github.argon.sos.moreoptions.game.ui.SliderDoubleList;
-import com.github.argon.sos.moreoptions.game.ui.SliderIntegerList;
+import com.github.argon.sos.mod.sdk.game.ui.Slider;
+import com.github.argon.sos.mod.sdk.game.ui.SliderDoubleList;
+import com.github.argon.sos.mod.sdk.game.ui.SliderIntegerList;
 import init.sprite.UI.UI;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import menu.Ui;
+import menu.MenuUi;
 import com.github.argon.sos.moreoptions.ui.json.JsonUiMapper;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.file.Json;
@@ -36,8 +35,8 @@ public class UiFactory {
     public static DropDown<String> dropDown(JsonString jsonString, List<String> options) {
         return DropDown.<String>builder()
             .label(jsonString.getValue())
-            .clickAction(dropDown -> Ui.getInstance().popups().show(dropDown.getMenu(), dropDown))
-            .closeAction(dropDown -> Ui.getInstance().popups().close(dropDown))
+            .clickAction(dropDown -> MenuUi.getInstance().popups().show(dropDown.getMenu(), dropDown))
+            .closeAction(dropDown -> MenuUi.getInstance().popups().close(dropDown))
             .menu(Switcher.<String>builder()
                 .highlight(true)
                 .menu(ButtonMenu.<String>builder()
@@ -80,7 +79,7 @@ public class UiFactory {
     public static MultiDropDown<String> multiDropDown(String buttonTitle, JsonArray jsonArray, List<String> options, int maxSelect, boolean maxSelected) {
         return MultiDropDown.<String>builder()
             .label(buttonTitle)
-            .clickAction(dropDown -> Ui.getInstance().popups().show(dropDown.getSelect(), dropDown))
+            .clickAction(dropDown -> MenuUi.getInstance().popups().show(dropDown.getSelect(), dropDown))
             .select(selectS(jsonArray,options, maxSelect, maxSelected))
             .build();
     }
@@ -95,9 +94,9 @@ public class UiFactory {
             .values(values)
             .label(buttonTitle)
             .possibleValues(options)
-            .clickAction(dropDownList -> Ui.getInstance().popups().show(dropDownList.getUiList(), dropDownList))
-            .optionClickAction(dropDown -> Ui.getInstance().popups().show(dropDown.getMenu(), dropDown))
-            .optionCloseAction(dropDown -> Ui.getInstance().popups().close(dropDown))
+            .clickAction(dropDownList -> MenuUi.getInstance().popups().show(dropDownList.getUiList(), dropDownList))
+            .optionClickAction(dropDown -> MenuUi.getInstance().popups().show(dropDown.getMenu(), dropDown))
+            .optionCloseAction(dropDown -> MenuUi.getInstance().popups().close(dropDown))
             .height(400)
             .build();
     }
@@ -114,7 +113,7 @@ public class UiFactory {
             .label(buttonTitle)
             .sliders(sliders)
             .elementSupplier(elementSupplier)
-            .clickAction(sliderList -> Ui.getInstance().popups().show(sliderList.getUiList(), sliderList))
+            .clickAction(sliderList -> MenuUi.getInstance().popups().show(sliderList.getUiList(), sliderList))
             .height(400)
             .build();
     }
@@ -132,7 +131,7 @@ public class UiFactory {
             .label(buttonTitle)
             .sliders(sliders)
             .elementSupplier(elementSupplier)
-            .clickAction(sliderList -> Ui.getInstance().popups().show(sliderList.getUiList(), sliderList))
+            .clickAction(sliderList -> MenuUi.getInstance().popups().show(sliderList.getUiList(), sliderList))
             .height(400)
             .build();
     }
@@ -181,7 +180,7 @@ public class UiFactory {
             .valueDisplay(Slider.ValueDisplay.PERCENTAGE)
             .build();
 
-        slider.mouseCooSupplier(() -> Ui.getInstance().getMouseCoo());
+        slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
         return slider;
     }
 
@@ -192,7 +191,7 @@ public class UiFactory {
             .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
             .build();
 
-        slider.mouseCooSupplier(() -> Ui.getInstance().getMouseCoo());
+        slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
         return slider;
     }
 

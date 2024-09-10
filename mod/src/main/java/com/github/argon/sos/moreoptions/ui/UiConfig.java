@@ -12,7 +12,7 @@ import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.UninitializedException;
 import com.github.argon.sos.moreoptions.ModModule;
-import com.github.argon.sos.moreoptions.MoreOptionsConfigurator;
+import com.github.argon.sos.moreoptions.config.Configurator;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
@@ -68,7 +68,7 @@ public class UiConfig implements Phases {
     }
 
     private final GameApis gameApis;
-    private final MoreOptionsConfigurator configurator;
+    private final Configurator configurator;
     private final ConfigStore configStore;
     private final MetricExporter metricExporter;
     private final UiFactory uiFactory;

@@ -8,7 +8,7 @@ import com.github.argon.sos.mod.sdk.game.ui.Table;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.moreoptions.ModModule;
-import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;

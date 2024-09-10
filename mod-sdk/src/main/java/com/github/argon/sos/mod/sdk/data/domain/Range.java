@@ -1,7 +1,7 @@
-package com.github.argon.sos.moreoptions.config.domain;
+package com.github.argon.sos.mod.sdk.data.domain;
 
-import com.github.argon.sos.moreoptions.game.ui.Slider;
-import com.github.argon.sos.moreoptions.ui.UiMapper;
+import com.github.argon.sos.mod.sdk.game.UiMapper;
+import com.github.argon.sos.mod.sdk.game.ui.Slider;
 import lombok.*;
 
 @Data

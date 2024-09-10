@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.game.ui;
+package com.github.argon.sos.mod.sdk.game.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import lombok.Builder;

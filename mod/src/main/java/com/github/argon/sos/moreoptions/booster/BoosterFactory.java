@@ -10,7 +10,7 @@ import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
 import game.boosting.BOOSTING;
 import game.boosting.BSourceInfo;

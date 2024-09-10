@@ -10,7 +10,7 @@ import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.mod.sdk.booster.Boosters;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
-import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import game.boosting.BoostableCat;
 import game.faction.FACTIONS;

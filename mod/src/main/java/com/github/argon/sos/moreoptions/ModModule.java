@@ -70,7 +70,7 @@ public class ModModule {
     private static UiConfig buildUiConfig() {
         return new UiConfig(
             ModSdkModule.gameApis(),
-            moreOptionsConfigurator(),
+            configurator(),
             configStore(),
             ModSdkModule.metricExporter(),
             uiFactory(),
@@ -138,9 +138,9 @@ public class ModModule {
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static MoreOptionsConfigurator moreOptionsConfigurator = buildMoreOptionsConfigurator();
-    private static MoreOptionsConfigurator buildMoreOptionsConfigurator() {
-        return new MoreOptionsConfigurator(
+    private final static Configurator configurator = buildConfigurator();
+    private static Configurator buildConfigurator() {
+        return new Configurator(
             ModSdkModule.gameApis(),
             gameApis().boosters(),
             ModSdkModule.metricCollector(),
@@ -152,7 +152,7 @@ public class ModModule {
     @Accessors(fluent = true)
     private final static ConfigApplier configApplier = buildConfigApplier();
     private static ConfigApplier buildConfigApplier() {
-        return new ConfigApplier(configStore(), moreOptionsConfigurator());
+        return new ConfigApplier(configStore(), configurator());
     }
 
     @Getter(lazy = true)

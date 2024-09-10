@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.config;
 
-import com.github.argon.sos.moreoptions.config.domain.Range;
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 
 import java.util.Map;
 import java.util.stream.Collectors;

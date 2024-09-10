@@ -60,7 +60,7 @@ public class FullWindow<Section extends GuiSection> extends ColorBox implements
         GButt.ButtPanel exit = new GButt.ButtPanel(SPRITES.icons().m.exit) {
             @Override
             protected void clickA() {
-                Menu menu = Ui.getInstance().getMenu();
+                Menu menu = MenuUi.getInstance().getMenu();
                 menu.switchScreen(menu.main);
             }
         };

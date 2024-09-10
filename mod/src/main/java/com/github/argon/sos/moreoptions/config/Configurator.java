@@ -1,11 +1,10 @@
-package com.github.argon.sos.moreoptions;
+package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
-import com.github.argon.sos.moreoptions.config.ConfigUtil;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
@@ -28,8 +27,8 @@ import java.util.concurrent.TimeUnit;
  * For manipulating game classes by given config {@link MoreOptionsV5Config}
  */
 @RequiredArgsConstructor
-public class MoreOptionsConfigurator implements Phases {
-    private final static Logger log = Loggers.getLogger(MoreOptionsConfigurator.class);
+public class Configurator implements Phases {
+    private final static Logger log = Loggers.getLogger(Configurator.class);
 
     private final GameApis gameApis;
     private final GameBoosterApi gameBoosterApi;
