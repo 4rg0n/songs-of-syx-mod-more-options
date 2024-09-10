@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.tab.events;
 
-import com.github.argon.sos.mod.sdk.game.UiMapper;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.game.ui.Checkbox;
 import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.game.ui.HorizontalLine;

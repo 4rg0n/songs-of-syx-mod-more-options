@@ -6,7 +6,6 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Clipboard;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
-import com.github.argon.sos.moreoptions.ui.msg.Messages;
 
 public class ErrorDialogController extends AbstractUiController<ErrorDialog> {
     private final static Logger log = Loggers.getLogger(ErrorDialogController.class);

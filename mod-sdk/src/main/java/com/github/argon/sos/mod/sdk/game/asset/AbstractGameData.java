@@ -1,4 +1,4 @@
-package com.github.argon.sos.mod.sdk.game.data;
+package com.github.argon.sos.mod.sdk.game.asset;
 
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import init.paths.PATH;

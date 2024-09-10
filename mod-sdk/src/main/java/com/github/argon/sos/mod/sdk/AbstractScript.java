@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk;
 
-import com.github.argon.sos.mod.sdk.game.ErrorHandler;
+import com.github.argon.sos.mod.sdk.game.error.ErrorHandler;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
@@ -63,6 +63,18 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
 
     protected abstract void registerPhases(PhaseManager phaseManager);
 
+    protected void registerSdkPhases(PhaseManager phaseManager) {
+        // initialize game apis first
+        for (Phase phase : Phase.values()) {
+            phaseManager.register(phase, gameApis);
+        }
+
+        phaseManager
+            .register(Phase.ON_GAME_UPDATE, ModSdkModule.notificator())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.gameJsonStore())
+            .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.i18nMessages());
+    }
+
 
     @Override
     public void initBeforeGameCreated() {
@@ -77,16 +89,8 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
 
         Loggers.setLevels(level);
 
-        // initialize game apis first
-        for (Phase phase : Phase.values()) {
-            phaseManager.register(phase, gameApis);
-        }
-
-        phaseManager
-            .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.gameJsonStore())
-            .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.i18nMessages());
-
         // call to register phases
+        registerSdkPhases(phaseManager);
         registerPhases(phaseManager);
         phaseManager.initBeforeGameCreated();
     }

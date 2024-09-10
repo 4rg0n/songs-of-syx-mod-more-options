@@ -1,6 +1,6 @@
 package snake2d;
 
-import com.github.argon.sos.mod.sdk.game.DumpLogsException;
+import com.github.argon.sos.mod.sdk.game.error.DumpLogsException;
 import lombok.Setter;
 import snake2d.util.misc.ERROR_HANDLER;
 

@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.json.factory.builder;
 
-import com.github.argon.sos.mod.sdk.game.Wildcard;
+import com.github.argon.sos.mod.sdk.game.asset.GameWildcard;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,7 +41,7 @@ public class JsonUiElementListBuilder<Value extends JsonElement, Element extends
             .jsonPath(jsonPath);
         
         if (asWildcards) {
-            Wildcard.from(names).forEach(name -> {
+            GameWildcard.from(names).forEach(name -> {
                 builder.element(asObjectElement(name));
             });
         } else {

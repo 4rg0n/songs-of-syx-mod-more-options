@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.json.tab;
 
-import com.github.argon.sos.mod.sdk.game.data.GameFolder;
-import com.github.argon.sos.mod.sdk.game.data.GameResources;
+import com.github.argon.sos.mod.sdk.game.asset.GameFolder;
+import com.github.argon.sos.mod.sdk.game.asset.GameResources;
 import com.github.argon.sos.mod.sdk.game.ui.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import init.paths.PATH;

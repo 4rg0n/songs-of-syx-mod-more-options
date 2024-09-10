@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.msg;
 
+import com.github.argon.sos.mod.sdk.ui.Notificator;
 import com.github.argon.sos.mod.sdk.game.ui.Window;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.util.ExceptionUtil;

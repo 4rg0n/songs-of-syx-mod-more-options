@@ -1,10 +1,10 @@
-package com.github.argon.sos.mod.sdk.game.data;
+package com.github.argon.sos.mod.sdk.game.asset;
 
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.game.data.init.Init;
-import com.github.argon.sos.mod.sdk.game.data.sprite.Sprite;
-import com.github.argon.sos.mod.sdk.game.data.text.Text;
+import com.github.argon.sos.mod.sdk.game.asset.init.Init;
+import com.github.argon.sos.mod.sdk.game.asset.sprite.Sprite;
+import com.github.argon.sos.mod.sdk.game.asset.text.Text;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.StringUtil;

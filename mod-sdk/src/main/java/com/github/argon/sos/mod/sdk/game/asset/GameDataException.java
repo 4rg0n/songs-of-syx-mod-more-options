@@ -1,4 +1,4 @@
-package com.github.argon.sos.mod.sdk.game.data;
+package com.github.argon.sos.mod.sdk.game.asset;
 
 public class GameDataException extends Exception {
     public GameDataException() {

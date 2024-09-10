@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui;
 
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.file.FileMeta;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.game.ui.*;
@@ -11,7 +12,7 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.properties.ModSdkProperties;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
-import com.github.argon.sos.moreoptions.ModModule;
+import com.github.argon.sos.mod.sdk.ui.UiShowroom;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
@@ -44,7 +45,7 @@ import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 @RequiredArgsConstructor
 public class UiFactory {
 
-    private static final I18nTranslator i18n = ModModule.i18n().get(UiFactory.class);
+    private static final I18nTranslator i18n = ModSdkModule.i18n().get(UiFactory.class);
 
     private final static Logger log = Loggers.getLogger(UiFactory.class);
 
@@ -175,6 +176,8 @@ public class UiFactory {
         return uiShowRoom;
     }
 
+
+// TODO how to move this into the sdk
     public Window<ErrorDialog> buildErrorDialog(Throwable exception, @Nullable String message) {
         Window<ErrorDialog> errorDialog = new Window<>(
             i18n.t("ErrorDialog.title"),

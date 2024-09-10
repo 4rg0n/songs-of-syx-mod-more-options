@@ -63,7 +63,6 @@ public final class MoreOptionsScript extends AbstractScript {
             .register(Phase.ON_GAME_SAVE_LOADED, ModModule.configStore())
             .register(Phase.ON_GAME_SAVED, ModModule.configStore())
             .register(Phase.ON_GAME_SAVE_RELOADED, ModModule.gameApis().boosters())
-			.register(Phase.ON_GAME_UPDATE, ModModule.notificator())
             .register(Phase.ON_CRASH, ModModule.configStore());
 	}
 

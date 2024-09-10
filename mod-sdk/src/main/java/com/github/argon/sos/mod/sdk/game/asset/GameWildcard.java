@@ -1,4 +1,4 @@
-package com.github.argon.sos.mod.sdk.game;
+package com.github.argon.sos.mod.sdk.game.asset;
 
 import com.github.argon.sos.mod.sdk.util.Lists;
 
@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 /**
  * WIP do not use :P
  */
-public class Wildcard {
+public class GameWildcard {
     private final List<String> parts;
     private final static String DELIMITER = "_";
     private final static String WILDCARD = "*";
 
-    public Wildcard(List<String> parts) {
+    public GameWildcard(List<String> parts) {
         this.parts = parts;
     }
 
@@ -45,14 +45,14 @@ public class Wildcard {
         return keys;
     }
 
-    public static Wildcard of(String path) {
+    public static GameWildcard of(String path) {
         String[] parts = path.split(DELIMITER);
-        return new Wildcard(Lists.of(parts));
+        return new GameWildcard(Lists.of(parts));
     }
 
     public static Set<String> from(List<String> paths) {
         return paths.stream()
-            .flatMap(path -> Wildcard.of(path).get().stream())
+            .flatMap(path -> GameWildcard.of(path).get().stream())
             .collect(Collectors.toSet());
     }
 }

@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.phase;
 
-import com.github.argon.sos.mod.sdk.game.DumpLogsException;
+import com.github.argon.sos.mod.sdk.game.error.DumpLogsException;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;

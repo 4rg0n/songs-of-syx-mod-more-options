@@ -1,6 +1,6 @@
 package menu;
 
-import com.github.argon.sos.mod.sdk.game.data.GameResources;
+import com.github.argon.sos.mod.sdk.game.asset.GameResources;
 import com.github.argon.sos.mod.sdk.game.ui.Button;
 import com.github.argon.sos.mod.sdk.game.ui.ButtonMenu;
 import com.github.argon.sos.mod.sdk.game.ui.Switcher;

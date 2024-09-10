@@ -19,7 +19,6 @@ import com.github.argon.sos.moreoptions.ui.UiConfig;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.ui.msg.Messages;
-import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +73,7 @@ public class ModModule {
             configStore(),
             ModSdkModule.metricExporter(),
             uiFactory(),
-            notificator(),
+            ModSdkModule.notificator(),
             ModSdkModule.phaseManager()
         );
     }
@@ -169,16 +168,9 @@ public class ModModule {
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static Notificator notificator = buildNotificator();
-    private static Notificator buildNotificator() {
-        return new Notificator(ModSdkModule.gameApis().ui());
-    }
-
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
     private final static Messages messages = buildMessages();
     private static Messages buildMessages() {
-        return new Messages(notificator(), uiFactory());
+        return new Messages(ModSdkModule.notificator(), uiFactory());
     }
 
     @Getter(lazy = true)

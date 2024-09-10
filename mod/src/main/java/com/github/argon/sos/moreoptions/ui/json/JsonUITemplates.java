@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.json;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.game.data.GameResources;
+import com.github.argon.sos.mod.sdk.game.asset.GameResources;
 import com.github.argon.sos.mod.sdk.json.GameJsonService;
 import com.github.argon.sos.mod.sdk.json.element.JsonArray;
 import com.github.argon.sos.mod.sdk.util.Lists;

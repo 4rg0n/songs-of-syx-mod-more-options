@@ -1,7 +1,5 @@
-package com.github.argon.sos.mod.sdk.game;
+package com.github.argon.sos.mod.sdk.game.error;
 
-import com.github.argon.sos.mod.sdk.log.Logger;
-import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.RequiredArgsConstructor;
 import snake2d.Errors;
@@ -13,8 +11,6 @@ import snake2d.Errors;
  */
 @RequiredArgsConstructor
 public class ErrorHandler<Script extends Phases> extends init.error.ErrorHandler {
-
-    private final static Logger log = Loggers.getLogger(ErrorHandler.class);
 
     private final Script script;
 

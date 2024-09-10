@@ -17,7 +17,7 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.ui.controller.*;
-import com.github.argon.sos.moreoptions.ui.msg.Notificator;
+import com.github.argon.sos.mod.sdk.ui.Notificator;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;

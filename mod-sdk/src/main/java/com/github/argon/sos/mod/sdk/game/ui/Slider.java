@@ -2,7 +2,7 @@ package com.github.argon.sos.mod.sdk.game.ui;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.game.UiMapper;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;

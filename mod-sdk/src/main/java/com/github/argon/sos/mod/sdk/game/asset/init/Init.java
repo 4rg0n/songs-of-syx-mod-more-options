@@ -1,14 +1,14 @@
-package com.github.argon.sos.mod.sdk.game.data.text;
+package com.github.argon.sos.mod.sdk.game.asset.init;
 
-import com.github.argon.sos.mod.sdk.game.data.GameFolder;
-import com.github.argon.sos.mod.sdk.game.data.AbstractGameData;
+import com.github.argon.sos.mod.sdk.game.asset.GameFolder;
+import com.github.argon.sos.mod.sdk.game.asset.AbstractGameData;
 import init.paths.PATHS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
-public class Text extends AbstractGameData {
-    public Text() {
-        super(PATHS.TEXT());
+public class Init extends AbstractGameData {
+    public Init() {
+        super(PATHS.INIT());
     }
 
     @Getter(lazy = true)
@@ -16,49 +16,37 @@ public class Text extends AbstractGameData {
     private final GameFolder animal = folder("animal");
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final GameFolder campaign = folder("campaign");
+    private final GameFolder battle = folder("battle");
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final GameFolder cutscene = folder("cutscene");
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
-    private final GameFolder dictionary = folder("dictionary");
+    private final GameFolder config = folder("config");
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final GameFolder disease = folder("disease");
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final GameFolder misc = folder("misc");
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
-    private final GameFolder names = folder("names");
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
     private final GameFolder player = folder("player");
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final TextRace race = new TextRace();
+    private final InitRace race = new InitRace();
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final GameFolder religion = folder("religion");
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final TextResource resource = new TextResource();
+    private final InitResource resource = new InitResource();
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final GameFolder room = folder("room");
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final TextSettlement settlement = new TextSettlement();
+    private final InitSettlement settlement = new InitSettlement();
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final GameFolder stats = folder("stats");
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final GameFolder tech = folder("tech");
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
-    private final GameFolder wiki = folder("wiki");
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final GameFolder world = folder("world");

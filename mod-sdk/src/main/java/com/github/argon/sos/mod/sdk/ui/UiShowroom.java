@@ -1,14 +1,12 @@
-package com.github.argon.sos.moreoptions.ui;
+package com.github.argon.sos.mod.sdk.ui;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.ui.*;
 import com.github.argon.sos.mod.sdk.game.ui.layout.Layouts;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
-import com.github.argon.sos.moreoptions.ModModule;
-import com.github.argon.sos.mod.sdk.game.ui.Slider;
-import com.github.argon.sos.moreoptions.ui.msg.Notificator;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
 import init.sprite.UI.Icons;
@@ -31,7 +29,7 @@ import java.util.stream.Collectors;
 
 public class UiShowroom extends GuiSection {
 
-    private final Notificator notificator = ModModule.notificator();
+    private final Notificator notificator = ModSdkModule.notificator();
 
     public UiShowroom() {
         int width = 900;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.mod.sdk.file.ResourceService;
+import com.github.argon.sos.mod.sdk.ui.Notificator;
 import com.github.argon.sos.mod.sdk.game.api.*;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.i18n.I18nMessages;
@@ -160,5 +161,12 @@ public class ModSdkModule {
     private final static MetricExporter metricExporter = buildMetricExporter();
     private static MetricExporter buildMetricExporter() {
         return new MetricExporter(metricCollector(), new MetricCsvWriter());
+    }
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static Notificator notificator = buildNotificator();
+    private static Notificator buildNotificator() {
+        return new Notificator(ModSdkModule.gameApis().ui());
     }
 }
