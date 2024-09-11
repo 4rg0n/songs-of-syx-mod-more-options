@@ -10,11 +10,11 @@ import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
-import com.github.argon.sos.mod.sdk.properties.ModSdkProperties;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import com.github.argon.sos.mod.sdk.ui.UiShowroom;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
+import com.github.argon.sos.moreoptions.config.ModProperties;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogController;
 import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
@@ -72,7 +72,7 @@ public class UiFactory {
 
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod(MoreOptionsScript.MOD_INFO.name.toString()).orElse(null);
-        Path exportFolder = MetricExporter.EXPORT_FOLDER;
+        Path exportFolder = metricExporter.getExportFolder();
         Path exportFile = metricExporter.getExportFile();
         String saveStamp = gameApis.save().getSaveStamp();
 
@@ -177,15 +177,14 @@ public class UiFactory {
     }
 
 
-// TODO how to move this into the sdk
     public Window<ErrorDialog> buildErrorDialog(Throwable exception, @Nullable String message) {
         Window<ErrorDialog> errorDialog = new Window<>(
             i18n.t("ErrorDialog.title"),
             new ErrorDialog(exception, message),
             true);
 
-        String errorReportUrl = propertiesStore.getModSdkProperties()
-            .map(ModSdkProperties::getErrorReportUrl)
+        String errorReportUrl = propertiesStore.get(ModProperties.class)
+            .map(ModProperties::getErrorReportUrl)
             .orElse("https://example.com/");
 
         // add functionality to error dialog

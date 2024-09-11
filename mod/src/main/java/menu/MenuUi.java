@@ -45,7 +45,7 @@ public class MenuUi {
 
     public static FullWindow<MoreOptionsEditor> moreOptionsFullsWindow() {
         MoreOptionsEditor moreOptionsEditor = new MoreOptionsEditor(null);
-        return new FullWindow<>("More Options (Experimental)",
+        return new FullWindow<>("More Options (experimental)",
             moreOptionsEditor,
             moreOptionsEditor.getTabulator().getMenu(),
             null

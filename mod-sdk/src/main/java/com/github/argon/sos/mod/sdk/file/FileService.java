@@ -2,6 +2,7 @@ package com.github.argon.sos.mod.sdk.file;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.util.Lists;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -14,6 +15,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Simple service for handling file operations, which are not resources.
@@ -24,13 +26,34 @@ public class FileService extends AbstractFileService {
     public final static Charset CHARSET = StandardCharsets.UTF_8;
 
     @Override
+    public Properties readProperties(Path filePath) throws IOException {
+        log.debug("Reading from resource properties file %s", filePath);
+
+        if (!Files.exists(filePath)) {
+            // do not read what's not there
+            log.info("%s is not a file, does not exists or is not readable", filePath);
+            return null;
+        }
+
+        Properties properties = new Properties();
+        try (InputStream inputStream = Files.newInputStream(filePath)) {
+            properties.load(inputStream);
+        } catch (Exception e) {
+            log.warn("Could not read properties from file %s", filePath);
+            throw e;
+        }
+
+        return properties;
+    }
+
+    @Override
     public List<String> readLines(Path path) throws IOException {
         log.debug("Reading from file %s", path);
 
         if (!Files.exists(path)) {
             // do not load what's not there
-            log.info("%s is not a file, does not exists or is not readable", path);
-            return null;
+            log.info("%s is not a folder, does not exists or is not readable", path);
+            return Lists.of();
         }
 
         try (InputStream inputStream = Files.newInputStream(path)) {

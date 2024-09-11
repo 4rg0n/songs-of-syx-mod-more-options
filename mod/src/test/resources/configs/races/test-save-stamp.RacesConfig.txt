@@ -1,0 +1,13 @@
+{
+  "likings": [ {
+    "race": "test",
+    "otherRace": "test",
+    "range": {
+      "value": 0,
+      "min": 0,
+      "max": 10000,
+      "applyMode": "MULTI",
+      "displayMode": "PERCENTAGE"
+    }
+  } ]
+}

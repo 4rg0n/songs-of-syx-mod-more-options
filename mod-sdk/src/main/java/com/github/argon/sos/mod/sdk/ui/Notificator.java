@@ -1,5 +1,6 @@
 package com.github.argon.sos.mod.sdk.ui;
 
+import com.github.argon.sos.mod.sdk.game.action.Hideable;
 import com.github.argon.sos.mod.sdk.game.api.GameUiApi;
 import com.github.argon.sos.mod.sdk.game.ui.Notification;
 import com.github.argon.sos.mod.sdk.log.Logger;
@@ -24,7 +25,7 @@ import java.util.List;
  * Notifications will be queued and shown in order.
  */
 @RequiredArgsConstructor
-public class Notificator implements Updateable, Phases {
+public class Notificator implements Updateable, Hideable, Phases {
     private final static Logger log = Loggers.getLogger(Notificator.class);
 
     private final GameUiApi gameUiApi;
@@ -38,7 +39,8 @@ public class Notificator implements Updateable, Phases {
     private Instant showUntil;
 
     /**
-     * Seconds per one hundred (100) characters
+     * How long the notification shall be visible
+     * Seconds per one hundred (100) characters.
      */
     @Setter
     @Accessors(fluent = true)
@@ -57,6 +59,10 @@ public class Notificator implements Updateable, Phases {
     @Setter
     @Accessors(fluent = true)
     private int showNextDelaySeconds = 1;
+
+    /**
+     * The currently displayed notification
+     */
     @Nullable
     private Notification current;
 
@@ -112,6 +118,17 @@ public class Notificator implements Updateable, Phases {
     }
 
     /**
+     * Will remove the currently shown notification.
+     * Will not prevent the next notification in the queue from popping up.
+     */
+    @Override
+    public void hide() {
+        gameUiApi.notification().closeSilent();
+        queue.remove(current);
+        current = null;
+    }
+
+    /**
      * Has to be called from the outside by a looping game process like
      * {@link snake2d.util.gui.renderable.RENDEROBJ#render(SPRITE_RENDERER, float)}
      *
@@ -124,9 +141,7 @@ public class Notificator implements Updateable, Phases {
             Instant now = Instant.now();
             if (showUntil != null && now.isAfter(showUntil)) {
                 // time elapsed, hide notifications!
-                gameUiApi.notification().closeSilent();
-                queue.remove(current);
-                current = null;
+                hide();
             }
         }
 

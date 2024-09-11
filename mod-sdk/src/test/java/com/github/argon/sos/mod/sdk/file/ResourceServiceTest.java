@@ -17,7 +17,7 @@ class ResourceServiceTest {
         Assertions.assertThat(resourceService.read(Paths.get("test.properties"))).isNotNull();
         Assertions.assertThat(resourceService.read("not.present")).isEmpty();
         Assertions.assertThat(resourceService.read("test.properties")).isPresent();
-        Assertions.assertThat(resourceService.read("test.properties")).hasValue("test=test\n");
+        Assertions.assertThat(resourceService.read("test.properties")).hasValue("test=test");
     }
 
     @Test
@@ -31,7 +31,7 @@ class ResourceServiceTest {
         Properties expected = new Properties();
         expected.put("test", "test");
 
-        Assertions.assertThat(resourceService.readProperties("not.present")).isEmpty();
-        Assertions.assertThat(resourceService.readProperties("test.properties")).hasValue(expected);
+        Assertions.assertThat(resourceService.readProperties("not.present")).isNull();
+        Assertions.assertThat(resourceService.readProperties("test.properties")).isEqualTo(expected);
     }
 }

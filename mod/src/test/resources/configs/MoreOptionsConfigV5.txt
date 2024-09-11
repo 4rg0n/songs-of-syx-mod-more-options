@@ -1,0 +1,102 @@
+{
+  "version": 5,
+  "logLevel": "INFO",
+  "sounds": {
+    "ambience": {
+      "test1": {
+        "value": 0,
+        "min": 0,
+        "max": 10000,
+        "applyMode": "MULTI",
+        "displayMode": "PERCENTAGE"
+      }
+    }
+  },
+  "events": {
+    "events": {
+      "test1": true,
+      "test2": false
+    },
+    "chance": {
+      "test1": {
+        "value": 0,
+        "min": 0,
+        "max": 10000,
+        "applyMode": "MULTI",
+        "displayMode": "PERCENTAGE"
+      }
+    },
+    "playerBattleLoot": {
+      "value": 0,
+      "min": 0,
+      "max": 10000,
+      "applyMode": "MULTI",
+      "displayMode": "PERCENTAGE"
+    },
+    "enemyBattleLoot": {
+      "value": 0,
+      "min": 0,
+      "max": 10000,
+      "applyMode": "MULTI",
+      "displayMode": "PERCENTAGE"
+    }
+  },
+  "weather": {
+    "effects": {
+      "test1": {
+        "value": 0,
+        "min": 0,
+        "max": 10000,
+        "applyMode": "MULTI",
+        "displayMode": "PERCENTAGE"
+      }
+    }
+  },
+  "metrics": {
+    "enabled": true,
+    "collectionRateSeconds": {
+      "value": 0,
+      "min": 0,
+      "max": 10000,
+      "applyMode": "MULTI",
+      "displayMode": "PERCENTAGE"
+    },
+    "exportRateMinutes": {
+      "value": 0,
+      "min": 0,
+      "max": 10000,
+      "applyMode": "MULTI",
+      "displayMode": "PERCENTAGE"
+    },
+    "stats": [ "test2", "test3", "test1" ]
+  },
+  "boostersPlayer": {
+    "test1": {
+      "key": "test1",
+      "range": {
+        "value": 0,
+        "min": 0,
+        "max": 10000,
+        "applyMode": "MULTI",
+        "displayMode": "PERCENTAGE"
+      }
+    }
+  },
+  "boostersPresets": {
+    "test1": {
+      "name": "test1",
+      "boosters": {
+        "test1": {
+          "key": "test1",
+          "range": {
+            "value": 0,
+            "min": 0,
+            "max": 10000,
+            "applyMode": "MULTI",
+            "displayMode": "PERCENTAGE"
+          }
+        }
+      }
+    }
+  }
+}

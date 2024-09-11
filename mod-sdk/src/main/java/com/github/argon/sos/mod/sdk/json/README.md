@@ -32,8 +32,6 @@ TECH: [
 ```java
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.json.JasonService;
-import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.JsonMapper;
@@ -81,7 +79,7 @@ public class MyJsonService {
 
     public Optional<Race> readHumanRace2() {
         // the JsonService can do the heavy lifting for you =)
-        return ModSdkModule.jasonService().load(PATHS.RACE().init.get("HUMAN"), Race.class);
+        return ModSdkModule.jsonGameService().load(PATHS.RACE().init.get("HUMAN"), Race.class);
     }
 
     public void writeHumanRace2() {
@@ -120,7 +118,7 @@ public class MyJsonService {
             .build();
 
         // the JsonService can do the heavy lifting for you =)
-        ModSdkModule.jasonService().save(PATHS.RACE().init.get("HUMAN"), race);
+        ModSdkModule.jsonGameService().save(PATHS.RACE().init.get("HUMAN"), race);
     }
 }
 ```
@@ -148,7 +146,6 @@ TECH: [
 ```java
 
 import com.github.argon.sos.mod.sdk.json.JsonPath;
-import com.github.argon.sos.mod.sdk.json.JasonService;
 import com.github.argon.sos.mod.sdk.json.element.JsonLong;
 
 import java.util.Optional;
@@ -156,7 +153,7 @@ import java.util.Optional;
 public class MyJsonExtractor {
     public Long readHumanRaceWidth() {
         // read the games init/race/HUMAN.txt file as Json
-        return ModSdkModule.jasonService().load(PATHS.RACE().init.get("HUMAN"))
+        return ModSdkModule.jsonGameService().load(PATHS.RACE().init.get("HUMAN"))
             // extract the json element via JsonPath when present
             .flatMap(json -> {
                 JsonPath jsonPath = JsonPath.get("PROPERTIES.WIDTH");
@@ -171,7 +168,7 @@ public class MyJsonExtractor {
 
     public void writeHumanRaceWidth(Long width) {
         // read the games init/race/HUMAN.txt file as Json
-        ModSdkModule.jasonService().load(PATHS.RACE().init.get("HUMAN"))
+        ModSdkModule.jsonGameService().load(PATHS.RACE().init.get("HUMAN"))
             .ifPresent(json -> {
                 // put the Long value into the fitting JsonElement
                 JsonLong jsonLong = new JsonLong(width);
@@ -181,7 +178,7 @@ public class MyJsonExtractor {
                 jsonPath.put(json, jsonLong);
 
                 // save the new changed object into init/race/HUMAN.txt json file
-                ModSdkModule.jasonService().save(PATHS.RACE().init.get("HUMAN"), json);
+                ModSdkModule.jsonGameService().save(PATHS.RACE().init.get("HUMAN"), json);
             });
     }
 }

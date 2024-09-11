@@ -1,4 +1,4 @@
-package com.github.argon.sos.mod.sdk.properties;
+package com.github.argon.sos.moreoptions.config;
 
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +10,6 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class ModSdkProperties {
+public class ModProperties {
    private String errorReportUrl;
 }

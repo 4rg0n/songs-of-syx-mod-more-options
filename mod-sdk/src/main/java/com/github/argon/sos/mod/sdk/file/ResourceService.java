@@ -13,11 +13,13 @@ import java.util.Optional;
 import java.util.Properties;
 
 /**
- * For reading files from the class path a.k.a. "resources" folder a.k.a. *.jar file.
+ * For reading files from the class path a.k.a. "src/main/resources" folder a.k.a. from inside a *.jar file.
  *
  * All files in the "resource" folder will be packaged into the built *.jar file.
  * This is where all the compiled "byte code" of your Java classes lives for example.
  * These files are than called "Resources" and can be accessed through this service.
+ *
+ * This service can not write into or delete resource files from inside a *.jar file.
  */
 public class ResourceService extends AbstractFileService {
 
@@ -41,6 +43,12 @@ public class ResourceService extends AbstractFileService {
     @Override
     public boolean delete(Path path) throws IOException {
         throw new UnsupportedOperationException("Can not delete resources");
+    }
+
+    @Override
+    @Nullable
+    public Properties readProperties(Path filePath) throws IOException {
+        return readProperties(filePath.toString());
     }
 
     /**
@@ -89,22 +97,24 @@ public class ResourceService extends AbstractFileService {
      * @return {@link Properties} read and parsed from a file path
      * @throws IOException when property file can not be accessed
      */
-    public Optional<Properties> readProperties(String filePath) throws IOException {
+    @Nullable
+    public Properties readProperties(String filePath) throws IOException {
         log.debug("Reading from resource properties file %s", filePath);
-        InputStream inputStream = getResourceInputStream(filePath);
-        if (inputStream == null) {
-            return Optional.empty();
-        }
 
         Properties properties = new Properties();
-        try {
+        try (InputStream inputStream = getResourceInputStream(filePath)) {
+            if (inputStream == null) {
+                log.info("%s is not a file, does not exists or is not readable", filePath);
+                return null;
+            }
+
             properties.load(inputStream);
         } catch (IOException e) {
             log.warn("Could not read properties from file %s", filePath);
             throw e;
         }
 
-        return Optional.of(properties);
+        return properties;
     }
 
     /**

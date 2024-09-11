@@ -3,14 +3,14 @@ package com.github.argon.sos.mod.sdk.json;
 import com.github.argon.sos.mod.sdk.file.ResourceService;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
 import com.github.argon.sos.mod.sdk.util.Lists;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class JsonTest {
 
@@ -23,7 +23,7 @@ class JsonTest {
 
         String parsedJsonString = json.write();
 
-        assertEqualsWithoutWhitespace(jsonString, parsedJsonString);
+        assertThat(parsedJsonString).isEqualToIgnoringWhitespace(jsonString);
     }
 
     @Test
@@ -33,7 +33,7 @@ class JsonTest {
         Json json = new Json(jsonEString, JsonWriters.jsonPretty());
 
         String parsedJsonString = json.write();
-        assertEqualsWithoutWhitespace(jsonString, parsedJsonString);
+        assertThat(parsedJsonString).isEqualToIgnoringWhitespace(jsonString);
     }
 
     @Test
@@ -51,7 +51,7 @@ class JsonTest {
                 String jsonString = resourceService.read(file)
                     .orElseThrow(() -> new AssertionError("No file?" + file));
                 Json json = new Json(jsonString, JsonWriters.jsonEPretty());
-                Assertions.assertThat(json.write()).as(file).isNotEmpty();
+                assertThat(json.write()).as(file).isNotEmpty();
             } catch (Exception e) {
                 errors.put(file, e);
             }
@@ -72,26 +72,5 @@ class JsonTest {
         Json json = new Json(jsonEString, JsonWriters.jsonEPretty());
 
         System.out.println(json.write());
-    }
-
-    private void assertEqualsWithoutWhitespace(String actual, String expected) {
-        Assertions.assertThat(actual.replaceAll("\\s+",""))
-            .isEqualTo(expected.replaceAll("\\s+",""));
-    }
-
-    private void assertEqualsContent(String actual, String expected) {
-        actual = actual.replaceAll("\\s+","");
-        expected = expected.replaceAll("\\s+","");
-
-        char[] actualChars = actual.toCharArray();
-        Arrays.sort(actualChars);
-        actual = new String(actualChars);
-
-        char[] expectedChars = expected.toCharArray();
-        Arrays.sort(expectedChars);
-        expected = new String(expectedChars);
-
-        Assertions.assertThat(actual)
-            .isEqualTo(expected);
     }
 }

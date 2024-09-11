@@ -93,7 +93,7 @@ public abstract class AbstractJsonWriter implements JsonWriter {
         } else if (json instanceof JsonNull)  {
             return jsonNull((JsonNull) json);
         } else if (json instanceof JsonBoolean)  {
-            return jsonString(json);
+            return jsonBoolean((JsonBoolean) json);
         } else {
             throw new RuntimeException("Does not support writing json element " + json.getClass().getSimpleName());
         }
@@ -161,6 +161,11 @@ public abstract class AbstractJsonWriter implements JsonWriter {
         }
 
         return new StringBuilder(jsonString);
+    }
+
+    @NotNull
+    protected StringBuilder jsonBoolean(JsonBoolean json) {
+        return new StringBuilder(json.toString());
     }
 
     @NotNull

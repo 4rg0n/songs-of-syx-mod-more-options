@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor
 public class Messages {
-    protected static final I18nTranslator i18n = ModModule.i18n().get(Messages.class);
+    private static final I18nTranslator i18n = ModModule.i18n().get(Messages.class);
 
     private final Notificator notificator;
 

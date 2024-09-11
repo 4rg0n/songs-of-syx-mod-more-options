@@ -4,7 +4,7 @@ import com.github.argon.sos.mod.sdk.config.ConfigVersionHandler;
 import com.github.argon.sos.mod.sdk.config.ConfigVersionHandlers;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
 import com.github.argon.sos.mod.sdk.file.FileMeta;
-import com.github.argon.sos.mod.sdk.json.JasonService;
+import com.github.argon.sos.mod.sdk.json.JsonGameService;
 import com.github.argon.sos.mod.sdk.json.JsonException;
 import com.github.argon.sos.mod.sdk.json.parser.JsonParseException;
 import com.github.argon.sos.mod.sdk.log.Logger;
@@ -29,18 +29,18 @@ public class ConfigService implements Phases {
     private final static Logger log = Loggers.getLogger(ConfigService.class);
 
     private final JsonConfigStore jsonConfigStore;
-    private final JasonService jasonService;
+    private final JsonGameService jsonGameService;
 
     private final ConfigVersionHandler<MoreOptionsV5Config> versionHandler;
 
     public ConfigService(
         JsonConfigStore jsonConfigStore,
         ConfigVersionHandlers<MoreOptionsV5Config> versionHandler,
-        JasonService jasonService
+        JsonGameService jsonGameService
     ) {
         this.jsonConfigStore = jsonConfigStore;
         this.versionHandler = versionHandler;
-        this.jasonService = jasonService;
+        this.jsonGameService = jsonGameService;
     }
 
     public Optional<ConfigMeta> getMeta() {
@@ -61,7 +61,7 @@ public class ConfigService implements Phases {
      */
     private Optional<ConfigMeta> readMetaLegacy() {
         try {
-            return jasonService.load(ConfigDefaults.CONFIG_FILE_PATH, JsonMeta.class)
+            return jsonGameService.load(ConfigDefaults.CONFIG_FILE_PATH, JsonMeta.class)
                 .map(ConfigMapper::mapMeta);
         } catch (JsonParseException | JsonException e) {
             // this is expected

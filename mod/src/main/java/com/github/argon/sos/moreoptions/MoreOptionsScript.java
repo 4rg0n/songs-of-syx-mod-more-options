@@ -10,6 +10,7 @@ import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
+import com.github.argon.sos.moreoptions.config.ModProperties;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 import util.info.INFO;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 /**
@@ -68,6 +70,8 @@ public final class MoreOptionsScript extends AbstractScript {
 
 	@Override
 	public void initBeforeGameCreated() {
+		propertiesStore.bind(ModProperties.class, Paths.get("mo-mod.properties"), true);
+
 		super.initBeforeGameCreated();
 		// force the use of the environment log level when present
 		configApplier.setEnvLogLevel(getEnvLogLevel());

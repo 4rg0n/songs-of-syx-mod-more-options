@@ -101,7 +101,7 @@ class ScMain implements SC{
 		current.addDown(8, text);
 
 		// MODDED
-		text = getNavButt("More Options Editor (WIP)");
+		text = getNavButt("More Options (experimental)");
 		text.clickActionSet(new ACTION() {
 			@Override
 			public void exe() {

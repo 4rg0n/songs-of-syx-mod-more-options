@@ -3,12 +3,25 @@ package com.github.argon.sos.moreoptions;
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.config.ConfigVersionHandlers;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
+import com.github.argon.sos.mod.sdk.file.IOService;
+import com.github.argon.sos.mod.sdk.game.api.GameFactionApi;
+import com.github.argon.sos.mod.sdk.game.api.GameLangApi;
+import com.github.argon.sos.mod.sdk.game.api.GameSaveApi;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.i18n.I18nMessages;
+import com.github.argon.sos.mod.sdk.json.JacksonService;
+import com.github.argon.sos.mod.sdk.json.JsonGameService;
+import com.github.argon.sos.mod.sdk.metric.MetricCollector;
+import com.github.argon.sos.mod.sdk.metric.MetricExporter;
+import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
+import com.github.argon.sos.mod.sdk.phase.PhaseManager;
+import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
+import com.github.argon.sos.mod.sdk.ui.Notificator;
 import com.github.argon.sos.moreoptions.booster.BoosterService;
 import com.github.argon.sos.moreoptions.config.*;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
+import com.github.argon.sos.moreoptions.config.json.JsonConfigStoreFactory;
 import com.github.argon.sos.moreoptions.config.json.v2.JsonConfigV2Handler;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonConfigV3Handler;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonConfigV4Handler;
@@ -29,154 +42,241 @@ public class ModModule {
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static GameApis gameApis = buildGameApis();
-    private static GameApis buildGameApis() {
-        return new GameApis(
-            new GameBoosterApi(booster()));
-    }
+    private final static GameApis gameApis = Factory.newGameApis(boosterService());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static PropertiesStore propertiesStore = buildPropertiesStore();
-    private static PropertiesStore buildPropertiesStore() {
-        return new PropertiesStore(ModSdkModule.resourceService(), "mo-mod.properties");
-    }
+    private final static I18nMessages i18nMessages = Factory.newI18nMessages("mo-messages", ModSdkModule.gameApis().lang());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static I18nMessages i18nMessages = buildI18nMessages();
-    private static I18nMessages buildI18nMessages() {
-        return new I18nMessages("mo-messages", ModSdkModule.gameApis().lang());
-    }
+    private final static I18n i18n = Factory.newI18n(i18nMessages());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static I18n i18n = buildI18n();
-    private static I18n buildI18n() {
-        return new I18n(i18nMessages());
-    }
+    private final static UiMapper uiMapper = Factory.newUiMapper(ModSdkModule.gameApis(), gameApis().boosters());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static UiMapper uiMapper = buildUiMapper();
-    private static UiMapper buildUiMapper() {
-        return new UiMapper(ModSdkModule.gameApis(), gameApis().boosters());
-    }
+    private final static UiConfig uiConfig = Factory.newUiConfig(
+        ModSdkModule.gameApis(),
+        configurator(),
+        configStore(),
+        ModSdkModule.metricExporter(),
+        uiFactory(),
+        ModSdkModule.notificator(),
+        ModSdkModule.phaseManager());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static UiConfig uiConfig = buildUiConfig();
-    private static UiConfig buildUiConfig() {
-        return new UiConfig(
-            ModSdkModule.gameApis(),
-            configurator(),
-            configStore(),
-            ModSdkModule.metricExporter(),
-            uiFactory(),
-            ModSdkModule.notificator(),
-            ModSdkModule.phaseManager()
-        );
-    }
+    private final static JsonConfigStoreFactory jsonConfigFactory = Factory.newConfigFactory(
+        ModSdkModule.gameApis().save(),
+        ModSdkModule.jacksonService(),
+        ModSdkModule.jsonGameService(),
+        ModSdkModule.fileService(),
+        JsonConfigStoreFactory.PathsConfig.builder()
+            .configFile(ConfigDefaults.CONFIG_FILE_PATH)
+            .raceConfigFolder(ConfigDefaults.RACES_CONFIG_FOLDER_PATH)
+            .boosterConfigFolder(ConfigDefaults.BOOSTERS_CONFIG_FOLDER_PATH)
+            .build());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static ConfigFactory configFactory = buildConfigFactory();
-    private static ConfigFactory buildConfigFactory() {
-        return new ConfigFactory(
-            ModSdkModule.gameApis().save(),
-            ModSdkModule.jacksonService(),
-            ModSdkModule.jasonService(),
-            ModSdkModule.fileService()
-        );
-    }
+    private final static JsonConfigStore jsonConfigStore = Factory.newJsonConfigStore();
+
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static JsonConfigStore jsonConfigStore = buildJsonConfigStore();
-    private static JsonConfigStore buildJsonConfigStore() {
-        return configFactory().newJsonConfigStoreV5();
-    }
+    private final static ConfigVersionHandlers<MoreOptionsV5Config> configVersionHandlers = Factory.newConfigVersionHandlers(
+        jsonConfigStore(),
+        jsonConfigFactory());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static ConfigVersionHandlers<MoreOptionsV5Config> configVersionHandlers = buildConfigVersionHandlers();
-    private static ConfigVersionHandlers<MoreOptionsV5Config> buildConfigVersionHandlers() {
-        return new ConfigVersionHandlers<MoreOptionsV5Config>()
-            .register(5, new JsonConfigV5Handler(jsonConfigStore()))
-            .register(4, new JsonConfigV4Handler(configFactory().newJsonConfigStoreV4()))
-            .register(3, new JsonConfigV3Handler(configFactory().newJsonConfigStoreV3()))
-            .register(2, new JsonConfigV2Handler(configFactory().newJsonConfigStoreV2()));
-    }
+    private final static ConfigService configService = Factory.newConfigService(
+        jsonConfigStore(),
+        configVersionHandlers(),
+        ModSdkModule.jsonGameService());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static ConfigService configService = buildConfigService();
-    private static ConfigService buildConfigService() {
-        return new ConfigService(
-            jsonConfigStore(),
-            configVersionHandlers(),
-            ModSdkModule.jasonService()
-        );
-    }
+    private final static ConfigDefaults configDefaults = Factory.newConfigDefaults(
+        ModSdkModule.gameApis(),
+        gameApis().boosters());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static ConfigDefaults configDefaults = buildConfigDefaults();
-    private static ConfigDefaults buildConfigDefaults() {
-        return new ConfigDefaults(
-            ModSdkModule.gameApis(),
-            gameApis().boosters());
-    }
+    private final static ConfigStore configStore = Factory.newConfigStore(
+        configService(),
+        configDefaults(),
+        ModSdkModule.stateManager());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static ConfigStore configStore = buildConfigStore();
-    private static ConfigStore buildConfigStore() {
-        return new ConfigStore(configService(), configDefaults(), ModSdkModule.stateManager());
-    }
+    private final static Configurator configurator = Factory.newConfigurator(
+        ModSdkModule.gameApis(),
+        gameApis().boosters(),
+        ModSdkModule.metricCollector(),
+        ModSdkModule.metricExporter(),
+        ModSdkModule.metricScheduler());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static Configurator configurator = buildConfigurator();
-    private static Configurator buildConfigurator() {
-        return new Configurator(
-            ModSdkModule.gameApis(),
-            gameApis().boosters(),
-            ModSdkModule.metricCollector(),
-            ModSdkModule.metricExporter(),
-            ModSdkModule.metricScheduler());
-    }
+    private final static ConfigApplier configApplier = Factory.newConfigApplier(configStore(), configurator());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static ConfigApplier configApplier = buildConfigApplier();
-    private static ConfigApplier buildConfigApplier() {
-        return new ConfigApplier(configStore(), configurator());
-    }
+    private final static UiFactory uiFactory = Factory.newUiFactory(
+        ModSdkModule.gameApis(),
+        configStore(),
+        ModSdkModule.propertiesStore(),
+        ModSdkModule.metricExporter(),
+        uiMapper());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static UiFactory uiFactory = buildUiFactory();
-    private static UiFactory buildUiFactory() {
-        return new UiFactory(
-            ModSdkModule.gameApis(),
-            configStore(),
-            propertiesStore(),
-            ModSdkModule.metricExporter(),
-            uiMapper());
-    }
+    private final static Messages messages = Factory.newMessages(ModSdkModule.notificator(), uiFactory());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static Messages messages = buildMessages();
-    private static Messages buildMessages() {
-        return new Messages(ModSdkModule.notificator(), uiFactory());
-    }
+    private final static BoosterService boosterService = Factory.newBoosterService(ModSdkModule.gameApis().faction());
 
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
-    private final static BoosterService booster = buildBoosterService();
-    private static BoosterService buildBoosterService() {
-        return new BoosterService(ModSdkModule.gameApis().faction());
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Factory {
+
+        public static I18nMessages newI18nMessages(String bundleName, GameLangApi langApi) {
+            return new I18nMessages(bundleName, langApi);
+        }
+
+        public static I18n newI18n(I18nMessages i18nMessages) {
+            return new I18n(i18nMessages);
+        }
+
+        public static GameApis newGameApis(BoosterService boosterService) {
+            return new GameApis(new GameBoosterApi(boosterService));
+        }
+
+        public static UiMapper newUiMapper(com.github.argon.sos.mod.sdk.game.api.GameApis gameApis, GameBoosterApi boosters) {
+            return new UiMapper(gameApis, boosters);
+        }
+
+        public static UiConfig newUiConfig(
+            com.github.argon.sos.mod.sdk.game.api.GameApis gameApis,
+            Configurator configurator,
+            ConfigStore configStore,
+            MetricExporter metricExporter,
+            UiFactory uiFactory,
+            Notificator notificator,
+            PhaseManager phaseManager
+        ) {
+            return new UiConfig(
+                gameApis,
+                configurator,
+                configStore,
+                metricExporter,
+                uiFactory,
+                notificator,
+                phaseManager);
+        }
+
+        public static JsonConfigStoreFactory newConfigFactory(
+            GameSaveApi saveApi,
+            JacksonService jacksonService,
+            JsonGameService jsonGameService,
+            IOService ioService,
+            JsonConfigStoreFactory.PathsConfig pathsConfig
+        ) {
+            return new JsonConfigStoreFactory(
+                saveApi,
+                jacksonService,
+                jsonGameService,
+                ioService,
+                pathsConfig);
+        }
+
+        public static JsonConfigStore newJsonConfigStore() {
+            return jsonConfigFactory().newJsonConfigStoreV5();
+        }
+
+        public static ConfigVersionHandlers<MoreOptionsV5Config> newConfigVersionHandlers(
+            JsonConfigStore latesJsonConfigStore,
+            JsonConfigStoreFactory jsonConfigStoreFactory
+        ) {
+            return new ConfigVersionHandlers<MoreOptionsV5Config>()
+                .register(5, new JsonConfigV5Handler(latesJsonConfigStore))
+                .register(4, new JsonConfigV4Handler(jsonConfigStoreFactory.newJsonConfigStoreV4()))
+                .register(3, new JsonConfigV3Handler(jsonConfigStoreFactory.newJsonConfigStoreV3()))
+                .register(2, new JsonConfigV2Handler(jsonConfigStoreFactory.newJsonConfigStoreV2()));
+        }
+
+        public static ConfigService newConfigService(
+            JsonConfigStore jsonConfigStore,
+            ConfigVersionHandlers<MoreOptionsV5Config> versionHandlers,
+            JsonGameService jsonGameService
+        ) {
+            return new ConfigService(
+                jsonConfigStore,
+                versionHandlers,
+                jsonGameService);
+        }
+
+        public static ConfigDefaults newConfigDefaults(
+            com.github.argon.sos.mod.sdk.game.api.GameApis gameApis,
+            GameBoosterApi boosters
+        ) {
+            return new ConfigDefaults(
+                gameApis,
+                boosters);
+        }
+
+        public static ConfigStore newConfigStore(
+            ConfigService configService,
+            ConfigDefaults configDefaults,
+            StateManager stateManager
+        ) {
+            return new ConfigStore(configService, configDefaults, stateManager);
+        }
+
+        public static Configurator newConfigurator(
+            com.github.argon.sos.mod.sdk.game.api.GameApis gameApis,
+            GameBoosterApi boosters,
+            MetricCollector metricCollector,
+            MetricExporter metricExporter,
+            MetricScheduler metricScheduler
+        ) {
+            return new Configurator(
+                gameApis,
+                boosters,
+                metricCollector,
+                metricExporter,
+                metricScheduler);
+        }
+
+        public static ConfigApplier newConfigApplier(ConfigStore configStore, Configurator configurator) {
+            return new ConfigApplier(configStore, configurator);
+        }
+
+        public static UiFactory newUiFactory(
+            com.github.argon.sos.mod.sdk.game.api.GameApis gameApis,
+            ConfigStore configStore,
+            PropertiesStore propertiesStore,
+            MetricExporter metricExporter,
+            UiMapper uiMapper
+        ) {
+            return new UiFactory(
+                gameApis,
+                configStore,
+                propertiesStore,
+                metricExporter,
+                uiMapper);
+        }
+
+        public static Messages newMessages(Notificator notificator, UiFactory uiFactory) {
+            return new Messages(notificator, uiFactory);
+        }
+
+        public static BoosterService newBoosterService(GameFactionApi gameFactionApi) {
+            return new BoosterService(gameFactionApi);
+        }
     }
 }

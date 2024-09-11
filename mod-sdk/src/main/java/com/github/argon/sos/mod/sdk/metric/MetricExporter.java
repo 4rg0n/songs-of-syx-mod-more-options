@@ -3,7 +3,6 @@ package com.github.argon.sos.mod.sdk.metric;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phases;
-import init.paths.PATHS;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -20,10 +19,8 @@ public class MetricExporter implements Phases {
 
     private final static Logger log = Loggers.getLogger(MetricExporter.class);
 
-    public final static String EXPORT_FOLDER_NAME = "Metric Exports";
-
-    public final static Path EXPORT_FOLDER = PATHS.local().PROFILE.get()
-        .resolve("/" + EXPORT_FOLDER_NAME);
+    @Getter
+    public final Path exportFolder;
 
     @Getter
     private Path exportFile = generateExportFile();
@@ -37,7 +34,7 @@ public class MetricExporter implements Phases {
     }
 
     private Path generateExportFile() {
-        return EXPORT_FOLDER.resolve(Instant.now().getEpochSecond() + "_MetricExport.csv");
+        return exportFolder.resolve(Instant.now().getEpochSecond() + "_MetricExport.csv");
     }
 
     public boolean export() {
@@ -68,12 +65,12 @@ public class MetricExporter implements Phases {
 
     @Override
     public void initBeforeGameCreated() {
-        if (!Files.isDirectory(EXPORT_FOLDER)) {
+        if (!Files.isDirectory(exportFolder)) {
             try {
-                log.debug("Create metrics export folder at %s", EXPORT_FOLDER);
-                Files.createDirectories(EXPORT_FOLDER);
+                log.debug("Create metrics export folder at %s", exportFolder);
+                Files.createDirectories(exportFolder);
             } catch (Exception e) {
-                log.error("Could not create metrics export folder at %s", EXPORT_FOLDER, e);
+                log.error("Could not create metrics export folder at %s", exportFolder, e);
             }
         }
     }

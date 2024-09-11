@@ -1,0 +1,16 @@
+{
+  "faction": {
+    "test1": {
+      "test1": {
+        "key": "test1",
+        "range": {
+          "value": 0,
+          "min": 0,
+          "max": 10000,
+          "applyMode": "MULTI",
+          "displayMode": "PERCENTAGE"
+        }
+      }
+    }
+  }
+}

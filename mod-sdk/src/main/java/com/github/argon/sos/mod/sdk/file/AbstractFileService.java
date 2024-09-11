@@ -23,9 +23,7 @@ public abstract class AbstractFileService implements IOService {
     private final static Logger log = Loggers.getLogger(AbstractFileService.class);
 
     protected String readFromInputStream(InputStream inputStream) throws IOException {
-        StringBuilder resultStringBuilder = new StringBuilder();
-        readLinesFromInputStream(inputStream).forEach(line -> resultStringBuilder.append(line).append("\n"));
-        return resultStringBuilder.toString();
+        return String.join("\n", readLinesFromInputStream(inputStream));
     }
 
     protected List<String> readLinesFromInputStream(InputStream inputStream) throws IOException {
@@ -52,7 +50,7 @@ public abstract class AbstractFileService implements IOService {
                 .fromFileAttributes(filePath, fileAttributes)
                 .build();
         } catch (Exception e) {
-            log.info("Could not read file meta from %s", filePath, e);
+            log.warn("Could not read file meta from %s", filePath, e);
         }
 
         return null;

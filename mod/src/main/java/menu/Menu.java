@@ -162,10 +162,8 @@ public class Menu extends CORE_STATE {
 
 		// MODDED
 		if (hoverTimer >= 0.4) {
-			// todo disabled
-//			moreOptions.hoverInfoGet(mouseHoverMessage.get());
+			moreOptions.hoverInfoGet(mouseHoverMessage.get());
 		}
-
 	}
 
 	@Override

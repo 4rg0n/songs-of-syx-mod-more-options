@@ -3,8 +3,6 @@ package com.github.argon.sos.mod.sdk.json;
 import com.github.argon.sos.mod.sdk.file.IOService;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriter;
-import com.github.argon.sos.mod.sdk.log.Logger;
-import com.github.argon.sos.mod.sdk.log.Loggers;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -18,8 +16,7 @@ import java.util.Optional;
  * Serves as a layer for parsing raw json strings into objects.
  */
 @RequiredArgsConstructor
-public class JasonService implements JsonService {
-    private final static Logger log = Loggers.getLogger(JasonService.class);
+public class JsonGameService implements JsonService {
 
     private final JsonWriter jsonWriter;
     private final IOService ioService;

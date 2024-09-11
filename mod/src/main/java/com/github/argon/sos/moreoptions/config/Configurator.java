@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.mod.sdk.data.domain.DataUtil;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -227,7 +228,7 @@ public class Configurator implements Phases {
 
     public boolean applyWeatherConfig(WeatherConfig weatherConfig) {
         try {
-            Map<String, Integer> weatherEffects = ConfigUtil.extractValues(weatherConfig.getEffects());
+            Map<String, Integer> weatherEffects = DataUtil.extractValues(weatherConfig.getEffects());
             Map<String, WeatherThing> weatherThings = gameApis.weather().getWeatherThings();
 
             weatherEffects.forEach((key, value) -> {

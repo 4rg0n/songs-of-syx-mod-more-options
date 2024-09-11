@@ -43,18 +43,7 @@ public class ConfigStore implements Phases {
 
     @Override
     public void initSettlementUiPresent() {
-        MoreOptionsV5Config defaultConfig = configDefaults.newConfig();
-        setDefaultConfig(defaultConfig);
-        MoreOptionsV5Config config = configService.getConfig()
-            .map(loadedConfig -> {
-                ConfigMerger.merge(loadedConfig, defaultConfig);
-                return loadedConfig;
-            })
-            .orElse(defaultConfig);
-
-        if (currentConfig == null) {
-            setCurrentConfig(config);
-        }
+        init();
     }
 
     @Override
@@ -73,6 +62,21 @@ public class ConfigStore implements Phases {
     public void onCrash(Throwable e) {
         if (!configService.saveBackups()) {
             log.warn("Could not create backup config for game crash");
+        }
+    }
+
+    public void init() {
+        MoreOptionsV5Config defaultConfig = configDefaults.newConfig();
+        setDefaultConfig(defaultConfig);
+        MoreOptionsV5Config config = configService.getConfig()
+            .map(loadedConfig -> {
+                ConfigMerger.merge(loadedConfig, defaultConfig);
+                return loadedConfig;
+            })
+            .orElse(defaultConfig);
+
+        if (currentConfig == null) {
+            setCurrentConfig(config);
         }
     }
 
@@ -124,7 +128,7 @@ public class ConfigStore implements Phases {
      */
     public MoreOptionsV5Config getDefaultConfig() {
         return Optional.ofNullable(defaultConfig)
-            .orElseThrow(() -> new UninitializedException(Phase.INIT_GAME_UPDATING));
+            .orElseThrow(() -> new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT));
     }
 
     public Optional<ConfigMeta> getConfigMeta() {

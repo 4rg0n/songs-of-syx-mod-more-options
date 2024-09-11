@@ -9,6 +9,7 @@ import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.state.StateManager;
+import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
@@ -32,6 +33,7 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     protected final PhaseManager phaseManager;
     protected final StateManager stateManager;
     protected final GameApis gameApis;
+    protected final PropertiesStore propertiesStore;
 
     @Nullable
     private ScriptInstance scriptInstance;
@@ -41,13 +43,14 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     private final Level envLogLevel;
 
     public AbstractScript() {
-        this(ModSdkModule.phaseManager(), ModSdkModule.stateManager(), ModSdkModule.gameApis());
+        this(ModSdkModule.phaseManager(), ModSdkModule.stateManager(), ModSdkModule.gameApis(), ModSdkModule.propertiesStore());
     }
 
-    public AbstractScript(PhaseManager phaseManager, StateManager stateManager, GameApis gameApis) {
+    public AbstractScript(PhaseManager phaseManager, StateManager stateManager, GameApis gameApis, PropertiesStore propertiesStore) {
         this.phaseManager = phaseManager;
         this.stateManager = stateManager;
         this.gameApis = gameApis;
+        this.propertiesStore = propertiesStore;
 
         // set log level from env variable
         envLogLevel = Optional.ofNullable(System.getenv(LOG_LEVEL_ENV_NAME))
