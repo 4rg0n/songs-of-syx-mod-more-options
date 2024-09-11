@@ -7,7 +7,7 @@ You can use this to read game config files or to create your config files.
 JSON Mapping
 ============
 
-The [JsonMapper](mapper/JsonMapper.java) provides various static methods to map a [Java Pojo](https://www.baeldung.com/java-pojo-class).
+The [JsonMapper](JsonMapper.java) provides various static methods to map a [Java Pojo](https://www.baeldung.com/java-pojo-class).
 It is inspired by the [Jackson ObjectMapper](https://www.baeldung.com/jackson-object-mapper-tutorial).
 
 With it, you will be able to write and read the games JSON format to and from Java objects. 
