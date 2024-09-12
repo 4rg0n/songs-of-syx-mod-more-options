@@ -30,7 +30,7 @@ public class GameEventsApi {
 
     public Map<String, EVENTS.EventResource> getEvents() {
         if (events == null) {
-            events = readWorldEvents();
+            events = readEvents();
         }
 
         return events;
@@ -40,7 +40,7 @@ public class GameEventsApi {
         return Optional.ofNullable(getEvents().get(key));
     }
 
-    public Map<String, EVENTS.EventResource> readWorldEvents() {
+    public Map<String, EVENTS.EventResource> readEvents() {
         Map<String, EVENTS.EventResource> worldEvents = new HashMap<>();
         for (EVENTS.EventResource eventResource : GAME.events().all()) {
             worldEvents.put(KEY_PREFIX + "." + eventResource.key, eventResource);
@@ -70,15 +70,8 @@ public class GameEventsApi {
 
     public boolean setChance(String eventKey, int chance) {
         EVENTS.EventResource event = eventsChances.get(eventKey);
-
-        // FIXME there are now multiple DISEASES.all()
-//        if (event instanceof EventDisease) {
-//            double current = DISEASES.EPIDEMIC_CHANCE;
-//            DISEASES.EPIDEMIC_CHANCE = current * MathUtil.toPercentage(chance);
-//            return true;
-//        }
-
         log.warn("Could not set chance for %s", event.getClass().getSimpleName());
+
         return false;
     }
 

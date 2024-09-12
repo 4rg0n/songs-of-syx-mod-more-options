@@ -41,15 +41,8 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
     ) {
         super(title, defaultConfig, availableWidth, availableHeight);
 
-        GuiSection settlementSection = new GuiSection();
-        GuiSection worldSection = new GuiSection();
         GuiSection eventsChanceSection = new GuiSection();
         GuiSection tributeSection = new GuiSection();
-
-        GHeader settlementHeader = new GHeader(i18n.t("EventsTab.header.settlement.name"));
-        settlementHeader.hoverInfoSet(i18n.t("EventsTab.header.settlement.desc"));
-        GHeader worldHeader = new GHeader(i18n.t("EventsTab.header.world.name"));
-        worldHeader.hoverInfoSet(i18n.t("EventsTab.header.world.desc"));
 
         // Siege tributes
         GHeader tributeHeader = new GHeader(i18n.t("EventsTab.header.battle.loot.name"));
@@ -94,11 +87,7 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
         eventsChanceSection.addDown(0, eventChancesHeader);
         eventsChanceSection.addDown(5, chanceTable);
 
-        settlementSection.addDown(0, settlementHeader);
-        worldSection.addDown(0, worldHeader);
-
         addDownC(0, eventsChanceSection);
-        addDownC(10, eventsChanceSection);
         addDownC(10, tributeSection);
     }
 
