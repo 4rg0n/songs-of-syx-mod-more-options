@@ -1,8 +1,10 @@
 package com.github.argon.sos.mod.sdk.util;
 
+import com.github.argon.sos.mod.sdk.testing.ModSdkExtension;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,6 +17,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@ExtendWith(ModSdkExtension.class)
 class ReflectionUtilTest {
 
     @Test

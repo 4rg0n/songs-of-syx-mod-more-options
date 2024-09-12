@@ -98,6 +98,15 @@ public class ReflectionUtil {
     }
 
     /**
+     * @return all fields with a given annotation attached to it
+     */
+    public static <T extends Annotation> List<Field> getDeclaredFieldsWithAnnotation(Class<T> annotationClass, Class<?> clazz)  {
+        return Arrays.stream(clazz.getDeclaredFields())
+            .filter(field -> field.isAnnotationPresent(annotationClass))
+            .collect(Collectors.toList());
+    }
+
+    /**
      * @param fieldName of the field to look for
      * @param clazz containing the field
      * @return the found field

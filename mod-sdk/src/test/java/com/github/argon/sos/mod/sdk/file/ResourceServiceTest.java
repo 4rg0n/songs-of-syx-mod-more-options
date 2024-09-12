@@ -1,12 +1,15 @@
 package com.github.argon.sos.mod.sdk.file;
 
+import com.github.argon.sos.mod.sdk.testing.ModSdkExtension;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.nio.file.Paths;
 import java.util.Properties;
 
+@ExtendWith(ModSdkExtension.class)
 class ResourceServiceTest {
 
     private final ResourceService resourceService = new ResourceService();

@@ -1,9 +1,12 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.moreoptions.testing.ModExtension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(ModExtension.class)
 class ConfigMergerTest {
 
     @Test

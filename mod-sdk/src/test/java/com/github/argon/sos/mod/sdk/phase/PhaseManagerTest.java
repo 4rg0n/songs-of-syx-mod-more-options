@@ -1,12 +1,15 @@
 package com.github.argon.sos.mod.sdk.phase;
 
+import com.github.argon.sos.mod.sdk.testing.ModSdkExtension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@ExtendWith(ModSdkExtension.class)
 class PhaseManagerTest {
 
     private final PhaseManager phaseManager = new PhaseManager();

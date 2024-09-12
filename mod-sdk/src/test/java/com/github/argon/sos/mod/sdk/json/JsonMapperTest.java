@@ -4,9 +4,11 @@ import com.github.argon.sos.mod.sdk.file.ResourceService;
 import com.github.argon.sos.mod.sdk.json.annotation.JsonProperty;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.json.mapper.TypeInfo;
+import com.github.argon.sos.mod.sdk.testing.ModSdkExtension;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import snake2d.util.file.JsonE;
 
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(ModSdkExtension.class)
 class JsonMapperTest {
 
     @Test

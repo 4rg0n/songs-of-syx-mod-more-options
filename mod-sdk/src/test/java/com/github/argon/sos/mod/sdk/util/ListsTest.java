@@ -1,11 +1,14 @@
 package com.github.argon.sos.mod.sdk.util;
 
+import com.github.argon.sos.mod.sdk.testing.ModSdkExtension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import snake2d.util.sets.ArrayList;
 import snake2d.util.sets.LIST;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(ModSdkExtension.class)
 class ListsTest {
 
     @Test

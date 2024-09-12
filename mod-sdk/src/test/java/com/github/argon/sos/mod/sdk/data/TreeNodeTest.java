@@ -1,12 +1,15 @@
 package com.github.argon.sos.mod.sdk.data;
 
+import com.github.argon.sos.mod.sdk.testing.ModSdkExtension;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(ModSdkExtension.class)
 class TreeNodeTest {
     @Test
     void test() {

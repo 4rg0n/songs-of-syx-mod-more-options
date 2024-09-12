@@ -2,8 +2,10 @@ package com.github.argon.sos.mod.sdk.json;
 
 import com.github.argon.sos.mod.sdk.file.ResourceService;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
+import com.github.argon.sos.mod.sdk.testing.ModSdkExtension;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(ModSdkExtension.class)
 class JsonTest {
 
     private final ResourceService resourceService = new ResourceService();

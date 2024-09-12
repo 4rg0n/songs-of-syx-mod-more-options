@@ -15,8 +15,11 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.json.JsonConfigStoreFactory;
+import com.github.argon.sos.moreoptions.testing.ModExtension;
+import com.github.argon.sos.moreoptions.testing.TestResourceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
 import java.io.IOException;
@@ -28,6 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(ModExtension.class)
 class ConfigStoreTest {
 
     private ConfigStore configStore;
@@ -35,6 +39,10 @@ class ConfigStoreTest {
     private Path configPath = Paths.get("configs/MoreOptionsConfigV5.txt");
     private ConfigDefaults configDefaultsMock;
     private ResourceService resourceServiceMock;
+    @TestResourceService
+    private ResourceService testResourceService;
+
+
 
     @BeforeEach
     void setUp() {
@@ -81,9 +89,9 @@ class ConfigStoreTest {
     @Test
     void save() throws Exception {
         configStore.save(TestData.newConfig());
-        String expectedConfigJson = resourceServiceMock.read(configPath);
-        String expectedBoostersConfigJson = resourceServiceMock.read(Paths.get("configs/boosters/test-save-stamp.BoostersConfig.txt"));
-        String expectedRacesConfigJson = resourceServiceMock.read(Paths.get("configs/races/test-save-stamp.RacesConfig.txt"));
+        String expectedConfigJson = testResourceService.read(configPath);
+        String expectedBoostersConfigJson = testResourceService.read(Paths.get("configs/boosters/test-save-stamp.BoostersConfig.txt"));
+        String expectedRacesConfigJson = testResourceService.read(Paths.get("configs/races/test-save-stamp.RacesConfig.txt"));
 
         assertThat(expectedConfigJson).isNotNull();
         assertThat(expectedBoostersConfigJson).isNotNull();
