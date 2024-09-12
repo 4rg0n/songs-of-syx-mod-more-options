@@ -45,17 +45,18 @@ public class I18nMessages implements Phases {
      * @param locale to load messages from
      * @return messages with given local or default english
      */
-    public static ResourceBundle load(@Nullable Locale locale) {
+    public ResourceBundle load(@Nullable Locale locale) {
+        log.debug("Loading message bundle %s for locale %s", bundleName, locale);
         if (locale == null) {
             log.debug("No no locale given. Using fallback %s", LOCALE_FALLBACK);
-            return ResourceBundle.getBundle(BUNDLE_NAME_DEFAULT, LOCALE_FALLBACK);
+            return ResourceBundle.getBundle(bundleName, LOCALE_FALLBACK);
         }
 
         try {
-            return ResourceBundle.getBundle(BUNDLE_NAME_DEFAULT, locale);
+            return ResourceBundle.getBundle(bundleName, locale);
         } catch (MissingResourceException e) {
             log.debug("No translation messages for locale %s found. Using fallback %s", locale, LOCALE_FALLBACK);
-            return ResourceBundle.getBundle(BUNDLE_NAME_DEFAULT, LOCALE_FALLBACK);
+            return ResourceBundle.getBundle(bundleName, LOCALE_FALLBACK);
         }
     }
 
@@ -64,7 +65,6 @@ public class I18nMessages implements Phases {
      */
     public void loadWithCurrentGameLocale() {
         this.locale = gameLangApi.getCurrent();
-        log.debug("loading messages for locale: %s", locale);
         this.messages = load(locale);
     }
 

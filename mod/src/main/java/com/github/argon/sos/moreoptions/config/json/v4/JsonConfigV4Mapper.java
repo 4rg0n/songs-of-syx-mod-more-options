@@ -1,14 +1,8 @@
-package com.github.argon.sos.moreoptions.config.json;
+package com.github.argon.sos.moreoptions.config.json.v4;
 
-import com.github.argon.sos.moreoptions.config.domain.EventsConfig;
 import com.github.argon.sos.moreoptions.config.domain.SoundsConfig;
 import com.github.argon.sos.moreoptions.config.domain.WeatherConfig;
 import com.github.argon.sos.moreoptions.config.json.v3.*;
-import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
-import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
-import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
-
-import java.util.HashMap;
 
 public class JsonConfigV4Mapper {
 
@@ -25,10 +19,9 @@ public class JsonConfigV4Mapper {
             .build();
     }
 
-    public static EventsConfig map(JsonEventsV3Config eventsV3Config) {
-        return EventsConfig.builder()
+    public static JsonEventsV4Config map(JsonEventsV3Config eventsV3Config) {
+        return JsonEventsV4Config.builder()
             .chance(eventsV3Config.getChance())
-            .events(new HashMap<>())
             .enemyBattleLoot(eventsV3Config.getEnemyBattleLoot())
             .playerBattleLoot(eventsV3Config.getPlayerBattleLoot())
             .build();

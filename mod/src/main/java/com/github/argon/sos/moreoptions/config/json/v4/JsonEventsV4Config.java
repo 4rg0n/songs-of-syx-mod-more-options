@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.config.domain;
+package com.github.argon.sos.moreoptions.config.json.v4;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
@@ -12,7 +12,9 @@ import java.util.Map;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class EventsConfig {
+public class JsonEventsV4Config {
+    @Builder.Default
+    private Map<String, Boolean> events = new HashMap<>();
     @Builder.Default
     private Map<String, Range> chance = new HashMap<>();
 

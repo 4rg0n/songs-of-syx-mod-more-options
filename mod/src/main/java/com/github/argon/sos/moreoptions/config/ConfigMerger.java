@@ -140,12 +140,6 @@ public class ConfigMerger {
         } else {
             merge(target.getChance(), source.getChance());
         }
-
-        if (target.getEvents() == null || target.getEvents().isEmpty()) {
-            target.setEvents(source.getEvents());
-        } else {
-            merge(target.getEvents(), source.getEvents());
-        }
     }
 
     public static void merge(SoundsConfig target, @Nullable SoundsConfig source) {

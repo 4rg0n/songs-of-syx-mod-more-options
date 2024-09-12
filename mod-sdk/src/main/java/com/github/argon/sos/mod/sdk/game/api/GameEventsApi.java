@@ -61,7 +61,9 @@ public class GameEventsApi {
         Map<String, EVENTS.EventResource> eventsChance = new HashMap<>();
         EVENTS gameEvents = GAME.events();
 
-        eventsChance.put(KEY_PREFIX + ".chance.disease", gameEvents.disease);
+        for (EVENTS.EventResource eventResource : gameEvents.all()) {
+            eventsChance.put(eventResource.key, eventResource);
+        }
 
         return eventsChance;
     }

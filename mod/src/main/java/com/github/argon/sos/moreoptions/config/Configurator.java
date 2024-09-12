@@ -198,28 +198,6 @@ public class Configurator implements Phases {
             return false;
         }
 
-        try {
-            Map<String, EVENTS.EventResource> gameEvents = gameApis.events().getEvents();
-
-            eventsConfig.getEvents().forEach((key, enabled) -> {
-                if (gameEvents.containsKey(key)) {
-                    EVENTS.EventResource event = gameEvents.get(key);
-                    log.trace("Setting event %s enabled = %s", event.getClass().getSimpleName(), enabled);
-                    gameApis.events().enableEvent(event, enabled);
-
-                    if (!enabled) {
-                        gameApis.events().reset(event);
-                    }
-                } else {
-                    log.warn("Could not find entry %s in game api result.", key);
-                    log.trace("API Result: %s", gameEvents);
-                }
-            });
-        } catch (Exception e) {
-            log.error("Could not apply events config to game", e);
-            return false;
-        }
-
         AC_Resolver.setEnemyLootMulti(MathUtil.toPercentage(eventsConfig.getEnemyBattleLoot().getValue()));
         AC_Resolver.setPlayerLootMulti(MathUtil.toPercentage(eventsConfig.getPlayerBattleLoot().getValue()));
 

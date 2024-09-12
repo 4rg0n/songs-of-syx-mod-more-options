@@ -1,19 +1,19 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
-import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
-import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
-import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
-import com.github.argon.sos.mod.sdk.log.Level;
+import com.github.argon.sos.moreoptions.config.json.v5.JsonBoostersV5Config;
+import com.github.argon.sos.moreoptions.config.json.v5.JsonMoreOptionsV5Config;
+import com.github.argon.sos.moreoptions.config.json.v5.JsonRacesV5Config;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigMapper {
-    public static MoreOptionsV5Config mapConfig(JsonMoreOptionsV4Config config) {
+    public static MoreOptionsV5Config mapConfig(JsonMoreOptionsV5Config config) {
        return MoreOptionsV5Config.builder()
             .logLevel(Level.fromName(config.getLogLevel())
                 .orElse(ConfigDefaults.LOG_LEVEL))
@@ -29,8 +29,8 @@ public class ConfigMapper {
             .build();
     }
 
-    public static JsonMoreOptionsV4Config mapConfig(MoreOptionsV5Config config) {
-        return JsonMoreOptionsV4Config.builder()
+    public static JsonMoreOptionsV5Config mapConfig(MoreOptionsV5Config config) {
+        return JsonMoreOptionsV5Config.builder()
             .logLevel(config.getLogLevel().getName())
             .version(config.getVersion())
             .sounds(config.getSounds())
@@ -42,14 +42,14 @@ public class ConfigMapper {
             .build();
     }
 
-    public static JsonRacesV4Config mapRacesConfig(MoreOptionsV5Config config) {
-        return JsonRacesV4Config.builder()
+    public static JsonRacesV5Config mapRacesConfig(MoreOptionsV5Config config) {
+        return JsonRacesV5Config.builder()
             .likings(config.getRaces().getLikings())
             .build();
     }
 
-    public static JsonBoostersV4Config mapBoostersConfig(MoreOptionsV5Config config) {
-        return JsonBoostersV4Config.builder()
+    public static JsonBoostersV5Config mapBoostersConfig(MoreOptionsV5Config config) {
+        return JsonBoostersV5Config.builder()
             .faction(config.getBoosters().getFaction())
             .build();
     }
@@ -62,11 +62,11 @@ public class ConfigMapper {
             .build();
     }
 
-    public static void mapInto(JsonRacesV4Config racesConfig, MoreOptionsV5Config config) {
+    public static void mapInto(JsonRacesV5Config racesConfig, MoreOptionsV5Config config) {
         config.getRaces().setLikings(racesConfig.getLikings());
     }
 
-    public static void mapInto(JsonBoostersV4Config boostersConfig, MoreOptionsV5Config config) {
+    public static void mapInto(JsonBoostersV5Config boostersConfig, MoreOptionsV5Config config) {
         config.getBoosters().setFaction(boostersConfig.getFaction());
     }
 }

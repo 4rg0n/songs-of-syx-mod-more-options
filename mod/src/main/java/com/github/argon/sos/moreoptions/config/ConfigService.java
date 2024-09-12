@@ -4,8 +4,8 @@ import com.github.argon.sos.mod.sdk.config.ConfigVersionHandler;
 import com.github.argon.sos.mod.sdk.config.ConfigVersionHandlers;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
 import com.github.argon.sos.mod.sdk.file.FileMeta;
-import com.github.argon.sos.mod.sdk.json.JsonGameService;
 import com.github.argon.sos.mod.sdk.json.JsonException;
+import com.github.argon.sos.mod.sdk.json.JsonGameService;
 import com.github.argon.sos.mod.sdk.json.parser.JsonParseException;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -15,9 +15,9 @@ import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
 import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
-import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
-import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
-import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
+import com.github.argon.sos.moreoptions.config.json.v5.JsonBoostersV5Config;
+import com.github.argon.sos.moreoptions.config.json.v5.JsonMoreOptionsV5Config;
+import com.github.argon.sos.moreoptions.config.json.v5.JsonRacesV5Config;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -88,13 +88,13 @@ public class ConfigService implements Phases {
     }
 
     public Optional<MoreOptionsV5Config> getBackup() {
-        return jsonConfigStore.getBackup(JsonMoreOptionsV4Config.class)
+        return jsonConfigStore.getBackup(JsonMoreOptionsV5Config.class)
             .map(ConfigMapper::mapConfig)
             // add other configs
             .map(domainConfig -> {
-                jsonConfigStore.getBackup(JsonRacesV4Config.class)
+                jsonConfigStore.getBackup(JsonRacesV5Config.class)
                     .ifPresent(racesConfig -> ConfigMapper.mapInto(racesConfig, domainConfig));
-                jsonConfigStore.getBackup(JsonBoostersV4Config.class)
+                jsonConfigStore.getBackup(JsonBoostersV5Config.class)
                     .ifPresent(boostersConfig -> ConfigMapper.mapInto(boostersConfig, domainConfig));
                 return domainConfig;
             });

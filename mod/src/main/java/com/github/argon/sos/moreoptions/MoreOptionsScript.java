@@ -57,6 +57,7 @@ public final class MoreOptionsScript extends AbstractScript {
             .register(Phase.INIT_MOD_CREATE_INSTANCE, ModModule.uiConfig())
             .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ModModule.configStore())
             .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ModModule.uiConfig())
+			.register(Phase.INIT_BEFORE_GAME_CREATED, ModModule.i18nMessages())
 
 			.register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.metricExporter())
 			.register(Phase.ON_GAME_SAVE_RELOADED, ModSdkModule.metricExporter())

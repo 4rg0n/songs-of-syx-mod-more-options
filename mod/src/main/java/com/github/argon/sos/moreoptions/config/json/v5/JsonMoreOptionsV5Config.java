@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.config.json.v4;
+package com.github.argon.sos.moreoptions.config.json.v5;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
@@ -16,7 +16,7 @@ import static com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class JsonMoreOptionsV4Config {
+public class JsonMoreOptionsV5Config {
     @Builder.Default
     private int version = VERSION;
     @Builder.Default
@@ -25,7 +25,7 @@ public class JsonMoreOptionsV4Config {
     @Builder.Default
     private SoundsConfig sounds = SoundsConfig.builder().build();
     @Builder.Default
-    private JsonEventsV4Config events = JsonEventsV4Config.builder().build();
+    private EventsConfig events = EventsConfig.builder().build();
     @Builder.Default
     private WeatherConfig weather = WeatherConfig.builder().build();
     @Builder.Default

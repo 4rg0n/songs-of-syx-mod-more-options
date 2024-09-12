@@ -4,7 +4,6 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,16 +13,23 @@ import java.util.List;
 /**
  * For exporting game stats as {@link Metric} into a CSV file
  */
-@RequiredArgsConstructor
 public class MetricExporter implements Phases {
 
     private final static Logger log = Loggers.getLogger(MetricExporter.class);
 
     @Getter
-    public final Path exportFolder;
+    private final Path exportFolder;
 
     @Getter
-    private Path exportFile = generateExportFile();
+    private Path exportFile;
+
+    public MetricExporter(Path exportFolder, MetricCollector metricCollector, MetricCsvWriter metricCsvWriter) {
+        this.exportFolder = exportFolder;
+        this.metricCollector = metricCollector;
+        this.metricCsvWriter = metricCsvWriter;
+
+        exportFile = generateExportFile();
+    }
 
     private final MetricCollector metricCollector;
     private final MetricCsvWriter metricCsvWriter;

@@ -14,6 +14,9 @@ import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonBoostersV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonMoreOptionsV4Config;
 import com.github.argon.sos.moreoptions.config.json.v4.JsonRacesV4Config;
+import com.github.argon.sos.moreoptions.config.json.v5.JsonBoostersV5Config;
+import com.github.argon.sos.moreoptions.config.json.v5.JsonMoreOptionsV5Config;
+import com.github.argon.sos.moreoptions.config.json.v5.JsonRacesV5Config;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -69,9 +72,9 @@ public class JsonConfigStoreFactory implements Phases {
 
         // bind current config classes with file paths to store
         jsonConfigStore.bind(JsonMeta.class, pathsConfig.getConfigFile(), false);
-        jsonConfigStore.bind(JsonMoreOptionsV4Config.class, pathsConfig.getConfigFile(), true);
-        jsonConfigStore.bindToSave(JsonRacesV4Config.class, "RacesConfig", pathsConfig.getRaceConfigFolder(), true);
-        jsonConfigStore.bindToSave(JsonBoostersV4Config.class, "BoostersConfig", pathsConfig.getBoosterConfigFolder(), true);
+        jsonConfigStore.bind(JsonMoreOptionsV5Config.class, pathsConfig.getConfigFile(), true);
+        jsonConfigStore.bindToSave(JsonRacesV5Config.class, "RacesConfig", pathsConfig.getRaceConfigFolder(), true);
+        jsonConfigStore.bindToSave(JsonBoostersV5Config.class, "BoostersConfig", pathsConfig.getBoosterConfigFolder(), true);
 
         return jsonConfigStore;
     }
