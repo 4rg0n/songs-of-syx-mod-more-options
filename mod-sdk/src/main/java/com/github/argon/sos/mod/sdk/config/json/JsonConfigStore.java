@@ -351,13 +351,6 @@ public class JsonConfigStore {
      * @param <T> type of the config class
      */
     public <T> Optional<T> readFromPath(Class<T> configClass, Path path) {
-        ConfigDefinition configDefinition = this.configDefinitions.get(configClass);
-
-        if (configDefinition == null) {
-            log.debug("Can not load %s config from file %s. No config entry.", configClass, path);
-            return Optional.empty();
-        }
-
         return load(configClass, path, false);
     }
 
@@ -435,7 +428,7 @@ public class JsonConfigStore {
         ConfigDefinition configDefinition = this.configDefinitions.get(configClass);
 
         if (configDefinition == null) {
-            log.debug("Can not load config for %s. No config entry.", configClass);
+            log.debug("Can not load config for %s. No config entry.", configClass.getName());
             return Optional.empty();
         }
 

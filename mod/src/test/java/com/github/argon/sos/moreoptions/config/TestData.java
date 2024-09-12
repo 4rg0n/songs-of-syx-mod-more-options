@@ -13,8 +13,9 @@ public class TestData {
     public static MoreOptionsV5Config newMergedDefaultConfig() {
         return MoreOptionsV5Config.builder()
             .events(EventsConfig.builder()
-                .chance(Maps.Modifiable.of(
-                    "default1", Range.builder().build()
+                .events(Maps.Modifiable.of(
+                    "default1", true,
+                    "default2", false
                 ))
                 .playerBattleLoot(Range.builder().build())
                 .enemyBattleLoot(Range.builder().build())
@@ -105,8 +106,9 @@ public class TestData {
     public static MoreOptionsV5Config newDefaultConfig() {
         return MoreOptionsV5Config.builder()
             .events(EventsConfig.builder()
-                .chance(Maps.Modifiable.of(
-                    "default1", Range.builder().build()
+                .events(Maps.Modifiable.of(
+                    "default1", true,
+                    "default2", false
                 ))
                 .playerBattleLoot(Range.builder().build())
                 .enemyBattleLoot(Range.builder().build())
@@ -167,8 +169,9 @@ public class TestData {
     public static MoreOptionsV5Config newConfig() {
         return MoreOptionsV5Config.builder()
             .events(EventsConfig.builder()
-                .chance(Maps.Modifiable.of(
-                    "test1", Range.builder().build()
+                .events(Maps.Modifiable.of(
+                    "test1", true,
+                    "test2", false
                 ))
                 .playerBattleLoot(Range.builder().build())
                 .enemyBattleLoot(Range.builder().build())

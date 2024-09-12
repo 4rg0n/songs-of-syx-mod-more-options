@@ -176,7 +176,6 @@ public class UiFactory {
         return uiShowRoom;
     }
 
-
     public Window<ErrorDialog> buildErrorDialog(Throwable exception, @Nullable String message) {
         Window<ErrorDialog> errorDialog = new Window<>(
             i18n.t("ErrorDialog.title"),
@@ -191,5 +190,9 @@ public class UiFactory {
         new ErrorDialogController(errorDialog, errorReportUrl);
 
         return errorDialog;
+    }
+
+    public static Window<BackupDialog> buildBackupDialog() {
+        return new Window<>(MOD_INFO.name.toString(), new BackupDialog(), true);
     }
 }

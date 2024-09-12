@@ -86,13 +86,13 @@ public final class MoreOptionsScript extends AbstractScript {
 	}
 
 	@Override
-	public void onViewSetup() {
+	public void initSettlementUiPresent() {
 		try {
-			super.onViewSetup();
+			super.initSettlementUiPresent();
 
 			Window<BackupDialog> backupDialog = uiConfig.getBackupDialog();
 			// show backup dialog?
-			if (backupDialog != null) {
+			if (configStore.getBackup().isPresent() && backupDialog != null) {
 				backupDialog.show();
 			} else {
 				// apply loaded config

@@ -28,9 +28,10 @@ public class ErrorDialogController extends AbstractUiController<ErrorDialog> {
 
     public void copy() {
         Throwable exception = errorDialog.getSection().getException();
+        String errorMessage = errorDialog.getSection().getErrorMessage();
 
         try {
-            Clipboard.write(StringUtil.stringify(exception));
+            Clipboard.write(errorMessage + "\n\n" + StringUtil.stringify(exception));
             messages.notifySuccess("notification.error.copy");
         } catch (Exception e) {
             messages.errorDialog(e, "notification.error.not.copy");

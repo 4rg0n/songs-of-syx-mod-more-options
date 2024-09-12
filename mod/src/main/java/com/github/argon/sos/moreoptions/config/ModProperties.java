@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
-import lombok.Builder;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
 /**
  * Holds common mod configuration, which can be used in the game
@@ -10,6 +10,10 @@ import lombok.Data;
  */
 @Data
 @Builder
+@EqualsAndHashCode
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ModProperties {
    private String errorReportUrl;
 }

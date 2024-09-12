@@ -182,19 +182,24 @@ public class Configurator implements Phases {
 
     public boolean applyEventsConfig(EventsConfig eventsConfig) {
         try {
-            eventsConfig.getChance().forEach((key, range) -> {
-                Map<String, EVENTS.EventResource> eventsChance = gameApis.events().getEventsChances();
+            Map<String, EVENTS.EventResource> gameEvents = gameApis.events().getEvents();
 
-                if (eventsChance.containsKey(key)) {
-                    log.trace("Setting %s chance to %s%%", key, range.getValue());
-                    gameApis.events().setChance(key, range.getValue());
+            eventsConfig.getEvents().forEach((key, enabled) -> {
+                if (gameEvents.containsKey(key)) {
+                    EVENTS.EventResource event = gameEvents.get(key);
+                    log.trace("Setting event %s enabled = %s", event.getClass().getSimpleName(), enabled);
+                    gameApis.events().enableEvent(event, enabled);
+
+                    if (!enabled) {
+                        gameApis.events().reset(event);
+                    }
                 } else {
                     log.warn("Could not find entry %s in game api result.", key);
-                    log.trace("API Result: %s", eventsChance);
+                    log.trace("API Result: %s", gameEvents);
                 }
             });
         } catch (Exception e) {
-            log.error("Could not apply event chances game", e);
+            log.error("Could not apply events config to game", e);
             return false;
         }
 

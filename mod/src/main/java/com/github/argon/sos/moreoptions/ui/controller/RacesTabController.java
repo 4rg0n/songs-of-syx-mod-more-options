@@ -15,8 +15,8 @@ import snake2d.util.file.FileManager;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public class RacesPanelController extends AbstractUiController<RacesTab> {
-    public RacesPanelController(RacesTab racesTab) {
+public class RacesTabController extends AbstractUiController<RacesTab> {
+    public RacesTabController(RacesTab racesTab) {
         super(racesTab);
 
         racesTab.getFileButton().clickActionSet(this::openCurrentRacesConfigFile);

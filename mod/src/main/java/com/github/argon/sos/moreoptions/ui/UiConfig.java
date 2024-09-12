@@ -108,7 +108,7 @@ public class UiConfig implements Phases {
 
         // create backup configuration dialog if needed
         configStore.getBackup().ifPresent(backupConfig -> {
-            backupDialog = new Window<>(MOD_INFO.name.toString(), new BackupDialog(), true);
+            backupDialog = UiFactory.buildBackupDialog();
             backupMoreOptionsModal = uiFactory.buildMoreOptionsFullScreen(
                 MOD_INFO.name + " " + i18n.t("MoreOptionsPanel.backup.title.suffix"),
                 backupConfig);
@@ -184,21 +184,21 @@ public class UiConfig implements Phases {
 
         // BOOSTERS
         BoostersTab boostersTab = moreOptionsPanel.getBoostersTab();
-        new BoostersPanelController(boostersTab);
+        new BoostersTabController(boostersTab);
 
         moreOptionsPanel.showAction(boostersTab::refresh);
 
         // METRICS
         MetricsTab metricsTab = moreOptionsPanel.getMetricsTab();
-        new MetricsPanelController(metricsTab);
+        new MetricsTabController(metricsTab);
 
         // RACES
         RacesTab racesTab = moreOptionsPanel.getRacesTab();
-        new RacesPanelController(racesTab);
+        new RacesTabController(racesTab);
 
         // ADVANCED
         AdvancedTab advancedTab = moreOptionsPanel.getAdvancedTab();
-        phaseManager.register(Phase.ON_GAME_SAVED, new AdvancedPanelController(advancedTab, moreOptionsPanel));
+        phaseManager.register(Phase.ON_GAME_SAVED, new AdvancedTabController(advancedTab, moreOptionsPanel));
     }
 
     public void initBackupControls(

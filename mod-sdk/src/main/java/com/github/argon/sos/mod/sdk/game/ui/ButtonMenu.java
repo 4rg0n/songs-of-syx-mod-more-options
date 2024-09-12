@@ -103,8 +103,14 @@ public class ButtonMenu<Key> extends Section {
         }
 
         List<? extends RENDEROBJ> renders = Layouts.align(buttons.values(), horizontal, margin, spacer, sameWidth, width, minWidth, widths);
-        maxWidth = (maxWidth > 0) ? maxWidth : 300;
-        maxHeight = (maxHeight > 0) ? maxHeight : 300;
+        if (maxWidth <= 0) {
+            maxWidth = UiUtil.sumWidths(renders);
+        }
+
+        if (maxHeight <= 0) {
+            maxHeight = UiUtil.getMaxHeight(buttons.values());
+        }
+
         margin = (spacer) ? 0 : margin;
 
         if (horizontal) {

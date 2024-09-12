@@ -78,9 +78,7 @@ public class ConfigStore implements Phases {
             })
             .orElse(defaultConfig);
 
-        if (currentConfig == null) {
-            setCurrentConfig(config);
-        }
+        setCurrentConfig(config);
     }
 
     public boolean save(@Nullable MoreOptionsV5Config config) {

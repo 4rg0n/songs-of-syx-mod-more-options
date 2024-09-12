@@ -14,7 +14,7 @@ import java.util.Map;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventsConfig {
     @Builder.Default
-    private Map<String, Range> chance = new HashMap<>();
+    private Map<String, Boolean> events = new HashMap<>();
 
     /**
      * Influences the amount of loot and slaves the player gets when winning a battle

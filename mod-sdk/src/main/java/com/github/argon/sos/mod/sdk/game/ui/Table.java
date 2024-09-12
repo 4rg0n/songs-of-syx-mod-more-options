@@ -92,7 +92,6 @@ public class Table<Value> extends ColorBox implements
         this.rowPadding = rowPadding;
         this.columnMargin = columnMargin;
 
-
         // max width and margin for each column
         maxColumnWidths = UiUtil.getMaxColumnWidths(rows.values());
 
@@ -102,9 +101,13 @@ public class Table<Value> extends ColorBox implements
 
             // adjust max width when header columns are wider
             for (int i = 0, headerButtonWidthsSize = headerButtonWidths.size(); i < headerButtonWidthsSize; i++) {
-                Integer buttonWith = headerButtonWidths.get(i);
+                int buttonWith = headerButtonWidths.get(i) + columnMargin;
 
-                if (i < maxColumnWidths.size() && buttonWith > maxColumnWidths.get(i)) {
+                if (rowPadding > 0) {
+                    buttonWith += (int) Math.ceil((double) (rowPadding * 2) / headerButtonWidths.size());
+                }
+
+                if (buttonWith > maxColumnWidths.get(i)) {
                     maxColumnWidths.set(i, buttonWith);
                 }
             }
@@ -134,21 +137,12 @@ public class Table<Value> extends ColorBox implements
 
         // add header if needed
         if (headerButtons != null) {
-            List<Integer> buttonMaxWidths = maxColumnWidths;
-            // compensate button width with padding
-            if (rowPadding > 0) {
-                buttonMaxWidths = maxColumnWidths.stream().map(maxWidth -> {
-                    int rowPaddingAdj = (int) Math.ceil((double) rowPadding * 2 / headerButtons.size()) + columnMargin;
-                    return rowPaddingAdj + maxWidth;
-                }).collect(Collectors.toList());
-            }
-
             ButtonMenu<String> header = ButtonMenu.<String>builder()
                 .buttons(headerButtons)
                 .horizontal(true)
                 .notClickable(true)
                 .notHoverable(true)
-                .widths(buttonMaxWidths)
+                .widths(maxColumnWidths)
                 .build();
 
             addDown(0, header);

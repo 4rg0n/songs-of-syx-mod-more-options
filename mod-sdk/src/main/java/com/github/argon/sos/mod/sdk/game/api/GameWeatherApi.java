@@ -17,7 +17,7 @@ public class GameWeatherApi {
 
     private final Logger log = Loggers.getLogger(GameWeatherApi.class);
 
-    public final static String KEY_PREFIX = "settlement/weather";
+    public final static String KEY_PREFIX = "weather";
 
     @Nullable
     private Map<String, WeatherThing> weatherThings;

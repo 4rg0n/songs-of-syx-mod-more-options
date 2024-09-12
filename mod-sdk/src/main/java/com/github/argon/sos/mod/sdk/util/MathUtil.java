@@ -2,11 +2,23 @@ package com.github.argon.sos.mod.sdk.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MathUtil {
+
+    /**
+     * @return sum of all integers in the list
+     */
+    public static int sum(@Nullable Collection<Integer> integers) {
+        if (integers == null) {
+            return 0;
+        }
+
+        return integers.stream().mapToInt(Integer::intValue).sum();
+    }
 
     /**
      * @return e.g. 100 will be 1.0

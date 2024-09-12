@@ -4,6 +4,7 @@ import com.github.argon.sos.mod.sdk.game.ui.Button;
 import com.github.argon.sos.mod.sdk.game.ui.HorizontalLine;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.moreoptions.ModModule;
+import init.C;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -30,16 +31,21 @@ public class ErrorDialog extends GuiSection {
     public ErrorDialog(Throwable exception, @Nullable String errorMessage) {
         this.exception = exception;
         this.errorMessage = errorMessage;
+        int maxWidth = C.WIDTH() - 100;
 
         GText text1 = new GText(UI.FONT().M, i18n.t("ErrorDialog.text.line1"));
         GText text2 = new GText(UI.FONT().M, i18n.t("ErrorDialog.text.line2"));
-        GText exceptionMessage = new GText(UI.FONT().M, exception.getMessage()).errorify();
+        GText exceptionMessage = new GText(UI.FONT().M, exception.getMessage())
+            .setMaxWidth(maxWidth)
+            .errorify();
 
         addDownC(0, text1);
         addDownC(5, text2);
 
         if (errorMessage != null) {
-            addDownC(10, new GText(UI.FONT().M, errorMessage).warnify());
+            addDownC(10, new GText(UI.FONT().M, errorMessage)
+                .setMaxWidth(maxWidth)
+                .warnify());
         }
 
         addDownC(10, exceptionMessage);

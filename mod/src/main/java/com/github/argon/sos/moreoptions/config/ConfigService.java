@@ -14,7 +14,6 @@ import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
-import com.github.argon.sos.moreoptions.config.json.v3.JsonRacesV3Config;
 import com.github.argon.sos.moreoptions.config.json.v5.JsonBoostersV5Config;
 import com.github.argon.sos.moreoptions.config.json.v5.JsonMoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.json.v5.JsonRacesV5Config;
@@ -105,7 +104,7 @@ public class ConfigService implements Phases {
     }
 
     public List<FileMeta> readRacesConfigMetas() {
-        return jsonConfigStore.readMetas(JsonRacesV3Config.class);
+        return jsonConfigStore.readMetas(JsonRacesV5Config.class);
     }
 
     public Optional<MoreOptionsV5Config> reloadAll() {
@@ -131,7 +130,7 @@ public class ConfigService implements Phases {
     }
 
     public Optional<Path> getRacesConfigPath() {
-        return jsonConfigStore.getPath(JsonRacesV3Config.class);
+        return jsonConfigStore.getPath(JsonRacesV5Config.class);
     }
 
     public boolean save(MoreOptionsV5Config config) {

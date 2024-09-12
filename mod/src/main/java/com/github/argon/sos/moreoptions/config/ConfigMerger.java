@@ -135,10 +135,10 @@ public class ConfigMerger {
             return;
         }
 
-        if (target.getChance() == null || target.getChance().isEmpty()) {
-            target.setChance(source.getChance());
+        if (target.getEvents() == null || target.getEvents().isEmpty()) {
+            target.setEvents(source.getEvents());
         } else {
-            merge(target.getChance(), source.getChance());
+            merge(target.getEvents(), source.getEvents());
         }
     }
 

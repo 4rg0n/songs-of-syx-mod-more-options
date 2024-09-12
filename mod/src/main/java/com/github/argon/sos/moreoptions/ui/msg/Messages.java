@@ -1,8 +1,10 @@
 package com.github.argon.sos.moreoptions.ui.msg;
 
-import com.github.argon.sos.mod.sdk.ui.Notificator;
 import com.github.argon.sos.mod.sdk.game.ui.Window;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.ui.Notificator;
 import com.github.argon.sos.mod.sdk.util.ExceptionUtil;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
@@ -13,6 +15,7 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor
 public class Messages {
+    private static final Logger log = Loggers.getLogger(Messages.class);
     private static final I18nTranslator i18n = ModModule.i18n().get(Messages.class);
 
     private final Notificator notificator;
@@ -25,6 +28,7 @@ public class Messages {
 
     public void errorDialog(Throwable throwable, @Nullable String translationKey, Object... args) {
         String translatedMessage = i18n.tn(translationKey, args);
+        log.error((translatedMessage != null) ? translatedMessage : "", throwable);
         Window<ErrorDialog> errorDialog = uiFactory.buildErrorDialog(throwable, translatedMessage);
         errorDialog.show();
     }

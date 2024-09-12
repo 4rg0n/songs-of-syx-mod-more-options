@@ -24,7 +24,7 @@ public class JsonConfigV5Mapper {
 
     public static EventsConfig map(JsonEventsV4Config eventsV4Config) {
         return EventsConfig.builder()
-            .chance(eventsV4Config.getChance())
+            .events(eventsV4Config.getEvents())
             .enemyBattleLoot(eventsV4Config.getEnemyBattleLoot())
             .playerBattleLoot(eventsV4Config.getPlayerBattleLoot())
             .build();

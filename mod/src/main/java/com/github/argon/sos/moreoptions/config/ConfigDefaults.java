@@ -138,12 +138,12 @@ public class ConfigDefaults {
     }
 
     public EventsConfig newEvents() {
-        // Events Chance
-        Map<String, Range> eventChances = gameApis.events().getEventsChances().keySet().stream()
-            .collect(Collectors.toMap(key -> key, key -> ConfigDefaults.eventChance()));
+        // Events
+        Map<String, Boolean> events = gameApis.events().getEvents().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> true));
 
         return EventsConfig.builder()
-            .chance(eventChances)
+            .events(events)
             .enemyBattleLoot(battleLootEnemy())
             .playerBattleLoot(battleLootPlayer())
             .build();

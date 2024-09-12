@@ -9,11 +9,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 class MathUtilTest {
 
     @Test
+    void sum() {
+        Assertions.assertThat(MathUtil.sum(Lists.of(1, 2, 3))).isEqualTo(6);
+        Assertions.assertThat(MathUtil.sum(Lists.of(0, 0, 0))).isEqualTo(0);
+        Assertions.assertThat(MathUtil.sum(Lists.of())).isEqualTo(0);
+        Assertions.assertThat(MathUtil.sum(null)).isEqualTo(0);
+    }
+
+    @Test
     void toPercentage() {
         Assertions.assertThat(MathUtil.toPercentage(100)).isEqualTo(1.00);
         Assertions.assertThat(MathUtil.toPercentage(100D)).isEqualTo(1.00);
     }
-
 
     @Test
     void fromPercentage() {

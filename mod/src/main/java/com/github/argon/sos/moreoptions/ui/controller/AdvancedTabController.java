@@ -12,11 +12,11 @@ import snake2d.util.file.FileManager;
 
 import java.nio.file.Path;
 
-public class AdvancedPanelController extends AbstractUiController<AdvancedTab> {
+public class AdvancedTabController extends AbstractUiController<AdvancedTab> {
 
     private final MoreOptionsPanel moreOptionsPanel;
 
-    public AdvancedPanelController(AdvancedTab advancedTab, MoreOptionsPanel moreOptionsPanel) {
+    public AdvancedTabController(AdvancedTab advancedTab, MoreOptionsPanel moreOptionsPanel) {
         super(advancedTab);
         this.moreOptionsPanel = moreOptionsPanel;
 

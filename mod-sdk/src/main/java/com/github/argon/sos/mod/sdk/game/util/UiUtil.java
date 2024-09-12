@@ -2,6 +2,7 @@ package com.github.argon.sos.mod.sdk.game.util;
 
 import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.game.ui.Section;
+import com.github.argon.sos.mod.sdk.util.Lists;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -26,10 +27,31 @@ public class UiUtil {
     public final static Supplier<Coo> MOUSE_COO_SUPPLIER = () -> new Coo(VIEW.mouse().x(), VIEW.mouse().y());
 
     /**
+     * @return sum of all render element widths
+     */
+    public static int sumWidths(@Nullable Collection<? extends RENDEROBJ> renderobjs) {
+        int sumWidth = 0;
+
+        if (renderobjs == null) {
+            return sumWidth;
+        }
+
+        for (RENDEROBJ renderobj : renderobjs) {
+            sumWidth += renderobj.body().width();
+        }
+
+        return sumWidth;
+    }
+
+    /**
      * @return width of widest ui element in list
      */
-    public static int getMaxWidth(Collection<? extends RENDEROBJ> renderobjs) {
+    public static int getMaxWidth(@Nullable Collection<? extends RENDEROBJ> renderobjs) {
         int maxWidth = 0;
+
+        if (renderobjs == null) {
+            return maxWidth;
+        }
 
         for (RENDEROBJ renderobj : renderobjs) {
             int currentWidth = renderobj.body().width();
@@ -45,8 +67,13 @@ public class UiUtil {
     /**
      * @return width of widest ui element in a column row
      */
-    public static <T> int getMaxColumnWidth(Collection<ColumnRow<T>> columnRows) {
+    public static <T> int getMaxColumnWidth(@Nullable Collection<ColumnRow<T>> columnRows) {
         int maxWidth = 0;
+
+        if (columnRows == null) {
+            return maxWidth;
+        }
+
         for (ColumnRow<T> columnRow : columnRows) {
             int sectionWidth = getMaxWidth(columnRow.getColumns());
 
@@ -58,8 +85,12 @@ public class UiUtil {
         return maxWidth;
     }
 
-    public static <Value> int getMaxColumnMargin(Collection<ColumnRow<Value>> columnRows) {
+    public static <Value> int getMaxColumnMargin(@Nullable Collection<ColumnRow<Value>> columnRows) {
         int margin = 0;
+
+        if (columnRows == null) {
+            return margin;
+        }
 
         for (ColumnRow<Value> columnRow : columnRows) {
             if (margin < columnRow.margin()) {
@@ -73,7 +104,11 @@ public class UiUtil {
     /**
      * @return list of widths of the widest column in each row
      */
-    public static <Value> List<Integer> getMaxColumnWidths(Collection<ColumnRow<Value>> columnRows) {
+    public static <Value> List<Integer> getMaxColumnWidths(@Nullable Collection<ColumnRow<Value>> columnRows) {
+        if (columnRows == null) {
+            return Lists.of();
+        }
+
         List<Integer> columnWidths = new ArrayList<>();
 
         for (ColumnRow<?> columnRow : columnRows) {
@@ -97,9 +132,12 @@ public class UiUtil {
         return columnWidths;
     }
 
-    public static Integer getMaxCombinedColumnWidth(List<List<? extends GuiSection>> gridRows) {
+    public static Integer getMaxCombinedColumnWidth(@Nullable List<List<? extends GuiSection>> gridRows) {
         int combinedWidth = 0;
 
+        if (gridRows == null) {
+            return combinedWidth;
+        }
 
         for (List<? extends GuiSection> columns : gridRows) {
             List<Integer> columnWidths = new ArrayList<>();
@@ -128,9 +166,12 @@ public class UiUtil {
         return combinedWidth;
     }
 
-    public static List<Integer> getMaxColumnWidths(Map<?, List<List<? extends GuiSection>>> columndRowsMap) {
-        List<Integer> maxColumnWidths = new ArrayList<>();
+    public static List<Integer> getMaxColumnWidths(@Nullable Map<?, List<List<? extends GuiSection>>> columndRowsMap) {
+        if (columndRowsMap == null) {
+            return Lists.of();
+        }
 
+        List<Integer> maxColumnWidths = new ArrayList<>();
         columndRowsMap.forEach((o, table) -> {
             for (List<? extends GuiSection> columns : table) {
                 fillMaxColumnWidths(maxColumnWidths, columns);
@@ -140,9 +181,12 @@ public class UiUtil {
         return maxColumnWidths;
     }
 
-    public static List<Integer> getMaxColumnWidths(List<List<? extends GuiSection>> gridRows) {
-        List<Integer> columnWidths = new ArrayList<>();
+    public static List<Integer> getMaxColumnWidths(@Nullable List<List<? extends GuiSection>> gridRows) {
+        if (gridRows == null) {
+            return Lists.of();
+        }
 
+        List<Integer> columnWidths = new ArrayList<>();
         for (List<? extends GuiSection> columns : gridRows) {
             fillMaxColumnWidths(columnWidths, columns);
         }
@@ -165,8 +209,13 @@ public class UiUtil {
         return maxColumnWidths;
     }
 
-    public static <T> int getMaxColumnHeight(Collection<ColumnRow<T>> columnRows) {
+    public static <T> int getMaxColumnHeight(@Nullable Collection<ColumnRow<T>> columnRows) {
         int maxHeight = 0;
+
+        if (columnRows == null) {
+            return maxHeight;
+        }
+
         for (ColumnRow<T> columnRow : columnRows) {
             int sectionHeight = getMaxHeight(columnRow.getColumns());
 
@@ -178,10 +227,14 @@ public class UiUtil {
         return maxHeight;
     }
 
-    public static int getMaxHeight(Collection<? extends RENDEROBJ> sections) {
+    public static int getMaxHeight(@Nullable Collection<? extends RENDEROBJ> renders) {
         int maxHeight = 0;
 
-        for (RENDEROBJ section : sections) {
+        if (renders == null) {
+            return maxHeight;
+        }
+
+        for (RENDEROBJ section : renders) {
             int sectionHeight = section.body().height();
 
             if (sectionHeight > maxHeight) {

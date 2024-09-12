@@ -20,10 +20,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class BoostersPanelController extends AbstractUiController<BoostersTab> {
+public class BoostersTabController extends AbstractUiController<BoostersTab> {
 
 
-    public BoostersPanelController(BoostersTab boostersTab) {
+    public BoostersTabController(BoostersTab boostersTab) {
         super(boostersTab);
         boostersTab.refreshAction(panel -> refreshBoosters());
 

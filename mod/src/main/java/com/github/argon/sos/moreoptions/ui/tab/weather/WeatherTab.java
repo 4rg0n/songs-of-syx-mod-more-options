@@ -40,7 +40,7 @@ public class WeatherTab extends AbstractConfigTab<WeatherConfig, WeatherTab> {
         this.sliders = UiMapper.toSliders(weatherConfig.getEffects());
         List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(sliders, i18n);
         Layout.vertical(availableHeight)
-            .addDownC(10, new VerticalLayout.Scalable(300, height -> Table.<Integer>builder()
+            .addDownC(50, new VerticalLayout.Scalable(300, height -> Table.<Integer>builder()
                 .rows(rows)
                 .evenOdd(true)
                 .highlight(true)

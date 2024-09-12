@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.tab.events;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
+import com.github.argon.sos.mod.sdk.game.ui.Checkbox;
 import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.game.ui.Slider;
 import com.github.argon.sos.mod.sdk.game.ui.Table;
@@ -29,7 +30,7 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
     private static final Logger log = Loggers.getLogger(EventsTab.class);
     private final static I18nTranslator i18n = ModModule.i18n().get(EventsTab.class);
 
-    private final Map<String, Slider> eventsChanceSliders;
+    private final Map<String, Checkbox> eventsCheckboxes;
     private final Map<String, Slider> tributeSliders;
 
     public EventsTab(
@@ -41,8 +42,10 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
     ) {
         super(title, defaultConfig, availableWidth, availableHeight);
 
-        GuiSection eventsChanceSection = new GuiSection();
+        GuiSection eventsSection = new GuiSection();
         GuiSection tributeSection = new GuiSection();
+        this.eventsCheckboxes = UiMapper.toCheckboxes(eventsConfig.getEvents());
+
 
         // Siege tributes
         GHeader tributeHeader = new GHeader(i18n.t("EventsTab.header.battle.loot.name"));
@@ -62,59 +65,51 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
         tributeSection.addDown(0, tributeHeader);
         tributeSection.addDown(5, tributeTable);
 
-        GHeader eventChancesHeader = new GHeader(i18n.t("EventsTab.header.chance.name"));
-        eventChancesHeader.hoverInfoSet(i18n.t("EventsTab.header.chance.desc"));
-
         int tableHeight = availableHeight
-            - eventChancesHeader.body().height()
             - tributeSection.body().height()
             - UI.FONT().H2.height() // headers height
             - 50;
 
         // Event chances
-        this.eventsChanceSliders = UiMapper.toSliders(eventsConfig.getChance());
-        List<ColumnRow<Integer>> evenChanceRows = UiMapper.toLabeledColumnRows(eventsChanceSliders, i18n);
-        Table<Integer> chanceTable = Table.<Integer>builder()
-            .rows(evenChanceRows)
+        Table<Integer> eventsTable = Table.<Integer>builder()
+            .rows(UiMapper.toLabeledColumnRows(eventsCheckboxes, i18n))
             .rowPadding(5)
-            .columnMargin(5)
-            .scrollable(true)
-            .displayHeight(tableHeight)
-            .backgroundColor(COLOR.WHITE10)
+            .columnMargin(20)
             .highlight(true)
+            .scrollable(true)
+            .backgroundColor(COLOR.WHITE10)
+            .displayHeight(tableHeight)
             .build();
 
-        eventsChanceSection.addDown(0, eventChancesHeader);
-        eventsChanceSection.addDown(5, chanceTable);
+        eventsSection.addDown(5, eventsTable);
 
-        addDownC(0, eventsChanceSection);
+        addDownC(0, eventsSection);
         addDownC(10, tributeSection);
     }
 
     @Override
     public EventsConfig getValue() {
        return EventsConfig.builder()
-           .chance(getEventsChanceConfig())
+           .events(getEventsConfig())
            .enemyBattleLoot(Range.fromSlider(tributeSliders.get("EventsTab.battle.loot.enemy")))
            .playerBattleLoot(Range.fromSlider(tributeSliders.get("EventsTab.battle.loot.player")))
            .build();
     }
 
-    public Map<String, Range> getEventsChanceConfig() {
-        return eventsChanceSliders.entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                tab -> Range.fromSlider(tab.getValue())));
+    public Map<String, Boolean> getEventsConfig() {
+        return eventsCheckboxes.entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 
     @Override
     public void setValue(EventsConfig eventsConfig) {
         log.trace("Applying UI settlement events config %s", eventsConfig);
 
-        eventsConfig.getChance().forEach((key, range) -> {
-            if (eventsChanceSliders.containsKey(key)) {
-                eventsChanceSliders.get(key).setValue(range.getValue());
+        eventsConfig.getEvents().forEach((key, value) -> {
+            if (eventsCheckboxes.containsKey(key)) {
+                eventsCheckboxes.get(key).selectedSet(value);
             } else {
-                log.warn("No event chance slider with key %s found in UI", key);
+                log.warn("No checkbox with key %s found in UI", key);
             }
         });
 

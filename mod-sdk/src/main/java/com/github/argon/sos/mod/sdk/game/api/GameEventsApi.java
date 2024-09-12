@@ -19,13 +19,11 @@ public class GameEventsApi {
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
     private Map<String, EVENTS.EventResource> events;
-    private Map<String, EVENTS.EventResource> eventsChances;
 
     public final static String KEY_PREFIX = "event";
 
     public void clearCached() {
         events = null;
-        eventsChances = null;
     }
 
     public Map<String, EVENTS.EventResource> getEvents() {
@@ -47,32 +45,6 @@ public class GameEventsApi {
         }
 
         return worldEvents;
-    }
-
-    public Map<String, EVENTS.EventResource> getEventsChances() {
-        if (eventsChances == null) {
-            eventsChances = readEventsChance();
-        }
-
-        return eventsChances;
-    }
-
-    public Map<String, EVENTS.EventResource> readEventsChance() {
-        Map<String, EVENTS.EventResource> eventsChance = new HashMap<>();
-        EVENTS gameEvents = GAME.events();
-
-        for (EVENTS.EventResource eventResource : gameEvents.all()) {
-            eventsChance.put(eventResource.key, eventResource);
-        }
-
-        return eventsChance;
-    }
-
-    public boolean setChance(String eventKey, int chance) {
-        EVENTS.EventResource event = eventsChances.get(eventKey);
-        log.warn("Could not set chance for %s", event.getClass().getSimpleName());
-
-        return false;
     }
 
     public Map<String, Boolean> readEventsEnabledStatus() {
