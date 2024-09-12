@@ -152,7 +152,7 @@ public class Json {
      * @return whether the end of the json string is reached
      */
     public boolean atEnd(){
-        return getIndex() >= rawJson.length() - 1; // FIXME -1 or not?
+        return getIndex() >= rawJson.length() - 1;
     }
 
     private boolean isEndOfValue(char c) {
@@ -176,6 +176,4 @@ public class Json {
     public String write() {
         return writer.write(this.getRoot());
     }
-
-
 }

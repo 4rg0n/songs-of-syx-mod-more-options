@@ -17,7 +17,6 @@ import java.util.Optional;
  */
 @RequiredArgsConstructor
 public class JacksonService implements JsonService {
-    private final static Logger log = Loggers.getLogger(JacksonService.class);
 
     private final ObjectMapper objectMapper;
     private final PrettyPrinter prettyPrinter;

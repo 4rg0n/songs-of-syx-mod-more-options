@@ -13,8 +13,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GameRoomsApi {
 
-    private final static Logger log = Loggers.getLogger(GameRoomsApi.class);
-
     public List<RoomBlueprintImp> getRooms() {
         return Lists.fromGameLIST(SETT.ROOMS().imps());
     }

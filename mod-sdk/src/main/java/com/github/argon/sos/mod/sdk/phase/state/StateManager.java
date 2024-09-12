@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class StateManager {
-    private final static Logger log = Loggers.getLogger(StateManager.class);
 
     @Getter
     private final State state = new State();

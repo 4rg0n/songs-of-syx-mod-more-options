@@ -31,11 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ConfigStoreTest {
 
     private ConfigStore configStore;
-    private ResourceService resourceServiceMock;
-
     private AtomicReference<List<String>> writtenJsonContents = new AtomicReference<>();
-
     private Path configPath = Paths.get("configs/MoreOptionsConfigV5.txt");
+    private ConfigDefaults configDefaultsMock;
+    private ResourceService resourceServiceMock;
 
     @BeforeEach
     void setUp() {
@@ -75,9 +74,7 @@ class ConfigStoreTest {
         ConfigVersionHandlers<MoreOptionsV5Config> configVersionHandlers = ModModule.Factory.newConfigVersionHandlers(jsonConfigStore, jsonConfigStoreFactory);
         ConfigService configService = ModModule.Factory.newConfigService(jsonConfigStore, configVersionHandlers, ModSdkModule.jsonGameService());
 
-        ConfigDefaults configDefaultsMock = Mockito.mock(ConfigDefaults.class);
-        Mockito.when(configDefaultsMock.newConfig()).thenReturn(TestData.newDefaultConfig());
-
+        configDefaultsMock = Mockito.mock(ConfigDefaults.class);
         configStore = ModModule.Factory.newConfigStore(configService, configDefaultsMock, ModSdkModule.stateManager());
     }
 
@@ -99,7 +96,15 @@ class ConfigStoreTest {
 
     @Test
     void init() {
+        Mockito.when(configDefaultsMock.newConfig()).thenReturn(TestData.newEmptyConfig());
         configStore.init();
-        assertThat(configStore.getCurrentConfig()).isEqualTo(TestData.newConfig());
+        assertThat(configStore.getCurrentConfig()).isEqualTo(TestData.newMergedEmptyConfig());
+    }
+
+    @Test
+    void init_withMergeDefaults() {
+        Mockito.when(configDefaultsMock.newConfig()).thenReturn(TestData.newDefaultConfig());
+        configStore.init();
+        assertThat(configStore.getCurrentConfig()).isEqualTo(TestData.newMergedDefaultConfig());
     }
 }

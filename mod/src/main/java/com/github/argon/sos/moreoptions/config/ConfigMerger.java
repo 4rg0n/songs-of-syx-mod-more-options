@@ -16,9 +16,9 @@ import java.util.Set;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConfigMerger {
-    public static void merge(MoreOptionsV5Config target, @Nullable MoreOptionsV5Config source) {
+    public static MoreOptionsV5Config merge(MoreOptionsV5Config target, @Nullable MoreOptionsV5Config source) {
         if (source == null) {
-            return;
+            return target;
         }
 
         // intentionally ignore updating of VERSION and filePath
@@ -65,6 +65,8 @@ public class ConfigMerger {
         } else {
             merge(target.getRaces(), source.getRaces());
         }
+
+        return target;
     }
     public static void merge(WeatherConfig target, @Nullable WeatherConfig source) {
         if (source == null) {
@@ -74,7 +76,7 @@ public class ConfigMerger {
         if (target.getEffects() == null || target.getEffects().isEmpty()) {
             target.setEffects(source.getEffects());
         }else {
-            addMissing(target.getEffects(), source.getEffects());
+            merge(target.getEffects(), source.getEffects());
         }
     }
 
@@ -113,8 +115,6 @@ public class ConfigMerger {
             return;
         }
 
-        target.setEnabled(source.isEnabled());
-
         if (target.getCollectionRateSeconds() == null) {
             target.setCollectionRateSeconds(source.getCollectionRateSeconds());
         }
@@ -138,13 +138,13 @@ public class ConfigMerger {
         if (target.getChance() == null || target.getChance().isEmpty()) {
             target.setChance(source.getChance());
         } else {
-            addMissing(target.getChance(), source.getChance());
+            merge(target.getChance(), source.getChance());
         }
 
         if (target.getEvents() == null || target.getEvents().isEmpty()) {
             target.setEvents(source.getEvents());
         } else {
-            addMissing(target.getEvents(), source.getEvents());
+            merge(target.getEvents(), source.getEvents());
         }
     }
 
@@ -156,7 +156,7 @@ public class ConfigMerger {
         if (target.getAmbience() == null || target.getAmbience().isEmpty()) {
             target.setAmbience(source.getAmbience());
         } else {
-            addMissing(target.getAmbience(), source.getAmbience());
+            merge(target.getAmbience(), source.getAmbience());
         }
     }
 

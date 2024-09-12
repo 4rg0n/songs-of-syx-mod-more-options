@@ -26,10 +26,6 @@ public abstract class AbstractScript implements script.SCRIPT, Phases {
     private final static Logger log = Loggers.getLogger(AbstractScript.class);
     public final static String LOG_LEVEL_ENV_NAME = "MOD.LOG_LEVEL";
 
-    static {
-        Loggers.setLevels(Loggers.LOG_LEVEL_DEFAULT);
-    }
-
     protected final PhaseManager phaseManager;
     protected final StateManager stateManager;
     protected final GameApis gameApis;

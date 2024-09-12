@@ -65,6 +65,9 @@ public class ConfigStore implements Phases {
         }
     }
 
+    /**
+     * Loads configs from files and caches it
+     */
     public void init() {
         MoreOptionsV5Config defaultConfig = configDefaults.newConfig();
         setDefaultConfig(defaultConfig);

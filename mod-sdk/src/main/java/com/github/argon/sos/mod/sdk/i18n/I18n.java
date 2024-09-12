@@ -11,7 +11,6 @@ import java.util.Map;
  * Will look for messages by a given key. See: {@link I18nMessages}
  */
 public class I18n {
-    private final static Logger log = Loggers.getLogger(I18n.class);
     private final static Map<String, I18nTranslator> i18ns = new HashMap<>();
 
     private final I18nMessages i18nMessages;

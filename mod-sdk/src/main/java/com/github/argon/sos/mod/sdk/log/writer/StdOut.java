@@ -40,4 +40,11 @@ public class StdOut extends AbstractLogWriter {
             problemLogging(formatMsg, args, e);
         }
     }
+
+    @Override
+    public void exception(Throwable ex) {
+        System.err.println("\n" + ex.getMessage());
+        ex.printStackTrace(System.err);
+        System.err.println();
+    }
 }

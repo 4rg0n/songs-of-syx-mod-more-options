@@ -5,8 +5,6 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -15,13 +13,11 @@ import java.util.ResourceBundle;
  */
 public class I18nTranslator {
     private final static Logger log = Loggers.getLogger(I18nTranslator.class);
-    private final static Map<String, I18nTranslator> i18ns = new HashMap<>();
-
     private final I18nMessages i18nMessages;
 
     /**
      * Used for adding a prefix to the translation key
-     * e.g. when the class is RacesPanel.class, the prefix will be "RacesPanel".
+     * e.g. when the class is RacesPanel, the prefix will be "RacesPanel".
      * Methods starting with "p" will use the prefix for their message key generation.
      */
     private final String prefix;

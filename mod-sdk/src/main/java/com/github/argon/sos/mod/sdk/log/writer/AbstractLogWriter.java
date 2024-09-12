@@ -22,11 +22,4 @@ public abstract class AbstractLogWriter implements LogWriter {
     protected String timestamp() {
         return LocalTime.now().toString();
     }
-
-    @Override
-    public void exception(Throwable ex) {
-        System.err.println("\n" + ex.getMessage());
-        ex.printStackTrace(System.err);
-        System.err.println();
-    }
 }

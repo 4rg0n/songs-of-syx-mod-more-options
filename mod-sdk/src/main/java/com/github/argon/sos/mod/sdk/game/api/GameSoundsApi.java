@@ -17,8 +17,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class GameSoundsApi {
 
-    private final static Logger log = Loggers.getLogger(GameSoundsApi.class);
-
     @Nullable
     private Map<String, Ambiance> ambienceSounds;
 

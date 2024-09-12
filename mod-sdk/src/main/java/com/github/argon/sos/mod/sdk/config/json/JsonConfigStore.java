@@ -59,6 +59,7 @@ public class JsonConfigStore {
      * @param doBackup whether the registered file can be backed up
      */
     public void bind(Class<?> configClass, Path file, boolean doBackup) {
+        log.debug("Binding %s to file '%s' with doBackup %s", configClass.getSimpleName(), file, doBackup);
         configDefinitions.put(configClass, ConfigDefinition.builder()
             .path(file)
             .doBackup(doBackup)
@@ -79,6 +80,8 @@ public class JsonConfigStore {
      * @param doBackup whether the registered file can be backed up
      */
     public void bindToSave(Class<?> configClass, String namePrefix, Path folder, boolean doBackup) {
+        log.debug("Binding %s to folder '%s' with prefix '%s' and doBackup %s to save",
+            configClass.getSimpleName(), folder, namePrefix, doBackup);
         configDefinitions.put(configClass, ConfigDefinition.builder()
             .path(folder)
             .configClass(configClass)
@@ -448,6 +451,7 @@ public class JsonConfigStore {
             savePath = asBackupPath(savePath);
         }
 
+        log.debug("Reading config from %s into %s", savePath, configClass.getSimpleName());
         return jsonService.load(savePath, configClass);
     }
 
@@ -500,6 +504,7 @@ public class JsonConfigStore {
             return false;
         }
 
+        log.debug("Deleting config %s for %s", filePath, configDefinition.getConfigClass().getSimpleName());
         if (jsonService.delete(filePath)) {
             if (removeFromStore) configStore.remove(configDefinition.getConfigClass());
             return true;
@@ -515,6 +520,7 @@ public class JsonConfigStore {
             return false;
         }
 
+        log.debug("Deleting config backup %s for %s", backupFilePath, configDefinition.getConfigClass().getSimpleName());
         if (jsonService.delete(backupFilePath)) {
             if (removeFromStore) backupConfigStore.remove(configDefinition.getConfigClass());
             return true;
