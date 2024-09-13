@@ -17,8 +17,6 @@ import java.io.IOException;
  * See {@link SCRIPT.SCRIPT_INSTANCE} for some documentation
  *
  * Some calls for the {@link PhaseManager} originate from here.
- *
- * todo add game state object: containing flags from here; save info; mod info;... (how refresh state? o.o)
  */
 @RequiredArgsConstructor
 public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {

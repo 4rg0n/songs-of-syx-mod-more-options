@@ -84,7 +84,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         if (faction instanceof FactionNPC) {
             bonus = ((FactionNPC) faction).bonus;
         } else {
-            bonus = FACTIONS.player(); // fixme
+            bonus = FACTIONS.player();
         }
 
         // Label with hover

@@ -34,7 +34,6 @@ public class GameRaceApi implements Phases {
     /**
      * List of vanilla game races
      */
-    // todo is there a better way to find these?
     private final List<String> vanillaRaces = Lists.of(
         "ARGONOSH",
         "CANTOR",
@@ -98,7 +97,6 @@ public class GameRaceApi implements Phases {
 
         // initialize vanilla race likings
         if (vanillaLikings == null) {
-            // todo do I need to clear and reload this on game save reload?
             vanillaLikings = getAllLikings();
         }
 

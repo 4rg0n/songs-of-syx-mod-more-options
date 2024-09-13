@@ -49,7 +49,6 @@ public class GameApis implements Phases {
     private final GameStatsApi stats;
 
     public void clear() {
-        // todo need to verify again...
         // game will initialize new instances of the cached class references on load
         events().clearCached();
         sounds().clearCached();

@@ -214,7 +214,7 @@ public class FactionList extends GuiSection {
 					if (f == null)
 						return;
 					double c = 0.5 + ROPINIONS.current(f.court().king().roy())/8.0;
-					GMeter.renderC(r, c, c, X1, X2, Y1, Y2);// TODO Auto-generated method stub
+					GMeter.renderC(r, c, c, X1, X2, Y1, Y2);
 
 				}
 			}, o.body().x1(), getLastY2()+1);
