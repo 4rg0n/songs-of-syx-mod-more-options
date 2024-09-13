@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Can hold the game JSON configuration
+ * Can cache the game JSON configuration by file path
  */
 @RequiredArgsConstructor
 public class GameJsonStore implements Phases {

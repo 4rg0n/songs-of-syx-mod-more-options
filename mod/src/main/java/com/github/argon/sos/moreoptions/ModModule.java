@@ -8,7 +8,7 @@ import com.github.argon.sos.mod.sdk.game.api.GameFactionApi;
 import com.github.argon.sos.mod.sdk.game.api.GameLangApi;
 import com.github.argon.sos.mod.sdk.game.api.GameSaveApi;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
-import com.github.argon.sos.mod.sdk.i18n.I18nMessages;
+import com.github.argon.sos.mod.sdk.i18n.I18nMessageBundle;
 import com.github.argon.sos.mod.sdk.json.JacksonService;
 import com.github.argon.sos.mod.sdk.json.JsonGameService;
 import com.github.argon.sos.mod.sdk.metric.MetricCollector;
@@ -46,7 +46,7 @@ public class ModModule {
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static I18nMessages i18nMessages = Factory.newI18nMessages("mo-messages", ModSdkModule.gameApis().lang());
+    private final static I18nMessageBundle i18nMessages = Factory.newI18nMessages("mo-i18n", ModSdkModule.gameApis().lang());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
@@ -144,12 +144,12 @@ public class ModModule {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Factory {
 
-        public static I18nMessages newI18nMessages(String bundleName, GameLangApi langApi) {
-            return new I18nMessages(bundleName, langApi);
+        public static I18nMessageBundle newI18nMessages(String bundleName, GameLangApi langApi) {
+            return new I18nMessageBundle(bundleName, langApi);
         }
 
-        public static I18n newI18n(I18nMessages i18nMessages) {
-            return new I18n(i18nMessages);
+        public static I18n newI18n(I18nMessageBundle i18NMessageBundle) {
+            return new I18n(i18NMessageBundle);
         }
 
         public static GameApis newGameApis(BoosterService boosterService) {

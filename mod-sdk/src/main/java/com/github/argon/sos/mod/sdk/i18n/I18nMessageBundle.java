@@ -12,13 +12,13 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * Loads and provides access to localized messages.
+ * Loads and provides access to localized message bundles.
  * Message .properties files are located in the "resources" folder.
  */
-public class I18nMessages implements Phases {
+public class I18nMessageBundle implements Phases {
 
-    private final static Logger log = Loggers.getLogger(I18nMessages.class);
-    public static final String BUNDLE_NAME_DEFAULT = "messages";
+    private final static Logger log = Loggers.getLogger(I18nMessageBundle.class);
+    public static final String BUNDLE_NAME_DEFAULT = "i18n";
     public final String bundleName;
 
     private final GameLangApi gameLangApi;
@@ -32,11 +32,11 @@ public class I18nMessages implements Phases {
 
     private final static Locale LOCALE_FALLBACK = GameLangApi.DEFAULT_LOCALE;
 
-    public I18nMessages(GameLangApi gameLangApi) {
+    public I18nMessageBundle(GameLangApi gameLangApi) {
         this(BUNDLE_NAME_DEFAULT, gameLangApi);
     }
 
-    public I18nMessages(String bundleName, GameLangApi gameLangApi) {
+    public I18nMessageBundle(String bundleName, GameLangApi gameLangApi) {
         this.bundleName = bundleName;
         this.gameLangApi = gameLangApi;
     }

@@ -18,6 +18,9 @@ import java.util.*;
 
 /**
  * Manages and contains config objects loaded from json files.
+ *
+ * You can register a data class under a given file path via {@link this#bind(Class, Path, boolean)} or {@link this#bindToSave(Class, String, Path, boolean)}.
+ * The store will than be able to manage these, and you can access the data through the store.
  */
 @RequiredArgsConstructor
 public class JsonConfigStore {

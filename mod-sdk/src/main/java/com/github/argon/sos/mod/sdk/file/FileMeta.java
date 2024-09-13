@@ -6,6 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 
+/**
+ * Contains meta information about a file such as the creation date
+ */
 @Getter
 @Builder
 @EqualsAndHashCode

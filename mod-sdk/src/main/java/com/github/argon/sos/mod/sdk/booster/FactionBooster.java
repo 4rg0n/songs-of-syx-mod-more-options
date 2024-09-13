@@ -9,6 +9,9 @@ import lombok.Builder;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * For boosters applicable to multiple factions.
+ */
 public class FactionBooster extends AbstractBooster {
 
     private final Map<Faction, Double> factionBoosts = new HashMap<>(FACTIONS.MAX);

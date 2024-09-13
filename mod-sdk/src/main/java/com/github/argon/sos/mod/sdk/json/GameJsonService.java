@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Gives access to the game JSON configuration
+ * Gives access to the game JSON configuration from the data.zip file
  */
 @RequiredArgsConstructor
 public class GameJsonService {

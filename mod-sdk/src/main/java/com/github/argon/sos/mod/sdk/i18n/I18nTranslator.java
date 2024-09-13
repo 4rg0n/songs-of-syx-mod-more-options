@@ -9,11 +9,11 @@ import java.util.ResourceBundle;
 
 /**
  * For translating text into different languages.
- * Provides access to translated messages. See: {@link I18nMessages}
+ * Provides access to translated messages. See: {@link I18nMessageBundle}
  */
 public class I18nTranslator {
     private final static Logger log = Loggers.getLogger(I18nTranslator.class);
-    private final I18nMessages i18nMessages;
+    private final I18nMessageBundle i18NMessageBundle;
 
     /**
      * Used for adding a prefix to the translation key
@@ -22,8 +22,8 @@ public class I18nTranslator {
      */
     private final String prefix;
 
-    public I18nTranslator(Class<?> clazz, I18nMessages i18nMessages) {
-        this.i18nMessages = i18nMessages;
+    public I18nTranslator(Class<?> clazz, I18nMessageBundle i18NMessageBundle) {
+        this.i18NMessageBundle = i18NMessageBundle;
         this.prefix = prefix(clazz);
     }
 
@@ -113,7 +113,7 @@ public class I18nTranslator {
             return null;
         }
 
-        ResourceBundle messages = i18nMessages.getMessages();
+        ResourceBundle messages = i18NMessageBundle.getMessages();
 
         if (messages == null) {
             log.trace("No messages for translation");

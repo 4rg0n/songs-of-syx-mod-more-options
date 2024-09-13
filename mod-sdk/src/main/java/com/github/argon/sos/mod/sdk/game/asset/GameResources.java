@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Main access to game resources like config files, folders  or sprites.
+ * Main access to game resources like config files, folders or sprites.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameResources {
