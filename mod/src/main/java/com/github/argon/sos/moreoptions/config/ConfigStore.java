@@ -65,6 +65,10 @@ public class ConfigStore implements Phases {
         }
     }
 
+    public boolean deleteBackupOriginals() {
+        return configService.deleteBackupOriginals(true);
+    }
+
     /**
      * Loads configs from files and caches it
      */

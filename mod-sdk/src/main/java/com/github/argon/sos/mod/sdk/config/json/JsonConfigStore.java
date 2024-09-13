@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Manages and contains config objects loaded from json files.
@@ -419,6 +420,49 @@ public class JsonConfigStore {
         return success;
     }
 
+    /**
+     * Will delete all backup original config files bound to the store.
+     * Will also remove the config objects from the backup store.
+     *
+     * @return whether deletions were successful
+     */
+    public boolean deleteBackupOriginals(boolean removeFromStore) {
+        boolean success = false;
+        Set<Class<?>> configClasses = configDefinitions.entrySet().stream()
+            .filter(entry -> entry.getValue().isDoBackup())
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toSet());
+
+        for (Class<?> configClass : configClasses) {
+            success = deleteBackupOriginal(configClass, removeFromStore);
+            if (!success) {
+                break;
+            }
+        }
+
+        log.debug("Deleted backups: %s", success);
+        return success;
+    }
+
+    /**
+     * Will delete only the backup original config file associated with the given class.
+     * Will also remove the config object from the backup store.
+     *
+     * @return whether deletion was successful
+     */
+    public boolean deleteBackupOriginal(Class<?> configClass, boolean removeFromStore) {
+        log.debug("Deleting backup original config for %s", configClass.getSimpleName());
+        ConfigDefinition configDefinition = configDefinitions.get(configClass);
+
+        if (configDefinition == null) {
+            log.debug("Can not delete backup original config file for %s. No config entry.", configClass.getSimpleName());
+            // nothing there to delete? OK!
+            return true;
+        }
+
+        return delete(configDefinition, removeFromStore);
+    }
+
     private <T> Optional<T> reload(Class<T> configClass) {
         // save in store when loaded
         return load(configClass).map(config -> {
@@ -465,7 +509,7 @@ public class JsonConfigStore {
                 .path(path)
                 .build());
         } catch (Exception e) {
-            log.error("Could not load config from %", path);
+            log.error("Could not load config from %s", path);
             throw e;
         }
     }

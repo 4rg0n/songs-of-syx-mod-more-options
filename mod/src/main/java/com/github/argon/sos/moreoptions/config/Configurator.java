@@ -23,6 +23,7 @@ import world.battle.AC_Resolver;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * For manipulating game classes by given config {@link MoreOptionsV5Config}
@@ -120,14 +121,18 @@ public class Configurator implements Phases {
 
     public boolean applyMetricsConfig(MetricsConfig metricsConfig) {
         try {
-            Set<String> metricStats = metricsConfig.getStats();
+            Map<String, Boolean> metricStats = metricsConfig.getStats();
+            Set<String> enabledStats = metricStats.entrySet().stream()
+                .filter(Map.Entry::getValue)// is enabled?
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
 
             // use new file when exported stats change
-            if (!metricStats.containsAll(lastMetricStats)) {
-                log.debug("New metric export stat list with %s stats", metricStats.size());
-                log.trace("Stats: %s", metricStats);
+            if (!enabledStats.containsAll(lastMetricStats)) {
+                log.debug("New metric export stat list with %s stats", enabledStats.size());
+                log.trace("Stats: %s", enabledStats);
                 metricExporter.newExportFile();
-                lastMetricStats = new TreeSet<>(metricStats);
+                lastMetricStats = new TreeSet<>(enabledStats);
             }
 
             // reschedule
@@ -136,7 +141,7 @@ public class Configurator implements Phases {
                 metricScheduler.stop();
                 metricScheduler.clear();
                 metricScheduler
-                    .schedule(() -> metricCollector.buffer(metricStats),
+                    .schedule(() -> metricCollector.buffer(enabledStats),
                         metricsConfig.getCollectionRateSeconds().getValue(), metricsConfig.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
                     .schedule(metricExporter::export,
                         metricsConfig.getExportRateMinutes().getValue(), metricsConfig.getExportRateMinutes().getValue(), TimeUnit.MINUTES)
@@ -155,7 +160,7 @@ public class Configurator implements Phases {
             if (metricsConfig.isEnabled()) {
                 log.debug("Start metric scheduler");
                 metricScheduler
-                    .schedule(() -> metricCollector.buffer(metricStats),
+                    .schedule(() -> metricCollector.buffer(enabledStats),
                         metricsConfig.getCollectionRateSeconds().getValue(), metricsConfig.getCollectionRateSeconds().getValue(), TimeUnit.SECONDS)
                     .schedule(metricExporter::export,
                         metricsConfig.getExportRateMinutes().getValue(), metricsConfig.getExportRateMinutes().getValue(), TimeUnit.MINUTES)

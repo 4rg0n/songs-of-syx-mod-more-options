@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -106,7 +107,7 @@ public class ConfigMerger {
         if (target.getLikings() == null || target.getLikings().isEmpty()) {
             target.setLikings(source.getLikings());
         } else {
-            target.setLikings(replace(target.getLikings(), source.getLikings()));
+            mergeLikings(target.getLikings(), source.getLikings());
         }
     }
 
@@ -126,7 +127,7 @@ public class ConfigMerger {
         if (target.getStats() == null || target.getStats().isEmpty()) {
             target.setStats(source.getStats());
         } else {
-            target.setStats(replace(target.getStats(), source.getStats()));
+            merge(target.getStats(), source.getStats());
         }
     }
 
@@ -160,6 +161,43 @@ public class ConfigMerger {
         }
 
         return source;
+    }
+
+    public static void mergeLikings(Collection<RacesConfig.Liking> target, @Nullable Collection<RacesConfig.Liking> source) {
+        if (source == null) {
+            return;
+        }
+
+        if (target.isEmpty()) {
+            target.addAll(source);
+            return;
+        }
+
+        // remove likings for non-existing races from target
+        Set<RacesConfig.Liking> toRemove = new HashSet<>();
+        target.forEach(targetLiking -> {
+            boolean contained = source.stream()
+                .anyMatch(sourceLiking ->
+                    targetLiking.getRace().equals(sourceLiking.getRace())
+                        && targetLiking.getOtherRace().equals(sourceLiking.getOtherRace()));
+
+            if (!contained) {
+                toRemove.add(targetLiking);
+            }
+        });
+        toRemove.forEach(target::remove);
+
+        // add missing race likings from source
+        source.forEach(sourceLiking -> {
+            boolean contained = target.stream()
+                .anyMatch(targetLiking ->
+                    targetLiking.getRace().equals(sourceLiking.getRace())
+                        && targetLiking.getOtherRace().equals(sourceLiking.getOtherRace()));
+
+            if (!contained) {
+                target.add(sourceLiking);
+            }
+        });
     }
 
     public static <K, V> void merge(Map<K, V> target, @Nullable Map<K, V> source) {

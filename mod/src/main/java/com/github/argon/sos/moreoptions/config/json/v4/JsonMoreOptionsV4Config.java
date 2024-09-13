@@ -2,7 +2,10 @@ package com.github.argon.sos.moreoptions.config.json.v4;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.domain.*;
+import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
+import com.github.argon.sos.moreoptions.config.domain.SoundsConfig;
+import com.github.argon.sos.moreoptions.config.domain.WeatherConfig;
+import com.github.argon.sos.moreoptions.config.json.v2.JsonMetricsV2Config;
 import lombok.*;
 
 import java.util.HashMap;
@@ -29,7 +32,7 @@ public class JsonMoreOptionsV4Config {
     @Builder.Default
     private WeatherConfig weather = WeatherConfig.builder().build();
     @Builder.Default
-    private MetricsConfig metrics = MetricsConfig.builder().build();
+    private JsonMetricsV2Config metrics = JsonMetricsV2Config.builder().build();
     @Builder.Default
     private Map<String, BoostersConfig.Booster> boostersPlayer = new HashMap<>();
     @Builder.Default

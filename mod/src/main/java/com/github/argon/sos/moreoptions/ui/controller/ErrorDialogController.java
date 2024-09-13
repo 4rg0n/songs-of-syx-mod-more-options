@@ -1,14 +1,11 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.mod.sdk.game.ui.Window;
-import com.github.argon.sos.mod.sdk.log.Logger;
-import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Clipboard;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
 
 public class ErrorDialogController extends AbstractUiController<ErrorDialog> {
-    private final static Logger log = Loggers.getLogger(ErrorDialogController.class);
     private final Window<ErrorDialog> errorDialog;
     private final String reportUrl;
 
@@ -20,6 +17,21 @@ public class ErrorDialogController extends AbstractUiController<ErrorDialog> {
         errorDialog.getSection().getCloseButton().clickActionSet(this::close);
         errorDialog.getSection().getCopyButton().clickActionSet(this::copy);
         errorDialog.getSection().getReportButton().clickActionSet(this::report);
+        errorDialog.getSection().getCleanButton().clickActionSet(this::clean);
+    }
+
+    public void clean() {
+        try {
+            boolean success = configStore.deleteBackupOriginals();
+
+            if (success) {
+                messages.notifySuccess("notification.error.clean");
+            } else {
+                messages.notifyError("notification.error.not.clean");
+            }
+        } catch (Exception e) {
+            messages.errorDialog(e, "notification.error.not.clean");
+        }
     }
 
     public void report() {

@@ -23,10 +23,13 @@ public class ErrorDialog extends GuiSection {
     @Getter
     private Button closeButton;
     @Getter
+    private Button cleanButton;
+    @Getter
     private final Throwable exception;
     @Getter
     @Nullable
     private final String errorMessage;
+
 
     public ErrorDialog(Throwable exception, @Nullable String errorMessage) {
         this.exception = exception;
@@ -64,6 +67,10 @@ public class ErrorDialog extends GuiSection {
         this.reportButton = new Button(i18n.t("ErrorDialog.button.report.name"), COLOR.WHITE15,
             i18n.t("ErrorDialog.button.report.desc"));
         section.addRight(20, reportButton);
+
+        this.cleanButton = new Button(i18n.t("ErrorDialog.button.clean.name"), COLOR.WHITE15,
+            i18n.t("ErrorDialog.button.clean.desc"));
+        section.addRight(20, cleanButton);
 
         this.closeButton = new Button(i18n.t("ErrorDialog.button.close.name"), COLOR.WHITE15,
             i18n.t("ErrorDialog.button.close.desc"));

@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -153,7 +154,11 @@ public class ConfigDefaults {
         // Metrics
         MetricsConfig metricsConfig = ConfigDefaults.metrics();
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
-        metricsConfig.setStats(availableStats);
+
+        metricsConfig.setStats(availableStats.stream().collect(Collectors.toMap(
+            Function.identity(),
+            stat -> true
+        )));
 
         return metricsConfig;
     }

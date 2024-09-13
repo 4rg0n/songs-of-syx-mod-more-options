@@ -17,15 +17,6 @@
       "test1": true,
       "test2": false
     },
-    "chance": {
-      "test1": {
-        "value": 0,
-        "min": 0,
-        "max": 10000,
-        "applyMode": "MULTI",
-        "displayMode": "PERCENTAGE"
-      }
-    },
     "playerBattleLoot": {
       "value": 0,
       "min": 0,
@@ -68,7 +59,11 @@
       "applyMode": "MULTI",
       "displayMode": "PERCENTAGE"
     },
-    "stats": [ "test2", "test3", "test1" ]
+    "stats": {
+      "test1": true,
+      "test2": true,
+      "test3": true
+    }
   },
   "boostersPlayer": {
     "test1": {

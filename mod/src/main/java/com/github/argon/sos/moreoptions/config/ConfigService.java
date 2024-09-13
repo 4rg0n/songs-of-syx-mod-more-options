@@ -150,4 +150,8 @@ public class ConfigService implements Phases {
     public boolean deleteBackups(boolean removeFromStore) {
         return jsonConfigStore.deleteBackups(removeFromStore);
     }
+
+    public boolean deleteBackupOriginals(boolean removeFromStore) {
+        return jsonConfigStore.deleteBackupOriginals(removeFromStore);
+    }
 }

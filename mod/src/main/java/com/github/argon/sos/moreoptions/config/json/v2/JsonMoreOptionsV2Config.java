@@ -1,9 +1,8 @@
 package com.github.argon.sos.moreoptions.config.json.v2;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
 import com.github.argon.sos.mod.sdk.data.domain.Range;
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import lombok.*;
 
 import java.util.HashMap;
@@ -39,5 +38,5 @@ public class JsonMoreOptionsV2Config {
     @Builder.Default
     private Map<String, Range> boosters = new HashMap<>();
     @Builder.Default
-    private MetricsConfig metrics = MetricsConfig.builder().build();
+    private JsonMetricsV2Config metrics = JsonMetricsV2Config.builder().build();
 }

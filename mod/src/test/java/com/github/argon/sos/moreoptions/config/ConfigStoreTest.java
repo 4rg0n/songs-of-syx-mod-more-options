@@ -42,8 +42,6 @@ class ConfigStoreTest {
     @TestResourceService
     private ResourceService testResourceService;
 
-
-
     @BeforeEach
     void setUp() {
         Loggers.setLevels(Level.DEBUG);

@@ -162,8 +162,14 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         // Export stats section
         SortedSet<String> sortedAvailableStats = Sets.sort(availableStats);
         List<ColumnRow<Boolean>> statRows = sortedAvailableStats.stream().map(statName -> {
-            Checkbox checkbox = new Checkbox(metricsConfig.getStats().isEmpty() || metricsConfig.getStats().contains(statName));
+            boolean checked = true;
+            if (!metricsConfig.getStats().isEmpty()) {
+                checked = metricsConfig.getStats().entrySet().stream()
+                    // is stat enabled?
+                    .anyMatch(entry -> entry.getKey().equals(statName) && entry.getValue());
+            }
 
+            Checkbox checkbox = new Checkbox(checked);
             this.statsCheckboxes.put(statName, checkbox);
             return ColumnRow.<Boolean>builder()
                 .searchTerm(statName)
@@ -188,7 +194,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
         Table<Void> configTable = Table.<Void>builder()
             .evenOdd(true)
-            .scrollable(false)
+            .scrollable(true)
             .rows(rows)
             .backgroundColor(COLOR.WHITE10)
             .rowPadding(5)
@@ -273,21 +279,31 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         return section;
     }
 
-    private Set<String> getCheckedStats() {
+    private Map<String, Boolean> getCheckedStats() {
         return statsCheckboxes.entrySet().stream()
-            .filter(entry -> {
-                Checkbox checkbox = entry.getValue();
-                return checkbox.getValue();
-            })
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> {
+                    Checkbox checkbox = entry.getValue();
+                    return checkbox.getValue();
+                }
+            ));
     }
 
-    private void setCheckedStats(Set<String> stats) {
+    private void setCheckedStats(Map<String, Boolean> stats) {
         if (stats.isEmpty()) { // enable all when empty stats
             statsCheckboxes.values().forEach(checkbox -> checkbox.setValue(true));
         } else { // enable only when in stats
-            statsCheckboxes.forEach((key, checkbox) -> checkbox.setValue(stats.contains(key)));
+            statsCheckboxes.forEach((key, checkbox) -> {
+                Boolean checked = stats.get(key);
+
+                // default is enabled
+                if (checked == null) {
+                    checked = true;
+                }
+
+                checkbox.setValue(checked);
+            });
         }
     }
 

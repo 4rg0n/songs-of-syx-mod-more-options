@@ -59,10 +59,15 @@ public class TestData {
                 .collectionRateSeconds(Range.builder().build())
                 .exportRateMinutes(Range.builder().build())
                 .enabled(true)
-                .stats(Sets.of("default1", "default2", "default3"))
+                .stats(Maps.Modifiable.of(
+                    "default1", true,
+                    "default2", true,
+                    "default3", true,
+                    "test1", true
+                ))
                 .build())
             .races(RacesConfig.builder()
-                .likings(Sets.of(
+                .likings(Sets.Modifiable.of(
                     RacesConfig.Liking.builder()
                         .race("default")
                         .otherRace("default")
@@ -152,10 +157,15 @@ public class TestData {
                 .collectionRateSeconds(Range.builder().build())
                 .exportRateMinutes(Range.builder().build())
                 .enabled(true)
-                .stats(Sets.of("default1", "default2", "default3"))
+                .stats(Maps.Modifiable.of(
+                    "default1", true,
+                    "default2", true,
+                    "default3", true,
+                    "test1", true
+                ))
                 .build())
             .races(RacesConfig.builder()
-                .likings(Sets.of(
+                .likings(Sets.Modifiable.of(
                     RacesConfig.Liking.builder()
                         .race("default")
                         .otherRace("default")
@@ -215,10 +225,14 @@ public class TestData {
                 .collectionRateSeconds(Range.builder().build())
                 .exportRateMinutes(Range.builder().build())
                 .enabled(true)
-                .stats(Sets.of("test1", "test2", "test3"))
+                .stats(Maps.Modifiable.of(
+                    "test1", true,
+                    "test2", true,
+                    "test3", true
+                ))
                 .build())
             .races(RacesConfig.builder()
-                .likings(Sets.of(
+                .likings(Sets.Modifiable.of(
                     RacesConfig.Liking.builder()
                         .race("test")
                         .otherRace("test")
