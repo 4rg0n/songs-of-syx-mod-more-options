@@ -182,7 +182,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
                 @Override
                 protected void clickA() {
-                    in.inc(-1 * step);
+                    in.inc(-1 * Slider.this.step);
                 }
 
                 @Override
@@ -195,7 +195,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
                             clickSpeed = 10;
                         List<Integer> allowedValues = Slider.this.allowedValues;
                         if (allowedValues.isEmpty()) {
-                            in.inc(-(int)(clickSpeed * step));
+                            in.inc(-(int)(clickSpeed * Slider.this.step));
                         } else {
                             int i = allowedValues.indexOf(in.get());
                             int index;
@@ -233,7 +233,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
                 @Override
                 protected void clickA() {
-                    in.inc(1 * step);
+                    in.inc(1 * Slider.this.step);
                 }
 
                 @Override
@@ -245,7 +245,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
                             clickSpeed = 10;
                         List<Integer> allowedValues = Slider.this.allowedValues;
                         if (allowedValues.isEmpty()) {
-                            in.inc((int)clickSpeed * step);
+                            in.inc((int)clickSpeed * Slider.this.step);
                         } else {
                             int i = allowedValues.indexOf(in.get());
                             int index;
