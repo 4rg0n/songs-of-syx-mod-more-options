@@ -13,6 +13,14 @@
 * [Ui](ui/README.md)
 * [Util](util/README.md)
 
+## Game Class Replacements
+
+These overwrite vanilla game code.
+
+* [Game Boosting](../../../../../../game/boosting/README.md)
+* [Settlement Weather](../../../../../../settlement/weather/README.md)
+* [Snake2d](../../../../../../snake2d/README.md)
+
 # Getting Started
 
 ## [AbstractModSdkScript](AbstractModSdkScript.java)
@@ -70,6 +78,47 @@ public class YourModScript extends AbstractModSdkScript {
     }
 }
 ```
+
+It caches [Singleton](https://www.baeldung.com/java-singleton) instances of various services and other classes. 
+And provides a `Factory` for building these classes. I would recommend that you also add your own kind of `YourModModule` with a similiar structure.
+This way you can easily wire up the components of the Mod SDK for your needs and also have a single point to look for your implementations.
+For example providing your own internationalization:
+
+```java
+public class YourModModule {
+    
+    // This @Getter is "lombok" magic. It will generate a lazy getter, which will only create this instance, when the getter is called the first time.
+    // It will then serve the same instance instead of creating a new one everytime 
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static I18nMessageBundle i18nMessages = new I18nMessageBundle("your-mod-i18n", ModSdkModule.gameApis().lang());
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static I18n i18n = new I18n(i18nMessages());
+}
+
+public class YourModScript extends AbstractModSdkScript {
+
+    private final I18nTranslator i18n = YourModModule.i18n().get(YourModScript.class);
+
+    @Override
+    public void initSettlementUiPresent() {
+        super.initSettlementUiPresent();
+        
+        // will display notification box with a translated message
+        ModSdkModule.notificator().notify(i18n.t("YourModScript.notify.helloWorld"));
+    }
+}
+```
+
+Try to separate your code into domains ([SoC](https://www.geeksforgeeks.org/separation-of-concerns-soc/)). Like everything config related comes into one package `config`. 
+And use [Dependency Injection](https://www.vogella.com/tutorials/DependencyInjection/article.html) where possible. This way you keep your code organized and reusable.
+It makes it also easier to test when you can simulate certain behavior you outsourced into another class.
+
+
+
+
 
 
 

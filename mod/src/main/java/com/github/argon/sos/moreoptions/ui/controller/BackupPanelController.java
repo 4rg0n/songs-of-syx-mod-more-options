@@ -2,19 +2,14 @@ package com.github.argon.sos.moreoptions.ui.controller;
 
 import com.github.argon.sos.mod.sdk.ui.FullWindow;
 import com.github.argon.sos.mod.sdk.ui.Window;
-import com.github.argon.sos.mod.sdk.log.Logger;
-import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.BackupDialog;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
-import com.github.argon.sos.moreoptions.ui.msg.Messages;
 import org.jetbrains.annotations.Nullable;
 
 import static com.github.argon.sos.moreoptions.MoreOptionsScript.MOD_INFO;
 
 public class BackupPanelController extends AbstractUiController<MoreOptionsPanel> {
-    private final static Logger log = Loggers.getLogger(BackupPanelController.class);
-
     @Nullable
     private final MoreOptionsV5Config backupConfig;
     private final Window<BackupDialog> backupDialog;

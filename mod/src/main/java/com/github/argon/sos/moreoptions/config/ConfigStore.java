@@ -7,6 +7,7 @@ import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.UninitializedException;
 import com.github.argon.sos.mod.sdk.phase.state.StateManager;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
@@ -43,7 +44,11 @@ public class ConfigStore implements Phases {
 
     @Override
     public void initSettlementUiPresent() {
-        init();
+        try {
+            init();
+        } catch (ConfigException e) {
+            ModModule.messages().errorDialog(e);
+        }
     }
 
     @Override
@@ -71,18 +76,24 @@ public class ConfigStore implements Phases {
 
     /**
      * Loads configs from files and caches it
+     * Used once when a game starts
      */
     public void init() {
         MoreOptionsV5Config defaultConfig = configDefaults.newConfig();
         setDefaultConfig(defaultConfig);
-        MoreOptionsV5Config config = configService.getConfig()
-            .map(loadedConfig -> {
-                ConfigMerger.merge(loadedConfig, defaultConfig);
-                return loadedConfig;
-            })
-            .orElse(defaultConfig);
-
-        setCurrentConfig(config);
+        MoreOptionsV5Config config;
+        try {
+            config = configService.getConfig()
+                .map(loadedConfig -> {
+                    ConfigMerger.merge(loadedConfig, defaultConfig);
+                    return loadedConfig;
+                })
+                .orElse(defaultConfig);
+            setCurrentConfig(config);
+        } catch (Exception e) {
+            setCurrentConfig(defaultConfig);
+            throw new ConfigException("Could not initialize config loaded from file system. Using default settings instead.", e);
+        }
     }
 
     public boolean save(@Nullable MoreOptionsV5Config config) {

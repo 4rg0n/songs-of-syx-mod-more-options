@@ -31,7 +31,7 @@ public class AdvancedTabController extends AbstractUiController<AdvancedTab> {
 
     @Override
     public void onGameSaved(Path saveFilePath) {
-        element.refresh(gameApis.save().getSaveStamp());
+        getElement().refresh(gameApis.save().getSaveStamp());
     }
 
     public void dumpLogs() {
@@ -79,7 +79,7 @@ public class AdvancedTabController extends AbstractUiController<AdvancedTab> {
     }
 
     public void copySaveStamp() {
-        String saveStamp = element.getSaveStamp();
+        String saveStamp = getElement().getSaveStamp();
         try {
             Clipboard.write(saveStamp);
             messages.notifySuccess("notification.advanced.saveStamp.copy", saveStamp);
@@ -89,7 +89,7 @@ public class AdvancedTabController extends AbstractUiController<AdvancedTab> {
     }
 
     public void copyWorldSeed() {
-        int worldSeed = element.getWorldSeed();
+        int worldSeed = getElement().getWorldSeed();
         try {
             Clipboard.write(String.valueOf(worldSeed));
             messages.notifySuccess("notification.advanced.worldSeed.copy", worldSeed);

@@ -55,7 +55,7 @@ public class RacesTabController extends AbstractUiController<RacesTab> {
 
     public void exportRacesConfigToClipboard() {
         try {
-            RacesConfig racesConfig = element.getValue();
+            RacesConfig racesConfig = getElement().getValue();
             JsonElement jsonElement = JsonMapper.mapObject(racesConfig);
             Json json = new Json(jsonElement, JsonWriters.jsonEPretty());
 
@@ -72,7 +72,7 @@ public class RacesTabController extends AbstractUiController<RacesTab> {
                 Json json = new Json(s, JsonWriters.jsonEPretty());
                 RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), RacesConfig.class);
 
-                element.setValue(racesConfig);
+                getElement().setValue(racesConfig);
                 messages.notifySuccess("notification.races.config.import");
             });
         } catch (Exception e) {
@@ -91,7 +91,7 @@ public class RacesTabController extends AbstractUiController<RacesTab> {
                 RacesConfig racesConfig = configStore.loadRacesConfig(configPath).orElse(null);
 
                 if (racesConfig != null) {
-                    element.setValue(racesConfig);
+                    getElement().setValue(racesConfig);
                     messages.notifySuccess("notification.races.config.load");
                     racesConfigsSelection.hide();
                 } else {

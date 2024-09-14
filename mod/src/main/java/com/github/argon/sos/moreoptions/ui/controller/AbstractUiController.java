@@ -5,7 +5,7 @@ import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.phase.Phases;
+import com.github.argon.sos.mod.sdk.ui.controller.AbstractController;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
@@ -15,17 +15,13 @@ import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
 import com.github.argon.sos.moreoptions.ui.msg.Messages;
-import lombok.RequiredArgsConstructor;
 
 import java.awt.*;
 import java.net.URI;
 import java.util.Objects;
 
-@RequiredArgsConstructor
-public abstract class AbstractUiController<Element> implements Phases {
+public abstract class AbstractUiController<Element> extends AbstractController<Element> {
     protected static final I18nTranslator i18n = ModModule.i18n().get(AbstractUiController.class);
-    protected final Element element;
-
     private final static Logger log = Loggers.getLogger(AbstractUiController.class);
 
     protected final GameApis gameApis = ModSdkModule.gameApis();
@@ -35,6 +31,10 @@ public abstract class AbstractUiController<Element> implements Phases {
     protected final UiFactory uiFactory = ModModule.uiFactory();
     protected final ConfigApplier configApplier = ModModule.configApplier();
     protected final Messages messages = ModModule.messages();
+
+    public AbstractUiController(Element element) {
+        super(element);
+    }
 
     protected boolean applyAndSave(MoreOptionsPanel moreOptionsPanel) {
         MoreOptionsV5Config currentConfig = configStore.getCurrentConfig();

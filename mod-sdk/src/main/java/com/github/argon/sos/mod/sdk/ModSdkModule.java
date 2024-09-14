@@ -23,6 +23,7 @@ import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import com.github.argon.sos.mod.sdk.properties.PropertiesService;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import com.github.argon.sos.mod.sdk.ui.Notificator;
+import com.github.argon.sos.mod.sdk.ui.controller.Controllers;
 import init.paths.PATHS;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,6 +37,14 @@ import java.nio.file.Path;
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ModSdkModule {
+
+    /**
+     * For managing controllers
+     * See: {@link Controllers}
+     */
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static Controllers controllers = Factory.newControllers();
 
     /**
      * For reading GAME JSON config
@@ -218,6 +227,10 @@ public class ModSdkModule {
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Factory {
+
+        public static Controllers newControllers() {
+            return new Controllers();
+        }
         public static GameJsonService newGameJsonService(GameJsonStore gameJsonStore) {
             return new GameJsonService(gameJsonStore);
         }

@@ -1,5 +1,6 @@
 package game.boosting;
 
+// MODDED made the class public
 public final class BoostSpec {
 
     public final Booster booster;

@@ -15,7 +15,7 @@ public class MetricsTabController extends AbstractUiController<MetricsTab> {
     }
 
     public void openMetricsExportFolder() {
-        Path exportFolderPath = element.getExportFolderPath();
+        Path exportFolderPath = getElement().getExportFolderPath();
         if (!exportFolderPath.toFile().exists()) {
             messages.notifyError("notification.metrics.folder.not.exists", exportFolderPath);
             return;
@@ -29,7 +29,7 @@ public class MetricsTabController extends AbstractUiController<MetricsTab> {
     }
 
     public void copyMetricExportFilename() {
-        Path exportFilePath = element.getExportFilePath();
+        Path exportFilePath = getElement().getExportFilePath();
 
         if (exportFilePath == null) {
             messages.notifyError("notification.metrics.file.path.not.copy");

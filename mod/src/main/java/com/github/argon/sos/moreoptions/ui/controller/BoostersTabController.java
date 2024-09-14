@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 public class BoostersTabController extends AbstractUiController<BoostersTab> {
 
-
     public BoostersTabController(BoostersTab boostersTab) {
         super(boostersTab);
         boostersTab.refreshAction(panel -> refreshBoosters());
@@ -42,7 +41,7 @@ public class BoostersTabController extends AbstractUiController<BoostersTab> {
             BoostersConfig.Booster::getRange
         ));
 
-        element.getBoostersSections().forEach((faction, boostersSection) -> {
+        getElement().getBoostersSections().forEach((faction, boostersSection) -> {
             if (gameApis.faction().isPlayer(faction)) {
                 return;
             }
@@ -54,7 +53,7 @@ public class BoostersTabController extends AbstractUiController<BoostersTab> {
     }
 
     public void resetCurrentBoosters() {
-        BoostersSection currentBoosterSection = element.getCurrentBoosterSection();
+        BoostersSection currentBoosterSection = getElement().getCurrentBoosterSection();
         Map<String, Range> boosterValues = configDefaults.newBoosters().values().stream().collect(Collectors.toMap(
             BoostersConfig.Booster::getKey,
             BoostersConfig.Booster::getRange
@@ -65,12 +64,12 @@ public class BoostersTabController extends AbstractUiController<BoostersTab> {
     }
 
     public void copyBoostersConfig() {
-        Faction copiedFaction = element.copyBoosters();
+        Faction copiedFaction = getElement().copyBoosters();
         messages.notifySuccess("notification.boosters.copy", copiedFaction.name.toString());
     }
 
     public void pasteBoostersConfigToAllNPCFactions() {
-        int amount = element.pasteBoostersToNPCFactions();
+        int amount = getElement().pasteBoostersToNPCFactions();
 
         if (amount > 0) {
             messages.notifySuccess("notification.boosters.factions.paste", amount);
@@ -80,7 +79,7 @@ public class BoostersTabController extends AbstractUiController<BoostersTab> {
     }
 
     public void pasteBoostersConfig() {
-        if (element.pasteBoosters()) {
+        if (getElement().pasteBoosters()) {
             messages.notifySuccess("notification.boosters.paste");
         } else {
             messages.notifyError("notification.boosters.not.paste");
@@ -88,14 +87,14 @@ public class BoostersTabController extends AbstractUiController<BoostersTab> {
     }
 
     public void saveBoostersPreset() {
-        Map<String, Range> preset = element.getCurrentBoosterSection().getValue();
+        Map<String, Range> preset = getElement().getCurrentBoosterSection().getValue();
         STRING_RECIEVER r = presetName -> {
             if (presetName != null && presetName.length() > 0) {
-                element.getBoosterPresets().put(presetName.toString(), preset);
+                getElement().getBoosterPresets().put(presetName.toString(), preset);
                 MoreOptionsV5Config currentConfig = configStore.getCurrentConfig();
 
                 if (currentConfig != null) {
-                    currentConfig.getBoosters().setPresets(element.getValue().getPresets());
+                    currentConfig.getBoosters().setPresets(getElement().getValue().getPresets());
                     configStore.save(currentConfig);
                 }
 
@@ -107,12 +106,12 @@ public class BoostersTabController extends AbstractUiController<BoostersTab> {
     }
 
     public void loadBoostersPreset() {
-        Map<String, Map<String, Range>> presets = element.getBoosterPresets();
+        Map<String, Map<String, Range>> presets = getElement().getBoosterPresets();
         BoostersPresetsSection presetsPanel = BoostersPresetsSection.builder()
             .presets(presets)
             .clickAction(key -> {
                 Map<String, Range> boostersPreset = presets.get(key);
-                element.getCurrentBoosterSection().setValue(boostersPreset);
+                getElement().getCurrentBoosterSection().setValue(boostersPreset);
                 messages.notifySuccess("notification.boosters.preset.load", key);
             })
             .deleteAction((key, panel) -> {
@@ -135,15 +134,15 @@ public class BoostersTabController extends AbstractUiController<BoostersTab> {
             })
             .build();
 
-        gameApis.ui().popup().show(presetsPanel, element.getLoadPresetButton());
+        gameApis.ui().popup().show(presetsPanel, getElement().getLoadPresetButton());
     }
 
     public void refreshBoosters() {
         configDefaults.newBoostersConfig();
         Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(configDefaults.newBoostersConfig());
-        element.refresh(boosterEntries);
+        getElement().refresh(boosterEntries);
         MoreOptionsV5Config currentConfig = configStore.getCurrentConfig();
         Objects.requireNonNull(currentConfig);
-        element.setValue(currentConfig.getBoosters());
+        getElement().setValue(currentConfig.getBoosters());
     }
 }
