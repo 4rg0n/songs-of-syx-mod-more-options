@@ -3,7 +3,7 @@
 Here you can find various classes for handling Songs of Syx JSON format and the standard JSON format.
 You can use this to read game config files or to create your config files.
 
-## JSON Mapping
+## Game JSON Mapping
 
 
 The [JsonMapper](JsonMapper.java) provides various static methods to map a [Java Pojo](https://www.baeldung.com/java-pojo-class).
@@ -29,18 +29,6 @@ TECH: [
 **Java Pojo and Service**
 
 ```java
-
-import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.json.Json;
-import com.github.argon.sos.mod.sdk.json.element.JsonElement;
-import com.github.argon.sos.mod.sdk.json.JsonMapper;
-import init.paths.PATHS;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Objects;
-
 @Getter
 @Setter
 @Builder
@@ -122,7 +110,7 @@ public class MyJsonService {
 }
 ```
 
-## JSON Path
+## Game JSON Path
 
 A [JsonPath](JsonPath.java) can be used to extract or even write Json elements from and into a Json.
 So you could read a single value from a whole json tree by pointing to it.
@@ -142,12 +130,6 @@ TECH: [
 ```
 
 ```java
-
-import com.github.argon.sos.mod.sdk.json.JsonPath;
-import com.github.argon.sos.mod.sdk.json.element.JsonLong;
-
-import java.util.Optional;
-
 public class MyJsonExtractor {
     public Long readHumanRaceWidth() {
         // read the games init/race/HUMAN.txt file as Json
@@ -180,7 +162,59 @@ public class MyJsonExtractor {
             });
     }
 }
+```
 
+## Standard JSON
+
+For dealing with standard JSON there is the [JacksonService](JacksonService.java). 
+It uses [FasterXML Jackson](https://mvnrepository.com/artifact/com.fasterxml.jackson.core) to do the parsing and mapping.
+
+`YourConfig.json`
+```json
+{
+  "name": "foo",
+  "dimensions": {
+    "x": 100,
+    "y": 200
+  }
+}
+```
+
+```java
+import com.github.argon.sos.mod.sdk.ModSdkModule;
+
+public class YourModScript extends AbstractModSdkScript {
+    private final static Logger log = Loggers.getLogger(YourModScript.class);
+
+    @Override
+    public void initBeforeGameCreated() {
+        Path jsonConfigPath = PATHS.local().SETTINGS.get().resolve("YourConfig.json");
+        
+        // read JSON file "YourConfig.json" from games "settings" folder
+        YourConfigJson yourConfigJson = ModSdkModule.jacksonService()
+            .load(jsonConfigPath, YourConfigJson.class)
+            .orElse(null);
+        log.info("Name: %s", yourConfigJson.getName());
+        
+        // change name and save in file
+        yourConfigJson.setName("bar");
+        ModSdkModule.jacksonService().save(jsonConfigPath, yourConfigJson);
+    }
+}
+
+/**
+ * Your JSON structure
+ */
+@Data
+public class YourConfigJson {
+    private String name;
+    private Dimensions dimensions;
+
+    public static class Dimensions {
+        private int x;
+        private int y;
+    }
+}
 ```
 
 
