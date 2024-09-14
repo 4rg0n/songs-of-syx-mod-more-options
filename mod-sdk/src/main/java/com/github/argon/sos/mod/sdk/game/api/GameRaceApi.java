@@ -45,6 +45,21 @@ public class GameRaceApi implements Phases {
         "TILAPI"
     );
 
+    @Override
+    public void initModCreateInstance() {
+        // initialize all game races
+        for (Race race : getAll()) {
+            raceIndexMap.put(race.key, race.index);
+        }
+
+        // initialize vanilla race likings
+        if (vanillaLikings == null) {
+            vanillaLikings = getAllLikings();
+        }
+
+        log.debug("Initialized %s races", raceIndexMap.size());
+    }
+
     public void increaseHappiness(Race race, double inc) {
         increaseStanding(STANDINGS.CITIZEN().happiness, race, inc);
     }
@@ -87,20 +102,6 @@ public class GameRaceApi implements Phases {
         } catch (Exception e) {
             log.warn("Could not increase %s for %s", standing.info().name, race.key, e);
         }
-    }
-
-    public void initModCreateInstance() {
-        // initialize all game races
-        for (Race race : getAll()) {
-            raceIndexMap.put(race.key, race.index);
-        }
-
-        // initialize vanilla race likings
-        if (vanillaLikings == null) {
-            vanillaLikings = getAllLikings();
-        }
-
-        log.debug("Initialized %s races", raceIndexMap.size());
     }
 
     /**

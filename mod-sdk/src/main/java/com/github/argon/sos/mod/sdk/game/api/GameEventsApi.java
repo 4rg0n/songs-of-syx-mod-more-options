@@ -1,5 +1,6 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
+import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Access to the games events like raids
  */
-public class GameEventsApi {
+public class GameEventsApi implements Resettable {
 
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
@@ -22,10 +23,14 @@ public class GameEventsApi {
 
     public final static String KEY_PREFIX = "event";
 
-    public void clearCached() {
+    @Override
+    public void reset() {
         events = null;
     }
 
+    /**
+     * @return a map with all game events
+     */
     public Map<String, EVENTS.EventResource> getEvents() {
         if (events == null) {
             events = readEvents();
@@ -39,12 +44,12 @@ public class GameEventsApi {
     }
 
     public Map<String, EVENTS.EventResource> readEvents() {
-        Map<String, EVENTS.EventResource> worldEvents = new HashMap<>();
+        Map<String, EVENTS.EventResource> events = new HashMap<>();
         for (EVENTS.EventResource eventResource : GAME.events().all()) {
-            worldEvents.put(KEY_PREFIX + "." + eventResource.key, eventResource);
+            events.put(KEY_PREFIX + "." + eventResource.key, eventResource);
         }
 
-        return worldEvents;
+        return events;
     }
 
     public Map<String, Boolean> readEventsEnabledStatus() {

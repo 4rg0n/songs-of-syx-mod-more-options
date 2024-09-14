@@ -20,6 +20,9 @@ public class CacheValue<Value> {
     @Nullable
     private Value cachedValue;
 
+    /**
+     * @return the cached value
+     */
     public Value get() {
         if (cachedValue == null || expired()) {
             return readValue();
@@ -28,14 +31,23 @@ public class CacheValue<Value> {
         }
     }
 
+    /**
+     * @return whether the cache is expired
+     */
     public boolean expired() {
         return System.currentTimeMillis() - updateTimeMillis >= lifetimeMillis;
     }
 
+    /**
+     * Clear the cached value and force the cache to fetch a new value
+     */
     public void evict() {
         cachedValue = null;
     }
 
+    /**
+     * Only clear when cache is expired
+     */
     public void evictExpired() {
         if (expired()) {
             evict();

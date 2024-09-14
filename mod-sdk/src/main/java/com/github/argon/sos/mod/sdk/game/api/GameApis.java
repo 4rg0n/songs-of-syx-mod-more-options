@@ -1,5 +1,6 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
+import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.nio.file.Path;
  */
 @Getter
 @RequiredArgsConstructor
-public class GameApis implements Phases {
+public class GameApis implements Phases, Resettable {
 
     @Accessors(fluent = true)
     private final GameEventsApi events;
@@ -48,12 +49,13 @@ public class GameApis implements Phases {
     @Accessors(fluent = true)
     private final GameStatsApi stats;
 
-    public void clear() {
+    @Override
+    public void reset() {
         // game will initialize new instances of the cached class references on load
-        events().clearCached();
-        sounds().clearCached();
-        weather().clearCached();
-        faction().clearCached();
+        events().reset();
+        sounds().reset();
+        weather().reset();
+        faction().reset();
     }
 
     @Override
@@ -98,7 +100,7 @@ public class GameApis implements Phases {
 
     @Override
     public void onGameSaveReloaded() {
-        clear();
+        reset();
     }
 
     @Override

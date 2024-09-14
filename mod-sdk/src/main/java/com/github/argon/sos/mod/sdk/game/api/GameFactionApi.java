@@ -1,5 +1,6 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
+import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phase;
@@ -20,7 +21,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
-public class GameFactionApi implements Phases {
+public class GameFactionApi implements Phases, Resettable {
 
     private final Logger log = Loggers.getLogger(GameFactionApi.class);
 
@@ -32,14 +33,20 @@ public class GameFactionApi implements Phases {
     @Nullable
     private Player player;
 
+    /**
+     * @return the player faction
+     */
     public Player getPlayer() {
         if (player == null) {
-            throw new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT);
+            throw new UninitializedException(Phase.ON_VIEW_SETUP);
         }
 
         return player;
     }
 
+    /**
+     * @return whether a faction is the player faction
+     */
     public boolean isPlayer(Faction faction) {
         return faction.equals(getPlayer());
     }
@@ -49,7 +56,8 @@ public class GameFactionApi implements Phases {
         return getFactions().get(name);
     }
 
-    public void clearCached() {
+    @Override
+    public void reset() {
         factions.clear();
         factionNPCs.clear();
         player = null;

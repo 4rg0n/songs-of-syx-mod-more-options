@@ -1,5 +1,6 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
+import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class GameWeatherApi {
+public class GameWeatherApi implements Resettable {
 
     private final Logger log = Loggers.getLogger(GameWeatherApi.class);
 
@@ -41,41 +42,10 @@ public class GameWeatherApi {
         return weatherThings;
     }
 
-    public void clearCached() {
+    @Override
+    public void reset() {
         weatherThings = null;
     }
-
-    /**
-     * 0 = night?
-     * 1 = predawn
-     * 2 = dawn
-     * 3 = dusk
-     * 4 = afterDusk
-     * 5 = day?
-     * 6 = night?
-     */
-
-    //TODO::experimental, need to do MoreOptionsScript thingy first
-//    public void lockDayCycle(int cycle, boolean lock) {
-//        if (cycle > 6 || cycle < 0) {
-//            log.warn("Invalid day cycle %s. Must be bigger than 0 and lesser than 6", cycle);
-//            return;
-//        }
-//
-//        TIME.light().sun().setCycleLock(cycle);
-//        TIME.light().sun().setLocked(lock);
-//
-//        TIME.light().moon().setCycleLock(cycle);
-//        TIME.light().moon().setLocked(lock);
-//    }
-//
-//    public void unlockDayCycle() {
-//        TIME.light().sun().setCycleLock(0);
-//        TIME.light().sun().setLocked(false);
-//
-//        TIME.light().moon().setCycleLock(0);
-//        TIME.light().moon().setLocked(false);
-//    }
 
     public void setAmountLimit(WeatherThing weatherThing, int percentage) {
         double currentValue = weatherThing.getD();

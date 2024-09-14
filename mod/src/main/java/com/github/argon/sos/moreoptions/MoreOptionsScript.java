@@ -53,7 +53,7 @@ public final class MoreOptionsScript extends AbstractModSdkScript {
 	protected void registerPhases(PhaseManager phaseManager) {
         phaseManager
             .register(Phase.INIT_BEFORE_GAME_CREATED, ModModule.configStore())
-			.register(Phase.INIT_MOD_CREATE_INSTANCE, ModModule.gameApis().boosters())
+			.register(Phase.INIT_MOD_CREATE_INSTANCE, ModModule.gameApis())
             .register(Phase.INIT_MOD_CREATE_INSTANCE, ModModule.uiConfig())
             .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ModModule.configStore())
             .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ModModule.uiConfig())
@@ -65,7 +65,7 @@ public final class MoreOptionsScript extends AbstractModSdkScript {
 
             .register(Phase.ON_GAME_SAVE_LOADED, ModModule.configStore())
             .register(Phase.ON_GAME_SAVED, ModModule.configStore())
-            .register(Phase.ON_GAME_SAVE_RELOADED, ModModule.gameApis().boosters())
+            .register(Phase.ON_GAME_SAVE_RELOADED, ModModule.gameApis())
             .register(Phase.ON_CRASH, ModModule.configStore());
 	}
 

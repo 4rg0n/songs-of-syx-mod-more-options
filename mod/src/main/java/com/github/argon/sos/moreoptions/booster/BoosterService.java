@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.booster;
 
 import com.github.argon.sos.mod.sdk.booster.Boosters;
 import com.github.argon.sos.mod.sdk.booster.FactionBooster;
+import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.game.api.GameFactionApi;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  * For accessing the games Booster mechanics with custom {@link FactionBooster}s.
  */
 @RequiredArgsConstructor
-public class BoosterService {
+public class BoosterService implements Resettable {
     private final static Logger log = Loggers.getLogger(BoosterService.class);
 
     private final GameFactionApi factionApi;
@@ -98,6 +99,7 @@ public class BoosterService {
         setBoosterValues(config);
     }
 
+    @Override
     public void reset() {
         Map<String, Boosters> boosters = BoosterFactory.createDefault(this.boosters);
 

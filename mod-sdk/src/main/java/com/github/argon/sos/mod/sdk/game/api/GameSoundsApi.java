@@ -1,7 +1,6 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
-import com.github.argon.sos.mod.sdk.log.Logger;
-import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
 import game.audio.AUDIO;
 import game.audio.Ambiance;
@@ -15,14 +14,15 @@ import java.util.Map;
  * Access to the games sound effects
  */
 @NoArgsConstructor
-public class GameSoundsApi {
+public class GameSoundsApi implements Resettable {
 
     @Nullable
     private Map<String, Ambiance> ambienceSounds;
 
     public final static String KEY_PREFIX = "sounds";
 
-    public void clearCached() {
+    @Override
+    public void reset() {
         ambienceSounds = null;
     }
 
