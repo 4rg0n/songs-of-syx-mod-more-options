@@ -1,11 +1,11 @@
 package com.github.argon.sos.moreoptions.ui.tab.races;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.game.ui.*;
-import com.github.argon.sos.mod.sdk.game.ui.layout.Layout;
-import com.github.argon.sos.mod.sdk.game.ui.layout.VerticalLayout;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
+import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.layout.Layout;
+import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
@@ -123,7 +123,7 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
         searchBar.addRightC(20, search);
         searchBar.hoverInfoSet(i18n.t("RacesTab.search.header.desc"));
 
-        Layout.vertical(availableHeight)
+       Layout.vertical(availableHeight)
             .addDownC(0, buttonMenu)
             .addDownC(20, searchBar)
             .addDownC(20, new VerticalLayout.Scalable(300, height ->  Table.<Integer>builder()

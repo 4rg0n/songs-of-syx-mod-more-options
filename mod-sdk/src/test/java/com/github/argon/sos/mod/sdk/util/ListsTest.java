@@ -41,7 +41,7 @@ class ListsTest {
     @Test
     void copy() {
         assertThat(Lists.slice(Lists.of("TEST1", "TEST2"), 0, 0)).isEqualTo(Lists.of("TEST1"));
-        assertThat(Lists.slice(Lists.of("TEST1", "TEST2"), 0, 3)).isEqualTo(Lists.of(Lists.of("TEST1", "TEST2")));
+        assertThat(Lists.slice(Lists.of("TEST1", "TEST2"), 0, 3)).isEqualTo(Lists.ofList(Lists.of("TEST1", "TEST2")));
         assertThat(Lists.slice(Lists.of("TEST1", "TEST2"), 3, 1)).isEqualTo(Lists.of());
     }
 }

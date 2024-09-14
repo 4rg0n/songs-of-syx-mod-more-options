@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
-import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
-import com.github.argon.sos.mod.sdk.game.ui.Label;
+import com.github.argon.sos.mod.sdk.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.Label;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;

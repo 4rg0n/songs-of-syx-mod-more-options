@@ -1,12 +1,12 @@
 package com.github.argon.sos.moreoptions.ui.json.factory;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.game.ui.*;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import menu.ui.ColorPicker;
-import com.github.argon.sos.mod.sdk.game.ui.Slider;
+import com.github.argon.sos.mod.sdk.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.json.JsonUiException;
 
 import java.nio.file.Path;

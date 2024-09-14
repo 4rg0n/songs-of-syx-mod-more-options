@@ -2,10 +2,10 @@ package com.github.argon.sos.moreoptions.ui.tab.sounds;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
-import com.github.argon.sos.mod.sdk.game.ui.Slider;
-import com.github.argon.sos.mod.sdk.game.ui.Table;
-import com.github.argon.sos.mod.sdk.game.ui.layout.Layout;
-import com.github.argon.sos.mod.sdk.game.ui.layout.VerticalLayout;
+import com.github.argon.sos.mod.sdk.ui.Slider;
+import com.github.argon.sos.mod.sdk.ui.Table;
+import com.github.argon.sos.mod.sdk.ui.layout.Layout;
+import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;

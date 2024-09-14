@@ -1,15 +1,15 @@
 package com.github.argon.sos.moreoptions.ui.tab.metrics;
 
-import com.github.argon.sos.mod.sdk.game.ui.*;
-import com.github.argon.sos.mod.sdk.game.ui.layout.Layout;
-import com.github.argon.sos.mod.sdk.game.ui.layout.VerticalLayout;
+import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.layout.Layout;
+import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Sets;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
 import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.game.ui.Slider;
+import com.github.argon.sos.mod.sdk.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.sprite.UI.UI;
 import lombok.Getter;

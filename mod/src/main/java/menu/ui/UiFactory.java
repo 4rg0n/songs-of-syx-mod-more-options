@@ -1,15 +1,15 @@
 package menu.ui;
 
-import com.github.argon.sos.mod.sdk.game.ui.*;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.json.JsonMapper;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
-import com.github.argon.sos.mod.sdk.game.ui.Slider;
-import com.github.argon.sos.mod.sdk.game.ui.SliderDoubleList;
-import com.github.argon.sos.mod.sdk.game.ui.SliderIntegerList;
+import com.github.argon.sos.mod.sdk.ui.Slider;
+import com.github.argon.sos.mod.sdk.ui.SliderDoubleList;
+import com.github.argon.sos.mod.sdk.ui.SliderIntegerList;
 import init.sprite.UI.UI;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

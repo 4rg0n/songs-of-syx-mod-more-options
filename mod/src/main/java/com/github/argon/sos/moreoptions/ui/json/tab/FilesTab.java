@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.ui.json.tab;
 
 import com.github.argon.sos.mod.sdk.game.asset.GameFolder;
-import com.github.argon.sos.mod.sdk.game.asset.GameResources;
-import com.github.argon.sos.mod.sdk.game.ui.*;
+import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import init.paths.PATH;
 import init.sprite.SPRITES;
@@ -49,7 +49,7 @@ public class FilesTab<Tab extends AbstractTab> extends AbstractTab {
         availableHeight -= searchBar.body().height();
 
         GuiSection menuWithSearch = new GuiSection();
-        GameFolder rootFolder = GameResources.get(root);
+        GameFolder rootFolder = GameAssets.get(root);
         boolean collapsed = true;
         FilesMenu filesMenu = FilesMenu.builder()
             .root(rootFolder)

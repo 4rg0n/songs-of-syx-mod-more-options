@@ -20,6 +20,7 @@ import java.util.Set;
 
 /**
  * For collecting game stats.
+ * Can extract data from different sorts of game statistics.
  */
 @RequiredArgsConstructor
 public class StatsExtractor {

@@ -1,11 +1,11 @@
 package com.github.argon.sos.moreoptions.ui.json.factory;
 
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
-import com.github.argon.sos.mod.sdk.game.ui.*;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import menu.ui.ColorPicker;
-import com.github.argon.sos.mod.sdk.game.ui.Slider;
-import com.github.argon.sos.mod.sdk.game.ui.SliderDoubleList;
+import com.github.argon.sos.mod.sdk.ui.Slider;
+import com.github.argon.sos.mod.sdk.ui.SliderDoubleList;
 import com.github.argon.sos.moreoptions.ui.json.factory.builder.JsonUiElementListBuilder;
 import init.sprite.UI.UI;
 import lombok.Getter;

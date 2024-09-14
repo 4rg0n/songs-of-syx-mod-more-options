@@ -1,14 +1,13 @@
 package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
-import com.github.argon.sos.mod.sdk.game.ui.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.game.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
 import game.boosting.BOOSTABLE_O;
 import game.boosting.Boostable;

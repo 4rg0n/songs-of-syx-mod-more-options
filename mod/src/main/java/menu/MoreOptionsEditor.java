@@ -1,10 +1,10 @@
 package menu;
 
-import com.github.argon.sos.mod.sdk.game.asset.GameResources;
-import com.github.argon.sos.mod.sdk.game.ui.Button;
-import com.github.argon.sos.mod.sdk.game.ui.ButtonMenu;
-import com.github.argon.sos.mod.sdk.game.ui.Switcher;
-import com.github.argon.sos.mod.sdk.game.ui.Tabulator;
+import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
+import com.github.argon.sos.mod.sdk.ui.Button;
+import com.github.argon.sos.mod.sdk.ui.ButtonMenu;
+import com.github.argon.sos.mod.sdk.ui.Switcher;
+import com.github.argon.sos.mod.sdk.ui.Tabulator;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import init.C;
 import init.paths.PATHS;
@@ -76,7 +76,7 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.sliderD("DANGER", 0, 100);
                 jsonUiTemplate.color("COLOR");
                 jsonUiTemplate.text("ICON");
-                jsonUiTemplate.dropDown("SPRITE", GameResources.sprite().animal().fileTitles());
+                jsonUiTemplate.dropDown("SPRITE", GameAssets.sprite().animal().fileTitles());
                 jsonUiTemplate.sliderD("LIVES_IN_CAVES", 0, 100);
                 jsonUiTemplate.checkbox("CARAVAN");
                 jsonUiTemplate.checkbox("PACK");
@@ -95,7 +95,7 @@ public class MoreOptionsEditor extends GuiSection {
     private JsonUi fences() {
         return JsonUi.builder(PATHS.SETT().init.getFolder("fence"))
             .templates(jsonUiTemplate -> {
-                jsonUiTemplate.dropDown("RESOURCE", GameResources.getResources());
+                jsonUiTemplate.dropDown("RESOURCE", GameAssets.getResources());
                 jsonUiTemplate.slider("RESOURCE_AMOUNT", 0, 1000);
                 jsonUiTemplate.color("MINIMAP_COLOR");
                 jsonUiTemplate.text("BUILD_SOUND");
@@ -115,30 +115,30 @@ public class MoreOptionsEditor extends GuiSection {
         return JsonUi.builder(PATHS.SETT().init.getFolder("floor"))
             .templates(jsonUiTemplate -> {
                 jsonUiTemplate.header("GAME_TEXTURE");
-                jsonUiTemplate.dropDown("GAME_TEXTURE.FILE", GameResources.sprite().textures().fileTitles());
+                jsonUiTemplate.dropDown("GAME_TEXTURE.FILE", GameAssets.sprite().textures().fileTitles());
                 jsonUiTemplate.slider("GAME_TEXTURE.ROW", 0, 7);
 
                 jsonUiTemplate.header("ROAD");
-                jsonUiTemplate.dropDown("ROAD.RESOURCE", GameResources.getResources());
+                jsonUiTemplate.dropDown("ROAD.RESOURCE", GameAssets.getResources());
                 jsonUiTemplate.slider("ROAD.RESOURCE_AMOUNT", 0, 1000);
                 jsonUiTemplate.slider("ROAD.SPEED", 0, 4);
                 jsonUiTemplate.sliderD("ROAD.DURABILITY", 0, 100);
 
                 jsonUiTemplate.header("ROAD.ENVIRONMENT");
-                jsonUiTemplate.slidersD("ROAD.ENVIRONMENT", GameResources.getEnvironments(), 0, 100);
+                jsonUiTemplate.slidersD("ROAD.ENVIRONMENT", GameAssets.getEnvironments(), 0, 100);
                 jsonUiTemplate.header("ROAD.PREFERENCE");
-                jsonUiTemplate.slidersD("ROAD.PREFERENCE", GameResources.getEnvironments(), 0, 100);
+                jsonUiTemplate.slidersD("ROAD.PREFERENCE", GameAssets.getEnvironments(), 0, 100);
             }).build();
     }
 
     private JsonUi fortifications() {
         return JsonUi.builder(PATHS.SETT().init.getFolder("fortification"))
             .templates(jsonUiTemplate -> {
-                jsonUiTemplate.dropDown("SPRITE", GameResources.sprite().settlement().fortification().fileTitles());
+                jsonUiTemplate.dropDown("SPRITE", GameAssets.sprite().settlement().fortification().fileTitles());
                 jsonUiTemplate.color("COLOR");
                 jsonUiTemplate.color("MINIMAP_COLOR");
                 jsonUiTemplate.text("BUILD_SOUND");
-                jsonUiTemplate.dropDown("RESOURCE", GameResources.getResources());
+                jsonUiTemplate.dropDown("RESOURCE", GameAssets.getResources());
                 jsonUiTemplate.slider("RESOURCE_AMOUNT", 1, 1000);
                 jsonUiTemplate.slider("HEIGHT", 1, 20);
                 jsonUiTemplate.sliderD("BUILD_TIME", 0, 100);
@@ -149,17 +149,17 @@ public class MoreOptionsEditor extends GuiSection {
     private JsonUi structures() {
         return JsonUi.builder(PATHS.SETT().init.getFolder("structure"))
             .templates(jsonUiTemplate -> {
-                jsonUiTemplate.dropDown("SPRITE", GameResources.sprite().settlement().structure().fileTitles());
+                jsonUiTemplate.dropDown("SPRITE", GameAssets.sprite().settlement().structure().fileTitles());
                 jsonUiTemplate.color("COLOR");
                 jsonUiTemplate.color("MINIMAP_COLOR");
                 jsonUiTemplate.text("BUILD_SOUND");
-                jsonUiTemplate.dropDown("RESOURCE", GameResources.getResources());
+                jsonUiTemplate.dropDown("RESOURCE", GameAssets.getResources());
                 jsonUiTemplate.slider("RESOURCE_AMOUNT", 1, 1000);
                 jsonUiTemplate.sliderD("BUILD_TIME", 0, 100);
                 jsonUiTemplate.sliderD("DURABILITY", 0, 100);
 
                 jsonUiTemplate.header("PREFERENCE");
-                jsonUiTemplate.slidersD("PREFERENCE", GameResources.getRaces(), 0, 100);
+                jsonUiTemplate.slidersD("PREFERENCE", GameAssets.getRaces(), 0, 100);
             }).build();
     }
 
@@ -167,7 +167,7 @@ public class MoreOptionsEditor extends GuiSection {
         return JsonUi.builder(PATHS.RACE().init)
             .templates(jsonUiTemplate -> {
                 jsonUiTemplate.checkbox("PLAYABLE");
-                jsonUiTemplate.dropDown("SPRITE_FILE", GameResources.getRaces());
+                jsonUiTemplate.dropDown("SPRITE_FILE", GameAssets.getRaces());
                 jsonUiTemplate.text("ICON_SMALL");
                 jsonUiTemplate.text("ICON_BIG");
 
@@ -183,48 +183,48 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.sliderD("BEHAVIOUR.USES_BENCH", 0, 100);
 
                 jsonUiTemplate.header("PREFERRED");
-                jsonUiTemplate.multiDropDown("PREFERRED.FOOD", GameResources.getEdibles());
-                jsonUiTemplate.multiDropDown("PREFERRED.DRINK", GameResources.getDrinkables());
+                jsonUiTemplate.multiDropDown("PREFERRED.FOOD", GameAssets.getEdibles());
+                jsonUiTemplate.multiDropDown("PREFERRED.DRINK", GameAssets.getDrinkables());
 
                 jsonUiTemplate.header("PREFERRED.STRUCTURE");
                 jsonUiTemplate.slidersD("PREFERRED.STRUCTURE",
-                    GameResources.getStructures(), true, 0, 100);
+                    GameAssets.getStructures(), true, 0, 100);
 
                 jsonUiTemplate.header("PREFERRED.ROAD");
                 jsonUiTemplate.slidersD("PREFERRED.ROAD",
-                    GameResources.getFloors(), true, 0, 100);
+                    GameAssets.getFloors(), true, 0, 100);
 
                 jsonUiTemplate.header("PREFERRED.WORK");
                 jsonUiTemplate.slidersD("PREFERRED.WORK",
-                    GameResources.getRooms(), true, 0, 100);
+                    GameAssets.getRooms(), true, 0, 100);
 
                 jsonUiTemplate.header("PREFERRED.OTHER_RACES");
                 jsonUiTemplate.slidersD("PREFERRED.OTHER_RACES",
-                    GameResources.getRaces(), true, 0, 100);
+                    GameAssets.getRaces(), true, 0, 100);
 
                 jsonUiTemplate.header("PREFERRED.OTHER_RACES_REVERSE");
                 jsonUiTemplate.slidersD("PREFERRED.OTHER_RACES_REVERSE",
-                    GameResources.getRaces(), true, 0, 100);
+                    GameAssets.getRaces(), true, 0, 100);
 
                 jsonUiTemplate.header("PREFERRED.TRAITS");
                 jsonUiTemplate.slidersD("PREFERRED.TRAITS",
-                    GameResources.init().race().trait().fileTitles(), true, 0, 100);
+                    GameAssets.init().race().trait().fileTitles(), true, 0, 100);
 
                 jsonUiTemplate.header("MILITARY_EQUIPMENT_EFFICIENCY");
                 jsonUiTemplate.sliders("MILITARY_EQUIPMENT_EFFICIENCY",
-                    GameResources.init().stats().folder("equip").fileTitles(), true, 0, 100);
+                    GameAssets.init().stats().folder("equip").fileTitles(), true, 0, 100);
 
                 jsonUiTemplate.header("MILITARY_SUPPLY_USE");
                 jsonUiTemplate.sliders("MILITARY_SUPPLY_USE",
-                    GameResources.init().resource().armySupply().fileTitles(), true, 0, 100);
+                    GameAssets.init().resource().armySupply().fileTitles(), true, 0, 100);
 
                 jsonUiTemplate.header("RESOURCE");
                 jsonUiTemplate.sliders("RESOURCE",
-                    GameResources.getResources(), true, 0, 100);
+                    GameAssets.getResources(), true, 0, 100);
 
                 jsonUiTemplate.header("RESOURCE_GROOMING");
                 jsonUiTemplate.sliders("RESOURCE_GROOMING",
-                    GameResources.getResources(), true, 0, 100);
+                    GameAssets.getResources(), true, 0, 100);
 
                 JsonUITemplates.stats(jsonUiTemplate);
                 JsonUITemplates.boosters("BOOST", jsonUiTemplate);
@@ -257,7 +257,7 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.sliderD("SPREAD", 0, 100, 3);
                 jsonUiTemplate.slider("INFECTION_DAYS", 0, 100);
                 jsonUiTemplate.header("OCCURRENCE_CLIMATE");
-                jsonUiTemplate.slidersD("OCCURRENCE_CLIMATE", GameResources.getClimates(), 0, 100);
+                jsonUiTemplate.slidersD("OCCURRENCE_CLIMATE", GameAssets.getClimates(), 0, 100);
             }).build();
     }
 
@@ -286,7 +286,7 @@ public class MoreOptionsEditor extends GuiSection {
             })
             .templates( "TOMB_", jsonUiTemplate -> {
                 JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
-                jsonUiTemplate.dropDown("MONUMENT", GameResources.getMonuments());
+                jsonUiTemplate.dropDown("MONUMENT", GameAssets.getMonuments());
                 jsonUiTemplate.space();
 
                 JsonUITemplates.standingWithDefault(jsonUiTemplate);
@@ -294,12 +294,12 @@ public class MoreOptionsEditor extends GuiSection {
             })
             .templates( "TEMPLE_", jsonUiTemplate -> {
                 JsonUITemplates.roomHead(jsonUiTemplate);
-                jsonUiTemplate.dropDown("SACRIFICE_TYPE", GameResources.getRaces());
+                jsonUiTemplate.dropDown("SACRIFICE_TYPE", GameAssets.getRaces());
                 jsonUiTemplate.sliderD("SACRIFICE_TIME", 0, 100);
-                jsonUiTemplate.dropDown("RELIGION", GameResources.getReligions());
+                jsonUiTemplate.dropDown("RELIGION", GameAssets.getReligions());
                 JsonUITemplates.floor(jsonUiTemplate);
                 JsonUITemplates.floor(jsonUiTemplate);
-                jsonUiTemplate.dropDown("FLOOR_PATH", GameResources.getFloors());
+                jsonUiTemplate.dropDown("FLOOR_PATH", GameAssets.getFloors());
                 jsonUiTemplate.space();
 
                 JsonUITemplates.serviceRoom(jsonUiTemplate);
@@ -326,7 +326,7 @@ public class MoreOptionsEditor extends GuiSection {
             })
             .templates( "SHRINE_", jsonUiTemplate -> {
                 JsonUITemplates.roomHead(jsonUiTemplate);
-                jsonUiTemplate.dropDown("RELIGION", GameResources.getReligions());
+                jsonUiTemplate.dropDown("RELIGION", GameAssets.getReligions());
                 JsonUITemplates.floors(jsonUiTemplate);
                 jsonUiTemplate.space();
 
@@ -357,7 +357,7 @@ public class MoreOptionsEditor extends GuiSection {
             })
             .templates( "PLEASURE_", jsonUiTemplate -> {
                 JsonUITemplates.roomHeadIconSFloors(jsonUiTemplate);
-                jsonUiTemplate.dropDown("FLOOR2", GameResources.getFloors());
+                jsonUiTemplate.dropDown("FLOOR2", GameAssets.getFloors());
                 jsonUiTemplate.color("COLOR_PIXEL_BAS");
                 jsonUiTemplate.space();
 
@@ -373,8 +373,8 @@ public class MoreOptionsEditor extends GuiSection {
             .templates( "PASTURE_", jsonUiTemplate -> {
                 JsonUITemplates.roomHead(jsonUiTemplate);
                 JsonUITemplates.floor(jsonUiTemplate);
-                jsonUiTemplate.dropDown("FENCE", GameResources.getFences());
-                jsonUiTemplate.dropDown("ANIMAL", GameResources.getAnimals());
+                jsonUiTemplate.dropDown("FENCE", GameAssets.getFences());
+                jsonUiTemplate.dropDown("ANIMAL", GameAssets.getAnimals());
                 jsonUiTemplate.space();
 
                 JsonUITemplates.industryRoom(jsonUiTemplate);
@@ -383,7 +383,7 @@ public class MoreOptionsEditor extends GuiSection {
                 JsonUITemplates.roomHead(jsonUiTemplate);
                 JsonUITemplates.floor(jsonUiTemplate);
                 jsonUiTemplate.checkbox("INDOORS");
-                jsonUiTemplate.dropDown("EXTRA_RESOURCE", GameResources.getResources());
+                jsonUiTemplate.dropDown("EXTRA_RESOURCE", GameAssets.getResources());
                 jsonUiTemplate.slider("EXTRA_AMOUNT", 0, 256);
                 jsonUiTemplate.slider("DAYS_TILL_GROWTH", 0, 256);
                 jsonUiTemplate.sliderD("RIPE_AT_PART_OF_YEAR", 0, 100);
@@ -393,7 +393,7 @@ public class MoreOptionsEditor extends GuiSection {
             })
             .templates( "NURSERY_", jsonUiTemplate -> {
                 JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
-                jsonUiTemplate.dropDown("RACE", GameResources.getRaces());
+                jsonUiTemplate.dropDown("RACE", GameAssets.getRaces());
                 jsonUiTemplate.slider("INCUBATION_DAYS", 0, 256);
                 jsonUiTemplate.space();
 
@@ -409,7 +409,7 @@ public class MoreOptionsEditor extends GuiSection {
             })
             .templates( "MINE_", jsonUiTemplate -> {
                 JsonUITemplates.roomHeadIconSFloor(jsonUiTemplate);
-                jsonUiTemplate.dropDown("MINABLE", GameResources.getMinables());
+                jsonUiTemplate.dropDown("MINABLE", GameAssets.getMinables());
                 jsonUiTemplate.text("SPRITE");
                 jsonUiTemplate.slider("YEILD_WORKER_DAILY", 0, 1000);
                 jsonUiTemplate.slider("DEGRADE_RATE", 0, 100);
@@ -476,7 +476,7 @@ public class MoreOptionsEditor extends GuiSection {
             })
             .templates( "FARM_", jsonUiTemplate -> {
                 JsonUITemplates.roomHead(jsonUiTemplate);
-                jsonUiTemplate.dropDown("GROWABLE", GameResources.getGrowables());
+                jsonUiTemplate.dropDown("GROWABLE", GameAssets.getGrowables());
                 jsonUiTemplate.checkbox("INDOORS");
                 jsonUiTemplate.space();
 

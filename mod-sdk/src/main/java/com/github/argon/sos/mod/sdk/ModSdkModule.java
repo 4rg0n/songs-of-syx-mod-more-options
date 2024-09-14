@@ -3,6 +3,7 @@ package com.github.argon.sos.mod.sdk;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
+import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
 import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.mod.sdk.file.IOService;
 import com.github.argon.sos.mod.sdk.file.ResourceService;
@@ -37,7 +38,7 @@ import java.nio.file.Path;
 public class ModSdkModule {
 
     /**
-     * For reading game json config
+     * For reading GAME JSON config
      * See: {@link GameJsonService}
      */
     @Getter(lazy = true)
@@ -51,6 +52,17 @@ public class ModSdkModule {
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final static GameJsonStore gameJsonStore = Factory.newGameJsonStore(fileService());
+
+    /**
+     * For managing json config files
+     * See: {@link JsonConfigStore}
+     */
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static JsonConfigStore jsonConfigStore = Factory.newJsonConfigStore(
+        gameApis().save(),
+        jacksonService(),
+        fileService());
 
     /**
      * For parsing Java properties
@@ -212,6 +224,10 @@ public class ModSdkModule {
 
         public static GameJsonStore newGameJsonStore(IOService ioService) {
             return new GameJsonStore(ioService);
+        }
+
+        public static JsonConfigStore newJsonConfigStore(GameSaveApi saveApi, JsonService jsonService, IOService ioService) {
+            return new JsonConfigStore(saveApi, jsonService, ioService);
         }
 
         public static JavaPropsMapper newJavaPropsMapper() {

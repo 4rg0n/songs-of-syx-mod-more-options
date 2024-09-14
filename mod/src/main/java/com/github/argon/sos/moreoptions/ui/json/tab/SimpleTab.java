@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.ui.json.tab;
 
-import com.github.argon.sos.mod.sdk.game.ui.Button;
-import com.github.argon.sos.mod.sdk.game.ui.Spacer;
-import com.github.argon.sos.mod.sdk.game.ui.Table;
+import com.github.argon.sos.mod.sdk.ui.Button;
+import com.github.argon.sos.mod.sdk.ui.Spacer;
+import com.github.argon.sos.mod.sdk.ui.Table;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;

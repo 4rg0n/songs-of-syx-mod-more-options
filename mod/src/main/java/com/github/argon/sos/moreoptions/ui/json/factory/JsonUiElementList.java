@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.json.factory;
 
-import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.json.element.JsonArray;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;

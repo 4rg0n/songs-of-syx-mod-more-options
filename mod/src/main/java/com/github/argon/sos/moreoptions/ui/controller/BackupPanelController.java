@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
-import com.github.argon.sos.mod.sdk.game.ui.FullWindow;
-import com.github.argon.sos.mod.sdk.game.ui.Window;
+import com.github.argon.sos.mod.sdk.ui.FullWindow;
+import com.github.argon.sos.mod.sdk.ui.Window;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;

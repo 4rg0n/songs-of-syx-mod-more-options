@@ -2,9 +2,9 @@ package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.BiAction;
-import com.github.argon.sos.mod.sdk.game.ui.Button;
-import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
-import com.github.argon.sos.mod.sdk.game.ui.Table;
+import com.github.argon.sos.mod.sdk.ui.Button;
+import com.github.argon.sos.mod.sdk.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.Table;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.moreoptions.ModModule;

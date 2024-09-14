@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.json.tab;
 
-import com.github.argon.sos.mod.sdk.game.ui.Spacer;
+import com.github.argon.sos.mod.sdk.ui.Spacer;
 import init.paths.PATH;
 import init.sprite.UI.UI;
 import lombok.Getter;

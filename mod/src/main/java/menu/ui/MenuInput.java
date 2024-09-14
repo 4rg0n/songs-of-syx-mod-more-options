@@ -1,6 +1,6 @@
 package menu.ui;
 
-import com.github.argon.sos.mod.sdk.game.ui.Input;
+import com.github.argon.sos.mod.sdk.ui.Input;
 import menu.MenuUi;
 import snake2d.util.sprite.text.StringInputSprite;
 

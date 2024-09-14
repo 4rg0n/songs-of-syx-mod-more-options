@@ -1,10 +1,10 @@
 package com.github.argon.sos.mod.sdk.game.util;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.game.ui.Checkbox;
-import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
-import com.github.argon.sos.mod.sdk.game.ui.Label;
-import com.github.argon.sos.mod.sdk.game.ui.Slider;
+import com.github.argon.sos.mod.sdk.ui.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.Label;
+import com.github.argon.sos.mod.sdk.ui.Slider;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import init.sprite.UI.UI;
 import lombok.AccessLevel;

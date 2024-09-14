@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.ui.json.tab;
 
-import com.github.argon.sos.mod.sdk.game.ui.Button;
-import com.github.argon.sos.mod.sdk.game.ui.ButtonMenu;
-import com.github.argon.sos.mod.sdk.game.ui.Switcher;
-import com.github.argon.sos.mod.sdk.game.ui.Tabulator;
+import com.github.argon.sos.mod.sdk.ui.Button;
+import com.github.argon.sos.mod.sdk.ui.ButtonMenu;
+import com.github.argon.sos.mod.sdk.ui.Switcher;
+import com.github.argon.sos.mod.sdk.ui.Tabulator;
 import init.paths.PATH;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;

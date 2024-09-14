@@ -2,11 +2,10 @@ package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.Hideable;
 import com.github.argon.sos.mod.sdk.game.api.GameUiApi;
-import com.github.argon.sos.mod.sdk.game.ui.Notification;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phases;
-import com.github.argon.sos.mod.sdk.phase.Updateable;
+import com.github.argon.sos.mod.sdk.game.action.Updateable;
 import init.C;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

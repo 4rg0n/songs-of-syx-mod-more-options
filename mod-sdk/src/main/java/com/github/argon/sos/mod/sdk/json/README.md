@@ -1,11 +1,10 @@
-JSON
-====
+# JSON
 
 Here you can find various classes for handling Songs of Syx JSON format and the standard JSON format.
 You can use this to read game config files or to create your config files.
 
-JSON Mapping
-============
+## JSON Mapping
+
 
 The [JsonMapper](JsonMapper.java) provides various static methods to map a [Java Pojo](https://www.baeldung.com/java-pojo-class).
 It is inspired by the [Jackson ObjectMapper](https://www.baeldung.com/jackson-object-mapper-tutorial).
@@ -123,8 +122,7 @@ public class MyJsonService {
 }
 ```
 
-JSON Path
-=========
+## JSON Path
 
 A [JsonPath](JsonPath.java) can be used to extract or even write Json elements from and into a Json.
 So you could read a single value from a whole json tree by pointing to it.

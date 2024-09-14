@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.json.icon;
 
-import com.github.argon.sos.mod.sdk.game.ui.Section;
+import com.github.argon.sos.mod.sdk.ui.Section;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiTemplate;
 import init.sprite.SPRITES;

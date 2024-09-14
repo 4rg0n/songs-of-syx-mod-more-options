@@ -8,6 +8,9 @@ import java.nio.file.Path;
  *
  * Classes implementing a certain init method can be registered
  * via the {@link PhaseManager#register(Phase, Phases)} method.
+ *
+ * Phases starting with "init" are executed only once per game.
+ * Phases starting with "on" can be executed multiple times.
  */
 public interface Phases {
     /**
@@ -76,8 +79,9 @@ public interface Phases {
     }
 
     /**
-     * 9. PHASE
-     * When the game ui being initialized
+     * 9. PHASE: can be called multiple times
+     * When the game ui being initialized. This is called everytime the game builds the ui.
+     * So also when switching between a battlefield screen and the settlement.
      */
     default void onViewSetup() {
         throw new PhaseNotImplemented(Phase.ON_VIEW_SETUP);

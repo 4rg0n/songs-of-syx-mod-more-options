@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.json;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.game.asset.GameResources;
+import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
 import com.github.argon.sos.mod.sdk.json.GameJsonService;
 import com.github.argon.sos.mod.sdk.json.element.JsonArray;
 import com.github.argon.sos.mod.sdk.util.Lists;
@@ -40,7 +40,7 @@ public class JsonUITemplates {
 
     public static void boosters(String prefix, JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header(prefix);
-        GameResources.getBoosters().forEach(s -> {
+        GameAssets.getBoosters().forEach(s -> {
             jsonUiTemplate.slider(prefix + "." + s + ">ADD", -10000, 10000);
             jsonUiTemplate.sliderD(prefix + "." + s + ">MUL", 0, 1000000);
             jsonUiTemplate.space(10);
@@ -58,7 +58,7 @@ public class JsonUITemplates {
 
     private static void standing(String prefix, JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header(prefix);
-        jsonUiTemplate.slidersD(prefix, GameResources.getHumanClasses(), 0, 100000);
+        jsonUiTemplate.slidersD(prefix, GameAssets.getHumanClasses(), 0, 100000);
         jsonUiTemplate.space(10);
         jsonUiTemplate.slider(prefix + ".MULTIPLIER", 0, 100000);
         jsonUiTemplate.sliderD(prefix + ".EXPONENT", 0, 100, 3);
@@ -106,7 +106,7 @@ public class JsonUITemplates {
         jsonUiTemplate.sliderD("SERVICE.DEFAULT_VALUE", 0, 10000);
         jsonUiTemplate.slider("SERVICE.RADIUS", 0, 50000);
         jsonUiTemplate.text("SERVICE.SOUND");
-        jsonUiTemplate.dropDown("SERVICE.NEED", GameResources.getNeeds());
+        jsonUiTemplate.dropDown("SERVICE.NEED", GameAssets.getNeeds());
         jsonUiTemplate.space(10);
         boosters("SERVICE.BOOST", jsonUiTemplate);
         serviceStanding(jsonUiTemplate);
@@ -137,7 +137,7 @@ public class JsonUITemplates {
 
     public static void environmentEmit(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("ENVIRONMENT");
-        GameResources.getEnvironments().forEach(s -> {
+        GameAssets.getEnvironments().forEach(s -> {
             jsonUiTemplate.sliderD("ENVIRONMENT_EMI." + s + ".VALUE", 0, 100);
             jsonUiTemplate.sliderD("ENVIRONMENT_EMI." + s + ".RADIUS", 0, 100);
         });
@@ -182,9 +182,9 @@ public class JsonUITemplates {
 
     public static void industry(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("INDUSTRY.IN");
-        jsonUiTemplate.slidersD("INDUSTRY.IN", GameResources.getResources(), 0, 1000);
+        jsonUiTemplate.slidersD("INDUSTRY.IN", GameAssets.getResources(), 0, 1000);
         jsonUiTemplate.header("INDUSTRY.OUT");
-        jsonUiTemplate.slidersD("INDUSTRY.OUT", GameResources.getResources(), 0, 1000, 4);
+        jsonUiTemplate.slidersD("INDUSTRY.OUT", GameAssets.getResources(), 0, 1000, 4);
     }
 
     public static void projectile(JsonUiTemplate jsonUiTemplate) {
@@ -219,7 +219,7 @@ public class JsonUITemplates {
 
     public static void stats(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("STATS");
-        GameResources.getStats().forEach(s -> {
+        GameAssets.getStats().forEach(s -> {
             standing("STATS." + s, jsonUiTemplate);
             jsonUiTemplate.space(10);
         });
@@ -280,24 +280,24 @@ public class JsonUITemplates {
 
     public static void climate(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("CLIMATE");
-        jsonUiTemplate.slidersD("CLIMATE", GameResources.getClimates(), 1, 100);
+        jsonUiTemplate.slidersD("CLIMATE", GameAssets.getClimates(), 1, 100);
     }
 
     public static void terrain(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("TERRAIN");
-        jsonUiTemplate.slidersD("TERRAIN", GameResources.getTerrains(), 1, 100);
+        jsonUiTemplate.slidersD("TERRAIN", GameAssets.getTerrains(), 1, 100);
     }
     
     public static void floor(JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.dropDown("FLOOR", GameResources.getFloors());
+        jsonUiTemplate.dropDown("FLOOR", GameAssets.getFloors());
     }
 
     public static void floors(JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.dropDownList("FLOOR", GameResources.getFloors());
+        jsonUiTemplate.dropDownList("FLOOR", GameAssets.getFloors());
     }
 
     public static void resources(JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.dropDownList("RESOURCES", GameResources.getResources());
+        jsonUiTemplate.dropDownList("RESOURCES", GameAssets.getResources());
     }
 
     public static void training(JsonUiTemplate jsonUiTemplate) {
@@ -306,7 +306,7 @@ public class JsonUITemplates {
     }
 
     public static void damage(String prefix, JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.slidersD(prefix + "DAMAGE", GameResources.getDamages(), 0, 100);
+        jsonUiTemplate.slidersD(prefix + "DAMAGE", GameAssets.getDamages(), 0, 100);
 
     }
 }

@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions;
 
-import com.github.argon.sos.mod.sdk.AbstractScript;
+import com.github.argon.sos.mod.sdk.AbstractModSdkScript;
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.game.ui.Window;
+import com.github.argon.sos.mod.sdk.ui.Window;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -27,7 +27,7 @@ import java.nio.file.Paths;
  */
 @NoArgsConstructor
 @SuppressWarnings("unused") // used by the game via reflection
-public final class MoreOptionsScript extends AbstractScript {
+public final class MoreOptionsScript extends AbstractModSdkScript {
 
 	private final static Logger log = Loggers.getLogger(MoreOptionsScript.class);
 

@@ -18,120 +18,109 @@ public class Lists {
         return Collections.emptyList();
     }
 
-    public static <E> List<E> of(Collection<E> e1) {
-        return new ArrayList<>(e1);
-    }
-
-    public static <E> List<E> ofSingle(E e1) {
-        return Collections.singletonList(e1);
+    public static <E> List<E> ofList(Collection<E> e1) {
+        return Collections.unmodifiableList(Lists.Modifiable.ofList(
+            e1
+        ));
     }
 
     public static <E> List<E> of(E e1, E e2) {
-        ArrayList<E> list = new ArrayList<>();
-        list.add(e1);
-        list.add(e2);
-
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(Lists.Modifiable.of(
+            e1,
+            e2
+        ));
     }
 
     public static <E> List<E> of(E e1, E e2, E e3) {
-        ArrayList<E> list = new ArrayList<>();
-        list.add(e1);
-        list.add(e2);
-        list.add(e3);
-
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(Lists.Modifiable.of(
+            e1,
+            e2,
+            e3
+        ));
     }
 
     public static <E> List<E> of(E e1, E e2, E e3, E e4) {
-        ArrayList<E> list = new ArrayList<>();
-        list.add(e1);
-        list.add(e2);
-        list.add(e3);
-        list.add(e4);
-
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(Lists.Modifiable.of(
+            e1,
+            e2,
+            e3,
+            e4
+        ));
     }
 
     public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5) {
-        ArrayList<E> list = new ArrayList<>();
-        list.add(e1);
-        list.add(e2);
-        list.add(e3);
-        list.add(e4);
-        list.add(e5);
-
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(Lists.Modifiable.of(
+            e1,
+            e2,
+            e3,
+            e4,
+            e5
+        ));
     }
 
     public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5, E e6) {
-        ArrayList<E> list = new ArrayList<>();
-        list.add(e1);
-        list.add(e2);
-        list.add(e3);
-        list.add(e4);
-        list.add(e5);
-        list.add(e6);
-
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(Lists.Modifiable.of(
+            e1,
+            e2,
+            e3,
+            e4,
+            e5,
+            e6
+        ));
     }
 
     public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7) {
-        ArrayList<E> list = new ArrayList<>();
-        list.add(e1);
-        list.add(e2);
-        list.add(e3);
-        list.add(e4);
-        list.add(e5);
-        list.add(e6);
-        list.add(e7);
-
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(Lists.Modifiable.of(
+            e1,
+            e2,
+            e3,
+            e4,
+            e5,
+            e6,
+            e7
+        ));
     }
 
     public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7, E e8) {
-        ArrayList<E> list = new ArrayList<>();
-        list.add(e1);
-        list.add(e2);
-        list.add(e3);
-        list.add(e4);
-        list.add(e5);
-        list.add(e6);
-        list.add(e7);
-        list.add(e8);
-
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(Lists.Modifiable.of(
+            e1,
+            e2,
+            e3,
+            e4,
+            e5,
+            e6,
+            e7,
+            e8
+        ));
     }
 
     public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7, E e8, E e9) {
-        ArrayList<E> list = new ArrayList<>();
-        list.add(e1);
-        list.add(e2);
-        list.add(e3);
-        list.add(e4);
-        list.add(e5);
-        list.add(e6);
-        list.add(e7);
-        list.add(e8);
-        list.add(e9);
-
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(Lists.Modifiable.of(
+            e1,
+            e2,
+            e3,
+            e4,
+            e5,
+            e6,
+            e7,
+            e8,
+            e9
+        ));
     }
 
     public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7, E e8, E e9, E e10) {
-        ArrayList<E> list = new ArrayList<>();
-        list.add(e1);
-        list.add(e2);
-        list.add(e3);
-        list.add(e4);
-        list.add(e5);
-        list.add(e6);
-        list.add(e7);
-        list.add(e8);
-        list.add(e9);
-        list.add(e10);
-
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(Lists.Modifiable.of(
+            e1,
+            e2,
+            e3,
+            e4,
+            e5,
+            e6,
+            e7,
+            e8,
+            e9,
+            e10
+        ));
     }
 
      @SafeVarargs
@@ -141,7 +130,7 @@ public class Lists {
             case 0:
                 return Lists.of();
             case 1:
-                return Lists.ofSingle(elements[0]);
+                return Collections.singletonList(elements[0]);
             case 2:
                 return Lists.of(elements[0], elements[1]);
             default:
@@ -224,5 +213,140 @@ public class Lists {
         }
 
         return copy;
+    }
+
+    public static class Modifiable {
+        public static <E> List<E> of() {
+            return new ArrayList<>();
+        }
+
+        public static <E> List<E> ofList(Collection<E> e1) {
+            return new ArrayList<>(e1);
+        }
+
+        public static <E> List<E> of(E e1, E e2) {
+            ArrayList<E> list = new ArrayList<>();
+            list.add(e1);
+            list.add(e2);
+
+            return list;
+        }
+
+        public static <E> List<E> of(E e1, E e2, E e3) {
+            ArrayList<E> list = new ArrayList<>();
+            list.add(e1);
+            list.add(e2);
+            list.add(e3);
+
+            return list;
+        }
+
+        public static <E> List<E> of(E e1, E e2, E e3, E e4) {
+            ArrayList<E> list = new ArrayList<>();
+            list.add(e1);
+            list.add(e2);
+            list.add(e3);
+            list.add(e4);
+
+            return list;
+        }
+
+        public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5) {
+            ArrayList<E> list = new ArrayList<>();
+            list.add(e1);
+            list.add(e2);
+            list.add(e3);
+            list.add(e4);
+            list.add(e5);
+
+            return list;
+        }
+
+        public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5, E e6) {
+            ArrayList<E> list = new ArrayList<>();
+            list.add(e1);
+            list.add(e2);
+            list.add(e3);
+            list.add(e4);
+            list.add(e5);
+            list.add(e6);
+
+            return list;
+        }
+
+        public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7) {
+            ArrayList<E> list = new ArrayList<>();
+            list.add(e1);
+            list.add(e2);
+            list.add(e3);
+            list.add(e4);
+            list.add(e5);
+            list.add(e6);
+            list.add(e7);
+
+            return list;
+        }
+
+        public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7, E e8) {
+            ArrayList<E> list = new ArrayList<>();
+            list.add(e1);
+            list.add(e2);
+            list.add(e3);
+            list.add(e4);
+            list.add(e5);
+            list.add(e6);
+            list.add(e7);
+            list.add(e8);
+
+            return list;
+        }
+
+        public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7, E e8, E e9) {
+            ArrayList<E> list = new ArrayList<>();
+            list.add(e1);
+            list.add(e2);
+            list.add(e3);
+            list.add(e4);
+            list.add(e5);
+            list.add(e6);
+            list.add(e7);
+            list.add(e8);
+            list.add(e9);
+
+            return list;
+        }
+
+        public static <E> List<E> of(E e1, E e2, E e3, E e4, E e5, E e6, E e7, E e8, E e9, E e10) {
+            ArrayList<E> list = new ArrayList<>();
+            list.add(e1);
+            list.add(e2);
+            list.add(e3);
+            list.add(e4);
+            list.add(e5);
+            list.add(e6);
+            list.add(e7);
+            list.add(e8);
+            list.add(e9);
+            list.add(e10);
+
+            return list;
+        }
+
+        @SafeVarargs
+        @SuppressWarnings("varargs")
+        public static <E> List<E> of(E... elements) {
+            switch (elements.length) { // implicit null check of elements
+                case 0:
+                    return Lists.Modifiable.of();
+                case 1:
+                    ArrayList<E> list = new ArrayList<>();
+                    list.add(elements[0]);
+                    return list;
+                case 2:
+                    return Lists.of(elements[0], elements[1]);
+                default:
+                    return listFromArray(elements);
+            }
+        }
     }
 }

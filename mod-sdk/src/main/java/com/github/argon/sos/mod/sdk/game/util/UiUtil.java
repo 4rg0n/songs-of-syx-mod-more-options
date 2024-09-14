@@ -1,7 +1,7 @@
 package com.github.argon.sos.mod.sdk.game.util;
 
-import com.github.argon.sos.mod.sdk.game.ui.ColumnRow;
-import com.github.argon.sos.mod.sdk.game.ui.Section;
+import com.github.argon.sos.mod.sdk.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.Section;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

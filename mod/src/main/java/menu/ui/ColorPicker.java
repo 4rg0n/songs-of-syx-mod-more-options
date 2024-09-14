@@ -1,8 +1,8 @@
 package menu.ui;
 
-import com.github.argon.sos.mod.sdk.game.ui.ColorBox;
-import com.github.argon.sos.mod.sdk.game.ui.InputInt;
-import com.github.argon.sos.mod.sdk.game.ui.Section;
+import com.github.argon.sos.mod.sdk.ui.ColorBox;
+import com.github.argon.sos.mod.sdk.ui.InputInt;
+import com.github.argon.sos.mod.sdk.ui.Section;
 import menu.MenuUi;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;

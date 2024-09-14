@@ -1,7 +1,7 @@
 package com.github.argon.sos.mod.sdk.data.domain;
 
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
-import com.github.argon.sos.mod.sdk.game.ui.Slider;
+import com.github.argon.sos.mod.sdk.ui.Slider;
 import lombok.*;
 
 @Data
