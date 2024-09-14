@@ -2,18 +2,20 @@
 
 ![Mod SDK Logo](../../../../../../../../../../doc/img/mod-sdk-logo.png)
 
-* [Config](config/)
-* [Data](data/)
-* [File](file/)
-* [Game](game/)
-* [I18n](i18n/)
-* [Json](json/)
-* [Log](log/)
-* [Metric](metric/)
-* [Phase](phase/)
-* [Properties](properties/)
-* [Ui](ui/)
-* [Util](util/)
+## Packages
+
+* [Config](config/) - For handling your mod configuration files
+* [Data](data/) - Some pre built data structures
+* [File](file/) - For reading and writing files
+* [Game](game/) - For everything related to the game
+* [I18n](i18n/) - For translating your mod texts
+* [Json](json/) - For everything around JSON
+* [Log](log/) - For logging messages and errors
+* [Metric](metric/) - For collecting game stats as CSV
+* [Phase](phase/) - For dealing with the games different states and phases
+* [Properties](properties/) - For reading and writing Java properties
+* [Ui](ui/) - Everything related to the game UI
+* [Util](util/) - Some little helper tools
 
 ## Game Class Replacements
 
