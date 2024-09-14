@@ -1,25 +1,25 @@
 # Mod SDK
 
-* [Config](config/README.md)
-* [Data](data/README.md)
-* [File](file/README.md)
-* [Game](game/README.md)
-* [I18n](i18n/README.md)
-* [Json](json/README.md)
-* [Log](log/README.md)
-* [Metric](metric/README.md)
-* [Phase](phase/README.md)
-* [Properties](properties/README.md)
-* [Ui](ui/README.md)
-* [Util](util/README.md)
+* [Config](config/)
+* [Data](data/)
+* [File](file/)
+* [Game](game/)
+* [I18n](i18n/)
+* [Json](json/)
+* [Log](log/)
+* [Metric](metric/)
+* [Phase](phase/)
+* [Properties](properties/)
+* [Ui](ui/)
+* [Util](util/)
 
 ## Game Class Replacements
 
 These overwrite vanilla game code.
 
-* [Game Boosting](../../../../../../game/boosting/README.md)
-* [Settlement Weather](../../../../../../settlement/weather/README.md)
-* [Snake2d](../../../../../../snake2d/README.md)
+* [Game Boosting](../../../../../../game/boosting/)
+* [Settlement Weather](../../../../../../settlement/weather/)
+* [Snake2d](../../../../../../snake2d/)
 
 # Getting Started
 
