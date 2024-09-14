@@ -1,5 +1,7 @@
 # Mod SDK
 
+![Mod SDK Logo](../../../../../../../../../../doc/img/mod-sdk-logo.png)
+
 * [Config](config/)
 * [Data](data/)
 * [File](file/)
