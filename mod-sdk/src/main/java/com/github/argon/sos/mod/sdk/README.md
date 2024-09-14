@@ -4,26 +4,26 @@
 
 ## Packages
 
-* [Config](config/) - For handling your mod configuration files
-* [Data](data/) - Some pre built data structures
-* [File](file/) - For reading and writing files
-* [Game](game/) - For everything related to the game
-* [I18n](i18n/) - For translating your mod texts
-* [Json](json/) - For everything around JSON
-* [Log](log/) - For logging messages and errors
-* [Metric](metric/) - For collecting game stats as CSV
-* [Phase](phase/) - For dealing with the games different states and phases
-* [Properties](properties/) - For reading and writing Java properties
-* [Ui](ui/) - Everything related to the game UI
-* [Util](util/) - Some little helper tools
+* [Config](config) - For handling your mod configuration files
+* [Data](data) - Some pre built data structures
+* [File](file) - For reading and writing files
+* [Game](game) - For everything related to the game
+* [I18n](i18n) - For translating your mod texts
+* [Json](json) - For everything around JSON
+* [Log](log) - For logging messages and errors
+* [Metric](metric) - For collecting game stats as CSV
+* [Phase](phase) - For dealing with the games different states and phases
+* [Properties](properties) - For reading and writing Java properties
+* [Ui](ui) - Everything related to the game UI
+* [Util](util) - Some little helper tools
 
 ## Game Class Replacements
 
 These overwrite vanilla game code.
 
-* [Game Boosting](../../../../../../game/boosting/)
-* [Settlement Weather](../../../../../../settlement/weather/)
-* [Snake2d](../../../../../../snake2d/)
+* [Game Boosting](../../../../../../game/boosting)
+* [Settlement Weather](../../../../../../settlement/weather)
+* [Snake2d](../../../../../../snake2d)
 
 # Getting Started
 
@@ -86,7 +86,7 @@ public class YourModScript extends AbstractModSdkScript {
 It caches [Singleton](https://www.baeldung.com/java-singleton) instances of various services and other classes. 
 And provides a `Factory` for building these classes. I would recommend that you also add your own kind of `YourModModule` with a similiar structure.
 This way you can easily wire up the components of the Mod SDK for your needs and also have a single point to look for your implementations.
-For example providing your own internationalization:
+For example providing your own [internationalization](i18n):
 
 ```java
 public class YourModModule {
