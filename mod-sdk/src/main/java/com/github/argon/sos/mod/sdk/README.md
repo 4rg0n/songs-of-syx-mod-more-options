@@ -1,4 +1,4 @@
-# Content
+# Mod SDK
 
 * [Config](config/README.md)
 * [Data](data/README.md)
