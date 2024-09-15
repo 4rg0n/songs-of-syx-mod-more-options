@@ -1,6 +1,6 @@
 # Mod SDK
 
-![Mod SDK Logo](../../../../../../../../../../doc/img/mod-sdk-logo.png)
+![Mod SDK Logo](../../../../../../../../../doc/img/mod-sdk-logo.png)
 
 ## Packages
 

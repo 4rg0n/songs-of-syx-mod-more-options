@@ -314,6 +314,31 @@ public class YourUiElement extends GuiSection {
 }
 ```
 
+### [Slider](Slider.java)
+
+A `Slider` is a UI element with a draggable bar. It has a minimum and a maximum value and can go to negative amounts.
+
+```java
+import com.github.argon.sos.mod.sdk.ui.Slider;
+import snake2d.util.color.COLOR;
+import snake2d.util.gui.GuiSection;
+
+public class YourUiElement extends GuiSection {
+    public YourUiElement() {
+        add(Slider.builder()
+            .min(0)
+            .value(10) // current value
+            .max(100)
+            .input(true) // will allow for manual number input via a button
+            .step(5) // will only allow increments and decrease of 5
+            .controls(true) // will show + and - buttons
+            .lockScroll(true) // will block changing the value by scrolling the mouse wheel
+            .valueDisplay(Slider.ValueDisplay.ABSOLUTE) // will display just the number
+            .threshold(75, COLOR.RED50)); // will color the bar red, when >=75% filled
+    }
+}
+```
+
 ### [Section](Section.java)
 
 A `Section` is a somewhat advanced version of the games `GuiSection`. 
