@@ -9,7 +9,7 @@
         <version>local</version>
     </parent>
 
-    <version>3.0.0-b</version>
+    <version>3.0.0-c</version>
     <artifactId>sos-mod-more-options</artifactId>
 
     <properties>
@@ -53,33 +53,32 @@
             </plugin>
 
             <!-- Build a fat / uber jar containing all dependencies -->
-<!--            <plugin>-->
-<!--                -->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-shade-plugin</artifactId>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>shade</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <artifactSet>-->
-<!--                                &lt;!&ndash; These dependencies have to be excluded, because they are provided by the sos-mod-sdk &ndash;&gt;-->
-<!--                                <excludes>-->
-<!--                                    <exclude>com.songsofsyx:*</exclude>-->
-<!--                                    &lt;!&ndash; Include mod skd dependencies as long as the Mod Sdk is no standalone mod &ndash;&gt;-->
-<!--&lt;!&ndash;                                    <exclude>org.jetbrains:*</exclude>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <exclude>com.fasterxml.jackson.core:*</exclude>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <exclude>com.google.dagger:*</exclude>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <exclude>com.github.argon.sos:sos-mod-sdk</exclude>&ndash;&gt;-->
-<!--                                </excludes>-->
-<!--                            </artifactSet>-->
-<!--                            <createDependencyReducedPom>false</createDependencyReducedPom>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <!-- These dependencies have to be excluded, because they are provided by the sos-mod-sdk -->
+                                <excludes>
+                                    <exclude>com.songsofsyx:*</exclude>
+                                    <exclude>org.jetbrains:*</exclude>
+                                    <exclude>com.fasterxml.jackson.core:*</exclude>
+                                    <exclude>com.fasterxml.jackson.dataformat:*</exclude>
+                                    <exclude>com.github.argon.sos:sos-mod-sdk</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
