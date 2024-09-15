@@ -25,6 +25,15 @@ These overwrite vanilla game code.
 * [Settlement Weather](../../../../../../settlement/weather)
 * [Snake2d](../../../../../../snake2d)
 
+## Used Third Party Runtime Dependencies
+
+**IMPORTANT:** Other mods using this dependencies will be incompatible.
+The SDK uses as less third party dependencies as possible to have a high compatibility to other mods.
+
+* [org.jetbrains:annotations](https://github.com/JetBrains/java-annotations) - Helper annotations for marking certain code flows
+* [com.fasterxml.jackson.core:jackson-databind](https://github.com/FasterXML/jackson-databind) - For processing JSON
+* [com.fasterxml.jackson.dataformat:jackson-dataformat-properties](https://github.com/FasterXML/jackson-dataformats-text/) - For processing Java properties
+
 # Getting Started
 
 ## [AbstractModSdkScript](AbstractModSdkScript.java)
