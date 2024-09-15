@@ -2,7 +2,7 @@
 
 Properties or "Java Properties" are a format to store configuration in a file.
 
-File: `src/main/resources/your-mod.peroperties`
+File: `src/main/resources/your-mod.properties`
 ```properties
 modUrl=https://your.mod
 race.name=Blue Elves
