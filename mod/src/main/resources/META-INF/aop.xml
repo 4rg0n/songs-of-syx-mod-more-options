@@ -1,0 +1,9 @@
+<!-- This is required for making Aspect Oriented Programming work. It defines all "aspects" with their class name.  -->
+<aspectj>
+    <aspects>
+        <aspect name="com.github.argon.sos.moreoptions.aspect.OnErrorShowDialogAspect"/>
+        <weaver options="-verbose -showWeaveInfo">
+            <include within="com.github.argon.sos.moreoptions.*"/>
+        </weaver>
+    </aspects>
+</aspectj>

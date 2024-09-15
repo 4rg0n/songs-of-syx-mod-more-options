@@ -3,6 +3,8 @@
     <classpathModifications>
       <entry path="C:\Program Files (x86)\Steam\steamapps\common\Songs of Syx\base\script\Examples.jar" />
       <entry path="C:\Program Files (x86)\Steam\steamapps\common\Songs of Syx\base\script\Tutorial.jar" />
+      <entry path="C:\Program Files (x86)\Steam\steamapps\common\Songs of Syx\base\script\Example.jar" />
+      <entry path="C:\Users\Argon\IdeaProjects\songs-of-syx-mod-more-options\mod\target\More Options.jar" />
     </classpathModifications>
     <envs>
       <env name="MOD.LOG_LEVEL" value="debug" />
@@ -19,7 +21,7 @@
     </extension>
     <method v="2">
       <option name="Make" enabled="true" />
-      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="clean install" />
+      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="clean install -DskipTests" />
     </method>
   </configuration>
 </component>

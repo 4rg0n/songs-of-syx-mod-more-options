@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.argon.sos</groupId>
+        <artifactId>songs-of-syx-mod-parent</artifactId>
+        <version>local</version>
+    </parent>
+
+    <version>3.0.0-c</version>
+    <artifactId>sos-mod-more-options</artifactId>
+
+    <properties>
+        <mod.name>More Options</mod.name>
+        <mod.description>Adds more options to the game :)</mod.description>
+        <mod.author>4rg0n and Senso</mod.author>
+        <mod.info></mod.info>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.argon.sos</groupId>
+            <artifactId>sos-mod-sdk</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Remove "installed" mod resources on clean -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+
+            <!-- Build a fat / uber jar containing all dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+
+            <!-- Attach mod source code -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+            <!-- Build mod files -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+
+            <!-- Build a fat / uber jar containing all dependencies -->
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <!-- These dependencies have to be excluded, because they are provided by the sos-mod-sdk -->
+                                <excludes>
+                                    <exclude>com.songsofsyx:*</exclude>
+                                    <exclude>org.jetbrains:*</exclude>
+                                    <exclude>com.fasterxml.jackson.core:*</exclude>
+                                    <exclude>com.fasterxml.jackson.dataformat:*</exclude>
+                                    <exclude>com.github.argon.sos:sos-mod-sdk</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

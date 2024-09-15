@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.argon.sos</groupId>
+        <artifactId>songs-of-syx-mod-parent</artifactId>
+        <version>local</version>
+    </parent>
+
+    <version>0.1.0</version>
+    <artifactId>sos-mod-sdk</artifactId>
+
+    <properties>
+        <mod.version>${project.version}</mod.version>
+        <mod.name>Mod SDK V0</mod.name>
+        <mod.description>Provides tools for code modding.</mod.description>
+        <mod.author>4rg0n</mod.author>
+        <mod.info></mod.info>
+    </properties>
+
+    <dependencies>
+        <!-- Lazy Developer -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+        </dependency>
+
+        <!-- Data -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-properties</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!-- Remove "installed" mod resources on clean -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+
+            <!-- Build a fat / uber jar containing all dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+
+            <!-- Attach mod source code -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+            <!-- Build mod files -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
