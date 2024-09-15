@@ -4,8 +4,6 @@ More complex and simple ui elements. The [UiShowroom](UiShowroom.java) contains 
 The base of all ui elements in the game is the `RENDEROBJ`. This is a game interface class, which describes the basic api of all rendered things.
 
 ```java
-package snake2d.util.gui.renderable;
-
 public interface RENDEROBJ extends BODY_HOLDERE {
 
     void render(SPRITE_RENDERER r, float ds);
@@ -193,6 +191,31 @@ public class YourUiElement extends GuiSection {
 }
 ```
 
+### [DropDown](DropDown.java)
+
+A `DropDown` is a button you can click, opening a popup with multiple options in form of other buttons to choose.
+
+```java
+public class YourUiElement extends GuiSection {
+    public YourUiElement() {
+        Switcher.SwitcherBuilder<String> menu = Switcher.builder()
+            .highlight(true) // highlight the active button
+            .menu(ButtonMenu.builder()
+                .button("RED50", new Button("Red50"))
+                .button("GREEN40", new Button("Green40"))
+                .button("BLUE50", new Button("Blue50"))
+                .build());
+
+        add(DropDown.builder()
+            .label("Color")
+            .description("Choose a color!")
+            .closeOnSelect(true) // will close the popup with options when an option is clicked
+            .menu(menu)
+            .build());
+    }
+}
+```
+
 ### [ColorBox](ColorBox.java)
 
 The `ColorBox` is a simple box with a certain color as background.
@@ -319,10 +342,6 @@ public class YourUiElement extends GuiSection {
 A `Slider` is a UI element with a draggable bar. It has a minimum and a maximum value and can go to negative amounts.
 
 ```java
-import com.github.argon.sos.mod.sdk.ui.Slider;
-import snake2d.util.color.COLOR;
-import snake2d.util.gui.GuiSection;
-
 public class YourUiElement extends GuiSection {
     public YourUiElement() {
         add(Slider.builder()
@@ -425,6 +444,79 @@ public class YourModScript extends AbstractModSdkScript {
     }
 }
 ```
+
+### [Tabulator](Tabulator.java)
+
+The `Tabulator` is a ui element, which can hold multiple other uis and switch between them.
+
+```java
+public class YourUiElement extends GuiSection {
+    public YourUiElement() {
+        // a switcher menu containing the buttons; the key e.g. "RED50" must match the keys of tha tabs further down
+        Switcher.SwitcherBuilder<String> menu = Switcher.builder()
+            .menu(ButtonMenu.builder()
+                .button("RED50", new Button("Red50"))
+                .button("GREEN40", new Button("Green40"))
+                .button("BLUE50", new Button("Blue50"))
+                .build());
+
+        // the actual tabulator
+        Tabulator<String, ColorBox, Void> tabulator = Tabulator.builder()
+            // the different views, in our case simple color boxes
+            // the keys must match the button keys defined in the switcher menu
+            .tabs(Maps.of(
+                "RED50", new ColorBox(100, COLOR.RED50),
+                "GREEN40", new ColorBox(100, COLOR.GREEN40),
+                "BLUE50", new ColorBox(100, COLOR.BLUE50)
+            ))
+            .direction(DIR.S) // display the view under the menu
+            .tabMenu(menu)
+            .build();
+        
+        add(tabulator);
+    }
+}
+```
+
+### [Table](Table.java)
+
+A `Table` consists of columns and rows. It can hold any `GuiSection` element you like in each row and column.
+
+```java
+public class YourUiElement extends GuiSection {
+    public YourUiElement() {
+        add(Table.builder()
+            .evenOdd(true) // color each second row differently
+            .highlight(true) // highlight rows when hovered
+            .scrollable(true) // whether to show a scrollbar
+            .columnMargin(5) // space in pixels between each column
+            .rowPadding(5) // space like a frame around a row
+            .displayHeight(500) // the height in pixels the table should be
+            .selectable(true) // rows can be selected with a click
+            .multiselect(true) // allows multiple rows to be selected
+            .displaySearch(true) // shows a default search bar
+            .headerButtons(Maps.of( // this will display a header with the column names
+                "name", new Button("Name"),
+                "race", new Button("Race"),
+                "age", new Button("Age")
+            ))
+            // the actual rows with columns
+            .row(ColumnRow.builder()
+                .column(new GText(UI.FONT().M, "Tootam Bryant"))
+                .column(new GText(UI.FONT().M, "HUMAN"))
+                .column(new GText(UI.FONT().M, "12"))
+                .build())
+            .row(ColumnRow.builder()
+                .column(new GText(UI.FONT().M, "Kaash Kopernikus"))
+                .column(new GText(UI.FONT().M, "DONDORIAN"))
+                .column(new GText(UI.FONT().M, "52"))
+                .build())
+            .build());
+    }
+}
+```
+
+
 
 
 
