@@ -1,6 +1,8 @@
-Updated for **V65** by [Senso](https://github.com/SensoHakai).
+Currently supporting **V67** of Songs of Syx
+Port for **V65** done by [Senso](https://github.com/SensoHakai) <3.
 
-[Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3044071344)
+* [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3044071344)
+* Songs of Syx [Mod SDK](mod-sdk/src/main/java/com/github/argon/sos/mod/sdk) used under the hood.
 
 Adds a menu with more options for the game:
 
@@ -12,17 +14,17 @@ Adds a menu with more options for the game:
 * Change the likings between your races
 * Game crash detection and backup mechanism
 
-![Enable Script](doc/img/enable_script.png)
-![Button](doc/img/button.png)
-![Stats Widget](doc/img/stats_widget.png)
-![Sounds](doc/img/sounds.png)
-![Events](doc/img/events.png)
-![Weather](doc/img/weather.png)
-![Boosters](doc/img/boosters.png)
-![Metrics](doc/img/metrics.png)
-![Races](doc/img/races.png)
-![Advanced](doc/img/advanced.png)
-![Backup](doc/img/backup.png)
+![Enable Script](mod/doc/img/enable_script.png)
+![Button](mod/doc/img/button.png)
+![Stats Widget](mod/doc/img/stats_widget.png)
+![Sounds](mod/doc/img/sounds.png)
+![Events](mod/doc/img/events.png)
+![Weather](mod/doc/img/weather.png)
+![Boosters](mod/doc/img/boosters.png)
+![Metrics](mod/doc/img/metrics.png)
+![Races](mod/doc/img/races.png)
+![Advanced](mod/doc/img/advanced.png)
+![Backup](mod/doc/img/backup.png)
 
 
 
