@@ -163,6 +163,10 @@ public class ConfigDefaults {
         return metricsConfig;
     }
 
+    public ConfigMeta newConfigMeta() {
+        return ConfigMeta.builder().build();
+    }
+
     public static Range boosterAdd() {
         return Range.builder()
             .value(0)

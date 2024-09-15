@@ -34,6 +34,12 @@ public class Button extends AbstractButton<String, Button> {
     }
 
     @Override
+    public Button searchTerm(@Nullable String searchTerm) {
+        super.searchTerm(searchTerm);
+        return this;
+    }
+
+    @Override
     protected Button element() {
         return this;
     }

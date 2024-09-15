@@ -38,8 +38,16 @@ public class ConfigStore implements Phases {
 
     @Override
     public void initBeforeGameCreated() {
-        // load configs into store
-        configService.getMeta().ifPresent(meta -> configMeta = meta);
+        ConfigMeta configMetaDefault = configDefaults.newConfigMeta();
+        try {
+            // load configs into store
+            configMeta = configService.getMeta()
+                .orElse(configMetaDefault);
+        } catch (Exception e) {
+            configMeta = configMetaDefault;
+            log.warn("Could not read config meta information. Using defaults.", e);
+            log.trace("Defaults: %s", configMetaDefault);
+        }
     }
 
     @Override
