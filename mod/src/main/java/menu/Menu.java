@@ -97,7 +97,9 @@ public class Menu extends CORE_STATE {
 
 		// MODDED
 		this.mouseHoverMessage = new MouseHoverMessage();
-		this.moreOptions = MenuUi.moreOptionsFullsWindow();
+		// TODO disabled
+		this.moreOptions = null;
+//		this.moreOptions = Ui.moreOptionsFullsWindow();
 
 		bg = new Background(this, bounds);
 
@@ -110,7 +112,7 @@ public class Menu extends CORE_STATE {
 					@Override
 					protected void afterSet(Path path) {
 						BattleState.setLoaded(new PlayerBattleSpec() {
-							
+
 							@Override
 							public void exit(BATTLE_RESULT res, int plosses, int elosses) {
 								CORE.setCurrentState(new Constructor() {
@@ -161,9 +163,10 @@ public class Menu extends CORE_STATE {
 		mouseLight.set(mCoo);
 
 		// MODDED
-		if (hoverTimer >= 0.4) {
-			moreOptions.hoverInfoGet(mouseHoverMessage.get());
-		}
+//		if (hoverTimer >= 0.4) {
+			// todo disabled
+//			moreOptions.hoverInfoGet(mouseHoverMessage.get());
+//		}
 	}
 
 	@Override
