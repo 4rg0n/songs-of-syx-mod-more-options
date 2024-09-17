@@ -187,13 +187,13 @@ public class Configurator implements Phases {
 
     public boolean applyEventsConfig(EventsConfig eventsConfig) {
         try {
-            Map<String, EVENTS.EventResource> gameEvents = gameApis.events().getEvents();
+            Map<String, EVENTS.EventResource> gameEvents = gameApis.events().getEventResources();
 
             eventsConfig.getEvents().forEach((key, enabled) -> {
                 if (gameEvents.containsKey(key)) {
                     EVENTS.EventResource event = gameEvents.get(key);
                     log.trace("Setting event %s enabled = %s", event.getClass().getSimpleName(), enabled);
-                    gameApis.events().enableEvent(event, enabled);
+                    gameApis.events().enableEventResource(event, enabled);
 
                     if (!enabled) {
                         gameApis.events().reset(event);

@@ -172,7 +172,7 @@ public class UiConfig implements Phases {
         IDebugPanel.add(MOD_INFO.name + ":metrics:stop", () -> ModSdkModule.metricScheduler().stop());
         IDebugPanel.add(MOD_INFO.name + ":metrics:start", () -> ModSdkModule.metricScheduler().start());
         IDebugPanel.add(MOD_INFO.name + ":log:stats", () -> {
-            log.info("Events Status: %s", gameApis.events().readEventsEnabledStatus()
+            log.info("Events Status: %s", gameApis.events().readEventResourcesEnabledStatus()
                 .entrySet().stream().map(entry -> entry.getKey() + " enabled: " + entry.getValue() + "\n")
                 .collect(Collectors.joining()));
         });

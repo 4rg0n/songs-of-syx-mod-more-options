@@ -9,7 +9,7 @@
         <version>local</version>
     </parent>
 
-    <version>3.0.2</version>
+    <version>3.0.3</version>
     <artifactId>sos-mod-more-options</artifactId>
 
     <properties>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.github.argon.sos</groupId>
             <artifactId>sos-mod-sdk</artifactId>
-            <version>0.1.0</version>
+            <version>sdk-0</version>
         </dependency>
     </dependencies>
 

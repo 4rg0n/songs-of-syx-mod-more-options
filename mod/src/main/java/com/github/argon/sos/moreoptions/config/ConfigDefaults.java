@@ -140,7 +140,7 @@ public class ConfigDefaults {
 
     public EventsConfig newEvents() {
         // Events
-        Map<String, Boolean> events = gameApis.events().getEvents().keySet().stream()
+        Map<String, Boolean> events = gameApis.events().getEventResources().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> true));
 
         return EventsConfig.builder()

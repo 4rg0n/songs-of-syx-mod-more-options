@@ -6,6 +6,7 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import game.GAME;
 import game.events.EVENTS;
+import game.events.general.EventAbs;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,19 +20,44 @@ public class GameEventsApi implements Resettable {
 
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
-    private Map<String, EVENTS.EventResource> events;
+    private Map<String, EVENTS.EventResource> eventResources;
+    private Map<String, EventAbs> events;
 
     public final static String KEY_PREFIX = "event";
 
     @Override
     public void reset() {
-        events = null;
+        eventResources = null;
     }
 
     /**
      * @return a map with all game events
      */
-    public Map<String, EVENTS.EventResource> getEvents() {
+    public Map<String, EVENTS.EventResource> getEventResources() {
+        if (eventResources == null) {
+            eventResources = readEventResources();
+        }
+
+        return eventResources;
+    }
+
+    public Optional<EVENTS.EventResource> getEventResource(String key) {
+        return Optional.ofNullable(getEventResources().get(KEY_PREFIX + "." + key));
+    }
+
+    public Map<String, EVENTS.EventResource> readEventResources() {
+        Map<String, EVENTS.EventResource> eventResources = new HashMap<>();
+        for (EVENTS.EventResource eventResource : GAME.events().all()) {
+            eventResources.put(KEY_PREFIX + "." + eventResource.key, eventResource);
+        }
+
+        return eventResources;
+    }
+
+    /**
+     * @return a map with all game events
+     */
+    public Map<String, EventAbs> getEvents() {
         if (events == null) {
             events = readEvents();
         }
@@ -39,25 +65,21 @@ public class GameEventsApi implements Resettable {
         return events;
     }
 
-    public Optional<EVENTS.EventResource> getEvent(String key) {
-        return Optional.ofNullable(getEvents().get(key));
-    }
-
-    public Map<String, EVENTS.EventResource> readEvents() {
-        Map<String, EVENTS.EventResource> events = new HashMap<>();
-        for (EVENTS.EventResource eventResource : GAME.events().all()) {
-            events.put(KEY_PREFIX + "." + eventResource.key, eventResource);
+    public Map<String, EventAbs> readEvents() {
+        Map<String, EventAbs> events = new HashMap<>();
+        for (EventAbs event : EventAbs.ALL()) {
+            events.put(KEY_PREFIX + "." + event.key, event);
         }
 
         return events;
     }
 
-    public Map<String, Boolean> readEventsEnabledStatus() {
-        return getEvents().entrySet().stream()
+    public Map<String, Boolean> readEventResourcesEnabledStatus() {
+        return getEventResources().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> isEnabled(entry.getValue())));
     }
 
-    public void enableEvent(EVENTS.EventResource event, Boolean enabled) {
+    public void enableEventResource(EVENTS.EventResource event, Boolean enabled) {
         event.supress(!enabled);
     }
 
