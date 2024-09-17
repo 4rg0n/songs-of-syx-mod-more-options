@@ -41,6 +41,7 @@
         <plugins>
             <!-- Remove "installed" mod resources on clean -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
             </plugin>
 
