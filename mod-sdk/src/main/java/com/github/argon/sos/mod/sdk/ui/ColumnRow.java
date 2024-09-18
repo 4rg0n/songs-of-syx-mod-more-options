@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
@@ -15,10 +16,7 @@ import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -30,7 +28,8 @@ import java.util.function.Supplier;
 public class ColumnRow<Value> extends Section implements
     Searchable<String, Boolean>,
     Valuable<Value>,
-    Toggleable<String>
+    Toggleable<String>,
+    Comparable<ColumnRow<Value>>
 {
     /**
      * Used to identify the row
@@ -132,6 +131,14 @@ public class ColumnRow<Value> extends Section implements
     @Nullable
     @Accessors(fluent = true, chain = false)
     private Consumer<Value> valueConsumer;
+
+    /**
+     * For sorting rows in a list via their values by a defined behavior
+     */
+    @Setter
+    @Builder.Default
+    @Accessors(fluent = true, chain = false)
+    private Comparator<Value> comparator = (value1, value2) -> 0;
 
     /**
      * What shall happen when you doubleclick the row.
@@ -324,6 +331,11 @@ public class ColumnRow<Value> extends Section implements
             columns.add(UiUtil.toGuiSection(column));
             return this;
         }
+    }
+
+    @Override
+    public int compareTo(@NotNull ColumnRow<Value> row) {
+        return comparator.compare(this.value, row.getValue());
     }
 
     @Override

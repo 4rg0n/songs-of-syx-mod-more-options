@@ -25,7 +25,7 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
     private static final Logger log = Loggers.getLogger(SoundsTab.class);
     private final static I18nTranslator i18n = ModModule.i18n().get(SoundsTab.class);
 
-    private final Map<String, Slider> ambienceSoundSliders;
+    private final Map<String, Slider> soundSliders;
     public SoundsTab(
         String title,
         SoundsConfig soundsConfig,
@@ -34,7 +34,7 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         int availableHeight
     ) {
         super(title, defaultConfig, availableWidth, availableHeight);
-        this.ambienceSoundSliders = UiMapper.toSliders(soundsConfig.getAmbience());
+        this.soundSliders = UiMapper.toSliders(soundsConfig.getAmbience());
 
         GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsTab.header.ambienceSounds.name"));
         ambienceSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.ambienceSounds.desc"));
@@ -42,11 +42,11 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         GHeader roomSoundsHeader = new GHeader(i18n.t("SoundsTab.header.roomSounds.name"));
         roomSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.roomSounds.desc"));
 
-        Map<String, Slider> ambience = ambienceSoundSliders.entrySet().stream()
+        Map<String, Slider> ambience = soundSliders.entrySet().stream()
             .filter(stringSliderEntry -> !stringSliderEntry.getKey().contains("ROOM_"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        Map<String, Slider> room = ambienceSoundSliders.entrySet().stream()
+        Map<String, Slider> room = soundSliders.entrySet().stream()
             .filter(stringSliderEntry -> stringSliderEntry.getKey().contains("ROOM_"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
@@ -69,12 +69,13 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
 
         Layout.vertical(tableHeight)
             .addDownC(20, roomSoundsHeader)
-            .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
+            .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<String>builder()
                 .rows(ModModule.uiMapper().toRoomSoundLabeledColumnRows(room))
                 .rowPadding(5)
                 .columnMargin(5)
                 .highlight(true)
                 .scrollable(true)
+                .displaySearch(true)
                 .backgroundColor(COLOR.WHITE10)
                 .displayHeight(height)
                 .build()))
@@ -89,7 +90,7 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
     }
 
     public Map<String, Range> getSoundsAmbienceConfig() {
-        return ambienceSoundSliders.entrySet().stream()
+        return soundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 tab -> Range.fromSlider(tab.getValue())));
@@ -100,8 +101,8 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         log.trace("Applying UI sounds config %s", soundsConfig);
 
         soundsConfig.getAmbience().forEach((key, range) -> {
-            if (ambienceSoundSliders.containsKey(key)) {
-                ambienceSoundSliders.get(key).setValue(range.getValue());
+            if (soundSliders.containsKey(key)) {
+                soundSliders.get(key).setValue(range.getValue());
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }

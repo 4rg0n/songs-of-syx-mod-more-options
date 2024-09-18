@@ -106,31 +106,35 @@ public class UiMapper {
             .collect(groupingBy(entry -> entry.getCat().name.toString()));
     }
 
-    public <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toRoomSoundLabeledColumnRows(Map<String, Element> elements) {
+    public <Element extends RENDEROBJ> List<ColumnRow<String>> toRoomSoundLabeledColumnRows(Map<String, Element> elements) {
         return elements.entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
             .map(entry -> {
                 String key = entry.getKey();
                 Element element = entry.getValue();
 
                 String name = key;
                 SPRITE sprite = SPRITES.icons().m.clear_structure;
-                Optional<RoomBlueprintImp> bySound = gameApis.rooms().getBySound(key);
+                Optional<RoomBlueprintImp> room = gameApis.rooms().getBySound(key);
 
-                if (bySound.isPresent()) {
-                    name = bySound.get().info.name.toString();
-                    sprite = bySound.get().iconBig().medium;
+                if (room.isPresent()) {
+                    name = room.get().info.name.toString();
+                    sprite = room.get().iconBig().medium;
                 }
 
                 // label with element
-                return ColumnRow.<Value>builder()
+                return ColumnRow.<String>builder()
+                    .key(key)
+                    .value(name)
                     .column(Label.builder()
                         .name(name)
                         .build())
                     .column(UiUtil.toRender(sprite))
                     .column(element)
+                    .searchTerm(name)
+                    .comparator(String::compareTo)
                     .build();
             })
+            .sorted()
             .collect(Collectors.toList());
     }
 }
