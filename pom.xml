@@ -53,24 +53,19 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-clean-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <configuration>
-                                    <filesets>
-                                        <fileset>
-                                            <!-- Remove installed mod from mod uploader directory on clean -->
-                                            <directory>${mod.uploader.directory}</directory>
-                                            <includes>
-                                                <!-- Deletes mod folder with files -->
-                                                <include>**</include>
-                                            </includes>
-                                            <followSymlinks>false</followSymlinks>
-                                        </fileset>
-                                    </filesets>
-                                </configuration>
-                            </execution>
-                        </executions>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <!-- Remove installed mod from mod uploader directory on clean -->
+                                    <directory>${mod.uploader.directory}</directory>
+                                    <includes>
+                                        <!-- Deletes mod folder with files -->
+                                        <include>**</include>
+                                    </includes>
+                                    <followSymlinks>false</followSymlinks>
+                                </fileset>
+                            </filesets>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -415,11 +410,6 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>${maven-clean-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>${maven-shade-plugin.version}</version>
                     <executions>
@@ -445,8 +435,11 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                 </plugin>
+
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven-clean-plugin.version}</version>
                     <configuration>
                         <filesets>
                             <fileset>
