@@ -3,14 +3,13 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.mod.sdk.file.FileMeta;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
-import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
-import com.github.argon.sos.mod.sdk.ui.UiShowroom;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
@@ -30,6 +29,7 @@ import snake2d.util.color.COLOR;
 import util.gui.misc.GButt;
 import util.save.SaveFile;
 import view.ui.top.UIPanelTop;
+import world.WORLD;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -67,25 +67,69 @@ public class UiFactory {
     }
 
     public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV5Config config) {
-        Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(config.getBoosters());
-        Map<String, List<RacesTab.Entry>> raceEntries = uiMapper.toRacePanelEntries(config.getRaces().getLikings());
+        Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoostersTabEntries(config.getBoosters());
+        Map<String, List<RacesTab.Entry>> raceEntries = uiMapper.toRacesTabEntries(config.getRaces().getLikings());
 
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod(MoreOptionsScript.MOD_INFO.name.toString()).orElse(null);
         Path exportFolder = metricExporter.getExportFolder();
         Path exportFile = metricExporter.getExportFile();
         String saveStamp = gameApis.save().getSaveStamp();
+        MoreOptionsV5Config defaultConfig = configStore.getDefaultConfig();
 
-        return MoreOptionsPanel.builder()
+        MoreOptionsModel moreOptionsModel = MoreOptionsModel.builder()
             .config(config)
-            .saveStamp(saveStamp)
-            .configStore(configStore)
-            .raceEntries(raceEntries)
-            .availableStats(availableStats)
-            .boosterEntries(boosterEntries)
+            .defaultConfig(defaultConfig)
             .modInfo(modInfo)
-            .exportFolder(exportFolder)
-            .exportFile(exportFile);
+            .advanced(MoreOptionsModel.Advanced.builder()
+                .title(i18n.t("MoreOptionsPanel.tab.advanced.name"))
+                .saveStamp(saveStamp)
+                .logLevel(config.getLogLevel())
+                .defaultLogLevel(defaultConfig.getLogLevel())
+                .worldSeed(WORLD.GEN().seed)
+                .build())
+            .boosters(MoreOptionsModel.Boosters.builder()
+                .title(i18n.t("MoreOptionsPanel.tab.boosters.name"))
+                .config(config.getBoosters())
+                .defaultConfig(defaultConfig.getBoosters())
+                .entries(boosterEntries)
+                .presets(config.getBoosters().getPresets())
+                .build())
+            .events(MoreOptionsModel.Events.builder()
+                .title(i18n.t("MoreOptionsPanel.tab.events.name"))
+                .config(config.getEvents())
+                .defaultConfig(defaultConfig.getEvents())
+                .build())
+            .metrics(MoreOptionsModel.Metrics.builder()
+                .title(i18n.t("MoreOptionsPanel.tab.metrics.name"))
+                .config(config.getMetrics())
+                .defaultConfig(defaultConfig.getMetrics())
+                .exportFolder(exportFolder)
+                .exportFile(exportFile)
+                .availableStats(availableStats)
+                .build())
+            .sounds(MoreOptionsModel.Sounds.builder()
+                .title(i18n.t("MoreOptionsPanel.tab.sounds.name"))
+                .config(config.getSounds())
+                .defaultConfig(defaultConfig.getSounds())
+                .build())
+            .races(MoreOptionsModel.Races.builder()
+                .title(i18n.t("MoreOptionsPanel.tab.races.name"))
+                .config(config.getRaces())
+                .defaultConfig(defaultConfig.getRaces())
+                .entries(raceEntries)
+                .build())
+            .weather(MoreOptionsModel.Weather.builder()
+                .title(i18n.t("MoreOptionsPanel.tab.weather.name"))
+                .config(config.getWeather())
+                .defaultConfig(defaultConfig.getWeather())
+                .build())
+            .build();
+
+        // available width and height have to be set outside or else they will be 0
+        return MoreOptionsPanel.builder()
+            .moreOptionsModel(moreOptionsModel)
+            .configStore(configStore);
     }
 
     /**

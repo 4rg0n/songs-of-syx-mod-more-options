@@ -12,6 +12,7 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.EventsConfig;
+import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.sprite.UI.UI;
 import snake2d.util.color.COLOR;
@@ -34,16 +35,15 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
     private final Map<String, Slider> tributeSliders;
 
     public EventsTab(
-        String title,
-        EventsConfig eventsConfig,
-        EventsConfig defaultConfig,
+        MoreOptionsModel.Events model,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultConfig, availableWidth, availableHeight);
+        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
 
         GuiSection eventsSection = new GuiSection();
         GuiSection tributeSection = new GuiSection();
+        EventsConfig eventsConfig = model.getConfig();
         this.eventsCheckboxes = UiMapper.toCheckboxes(eventsConfig.getEvents());
 
 

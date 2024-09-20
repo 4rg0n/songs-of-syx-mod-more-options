@@ -5,8 +5,8 @@ import com.github.argon.sos.mod.sdk.game.action.Refreshable;
 import com.github.argon.sos.mod.sdk.game.action.Showable;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
-import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
@@ -21,7 +21,6 @@ import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import com.github.argon.sos.moreoptions.ui.tab.sounds.SoundsTab;
 import com.github.argon.sos.moreoptions.ui.tab.weather.WeatherTab;
 import game.VERSION;
-import game.faction.Faction;
 import init.paths.ModInfo;
 import init.sprite.UI.UI;
 import lombok.Builder;
@@ -33,12 +32,8 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GText;
-import world.WORLD;
 
-import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -107,17 +102,10 @@ public class MoreOptionsPanel extends GuiSection implements
      */
     @Builder
     public MoreOptionsPanel(
-        MoreOptionsV5Config config,
+        MoreOptionsModel moreOptionsModel,
         ConfigStore configStore,
-        Map<Faction, List<BoostersTab.Entry>> boosterEntries,
-        Map<String, List<RacesTab.Entry>> raceEntries,
-        Set<String> availableStats,
-        Path exportFolder,
-        Path exportFile,
-        String saveStamp,
         int availableWidth,
-        int availableHeight,
-        @Nullable ModInfo modInfo
+        int availableHeight
     ) {
         this.configStore = configStore;
 
@@ -145,10 +133,12 @@ public class MoreOptionsPanel extends GuiSection implements
         footer.addRightC(50, moreButton);
 
         String modVersion = "NO_VER";
+        ModInfo modInfo = moreOptionsModel.getModInfo();
         if (modInfo != null) {
             modVersion = modInfo.version;
         }
 
+        MoreOptionsV5Config config = moreOptionsModel.getConfig();
         footer.addRightC(50, versions(config.getVersion(), modVersion));
 
         this.applyButton = new Button(i18n.t("MoreOptionsPanel.button.apply.name"), i18n.t("MoreOptionsPanel.button.apply.desc"));
@@ -184,13 +174,13 @@ public class MoreOptionsPanel extends GuiSection implements
 
         MoreOptionsV5Config defaultConfig = configStore.getDefaultConfig();
 
-        soundsTab = new SoundsTab(i18n.t("MoreOptionsPanel.tab.sounds.name"), config.getSounds(), defaultConfig.getSounds(), availableWidth, availableHeight);
-        eventsTab = new EventsTab(i18n.t("MoreOptionsPanel.tab.events.name"), config.getEvents(), defaultConfig.getEvents(), availableWidth, availableHeight);
-        weatherTab = new WeatherTab(i18n.t("MoreOptionsPanel.tab.weather.name"), config.getWeather(), defaultConfig.getWeather(), availableWidth, availableHeight);
-        boostersTab = new BoostersTab(i18n.t("MoreOptionsPanel.tab.boosters.name"), boosterEntries, config.getBoosters().getPresets(), defaultConfig.getBoosters(), availableWidth, availableHeight);
-        metricsTab = new MetricsTab(i18n.t("MoreOptionsPanel.tab.metrics.name"), config.getMetrics(), defaultConfig.getMetrics(), availableStats, exportFolder, exportFile, availableWidth, availableHeight);
-        racesTab = new RacesTab(i18n.t("MoreOptionsPanel.tab.races.name"), raceEntries, defaultConfig.getRaces(), availableWidth, availableHeight);
-        advancedTab = new AdvancedTab(i18n.t("MoreOptionsPanel.tab.advanced.name"), saveStamp, WORLD.GEN().seed, config.getLogLevel(), defaultConfig.getLogLevel(), availableWidth, availableHeight);
+        soundsTab = new SoundsTab(moreOptionsModel.getSounds(), availableWidth, availableHeight);
+        eventsTab = new EventsTab(moreOptionsModel.getEvents(), availableWidth, availableHeight);
+        weatherTab = new WeatherTab(moreOptionsModel.getWeather(), availableWidth, availableHeight);
+        boostersTab = new BoostersTab(moreOptionsModel.getBoosters(), availableWidth, availableHeight);
+        metricsTab = new MetricsTab(moreOptionsModel.getMetrics(), availableWidth, availableHeight);
+        racesTab = new RacesTab(moreOptionsModel.getRaces(), availableWidth, availableHeight);
+        advancedTab = new AdvancedTab(moreOptionsModel.getAdvanced(), availableWidth, availableHeight);
 
         tabulator = Tabulator.<String, AbstractConfigTab<?, ?>, Void>builder()
             .tabs(Maps.ofLinked(

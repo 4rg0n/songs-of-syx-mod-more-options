@@ -10,6 +10,7 @@ import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
+import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.race.Race;
 import init.sprite.UI.UI;
@@ -47,13 +48,13 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
     private final Button importButton;
 
     public RacesTab(
-        String title,
-        Map<String, List<Entry>> raceEntries,
-        RacesConfig defaultConfig,
+        MoreOptionsModel.Races model,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultConfig, availableWidth, availableHeight);
+        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
+        Map<String, List<Entry>> raceEntries = model.getEntries();
+
         // Race Likings rows for table
         Map<String, List<ColumnRow<Integer>>> raceLikingsRowMap = raceEntries.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,

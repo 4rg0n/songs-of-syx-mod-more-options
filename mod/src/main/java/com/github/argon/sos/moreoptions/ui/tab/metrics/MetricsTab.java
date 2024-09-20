@@ -10,6 +10,7 @@ import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
 import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.ui.Slider;
+import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.sprite.UI.UI;
 import lombok.Getter;
@@ -61,17 +62,14 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
     private Consumer<MetricsConfig> valueConsumer = o -> {};
 
     public MetricsTab(
-        String title,
-        MetricsConfig metricsConfig,
-        MetricsConfig defaultConfig,
-        Set<String> availableStats,
-        Path exportFolderPath,
-        Path exportFilePath,
+        MoreOptionsModel.Metrics model,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultConfig, availableWidth, availableHeight);
-        this.exportFolderPath = exportFolderPath;
+        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
+        this.exportFolderPath = model.getExportFolder();
+        this.exportFilePath = model.getExportFile();
+        MetricsConfig metricsConfig = model.getConfig();
 
         // Started / Stopped toggle
         Switcher<Boolean> switcher = Switcher.<Boolean>builder()
@@ -160,7 +158,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         searchBar.addRightC(10, checkSwitcher);
 
         // Export stats section
-        SortedSet<String> sortedAvailableStats = Sets.sort(availableStats);
+        SortedSet<String> sortedAvailableStats = Sets.sort(model.getAvailableStats());
         List<ColumnRow<Boolean>> statRows = sortedAvailableStats.stream().map(statName -> {
             boolean checked = true;
             if (!metricsConfig.getStats().isEmpty()) {

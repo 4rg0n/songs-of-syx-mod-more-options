@@ -5,6 +5,7 @@ import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.ModModule;
+import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.paths.PATHS;
@@ -47,17 +48,13 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
     private final int worldSeed;
 
     public AdvancedTab(
-        String title,
-        String saveStamp,
-        int worldSeed,
-        Level logLevel,
-        Level defaultLogLevel,
+        MoreOptionsModel.Advanced model,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultLogLevel, availableWidth, availableHeight);
-        this.worldSeed = worldSeed;
-        this.saveStamp = saveStamp;
+        super(model.getTitle(), model.getDefaultLogLevel(), availableWidth, availableHeight);
+        this.worldSeed = model.getWorldSeed();
+        this.saveStamp = (model.getSaveStamp() != null) ? model.getSaveStamp() : "NONE";
 
         logLevelDropDown = DropDown.<Level>builder()
             .label(i18n.t("AdvancedTab.dropDown.log.level.name"))
@@ -68,7 +65,7 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
                     .sameWidth(true)
                     .build())
                 .highlight(true)
-                .aktiveKey(logLevel)
+                .aktiveKey(model.getLogLevel())
                 .build())
             .build();
         ColumnRow<Void> logLevelSelect = ColumnRow.<Void>builder()

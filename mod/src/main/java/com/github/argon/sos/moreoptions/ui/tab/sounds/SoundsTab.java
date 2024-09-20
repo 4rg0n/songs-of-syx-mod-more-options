@@ -11,6 +11,7 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.SoundsConfig;
+import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import snake2d.util.color.COLOR;
 import util.gui.misc.GHeader;
@@ -27,13 +28,12 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
 
     private final Map<String, Slider> soundSliders;
     public SoundsTab(
-        String title,
-        SoundsConfig soundsConfig,
-        SoundsConfig defaultConfig,
+        MoreOptionsModel.Sounds model,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultConfig, availableWidth, availableHeight);
+        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
+        SoundsConfig soundsConfig = model.getConfig();
         this.soundSliders = UiMapper.toSliders(soundsConfig.getAmbience());
 
         GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsTab.header.ambienceSounds.name"));

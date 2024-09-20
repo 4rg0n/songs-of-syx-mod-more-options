@@ -33,11 +33,11 @@ public class UiMapper {
     private final GameApis gameApis;
     private final GameBoosterApi gameBoosterApi;
 
-    public Map<String, List<RacesTab.Entry>> toRacePanelEntries(Set<RacesConfig.Liking> raceLikings) {
+    public Map<String, List<RacesTab.Entry>> toRacesTabEntries(Set<RacesConfig.Liking> raceLikings) {
         Map<String, List<RacesTab.Entry>> entries = new HashMap<>();
 
         for (RacesConfig.Liking raceLiking : raceLikings) {
-            RacesTab.Entry entry = toRacePanelEntry(raceLiking);
+            RacesTab.Entry entry = toRacesTabEntry(raceLiking);
             String raceKey = entry.getRace().info.name.toString();
             entries.putIfAbsent(raceKey, new ArrayList<>());
             entries.get(raceKey).add(entry);
@@ -46,7 +46,7 @@ public class UiMapper {
         return entries;
     }
 
-    public RacesTab.Entry toRacePanelEntry(RacesConfig.Liking liking) {
+    public RacesTab.Entry toRacesTabEntry(RacesConfig.Liking liking) {
         Race race = gameApis.race().getRace(liking.getRace()).orElse(null);
         Race otherRace = gameApis.race().getRace(liking.getOtherRace()).orElse(null);
 
@@ -59,7 +59,7 @@ public class UiMapper {
             .build();
     }
 
-    public Map<Faction, List<BoostersTab.Entry>> toBoosterPanelEntries(BoostersConfig boostersConfig) {
+    public Map<Faction, List<BoostersTab.Entry>> toBoostersTabEntries(BoostersConfig boostersConfig) {
         Map<Faction, List<BoostersTab.Entry>> factionBoosters = new HashMap<>();
         // npc factions
         for (Map.Entry<String, Map<String, BoostersConfig.Booster>> entry : boostersConfig.getFaction().entrySet()) {
@@ -74,7 +74,7 @@ public class UiMapper {
             factionBoosters.put(
                 faction,
                 entry.getValue().values().stream()
-                    .map(this::toBoosterPanelEntry)
+                    .map(this::toBoostersTabEntry)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList()));
         }
@@ -83,7 +83,7 @@ public class UiMapper {
         factionBoosters.put(
             gameApis.faction().getPlayer(),
             boostersConfig.getPlayer().values().stream()
-                .map(this::toBoosterPanelEntry)
+                .map(this::toBoostersTabEntry)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList()));
 
@@ -91,7 +91,7 @@ public class UiMapper {
     }
 
     @Nullable
-    public BoostersTab.Entry toBoosterPanelEntry(BoostersConfig.Booster booster) {
+    public BoostersTab.Entry toBoostersTabEntry(BoostersConfig.Booster booster) {
         return gameBoosterApi.get(booster.getKey()).map(boosters -> BoostersTab.Entry.builder()
             .key(booster.getKey())
             .range(booster.getRange())
@@ -101,7 +101,7 @@ public class UiMapper {
         ).orElse(null);
     }
 
-    public static Map<String, List<BoostersTab.Entry>> toBoosterPanelEntriesCategorized(List<BoostersTab.Entry> boosterEntries) {
+    public static Map<String, List<BoostersTab.Entry>> toBoostersTabEntriesCategorized(List<BoostersTab.Entry> boosterEntries) {
         return boosterEntries.stream()
             .collect(groupingBy(entry -> entry.getCat().name.toString()));
     }

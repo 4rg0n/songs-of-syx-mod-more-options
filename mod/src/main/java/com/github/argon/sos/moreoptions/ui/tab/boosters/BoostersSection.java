@@ -39,7 +39,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
     public BoostersSection(Faction faction, List<BoostersTab.Entry> boosterEntries, int availableHeight) {
         this.faction = faction;
 
-        Map<String, List<BoostersTab.Entry>> groupedBoosterEntries = UiMapper.toBoosterPanelEntriesCategorized(boosterEntries);
+        Map<String, List<BoostersTab.Entry>> groupedBoosterEntries = UiMapper.toBoostersTabEntriesCategorized(boosterEntries);
         Map<String, List<ColumnRow<Range>>> boosterRows = groupedBoosterEntries.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,

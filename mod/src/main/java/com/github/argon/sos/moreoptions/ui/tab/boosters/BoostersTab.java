@@ -11,6 +11,7 @@ import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.mod.sdk.booster.Boosters;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.mod.sdk.data.domain.Range;
+import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import game.boosting.BoostableCat;
 import game.faction.FACTIONS;
@@ -70,15 +71,12 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
     private Map<String, Map<String, Range>> boosterPresets;
 
     public BoostersTab(
-        String title,
-        Map<Faction, List<Entry>> boosterEntries,
-        Map<String, BoostersConfig.BoostersPreset> boosterPresets,
-        BoostersConfig defaultConfig,
+        MoreOptionsModel.Boosters model,
         int availableWidth,
         int availableHeight
     ) {
-        super(title, defaultConfig, availableWidth, availableHeight);
-        this.boosterPresets = boosterPresetValues(boosterPresets);
+        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
+        this.boosterPresets = boosterPresetValues(model.getPresets());
 
         GETTER.GETTER_IMP<Faction> getter = new GETTER.GETTER_IMP<>();
         FactionList factionList = new FactionList(getter, availableHeight);
@@ -139,7 +137,7 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
         buttonBox.pad(5);
 
         this.tableHeight = availableHeight - buttonBox.body().height() - 20;
-        refresh(boosterEntries);
+        refresh(model.getEntries());
 
         int maxWidth = UiUtil.getMaxWidth(boostersSections.values());
         GuiSection section = new GuiSection();

@@ -139,7 +139,7 @@ public class BoostersTabController extends AbstractUiController<BoostersTab> {
 
     public void refreshBoosters() {
         configDefaults.newBoostersConfig();
-        Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoosterPanelEntries(configDefaults.newBoostersConfig());
+        Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoostersTabEntries(configDefaults.newBoostersConfig());
         getElement().refresh(boosterEntries);
         MoreOptionsV5Config currentConfig = configStore.getCurrentConfig();
         Objects.requireNonNull(currentConfig);
