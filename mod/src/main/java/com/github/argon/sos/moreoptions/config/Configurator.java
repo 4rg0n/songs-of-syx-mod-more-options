@@ -15,6 +15,7 @@ import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import game.audio.Ambiance;
+import game.audio.SoundRace;
 import game.events.EVENTS;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
@@ -87,18 +88,28 @@ public class Configurator implements Phases {
     public boolean applySoundsConfig(SoundsConfig sounds) {
         try {
             Map<String, Ambiance> ambienceSounds = gameApis.sounds().getAmbienceSounds();
-
             sounds.getAmbience().forEach((key, range) -> {
                 if (ambienceSounds.containsKey(key)) {
                     Ambiance ambienceSound = ambienceSounds.get(key);
-                    gameApis.sounds().setSoundGainLimiter(ambienceSound, range.getValue());
+                    gameApis.sounds().setSoundGain(ambienceSound, range.getValue());
                 } else {
                     log.warn("Could not find entry %s in game api result.", key);
                     log.trace("API Result: %s", ambienceSounds);
                 }
             });
+
+            Map<String, SoundRace> raceSounds = gameApis.sounds().getRaceSounds();
+            sounds.getRace().forEach((key, range) -> {
+                if (raceSounds.containsKey(key)) {
+                    SoundRace raceSound = raceSounds.get(key);
+                    gameApis.sounds().setSoundGain(raceSound, range.getValue());
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", raceSounds);
+                }
+            });
         } catch (Exception e) {
-            log.error("Could not apply sound ambience config to game", e);
+            log.error("Could not apply sound config to game", e);
             return false;
         }
 

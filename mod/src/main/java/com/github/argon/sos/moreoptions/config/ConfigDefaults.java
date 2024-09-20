@@ -133,8 +133,13 @@ public class ConfigDefaults {
         Map<String, Range> ambienceSounds = gameApis.sounds().getAmbienceSounds().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
+        // Sounds Race
+        Map<String, Range> raceSounds = gameApis.sounds().getRaceSounds().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+
         return SoundsConfig.builder()
             .ambience(ambienceSounds)
+            .race(raceSounds)
             .build();
     }
 

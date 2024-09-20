@@ -153,6 +153,12 @@ public class ConfigMerger {
         } else {
             merge(target.getAmbience(), source.getAmbience());
         }
+
+        if (target.getRace() == null || target.getRace().isEmpty()) {
+            target.setRace(source.getRace());
+        } else {
+            merge(target.getRace(), source.getRace());
+        }
     }
 
     public static <T> Set<T> replace(Set<T> target, @Nullable Set<T> source) {
