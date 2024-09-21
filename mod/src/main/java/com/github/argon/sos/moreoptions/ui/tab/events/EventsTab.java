@@ -1,22 +1,24 @@
 package com.github.argon.sos.moreoptions.ui.tab.events;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.ui.Checkbox;
-import com.github.argon.sos.mod.sdk.ui.ColumnRow;
-import com.github.argon.sos.mod.sdk.ui.Slider;
-import com.github.argon.sos.mod.sdk.ui.Table;
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.EventsConfig;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
+import game.events.general.EventAbs;
 import init.sprite.UI.UI;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.renderable.RENDEROBJ;
 import util.gui.misc.GHeader;
 
 import java.util.List;
@@ -33,19 +35,20 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
 
     private final Map<String, Checkbox> eventsCheckboxes;
     private final Map<String, Slider> tributeSliders;
+    private final Table<Boolean> generalEventsTable;
 
     public EventsTab(
+        String title,
         MoreOptionsModel.Events model,
         int availableWidth,
         int availableHeight
     ) {
-        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
+        super(title, model.getDefaultConfig(), availableWidth, availableHeight);
 
         GuiSection eventsSection = new GuiSection();
         GuiSection tributeSection = new GuiSection();
         EventsConfig eventsConfig = model.getConfig();
         this.eventsCheckboxes = UiMapper.toCheckboxes(eventsConfig.getEvents());
-
 
         // Siege tributes
         GHeader tributeHeader = new GHeader(i18n.t("EventsTab.header.battle.loot.name"));
@@ -65,12 +68,31 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
         tributeSection.addDown(0, tributeHeader);
         tributeSection.addDown(5, tributeTable);
 
-        int tableHeight = availableHeight
-            - tributeSection.body().height()
-            - UI.FONT().H2.height() // headers height
-            - 50;
+        Switcher<String> menu = Switcher.<String>builder()
+            .aktiveKey("events")
+            .highlight(true)
+            .menu(ButtonMenu.<String>builder()
+                .margin(10)
+                .spacer(true)
+                .maxWidth(availableWidth)
+                .horizontal(true)
+                .button("events", new Button(
+                    i18n.t("EventsTab.tab.events.name"),
+                    i18n.t("EventsTab.tab.events.desc")
+                ))
+                .button("generalEvents", new Button(
+                    i18n.t("EventsTab.tab.generalEvents.name"),
+                    i18n.t("EventsTab.tab.generalEvents.desc")
+                ))
+                .build())
+            .build();
 
-        // Event chances
+        int tableHeight = (availableHeight
+            - tributeSection.body().height()
+            - menu.body().height()
+            - UI.FONT().H2.height());
+
+        // Events
         Table<Integer> eventsTable = Table.<Integer>builder()
             .rows(UiMapper.toLabeledColumnRows(eventsCheckboxes, i18n))
             .rowPadding(5)
@@ -81,10 +103,32 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
             .displayHeight(tableHeight)
             .build();
 
-        eventsSection.addDown(5, eventsTable);
+        // Events
+        generalEventsTable = Table.<Boolean>builder()
+            .rows(com.github.argon.sos.moreoptions.ui.UiMapper.toEventsTabGeneralEventColumnRows(model.getGeneralEvents().values()))
+            .rowPadding(5)
+            .columnMargin(20)
+            .highlight(true)
+            .scrollable(true)
+            .displaySearch(true)
+            .backgroundColor(COLOR.WHITE10)
+            .displayHeight(tableHeight)
+            .build();
+
+        Tabulator<String, RENDEROBJ, Void> tabulator = Tabulator.<String, RENDEROBJ, Void>builder()
+            .tabMenu(menu)
+            .center(true)
+            .tabs(Maps.of(
+                "events", eventsTable,
+                "generalEvents", generalEventsTable
+            ))
+            .build();
+
+        eventsSection.addDownC(0, menu);
+        eventsSection.addDownC(15, tabulator);
 
         addDownC(0, eventsSection);
-        addDownC(10, tributeSection);
+        addDownC(15, tributeSection);
     }
 
     @Override
@@ -93,6 +137,7 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
            .events(getEventsConfig())
            .enemyBattleLoot(Range.fromSlider(tributeSliders.get("EventsTab.battle.loot.enemy")))
            .playerBattleLoot(Range.fromSlider(tributeSliders.get("EventsTab.battle.loot.player")))
+           .generalEvents(generalEventsTable.getValue())
            .build();
     }
 
@@ -113,11 +158,22 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
             }
         });
 
+        generalEventsTable.setValue(eventsConfig.getGeneralEvents());
+
         tributeSliders.get("EventsTab.battle.loot.enemy").setValue(eventsConfig.getEnemyBattleLoot().getValue());
         tributeSliders.get("EventsTab.battle.loot.player").setValue(eventsConfig.getPlayerBattleLoot().getValue());
     }
 
     protected EventsTab element() {
         return this;
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    public static class GeneralEvent {
+        private String key;
+        private EventAbs event;
+        private boolean enabled;
     }
 }

@@ -16,6 +16,9 @@ public class EventsConfig {
     @Builder.Default
     private Map<String, Boolean> events = new HashMap<>();
 
+    @Builder.Default
+    private Map<String, Boolean> generalEvents = new HashMap<>();
+
     /**
      * Influences the amount of loot and slaves the player gets when winning a battle
      */

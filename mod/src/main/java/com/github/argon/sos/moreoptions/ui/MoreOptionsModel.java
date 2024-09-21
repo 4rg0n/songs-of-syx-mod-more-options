@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.ui;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.events.EventsTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.faction.Faction;
 import init.paths.ModInfo;
@@ -49,8 +50,6 @@ public class MoreOptionsModel {
     @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Advanced {
-        @NonNull
-        private String title;
         @Nullable
         private String saveStamp;
         @NonNull
@@ -68,8 +67,6 @@ public class MoreOptionsModel {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Boosters {
         @NonNull
-        private String title;
-        @NonNull
         private BoostersConfig config;
         @NonNull
         private BoostersConfig defaultConfig;
@@ -86,11 +83,12 @@ public class MoreOptionsModel {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Events {
         @NonNull
-        private String title;
-        @NonNull
         private EventsConfig config;
         @NonNull
         private EventsConfig defaultConfig;
+
+        @NonNull
+        private Map<String, EventsTab.GeneralEvent> generalEvents;
     }
 
     @Data
@@ -99,8 +97,6 @@ public class MoreOptionsModel {
     @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Metrics {
-        @NonNull
-        private String title;
         @NonNull
         private Path exportFolder;
         @NonNull
@@ -120,8 +116,6 @@ public class MoreOptionsModel {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Races {
         @NonNull
-        private String title;
-        @NonNull
         private Map<String, List<RacesTab.Entry>> entries;
         @NonNull
         private RacesConfig defaultConfig;
@@ -136,8 +130,6 @@ public class MoreOptionsModel {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Sounds {
         @NonNull
-        private String title;
-        @NonNull
         private SoundsConfig defaultConfig;
         @NonNull
         private SoundsConfig config;
@@ -149,8 +141,6 @@ public class MoreOptionsModel {
     @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Weather {
-        @NonNull
-        private String title;
         @NonNull
         private WeatherConfig defaultConfig;
         @NonNull

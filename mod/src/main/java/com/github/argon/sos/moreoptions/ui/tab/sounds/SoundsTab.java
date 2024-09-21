@@ -30,11 +30,12 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
     private final Map<String, Slider> raceSoundSliders;
 
     public SoundsTab(
+        String title,
         MoreOptionsModel.Sounds model,
         int availableWidth,
         int availableHeight
     ) {
-        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
+        super(title, model.getDefaultConfig(), availableWidth, availableHeight);
         SoundsConfig soundsConfig = model.getConfig();
         this.ambienceSoundSliders = UiMapper.toSliders(soundsConfig.getAmbience());
         this.raceSoundSliders = UiMapper.toSliders(soundsConfig.getRace());

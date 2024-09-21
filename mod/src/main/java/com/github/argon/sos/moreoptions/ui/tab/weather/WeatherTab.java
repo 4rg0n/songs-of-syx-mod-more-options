@@ -31,11 +31,12 @@ public class WeatherTab extends AbstractConfigTab<WeatherConfig, WeatherTab> {
     @Getter
     private final Map<String, Slider> sliders;
     public WeatherTab(
+        String title,
         MoreOptionsModel.Weather model,
         int availableWidth,
         int availableHeight
     ) {
-        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
+        super(title, model.getDefaultConfig(), availableWidth, availableHeight);
         WeatherConfig weatherConfig = model.getConfig();
         this.sliders = UiMapper.toSliders(weatherConfig.getEffects());
         List<ColumnRow<Integer>> rows = UiMapper.toLabeledColumnRows(sliders, i18n);

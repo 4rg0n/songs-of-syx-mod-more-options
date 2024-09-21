@@ -148,8 +148,13 @@ public class ConfigDefaults {
         Map<String, Boolean> events = gameApis.events().getEventResources().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> true));
 
+        // General Events
+        Map<String, Boolean> generalEvents = gameApis.events().getEvents().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> true));
+
         return EventsConfig.builder()
             .events(events)
+            .generalEvents(generalEvents)
             .enemyBattleLoot(battleLootEnemy())
             .playerBattleLoot(battleLootPlayer())
             .build();

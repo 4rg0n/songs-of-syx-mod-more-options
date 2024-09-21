@@ -71,11 +71,12 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
     private Map<String, Map<String, Range>> boosterPresets;
 
     public BoostersTab(
+        String title,
         MoreOptionsModel.Boosters model,
         int availableWidth,
         int availableHeight
     ) {
-        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
+        super(title, model.getDefaultConfig(), availableWidth, availableHeight);
         this.boosterPresets = boosterPresetValues(model.getPresets());
 
         GETTER.GETTER_IMP<Faction> getter = new GETTER.GETTER_IMP<>();

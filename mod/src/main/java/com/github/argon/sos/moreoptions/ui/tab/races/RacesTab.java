@@ -48,11 +48,12 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
     private final Button importButton;
 
     public RacesTab(
+        String title,
         MoreOptionsModel.Races model,
         int availableWidth,
         int availableHeight
     ) {
-        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
+        super(title, model.getDefaultConfig(), availableWidth, availableHeight);
         Map<String, List<Entry>> raceEntries = model.getEntries();
 
         // Race Likings rows for table

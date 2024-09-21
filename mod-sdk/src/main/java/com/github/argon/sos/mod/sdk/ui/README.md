@@ -198,13 +198,14 @@ A `DropDown` is a button you can click, opening a popup with multiple options in
 ```java
 public class YourUiElement extends GuiSection {
     public YourUiElement() {
-        Switcher.SwitcherBuilder<String> menu = Switcher.builder()
+        Switcher<String> menu = Switcher.<String>builder()
             .highlight(true) // highlight the active button
-            .menu(ButtonMenu.builder()
+            .menu(ButtonMenu.<String>builder()
                 .button("RED50", new Button("Red50"))
                 .button("GREEN40", new Button("Green40"))
                 .button("BLUE50", new Button("Blue50"))
-                .build());
+                .build())
+            .build();
 
         add(DropDown.builder()
             .label("Color")
@@ -413,12 +414,13 @@ public class YourModScript extends AbstractModSdkScript {
 
         Button button = new Button("ColorBoxes");
         // a switcher menu containing the buttons; the key e.g. "RED50" must match the keys of tha tabs further down
-        Switcher.SwitcherBuilder<String> menu = Switcher.builder()
+        Switcher.<String> menu = Switcher.builder()
             .menu(ButtonMenu.builder()
                 .button("RED50", new Button("Red50"))
                 .button("GREEN40", new Button("Green40"))
                 .button("BLUE50", new Button("Blue50"))
-                .build());
+                .build())
+            .build();
 
         // a tabulator is able to switch between views via the switcher menu
         Tabulator<Object, RENDEROBJ, Object> tabulator = Tabulator.builder()
@@ -453,12 +455,13 @@ The `Tabulator` is a ui element, which can hold multiple other uis and switch be
 public class YourUiElement extends GuiSection {
     public YourUiElement() {
         // a switcher menu containing the buttons; the key e.g. "RED50" must match the keys of tha tabs further down
-        Switcher.SwitcherBuilder<String> menu = Switcher.builder()
-            .menu(ButtonMenu.builder()
+        Switcher<String> menu = Switcher.<String>builder()
+            .menu(ButtonMenu.<String>builder()
                 .button("RED50", new Button("Red50"))
                 .button("GREEN40", new Button("Green40"))
                 .button("BLUE50", new Button("Blue50"))
-                .build());
+                .build())
+            .build();
 
         // the actual tabulator
         Tabulator<String, ColorBox, Void> tabulator = Tabulator.builder()

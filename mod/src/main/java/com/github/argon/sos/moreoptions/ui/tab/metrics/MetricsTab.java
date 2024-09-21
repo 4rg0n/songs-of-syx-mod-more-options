@@ -62,11 +62,12 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
     private Consumer<MetricsConfig> valueConsumer = o -> {};
 
     public MetricsTab(
+        String title,
         MoreOptionsModel.Metrics model,
         int availableWidth,
         int availableHeight
     ) {
-        super(model.getTitle(), model.getDefaultConfig(), availableWidth, availableHeight);
+        super(title, model.getDefaultConfig(), availableWidth, availableHeight);
         this.exportFolderPath = model.getExportFolder();
         this.exportFilePath = model.getExportFile();
         MetricsConfig metricsConfig = model.getConfig();

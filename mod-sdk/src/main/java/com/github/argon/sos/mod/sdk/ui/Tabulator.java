@@ -4,7 +4,6 @@ import com.github.argon.sos.mod.sdk.game.action.Refreshable;
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
-import com.github.argon.sos.mod.sdk.ui.Section;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,9 +59,22 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends Section im
         this.tabs = tabs;
         this.resetOnToggle = resetOnToggle;
         this.menu = tabMenu;
-        // activate first element in map
-        tab(tabs.keySet().iterator().next());
-        if (tabMenu != null) tabMenu.clickAction(this::tab);
+
+        // toggle to active key, when set in menu
+        Key firstKey = tabs.keySet().iterator().next();
+        if (tabMenu != null) {
+            tabMenu.clickAction(this::tab);
+            Key activeKey = tabMenu.getActiveKey();
+
+            if (activeKey != null) {
+                tab(activeKey);
+            } else {
+                tab(firstKey);
+            }
+        } else {
+            // activate first element in map
+            tab(firstKey);
+        }
 
         // guarantee same width
         int maxWidth = UiUtil.getMaxWidth(tabs.values());

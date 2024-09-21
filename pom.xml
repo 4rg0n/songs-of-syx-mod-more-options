@@ -85,9 +85,6 @@
                                     <resources>
                                         <resource>
                                             <directory>${mod.build.output.directory}</directory>
-                                            <excludes>
-                                                <exclude>**/_src/**</exclude>
-                                            </excludes>
                                         </resource>
                                     </resources>
                                 </configuration>

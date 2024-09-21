@@ -18,6 +18,7 @@ import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogController;
 import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.events.EventsTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.faction.Faction;
@@ -69,6 +70,7 @@ public class UiFactory {
     public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV5Config config) {
         Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoostersTabEntries(config.getBoosters());
         Map<String, List<RacesTab.Entry>> raceEntries = uiMapper.toRacesTabEntries(config.getRaces().getLikings());
+        Map<String, EventsTab.GeneralEvent> generalEvents = uiMapper.toEventsTabGeneralEvents(config.getEvents().getGeneralEvents());
 
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod(MoreOptionsScript.MOD_INFO.name.toString()).orElse(null);
@@ -82,26 +84,23 @@ public class UiFactory {
             .defaultConfig(defaultConfig)
             .modInfo(modInfo)
             .advanced(MoreOptionsModel.Advanced.builder()
-                .title(i18n.t("MoreOptionsPanel.tab.advanced.name"))
                 .saveStamp(saveStamp)
                 .logLevel(config.getLogLevel())
                 .defaultLogLevel(defaultConfig.getLogLevel())
                 .worldSeed(WORLD.GEN().seed)
                 .build())
             .boosters(MoreOptionsModel.Boosters.builder()
-                .title(i18n.t("MoreOptionsPanel.tab.boosters.name"))
                 .config(config.getBoosters())
                 .defaultConfig(defaultConfig.getBoosters())
                 .entries(boosterEntries)
                 .presets(config.getBoosters().getPresets())
                 .build())
             .events(MoreOptionsModel.Events.builder()
-                .title(i18n.t("MoreOptionsPanel.tab.events.name"))
                 .config(config.getEvents())
                 .defaultConfig(defaultConfig.getEvents())
+                .generalEvents(generalEvents)
                 .build())
             .metrics(MoreOptionsModel.Metrics.builder()
-                .title(i18n.t("MoreOptionsPanel.tab.metrics.name"))
                 .config(config.getMetrics())
                 .defaultConfig(defaultConfig.getMetrics())
                 .exportFolder(exportFolder)
@@ -109,18 +108,15 @@ public class UiFactory {
                 .availableStats(availableStats)
                 .build())
             .sounds(MoreOptionsModel.Sounds.builder()
-                .title(i18n.t("MoreOptionsPanel.tab.sounds.name"))
                 .config(config.getSounds())
                 .defaultConfig(defaultConfig.getSounds())
                 .build())
             .races(MoreOptionsModel.Races.builder()
-                .title(i18n.t("MoreOptionsPanel.tab.races.name"))
                 .config(config.getRaces())
                 .defaultConfig(defaultConfig.getRaces())
                 .entries(raceEntries)
                 .build())
             .weather(MoreOptionsModel.Weather.builder()
-                .title(i18n.t("MoreOptionsPanel.tab.weather.name"))
                 .config(config.getWeather())
                 .defaultConfig(defaultConfig.getWeather())
                 .build())

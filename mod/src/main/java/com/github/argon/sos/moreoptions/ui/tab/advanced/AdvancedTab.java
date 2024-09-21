@@ -48,11 +48,12 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
     private final int worldSeed;
 
     public AdvancedTab(
+        String title,
         MoreOptionsModel.Advanced model,
         int availableWidth,
         int availableHeight
     ) {
-        super(model.getTitle(), model.getDefaultLogLevel(), availableWidth, availableHeight);
+        super(title, model.getDefaultLogLevel(), availableWidth, availableHeight);
         this.worldSeed = model.getWorldSeed();
         this.saveStamp = (model.getSaveStamp() != null) ? model.getSaveStamp() : "NONE";
 

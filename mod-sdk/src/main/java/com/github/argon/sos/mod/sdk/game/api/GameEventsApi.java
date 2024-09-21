@@ -7,6 +7,13 @@ import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import game.GAME;
 import game.events.EVENTS;
 import game.events.general.EventAbs;
+import game.faction.Faction;
+import game.values.Lock;
+import game.values.Locker;
+import init.sprite.UI.UI;
+import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
+import snake2d.util.sprite.SPRITE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +27,20 @@ public class GameEventsApi implements Resettable {
 
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
+    @Nullable
     private Map<String, EVENTS.EventResource> eventResources;
+    @Nullable
     private Map<String, EventAbs> events;
+    @Nullable
+    private Map<String, EventLocker> eventLocks;
 
     public final static String KEY_PREFIX = "event";
 
     @Override
     public void reset() {
         eventResources = null;
+        events = null;
+        eventLocks = null;
     }
 
     /**
@@ -39,6 +52,27 @@ public class GameEventsApi implements Resettable {
         }
 
         return eventResources;
+    }
+
+    public Map<String, EventLocker> getEventLocks() {
+        if (eventLocks == null) {
+            eventLocks = newEventLocks();
+        }
+
+        return eventLocks;
+    }
+
+    private Map<String, EventLocker> newEventLocks() {
+        Map<String, EventLocker> eventLocks = new HashMap<>();
+
+        getEvents().forEach((key, event) -> {
+            EventLocker eventLocker = new EventLocker("Mod SDK", UI.icons().m.cog);
+            Lock<Faction> factionLock = new Lock<>(event.plockable, eventLocker);
+            eventLocks.put(key, eventLocker);
+            event.plockable.push(factionLock);
+        });
+
+        return eventLocks;
     }
 
     public Optional<EVENTS.EventResource> getEventResource(String key) {
@@ -117,5 +151,31 @@ public class GameEventsApi implements Resettable {
     private void _reset(EVENTS.EventResource event) {
         log.trace("Resetting event %s", event.getClass().getSimpleName());
         ReflectionUtil.invokeMethod("clear", event);
+    }
+
+    public static class EventLocker extends Locker<Faction> {
+        @Nullable
+        private final Faction faction;
+
+        @Setter
+        private boolean locked = false;
+        public EventLocker(CharSequence name, SPRITE icon) {
+            this(null, name, icon);
+        }
+
+        public EventLocker(@Nullable Faction faction, CharSequence name, SPRITE icon) {
+            super(name, icon);
+            this.faction = faction;
+        }
+
+        @Override
+        public boolean inUnlocked(Faction faction) {
+            boolean sameFaction = true;
+            if (this.faction != null) {
+                sameFaction = this.faction.equals(faction);
+            }
+
+            return sameFaction && !locked;
+        }
     }
 }

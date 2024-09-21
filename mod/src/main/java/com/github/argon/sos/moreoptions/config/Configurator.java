@@ -1,23 +1,25 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.mod.sdk.data.domain.DataUtil;
+import com.github.argon.sos.mod.sdk.game.action.Action;
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.game.api.GameEventsApi;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
-import com.github.argon.sos.mod.sdk.util.MathUtil;
-import com.github.argon.sos.moreoptions.config.domain.*;
-import com.github.argon.sos.mod.sdk.game.action.Action;
-import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.metric.MetricCollector;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
 import com.github.argon.sos.mod.sdk.phase.Phases;
+import com.github.argon.sos.mod.sdk.util.Lists;
+import com.github.argon.sos.mod.sdk.util.MathUtil;
+import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import game.audio.Ambiance;
 import game.audio.SoundRace;
 import game.events.EVENTS;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import settlement.weather.WeatherThing;
 import world.battle.AC_Resolver;
@@ -210,8 +212,19 @@ public class Configurator implements Phases {
                         gameApis.events().reset(event);
                     }
                 } else {
-                    log.warn("Could not find entry %s in game api result.", key);
+                    log.warn("Could not find event %s in game api result.", key);
                     log.trace("API Result: %s", gameEvents);
+                }
+            });
+
+            Map<String, GameEventsApi.EventLocker> eventLocks = gameApis.events().getEventLocks();
+            eventsConfig.getGeneralEvents().forEach((key, enabled) -> {
+                if (eventLocks.containsKey(key)) {
+                    GameEventsApi.EventLocker locker = eventLocks.get(key);
+                    locker.setLocked(!enabled);
+                } else {
+                    log.warn("Could not find event lock %s in game api result.", key);
+                    log.trace("API Result: %s", eventLocks);
                 }
             });
         } catch (Exception e) {

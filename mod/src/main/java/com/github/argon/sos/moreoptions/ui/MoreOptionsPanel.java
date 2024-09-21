@@ -172,21 +172,19 @@ public class MoreOptionsPanel extends GuiSection implements
         HorizontalLine horizontalLine = new HorizontalLine(footer.body().width(), 20, 1);
         availableHeight = availableHeight - footer.body().height() - horizontalLine.body().height() - 40;
 
-        MoreOptionsV5Config defaultConfig = configStore.getDefaultConfig();
-
-        soundsTab = new SoundsTab(moreOptionsModel.getSounds(), availableWidth, availableHeight);
-        eventsTab = new EventsTab(moreOptionsModel.getEvents(), availableWidth, availableHeight);
-        weatherTab = new WeatherTab(moreOptionsModel.getWeather(), availableWidth, availableHeight);
-        boostersTab = new BoostersTab(moreOptionsModel.getBoosters(), availableWidth, availableHeight);
-        metricsTab = new MetricsTab(moreOptionsModel.getMetrics(), availableWidth, availableHeight);
-        racesTab = new RacesTab(moreOptionsModel.getRaces(), availableWidth, availableHeight);
-        advancedTab = new AdvancedTab(moreOptionsModel.getAdvanced(), availableWidth, availableHeight);
+        soundsTab = new SoundsTab(i18n.t("MoreOptionsPanel.tab.sounds.name"), moreOptionsModel.getSounds(), availableWidth, availableHeight);
+        eventsTab = new EventsTab(i18n.t("MoreOptionsPanel.tab.events.name"), moreOptionsModel.getEvents(), availableWidth, availableHeight);
+        weatherTab = new WeatherTab(i18n.t("MoreOptionsPanel.tab.weather.name"), moreOptionsModel.getWeather(), availableWidth, availableHeight);
+        boostersTab = new BoostersTab(i18n.t("MoreOptionsPanel.tab.boosters.name"), moreOptionsModel.getBoosters(), availableWidth, availableHeight);
+        metricsTab = new MetricsTab(i18n.t("MoreOptionsPanel.tab.metrics.name"), moreOptionsModel.getMetrics(), availableWidth, availableHeight);
+        racesTab = new RacesTab(i18n.t("MoreOptionsPanel.tab.races.name"), moreOptionsModel.getRaces(), availableWidth, availableHeight);
+        advancedTab = new AdvancedTab(i18n.t("MoreOptionsPanel.tab.advanced.name"), moreOptionsModel.getAdvanced(), availableWidth, availableHeight);
 
         tabulator = Tabulator.<String, AbstractConfigTab<?, ?>, Void>builder()
             .tabs(Maps.ofLinked(
                 "sounds", soundsTab,
                 "events", eventsTab,
-                "settlement/weather", weatherTab,
+                "weather", weatherTab,
                 "boosters", boostersTab,
                 "metrics", metricsTab,
                 "races", racesTab,
@@ -200,7 +198,7 @@ public class MoreOptionsPanel extends GuiSection implements
                     .button("events", new Button(
                         i18n.t("MoreOptionsPanel.tab.events.name"),
                         i18n.t("MoreOptionsPanel.tab.events.desc")))
-                    .button("settlement/weather", new Button(
+                    .button("weather", new Button(
                         i18n.t("MoreOptionsPanel.tab.weather.name"),
                         i18n.t("MoreOptionsPanel.tab.weather.desc")))
                     .button("boosters", new Button(

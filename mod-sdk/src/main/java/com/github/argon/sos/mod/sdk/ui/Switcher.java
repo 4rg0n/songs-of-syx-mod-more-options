@@ -1,7 +1,6 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.*;
-import com.github.argon.sos.mod.sdk.ui.Section;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,8 +23,11 @@ public class Switcher<Key> extends Section implements
     Switchable<Key>
 {
 
+    @Getter
     @Nullable
     private Key activeKey;
+
+    @Getter
     @Nullable
     private final Key initKey;
 

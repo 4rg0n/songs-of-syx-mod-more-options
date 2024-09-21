@@ -1,22 +1,30 @@
 package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
+import com.github.argon.sos.mod.sdk.ui.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.ColorCircle;
 import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.ui.Label;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.events.EventsTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
+import game.events.general.EventAbs;
+import game.faction.FACTIONS;
 import game.faction.Faction;
 import init.race.Race;
 import init.sprite.SPRITES;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import settlement.room.main.RoomBlueprintImp;
+import snake2d.util.color.COLOR;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.SPRITE;
 
@@ -29,9 +37,42 @@ import static java.util.stream.Collectors.groupingBy;
 public class UiMapper {
 
     private final static Logger log = Loggers.getLogger(UiMapper.class);
+    private final static I18nTranslator i18n = ModModule.i18n().get(UiMapper.class);
 
     private final GameApis gameApis;
     private final GameBoosterApi gameBoosterApi;
+
+    public Map<String, EventsTab.GeneralEvent> toEventsTabGeneralEvents(Map<String, Boolean> generalEvents) {
+        Map<String, EventsTab.GeneralEvent> events = new HashMap<>();
+
+        for (Map.Entry<String, Boolean> entry : generalEvents.entrySet()) {
+            EventsTab.GeneralEvent event = toEventsTabGeneralEvent(entry.getKey(), entry.getValue());
+
+            if (event == null) {
+                continue;
+            }
+
+            events.put(event.getKey(), event);
+        }
+
+        return events;
+    }
+
+    @Nullable
+    public EventsTab.GeneralEvent toEventsTabGeneralEvent(String key, Boolean enabled) {
+        EventAbs eventAbs = gameApis.events().getEvents().get(key);
+
+        if (eventAbs == null) {
+            log.debug("No event '%s' present", key);
+            return null;
+        }
+
+        return EventsTab.GeneralEvent.builder()
+            .key(key)
+            .enabled(enabled)
+            .event(eventAbs)
+            .build();
+    }
 
     public Map<String, List<RacesTab.Entry>> toRacesTabEntries(Set<RacesConfig.Liking> raceLikings) {
         Map<String, List<RacesTab.Entry>> entries = new HashMap<>();
@@ -136,5 +177,40 @@ public class UiMapper {
             })
             .sorted()
             .collect(Collectors.toList());
+    }
+
+    public static List<ColumnRow<Boolean>> toEventsTabGeneralEventColumnRows(Collection<EventsTab.GeneralEvent> generalEvents) {
+        return generalEvents.stream()
+            // sort by event name
+            .sorted(Comparator.comparing(event -> event.getEvent().sName.toString()))
+            .map(UiMapper::toEventsTabGeneralEventColumnRow)
+            .collect(Collectors.toList());
+    }
+
+    public static ColumnRow<Boolean> toEventsTabGeneralEventColumnRow(EventsTab.GeneralEvent generalEvent) {
+        EventAbs event = generalEvent.getEvent();
+        Checkbox checkbox = new Checkbox(generalEvent.isEnabled());
+
+        ColorCircle colorCircle = new ColorCircle(3, (event.plockable.passes(FACTIONS.player())) ? COLOR.GREEN100 : COLOR.RED100);
+        colorCircle.renderAction(aFloat -> {
+            COLOR color = (event.plockable.passes(FACTIONS.player())) ? COLOR.GREEN100 : COLOR.RED100;
+            colorCircle.setColor(color);
+        });
+        colorCircle.hoverInfoSet(i18n.t("EventsTab.tab.events.canFire.desc"));
+
+        return ColumnRow.<Boolean>builder()
+            .key(generalEvent.getKey())
+            .value(generalEvent.isEnabled())
+            .column(colorCircle)
+            .column(Label.builder()
+                .name(event.sName.toString())
+                .hoverGuiAction(event::hover)
+                .build())
+            .column(UiUtil.toRender(event.icon))
+            .column(checkbox)
+            .valueConsumer(checkbox::setValue)
+            .valueSupplier(checkbox::getValue)
+            .searchTerm(event.sName.toString())
+            .build();
     }
 }

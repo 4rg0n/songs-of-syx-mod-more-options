@@ -2,6 +2,9 @@
 
 ![Mod SDK Logo](../../../../../../../../../doc/img/mod-sdk-logo.png)
 
+**But what is it?**
+It provides some pre-build components and patterns to make it easier writing a Java code mod.
+
 ## Packages
 
 * [Config](config) - For handling your mod configuration files
