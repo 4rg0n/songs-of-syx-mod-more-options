@@ -37,8 +37,7 @@ public final class AmbianceUpdater {
 			for (Ambiance a : aaa.all()) {
 				a.priority = debugPrio[a.index()];
 				if (a.priority > 0) {
-					a.gain = debugGain[a.index()];
-					
+					a.gainSet(debugGain[a.index()]);
 				}
 			}
 			debugPrio = null;

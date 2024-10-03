@@ -12,15 +12,15 @@ public final class Ambiance implements MAPPED{
 	
 	public final LIST<SoundStream> streams;
 	double priority;
-	double gain;
+	// MODDED: made private
+	private double gain;
 	private final String key;
 	private final int index;
 
 	// MODDED
 	@Setter
 	private double gainLimit = 1.0;
-	
-	
+
 	Ambiance(String key, LISTE<Ambiance> all, LIST<SoundStream> streams){
 		this.streams = streams;
 		index = all.add(this);
@@ -28,7 +28,7 @@ public final class Ambiance implements MAPPED{
 	}
 
 	public double gain() {
-		// MODDED
+		// MODDED: AmbianceChannel and AmbienceUpdated only read from here now
 		return gain * gainLimit;
 	}
 	
