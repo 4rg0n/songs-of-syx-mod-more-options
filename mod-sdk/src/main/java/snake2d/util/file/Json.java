@@ -3,6 +3,7 @@ package snake2d.util.file;
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.json.GameJsonStore;
 import snake2d.Errors;
+import snake2d.util.sets.KeyMap;
 import snake2d.util.sets.LIST;
 
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.nio.file.Paths;
 public class Json {
 	
 	private final JsonParser parser;
+	private KeyMap<Boolean> testMap = new KeyMap<Boolean>();
+	private static boolean untest = false;
 
 	private final GameJsonStore gameJsonStore = ModSdkModule.gameJsonStore();
 
@@ -73,7 +76,22 @@ public class Json {
 		this.parser = parser;
 	}
 	
+
+	public void checkUnused(Json json) {
+		if (untest)
+			return;
+		for (String k : keys()) {
+			if (!testMap.containsKey(k)) {
+				System.err.println("unknown key: " + k + " in " + json.path());
+				System.err.println("available: ");
+				System.err.println(testMap.keysString());
+				untest = true;
+			}
+		}
+	}
+
 	public boolean has(String key) {
+		testMap.putReplace(key, true);
 		return parser.test(key);
 	}
 	
@@ -82,7 +100,7 @@ public class Json {
 	}
 	
 	public String text(String key, String fallback) {
-		if (!parser.test(key))
+		if (!has(key))
 			return fallback;
 		return parser.string(key);
 	}
@@ -92,7 +110,7 @@ public class Json {
 	}
 	
 	public String[] textsTry(String key) {
-		if (!parser.test(key))
+		if (!has(key))
 			return new String[0];
 		return parser.strings(key);
 	}
@@ -126,6 +144,11 @@ public class Json {
 		return parser.jsonIs(key);
 	}
 	
+	public boolean textIs(String key) {
+		return parser.jsonIs(key);
+	}
+
+
 	public boolean jsonsIs(String key) {
 		return parser.jsonsIs(key);
 	}
@@ -256,6 +279,7 @@ public class Json {
 	}
 	
 	public String value(String key) {
+		testMap.putReplace(key, true);
 		return parser.value(key);
 	}
 	

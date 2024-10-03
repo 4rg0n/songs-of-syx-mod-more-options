@@ -5,6 +5,10 @@
 **But what is it?**
 It provides some pre-build components and patterns to make it easier writing a Java code mod.
 
+## DISCLAIMER for V0
+
+Version 0 is the first release for testing the waters and gathering feedback. APIs and classes are not stable yet and may change.
+
 ## Packages
 
 * [Config](config) - For handling your mod configuration files

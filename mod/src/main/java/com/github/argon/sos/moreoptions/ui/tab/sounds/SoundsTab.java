@@ -2,18 +2,20 @@ package com.github.argon.sos.moreoptions.ui.tab.sounds;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
-import com.github.argon.sos.mod.sdk.ui.Slider;
-import com.github.argon.sos.mod.sdk.ui.Table;
-import com.github.argon.sos.mod.sdk.ui.layout.Layout;
-import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.layout.Layout;
+import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
+import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.SoundsConfig;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import snake2d.util.color.COLOR;
+import snake2d.util.gui.GuiSection;
+import snake2d.util.gui.renderable.RENDEROBJ;
 import util.gui.misc.GHeader;
 
 import java.util.Map;
@@ -43,9 +45,6 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsTab.header.ambienceSounds.name"));
         ambienceSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.ambienceSounds.desc"));
 
-        GHeader roomSoundsHeader = new GHeader(i18n.t("SoundsTab.header.roomSounds.name"));
-        roomSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.roomSounds.desc"));
-
         GHeader raceSoundsHeader = new GHeader(i18n.t("SoundsTab.header.raceSounds.name"));
         raceSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.raceSounds.desc"));
 
@@ -57,16 +56,32 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
             .filter(stringSliderEntry -> stringSliderEntry.getKey().contains("ROOM_"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-
-
+        Switcher<String> menu = Switcher.<String>builder()
+            .aktiveKey("sounds")
+            .highlight(true)
+            .menu(ButtonMenu.<String>builder()
+                .margin(10)
+                .spacer(true)
+                .maxWidth(availableWidth)
+                .horizontal(true)
+                .button("sounds", new Button(
+                    i18n.t("SoundsTab.header.ambienceSounds.name"),
+                    i18n.t("SoundsTab.header.ambienceSounds.desc")
+                ))
+                .button("roomSounds", new Button(
+                    i18n.t("SoundsTab.header.roomSounds.name"),
+                    i18n.t("SoundsTab.header.roomSounds.desc")
+                ))
+                .build())
+            .build();
 
         int tableHeight = (availableHeight
-            - ambienceSoundsHeader.body().height()
-            - roomSoundsHeader.body().height()
-            - raceSoundsHeader.body().height()
-            - 30) / 3;
+            - menu.body().height());
 
-        Layout.vertical(tableHeight)
+        GuiSection soundsSection = new GuiSection();
+        GuiSection roomSoundsSection = new GuiSection();
+
+        Layout.vertical(tableHeight / 2)
             .addDownC(0, ambienceSoundsHeader)
             .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
                 .rows(UiMapper.toLabeledColumnRows(ambience, i18n))
@@ -77,9 +92,9 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
                 .backgroundColor(COLOR.WHITE10)
                 .displayHeight(height)
                 .build()))
-            .build(this);
+            .build(soundsSection);
 
-        Layout.vertical(tableHeight)
+        Layout.vertical(tableHeight / 2)
             .addDownC(20, raceSoundsHeader)
             .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<String>builder()
                 .rows(UiMapper.toLabeledColumnRows(raceSoundSliders, i18n))
@@ -90,10 +105,9 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
                 .backgroundColor(COLOR.WHITE10)
                 .displayHeight(height)
                 .build()))
-            .build(this);
+            .build(soundsSection);
 
         Layout.vertical(tableHeight)
-            .addDownC(20, roomSoundsHeader)
             .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<String>builder()
                 .rows(ModModule.uiMapper().toRoomSoundLabeledColumnRows(room))
                 .rowPadding(5)
@@ -104,7 +118,19 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
                 .backgroundColor(COLOR.WHITE10)
                 .displayHeight(height)
                 .build()))
-            .build(this);
+            .build(roomSoundsSection);
+
+        Tabulator<String, RENDEROBJ, Void> tabulator = Tabulator.<String, RENDEROBJ, Void>builder()
+            .tabMenu(menu)
+            .center(true)
+            .tabs(Maps.of(
+                "sounds", soundsSection,
+                "roomSounds", roomSoundsSection
+            ))
+            .build();
+
+        addDownC(0, menu);
+        addDownC(15, tabulator);
     }
 
     @Override

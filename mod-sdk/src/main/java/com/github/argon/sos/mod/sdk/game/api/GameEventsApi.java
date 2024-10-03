@@ -62,6 +62,18 @@ public class GameEventsApi implements Resettable {
         return eventLocks;
     }
 
+    public void lockEvent(String key, boolean locked) {
+        GameEventsApi.EventLocker locker = getEventLocks().get(key);
+
+        if (locker == null) {
+            log.warn("Could not find event lock %s in game api result.", key);
+            log.trace("API Result: %s", eventLocks);
+            return;
+        }
+
+        locker.setLocked(locked);
+    }
+
     private Map<String, EventLocker> newEventLocks() {
         Map<String, EventLocker> eventLocks = new HashMap<>();
 

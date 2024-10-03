@@ -3,7 +3,6 @@ package com.github.argon.sos.moreoptions.config;
 import com.github.argon.sos.mod.sdk.data.domain.DataUtil;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
-import com.github.argon.sos.mod.sdk.game.api.GameEventsApi;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -217,15 +216,8 @@ public class Configurator implements Phases {
                 }
             });
 
-            Map<String, GameEventsApi.EventLocker> eventLocks = gameApis.events().getEventLocks();
             eventsConfig.getGeneralEvents().forEach((key, enabled) -> {
-                if (eventLocks.containsKey(key)) {
-                    GameEventsApi.EventLocker locker = eventLocks.get(key);
-                    locker.setLocked(!enabled);
-                } else {
-                    log.warn("Could not find event lock %s in game api result.", key);
-                    log.trace("API Result: %s", eventLocks);
-                }
+                gameApis.events().lockEvent(key, !enabled);
             });
         } catch (Exception e) {
             log.error("Could not apply events config to game", e);
