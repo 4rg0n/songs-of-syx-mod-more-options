@@ -101,7 +101,6 @@ public class GameSoundsApi implements Resettable {
             sounds.put(KEY_PREFIX + ".BUILD", AUDIO.mono().BUILD);
             sounds.put(KEY_PREFIX + ".SLAUGHTER", AUDIO.mono().SLAUGHTER);
             sounds.put(KEY_PREFIX + ".SWORD", AUDIO.mono().SWORD);
-            sounds.put(KEY_PREFIX + ".CLEAR_GRASS2", AUDIO.mono().clearGrass);
 
             //noinspection unchecked
             ReflectionUtil.getDeclaredFieldValue("map", AUDIO.mono())
