@@ -33,21 +33,23 @@ public class ConfigStore implements Phases {
     private MoreOptionsV5Config currentConfig;
     @Nullable
     private MoreOptionsV5Config defaultConfig;
-    @Nullable
     private ConfigMeta configMeta;
 
-    @Override
-    public void initBeforeGameCreated() {
-        ConfigMeta configMetaDefault = configDefaults.newConfigMeta();
-        try {
-            // load configs into store
-            configMeta = configService.getMeta()
-                .orElse(configMetaDefault);
-        } catch (Exception e) {
-            configMeta = configMetaDefault;
-            log.warn("Could not read config meta information. Using defaults.", e);
-            log.trace("Defaults: %s", configMetaDefault);
+    public ConfigMeta getConfigMeta() {
+        if (configMeta == null) {
+            ConfigMeta configMetaDefault = configDefaults.newConfigMeta();
+            try {
+                // load config meta information into store
+                configMeta = configService.getMeta()
+                    .orElse(configMetaDefault);
+            } catch (Exception e) {
+                configMeta = configMetaDefault;
+                log.warn("Could not read config meta information. Using defaults.", e);
+                log.trace("Defaults: %s", configMetaDefault);
+            }
         }
+
+        return configMeta;
     }
 
     @Override
@@ -153,10 +155,6 @@ public class ConfigStore implements Phases {
     public MoreOptionsV5Config getDefaultConfig() {
         return Optional.ofNullable(defaultConfig)
             .orElseThrow(() -> new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT));
-    }
-
-    public Optional<ConfigMeta> getConfigMeta() {
-        return Optional.ofNullable(configMeta);
     }
 
     public List<FileMeta> readRacesConfigMetas() {

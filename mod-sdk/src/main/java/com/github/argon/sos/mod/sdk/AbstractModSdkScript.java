@@ -59,6 +59,13 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
         envLogLevel = Optional.ofNullable(System.getenv(LOG_LEVEL_ENV_NAME))
             .flatMap(Level::fromName)
             .orElse(null);
+
+        Level level = initLogging();
+        if (envLogLevel != null) {
+            level = envLogLevel;
+        }
+
+        Loggers.setLevels(level);
     }
 
     @Override
@@ -91,20 +98,13 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
         // custom error handling
         Errors.setHandler(new ErrorHandler<>(this));
 
-        Level level = envLogLevel;
-        if (level == null) {
-            level = initLogLevel();
-        }
-
-        Loggers.setLevels(level);
-
         // call to register phases
         registerSdkPhases(phaseManager);
         registerPhases(phaseManager);
         phaseManager.initBeforeGameCreated();
     }
 
-    protected Level initLogLevel() {
+    protected Level initLogging() {
         return Loggers.LOG_LEVEL_DEFAULT;
     }
 

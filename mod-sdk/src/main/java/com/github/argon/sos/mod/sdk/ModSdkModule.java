@@ -14,6 +14,8 @@ import com.github.argon.sos.mod.sdk.json.*;
 import com.github.argon.sos.mod.sdk.json.writer.JacksonWriter;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriter;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.writer.FileLogWriter;
 import com.github.argon.sos.mod.sdk.metric.MetricCollector;
 import com.github.argon.sos.mod.sdk.metric.MetricCsvWriter;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
@@ -160,7 +162,7 @@ public class ModSdkModule {
     private final static PhaseManager phaseManager = Factory.newPhaseManager();
 
     /**
-     * Holds certain information about the current game e.g. whether if it's a new game
+     * Holds certain information about the current game e.g., whether if it's a new game
      * See: {@link StateManager}
      */
     @Getter(lazy = true)
@@ -218,7 +220,7 @@ public class ModSdkModule {
         metricCollector());
 
     /**
-     * For showing a small message box in the right hand corner
+     * For showing a small message box in the right-hand corner
      * See: {@link Notificator}
      */
     @Getter(lazy = true)
@@ -334,6 +336,10 @@ public class ModSdkModule {
 
         public static StateManager newStateManager() {
             return new StateManager();
+        }
+
+        public static FileLogWriter newFileLogWriter(Path logFile) {
+            return new FileLogWriter(Logger.PREFIX_MOD, Logger.LOG_MSG_FORMAT, logFile);
         }
     }
 }

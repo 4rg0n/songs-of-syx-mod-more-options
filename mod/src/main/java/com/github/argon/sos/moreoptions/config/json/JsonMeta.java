@@ -16,4 +16,6 @@ public class JsonMeta {
     private int version = MoreOptionsV5Config.VERSION;
     @Builder.Default
     private String logLevel = ConfigDefaults.LOG_LEVEL.getName();
+    @Builder.Default
+    private boolean logToFile = false;
 }

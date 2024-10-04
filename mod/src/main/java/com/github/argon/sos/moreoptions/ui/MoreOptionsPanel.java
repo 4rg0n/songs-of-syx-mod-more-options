@@ -11,6 +11,7 @@ import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
+import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
@@ -234,7 +235,8 @@ public class MoreOptionsPanel extends GuiSection implements
     @Override
     public MoreOptionsV5Config getValue() {
         return MoreOptionsV5Config.builder()
-            .logLevel(advancedTab.getValue())
+            .logLevel(advancedTab.getValue().getLogLevel())
+            .logToFile(advancedTab.getValue().isLogToFile())
             .events(eventsTab.getValue())
             .sounds(soundsTab.getValue())
             .weather(weatherTab.getValue())
@@ -256,7 +258,10 @@ public class MoreOptionsPanel extends GuiSection implements
         boostersTab.setValue(config.getBoosters());
         metricsTab.setValue(config.getMetrics());
         racesTab.setValue(config.getRaces());
-        advancedTab.setValue(config.getLogLevel());
+        advancedTab.setValue(ConfigMeta.builder()
+            .logLevel(config.getLogLevel())
+            .logToFile(config.isLogToFile())
+            .build());
     }
 
     /**

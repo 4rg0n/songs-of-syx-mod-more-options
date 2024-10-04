@@ -1,10 +1,11 @@
 package com.github.argon.sos.moreoptions.ui.tab.advanced;
 
-import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Level;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.ModModule;
+import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
@@ -21,7 +22,7 @@ import util.gui.misc.GTextR;
 /**
  * Contains slider for controlling the intensity of weather effects
  */
-public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
+public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
     private static final I18nTranslator i18n = ModModule.i18n().get(AdvancedTab.class);
 
     private final DropDown<Level> logLevelDropDown;
@@ -40,6 +41,10 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
     private final Button copySaveStampButton;
     @Getter
     private final Button uiShowRoomButton;
+    @Getter
+    private final Button modLogsButton;
+    @Getter
+    private final Checkbox logToFileCheckbox;
 
     @Getter
     private String saveStamp;
@@ -53,7 +58,7 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
         int availableWidth,
         int availableHeight
     ) {
-        super(title, model.getDefaultLogLevel(), availableWidth, availableHeight);
+        super(title, model.getDefaultConfig(), availableWidth, availableHeight);
         this.worldSeed = model.getWorldSeed();
         this.saveStamp = (model.getSaveStamp() != null) ? model.getSaveStamp() : "NONE";
 
@@ -63,18 +68,32 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
             .closeOnSelect(true)
             .menu(Switcher.<Level>builder()
                 .menu(UiFactory.buildLogLevelButtonMenu()
+                    .maxHeight(500)
                     .sameWidth(true)
                     .build())
                 .highlight(true)
                 .aktiveKey(model.getLogLevel())
                 .build())
             .build();
+
+        logToFileCheckbox = new Checkbox(model.isLogToFile());
+        logToFileCheckbox.hoverInfoSet(i18n.t("AdvancedTab.label.file.logging.desc", model.getLogFilePath()));
+
+        this.modLogsButton = new Button(
+            i18n.t("AdvancedTab.button.logs.mod.name"),
+            i18n.t("AdvancedTab.button.logs.mod.desc", model.getLogFilePath()));
+
+        GuiSection loggingSection = new GuiSection();
+        loggingSection.addRightC(0, logLevelDropDown);
+        loggingSection.addRightC(10, logToFileCheckbox);
+        loggingSection.addRightC(10, modLogsButton);
+
         ColumnRow<Void> logLevelSelect = ColumnRow.<Void>builder()
             .column(Label.builder()
-                .name(i18n.t("AdvancedTab.label.log.level.name"))
-                .description(i18n.t("AdvancedTab.label.log.level.desc"))
+                .name(i18n.t("AdvancedTab.label.logging.name"))
+                .description(i18n.t("AdvancedTab.label.logging.desc"))
                 .build())
-            .column(logLevelDropDown)
+            .column(loggingSection)
             .build();
 
         this.dumpLogsButton = new Button(
@@ -83,6 +102,7 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
         this.gameLogsFolderButton = new Button(
             i18n.t("AdvancedTab.button.logs.folder.name"),
             i18n.t("AdvancedTab.button.logs.folder.desc", PATHS.local().LOGS.get().toString()));
+
         ColumnRow<Void> logFunctions = ColumnRow.<Void>builder()
             .column(Label.builder()
                 .name(i18n.t("AdvancedTab.label.log.functions.name"))
@@ -92,8 +112,8 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
                 .button("dumpLogs", dumpLogsButton)
                 .button("gameLogsFolder", gameLogsFolderButton)
                 .horizontal(true)
+                .maxWidth(500)
                 .sameWidth(true)
-
                 .margin(10)
                 .build())
             .build();
@@ -163,13 +183,17 @@ public class AdvancedTab extends AbstractConfigTab<Level, AdvancedTab> {
     }
 
     @Override
-    public Level getValue() {
-        return logLevelDropDown.getValue();
+    public ConfigMeta getValue() {
+        return ConfigMeta.builder()
+            .logLevel(logLevelDropDown.getValue())
+            .logToFile(logToFileCheckbox.selectedIs())
+            .build();
     }
 
     @Override
-    public void setValue(Level logLevel) {
-        logLevelDropDown.setValue(logLevel);
+    public void setValue(ConfigMeta configMeta) {
+        logLevelDropDown.setValue(configMeta.getLogLevel());
+        logToFileCheckbox.setValue(configMeta.isLogToFile());
     }
 
     protected AdvancedTab element() {

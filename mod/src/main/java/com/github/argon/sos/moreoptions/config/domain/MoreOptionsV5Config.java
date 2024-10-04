@@ -1,10 +1,10 @@
 package com.github.argon.sos.moreoptions.config.domain;
 
-import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.JsonMapper;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
 import com.github.argon.sos.mod.sdk.log.Level;
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import lombok.*;
 
 @Data
@@ -20,6 +20,8 @@ public class MoreOptionsV5Config {
     private int version = VERSION;
     @Builder.Default
     private Level logLevel = ConfigDefaults.LOG_LEVEL;
+    @Builder.Default
+    private boolean logToFile = false;
 
     @Builder.Default
     private SoundsConfig sounds = SoundsConfig.builder().build();

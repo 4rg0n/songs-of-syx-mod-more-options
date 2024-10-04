@@ -2,12 +2,13 @@ package com.github.argon.sos.moreoptions;
 
 import com.github.argon.sos.mod.sdk.AbstractModSdkScript;
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.ui.Window;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.log.writer.FileLogWriter;
 import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
+import com.github.argon.sos.mod.sdk.ui.Window;
 import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.ModProperties;
@@ -52,7 +53,6 @@ public final class MoreOptionsScript extends AbstractModSdkScript {
 	@Override
 	protected void registerPhases(PhaseManager phaseManager) {
         phaseManager
-            .register(Phase.INIT_BEFORE_GAME_CREATED, ModModule.configStore())
 			.register(Phase.INIT_MOD_CREATE_INSTANCE, ModModule.gameApis())
             .register(Phase.INIT_MOD_CREATE_INSTANCE, ModModule.uiConfig())
             .register(Phase.INIT_SETTLEMENT_UI_PRESENT, ModModule.configStore())
@@ -66,7 +66,8 @@ public final class MoreOptionsScript extends AbstractModSdkScript {
             .register(Phase.ON_GAME_SAVE_LOADED, ModModule.configStore())
             .register(Phase.ON_GAME_SAVED, ModModule.configStore())
             .register(Phase.ON_GAME_SAVE_RELOADED, ModModule.gameApis())
-            .register(Phase.ON_CRASH, ModModule.configStore());
+            .register(Phase.ON_CRASH, ModModule.configStore())
+            .register(Phase.ON_CRASH, ModModule.fileLogWriter());
 	}
 
 	@Override
@@ -79,10 +80,22 @@ public final class MoreOptionsScript extends AbstractModSdkScript {
 	}
 
 	@Override
-	public Level initLogLevel() {
-		return configStore.getConfigMeta()
-			.map(ConfigMeta::getLogLevel)
-			.orElse(Loggers.LOG_LEVEL_DEFAULT);
+	public Level initLogging() {
+		ConfigMeta configMeta = ModModule.configStore().getConfigMeta();
+		boolean logToFile = configMeta.isLogToFile();
+
+		if (logToFile) {
+			FileLogWriter fileLogWriter = ModModule.fileLogWriter();
+			if (fileLogWriter.open()) {
+				Loggers.registerWriter(fileLogWriter);
+				Loggers.addWriter(fileLogWriter);
+			}
+		}
+
+		Level logLevel = configMeta.getLogLevel();
+		log.debug("Init logging: level: %s | logToFile: %s", logLevel, logToFile);
+
+		return logLevel;
 	}
 
 	@Override

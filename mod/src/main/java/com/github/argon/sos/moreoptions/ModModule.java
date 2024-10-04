@@ -11,6 +11,7 @@ import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.i18n.I18nMessageBundle;
 import com.github.argon.sos.mod.sdk.json.JacksonService;
 import com.github.argon.sos.mod.sdk.json.JsonGameService;
+import com.github.argon.sos.mod.sdk.log.writer.FileLogWriter;
 import com.github.argon.sos.mod.sdk.metric.MetricCollector;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
@@ -39,6 +40,14 @@ import lombok.experimental.Accessors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ModModule {
+
+    /**
+     * For writing logs into a file
+     * See: {@link FileLogWriter}
+     */
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static FileLogWriter fileLogWriter = ModSdkModule.Factory.newFileLogWriter(ConfigDefaults.LOG_FILE_PATH);
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
@@ -118,7 +127,9 @@ public class ModModule {
         gameApis().boosters(),
         ModSdkModule.metricCollector(),
         ModSdkModule.metricExporter(),
-        ModSdkModule.metricScheduler());
+        ModSdkModule.metricScheduler(),
+        fileLogWriter()
+    );
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
@@ -242,14 +253,16 @@ public class ModModule {
             GameBoosterApi boosters,
             MetricCollector metricCollector,
             MetricExporter metricExporter,
-            MetricScheduler metricScheduler
+            MetricScheduler metricScheduler,
+            FileLogWriter fileLogWriter
         ) {
             return new Configurator(
                 gameApis,
                 boosters,
                 metricCollector,
                 metricExporter,
-                metricScheduler);
+                metricScheduler,
+                fileLogWriter);
         }
 
         public static ConfigApplier newConfigApplier(ConfigStore configStore, Configurator configurator) {

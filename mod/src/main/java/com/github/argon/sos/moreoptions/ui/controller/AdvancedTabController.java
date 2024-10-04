@@ -22,11 +22,26 @@ public class AdvancedTabController extends AbstractUiController<AdvancedTab> {
 
         advancedTab.getDumpLogsButton().clickActionSet(this::dumpLogs);
         advancedTab.getGameLogsFolderButton().clickActionSet(this::openGameLogsFolder);
+        advancedTab.getModLogsButton().clickActionSet(this::openModLogs);
         advancedTab.getResetButton().clickActionSet(this::resetModConfig);
         advancedTab.getFolderButton().clickActionSet(this::openModConfigFolder);
         advancedTab.getCopySaveStampButton().clickActionSet(this::copySaveStamp);
         advancedTab.getCopyWorldSeedButton().clickActionSet(this::copyWorldSeed);
         advancedTab.getUiShowRoomButton().clickActionSet(this::openUiShowRoom);
+    }
+
+    public void openModLogs() {
+        Path path = ConfigDefaults.LOG_FILE_PATH;
+        if (!path.toFile().exists()) {
+            messages.notify("notification.advanced.mod.log.file.not.exists", path);
+            return;
+        }
+
+        try {
+            FileManager.openDesctop(path.toString());
+        } catch (Exception e) {
+            messages.errorDialog(e, "notification.advanced.mod.log.file.not.open", path);
+        }
     }
 
     @Override

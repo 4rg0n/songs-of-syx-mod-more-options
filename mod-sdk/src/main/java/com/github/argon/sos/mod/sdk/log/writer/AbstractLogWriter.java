@@ -9,7 +9,6 @@ import java.time.LocalTime;
 public abstract class AbstractLogWriter implements LogWriter {
     protected final String prefix;
     protected final String messageFormat;
-    protected final String name;
 
     protected void problemLogging(String formatMsg, Object[] args, Throwable e) {
         System.err.println("PROBLEM WHILE LOGGING!");

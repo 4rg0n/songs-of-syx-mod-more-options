@@ -15,18 +15,19 @@ import lombok.RequiredArgsConstructor;
 public class ConfigMapper {
     public static MoreOptionsV5Config mapConfig(JsonMoreOptionsV5Config config) {
        return MoreOptionsV5Config.builder()
-            .logLevel(Level.fromName(config.getLogLevel())
-                .orElse(ConfigDefaults.LOG_LEVEL))
-            .version(config.getVersion())
-            .sounds(config.getSounds())
-            .weather(config.getWeather())
-            .metrics(config.getMetrics())
-            .events(config.getEvents())
-            .boosters(BoostersConfig.builder()
-                .presets(config.getBoostersPresets())
-                .player(config.getBoostersPlayer())
-                .build())
-            .build();
+           .logLevel(Level.fromName(config.getLogLevel())
+               .orElse(ConfigDefaults.LOG_LEVEL))
+           .logToFile(config.isLogToFile())
+           .version(config.getVersion())
+           .sounds(config.getSounds())
+           .weather(config.getWeather())
+           .metrics(config.getMetrics())
+           .events(config.getEvents())
+           .boosters(BoostersConfig.builder()
+               .presets(config.getBoostersPresets())
+               .player(config.getBoostersPlayer())
+               .build())
+           .build();
     }
 
     public static JsonMoreOptionsV5Config mapConfig(MoreOptionsV5Config config) {
@@ -58,6 +59,7 @@ public class ConfigMapper {
         return ConfigMeta.builder()
             .logLevel(Level.fromName(config.getLogLevel())
                 .orElse(ConfigDefaults.LOG_LEVEL))
+            .logToFile(config.isLogToFile())
             .version(config.getVersion())
             .build();
     }

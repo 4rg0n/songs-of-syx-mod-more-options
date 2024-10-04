@@ -10,12 +10,12 @@ import static com.github.argon.sos.mod.sdk.util.StringUtil.stringifyValues;
  */
 public class GameLOG extends AbstractLogWriter {
 
-    public GameLOG(String prefix, String messageFormat, String name) {
-        super(prefix, messageFormat, name);
+    public GameLOG(String prefix, String messageFormat) {
+        super(prefix, messageFormat);
     }
 
     @Override
-    public void error(String msgPrefix, String formatMsg, Object[] args) {
+    public void error(String name, String msgPrefix, String formatMsg, Object[] args) {
         try {
             LOG.err(String.format(messageFormat,
                 prefix,
@@ -29,7 +29,7 @@ public class GameLOG extends AbstractLogWriter {
     }
 
     @Override
-    public void log(String msgPrefix, String formatMsg, Object[] args) {
+    public void log(String name, String msgPrefix, String formatMsg, Object[] args) {
         try {
             LOG.ln(String.format(messageFormat,
                 prefix,
