@@ -6,6 +6,7 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.ClassUtil;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
+import com.github.argon.sos.mod.testing.TestResourceService;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 

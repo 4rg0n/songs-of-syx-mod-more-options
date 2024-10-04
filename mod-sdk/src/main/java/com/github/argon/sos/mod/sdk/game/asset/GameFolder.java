@@ -14,12 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,19 +37,16 @@ public class GameFolder {
 
     @Getter(lazy = true)
     @Accessors(fluent = true, chain = false)
-    private final List<Path> paths = readPaths(path);
-
-    @Getter(lazy = true)
-    @Accessors(fluent = true, chain = false)
-    private final List<Path> filePaths = paths().stream()
-        .filter(filePath -> !Files.isDirectory(filePath))
+    private final List<Path> paths = Stream.concat(filePaths().stream(), folderPaths().stream())
         .collect(Collectors.toList());
 
     @Getter(lazy = true)
     @Accessors(fluent = true, chain = false)
-    private final List<Path> folderPaths = paths().stream()
-        .filter(Files::isDirectory)
-        .collect(Collectors.toList());
+    private final List<Path> filePaths = readFilePaths(path);
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true, chain = false)
+    private final List<Path> folderPaths = readFolderPaths(path);
 
     @Getter(lazy = true)
     @Accessors(fluent = true, chain = false)
@@ -151,19 +144,39 @@ public class GameFolder {
         return gameJsonService.get(filePath);
     }
 
-    private static List<Path> readPaths(PATH path) {
+    private static List<Path> readFilePaths(PATH gamePath) {
+        Path path;
         try {
-            path.get();
+            path = gamePath.get();
         } catch (Exception e) {
             log.warn("Game data path does not exist?", e);
             return Lists.of();
         }
 
-        try (Stream<Path> stream = Files.list(path.get())) {
-            return stream.collect(Collectors.toList());
+        List<Path> paths = new ArrayList<>();
+
+        for (String file : gamePath.getFiles()) {
+            paths.add(path.resolve(file));
+        }
+
+        return paths;
+    }
+
+    private static List<Path> readFolderPaths(PATH gamePath) {
+        Path path;
+        try {
+            path = gamePath.get();
         } catch (Exception e) {
-            log.warn("Could not read game data files from %s", path.get());
+            log.warn("Game data path does not exist?", e);
             return Lists.of();
         }
+
+        List<Path> paths = new ArrayList<>();
+
+        for (String folder : gamePath.folders()) {
+            paths.add(path.resolve(folder));
+        }
+
+        return paths;
     }
 }

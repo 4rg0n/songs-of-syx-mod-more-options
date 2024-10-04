@@ -1,4 +1,4 @@
-package com.github.argon.sos.mod.sdk.testing;
+package com.github.argon.sos.mod.testing;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

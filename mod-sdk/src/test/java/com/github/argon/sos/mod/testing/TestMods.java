@@ -1,4 +1,4 @@
-package com.github.argon.sos.moreoptions.testing;
+package com.github.argon.sos.mod.testing;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface TestResourceService {
+@Target(ElementType.TYPE)
+public @interface TestMods {
+    String[] value();
 }

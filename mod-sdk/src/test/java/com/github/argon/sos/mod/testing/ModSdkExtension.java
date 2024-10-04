@@ -1,4 +1,4 @@
-package com.github.argon.sos.mod.sdk.testing;
+package com.github.argon.sos.mod.testing;
 
 import com.github.argon.sos.mod.sdk.file.ResourceService;
 import com.github.argon.sos.mod.sdk.log.Level;

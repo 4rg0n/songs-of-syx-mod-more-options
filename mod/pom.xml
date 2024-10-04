@@ -25,6 +25,11 @@
             <artifactId>sos-mod-sdk</artifactId>
             <version>sdk-0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.argon.sos</groupId>
+            <artifactId>sos-mod-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

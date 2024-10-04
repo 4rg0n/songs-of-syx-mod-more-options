@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.phase;
 
-import com.github.argon.sos.mod.sdk.testing.ModSdkExtension;
+import com.github.argon.sos.mod.testing.ModSdkExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;

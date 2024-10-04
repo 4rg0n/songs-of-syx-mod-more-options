@@ -1,6 +1,7 @@
 {
   "version": 5,
   "logLevel": "INFO",
+  "logToFile": false,
   "sounds": {
     "ambience": {
       "test1": {
@@ -10,13 +11,18 @@
         "applyMode": "MULTI",
         "displayMode": "PERCENTAGE"
       }
-    }
+    },
+    "race": { },
+    "sounds": { },
+    "animal": { },
+    "room": { }
   },
   "events": {
     "events": {
       "test1": true,
       "test2": false
     },
+    "generalEvents": { },
     "playerBattleLoot": {
       "value": 0,
       "min": 0,

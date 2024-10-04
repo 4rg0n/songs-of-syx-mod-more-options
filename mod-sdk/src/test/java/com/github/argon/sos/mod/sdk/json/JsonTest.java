@@ -2,7 +2,7 @@ package com.github.argon.sos.mod.sdk.json;
 
 import com.github.argon.sos.mod.sdk.file.ResourceService;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
-import com.github.argon.sos.mod.sdk.testing.ModSdkExtension;
+import com.github.argon.sos.mod.testing.ModSdkExtension;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

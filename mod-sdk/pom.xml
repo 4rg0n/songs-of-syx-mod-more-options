@@ -36,9 +36,43 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-properties</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.argon.sos</groupId>
+            <artifactId>sos-mod-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <!-- Copy game resources for testing -->
+                    <execution>
+                        <id>copy-game-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/base</outputDirectory>
+                            <includeEmptyDirs>true</includeEmptyDirs>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>${game.install.directory}/base</directory>
+                                    <includes>
+                                        <include>data.zip</include>
+                                        <include>locale.zip</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Remove "installed" mod resources on clean -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.util;
 
-import com.github.argon.sos.mod.sdk.testing.ModSdkExtension;
+import com.github.argon.sos.mod.testing.ModSdkExtension;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
