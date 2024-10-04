@@ -30,6 +30,9 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
 
     private final Map<String, Slider> ambienceSoundSliders;
     private final Map<String, Slider> raceSoundSliders;
+    private final Map<String, Slider> soundSliders;
+    private final Map<String, Slider> animalSoundSliders;
+    private final Map<String, Slider> roomWorkSoundSliders;
 
     public SoundsTab(
         String title,
@@ -38,9 +41,13 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         int availableHeight
     ) {
         super(title, model.getDefaultConfig(), availableWidth, availableHeight);
+
         SoundsConfig soundsConfig = model.getConfig();
         this.ambienceSoundSliders = UiMapper.toSliders(soundsConfig.getAmbience());
         this.raceSoundSliders = UiMapper.toSliders(soundsConfig.getRace());
+        this.soundSliders = UiMapper.toSliders(soundsConfig.getSounds());
+        this.animalSoundSliders = UiMapper.toSliders(soundsConfig.getAnimal());
+        this.roomWorkSoundSliders = UiMapper.toSliders(soundsConfig.getRoom());
 
         GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsTab.header.ambienceSounds.name"));
         ambienceSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.ambienceSounds.desc"));
@@ -48,29 +55,43 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         GHeader raceSoundsHeader = new GHeader(i18n.t("SoundsTab.header.raceSounds.name"));
         raceSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.raceSounds.desc"));
 
+        GHeader settlementSoundsHeader = new GHeader(i18n.t("SoundsTab.header.settlementSounds.name"));
+        settlementSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.settlementSounds.desc"));
+
+        GHeader animalSoundsHeader = new GHeader(i18n.t("SoundsTab.header.animalSounds.name"));
+        animalSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.animalSounds.desc"));
+
         Map<String, Slider> ambience = ambienceSoundSliders.entrySet().stream()
             .filter(stringSliderEntry -> !stringSliderEntry.getKey().contains("ROOM_"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        Map<String, Slider> room = ambienceSoundSliders.entrySet().stream()
+        Map<String, Slider> roomAmbience = ambienceSoundSliders.entrySet().stream()
             .filter(stringSliderEntry -> stringSliderEntry.getKey().contains("ROOM_"))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         Switcher<String> menu = Switcher.<String>builder()
-            .aktiveKey("sounds")
+            .aktiveKey("ambienceAndRace")
             .highlight(true)
             .menu(ButtonMenu.<String>builder()
                 .margin(10)
                 .spacer(true)
                 .maxWidth(availableWidth)
                 .horizontal(true)
-                .button("sounds", new Button(
-                    i18n.t("SoundsTab.header.ambienceSounds.name"),
-                    i18n.t("SoundsTab.header.ambienceSounds.desc")
+                .button("ambienceAndRace", new Button(
+                    i18n.t("SoundsTab.tab.ambienceAndRaceSounds.name"),
+                    i18n.t("SoundsTab.tab.ambienceAndRaceSounds.desc")
                 ))
-                .button("roomSounds", new Button(
-                    i18n.t("SoundsTab.header.roomSounds.name"),
-                    i18n.t("SoundsTab.header.roomSounds.desc")
+                .button("settlementAndAnimal", new Button(
+                    i18n.t("SoundsTab.tab.settlementAndAnimal.name"),
+                    i18n.t("SoundsTab.tab.settlementAndAnimal.desc")
+                ))
+                .button("roomWork", new Button(
+                    i18n.t("SoundsTab.tab.roomWork.name"),
+                    i18n.t("SoundsTab.tab.roomWork.desc")
+                ))
+                .button("roomAmbience", new Button(
+                    i18n.t("SoundsTab.tab.roomAmbience.name"),
+                    i18n.t("SoundsTab.tab.roomAmbience.desc")
                 ))
                 .build())
             .build();
@@ -78,9 +99,12 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         int tableHeight = (availableHeight
             - menu.body().height());
 
-        GuiSection soundsSection = new GuiSection();
-        GuiSection roomSoundsSection = new GuiSection();
+        GuiSection ambienceAndRaceTab = new GuiSection();
+        GuiSection settlementAndAnimalTab = new GuiSection();
+        GuiSection roomAmbienceTab = new GuiSection();
+        GuiSection roomWorkTab = new GuiSection();
 
+        // Ambience
         Layout.vertical(tableHeight / 2)
             .addDownC(0, ambienceSoundsHeader)
             .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
@@ -92,8 +116,9 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
                 .backgroundColor(COLOR.WHITE10)
                 .displayHeight(height)
                 .build()))
-            .build(soundsSection);
+            .build(ambienceAndRaceTab);
 
+        // Race
         Layout.vertical(tableHeight / 2)
             .addDownC(20, raceSoundsHeader)
             .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<String>builder()
@@ -105,11 +130,40 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
                 .backgroundColor(COLOR.WHITE10)
                 .displayHeight(height)
                 .build()))
-            .build(soundsSection);
+            .build(ambienceAndRaceTab);
 
+        // Settlement
+        Layout.vertical(tableHeight / 2)
+            .addDownC(0, settlementSoundsHeader)
+            .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<Integer>builder()
+                .rows(UiMapper.toLabeledColumnRows(soundSliders, i18n))
+                .rowPadding(5)
+                .columnMargin(5)
+                .highlight(true)
+                .scrollable(true)
+                .backgroundColor(COLOR.WHITE10)
+                .displayHeight(height)
+                .build()))
+            .build(settlementAndAnimalTab);
+
+        // Animal
+        Layout.vertical(tableHeight / 2)
+            .addDownC(20, animalSoundsHeader)
+            .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<String>builder()
+                .rows(ModModule.uiMapper().toAnimalSoundLabeledColumnRows(animalSoundSliders))
+                .rowPadding(5)
+                .columnMargin(5)
+                .highlight(true)
+                .scrollable(true)
+                .backgroundColor(COLOR.WHITE10)
+                .displayHeight(height)
+                .build()))
+            .build(settlementAndAnimalTab);
+
+        // Room
         Layout.vertical(tableHeight)
             .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<String>builder()
-                .rows(ModModule.uiMapper().toRoomSoundLabeledColumnRows(room))
+                .rows(ModModule.uiMapper().toRoomSoundLabeledColumnRows(roomWorkSoundSliders))
                 .rowPadding(5)
                 .columnMargin(5)
                 .highlight(true)
@@ -118,14 +172,30 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
                 .backgroundColor(COLOR.WHITE10)
                 .displayHeight(height)
                 .build()))
-            .build(roomSoundsSection);
+            .build(roomWorkTab);
+
+        // Room
+        Layout.vertical(tableHeight)
+            .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<String>builder()
+                .rows(ModModule.uiMapper().toRoomSoundLabeledColumnRows(roomAmbience))
+                .rowPadding(5)
+                .columnMargin(5)
+                .highlight(true)
+                .scrollable(true)
+                .displaySearch(true)
+                .backgroundColor(COLOR.WHITE10)
+                .displayHeight(height)
+                .build()))
+            .build(roomAmbienceTab);
 
         Tabulator<String, RENDEROBJ, Void> tabulator = Tabulator.<String, RENDEROBJ, Void>builder()
             .tabMenu(menu)
             .center(true)
             .tabs(Maps.of(
-                "sounds", soundsSection,
-                "roomSounds", roomSoundsSection
+                "ambienceAndRace", ambienceAndRaceTab,
+                "settlementAndAnimal", settlementAndAnimalTab,
+                "roomWork", roomWorkTab,
+                "roomAmbience", roomAmbienceTab
             ))
             .build();
 
@@ -138,6 +208,9 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         return SoundsConfig.builder()
             .ambience(getAmbienceSoundConfig())
             .race(getRaceSoundConfig())
+            .sounds(getSettlementSoundConfig())
+            .animal(getAnimalSoundConfig())
+            .room(getRoomWorkSoundConfig())
             .build();
     }
 
@@ -150,6 +223,27 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
 
     private Map<String, Range> getRaceSoundConfig() {
         return raceSoundSliders.entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                slider -> Range.fromSlider(slider.getValue())));
+    }
+
+    private Map<String, Range> getAnimalSoundConfig() {
+        return animalSoundSliders.entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                slider -> Range.fromSlider(slider.getValue())));
+    }
+
+    private Map<String, Range> getSettlementSoundConfig() {
+        return soundSliders.entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                slider -> Range.fromSlider(slider.getValue())));
+    }
+
+    private Map<String, Range> getRoomWorkSoundConfig() {
+        return roomWorkSoundSliders.entrySet().stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 slider -> Range.fromSlider(slider.getValue())));
@@ -170,6 +264,30 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         soundsConfig.getRace().forEach((key, range) -> {
             if (raceSoundSliders.containsKey(key)) {
                 raceSoundSliders.get(key).setValue(range.getValue());
+            } else {
+                log.warn("No slider with key %s found in UI", key);
+            }
+        });
+
+        soundsConfig.getAnimal().forEach((key, range) -> {
+            if (animalSoundSliders.containsKey(key)) {
+                animalSoundSliders.get(key).setValue(range.getValue());
+            } else {
+                log.warn("No slider with key %s found in UI", key);
+            }
+        });
+
+        soundsConfig.getSounds().forEach((key, range) -> {
+            if (soundSliders.containsKey(key)) {
+                soundSliders.get(key).setValue(range.getValue());
+            } else {
+                log.warn("No slider with key %s found in UI", key);
+            }
+        });
+
+        soundsConfig.getRace().forEach((key, range) -> {
+            if (roomWorkSoundSliders.containsKey(key)) {
+                roomWorkSoundSliders.get(key).setValue(range.getValue());
             } else {
                 log.warn("No slider with key %s found in UI", key);
             }

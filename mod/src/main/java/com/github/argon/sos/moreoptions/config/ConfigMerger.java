@@ -165,6 +165,24 @@ public class ConfigMerger {
         } else {
             merge(target.getRace(), source.getRace());
         }
+
+        if (target.getSounds() == null || target.getSounds().isEmpty()) {
+            target.setSounds(source.getSounds());
+        } else {
+            merge(target.getSounds(), source.getSounds());
+        }
+
+        if (target.getAnimal() == null || target.getAnimal().isEmpty()) {
+            target.setAnimal(source.getAnimal());
+        } else {
+            merge(target.getAnimal(), source.getAnimal());
+        }
+
+        if (target.getRoom() == null || target.getRoom().isEmpty()) {
+            target.setRoom(source.getRoom());
+        } else {
+            merge(target.getRoom(), source.getRoom());
+        }
     }
 
     public static <T> Set<T> replace(Set<T> target, @Nullable Set<T> source) {

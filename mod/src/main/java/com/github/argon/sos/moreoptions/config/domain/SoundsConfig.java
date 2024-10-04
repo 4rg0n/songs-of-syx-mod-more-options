@@ -16,4 +16,10 @@ public class SoundsConfig {
     private Map<String, Range> ambience = new HashMap<>();
     @Builder.Default
     private Map<String, Range> race = new HashMap<>();
+    @Builder.Default
+    private Map<String, Range> sounds = new HashMap<>();
+    @Builder.Default
+    private Map<String, Range> animal = new HashMap<>();
+    @Builder.Default
+    private Map<String, Range> room = new HashMap<>();
 }

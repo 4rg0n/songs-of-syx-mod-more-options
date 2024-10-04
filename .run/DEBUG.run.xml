@@ -12,7 +12,7 @@
     </envs>
     <option name="MAIN_CLASS_NAME" value="init.MainProcess" />
     <module name="songs-of-syx-mod-more-options" />
-    <option name="PROGRAM_PARAMETERS" value="-Xms512m -Xmx1024m -XX:+UseCompressedOops" />
+    <option name="PROGRAM_PARAMETERS" value="-Xms512m -Xmx4096m -XX:+UseCompressedOops" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
     <extension name="coverage">
       <pattern>

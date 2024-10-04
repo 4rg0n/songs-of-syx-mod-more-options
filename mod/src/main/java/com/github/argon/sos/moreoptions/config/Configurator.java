@@ -16,6 +16,7 @@ import com.github.argon.sos.mod.sdk.util.MathUtil;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import game.audio.Ambiance;
+import game.audio.Sound;
 import game.audio.SoundRace;
 import game.events.EVENTS;
 import lombok.RequiredArgsConstructor;
@@ -121,6 +122,28 @@ public class Configurator implements Phases {
                 } else {
                     log.warn("Could not find entry %s in game api result.", key);
                     log.trace("API Result: %s", raceSounds);
+                }
+            });
+
+            Map<String, Sound> animalSounds = gameApis.sounds().getAnimalSounds();
+            sounds.getAnimal().forEach((key, range) -> {
+                if (animalSounds.containsKey(key)) {
+                    Sound sound = animalSounds.get(key);
+                    gameApis.sounds().setSoundGain(sound, range.getValue());
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", animalSounds);
+                }
+            });
+
+            Map<String, Sound> settlementSounds = gameApis.sounds().getSounds();
+            sounds.getSounds().forEach((key, range) -> {
+                if (settlementSounds.containsKey(key)) {
+                    Sound sound = settlementSounds.get(key);
+                    gameApis.sounds().setSoundGain(sound, range.getValue());
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", settlementSounds);
                 }
             });
         } catch (Exception e) {
