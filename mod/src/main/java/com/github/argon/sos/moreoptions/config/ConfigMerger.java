@@ -22,7 +22,7 @@ public class ConfigMerger {
             return target;
         }
 
-        // intentionally ignore updating of VERSION and filePath
+        // intentionally ignore updating of VERSION
         if (target.getLogLevel() == null) target.setLogLevel(source.getLogLevel());
 
         // Sounds

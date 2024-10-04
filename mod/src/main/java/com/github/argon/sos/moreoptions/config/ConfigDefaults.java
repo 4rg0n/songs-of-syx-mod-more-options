@@ -31,6 +31,8 @@ public class ConfigDefaults {
 
     public final static Path PROFILE_PATH = PATHS.local().PROFILE.get().resolve(MoreOptionsScript.MOD_INFO.name.toString());
     public final static Path CONFIG_PATH = PATHS.local().SETTINGS.get();
+    public final static Path LOGS_PATH = PATHS.local().LOGS.get();
+    public final static Path LOG_FILE_PATH = LOGS_PATH.resolve("MoreOptions.log");
     public final static Path CONFIG_FILE_PATH = CONFIG_PATH.resolve("MoreOptions.txt");
 
     public final static Path RACES_CONFIG_FOLDER_PATH = PROFILE_PATH.resolve("races");

@@ -6,6 +6,7 @@ import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.log.writer.FileLogWriter;
 import com.github.argon.sos.mod.sdk.metric.MetricCollector;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
@@ -39,6 +40,7 @@ public class Configurator implements Phases {
     private final MetricCollector metricCollector;
     private final MetricExporter metricExporter;
     private final MetricScheduler metricScheduler;
+    private final FileLogWriter fileLogWriter;
 
     @Setter
     private Level envLogLevel;
@@ -62,7 +64,19 @@ public class Configurator implements Phases {
         log.debug("Apply More Options config to game");
         log.trace("Config: %s", config);
 
+        // set log level
         Loggers.setLevels((envLogLevel == null) ? config.getLogLevel() : envLogLevel);
+
+        // toggle file logging
+        if (config.isLogToFile() && !fileLogWriter.isOpen()) {
+            if (fileLogWriter.open()) {
+                Loggers.registerWriter(fileLogWriter);
+                Loggers.addWriter(fileLogWriter);
+            }
+        } else if (!config.isLogToFile() && fileLogWriter.isOpen()) {
+            fileLogWriter.close();
+        }
+
         List<Boolean> results = Lists.of(
             applyEventsConfig(config.getEvents()),
             applySoundsConfig(config.getSounds()),

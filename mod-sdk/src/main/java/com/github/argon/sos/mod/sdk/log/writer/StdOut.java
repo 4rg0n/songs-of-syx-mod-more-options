@@ -9,12 +9,12 @@ import static com.github.argon.sos.mod.sdk.util.StringUtil.stringifyValues;
  */
 public class StdOut extends AbstractLogWriter {
 
-    public StdOut(String prefix, String messageFormat, String name) {
-        super(prefix, messageFormat, name);
+    public StdOut(String prefix, String messageFormat) {
+        super(prefix, messageFormat);
     }
 
     @Override
-    public void error(String msgPrefix, String formatMsg, Object[] args) {
+    public void error(String name, String msgPrefix, String formatMsg, Object[] args) {
         try {
             System.err.printf((messageFormat) + "%n",
                 prefix,
@@ -28,7 +28,7 @@ public class StdOut extends AbstractLogWriter {
     }
 
     @Override
-    public void log(String msgPrefix, String formatMsg, Object[] args) {
+    public void log(String name, String msgPrefix, String formatMsg, Object[] args) {
         try {
             System.out.printf((messageFormat) + "%n",
                 prefix,

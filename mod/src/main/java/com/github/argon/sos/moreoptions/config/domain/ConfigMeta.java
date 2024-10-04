@@ -14,4 +14,6 @@ public class ConfigMeta {
     private int version = MoreOptionsV5Config.VERSION;
     @Builder.Default
     private Level logLevel = Loggers.LOG_LEVEL_DEFAULT;
+    @Builder.Default
+    private boolean logToFile = false;
 }

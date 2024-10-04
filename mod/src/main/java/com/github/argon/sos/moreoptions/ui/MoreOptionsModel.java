@@ -57,7 +57,12 @@ public class MoreOptionsModel {
         @NonNull
         private Level logLevel;
         @NonNull
+        private Path logFilePath;
+        private boolean logToFile;
+        @NonNull
         private Level defaultLogLevel;
+        @NonNull
+        private ConfigMeta defaultConfig;
     }
 
     @Data

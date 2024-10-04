@@ -12,8 +12,10 @@ import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.ModProperties;
+import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogController;
 import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
@@ -86,8 +88,14 @@ public class UiFactory {
             .advanced(MoreOptionsModel.Advanced.builder()
                 .saveStamp(saveStamp)
                 .logLevel(config.getLogLevel())
+                .logFilePath(ConfigDefaults.LOG_FILE_PATH)
                 .defaultLogLevel(defaultConfig.getLogLevel())
                 .worldSeed(WORLD.GEN().seed)
+                .logToFile(config.isLogToFile())
+                .defaultConfig(ConfigMeta.builder()
+                    .logLevel(defaultConfig.getLogLevel())
+                    .logToFile(defaultConfig.isLogToFile())
+                    .build())
                 .build())
             .boosters(MoreOptionsModel.Boosters.builder()
                 .config(config.getBoosters())

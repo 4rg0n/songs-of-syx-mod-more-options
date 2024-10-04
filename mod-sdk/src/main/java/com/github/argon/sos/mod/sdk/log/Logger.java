@@ -2,13 +2,14 @@ package com.github.argon.sos.mod.sdk.log;
 
 
 import com.github.argon.sos.mod.sdk.log.writer.LogWriter;
-import com.github.argon.sos.mod.sdk.log.writer.StdOut;
 import com.github.argon.sos.mod.sdk.util.ExceptionUtil;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * For printing messages with different log {@link Level}s to the system output
@@ -17,8 +18,8 @@ import java.util.Arrays;
 public class Logger {
 
     public static final String PREFIX_MOD = "MOD";
-    private final static Level DEFAULT_LEVEL = Loggers.getRootLevel();
-    private final static String LOG_MSG_FORMAT = "[%s|%s]%s[%s] %s";
+    public final static Level DEFAULT_LEVEL = Loggers.getRootLevel();
+    public final static String LOG_MSG_FORMAT = "[%s|%s]%s[%s] %s";
     private final static int NAME_DISPLAY_MAX_LENGTH = 32;
 
     private final String name;
@@ -27,8 +28,7 @@ public class Logger {
 
     @Setter
     private Level level;
-    @Setter
-    private LogWriter writer;
+    private final static Set<LogWriter> writers = new LinkedHashSet<>();
 
     public Logger(Class<?> clazz) {
         this(clazz, DEFAULT_LEVEL);
@@ -39,7 +39,10 @@ public class Logger {
         this.shortName = StringUtil.shortenClassName(clazz);
         this.displayName = StringUtil.cutOrFill(shortName, NAME_DISPLAY_MAX_LENGTH, false);
         this.level = level;
-        this.writer = new StdOut(PREFIX_MOD, LOG_MSG_FORMAT, displayName);
+    }
+
+    public void addWriter(LogWriter writer) {
+        writers.add(writer);
     }
 
     public boolean isLevel(Level level) {
@@ -82,7 +85,7 @@ public class Logger {
             args = Arrays.copyOf(args, args.length - 1);
 
             doLog(levelText(level), formatMsg, args);
-            writer.exception(ex);
+            writers.forEach(writer -> writer.exception(ex));
         } else {
             doLog(levelText(level), formatMsg, args);
         }
@@ -98,18 +101,18 @@ public class Logger {
         if (ex != null) {
             args = Arrays.copyOf(args, args.length - 1);
             doLogErr(levelText(level), formatMsg, args);
-            writer.exception(ex);
+            writers.forEach(writer -> writer.exception(ex));
         } else {
             doLogErr(levelText(level), formatMsg, args);
         }
     }
 
     private void doLogErr(String msgPrefix, String formatMsg, Object[] args) {
-        writer.error(msgPrefix, formatMsg, args);
+        writers.forEach(writer -> writer.error(displayName, msgPrefix, formatMsg, args));
     }
 
     private void doLog(String prefix, String formatMsg, Object[] args) {
-        writer.log(prefix, formatMsg, args);
+        writers.forEach(writer -> writer.log(displayName, prefix, formatMsg, args));
     }
 
     private String levelText(Level level) {

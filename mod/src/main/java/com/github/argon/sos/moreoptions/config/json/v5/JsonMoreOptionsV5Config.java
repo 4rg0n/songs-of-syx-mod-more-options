@@ -21,6 +21,8 @@ public class JsonMoreOptionsV5Config {
     private int version = VERSION;
     @Builder.Default
     private String logLevel = ConfigDefaults.LOG_LEVEL.getName();
+    @Builder.Default
+    private boolean logToFile = false;
 
     @Builder.Default
     private SoundsConfig sounds = SoundsConfig.builder().build();
