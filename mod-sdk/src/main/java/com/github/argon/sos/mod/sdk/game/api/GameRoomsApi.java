@@ -1,7 +1,5 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
-import com.github.argon.sos.mod.sdk.log.Logger;
-import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import lombok.RequiredArgsConstructor;
 import settlement.main.SETT;
@@ -18,12 +16,11 @@ public class GameRoomsApi {
     }
 
     public Optional<RoomBlueprintImp> getBySound(String soundKey) {
-        String roomKey = soundKey.replace(GameSoundsApi.KEY_PREFIX + ".ROOM_", "");
+        String roomKey = soundKey.replace(GameSoundsApi.KEY_PREFIX + ".", "")
+            .replace("ROOM_", "");
 
         return getRooms().stream()
             .filter(roomBlueprint -> roomBlueprint.key.equals(roomKey))
             .findFirst();
     }
-
-
 }

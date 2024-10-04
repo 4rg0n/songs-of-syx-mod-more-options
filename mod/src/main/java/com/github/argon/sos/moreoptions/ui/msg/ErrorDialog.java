@@ -30,15 +30,19 @@ public class ErrorDialog extends GuiSection {
     @Nullable
     private final String errorMessage;
 
-
     public ErrorDialog(Throwable exception, @Nullable String errorMessage) {
         this.exception = exception;
         this.errorMessage = errorMessage;
         int maxWidth = C.WIDTH() - 100;
+        String message = exception.getMessage();
+
+        if (message == null) {
+            message = "null";
+        }
 
         GText text1 = new GText(UI.FONT().M, i18n.t("ErrorDialog.text.line1"));
         GText text2 = new GText(UI.FONT().M, i18n.t("ErrorDialog.text.line2"));
-        GText exceptionMessage = new GText(UI.FONT().M, exception.getMessage())
+        GText exceptionMessage = new GText(UI.FONT().M, message)
             .setMaxWidth(maxWidth)
             .errorify();
 

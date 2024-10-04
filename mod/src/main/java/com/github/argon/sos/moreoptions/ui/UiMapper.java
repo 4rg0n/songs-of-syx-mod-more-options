@@ -23,6 +23,7 @@ import init.race.Race;
 import init.sprite.SPRITES;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import settlement.entity.animal.AnimalSpecies;
 import settlement.room.main.RoomBlueprintImp;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.renderable.RENDEROBJ;
@@ -142,9 +143,49 @@ public class UiMapper {
         ).orElse(null);
     }
 
+
+
     public static Map<String, List<BoostersTab.Entry>> toBoostersTabEntriesCategorized(List<BoostersTab.Entry> boosterEntries) {
         return boosterEntries.stream()
             .collect(groupingBy(entry -> entry.getCat().name.toString()));
+    }
+
+    public <Element extends RENDEROBJ> List<ColumnRow<String>> toAnimalSoundLabeledColumnRows(Map<String, Element> elements) {
+        return elements.entrySet().stream()
+            .map(entry -> {
+                String key = entry.getKey();
+                Element element = entry.getValue();
+
+                String name = key;
+                SPRITE sprite = SPRITES.icons().m.clear_structure;
+                AnimalSpecies animalSpecies = gameApis.animals().getBySound(key).orElse(null);
+
+                if (animalSpecies != null) {
+                    name = animalSpecies.name.toString();
+                    sprite = animalSpecies.icon;
+                }
+
+                Label label = Label.builder()
+                    .name(name)
+                    .build();
+
+                if (animalSpecies != null) {
+                    label.hoverGuiAction(animalSpecies::hover);
+                }
+
+                // label with element
+                return ColumnRow.<String>builder()
+                    .key(key)
+                    .value(name)
+                    .column(label)
+                    .column(UiUtil.toRender(sprite))
+                    .column(element)
+                    .searchTerm(name)
+                    .comparator(String::compareTo)
+                    .build();
+            })
+            .sorted()
+            .collect(Collectors.toList());
     }
 
     public <Element extends RENDEROBJ> List<ColumnRow<String>> toRoomSoundLabeledColumnRows(Map<String, Element> elements) {
@@ -155,11 +196,11 @@ public class UiMapper {
 
                 String name = key;
                 SPRITE sprite = SPRITES.icons().m.clear_structure;
-                Optional<RoomBlueprintImp> room = gameApis.rooms().getBySound(key);
+                RoomBlueprintImp room = gameApis.rooms().getBySound(key).orElse(null);
 
-                if (room.isPresent()) {
-                    name = room.get().info.name.toString();
-                    sprite = room.get().iconBig().medium;
+                if (room != null) {
+                    name = room.info.name.toString();
+                    sprite = room.iconBig().medium;
                 }
 
                 // label with element

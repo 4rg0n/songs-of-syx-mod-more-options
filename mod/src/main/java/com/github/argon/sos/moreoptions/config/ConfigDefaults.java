@@ -139,9 +139,24 @@ public class ConfigDefaults {
         Map<String, Range> raceSounds = gameApis.sounds().getRaceSounds().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
+        // General Sounds
+        Map<String, Range> sounds = gameApis.sounds().getSounds().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+
+        // Animal Sounds
+        Map<String, Range> animalSounds = gameApis.sounds().getAnimalSounds().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+
+        // Room Work Sounds
+        Map<String, Range> roomWorkSounds = gameApis.sounds().getRoomWorkSounds().keySet().stream()
+            .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
+
         return SoundsConfig.builder()
             .ambience(ambienceSounds)
             .race(raceSounds)
+            .sounds(sounds)
+            .animal(animalSounds)
+            .room(roomWorkSounds)
             .build();
     }
 

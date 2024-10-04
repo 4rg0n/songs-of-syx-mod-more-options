@@ -9,10 +9,11 @@ Adds a menu with more options for the game:
 
 * Tune the volume of in game soundsConfig like wind
 * Toggle certain random eventsConfig
-* Tune the amount of weather effects like snow
+* Tune the intensity of weather effects like snow
 * Influence bonuses
 * Collect and export game stats into a CSV file
 * Change the likings between your races
+* Export and import room blueprints
 * Game crash detection and backup mechanism
 
 ![Enable Script](mod/doc/img/enable_script.png)
@@ -25,6 +26,7 @@ Adds a menu with more options for the game:
 ![Metrics](mod/doc/img/metrics.png)
 ![Races](mod/doc/img/races.png)
 ![Advanced](mod/doc/img/advanced.png)
+![Export and Import Blueprints](mod/doc/img/blueprint_export_import.png)
 ![Backup](mod/doc/img/backup.png)
 
 

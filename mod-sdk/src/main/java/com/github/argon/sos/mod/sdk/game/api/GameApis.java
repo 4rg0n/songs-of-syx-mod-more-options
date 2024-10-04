@@ -49,6 +49,9 @@ public class GameApis implements Phases, Resettable {
     @Accessors(fluent = true)
     private final GameStatsApi stats;
 
+    @Accessors(fluent = true)
+    private final GameAnimalsApi animals;
+
     @Override
     public void reset() {
         // game will initialize new instances of the cached class references on load

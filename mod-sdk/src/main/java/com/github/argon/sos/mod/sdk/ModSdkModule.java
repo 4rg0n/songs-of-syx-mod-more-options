@@ -306,7 +306,8 @@ public class ModSdkModule {
                 new GameLangApi(),
                 new GameFactionApi(),
                 new GameRoomsApi(),
-                new GameStatsApi(metricCollector)
+                new GameStatsApi(metricCollector),
+                new GameAnimalsApi()
             );
         }
 
