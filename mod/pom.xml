@@ -9,7 +9,7 @@
         <version>local</version>
     </parent>
 
-    <version>3.4.0</version>
+    <version>3.4.1</version>
     <artifactId>sos-mod-more-options</artifactId>
 
     <properties>
