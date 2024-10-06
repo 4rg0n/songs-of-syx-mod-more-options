@@ -18,10 +18,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Manages and contains config objects loaded from json files.
+ * Manages and contains config objects loaded from JSON files.
  *
  * You can register a data class under a given file path via {@link this#bind(Class, Path, boolean)} or {@link this#bindToSave(Class, String, Path, boolean)}.
- * The store will than be able to manage these, and you can access the data through the store.
+ * The store will then be able to manage these, and you can access the data through the store.
  */
 @RequiredArgsConstructor
 public class JsonConfigStore {
@@ -46,7 +46,7 @@ public class JsonConfigStore {
     private final Map<Class<?>, ConfigDefinition> configDefinitions = new HashMap<>();
 
     /**
-     * Contains config objects loaded from json files
+     * Contains config objects loaded from JSON files
      */
     private final Map<Class<?>, ConfigObject<?>> configStore = new HashMap<>();
 
@@ -79,17 +79,17 @@ public class JsonConfigStore {
      * Configs bound to saves will also be automatically loaded when the game loaded a save.
      *
      * @param configClass of the config to bing
-     * @param namePrefix used for the filename in combination with the game stamp
+     * @param fileName used for the filename in combination with the game stamp
      * @param folder path to store the bound configs
      * @param doBackup whether the registered file can be backed up
      */
-    public void bindToSave(Class<?> configClass, String namePrefix, Path folder, boolean doBackup) {
+    public void bindToSave(Class<?> configClass, String fileName, Path folder, boolean doBackup) {
         log.debug("Binding %s to folder '%s' with prefix '%s' and doBackup %s to save",
-            configClass.getSimpleName(), folder, namePrefix, doBackup);
+            configClass.getSimpleName(), folder, fileName, doBackup);
         configDefinitions.put(configClass, ConfigDefinition.builder()
             .path(folder)
             .configClass(configClass)
-            .namePrefix(namePrefix)
+            .namePrefix(fileName)
             .boundToSave(true)
             .doBackup(doBackup)
             .build());
@@ -624,7 +624,7 @@ public class JsonConfigStore {
     }
 
     /**
-     * Configs bound to saves will get a special name with the game save stamp
+     * Configs bound to save files will get a special name with the game save stamp
      *
      * @param namePrefix used in combination with the saveStamp
      * @return filename for a save bound config or null when there is no stamp

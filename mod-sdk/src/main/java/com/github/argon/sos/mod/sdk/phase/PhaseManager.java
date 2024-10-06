@@ -77,9 +77,9 @@ public class PhaseManager implements Phases {
     }
 
     @Override
-    public void onGameSaveLoaded(Path saveFilePath) {
+    public void onGameLoaded(Path saveFilePath) {
         log.debug("PHASE: onGameSaveLoaded");
-        phases.get(Phase.ON_GAME_SAVE_LOADED).forEach(init -> execute(init, () -> init.onGameSaveLoaded(saveFilePath)));
+        phases.get(Phase.ON_GAME_SAVE_LOADED).forEach(init -> execute(init, () -> init.onGameLoaded(saveFilePath)));
     }
 
     @Override

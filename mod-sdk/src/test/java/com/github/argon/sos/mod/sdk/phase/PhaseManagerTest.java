@@ -24,7 +24,7 @@ class PhaseManagerTest {
 
         phaseManager.initBeforeGameCreated();
         phaseManager.initModCreateInstance();
-        phaseManager.onGameSaveLoaded(Paths.get(""));
+        phaseManager.onGameLoaded(Paths.get(""));
         phaseManager.onGameSaveReloaded();
         phaseManager.initNewGameSession();
         phaseManager.initGameUpdating();
@@ -36,7 +36,7 @@ class PhaseManagerTest {
 
         Mockito.verify(phasesImpl, Mockito.times(1)).initBeforeGameCreated();
         Mockito.verify(phasesImpl, Mockito.times(1)).initModCreateInstance();
-        Mockito.verify(phasesImpl, Mockito.times(1)).onGameSaveLoaded(ArgumentMatchers.any(Path.class));
+        Mockito.verify(phasesImpl, Mockito.times(1)).onGameLoaded(ArgumentMatchers.any(Path.class));
         Mockito.verify(phasesImpl, Mockito.times(1)).onGameSaveReloaded();
         Mockito.verify(phasesImpl, Mockito.times(1)).initNewGameSession();
         Mockito.verify(phasesImpl, Mockito.times(1)).initGameUpdating();

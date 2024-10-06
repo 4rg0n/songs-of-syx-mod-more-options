@@ -46,7 +46,12 @@ The SDK uses as less third party dependencies as possible to have a high compati
 ## [AbstractModSdkScript](AbstractModSdkScript.java)
 
 The `AbstractModSdkScript` contains some of the required functionality to make the Mod SDK work.
-You have to extend from it to make use of it.
+You **must** extend from it to make use of it. 
+This class is some kind of **Main** entry point for your mod. It implements the game `script.SCRIPT` interface.
+The game will scan for classes having this interface, instantiate them and execute certain methods of it.
+
+Theoretically it is possible to have multiple classes implementing the `script.SCRIPT` interface in your mod.
+I didn't test this use case yet though :x
 
 ```java
 public class YourModScript extends AbstractModSdkScript {
@@ -62,12 +67,28 @@ public class YourModScript extends AbstractModSdkScript {
     public CharSequence desc() {
         return MOD_INFO.desc;
     }
-
+    
+    /*
+        The game will go through different "Phases" when it is booting and running.
+        Some resources might be just available after a certain phase has passed. 
+        So you have to design your code around this. The PhaseManager helps you to initialize 
+        your code or data on certain events.
+     */
     @Override
     protected void registerPhases(PhaseManager phaseManager) {
         // here you can register classes to "phases" e.g. "on game saved"
         // this is useful for encapsulating your code into different classes
         phaseManager.register(Phase.ON_GAME_SAVED, new MyGameSaver());
+    }
+    
+    /*
+        OPTIONAL:
+        This will force the game to enable and initialize the mod.
+        Without it, the user will need to manually enable the "Script" when starting a new game.
+     */
+    @Override
+    public boolean forceInit() {
+        return true;
     }
 }
 

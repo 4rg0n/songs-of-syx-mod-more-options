@@ -60,7 +60,7 @@ public class GameSaveApi implements Phases {
     }
 
     @Override
-    public void onGameSaveLoaded(Path saveFilePath) {
+    public void onGameLoaded(Path saveFilePath) {
         // update save info on game loaded
         setCurrent(saveFilePath);
     }

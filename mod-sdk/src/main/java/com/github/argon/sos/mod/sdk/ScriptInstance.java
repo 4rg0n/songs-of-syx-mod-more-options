@@ -50,14 +50,14 @@ public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 	public void save(FilePutter filePutter) {
 		State state = stateManager.getState();
 		state.setGameSaved(true);
-		scriptPhases.onGameSaved(filePutter.path);
+		// intentionally not calling phaseManager.onGameSaved()
 	}
 
 	@Override
 	public void load(FileGetter fileGetter) throws IOException {
 		State state = stateManager.getState();
 		state.setGameSaveLoaded(true);
-		scriptPhases.onGameSaveLoaded(fileGetter.path);
+		// intentionally not calling phaseManager.onGameLoaded()
 
 		if (state.isNewGameSession()) {
 			state.setNewGameSession(false);

@@ -439,19 +439,29 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>${maven-clean-plugin.version}</version>
-                    <configuration>
-                        <filesets>
-                            <fileset>
-                                <!-- Remove installed mod from games mod folder on clean -->
-                                <directory>${mod.install.directory}</directory>
-                                <includes>
-                                    <!-- Deletes mod folder with files -->
-                                    <include>**</include>
-                                </includes>
-                                <followSymlinks>false</followSymlinks>
-                            </fileset>
-                        </filesets>
-                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                            <id>clean-installed-mod-files</id>
+                            <configuration>
+                                <filesets>
+                                    <fileset>
+                                        <!-- Remove installed mod from games mod folder on clean -->
+                                        <directory>${mod.install.directory}</directory>
+                                        <includes>
+                                            <!-- Deletes mod folder with files -->
+                                            <include>**</include>
+                                        </includes>
+                                        <followSymlinks>false</followSymlinks>
+                                    </fileset>
+                                </filesets>
+                            </configuration>
+                        </execution>
+                    </executions>
+
                 </plugin>
             </plugins>
         </pluginManagement>

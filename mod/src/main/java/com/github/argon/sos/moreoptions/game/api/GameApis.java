@@ -24,7 +24,7 @@ public class GameApis implements Phases {
     }
 
     @Override
-    public void onGameSaveLoaded(Path saveFilePath) {
+    public void onGameLoaded(Path saveFilePath) {
     }
 
     @Override

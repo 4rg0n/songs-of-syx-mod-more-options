@@ -33,7 +33,7 @@ public interface Phases {
      * (3.) PHASE: can be called multiple times
      * When the game loaded a save game
      */
-    default void onGameSaveLoaded(Path saveFilePath) {
+    default void onGameLoaded(Path saveFilePath) {
         throw new PhaseNotImplemented(Phase.ON_GAME_SAVE_LOADED);
     }
 

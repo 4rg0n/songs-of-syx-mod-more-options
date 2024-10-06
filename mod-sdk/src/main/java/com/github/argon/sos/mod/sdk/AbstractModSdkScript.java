@@ -13,6 +13,7 @@ import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
+import snake2d.util.file.FileGetter;
 import world.WORLD;
 
 import java.nio.file.Path;
@@ -27,7 +28,6 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
 
     /**
      * You can force to set the log level via this environment variable.
-     * The environment variable has to set in the operating system.
      *
      * <pre>MOD.LOG_LEVEL=debug</pre>
      */
@@ -74,6 +74,9 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     @Override
     public abstract CharSequence desc();
 
+    /**
+     * Triggered by {@link this#initBeforeGameCreated()}
+     */
     protected abstract void registerPhases(PhaseManager phaseManager);
 
     /**
@@ -91,7 +94,9 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
             .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.i18nMessages());
     }
 
-
+    /**
+     * Triggered by the game
+     */
     @Override
     public void initBeforeGameCreated() {
         log.debug("Initializing Script");
@@ -104,15 +109,24 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
         phaseManager.initBeforeGameCreated();
     }
 
+    /**
+     * Triggered when {@link AbstractModSdkScript} is instantiated
+     */
     protected Level initLogging() {
         return Loggers.LOG_LEVEL_DEFAULT;
     }
 
+    /**
+     * Triggered by {@link this#createInstance()}
+     */
     @Override
     public void initModCreateInstance() {
         phaseManager.initModCreateInstance();
     }
 
+    /**
+     * Triggered by the game
+     */
     @Override
     public SCRIPT_INSTANCE createInstance() {
         if (scriptInstance == null) {
@@ -128,51 +142,81 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
         return scriptInstance;
     }
 
+    /**
+     * Triggered by {@link ScriptInstance#update(double)}
+     */
     @Override
     public void initGameUpdating() {
         phaseManager.initGameUpdating();
     }
 
+    /**
+     * Triggered by {@link ScriptInstance#update(double)}
+     */
     @Override
     public void initGameUiPresent() {
         phaseManager.initGameUiPresent();
     }
 
+    /**
+     * Triggered by the game
+     */
     @Override
     public void onViewSetup() {
         phaseManager.onViewSetup();
     }
 
+    /**
+     * Triggered by the game
+     */
     @Override
     public void initSettlementUiPresent() {
         phaseManager.initSettlementUiPresent();
     }
 
+    /**
+     * Triggered by the game
+     */
     @Override
-    public void onGameSaveLoaded(Path saveFilePath) {
-        phaseManager.onGameSaveLoaded(saveFilePath);
+    public void onGameLoaded(Path saveFilePath) {
+        phaseManager.onGameLoaded(saveFilePath);
     }
 
+    /**
+     * Triggered by the game
+     */
     @Override
     public void onGameSaved(Path saveFilePath) {
         phaseManager.onGameSaved(saveFilePath);
     }
 
+    /**
+     * Triggered by {@link ScriptInstance#load(FileGetter)}
+     */
     @Override
     public void initNewGameSession() {
         phaseManager.initNewGameSession();
     }
 
+    /**
+     * Triggered by {@link ScriptInstance#load(FileGetter)}
+     */
     @Override
     public void onGameSaveReloaded() {
         phaseManager.onGameSaveReloaded();
     }
 
+    /**
+     * Triggered by {@link ScriptInstance#update(double)}
+     */
     @Override
     public void onGameUpdate(double seconds) {
         phaseManager.onGameUpdate(seconds);
     }
 
+    /**
+     * Triggered by {@link ErrorHandler}
+     */
     @Override
     public void onCrash(Throwable throwable) {
         log.warn("Game crash detected!");

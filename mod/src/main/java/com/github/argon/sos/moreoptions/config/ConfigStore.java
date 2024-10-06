@@ -62,7 +62,7 @@ public class ConfigStore implements Phases {
     }
 
     @Override
-    public void onGameSaveLoaded(Path saveFilePath) {
+    public void onGameLoaded(Path saveFilePath) {
         configService.reloadBoundToSave();
     }
 
