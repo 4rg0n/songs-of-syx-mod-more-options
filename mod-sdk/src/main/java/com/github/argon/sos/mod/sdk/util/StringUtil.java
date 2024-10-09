@@ -180,35 +180,6 @@ public class StringUtil {
     }
 
     /**
-     * Will replace the packages with a single character in a class name.
-     * E.g. "java.lang.String" will be transformed to "j.l.String"
-     *
-     * @param clazz to read the class name from
-     * @return shortened class name
-     */
-    public static String shortenClassName(Class<?> clazz) {
-        return shortenPackageName(clazz.getPackage().getName()) + '.' + clazz.getSimpleName();
-    }
-
-    /**
-     * Will replace the packages with a single character in a package name.
-     * E.g. "java.lang" will be transformed to "j.l"
-     *
-     * @param packageName to shorten
-     * @return shortened class name
-     */
-    public static String shortenPackageName(String packageName) {
-        if (packageName.isEmpty()) {
-            return packageName;
-        }
-
-        return Arrays.stream(packageName.split("\\."))
-            .filter(string -> !string.isEmpty())
-            .map(segment -> Character.toString(segment.charAt(0)))
-            .collect(Collectors.joining("."));
-    }
-
-    /**
      * Cuts a given text to a max length or fills it up with spaces to the max length.
      *
      *

@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.config.json.v3;
 
-import com.github.argon.sos.mod.sdk.config.json.AbstractJsonConfigVersionHandler;
+import com.github.argon.sos.mod.sdk.config.AbstractJsonConfigVersionHandler;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
 import com.github.argon.sos.moreoptions.config.ConfigMapper;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;

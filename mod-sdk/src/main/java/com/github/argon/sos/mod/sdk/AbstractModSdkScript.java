@@ -187,7 +187,18 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
      */
     @Override
     public void onGameSaved(Path saveFilePath) {
-        phaseManager.onGameSaved(saveFilePath);
+        boolean isBeforeBattleSave = saveFilePath.endsWith("__beforeBattle");
+        boolean isBattleSave = saveFilePath.endsWith("__battle");
+
+        // originates from the game BattleState
+        if (isBeforeBattleSave) {
+            phaseManager.onGameBeforeBattle();
+            phaseManager.onGameSaved(saveFilePath);
+        } else if (isBattleSave) {
+            phaseManager.onGameBattleSaved(saveFilePath);
+        } else {
+            phaseManager.onGameSaved(saveFilePath);
+        }
     }
 
     /**

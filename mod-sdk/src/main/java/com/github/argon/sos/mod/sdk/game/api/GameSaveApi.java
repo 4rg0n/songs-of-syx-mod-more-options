@@ -91,10 +91,11 @@ public class GameSaveApi implements Phases {
      */
     @Nullable
     public String getSaveStamp() {
-        if (currentFile == null) {
+        Path currentPath = getCurrentPath();
+        if (currentPath == null) {
             return null;
         }
 
-        return SaveUtil.extractSaveStamp(currentFile);
+        return SaveUtil.extractSaveStamp(currentPath);
     }
 }

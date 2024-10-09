@@ -1,5 +1,6 @@
 package com.github.argon.sos.mod.sdk.game.util;
 
+import com.github.argon.sos.mod.sdk.util.StringUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import util.save.SaveFile;
@@ -39,7 +40,7 @@ public class SaveUtil {
         String saveStamp = saveFileName;
         // remove file ending
         if (saveFileName.endsWith("." + SAVE_FILE_ENDING)) {
-            saveStamp = saveFileName.substring(saveFileName.indexOf("." + SAVE_FILE_ENDING), saveFileName.length() - 1);
+            saveStamp = StringUtil.removeFileExtension(saveFileName);
         }
 
         return saveStamp;

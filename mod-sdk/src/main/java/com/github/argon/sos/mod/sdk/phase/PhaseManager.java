@@ -119,6 +119,25 @@ public class PhaseManager implements Phases {
     }
 
     @Override
+    public void onGameBattle() {
+        log.debug("PHASE: onGameBattle");
+        phases.get(Phase.ON_GAME_BATTLE).forEach(init -> execute(init, init::onGameBattle));
+    }
+
+    @Override
+    public void onGameBattleSaved(Path saveFilePath) {
+        log.debug("PHASE: onGameBattleSaved");
+        phases.get(Phase.ON_GAME_BATTLE_SAVED).forEach(init -> execute(init, () -> init.onGameBattleSaved(saveFilePath)));
+    }
+
+    @Override
+    public void onGameBeforeBattle() {
+        log.debug("PHASE: onGameBeforeBattle");
+        phases.get(Phase.ON_GAME_BEFORE_BATTLE).forEach(init -> execute(init, init::onGameBeforeBattle));
+    }
+
+
+    @Override
     public void initSettlementUiPresent() {
         log.debug("PHASE: initSettlementUiPresent");
         phases.get(Phase.INIT_SETTLEMENT_UI_PRESENT).forEach(init -> execute(init, init::initSettlementUiPresent));

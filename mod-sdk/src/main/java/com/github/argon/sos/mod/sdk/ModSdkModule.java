@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
+import com.github.argon.sos.mod.sdk.data.save.GameSaver;
+import com.github.argon.sos.mod.sdk.data.save.GameSavers;
 import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.mod.sdk.file.IOService;
 import com.github.argon.sos.mod.sdk.file.ResourceService;
@@ -11,6 +13,9 @@ import com.github.argon.sos.mod.sdk.game.api.*;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.i18n.I18nMessageBundle;
 import com.github.argon.sos.mod.sdk.json.*;
+import com.github.argon.sos.mod.sdk.json.store.JsonStore;
+import com.github.argon.sos.mod.sdk.json.store.JsonStoreManager;
+import com.github.argon.sos.mod.sdk.json.store.filepath.*;
 import com.github.argon.sos.mod.sdk.json.writer.JacksonWriter;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriter;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
@@ -20,6 +25,7 @@ import com.github.argon.sos.mod.sdk.metric.MetricCollector;
 import com.github.argon.sos.mod.sdk.metric.MetricCsvWriter;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
+import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import com.github.argon.sos.mod.sdk.properties.PropertiesService;
@@ -65,7 +71,7 @@ public class ModSdkModule {
     private final static GameJsonStore gameJsonStore = Factory.newGameJsonStore(fileService());
 
     /**
-     * For managing json config files
+     * For managing JSON config files
      * See: {@link JsonConfigStore}
      */
     @Getter(lazy = true)
@@ -227,6 +233,45 @@ public class ModSdkModule {
     @Accessors(fluent = true)
     private final static Notificator notificator = Factory.newNotificator(ModSdkModule.gameApis().ui());
 
+    /**
+     * For saving data related to save games
+     * See: {@link GameSaver}
+     */
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static GameSaver gameSaver = gameSaver("mods");
+
+    public static GameSaver gameSaver(String folderName) {
+        Path path = PATHS.local().SAVE.get().resolve(folderName);
+        GameSaver saver = GameSavers.getSaver(path);
+        phaseManager().register(Phase.ON_GAME_SAVE_LOADED, saver);
+
+        return saver;
+    }
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static SimpleFilePathGenerator simpleFilePathGenerator = Factory.newSimpleFilePathGenerator();
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static SaveFilePathGenerator saveFilePathGenerator = Factory.newSaveFilePathGenerator(gameApis().save());
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static JsonStoreManager jsonStoreManager = Factory.newJsonStoreManager(
+        simpleFilePathGenerator(),
+        Factory.newJsonStore(jacksonService())
+    );
+
+
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static JsonStoreManager jsonSaveStoreManager = Factory.newJsonStoreManager(
+        saveFilePathGenerator(),
+        Factory.newJsonStore(jacksonService())
+    );
+
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Factory {
 
@@ -341,6 +386,29 @@ public class ModSdkModule {
 
         public static FileLogWriter newFileLogWriter(Path logFile) {
             return new FileLogWriter(Logger.PREFIX_MOD, Logger.LOG_MSG_FORMAT, logFile);
+        }
+
+        public static GameSaver newGameSaver(Path path) {
+            return new GameSaver(path, jsonSaveStoreManager());
+        }
+
+        public static JsonStoreManager newJsonStoreManager(
+            FilePathGenerator filePathGenerator,
+            JsonStore jsonStore
+        ) {
+            return new JsonStoreManager(filePathGenerator, jsonStore);
+        }
+
+        public static JsonStore newJsonStore(JsonService jsonService) {
+            return new JsonStore(jsonService);
+        }
+
+        public static SimpleFilePathGenerator newSimpleFilePathGenerator() {
+            return new SimpleFilePathGenerator();
+        }
+
+        public static SaveFilePathGenerator newSaveFilePathGenerator(GameSaveApi saveApi) {
+            return new SaveFilePathGenerator(saveApi);
         }
     }
 }
