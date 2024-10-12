@@ -25,8 +25,7 @@ public class FileGetterApi implements IFileLoad {
         try {
             return ModSdkModule.jacksonJsonMapper().readValue(json.toString(), type);
         } catch (JsonProcessingException e) {
-            log.error("Falied to deserialize json with key: " + key + ", value: " + json.toString());
-            e.printStackTrace();
+            log.error("Failed to deserialize json with key: " + key + ", value: " + json.toString());
             return null;
         }
     }
