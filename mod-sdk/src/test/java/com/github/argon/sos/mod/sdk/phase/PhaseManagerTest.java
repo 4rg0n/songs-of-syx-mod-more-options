@@ -1,5 +1,7 @@
 package com.github.argon.sos.mod.sdk.phase;
 
+import com.github.argon.sos.mod.sdk.game.api.IFileLoad;
+import com.github.argon.sos.mod.sdk.game.api.IFileSave;
 import com.github.argon.sos.mod.testing.ModSdkExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,26 +26,26 @@ class PhaseManagerTest {
 
         phaseManager.initBeforeGameCreated();
         phaseManager.initModCreateInstance();
-        phaseManager.onGameLoaded(Paths.get(""));
+        phaseManager.onGameLoaded(Paths.get(""), Mockito.mock(IFileLoad.class));
         phaseManager.onGameSaveReloaded();
         phaseManager.initNewGameSession();
         phaseManager.initGameUpdating();
         phaseManager.onGameUpdate(1D);
         phaseManager.initGameUiPresent();
         phaseManager.onViewSetup();
-        phaseManager.onGameSaved(Paths.get(""));
+        phaseManager.onGameSaved(Paths.get(""), Mockito.mock(IFileSave.class));
         phaseManager.onCrash(new RuntimeException());
 
         Mockito.verify(phasesImpl, Mockito.times(1)).initBeforeGameCreated();
         Mockito.verify(phasesImpl, Mockito.times(1)).initModCreateInstance();
-        Mockito.verify(phasesImpl, Mockito.times(1)).onGameLoaded(ArgumentMatchers.any(Path.class));
+        Mockito.verify(phasesImpl, Mockito.times(1)).onGameLoaded(ArgumentMatchers.any(Path.class), ArgumentMatchers.any(IFileLoad.class));
         Mockito.verify(phasesImpl, Mockito.times(1)).onGameSaveReloaded();
         Mockito.verify(phasesImpl, Mockito.times(1)).initNewGameSession();
         Mockito.verify(phasesImpl, Mockito.times(1)).initGameUpdating();
         Mockito.verify(phasesImpl, Mockito.times(1)).onGameUpdate(1D);
         Mockito.verify(phasesImpl, Mockito.times(1)).initGameUiPresent();
         Mockito.verify(phasesImpl, Mockito.times(1)).onViewSetup();
-        Mockito.verify(phasesImpl, Mockito.times(1)).onGameSaved(ArgumentMatchers.any(Path.class));
+        Mockito.verify(phasesImpl, Mockito.times(1)).onGameSaved(ArgumentMatchers.any(Path.class), ArgumentMatchers.any(IFileSave.class));
         Mockito.verify(phasesImpl, Mockito.times(1)).onCrash(ArgumentMatchers.any(Throwable.class));
     }
 }
