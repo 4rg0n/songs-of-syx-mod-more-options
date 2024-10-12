@@ -1,6 +1,6 @@
-package com.github.argon.sos.mod.sdk.config.json;
+package com.github.argon.sos.mod.sdk.config;
 
-import com.github.argon.sos.mod.sdk.config.ConfigVersionHandler;
+import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

@@ -139,6 +139,7 @@
         <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
         <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <h2.version>2.3.232</h2.version>
     </properties>
 
     <dependencyManagement>
@@ -178,6 +179,11 @@
                 <version>${junit-jupiter-engine.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.github.argon.sos</groupId>
                 <artifactId>sos-mod-test</artifactId>
                 <version>0.1.0</version>
@@ -208,6 +214,12 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <version>${mockito-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito-core.version}</version>
             <scope>test</scope>
         </dependency>

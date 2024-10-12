@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.mod.sdk.config.ConfigVersionHandler;
 import com.github.argon.sos.mod.sdk.config.ConfigVersionHandlers;
+import com.github.argon.sos.mod.sdk.config.json.Binding;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
 import com.github.argon.sos.mod.sdk.file.FileMeta;
 import com.github.argon.sos.mod.sdk.json.JsonException;
@@ -118,11 +119,7 @@ public class ConfigService implements Phases {
     }
 
     public void reloadBoundToSave() {
-        jsonConfigStore.reloadBoundToSave();
-    }
-
-    public void reloadNotBoundToSave() {
-        jsonConfigStore.reloadNotBoundToSave();
+        jsonConfigStore.reload(Binding.SAVE);
     }
 
     public Optional<RacesConfig> loadRacesConfig(Path path) {

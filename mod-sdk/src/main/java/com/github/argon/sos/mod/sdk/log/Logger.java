@@ -2,6 +2,7 @@ package com.github.argon.sos.mod.sdk.log;
 
 
 import com.github.argon.sos.mod.sdk.log.writer.LogWriter;
+import com.github.argon.sos.mod.sdk.util.ClassUtil;
 import com.github.argon.sos.mod.sdk.util.ExceptionUtil;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import lombok.Getter;
@@ -36,7 +37,7 @@ public class Logger {
 
     public Logger(Class<?> clazz, Level level) {
         this.name = clazz.getCanonicalName();
-        this.shortName = StringUtil.shortenClassName(clazz);
+        this.shortName = ClassUtil.shortenClassName(clazz);
         this.displayName = StringUtil.cutOrFill(shortName, NAME_DISPLAY_MAX_LENGTH, false);
         this.level = level;
     }

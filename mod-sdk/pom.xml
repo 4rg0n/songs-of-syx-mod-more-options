@@ -37,6 +37,12 @@
             <artifactId>jackson-dataformat-properties</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
             <groupId>com.github.argon.sos</groupId>
             <artifactId>sos-mod-test</artifactId>
             <scope>test</scope>
@@ -48,6 +54,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+
+            <!-- Attach mod source code -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
             </plugin>
 
             <plugin>
@@ -81,11 +93,6 @@
                 <artifactId>maven-clean-plugin</artifactId>
             </plugin>
 
-            <!-- Attach mod source code -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 </project>

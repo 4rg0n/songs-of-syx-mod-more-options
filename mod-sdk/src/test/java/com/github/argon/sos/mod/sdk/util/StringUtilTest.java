@@ -66,22 +66,6 @@ class StringUtilTest {
     }
 
     @Test
-    void shortenClassName() {
-        Assertions.assertThat(StringUtil.shortenClassName(String.class)).isEqualTo("j.l.String");
-    }
-
-    @Test
-    void shortenPackageName() {
-        Assertions.assertThat(StringUtil.shortenPackageName("test.foo.bar")).isEqualTo("t.f.b");
-        Assertions.assertThat(StringUtil.shortenPackageName("test")).isEqualTo("t");
-        Assertions.assertThat(StringUtil.shortenPackageName("")).isEqualTo("");
-        Assertions.assertThat(StringUtil.shortenPackageName("t")).isEqualTo("t");
-        Assertions.assertThat(StringUtil.shortenPackageName(".")).isEqualTo("");
-        Assertions.assertThat(StringUtil.shortenPackageName("test.")).isEqualTo("t");
-        Assertions.assertThat(StringUtil.shortenPackageName(".test")).isEqualTo("t");
-    }
-
-    @Test
     void cutOrFill() {
         Assertions.assertThat(StringUtil.cutOrFill("test", 4, false)).isEqualTo("test");
         Assertions.assertThat(StringUtil.cutOrFill("test", 3, false)).isEqualTo("est");

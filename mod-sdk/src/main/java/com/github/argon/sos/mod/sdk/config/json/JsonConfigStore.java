@@ -71,6 +71,10 @@ public class JsonConfigStore {
             .build());
     }
 
+    public boolean isBound(Class<?> configClass) {
+        return configDefinitions.containsKey(configClass);
+    }
+
     /**
      * Registers a game save bound config class with its save folder in the store.
      * This config will get an identifier (save stamp) into its filename.
@@ -90,7 +94,7 @@ public class JsonConfigStore {
             .path(folder)
             .configClass(configClass)
             .namePrefix(fileName)
-            .boundToSave(true)
+            .binding(Binding.SAVE)
             .doBackup(doBackup)
             .build());
     }
@@ -221,32 +225,26 @@ public class JsonConfigStore {
         log.debug("Reloaded all configs successful? %s", success);
     }
 
-    /**
-     * Reloads configs bound not to saves from files
-     */
-    public void reloadNotBoundToSave() {
+
+    public void reload(@Nullable Binding binding) {
         Boolean success = configDefinitions.entrySet().stream()
-            .filter(entry -> !entry.getValue().isBoundToSave())
+            .filter(entry -> {
+               Binding configBinding = entry.getValue().getBinding();
+
+                if (configBinding == null && binding == null) {
+                    return true;
+                } else if (binding != null) {
+                    return binding.equals(configBinding);
+                }
+
+                return false;
+            })
             .map(entry -> reload(entry.getKey()).isPresent())
             .filter(aBoolean -> !aBoolean)
             .findFirst()
             .orElse(true);
 
-        log.debug("Reloaded not save bound configs successful? %s", success);
-    }
-
-    /**
-     * Reloads only configs bound to saves from files
-     */
-    public void reloadBoundToSave() {
-        Boolean success = configDefinitions.entrySet().stream()
-            .filter(entry -> entry.getValue().isBoundToSave())
-            .map(entry -> reload(entry.getKey()).isPresent())
-            .filter(aBoolean -> !aBoolean)
-            .findFirst()
-            .orElse(true);
-
-        log.debug("Reloaded save bound configs successful? %s", success);
+        log.debug("Reloaded %s bound configs successful? %s", binding, success);
     }
 
     /**
@@ -373,7 +371,8 @@ public class JsonConfigStore {
     }
 
     private List<FileMeta> readMetas(ConfigDefinition configDefinition) {
-        if (!configDefinition.isBoundToSave()) {
+        // FIXME not good; should read all metas and not just bound
+        if (!Binding.NONE.equals(configDefinition.getBinding())) {
             return Lists.of();
         }
 
@@ -604,7 +603,7 @@ public class JsonConfigStore {
     @Nullable
     private Path filePath(ConfigDefinition configDefinition, boolean asBackup) {
         Path path;
-        if (configDefinition.isBoundToSave()) {
+        if (!Binding.NONE.equals(configDefinition.getBinding())) {
             String fileName = configSaveFileName(configDefinition.getNamePrefix());
             if (fileName == null) {
                 log.debug("Could not create save game bound file path for %s. No game save stamp present.", configDefinition.getConfigClass().getSimpleName());
@@ -675,21 +674,21 @@ public class JsonConfigStore {
      */
     @Getter
     @Builder
-    private static class ConfigDefinition {
+    public static class ConfigDefinition {
         /**
          * Class of the config object
          */
         private Class<?> configClass;
         /**
          * Where it shall be saved.
-         * Can be folder path of boundToSave is true.
+         * Can be the folder path when boundToSave is true.
          */
         @NonNull
         private Path path;
         /**
          * Whether config shall be saved with a save game identifier (save stamp)
          */
-        private boolean boundToSave;
+        private Binding binding;
         /**
          * Used when config shall be bound to save.
          * Will be used in the config file name in combination with the game save stamp.

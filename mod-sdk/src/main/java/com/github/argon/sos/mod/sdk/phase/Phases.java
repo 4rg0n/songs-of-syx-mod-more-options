@@ -107,6 +107,34 @@ public interface Phases {
     }
 
     /**
+     * Before a battle is started
+     */
+    default void onGameBeforeBattle() {
+        throw new PhaseNotImplemented(Phase.ON_GAME_BEFORE_BATTLE);
+    }
+
+    /**
+     * When the game saves a {@link game.battle.BattleState}
+     */
+    default void onGameBeforeBattleSaved(Path saveFilePath) {
+        throw new PhaseNotImplemented(Phase.ON_GAME_BEFORE_BATTLE_SAVED);
+    }
+
+    /**
+     * When a battle is started
+     */
+    default void onGameBattle() {
+        throw new PhaseNotImplemented(Phase.ON_GAME_BATTLE);
+    }
+
+    /**
+     * When the game saves a {@link game.battle.BattleState}
+     */
+    default void onGameBattleSaved(Path saveFilePath) {
+        throw new PhaseNotImplemented(Phase.ON_GAME_BATTLE_SAVED);
+    }
+
+    /**
      * When the game crashes
      */
     default void onCrash(Throwable e) {
