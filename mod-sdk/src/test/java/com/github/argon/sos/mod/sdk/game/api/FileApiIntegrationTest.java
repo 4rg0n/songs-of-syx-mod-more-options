@@ -1,6 +1,10 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
-import lombok.Cleanup;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import game.time.TIME;
+import init.RES;
+import init.paths.PATHS;
+import lombok.*;
 import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -9,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import snake2d.Errors;
 import snake2d.util.file.FileGetter;
 import snake2d.util.file.FilePutter;
+import util.save.SaveGame;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,17 +25,8 @@ public class FileApiIntegrationTest {
     private final Path path = Paths.get("RandomFileThatShouldBeDeletedEveryTime" + this.getClass().getSimpleName() + "RunsTests.save");
 
     @BeforeEach
-    public void init() {
-        try {
-            Files.deleteIfExists(path);
-            Files.createFile(path);
-        } catch (IOException e) {
-            throw new Errors.DataError("Unable to process file", path);
-        }
-    }
-
     @AfterEach
-    public void cleanup() {
+    public void initAndCleanUp() {
         try {
             Files.deleteIfExists(path);
         } catch (IOException e) {
@@ -60,7 +56,6 @@ public class FileApiIntegrationTest {
         fileSaver.put(key, value);
         fileSaver.onGameSaved(filePutter);
         filePutter.zip();
-        filePutter.close();
         fileGetter = new FileGetter(path, true);
         fileLoader.onGameLoaded(fileGetter);
         Parent result = fileLoader.get(key, Parent.class);
@@ -72,7 +67,11 @@ public class FileApiIntegrationTest {
         Assertions.assertEquals(value.word, result.word);
     }
 
-    public class Parent {
+    @Data
+    @EqualsAndHashCode
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Parent {
         public Child child;
 
         public int[] one;
@@ -80,7 +79,11 @@ public class FileApiIntegrationTest {
         public String word;
     }
 
-    public class Child {
+    @Data
+    @EqualsAndHashCode
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Child {
         public HashMap<Integer, Integer> five;
     }
 }

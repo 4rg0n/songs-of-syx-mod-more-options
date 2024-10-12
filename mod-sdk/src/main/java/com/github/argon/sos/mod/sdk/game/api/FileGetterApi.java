@@ -2,6 +2,7 @@ package com.github.argon.sos.mod.sdk.game.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.JsonMapper;
@@ -15,16 +16,17 @@ import java.util.HashMap;
 
 public class FileGetterApi implements IFileLoad {
     private final static Logger log = Loggers.getLogger(GameSaveApi.class);
-    private HashMap<String, String> loadedData;
+    private HashMap<String, JsonNode> loadedData;
 
     @Override
     public <T> T get(String key, Class<T> type) {
-        String json = loadedData.get(key);
+        JsonNode json = loadedData.get(key);
 
         try {
-            return ModSdkModule.jacksonJsonMapper().readValue(json, type);
+            return ModSdkModule.jacksonJsonMapper().readValue(json.toString(), type);
         } catch (JsonProcessingException e) {
-            log.error("Falied to deserialize json with key: " + key + ", value: " + json);
+            log.error("Falied to deserialize json with key: " + key + ", value: " + json.toString());
+            e.printStackTrace();
             return null;
         }
     }
@@ -34,12 +36,13 @@ public class FileGetterApi implements IFileLoad {
             return;
         }
 
-        byte[] jsonBytes = new byte[0];
-        fileGetter.bsE(jsonBytes);
+        int length = fileGetter.i();
+        byte[] jsonBytes = new byte[length];
+        fileGetter.bs(jsonBytes);
 
         String json = new String(jsonBytes, StandardCharsets.UTF_8);
 
-        loadedData = ModSdkModule.jacksonJsonMapper().readValue(json, new TypeReference<HashMap<String, String>>() {
+        loadedData = ModSdkModule.jacksonJsonMapper().readValue(json, new TypeReference<HashMap<String, JsonNode>>() {
         });
     }
 }
