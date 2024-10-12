@@ -1,11 +1,9 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import game.time.TIME;
-import init.RES;
-import init.paths.PATHS;
-import lombok.*;
-import org.assertj.core.api.Assert;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import snake2d.Errors;
 import snake2d.util.file.FileGetter;
 import snake2d.util.file.FilePutter;
-import util.save.SaveGame;
 
 import java.io.IOException;
 import java.nio.file.Files;
