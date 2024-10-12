@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
+import com.github.argon.sos.mod.sdk.data.database.H2DatabaseConnection;
+import com.github.argon.sos.mod.sdk.data.database.KeyValueDatabase;
 import com.github.argon.sos.mod.sdk.data.save.GameSaver;
 import com.github.argon.sos.mod.sdk.data.save.GameSavers;
 import com.github.argon.sos.mod.sdk.file.FileService;
@@ -15,7 +17,9 @@ import com.github.argon.sos.mod.sdk.i18n.I18nMessageBundle;
 import com.github.argon.sos.mod.sdk.json.*;
 import com.github.argon.sos.mod.sdk.json.store.JsonStore;
 import com.github.argon.sos.mod.sdk.json.store.JsonStoreManager;
-import com.github.argon.sos.mod.sdk.json.store.filepath.*;
+import com.github.argon.sos.mod.sdk.json.store.filepath.FilePathGenerator;
+import com.github.argon.sos.mod.sdk.json.store.filepath.SaveFilePathGenerator;
+import com.github.argon.sos.mod.sdk.json.store.filepath.SimpleFilePathGenerator;
 import com.github.argon.sos.mod.sdk.json.writer.JacksonWriter;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriter;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
@@ -272,6 +276,12 @@ public class ModSdkModule {
         Factory.newJsonStore(jacksonService())
     );
 
+    public static KeyValueDatabase h2Database(Path filePath) {
+        return Factory.newH2Database(
+            Factory.newFileH2DatabaseConnection(filePath)
+        );
+    }
+
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Factory {
 
@@ -409,6 +419,18 @@ public class ModSdkModule {
 
         public static SaveFilePathGenerator newSaveFilePathGenerator(GameSaveApi saveApi) {
             return new SaveFilePathGenerator(saveApi);
+        }
+
+        public static H2DatabaseConnection newMemoryH2DatabaseConnection(String databaseName) {
+            return new H2DatabaseConnection(databaseName);
+        }
+
+        public static H2DatabaseConnection newFileH2DatabaseConnection(Path filePath) {
+            return new H2DatabaseConnection(filePath);
+        }
+
+        public static KeyValueDatabase newH2Database(H2DatabaseConnection fileConnection) {
+            return new KeyValueDatabase(fileConnection);
         }
     }
 }
