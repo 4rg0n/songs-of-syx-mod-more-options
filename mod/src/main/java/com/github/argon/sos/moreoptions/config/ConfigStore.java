@@ -1,6 +1,8 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.mod.sdk.file.FileMeta;
+import com.github.argon.sos.mod.sdk.game.api.IFileLoad;
+import com.github.argon.sos.mod.sdk.game.api.IFileSave;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phase;
@@ -62,12 +64,12 @@ public class ConfigStore implements Phases {
     }
 
     @Override
-    public void onGameLoaded(Path saveFilePath) {
+    public void onGameLoaded(Path saveFilePath, IFileLoad fileLoader) {
         configService.reloadBoundToSave();
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath, IFileSave fileSaver) {
         MoreOptionsV5Config currentConfig = getCurrentConfig();
         if (currentConfig != null && !stateManager.getState().isNewGame()) {
             save(currentConfig);

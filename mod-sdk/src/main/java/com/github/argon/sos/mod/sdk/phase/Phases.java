@@ -1,5 +1,9 @@
 package com.github.argon.sos.mod.sdk.phase;
 
+import com.github.argon.sos.mod.sdk.game.api.IFileLoad;
+import com.github.argon.sos.mod.sdk.game.api.IFileSave;
+import snake2d.util.file.FilePutter;
+
 import java.nio.file.Path;
 
 /**
@@ -33,7 +37,7 @@ public interface Phases {
      * (3.) PHASE: can be called multiple times
      * When the game loaded a save game
      */
-    default void onGameLoaded(Path saveFilePath) {
+    default void onGameLoaded(Path saveFilePath, IFileLoad fileLoader) {
         throw new PhaseNotImplemented(Phase.ON_GAME_SAVE_LOADED);
     }
 
@@ -98,7 +102,7 @@ public interface Phases {
     /**
      * When the game saves
      */
-    default void onGameSaved(Path saveFilePath) {
+    default void onGameSaved(Path saveFilePath, IFileSave fileSaver) {
         throw new PhaseNotImplemented(Phase.ON_GAME_SAVED);
     }
 

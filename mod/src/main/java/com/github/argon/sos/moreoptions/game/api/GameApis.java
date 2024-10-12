@@ -1,5 +1,7 @@
 package com.github.argon.sos.moreoptions.game.api;
 
+import com.github.argon.sos.mod.sdk.game.api.IFileLoad;
+import com.github.argon.sos.mod.sdk.game.api.IFileSave;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,7 @@ public class GameApis implements Phases {
     }
 
     @Override
-    public void onGameLoaded(Path saveFilePath) {
+    public void onGameLoaded(Path saveFilePath, IFileLoad fileLoader) {
     }
 
     @Override
@@ -57,7 +59,7 @@ public class GameApis implements Phases {
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath, IFileSave fileSaver) {
 
     }
 

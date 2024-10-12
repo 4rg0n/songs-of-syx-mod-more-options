@@ -1,5 +1,9 @@
 package com.github.argon.sos.mod.sdk.phase;
 
+import com.github.argon.sos.mod.sdk.ModSdkModule;
+import com.github.argon.sos.mod.sdk.game.api.FilePutterApi;
+import com.github.argon.sos.mod.sdk.game.api.IFileLoad;
+import com.github.argon.sos.mod.sdk.game.api.IFileSave;
 import com.github.argon.sos.mod.sdk.game.error.DumpLogsException;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
 import com.github.argon.sos.mod.sdk.log.Logger;
@@ -77,9 +81,9 @@ public class PhaseManager implements Phases {
     }
 
     @Override
-    public void onGameLoaded(Path saveFilePath) {
+    public void onGameLoaded(Path saveFilePath, IFileLoad fileLoader) {
         log.debug("PHASE: onGameSaveLoaded");
-        phases.get(Phase.ON_GAME_SAVE_LOADED).forEach(init -> execute(init, () -> init.onGameLoaded(saveFilePath)));
+        phases.get(Phase.ON_GAME_SAVE_LOADED).forEach(init -> execute(init, () -> init.onGameLoaded(saveFilePath, fileLoader)));
     }
 
     @Override
@@ -113,9 +117,11 @@ public class PhaseManager implements Phases {
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath, IFileSave fileSaver) {
         log.debug("PHASE: onGameSaved");
-        phases.get(Phase.ON_GAME_SAVED).forEach(init -> execute(init, () -> init.onGameSaved(saveFilePath)));
+        FilePutterApi api = new FilePutterApi();
+        phases.get(Phase.ON_GAME_SAVED).forEach(init -> execute(init, () -> init.onGameSaved(saveFilePath, api)));
+        api.onGameSaved(ModSdkModule.gameApis().save().filePutter);
     }
 
     @Override

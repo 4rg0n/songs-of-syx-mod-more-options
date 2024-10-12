@@ -92,13 +92,13 @@ public class GameApis implements Phases, Resettable {
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
-        save().onGameSaved(saveFilePath);
+    public void onGameSaved(Path saveFilePath, IFileSave fileSaver) {
+        save().onGameSaved(saveFilePath, fileSaver);
     }
 
     @Override
-    public void onGameLoaded(Path saveFilePath) {
-        save().onGameLoaded(saveFilePath);
+    public void onGameLoaded(Path saveFilePath, IFileLoad fileLoader) {
+        save().onGameLoaded(saveFilePath, fileLoader);
     }
 
     @Override

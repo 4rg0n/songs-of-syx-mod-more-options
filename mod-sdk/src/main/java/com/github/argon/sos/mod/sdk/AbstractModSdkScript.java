@@ -1,5 +1,7 @@
 package com.github.argon.sos.mod.sdk;
 
+import com.github.argon.sos.mod.sdk.game.api.IFileLoad;
+import com.github.argon.sos.mod.sdk.game.api.IFileSave;
 import com.github.argon.sos.mod.sdk.game.error.ErrorHandler;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.log.Level;
@@ -178,16 +180,16 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
      * Triggered by the game
      */
     @Override
-    public void onGameLoaded(Path saveFilePath) {
-        phaseManager.onGameLoaded(saveFilePath);
+    public void onGameLoaded(Path saveFilePath, IFileLoad fileLoader) {
+        phaseManager.onGameLoaded(saveFilePath, fileLoader);
     }
 
     /**
      * Triggered by the game
      */
     @Override
-    public void onGameSaved(Path saveFilePath) {
-        phaseManager.onGameSaved(saveFilePath);
+    public void onGameSaved(Path saveFilePath, IFileSave fileSaver) {
+        phaseManager.onGameSaved(saveFilePath, fileSaver);
     }
 
     /**

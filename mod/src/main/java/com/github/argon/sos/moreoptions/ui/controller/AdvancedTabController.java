@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.controller;
 
+import com.github.argon.sos.mod.sdk.game.api.IFileSave;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsPanel;
@@ -45,7 +46,7 @@ public class AdvancedTabController extends AbstractUiController<AdvancedTab> {
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath, IFileSave fileSaver) {
         getElement().refresh(gameApis.save().getSaveStamp());
     }
 

@@ -1,7 +1,12 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.JsonMapper;
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import snake2d.util.file.FileGetter;
 
 import java.io.IOException;
@@ -9,22 +14,32 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class FileGetterApi implements IFileLoad {
-    private HashMap<String, Json> loadedData;
+    private final static Logger log = Loggers.getLogger(GameSaveApi.class);
+    private HashMap<String, String> loadedData;
 
     @Override
     public <T> T get(String key, Class<T> type) {
-        Json json = loadedData.get(key);
+        String json = loadedData.get(key);
 
-        return JsonMapper.mapJson(json, type);
+        try {
+            return ModSdkModule.jacksonJsonMapper().readValue(json, type);
+        } catch (JsonProcessingException e) {
+            log.error("Falied to deserialize json with key: " + key + ", value: " + json);
+            return null;
+        }
     }
 
     void onGameLoaded(FileGetter fileGetter) throws IOException {
-        int length = fileGetter.i();
-        byte[] jsonBytes = new byte[length];
-        fileGetter.bs(jsonBytes);
+        if (fileGetter == null) {
+            return;
+        }
 
-        Json json = new Json(new String(jsonBytes, StandardCharsets.UTF_8));
+        byte[] jsonBytes = new byte[0];
+        fileGetter.bsE(jsonBytes);
 
-        loadedData = JsonMapper.mapJson(json, loadedData.getClass());
+        String json = new String(jsonBytes, StandardCharsets.UTF_8);
+
+        loadedData = ModSdkModule.jacksonJsonMapper().readValue(json, new TypeReference<HashMap<String, String>>() {
+        });
     }
 }
