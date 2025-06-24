@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Main" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="init.Main" />
-    <module name="songs-of-syx-mod-more-options" />
+    <module name="sos-mod-more-options" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
     <extension name="coverage">
       <pattern>
