@@ -79,16 +79,7 @@ public interface Phases {
     }
 
     /**
-     * 9. PHASE: can be called multiple times
-     * When the game ui being initialized. This is called everytime the game builds the ui.
-     * So also when switching between a battlefield screen and the settlement.
-     */
-    default void onViewSetup() {
-        throw new PhaseNotImplemented(Phase.ON_VIEW_SETUP);
-    }
-
-    /**
-     * 10. PHASE
+     * 9. PHASE
      * When the settlement ui is loaded for the first time
      */
     default void initSettlementUiPresent() {

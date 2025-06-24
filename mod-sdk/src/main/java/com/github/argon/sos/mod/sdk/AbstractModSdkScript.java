@@ -162,14 +162,6 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
      * Triggered by the game
      */
     @Override
-    public void onViewSetup() {
-        phaseManager.onViewSetup();
-    }
-
-    /**
-     * Triggered by the game
-     */
-    @Override
     public void initSettlementUiPresent() {
         phaseManager.initSettlementUiPresent();
     }

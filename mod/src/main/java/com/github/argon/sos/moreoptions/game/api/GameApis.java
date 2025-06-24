@@ -49,10 +49,6 @@ public class GameApis implements Phases {
     }
 
     @Override
-    public void onViewSetup() {
-    }
-
-    @Override
     public void initSettlementUiPresent() {
     }
 

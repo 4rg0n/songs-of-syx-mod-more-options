@@ -82,13 +82,8 @@ public class GameApis implements Phases, Resettable {
     }
 
     @Override
-    public void onViewSetup() {
-        faction.onViewSetup();
-    }
-
-    @Override
     public void initSettlementUiPresent() {
-
+        faction.initSettlementUiPresent();
     }
 
     @Override

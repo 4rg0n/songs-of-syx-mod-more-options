@@ -125,12 +125,6 @@ public class PhaseManager implements Phases {
     }
 
     @Override
-    public void onViewSetup() {
-        log.debug("PHASE: initSettlementUiPresent");
-        phases.get(Phase.ON_VIEW_SETUP).forEach(init -> execute(init, init::onViewSetup));
-    }
-
-    @Override
     public void onCrash(Throwable throwable) {
         log.debug("PHASE: onCrash");
         if (throwable instanceof DumpLogsException) {

@@ -30,7 +30,6 @@ class PhaseManagerTest {
         phaseManager.initGameUpdating();
         phaseManager.onGameUpdate(1D);
         phaseManager.initGameUiPresent();
-        phaseManager.onViewSetup();
         phaseManager.onGameSaved(Paths.get(""));
         phaseManager.onCrash(new RuntimeException());
 
@@ -42,7 +41,6 @@ class PhaseManagerTest {
         Mockito.verify(phasesImpl, Mockito.times(1)).initGameUpdating();
         Mockito.verify(phasesImpl, Mockito.times(1)).onGameUpdate(1D);
         Mockito.verify(phasesImpl, Mockito.times(1)).initGameUiPresent();
-        Mockito.verify(phasesImpl, Mockito.times(1)).onViewSetup();
         Mockito.verify(phasesImpl, Mockito.times(1)).onGameSaved(ArgumentMatchers.any(Path.class));
         Mockito.verify(phasesImpl, Mockito.times(1)).onCrash(ArgumentMatchers.any(Throwable.class));
     }
