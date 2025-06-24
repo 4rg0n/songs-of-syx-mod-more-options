@@ -2,7 +2,7 @@ package com.github.argon.sos.mod.sdk.game.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import util.save.SaveFile;
+import game.save.SaveFile;
 
 import java.nio.file.Path;
 

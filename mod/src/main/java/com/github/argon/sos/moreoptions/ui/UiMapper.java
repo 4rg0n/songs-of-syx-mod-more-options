@@ -14,10 +14,10 @@ import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
-import com.github.argon.sos.moreoptions.ui.tab.events.EventsTab;
+import game.event.engine.GeneralEvent;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
-import game.events.general.EventAbs;
-import game.faction.FACTIONS;
+import game.event.engine.Event;
+import game.events.EVENTS;
 import game.faction.Faction;
 import init.race.Race;
 import init.sprite.SPRITES;
@@ -30,6 +30,7 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.SPRITE;
 
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -43,11 +44,11 @@ public class UiMapper {
     private final GameApis gameApis;
     private final GameBoosterApi gameBoosterApi;
 
-    public Map<String, EventsTab.GeneralEvent> toEventsTabGeneralEvents(Map<String, Boolean> generalEvents) {
-        Map<String, EventsTab.GeneralEvent> events = new HashMap<>();
+    public Map<String, GeneralEvent> toEventsTabGeneralEvents(Map<String, Boolean> generalEvents) {
+        Map<String, GeneralEvent> events = new HashMap<>();
 
         for (Map.Entry<String, Boolean> entry : generalEvents.entrySet()) {
-            EventsTab.GeneralEvent event = toEventsTabGeneralEvent(entry.getKey(), entry.getValue());
+            GeneralEvent event = toEventsTabGeneralEvent(entry.getKey(), entry.getValue());
 
             if (event == null) {
                 continue;
@@ -60,18 +61,20 @@ public class UiMapper {
     }
 
     @Nullable
-    public EventsTab.GeneralEvent toEventsTabGeneralEvent(String key, Boolean enabled) {
-        EventAbs eventAbs = gameApis.events().getEvents().get(key);
+    public GeneralEvent toEventsTabGeneralEvent(String key, Boolean enabled) {
+        Event event = gameApis.events().getEvents().get(key);
+        EVENTS.EventResource eventResource = gameApis.events().getEventResources().get(key);
 
-        if (eventAbs == null) {
-            log.debug("No event '%s' present", key);
+        if (event == null || eventResource == null) {
+            log.debug("No event with key '%s' present", key);
             return null;
         }
 
-        return EventsTab.GeneralEvent.builder()
+        return GeneralEvent.builder()
             .key(key)
             .enabled(enabled)
-            .event(eventAbs)
+            .event(event)
+            .eventResource(eventResource)
             .build();
     }
 
@@ -220,21 +223,22 @@ public class UiMapper {
             .collect(Collectors.toList());
     }
 
-    public static List<ColumnRow<Boolean>> toEventsTabGeneralEventColumnRows(Collection<EventsTab.GeneralEvent> generalEvents) {
+    public List<ColumnRow<Boolean>> toEventsTabGeneralEventColumnRows(Collection<GeneralEvent> generalEvents) {
         return generalEvents.stream()
             // sort by event name
-            .sorted(Comparator.comparing(event -> event.getEvent().sName.toString()))
-            .map(UiMapper::toEventsTabGeneralEventColumnRow)
+            .sorted(Comparator.comparing(event -> event.getEvent().key))
+            .map(this::toEventsTabGeneralEventColumnRow)
             .collect(Collectors.toList());
     }
 
-    public static ColumnRow<Boolean> toEventsTabGeneralEventColumnRow(EventsTab.GeneralEvent generalEvent) {
-        EventAbs event = generalEvent.getEvent();
+    public ColumnRow<Boolean> toEventsTabGeneralEventColumnRow(GeneralEvent generalEvent) {
+        Event event = generalEvent.getEvent();
+        EVENTS.EventResource eventResource = generalEvent.getEventResource();
         Checkbox checkbox = new Checkbox(generalEvent.isEnabled());
 
-        ColorCircle colorCircle = new ColorCircle(3, (event.plockable.passes(FACTIONS.player())) ? COLOR.GREEN100 : COLOR.RED100);
+        ColorCircle colorCircle = new ColorCircle(3, (gameApis.events().isEnabled(eventResource)) ? COLOR.GREEN100 : COLOR.RED100);
         colorCircle.renderAction(aFloat -> {
-            COLOR color = (event.plockable.passes(FACTIONS.player())) ? COLOR.GREEN100 : COLOR.RED100;
+            COLOR color = (gameApis.events().isEnabled(eventResource)) ? COLOR.GREEN100 : COLOR.RED100;
             colorCircle.setColor(color);
         });
         colorCircle.hoverInfoSet(i18n.t("EventsTab.tab.events.canFire.desc"));
@@ -244,14 +248,14 @@ public class UiMapper {
             .value(generalEvent.isEnabled())
             .column(colorCircle)
             .column(Label.builder()
-                .name(event.sName.toString())
-                .hoverGuiAction(event::hover)
+                .name(generalEvent.getKey())
+                .hoverGuiAction(generalEvent::hover)
                 .build())
-            .column(UiUtil.toRender(event.icon))
+            .column(UiUtil.toRender(event.info.icon))
             .column(checkbox)
             .valueConsumer(checkbox::setValue)
             .valueSupplier(checkbox::getValue)
-            .searchTerm(event.sName.toString())
+            .searchTerm(event.info.name.toString())
             .build();
     }
 }

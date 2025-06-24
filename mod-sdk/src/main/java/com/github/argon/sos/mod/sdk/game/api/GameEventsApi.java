@@ -1,18 +1,18 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
+import com.github.argon.sos.mod.sdk.game.util.GameEventUtil;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import game.GAME;
+import game.event.engine.Event;
 import game.events.EVENTS;
-import game.events.general.EventAbs;
 import game.faction.Faction;
-import game.values.Lock;
 import game.values.Locker;
-import init.sprite.UI.UI;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.sets.ArrayListGrower;
 import snake2d.util.sprite.SPRITE;
 
 import java.util.HashMap;
@@ -30,9 +30,7 @@ public class GameEventsApi implements Resettable {
     @Nullable
     private Map<String, EVENTS.EventResource> eventResources;
     @Nullable
-    private Map<String, EventAbs> events;
-    @Nullable
-    private Map<String, EventLocker> eventLocks;
+    private Map<String, Event> events;
 
     public final static String KEY_PREFIX = "event";
 
@@ -40,7 +38,6 @@ public class GameEventsApi implements Resettable {
     public void reset() {
         eventResources = null;
         events = null;
-        eventLocks = null;
     }
 
     /**
@@ -54,37 +51,10 @@ public class GameEventsApi implements Resettable {
         return eventResources;
     }
 
-    public Map<String, EventLocker> getEventLocks() {
-        if (eventLocks == null) {
-            eventLocks = newEventLocks();
-        }
-
-        return eventLocks;
-    }
-
-    public void lockEvent(String key, boolean locked) {
-        GameEventsApi.EventLocker locker = getEventLocks().get(key);
-
-        if (locker == null) {
-            log.warn("Could not find event lock %s in game api result.", key);
-            log.trace("API Result: %s", eventLocks);
-            return;
-        }
-
-        locker.setLocked(locked);
-    }
-
-    private Map<String, EventLocker> newEventLocks() {
-        Map<String, EventLocker> eventLocks = new HashMap<>();
-
-        getEvents().forEach((key, event) -> {
-            EventLocker eventLocker = new EventLocker("Mod SDK", UI.icons().m.cog);
-            Lock<Faction> factionLock = new Lock<>(event.plockable, eventLocker);
-            eventLocks.put(key, eventLocker);
-            event.plockable.push(factionLock);
+    public void enableEventResource(String key, boolean locked) {
+        getEventResource(key).ifPresent(eventResource -> {
+            enableEventResource(eventResource, locked);
         });
-
-        return eventLocks;
     }
 
     public Optional<EVENTS.EventResource> getEventResource(String key) {
@@ -101,35 +71,6 @@ public class GameEventsApi implements Resettable {
     }
 
     /**
-     * @return a map with all game events
-     */
-    public Map<String, EventAbs> getEvents() {
-        if (events == null) {
-            events = readEvents();
-        }
-
-        return events;
-    }
-
-    public Map<String, EventAbs> readEvents() {
-        Map<String, EventAbs> events = new HashMap<>();
-        for (EventAbs event : EventAbs.ALL()) {
-            events.put(KEY_PREFIX + "." + event.key, event);
-        }
-
-        return events;
-    }
-
-    public Map<String, Boolean> readEventResourcesEnabledStatus() {
-        return getEventResources().entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> isEnabled(entry.getValue())));
-    }
-
-    public void enableEventResource(EVENTS.EventResource event, Boolean enabled) {
-        event.supress(!enabled);
-    }
-
-    /**
      * @return whether given event will execute or not
      */
     public Boolean isEnabled(EVENTS.EventResource event) {
@@ -137,12 +78,55 @@ public class GameEventsApi implements Resettable {
             try {
                 // checks whether event is suppressed
                 return !(Boolean) ReflectionUtil.getDeclaredFieldValue(field, event)
-                        .orElseThrow(() -> new RuntimeException("Got empty 'supress' from event class " + event.getClass().getName()));
+                    .orElseThrow(() -> new RuntimeException("Got empty 'supress' from event class " + event.getClass().getName()));
             } catch (Exception e) {
                 log.warn("Could not read '%s.supress' field", event.getClass(), e);
                 return true;
             }
         }).orElse(true);
+    }
+
+    /**
+     * @return a map with all game events
+     */
+    public Map<String, Event> getEvents() {
+        if (events == null) {
+            events = readEvents();
+        }
+
+        return events;
+    }
+
+    public Map<String, Event> readEvents() {
+        Map<String, Event> events = new HashMap<>();
+        try {
+            ArrayListGrower<Event> all = ReflectionUtil.getDeclaredField("all", Event.class)
+                .map(field ->
+                     ReflectionUtil.getDeclaredFieldValue(field, Event.class)
+                        .orElseThrow(() -> new RuntimeException("Got empty 'all' from event class " + Event.class.getName()))
+                ).filter(ArrayListGrower.class::isInstance)
+                .map(list -> (ArrayListGrower<Event>) list)
+                .orElse(new ArrayListGrower<>());
+
+
+            for (Event event : all) {
+                events.put(KEY_PREFIX + "." + event.key, event);
+            }
+
+        } catch (Exception e) {
+            log.warn("Could not read '%s.all' field", Event.class, e);
+        }
+
+        return events;
+    }
+
+    public Map<String, Boolean> readEventResourcesEnabledStatus() {
+        return getEventResources().entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> GameEventUtil.isEnabled(entry.getValue())));
+    }
+
+    public void enableEventResource(EVENTS.EventResource event, Boolean enabled) {
+        event.supress(!enabled);
     }
 
     /**

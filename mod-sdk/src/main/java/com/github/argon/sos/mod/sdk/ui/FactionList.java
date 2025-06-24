@@ -55,25 +55,26 @@ public class FactionList extends GuiSection {
 	@Accessors(fluent = true, chain = false)
 	private Action<Faction> clickAction = o -> {};
 
-	private final Tree<Faction> sorter = new Tree<Faction>(FACTIONS.MAX) {
+	private final Tree<FactionNPC> sorter = new Tree<FactionNPC>(FACTIONS.MAX) {
 
 		@Override
-		protected boolean isGreaterThan(Faction current, Faction cmp) {
+		protected boolean isGreaterThan(FactionNPC current, FactionNPC cmp) {
 			return value(current) > value(cmp);
 		}
-		
-		private int value(Faction f) {
+
+		private double value(Faction f) {
+			double d = 1.0-1.0/RD.DIST().distance(f);
 			if (DIP.WAR().is(FACTIONS.player(), f))
-				return 0+f.index();
+				return 0+d;
 			if (DIP.get(FACTIONS.player(), f).trades)
-				return FACTIONS.MAX+f.index();
+				return FACTIONS.MAX+d;
 			if (RD.DIST().reachable(f))
-				return FACTIONS.MAX*2+f.index();
-			if (RD.DIST().neighbours(f))
-				return FACTIONS.MAX*3+f.index();
-			return FACTIONS.MAX*4+f.index();
+				return FACTIONS.MAX*2+d;
+			if (RD.DIST().factionHasRegionBorderingPlayer(f))
+				return FACTIONS.MAX*3+d;
+			return FACTIONS.MAX*4+d;
 		}
-		
+
 	};
 	
 	

@@ -20,7 +20,7 @@ import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogController;
 import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
-import com.github.argon.sos.moreoptions.ui.tab.events.EventsTab;
+import game.event.engine.GeneralEvent;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.faction.Faction;
@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import util.gui.misc.GButt;
-import util.save.SaveFile;
+import game.save.SaveFile;
 import view.ui.top.UIPanelTop;
 import world.WORLD;
 
@@ -72,7 +72,7 @@ public class UiFactory {
     public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV5Config config) {
         Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoostersTabEntries(config.getBoosters());
         Map<String, List<RacesTab.Entry>> raceEntries = uiMapper.toRacesTabEntries(config.getRaces().getLikings());
-        Map<String, EventsTab.GeneralEvent> generalEvents = uiMapper.toEventsTabGeneralEvents(config.getEvents().getGeneralEvents());
+        Map<String, GeneralEvent> generalEvents = uiMapper.toEventsTabGeneralEvents(config.getEvents().getGeneralEvents());
 
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod(MoreOptionsScript.MOD_INFO.name.toString()).orElse(null);

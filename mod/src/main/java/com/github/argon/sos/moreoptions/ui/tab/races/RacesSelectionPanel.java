@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GText;
-import util.save.SaveFile;
+import game.save.SaveFile;
 
 import java.nio.file.Path;
 import java.time.Instant;

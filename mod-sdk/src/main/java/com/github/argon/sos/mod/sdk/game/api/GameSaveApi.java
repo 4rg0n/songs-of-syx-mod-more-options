@@ -8,7 +8,7 @@ import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
-import util.save.SaveFile;
+import game.save.SaveFile;
 
 import java.nio.file.Path;
 import java.util.Arrays;
