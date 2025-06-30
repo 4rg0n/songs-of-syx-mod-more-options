@@ -102,7 +102,7 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
         // Events
         generalEventsTable = Table.<Boolean>builder()
             // FIXME do not use ModModule.uiMapper() in UIs?
-            .rows(ModModule.uiMapper().toEventsTabGeneralEventColumnRows(model.getGeneralEvents().values()))
+            .rows(ModModule.uiMapper().toEventTabColumnRows(model.getEventTrees().values()))
             .rowPadding(5)
             .columnMargin(20)
             .highlight(true)

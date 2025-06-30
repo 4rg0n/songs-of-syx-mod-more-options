@@ -25,9 +25,6 @@ public class SpriteRace extends AbstractGameData {
     private final GameFolder misc = folder("misc");
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final GameFolder portrait = folder("portrait");
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
     private final GameFolder skelleton = folder("skelleton");
     @Getter(lazy = true)
     @Accessors(fluent = true)

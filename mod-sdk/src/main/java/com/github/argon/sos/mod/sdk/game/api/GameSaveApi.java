@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import game.save.SaveFile;
+import snake2d.util.file.FileGetter;
+import snake2d.util.file.FilePutter;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -54,13 +56,13 @@ public class GameSaveApi implements Phases {
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         // update save info on game save
         setCurrent(saveFilePath);
     }
 
     @Override
-    public void onGameLoaded(Path saveFilePath) {
+    public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
         // update save info on game loaded
         setCurrent(saveFilePath);
     }

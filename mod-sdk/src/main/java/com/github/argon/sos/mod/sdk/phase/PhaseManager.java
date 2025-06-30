@@ -4,6 +4,8 @@ import com.github.argon.sos.mod.sdk.game.error.DumpLogsException;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import snake2d.util.file.FileGetter;
+import snake2d.util.file.FilePutter;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -77,9 +79,9 @@ public class PhaseManager implements Phases {
     }
 
     @Override
-    public void onGameLoaded(Path saveFilePath) {
-        log.debug("PHASE: onGameSaveLoaded");
-        phases.get(Phase.ON_GAME_SAVE_LOADED).forEach(init -> execute(init, () -> init.onGameLoaded(saveFilePath)));
+    public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
+        log.debug("PHASE: onGameLoaded");
+        phases.get(Phase.ON_GAME_SAVE_LOADED).forEach(init -> execute(init, () -> init.onGameLoaded(saveFilePath, fileGetter)));
     }
 
     @Override
@@ -113,9 +115,9 @@ public class PhaseManager implements Phases {
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         log.debug("PHASE: onGameSaved");
-        phases.get(Phase.ON_GAME_SAVED).forEach(init -> execute(init, () -> init.onGameSaved(saveFilePath)));
+        phases.get(Phase.ON_GAME_SAVED).forEach(init -> execute(init, () -> init.onGameSaved(saveFilePath, filePutter)));
     }
 
     @Override

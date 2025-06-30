@@ -102,7 +102,7 @@
         <mod.author>4rg0n</mod.author>
         <mod.info></mod.info>
         <game.version.major>69</game.version.major>
-        <game.version.minor>29</game.version.minor>
+        <game.version.minor>31</game.version.minor>
 
         <!-- Build settings -->
         <game.version.directory>V${game.version.major}</game.version.directory>

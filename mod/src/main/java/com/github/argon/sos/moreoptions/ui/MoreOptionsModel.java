@@ -3,7 +3,7 @@ package com.github.argon.sos.moreoptions.ui;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
-import game.event.engine.GeneralEvent;
+import game.event.engine.EventTree;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.faction.Faction;
 import init.paths.ModInfo;
@@ -93,7 +93,7 @@ public class MoreOptionsModel {
         private EventsConfig defaultConfig;
 
         @NonNull
-        private Map<String, GeneralEvent> generalEvents;
+        private Map<String, EventTree> eventTrees;
     }
 
     @Data

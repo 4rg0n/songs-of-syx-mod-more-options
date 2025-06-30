@@ -20,7 +20,7 @@ import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogController;
 import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
-import game.event.engine.GeneralEvent;
+import game.event.engine.EventTree;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.faction.Faction;
@@ -72,7 +72,7 @@ public class UiFactory {
     public MoreOptionsPanel.MoreOptionsPanelBuilder buildMoreOptionsPanel(MoreOptionsV5Config config) {
         Map<Faction, List<BoostersTab.Entry>> boosterEntries = uiMapper.toBoostersTabEntries(config.getBoosters());
         Map<String, List<RacesTab.Entry>> raceEntries = uiMapper.toRacesTabEntries(config.getRaces().getLikings());
-        Map<String, GeneralEvent> generalEvents = uiMapper.toEventsTabGeneralEvents(config.getEvents().getGeneralEvents());
+        Map<String, EventTree> eventTrees = uiMapper.toEventsTabEvents(config.getEvents().getGeneralEvents());
 
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
         ModInfo modInfo = gameApis.mod().getCurrentMod(MoreOptionsScript.MOD_INFO.name.toString()).orElse(null);
@@ -106,7 +106,7 @@ public class UiFactory {
             .events(MoreOptionsModel.Events.builder()
                 .config(config.getEvents())
                 .defaultConfig(defaultConfig.getEvents())
-                .generalEvents(generalEvents)
+                .eventTrees(eventTrees)
                 .build())
             .metrics(MoreOptionsModel.Metrics.builder()
                 .config(config.getMetrics())

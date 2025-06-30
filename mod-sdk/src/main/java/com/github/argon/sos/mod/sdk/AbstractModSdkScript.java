@@ -1,7 +1,9 @@
 package com.github.argon.sos.mod.sdk;
 
-import com.github.argon.sos.mod.sdk.game.error.ErrorHandler;
+import com.github.argon.sos.mod.sdk.data.TreeNode;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
+import com.github.argon.sos.mod.sdk.game.api.GameEventsApi;
+import com.github.argon.sos.mod.sdk.game.error.ErrorHandler;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -10,13 +12,16 @@ import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
+import com.github.argon.sos.mod.sdk.util.StringUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
 import snake2d.util.file.FileGetter;
+import snake2d.util.file.FilePutter;
 import world.WORLD;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -164,22 +169,43 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     @Override
     public void initSettlementUiPresent() {
         phaseManager.initSettlementUiPresent();
+        Map<String, TreeNode<GameEventsApi.EventContainer>> eventsHierarchy = ModSdkModule.gameApis().events().getEventTrees();
+
+
+        // TODO only temporarily here
+        eventsHierarchy.forEach((key, eventTreeNode) -> {
+            eventTreeNode.forEach(eventTreeNode1 -> {
+                GameEventsApi.EventContainer eventContainer = eventTreeNode1.get();
+                int depth = eventTreeNode1.depth();
+
+                String context = "";
+
+                if (!GameEventsApi.EventContainer.Context.ROOT.equals(eventContainer.getContext())) {
+                    context = "[" + eventContainer.getContext() + "] ";
+                }
+                System.out.println(
+                    StringUtil.repeat('\t', depth) + "- " +
+                    context +
+                    eventContainer.getEvent().key);
+            });
+        });
+
     }
 
     /**
      * Triggered by the game
      */
     @Override
-    public void onGameLoaded(Path saveFilePath) {
-        phaseManager.onGameLoaded(saveFilePath);
+    public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
+        phaseManager.onGameLoaded(saveFilePath, fileGetter);
     }
 
     /**
      * Triggered by the game
      */
     @Override
-    public void onGameSaved(Path saveFilePath) {
-        phaseManager.onGameSaved(saveFilePath);
+    public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
+        phaseManager.onGameSaved(saveFilePath, filePutter);
     }
 
     /**

@@ -1,23 +1,21 @@
 package com.github.argon.sos.moreoptions.ui;
 
+import com.github.argon.sos.mod.sdk.data.TreeNode;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
-import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.ui.Checkbox;
-import com.github.argon.sos.mod.sdk.ui.ColorCircle;
-import com.github.argon.sos.mod.sdk.ui.ColumnRow;
-import com.github.argon.sos.mod.sdk.ui.Label;
+import com.github.argon.sos.mod.sdk.game.api.GameEventsApi;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
-import game.event.engine.GeneralEvent;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import game.event.engine.Event;
-import game.events.EVENTS;
+import game.event.engine.EventTree;
 import game.faction.Faction;
 import init.race.Race;
 import init.sprite.SPRITES;
@@ -30,7 +28,6 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.SPRITE;
 
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -44,11 +41,11 @@ public class UiMapper {
     private final GameApis gameApis;
     private final GameBoosterApi gameBoosterApi;
 
-    public Map<String, GeneralEvent> toEventsTabGeneralEvents(Map<String, Boolean> generalEvents) {
-        Map<String, GeneralEvent> events = new HashMap<>();
+    public Map<String, EventTree> toEventsTabEvents(Map<String, Boolean> generalEvents) {
+        Map<String, EventTree> events = new HashMap<>();
 
         for (Map.Entry<String, Boolean> entry : generalEvents.entrySet()) {
-            GeneralEvent event = toEventsTabGeneralEvent(entry.getKey(), entry.getValue());
+            EventTree event = toEventTree(entry.getKey(), entry.getValue());
 
             if (event == null) {
                 continue;
@@ -61,20 +58,18 @@ public class UiMapper {
     }
 
     @Nullable
-    public GeneralEvent toEventsTabGeneralEvent(String key, Boolean enabled) {
-        Event event = gameApis.events().getEvents().get(key);
-        EVENTS.EventResource eventResource = gameApis.events().getEventResources().get(key);
+    public EventTree toEventTree(String key, Boolean enabled) {
+        TreeNode<GameEventsApi.EventContainer> eventTree = gameApis.events().getEventTrees().get(key);
 
-        if (event == null || eventResource == null) {
+        if (eventTree == null) {
             log.debug("No event with key '%s' present", key);
             return null;
         }
 
-        return GeneralEvent.builder()
+        return EventTree.builder()
             .key(key)
             .enabled(enabled)
-            .event(event)
-            .eventResource(eventResource)
+            .tree(eventTree)
             .build();
     }
 
@@ -223,33 +218,37 @@ public class UiMapper {
             .collect(Collectors.toList());
     }
 
-    public List<ColumnRow<Boolean>> toEventsTabGeneralEventColumnRows(Collection<GeneralEvent> generalEvents) {
-        return generalEvents.stream()
+    public List<ColumnRow<Boolean>> toEventTabColumnRows(Collection<EventTree> eventTrees) {
+        return eventTrees.stream()
             // sort by event name
-            .sorted(Comparator.comparing(event -> event.getEvent().key))
-            .map(this::toEventsTabGeneralEventColumnRow)
+            .sorted(Comparator.comparing(EventTree::getKey))
+            // only show events with an actual name and description
+            .filter(eventTree ->
+                eventTree.getTree().get().getEvent().info.name.length() > 0 &&
+                eventTree.getTree().get().getEvent().info.desc.length() > 0
+            )
+            .map(this::toEventTabColumnRow)
             .collect(Collectors.toList());
     }
 
-    public ColumnRow<Boolean> toEventsTabGeneralEventColumnRow(GeneralEvent generalEvent) {
-        Event event = generalEvent.getEvent();
-        EVENTS.EventResource eventResource = generalEvent.getEventResource();
-        Checkbox checkbox = new Checkbox(generalEvent.isEnabled());
+    public ColumnRow<Boolean> toEventTabColumnRow(EventTree eventTree) {
+        Event event = eventTree.getTree().get().getEvent();
 
-        ColorCircle colorCircle = new ColorCircle(3, (gameApis.events().isEnabled(eventResource)) ? COLOR.GREEN100 : COLOR.RED100);
+        Checkbox checkbox = new Checkbox(eventTree.isEnabled());
+        ColorCircle colorCircle = new ColorCircle(3, (gameApis.events().isLockedForPlayer(event)) ? COLOR.GREEN100 : COLOR.RED100);
         colorCircle.renderAction(aFloat -> {
-            COLOR color = (gameApis.events().isEnabled(eventResource)) ? COLOR.GREEN100 : COLOR.RED100;
+            COLOR color = (gameApis.events().isLockedForPlayer(event)) ? COLOR.GREEN100 : COLOR.RED100;
             colorCircle.setColor(color);
         });
         colorCircle.hoverInfoSet(i18n.t("EventsTab.tab.events.canFire.desc"));
 
         return ColumnRow.<Boolean>builder()
-            .key(generalEvent.getKey())
-            .value(generalEvent.isEnabled())
+            .key(eventTree.getKey())
+            .value(eventTree.isEnabled())
             .column(colorCircle)
             .column(Label.builder()
-                .name(generalEvent.getKey())
-                .hoverGuiAction(generalEvent::hover)
+                .name(event.info.name.toString())
+                .hoverGuiAction(eventTree::hover)
                 .build())
             .column(UiUtil.toRender(event.info.icon))
             .column(checkbox)

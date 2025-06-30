@@ -4,6 +4,8 @@ import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import snake2d.util.file.FileGetter;
+import snake2d.util.file.FilePutter;
 
 import java.nio.file.Path;
 
@@ -24,7 +26,7 @@ public class GameApis implements Phases {
     }
 
     @Override
-    public void onGameLoaded(Path saveFilePath) {
+    public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
     }
 
     @Override
@@ -53,7 +55,7 @@ public class GameApis implements Phases {
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
 
     }
 

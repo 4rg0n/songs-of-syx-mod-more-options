@@ -254,7 +254,7 @@ public class Configurator implements Phases {
             });
 
             eventsConfig.getGeneralEvents().forEach((key, enabled) -> {
-                gameApis.events().enableEventResource(key, !enabled);
+                gameApis.events().lockEvent(key, !enabled);
             });
         } catch (Exception e) {
             log.error("Could not apply events config to game", e);
