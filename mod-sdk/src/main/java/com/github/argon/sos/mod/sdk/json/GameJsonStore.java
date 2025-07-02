@@ -54,8 +54,7 @@ public class GameJsonStore implements Phases {
         }
 
         try {
-            snake2d.util.file.Json json = new snake2d.util.file.Json(content, filePath.toString(), false);
-            return json;
+            return new snake2d.util.file.Json(content, filePath.toString(), false);
         } catch (Exception e) {
             log.info("Could not parse jsonE content from %s", filePath, e);
             return null;

@@ -3,7 +3,6 @@ package com.github.argon.sos.mod.sdk.game.api;
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.UninitializedException;
 import com.github.argon.sos.mod.sdk.util.Lists;
@@ -38,7 +37,7 @@ public class GameFactionApi implements Phases, Resettable {
      */
     public Player getPlayer() {
         if (player == null) {
-            throw new UninitializedException(Phase.ON_VIEW_SETUP);
+            throw new UninitializedException("No player faction available");
         }
 
         return player;
@@ -64,7 +63,7 @@ public class GameFactionApi implements Phases, Resettable {
     }
 
     @Override
-    public void onViewSetup() {
+    public void initSettlementUiPresent() {
         reloadFactions();
     }
 

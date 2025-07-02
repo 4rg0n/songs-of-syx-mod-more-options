@@ -20,8 +20,6 @@ public enum Phase {
     ON_GAME_UPDATE,
     // 8. Phase
     INIT_GAME_UI_PRESENT,
-    // 9. Phase
-    ON_VIEW_SETUP,
     // 10. Phase
     INIT_SETTLEMENT_UI_PRESENT,
     ON_GAME_SAVED,

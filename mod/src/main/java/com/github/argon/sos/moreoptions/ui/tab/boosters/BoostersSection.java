@@ -81,7 +81,8 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
 
         BOOSTABLE_O bonus;
         if (faction instanceof FactionNPC) {
-            bonus = ((FactionNPC) faction).bonus;
+            // FIXME hacky >.<
+            bonus = v -> ((FactionNPC) faction).bonus.getD(boostable);
         } else {
             bonus = FACTIONS.player();
         }

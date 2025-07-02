@@ -3,7 +3,11 @@ package com.github.argon.sos.mod.sdk.booster;
 import game.boosting.BSourceInfo;
 import game.boosting.Boostable;
 import game.boosting.BoosterImp;
+import game.faction.player.Player;
 import lombok.Getter;
+import settlement.army.div.Div;
+import settlement.stats.Induvidual;
+import world.map.regions.Region;
 
 public abstract class AbstractBooster extends BoosterImp {
 
@@ -47,5 +51,30 @@ public abstract class AbstractBooster extends BoosterImp {
         }
 
         this.origin = origin;
+    }
+
+    @Override
+    public double vGet(Induvidual indu) {
+        return noValue;
+    }
+
+    @Override
+    public double vGet(Region reg) {
+        return noValue;
+    }
+
+    @Override
+    public double vGet(Div div) {
+        return noValue;
+    }
+
+    @Override
+    public double vGet(PopTime popTime) {
+        return noValue;
+    }
+
+    @Override
+    public double vGet(Player f) {
+        return noValue;
     }
 }

@@ -1,5 +1,8 @@
 package com.github.argon.sos.mod.sdk.phase;
 
+import snake2d.util.file.FileGetter;
+import snake2d.util.file.FilePutter;
+
 import java.nio.file.Path;
 
 /**
@@ -33,7 +36,7 @@ public interface Phases {
      * (3.) PHASE: can be called multiple times
      * When the game loaded a save game
      */
-    default void onGameLoaded(Path saveFilePath) {
+    default void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
         throw new PhaseNotImplemented(Phase.ON_GAME_SAVE_LOADED);
     }
 
@@ -79,16 +82,7 @@ public interface Phases {
     }
 
     /**
-     * 9. PHASE: can be called multiple times
-     * When the game ui being initialized. This is called everytime the game builds the ui.
-     * So also when switching between a battlefield screen and the settlement.
-     */
-    default void onViewSetup() {
-        throw new PhaseNotImplemented(Phase.ON_VIEW_SETUP);
-    }
-
-    /**
-     * 10. PHASE
+     * 9. PHASE
      * When the settlement ui is loaded for the first time
      */
     default void initSettlementUiPresent() {
@@ -98,7 +92,7 @@ public interface Phases {
     /**
      * When the game saves
      */
-    default void onGameSaved(Path saveFilePath) {
+    default void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         throw new PhaseNotImplemented(Phase.ON_GAME_SAVED);
     }
 

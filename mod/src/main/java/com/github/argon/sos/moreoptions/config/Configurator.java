@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 import settlement.weather.WeatherThing;
-import world.battle.AC_Resolver;
+import world.battle.Resolver;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -261,8 +261,8 @@ public class Configurator implements Phases {
             return false;
         }
 
-        AC_Resolver.setEnemyLootMulti(MathUtil.toPercentage(eventsConfig.getEnemyBattleLoot().getValue()));
-        AC_Resolver.setPlayerLootMulti(MathUtil.toPercentage(eventsConfig.getPlayerBattleLoot().getValue()));
+        Resolver.setEnemyLootMulti(MathUtil.toPercentage(eventsConfig.getEnemyBattleLoot().getValue()));
+        Resolver.setPlayerLootMulti(MathUtil.toPercentage(eventsConfig.getPlayerBattleLoot().getValue()));
 
         return true;
     }

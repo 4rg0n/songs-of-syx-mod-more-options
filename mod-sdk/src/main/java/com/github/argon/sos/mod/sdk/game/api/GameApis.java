@@ -5,6 +5,8 @@ import com.github.argon.sos.mod.sdk.phase.Phases;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import snake2d.util.file.FileGetter;
+import snake2d.util.file.FilePutter;
 
 import java.nio.file.Path;
 
@@ -82,23 +84,18 @@ public class GameApis implements Phases, Resettable {
     }
 
     @Override
-    public void onViewSetup() {
-        faction.onViewSetup();
-    }
-
-    @Override
     public void initSettlementUiPresent() {
-
+        faction.initSettlementUiPresent();
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
-        save().onGameSaved(saveFilePath);
+    public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
+        save().onGameSaved(saveFilePath, filePutter);
     }
 
     @Override
-    public void onGameLoaded(Path saveFilePath) {
-        save().onGameLoaded(saveFilePath);
+    public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
+        save().onGameLoaded(saveFilePath, fileGetter);
     }
 
     @Override

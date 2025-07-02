@@ -478,4 +478,8 @@ public class StringUtil {
         }
         return decimalPattern.matcher(strNum).matches();
     }
+
+    public static boolean isBlank(@Nullable String text) {
+        return text == null || text.isEmpty() || text.trim().isEmpty();
+    }
 }

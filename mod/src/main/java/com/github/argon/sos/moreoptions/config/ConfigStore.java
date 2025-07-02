@@ -13,6 +13,8 @@ import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import snake2d.util.file.FileGetter;
+import snake2d.util.file.FilePutter;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -62,12 +64,12 @@ public class ConfigStore implements Phases {
     }
 
     @Override
-    public void onGameLoaded(Path saveFilePath) {
+    public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
         configService.reloadBoundToSave();
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         MoreOptionsV5Config currentConfig = getCurrentConfig();
         if (currentConfig != null && !stateManager.getState().isNewGame()) {
             save(currentConfig);

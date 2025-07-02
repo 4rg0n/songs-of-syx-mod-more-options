@@ -1,17 +1,18 @@
 package menu;
 
-import game.battle.BattleResult;
-import game.battle.BattleState;
-import game.battle.PlayerBattleSpec;
 import game.faction.player.PTitles;
 import init.C;
-import init.paths.PATHS;
 import init.settings.S;
 import init.sprite.UI.UI;
-import init.text.D;
 import menu.ui.MouseHoverMessage;
-import snake2d.*;
+import snake2d.CORE;
+import snake2d.CORE_STATE;
+import snake2d.KEYCODES;
 import snake2d.KeyBoard.KeyEvent;
+import snake2d.MButt;
+import snake2d.PreLoader;
+import snake2d.Renderer;
+import snake2d.SPRITE_RENDERER;
 import snake2d.util.datatypes.COORDINATE;
 import snake2d.util.datatypes.Coo;
 import snake2d.util.datatypes.Rec;
@@ -20,26 +21,22 @@ import snake2d.util.light.AmbientLight;
 import snake2d.util.light.PointLight;
 import snake2d.util.sets.LIST;
 import snake2d.util.sprite.TextureCoords;
-import world.battle.spec.WBattleResult.BATTLE_RESULT;
-
-import java.nio.file.Path;
+import util.dic.Dic;
 
 public class Menu extends CORE_STATE {
-
-	final ScMain main;
-	final ScOptions options;
-	final ScLoad load;
-	final ScLoader[] loads;
-	final ScRandom sandbox;
-	final ScCredits credits;
-	final ScCampaign campaigns;
 
 	// MODDED
 	private final MouseHoverMessage mouseHoverMessage;
 	final FullWindow<MoreOptionsEditor> moreOptions;
 	private double hoverTimer = 0;
 
-
+	final ScMain main;
+	final ScOptions options;
+	final ScLoad load;
+	final ScLoad[] loads;
+	final ScRandom sandbox;
+	final ScCredits credits;
+	final ScCampaign campaigns;
 	private SC current;
 
 	private Coo mCoo = new Coo();
@@ -55,10 +52,6 @@ public class Menu extends CORE_STATE {
 	private static boolean hasIntro = true;
 	private float fadeLight = 0;
 
-	private final CharSequence ¤¤loading = "¤loading...";
-	private final CharSequence ¤¤showCases = "¤showcases";
-	private final CharSequence ¤¤custom = "¤custom games";
-	private final CharSequence ¤¤battles = "¤battles";
 
 	public final RESOURCES res;
 
@@ -66,7 +59,7 @@ public class Menu extends CORE_STATE {
 
 		CORE.create(S.get().make());
 		CORE.getInput().getMouse().showCusor(false);
-		CORE.start(new Constructor() {
+		CORE.start(new CORE_STATE.Constructor() {
 			@Override
 			public CORE_STATE getState() {
 				return make();
@@ -78,18 +71,21 @@ public class Menu extends CORE_STATE {
 	public static Menu make() {
 
 		Menu menu = new Menu();
-
-		// MODDED
-		MenuUi.getInstance().init(menu);
-
 		PreLoader.exit();
+		return menu;
+	}
+
+	public static Menu makeCampaign() {
+
+		Menu menu = new Menu();
+		PreLoader.exit();
+		menu.switchScreen(menu.campaigns);
 		return menu;
 	}
 
 	private Menu() {
 
 		res = new RESOURCES();
-		D.t(this);
 		final Rec bounds = new Rec(0, C.MIN_WIDTH, 0, 2 * 256);
 		bounds.centerIn(C.DIM());
 
@@ -105,31 +101,9 @@ public class Menu extends CORE_STATE {
 
 		options = new ScOptions(this);
 		sandbox = new ScRandom(this);
-		load = new ScLoad(this);
+		load = ScLoad.load(this);
 
-		loads = new ScLoader[] { new ScLoader(this, ¤¤custom, PATHS.MISC().CUSTOM, true),
-				new ScLoader(this, ¤¤battles, PATHS.MISC().BATTLE, true) {
-					@Override
-					protected void afterSet(Path path) {
-						BattleState.setLoaded(new PlayerBattleSpec() {
-
-							@Override
-							public void exit(BATTLE_RESULT res, int plosses, int elosses) {
-								CORE.setCurrentState(new Constructor() {
-									@Override
-									public CORE_STATE getState() {
-										return make();
-									}
-								});
-							}
-
-							@Override
-							public void afterExit(BattleResult res) {
-
-							}
-						}, path);
-					}
-				}, new ScLoader(this, ¤¤showCases, PATHS.MISC().EXAMPLES, false) };
+		loads = new ScLoad[] {ScLoad.scenarios(this), ScLoad.battle(this), ScLoad.showcase(this)};
 		credits = new ScCredits(this);
 		main = new ScMain(this);
 		campaigns = new ScCampaign(this);
@@ -164,7 +138,7 @@ public class Menu extends CORE_STATE {
 
 		// MODDED
 //		if (hoverTimer >= 0.4) {
-			// todo disabled
+		// todo disabled
 //			moreOptions.hoverInfoGet(mouseHoverMessage.get());
 //		}
 	}
@@ -276,7 +250,7 @@ public class Menu extends CORE_STATE {
 		CORE.renderer().clear();
 
 		GuiSection s = new GuiSection();
-		GUI.addTitleText(s, ¤¤loading);
+		GUI.addTitleText(s, Dic.¤¤loading);
 		s.body().centerIn(C.DIM());
 		s.render(rr, 0);
 		AmbientLight.Strongmoonlight.register(C.DIM());

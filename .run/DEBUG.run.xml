@@ -1,16 +1,16 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="DEBUG" type="Application" factoryName="Application">
     <classpathModifications>
-      <entry path="$PROJECT_DIR$\mod-sdk\target\Mod SDK V0.jar" />
-      <entry path="$PROJECT_DIR$\mod\target\More Options.jar" />
-      <entry path="C:\Program Files (x86)\Steam\steamapps\common\Songs of Syx\base\script\Tutorial.jar" />
-      <entry path="C:\Program Files (x86)\Steam\steamapps\common\Songs of Syx\base\script\Example.jar" />
+      <entry path="C:\Program Files (x86)\Steam\steamapps\common\Songs of Syx\base\script\000_Tutorial.jar" />
+      <entry path="C:\Program Files (x86)\Steam\steamapps\common\Songs of Syx\base\script\001_Tutorial.jar" />
+      <entry path="$PROJECT_DIR$/../songs-of-syx-mod-more-options\mod-sdk\target\Mod SDK V0.jar" />
+      <entry path="$PROJECT_DIR$/../songs-of-syx-mod-more-options\mod\target\More Options.jar" />
     </classpathModifications>
     <envs>
       <env name="MOD.LOG_LEVEL" value="debug" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="init.MainProcess" />
-    <module name="songs-of-syx-mod-more-options" />
+    <module name="sos-mod-more-options" />
     <option name="PROGRAM_PARAMETERS" value="-Xms512m -Xmx4096m -XX:+UseCompressedOops" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../../Program Files (x86)/Steam/steamapps/common/Songs of Syx" />
     <extension name="coverage">

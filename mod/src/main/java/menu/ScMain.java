@@ -18,6 +18,7 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.misc.ACTION;
 import util.gui.misc.GText;
 import view.main.VIEW;
+import view.menu.MenuScreenLoad;
 
 import static menu.GUI.*;
 
@@ -110,7 +111,7 @@ class ScMain implements SC{
 //			}
 //		});
 //		current.addDown(8, text);
-
+		
 		text = getNavButt(ScCredits.¤¤name);
 		text.clickActionSet(new ACTION() {
 			@Override
@@ -142,7 +143,7 @@ class ScMain implements SC{
 		
 		CLICKABLE text;
 		
-		text = getNavButt(ScLoad.¤¤name);
+		text = getNavButt(MenuScreenLoad.¤¤name);
 		text.clickActionSet(new ACTION() {
 			@Override
 			public void exe() {
@@ -203,7 +204,7 @@ class ScMain implements SC{
 		
 		CLICKABLE text;
 		
-		for (ScLoader l : menu.loads) {
+		for (ScLoad l : menu.loads) {
 			text = getNavButt(l.name);
 			text.clickActionSet(new ACTION() {
 				@Override
@@ -230,8 +231,7 @@ class ScMain implements SC{
 							.map(scriptLoad -> scriptLoad.key)
 							.toArray(String[]::new);
 
-						new GAME(scripts);
-						CORE_STATE s = new VIEW();
+						CORE_STATE s = GAME.create(scripts);
 						
 						VIEW.world().editor.activate();
 

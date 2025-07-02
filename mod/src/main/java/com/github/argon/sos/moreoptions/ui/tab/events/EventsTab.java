@@ -11,11 +11,7 @@ import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.EventsConfig;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
-import game.events.general.EventAbs;
 import init.sprite.UI.UI;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
@@ -105,7 +101,8 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
 
         // Events
         generalEventsTable = Table.<Boolean>builder()
-            .rows(com.github.argon.sos.moreoptions.ui.UiMapper.toEventsTabGeneralEventColumnRows(model.getGeneralEvents().values()))
+            // FIXME do not use ModModule.uiMapper() in UIs?
+            .rows(ModModule.uiMapper().toEventTabColumnRows(model.getEventTrees().values()))
             .rowPadding(5)
             .columnMargin(20)
             .highlight(true)
@@ -168,12 +165,4 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
         return this;
     }
 
-    @Data
-    @Builder
-    @EqualsAndHashCode
-    public static class GeneralEvent {
-        private String key;
-        private EventAbs event;
-        private boolean enabled;
-    }
 }

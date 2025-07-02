@@ -9,6 +9,7 @@ import com.github.argon.sos.mod.sdk.util.Clipboard;
 import init.paths.PATHS;
 import snake2d.Errors;
 import snake2d.util.file.FileManager;
+import snake2d.util.file.FilePutter;
 
 import java.nio.file.Path;
 
@@ -45,7 +46,7 @@ public class AdvancedTabController extends AbstractUiController<AdvancedTab> {
     }
 
     @Override
-    public void onGameSaved(Path saveFilePath) {
+    public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         getElement().refresh(gameApis.save().getSaveStamp());
     }
 
