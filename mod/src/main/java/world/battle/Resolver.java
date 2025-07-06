@@ -124,7 +124,7 @@ public final class Resolver {
 	}
 	
 	
-	void besige(Side besieger, Side besieged, boolean first) {
+	boolean besige(Side besieger, Side besieged, boolean first) {
 
 		
 		Region reg = besieged.us.get(0).r();
@@ -142,18 +142,18 @@ public final class Resolver {
 				a.count(count, 1-a.powerBalance, false);
 			}
 			iplayer.besige(a, b);
-			return;
+			return true;
 		}
 		if (b.player && first) {
 			b.count(count, 0, true);
 			if (b.men() > 0) {
 				iplayer.sallyOut(b, a);
-				return;
+				return true;
 			}
 		}
 		
 		if (b.powerBalance > a.powerBalance) {
-			return;
+			return false;
 		}
 		
 		
@@ -161,14 +161,14 @@ public final class Resolver {
 		BattleListener.notify(besieger, reg); 
 		if (b.player && reg.capitol()) {
 			iplayer.invadeCapitol(a);
-			return;
+			return true;
 		}
 		
 		
 		a.us.get(0).extract((1-a.powerBalance));
 		b.us.get(0).extract(1.0);
 		Util.conquer(a.side, RND.rFloat(),RND.rFloat(), reg, besieger.us.get(0).faction());
-		
+		return true;
 		
 	}
 	
