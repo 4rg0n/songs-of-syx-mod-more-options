@@ -1,4 +1,4 @@
-Currently supporting **V67** of Songs of Syx.
+Currently supporting **V69** of Songs of Syx.
 
 Port for **V65** done by [Senso](https://github.com/SensoHakai) <3.
 
