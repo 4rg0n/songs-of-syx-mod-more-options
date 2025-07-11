@@ -127,6 +127,12 @@ public class PhaseManager implements Phases {
     }
 
     @Override
+    public void initGameResourcesLoaded() {
+        log.debug("PHASE: initResourcesLoaded");
+        phases.get(Phase.INIT_GAME_RESOURCES_LOADED).forEach(init -> execute(init, init::initGameResourcesLoaded));
+    }
+
+    @Override
     public void onCrash(Throwable throwable) {
         log.debug("PHASE: onCrash");
         if (throwable instanceof DumpLogsException) {

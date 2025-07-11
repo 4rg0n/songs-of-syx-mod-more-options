@@ -110,4 +110,8 @@ public class GameApis implements Phases, Resettable {
     @Override
     public void onCrash(Throwable e) {
     }
+
+    @Override
+    public void initGameResourcesLoaded() {
+    }
 }

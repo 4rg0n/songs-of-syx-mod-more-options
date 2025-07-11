@@ -102,6 +102,8 @@ public class Configurator implements Phases {
     }
 
     public boolean applySoundsConfig(SoundsConfig sounds) {
+        log.info("Applying SoundsConfig");
+        log.trace("SoundsConfig: %s", sounds);
         try {
             Map<String, Ambiance> ambienceSounds = gameApis.sounds().getAmbienceSounds();
             sounds.getAmbience().forEach((key, range) -> {
@@ -147,7 +149,7 @@ public class Configurator implements Phases {
                 }
             });
         } catch (Exception e) {
-            log.error("Could not apply sound config to game", e);
+            log.error("Could not apply SOUND config to game", e);
             return false;
         }
 
@@ -155,13 +157,15 @@ public class Configurator implements Phases {
     }
 
     public boolean applyRacesConfig(RacesConfig races) {
+        log.info("Applying RacesConfig");
+        log.trace("RacesConfig: %s", races);
         try {
             races.getLikings().forEach(liking -> gameApis.race().setLiking(
                 liking.getRace(),
                 liking.getOtherRace(),
                 MathUtil.toPercentage(liking.getRange().getValue())));
         } catch (Exception e) {
-            log.error("Could not apply race config to game", e);
+            log.error("Could not apply RACE config to game", e);
             return false;
         }
 
@@ -169,6 +173,8 @@ public class Configurator implements Phases {
     }
 
     public boolean applyMetricsConfig(MetricsConfig metricsConfig) {
+        log.info("Applying MetricsConfig");
+        log.trace("MetricsConfig: %s", metricsConfig);
         try {
             Map<String, Boolean> metricStats = metricsConfig.getStats();
             Set<String> enabledStats = metricStats.entrySet().stream()
@@ -216,7 +222,7 @@ public class Configurator implements Phases {
                     .start();
             }
         } catch (Exception e) {
-            log.error("Could not apply metrics config", e);
+            log.error("Could not apply METRICS config", e);
             return false;
         }
 
@@ -224,10 +230,11 @@ public class Configurator implements Phases {
     }
 
     public boolean applyBoostersConfig(BoostersConfig boostersConfig) {
+        log.info("Applying BoostersConfig");
         try {
             gameBoosterApi.setBoosters(boostersConfig);
         } catch (Exception e) {
-            log.error("Could not apply boosters config to game", e);
+            log.error("Could not apply BOOSTERS config to game", e);
             return false;
         }
 
@@ -235,6 +242,8 @@ public class Configurator implements Phases {
     }
 
     public boolean applyEventsConfig(EventsConfig eventsConfig) {
+        log.info("Applying EventsConfig");
+        log.trace("EventsConfig: %s", eventsConfig);
         try {
             Map<String, EVENTS.EventResource> gameEvents = gameApis.events().getEventResources();
 
@@ -257,7 +266,7 @@ public class Configurator implements Phases {
                 gameApis.events().lockEvent(key, !enabled);
             });
         } catch (Exception e) {
-            log.error("Could not apply events config to game", e);
+            log.error("Could not apply EVENTS config to game", e);
             return false;
         }
 
@@ -268,6 +277,8 @@ public class Configurator implements Phases {
     }
 
     public boolean applyWeatherConfig(WeatherConfig weatherConfig) {
+        log.info("Applying WeatherConfig");
+        log.trace("WeatherConfig: %s", weatherConfig);
         try {
             Map<String, Integer> weatherEffects = DataUtil.extractValues(weatherConfig.getEffects());
             Map<String, WeatherThing> weatherThings = gameApis.weather().getWeatherThings();
@@ -282,7 +293,7 @@ public class Configurator implements Phases {
                 }
             });
         } catch (Exception e) {
-            log.error("Could not apply weather config to game", e);
+            log.error("Could not apply WEATHER config to game", e);
             return false;
         }
 

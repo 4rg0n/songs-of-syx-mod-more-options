@@ -12,6 +12,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Boosters {
     private final FactionBooster add;
-
     private final FactionBooster multi;
 }

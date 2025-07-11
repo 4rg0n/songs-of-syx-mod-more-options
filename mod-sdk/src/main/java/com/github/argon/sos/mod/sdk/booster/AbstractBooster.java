@@ -25,28 +25,29 @@ public abstract class AbstractBooster extends BoosterImp {
         BSourceInfo bSourceInfo,
         int min,
         int max,
-        double scale,
         BoostMode boostMode
     ) {
         super(
             bSourceInfo,
-            BoosterMapper.normalize(boostMode, min, scale),
-            BoosterMapper.normalize(boostMode, max, scale),
+            min,
+            max,
             !boostMode.equals(BoostMode.ADD)
         );
         this.boostMode = boostMode;
-        this.scale = scale;
 
         switch (boostMode) {
             case PERCENT:
-                this.noValue = 0.01D * this.scale ;
+                this.scale = 0.01D;
+                this.noValue = 1D;
                 break;
             case MULTI:
-                this.noValue = this.scale;
+                this.noValue = 1D;
+                this.scale = 1D;
                 break;
-            default:
             case ADD:
+            default:
                 this.noValue = 0.0D;
+                this.scale = 1D;
                 break;
         }
 

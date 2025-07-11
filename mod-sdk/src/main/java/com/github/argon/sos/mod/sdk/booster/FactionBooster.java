@@ -1,9 +1,11 @@
 package com.github.argon.sos.mod.sdk.booster;
 
+import game.boosting.BOOSTABLE_O;
 import game.boosting.BSourceInfo;
 import game.boosting.Boostable;
 import game.faction.FACTIONS;
 import game.faction.Faction;
+import game.faction.player.Player;
 import lombok.Builder;
 
 import java.util.HashMap;
@@ -22,28 +24,50 @@ public class FactionBooster extends AbstractBooster {
         BSourceInfo bSourceInfo,
         int min,
         int max,
-        double scale,
         BoostMode boostMode
     ) {
-        super(origin, bSourceInfo, min, max, scale, boostMode);
+        super(origin, bSourceInfo, min, max, boostMode);
     }
 
     @Override
     public double vGet(Faction f) {
-        Double boost = factionBoosts.get(f);
+        return getFactionValue(f);
+    }
+
+    @Override
+    public double vGet(Player player) {
+        return getFactionValue(player);
+    }
+
+    @Override
+    public double get(BOOSTABLE_O o) {
+        if (o instanceof Player) {
+            return vGet((Player) o);
+        }
+
+        if (o instanceof Faction) {
+            return vGet((Faction) o);
+        }
+
+        return super.get(o);
+    }
+
+    public void set(Faction faction, int value) {
+        double scaled = value * scale;
+        factionBoosts.put(faction, scaled);
+    }
+
+    public void reset() {
+        factionBoosts.entrySet().forEach(entry -> entry.setValue(noValue));
+    }
+
+    private double getFactionValue(Faction faction) {
+        Double boost = factionBoosts.get(faction);
 
         if (boost == null) {
             return noValue;
         }
 
         return boost;
-    }
-
-    public void set(Faction faction, int value) {
-        factionBoosts.put(faction, BoosterMapper.normalizeBoost(boostMode, value, from(), to(), scale));
-    }
-
-    public void reset() {
-        factionBoosts.entrySet().forEach(entry -> entry.setValue(noValue));
     }
 }

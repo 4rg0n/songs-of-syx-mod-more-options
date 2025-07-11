@@ -1,12 +1,13 @@
 package com.github.argon.sos.moreoptions.ui.tab.races;
 
-import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
+import game.save.SaveFile;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
 import init.sprite.UI.UI;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GText;
-import game.save.SaveFile;
 
 import java.nio.file.Path;
 import java.time.Instant;

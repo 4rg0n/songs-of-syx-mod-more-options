@@ -1,14 +1,13 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
 import com.github.argon.sos.mod.sdk.game.util.SaveUtil;
-import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phases;
+import game.save.SaveFile;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
-import game.save.SaveFile;
 import snake2d.util.file.FileGetter;
 import snake2d.util.file.FilePutter;
 
@@ -34,15 +33,24 @@ public class GameSaveApi implements Phases {
     /**
      * Currently used game save file
      */
-    @Getter
     @Nullable
     private SaveFile currentFile;
 
+    public @Nullable SaveFile getCurrentFile() {
+        if (currentPath == null) {
+            return null;
+        }
+
+        if (currentFile == null) {
+            currentFile = findByPathContains(currentPath).orElse(null);
+        }
+
+        return currentFile;
+    }
+
     private void setCurrent(Path saveFilePath) {
         SaveFile saveFile = findByPathContains(saveFilePath).orElse(null);
-        if (log.isLevel(Level.DEBUG)) {
-            log.debug("Set current saveFilePath: %s", saveFilePath);
-        }
+        log.debug("Set current saveFilePath: %s", saveFilePath);
 
         this.currentPath = saveFilePath;
         this.currentFile = saveFile;
@@ -94,6 +102,10 @@ public class GameSaveApi implements Phases {
     @Nullable
     public String getSaveStamp() {
         if (currentFile == null) {
+            if (currentPath != null) {
+                return SaveUtil.extractSaveStamp(currentPath);
+            }
+
             return null;
         }
 

@@ -3,6 +3,7 @@ package com.github.argon.sos.moreoptions.booster;
 import com.github.argon.sos.mod.sdk.booster.BoostMode;
 import com.github.argon.sos.mod.sdk.booster.Boosters;
 import com.github.argon.sos.mod.sdk.booster.FactionBooster;
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -10,7 +11,6 @@ import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
-import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.moreoptions.util.BoosterUtil;
 import game.boosting.BOOSTING;
 import game.boosting.BSourceInfo;
@@ -85,18 +85,15 @@ public class BoosterFactory {
      */
     public static FactionBooster createMoreOptionsBooster(Boostable booster, Range range) {
         String suffix = " " +  i18n.t("Boosters.percent.suffix");
-        double scale = 1.0D;
 
         if (range.getApplyMode().equals(Range.ApplyMode.ADD)) {
             suffix = " " +  i18n.t("Boosters.add.suffix");
-            scale = 0.01D;
         }
 
         FactionBooster factionBooster = fromRange(
             booster,
             new BSourceInfo(MoreOptionsScript.MOD_INFO.name + suffix, SPRITES.icons().m.cog),
-            range,
-            scale
+            range
         );
 
         BoostSpec boostSpec = new BoostSpec(factionBooster, booster, MoreOptionsScript.MOD_INFO.name);
@@ -138,18 +135,13 @@ public class BoosterFactory {
     public static FactionBooster fromRange(
         Boostable origin,
         BSourceInfo bSourceInfo,
-        Range range,
-        double scale
+        Range range
     ) {
         return FactionBooster.builder()
             .bSourceInfo(bSourceInfo)
             .origin(origin)
-//            .from(BoosterUtil.toBoosterValue(range.getMin()))
-//            .to(BoosterUtil.toBoosterValue(range.getMax()))
-//            .value(MathUtil.toPercentage(range.getValue()))
             .min(range.getMin())
             .max(range.getMax())
-            .scale(scale)
             .boostMode(BoostMode.valueOf(range.getApplyMode().name()))
             .build();
     }

@@ -59,7 +59,13 @@ public abstract class AbstractUiController<Element> extends AbstractController<E
         }
 
         boolean success = configApplier.applyToGameAndSave(config);
-        log.debug("Config applied? %s", success);
+        if (success) {
+            log.info("Config SUCCESSFULLY applied");
+        } else {
+            log.info("Config NOT applied =(");
+        }
+
+
 
         return success;
     }

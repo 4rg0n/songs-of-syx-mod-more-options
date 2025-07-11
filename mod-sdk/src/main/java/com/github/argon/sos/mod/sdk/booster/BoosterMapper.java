@@ -1,6 +1,5 @@
 package com.github.argon.sos.mod.sdk.booster;
 
-import com.github.argon.sos.mod.sdk.util.MathUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -17,12 +16,11 @@ public class BoosterMapper {
         value = value * scale;
 
         switch (boostMode) {
-            default:
             case ADD:
             case MULTI:
-                return value;
             case PERCENT:
-                return MathUtil.toPercentage(value);
+            default:
+                return value;
         }
     }
 }

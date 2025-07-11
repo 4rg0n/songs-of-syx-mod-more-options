@@ -22,18 +22,4 @@ public class BoosterUtil {
 
         return false;
     }
-
-    /**
-     * A value of 0.001 means 1 in the games boosters
-     */
-    public static double toBoosterValue(int value) {
-        return toBoosterValue((double) value);
-    }
-
-    /**
-     * A value of 0.001 means 1.0 in the games boosters
-     */
-    public static double toBoosterValue(double value) {
-        return value / 1000;
-    }
 }

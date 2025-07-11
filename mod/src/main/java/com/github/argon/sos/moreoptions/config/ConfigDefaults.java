@@ -166,7 +166,7 @@ public class ConfigDefaults {
             .collect(Collectors.toMap(key -> key, o -> true));
 
         // General Events
-        Map<String, Boolean> generalEvents = gameApis.events().getEvents().keySet().stream()
+        Map<String, Boolean> generalEvents = gameApis.events().getEventTrees().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> true));
 
         return EventsConfig.builder()

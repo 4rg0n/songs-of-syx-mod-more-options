@@ -18,6 +18,7 @@ public class GameApis implements Phases {
 
     @Override
     public void initBeforeGameCreated() {
+
     }
 
     @Override
@@ -61,5 +62,10 @@ public class GameApis implements Phases {
 
     @Override
     public void onCrash(Throwable e) {
+    }
+
+    @Override
+    public void initGameResourcesLoaded() {
+
     }
 }

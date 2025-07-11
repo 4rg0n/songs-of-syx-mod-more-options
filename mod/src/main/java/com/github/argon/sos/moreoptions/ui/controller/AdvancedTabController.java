@@ -81,7 +81,7 @@ public class AdvancedTabController extends AbstractUiController<AdvancedTab> {
             MoreOptionsV5Config defaultConfig = configStore.getDefaultConfig();
             try {
                 moreOptionsPanel.setValue(defaultConfig);
-                configStore.clear();
+                configStore.setCurrentConfig(defaultConfig);
                 if (applyAndSave(moreOptionsPanel)) {
                     messages.notifySuccess("notification.config.reset");
                 } else {

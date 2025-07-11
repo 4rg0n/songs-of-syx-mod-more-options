@@ -9,11 +9,8 @@ import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.ui.UiMapper;
-import game.boosting.BOOSTABLE_O;
 import game.boosting.Boostable;
-import game.faction.FACTIONS;
 import game.faction.Faction;
-import game.faction.npc.FactionNPC;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
@@ -74,17 +71,21 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
     }
 
     private ColumnRow<Range> boosterRow(BoostersTab.Entry boosterEntry) {
-        Boostable boostable = boosterEntry.getBoosters().getAdd().getOrigin();
+        Boostable boostable;
         Range rangePerc;
         Range rangeAdd;
         Range.ApplyMode activeKey;
 
-        BOOSTABLE_O bonus;
-        if (faction instanceof FactionNPC) {
-            // FIXME hacky >.<
-            bonus = v -> ((FactionNPC) faction).bonus.getD(boostable);
+        if (boosterEntry.getRange().getApplyMode().equals(Range.ApplyMode.PERCENT)) {
+            boostable = boosterEntry.getBoosters().getMulti().getOrigin();
+            rangePerc = boosterEntry.getRange();
+            rangeAdd = ConfigDefaults.boosterAdd();
+            activeKey = Range.ApplyMode.PERCENT;
         } else {
-            bonus = FACTIONS.player();
+            boostable = boosterEntry.getBoosters().getAdd().getOrigin();
+            rangePerc = ConfigDefaults.boosterPercent();
+            rangeAdd = boosterEntry.getRange();
+            activeKey = Range.ApplyMode.ADD;
         }
 
         // Label with hover
@@ -94,7 +95,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
                 guiBox.title(faction.name + ": " + boostable.name);
                 guiBox.text(boostable.desc);
                 guiBox.NL(8);
-                boostable.hoverDetailed(guiBox, bonus, null, true);
+                boostable.hoverDetailed(guiBox, faction, null, true);
             })
             .build();
 
@@ -102,15 +103,6 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         GuiSection icon = UiUtil.toGuiSection(new RENDEROBJ.Sprite(boostable.icon));
         icon.pad(5);
 
-        if (boosterEntry.getRange().getApplyMode().equals(Range.ApplyMode.PERCENT)) {
-            rangePerc = boosterEntry.getRange();
-            rangeAdd = ConfigDefaults.boosterAdd();
-            activeKey = Range.ApplyMode.PERCENT;
-        } else {
-            rangePerc = ConfigDefaults.boosterPercent();
-            rangeAdd = boosterEntry.getRange();
-            activeKey = Range.ApplyMode.ADD;
-        }
 
         Slider multiSlider = Slider.SliderBuilder.fromRange(rangePerc)
             .controls(true)

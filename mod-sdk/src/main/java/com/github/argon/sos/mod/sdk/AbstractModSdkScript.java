@@ -1,8 +1,6 @@
 package com.github.argon.sos.mod.sdk;
 
-import com.github.argon.sos.mod.sdk.data.TreeNode;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
-import com.github.argon.sos.mod.sdk.game.api.GameEventsApi;
 import com.github.argon.sos.mod.sdk.game.error.ErrorHandler;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
@@ -12,7 +10,7 @@ import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
-import com.github.argon.sos.mod.sdk.util.StringUtil;
+import game.GAME;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.Errors;
@@ -21,7 +19,6 @@ import snake2d.util.file.FilePutter;
 import world.WORLD;
 
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -88,11 +85,12 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
      * Will register classes to phases required by the Mod SDK
      */
     protected void registerSdkPhases(PhaseManager phaseManager) {
+        GAME.addOnInit(phaseManager::initGameResourcesLoaded);
+
         // initialize game apis first
         for (Phase phase : Phase.values()) {
             phaseManager.register(phase, gameApis);
         }
-
         phaseManager
             .register(Phase.ON_GAME_UPDATE, ModSdkModule.notificator())
             .register(Phase.INIT_BEFORE_GAME_CREATED, ModSdkModule.gameJsonStore())
@@ -169,27 +167,6 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     @Override
     public void initSettlementUiPresent() {
         phaseManager.initSettlementUiPresent();
-        Map<String, TreeNode<GameEventsApi.EventContainer>> eventsHierarchy = ModSdkModule.gameApis().events().getEventTrees();
-
-
-        // TODO only temporarily here
-        eventsHierarchy.forEach((key, eventTreeNode) -> {
-            eventTreeNode.forEach(eventTreeNode1 -> {
-                GameEventsApi.EventContainer eventContainer = eventTreeNode1.get();
-                int depth = eventTreeNode1.depth();
-
-                String context = "";
-
-                if (!GameEventsApi.EventContainer.Context.ROOT.equals(eventContainer.getContext())) {
-                    context = "[" + eventContainer.getContext() + "] ";
-                }
-                System.out.println(
-                    StringUtil.repeat('\t', depth) + "- " +
-                    context +
-                    eventContainer.getEvent().key);
-            });
-        });
-
     }
 
     /**

@@ -26,6 +26,14 @@ public interface Phases {
 
     /**
      * 2. PHASE
+     * After the game loaded all necessary resources
+     */
+    default void initGameResourcesLoaded() {
+        throw new PhaseNotImplemented(Phase.INIT_GAME_RESOURCES_LOADED);
+    }
+
+    /**
+     * 3. PHASE
      * When the mod instance is created
      */
     default void initModCreateInstance() {
@@ -33,7 +41,7 @@ public interface Phases {
     }
 
     /**
-     * (3.) PHASE: can be called multiple times
+     * (4.) PHASE: can be called multiple times
      * When the game loaded a save game
      */
     default void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
@@ -41,7 +49,7 @@ public interface Phases {
     }
 
     /**
-     * (4.) PHASE: can be called multiple times
+     * (5.) PHASE: can be called multiple times
      * When the player loads into game while already playing another one
      */
     default void onGameSaveReloaded() {
@@ -49,7 +57,7 @@ public interface Phases {
     }
 
     /**
-     * 5. PHASE
+     * 6. PHASE
      * When a new game session is started (not when a player starts a fresh new game)
      * This will not fire when the player loads from an existing game into another one.
      */
@@ -58,7 +66,7 @@ public interface Phases {
     }
 
     /**
-     * 6. PHASE
+     * 7. PHASE
      * When the game starts the update() process
      */
     default void initGameUpdating() {
@@ -66,7 +74,7 @@ public interface Phases {
     }
 
     /**
-     * (7.) PHASE: can be called multiple times
+     * (8.) PHASE: can be called multiple times
      * Called by the games update loop
      */
     default void onGameUpdate(double seconds)  {
@@ -74,7 +82,7 @@ public interface Phases {
     }
 
     /**
-     * 8. PHASE
+     * 9. PHASE
      * When the game UI is loaded
      */
     default void initGameUiPresent() {
@@ -82,7 +90,7 @@ public interface Phases {
     }
 
     /**
-     * 9. PHASE
+     * 10. PHASE
      * When the settlement ui is loaded for the first time
      */
     default void initSettlementUiPresent() {

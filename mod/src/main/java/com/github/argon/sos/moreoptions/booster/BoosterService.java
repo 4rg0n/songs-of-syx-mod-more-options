@@ -32,7 +32,8 @@ public class BoosterService implements Resettable {
     private Map<String, BoostableCat> boosterCategories = new HashMap<>();
 
     public Optional<Boosters> get(String key) {
-        return getBoosters().map(boosters -> boosters.get(key));
+        return getBoosters()
+            .map(boosters -> boosters.get(key));
     }
     public Optional<BoostableCat> getCat(String key) {
         return getBoosterCategories().map(boosterCategories -> boosterCategories.get(key));
@@ -56,7 +57,8 @@ public class BoosterService implements Resettable {
                 Faction faction = factionApi.getByName(factionName);
 
                 if (faction == null) {
-                    return; // skip for factions not present in game
+                    log.info("Faction %s not found in-game", factionName);
+                    return;
                 }
 
                 applyBoosters(faction, boosterConfig);
@@ -73,24 +75,24 @@ public class BoosterService implements Resettable {
 
         getBoosters().ifPresent(gameBoosters -> {
             Range range = boosterConfig.getRange();
-            gameBoosters.computeIfPresent(boosterKey, (keyAgain, gameBooster) -> {
-                log.trace("Apply booster config for: %s", boosterKey);
+            if (!gameBoosters.containsKey(boosterKey)) {
+                log.info("Booster %s not present for faction %s", boosterKey, faction.name);
+                return;
+            }
 
-                switch (range.getApplyMode()) {
-                    case PERCENT:
-                        log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
-                        gameBooster.getMulti().set(faction, range.getValue());
-                        gameBooster.getAdd().reset();
-                        break;
-                    case ADD:
-                        log.trace("Booster %s: %s", range.getApplyMode(), range.getValue());
-                        gameBooster.getAdd().set(faction, range.getValue());
-                        gameBooster.getMulti().reset();
-                        break;
-                }
+            Boosters gameBooster = gameBoosters.get(boosterKey);
+            log.trace("Apply [%s]%s %s: %s", faction.name, boosterKey, range.getApplyMode(), range.getValue());
 
-                return gameBooster;
-            });
+            switch (range.getApplyMode()) {
+                case PERCENT:
+                    gameBooster.getMulti().set(faction, range.getValue());
+                    gameBooster.getAdd().reset();
+                    break;
+                case ADD:
+                    gameBooster.getAdd().set(faction, range.getValue());
+                    gameBooster.getMulti().reset();
+                    break;
+            }
         });
     }
 
