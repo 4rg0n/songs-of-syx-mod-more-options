@@ -71,6 +71,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     private final int resolution;
     private final int resolutionMulti;
 
+
     /**
      * Makes slider unusable and greyed out
      */

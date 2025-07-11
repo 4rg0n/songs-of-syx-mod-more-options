@@ -58,7 +58,11 @@ public class FactionBooster extends AbstractBooster {
     }
 
     public void reset() {
-        factionBoosts.entrySet().forEach(entry -> entry.setValue(noValue));
+        factionBoosts.forEach((key, value) -> reset(key));
+    }
+
+    public void reset(Faction faction) {
+        factionBoosts.put(faction, noValue);
     }
 
     private double getFactionValue(Faction faction) {

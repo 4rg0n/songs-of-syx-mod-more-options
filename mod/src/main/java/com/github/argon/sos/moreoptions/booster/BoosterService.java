@@ -61,20 +61,21 @@ public class BoosterService implements Resettable {
                     return;
                 }
 
-                applyBoosters(faction, boosterConfig);
+                applyBooster(faction, boosterConfig);
             });
         });
 
         config.getPlayer().forEach((boosterKey, boosterConfig) -> {
-            applyBoosters(FACTIONS.player(), boosterConfig);
+            applyBooster(FACTIONS.player(), boosterConfig);
         });
     }
 
-    private void applyBoosters(Faction faction, BoostersConfig.Booster boosterConfig) {
+    private void applyBooster(Faction faction, BoostersConfig.Booster boosterConfig) {
         String boosterKey = boosterConfig.getKey();
 
         getBoosters().ifPresent(gameBoosters -> {
             Range range = boosterConfig.getRange();
+
             if (!gameBoosters.containsKey(boosterKey)) {
                 log.info("Booster %s not present for faction %s", boosterKey, faction.name);
                 return;
@@ -86,11 +87,11 @@ public class BoosterService implements Resettable {
             switch (range.getApplyMode()) {
                 case PERCENT:
                     gameBooster.getMulti().set(faction, range.getValue());
-                    gameBooster.getAdd().reset();
+                    gameBooster.getAdd().reset(faction);
                     break;
                 case ADD:
                     gameBooster.getAdd().set(faction, range.getValue());
-                    gameBooster.getMulti().reset();
+                    gameBooster.getMulti().reset(faction);
                     break;
             }
         });
