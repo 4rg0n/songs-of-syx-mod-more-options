@@ -4,6 +4,8 @@ import game.boosting.BSourceInfo;
 import game.boosting.Boostable;
 import game.boosting.BoosterImp;
 import game.faction.player.Player;
+import game.faction.royalty.Royalty;
+import init.type.POP_CL;
 import lombok.Getter;
 import settlement.army.div.Div;
 import settlement.stats.Induvidual;
@@ -55,17 +57,27 @@ public abstract class AbstractBooster extends BoosterImp {
     }
 
     @Override
-    public double vGet(Induvidual indu) {
+    public double vGet(Induvidual induvidual) {
         return noValue;
     }
 
     @Override
-    public double vGet(Region reg) {
+    public double vGet(Region region) {
         return noValue;
     }
 
     @Override
-    public double vGet(Div div) {
+    public double vGet(Royalty royalty) {
+        return noValue;
+    }
+
+    @Override
+    public double vGet(POP_CL populationClass) {
+        return noValue;
+    }
+
+    @Override
+    public double vGet(Div division) {
         return noValue;
     }
 

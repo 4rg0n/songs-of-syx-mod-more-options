@@ -6,7 +6,12 @@ import game.boosting.Boostable;
 import game.faction.FACTIONS;
 import game.faction.Faction;
 import game.faction.player.Player;
+import game.faction.royalty.Royalty;
+import init.type.POP_CL;
 import lombok.Builder;
+import settlement.army.div.Div;
+import settlement.stats.Induvidual;
+import world.map.regions.Region;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +45,44 @@ public class FactionBooster extends AbstractBooster {
     }
 
     @Override
+    public double vGet(POP_CL populationClass) {
+        if (populationClass.f() == null) {
+            return vGet(FACTIONS.player());
+        } else {
+            return vGet(populationClass.f());
+        }
+    }
+
+    @Override
+    public double vGet(PopTime popTime) {
+        if (popTime.pop.f() == null) {
+            return vGet(FACTIONS.player());
+        } else {
+            return vGet(popTime.pop.f());
+        }
+    }
+
+    @Override
+    public double vGet(Induvidual induvidual) {
+        return super.vGet(induvidual.faction());
+    }
+
+    @Override
+    public double vGet(Region region) {
+        return super.vGet(region.faction());
+    }
+
+    @Override
+    public double vGet(Royalty royalty) {
+        return super.vGet(royalty.induvidual.faction());
+    }
+
+    @Override
+    public double vGet(Div division) {
+        return super.vGet(division.faction());
+    }
+
+    @Override
     public double get(BOOSTABLE_O o) {
         if (o instanceof Player) {
             return vGet((Player) o);
@@ -49,7 +92,27 @@ public class FactionBooster extends AbstractBooster {
             return vGet((Faction) o);
         }
 
-        return super.get(o);
+        if (o instanceof POP_CL) {
+            return vGet((POP_CL) o);
+        }
+
+        if (o instanceof PopTime) {
+            return vGet(((PopTime) o));
+        }
+
+        if (o instanceof Div) {
+            return vGet(((Div) o));
+        }
+
+        if (o instanceof Region) {
+            return vGet(((Region) o));
+        }
+
+        if (o instanceof Induvidual) {
+            return vGet(((Induvidual) o));
+        }
+
+        return noValue;
     }
 
     public void set(Faction faction, int value) {
