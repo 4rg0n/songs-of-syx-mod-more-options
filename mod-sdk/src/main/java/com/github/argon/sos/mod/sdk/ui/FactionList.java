@@ -42,11 +42,10 @@ import world.region.RD;
 
 public class FactionList extends GuiSection {
 
-	private final ArrayList<Faction> sorted = new ArrayList<>(FACTIONS.MAX);
+	private final ArrayList<Faction> sorted = new ArrayList<>();
 	
 	private final int width = C.SG*264;
-	private int[] emmi = new int[FACTIONS.MAX];
-	
+
 	private final StringInputSprite filter = new StringInputSprite(20, UI.FONT().S);
 	private final GTableBuilder builder;
 	private final GETTER_IMP<Faction> getter;
@@ -55,7 +54,7 @@ public class FactionList extends GuiSection {
 	@Accessors(fluent = true, chain = false)
 	private Action<Faction> clickAction = o -> {};
 
-	private final Tree<FactionNPC> sorter = new Tree<FactionNPC>(FACTIONS.MAX) {
+	private final Tree<FactionNPC> sorter = new Tree<FactionNPC>(64) {
 
 		@Override
 		protected boolean isGreaterThan(FactionNPC current, FactionNPC cmp) {
@@ -67,12 +66,12 @@ public class FactionList extends GuiSection {
 			if (DIP.WAR().is(FACTIONS.player(), f))
 				return 0+d;
 			if (DIP.get(FACTIONS.player(), f).trades)
-				return FACTIONS.MAX+d;
+				return 64+d;
 			if (RD.DIST().reachable(f))
-				return FACTIONS.MAX*2+d;
+				return 64*2+d;
 			if (RD.DIST().factionHasRegionBorderingPlayer(f))
-				return FACTIONS.MAX*3+d;
-			return FACTIONS.MAX*4+d;
+				return 64*3+d;
+			return 64*4+d;
 		}
 
 	};

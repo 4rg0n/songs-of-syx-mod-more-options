@@ -25,9 +25,9 @@ public class GameFactionApi implements Phases, Resettable {
     private final Logger log = Loggers.getLogger(GameFactionApi.class);
 
     @Getter
-    private final Map<String, Faction> factions = new HashMap<>(FACTIONS.MAX);
+    private final Map<String, Faction> factions = new HashMap<>();
     @Getter
-    private final Map<String, FactionNPC> factionNPCs = new HashMap<>(FACTIONS.NPCS_MAX);
+    private final Map<String, FactionNPC> factionNPCs = new HashMap<>();
 
     @Nullable
     private Player player;

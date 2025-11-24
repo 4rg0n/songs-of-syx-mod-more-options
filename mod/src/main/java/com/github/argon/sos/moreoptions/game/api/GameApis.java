@@ -18,12 +18,11 @@ public class GameApis implements Phases {
 
     @Override
     public void initBeforeGameCreated() {
-
     }
 
     @Override
     public void initModCreateInstance() {
-        boosters().initModCreateInstance();
+        boosters().reset();
     }
 
     @Override
@@ -32,7 +31,7 @@ public class GameApis implements Phases {
 
     @Override
     public void onGameSaveReloaded() {
-        boosters().onGameSaveReloaded();
+        boosters().reset();
     }
 
     @Override

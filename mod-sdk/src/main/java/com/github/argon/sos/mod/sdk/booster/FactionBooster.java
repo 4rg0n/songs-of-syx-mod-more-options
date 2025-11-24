@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class FactionBooster extends AbstractBooster {
 
-    private final Map<Faction, Double> factionBoosts = new HashMap<>(FACTIONS.MAX);
+    private final Map<Faction, Double> factionBoosts = new HashMap<>();
 
     @Builder
     public FactionBooster(

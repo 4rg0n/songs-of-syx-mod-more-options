@@ -44,14 +44,4 @@ public class GameBoosterApi implements Phases, Resettable {
     public void setBoosters(BoostersConfig boostersConfig) {
         boosterService.setBoosterValues(boostersConfig);
     }
-
-    @Override
-    public void initModCreateInstance() {
-        reset();
-    }
-
-    @Override
-    public void onGameSaveReloaded() {
-        reset();
-    }
 }
