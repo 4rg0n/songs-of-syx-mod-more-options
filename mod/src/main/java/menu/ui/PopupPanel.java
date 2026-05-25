@@ -2,7 +2,7 @@ package menu.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.Hideable;
 import com.github.argon.sos.mod.sdk.game.action.Showable;
-import init.C;
+import init.constant.C;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.ui;
 
-import init.C;
+import init.constant.C;
 import init.sprite.UI.UI;
 import init.sprite.UI.UIPanels.TitleBox;
 import init.sprite.UI.UIPanels.UIPanel;
@@ -12,7 +12,7 @@ import snake2d.util.datatypes.*;
 import snake2d.util.gui.clickable.CLICKABLE;
 import snake2d.util.misc.ACTION;
 import snake2d.util.sprite.text.Font;
-import util.dic.Dic;
+import util.text.Dic;
 import util.gui.misc.GText;
 
 public class Panel extends CLICKABLE.ClickableAbs {

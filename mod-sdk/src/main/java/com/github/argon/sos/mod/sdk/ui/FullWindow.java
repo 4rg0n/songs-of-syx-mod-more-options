@@ -5,7 +5,7 @@ import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import game.GAME;
-import init.C;
+import init.constant.C;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;

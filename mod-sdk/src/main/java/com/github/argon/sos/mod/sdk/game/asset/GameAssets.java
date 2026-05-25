@@ -2,6 +2,7 @@ package com.github.argon.sos.mod.sdk.game.asset;
 
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
+import com.github.argon.sos.mod.sdk.game.asset.audio.Audio;
 import com.github.argon.sos.mod.sdk.game.asset.init.Init;
 import com.github.argon.sos.mod.sdk.game.asset.sprite.Sprite;
 import com.github.argon.sos.mod.sdk.game.asset.text.Text;
@@ -33,6 +34,9 @@ public class GameAssets {
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final static Text text = new Text();
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static Audio audio = new Audio();
 
     @Getter(lazy = true)
     private final static List<String> resources = init().resource()

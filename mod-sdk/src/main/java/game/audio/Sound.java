@@ -27,6 +27,10 @@ public final class Sound {
 	public void rnd(RECTANGLE body,double gain) {
 		rnd(body.cX(), body.cY(), gain);
 	}
+
+	public void rnd(int cx, int cy) {
+		rnd(cx, cy, 0.8f + RND.rFloat(0.2));
+	}
 	
 	public void rnd(int x, int y, double gain) {
 		playCount += GAME.SPEED.speedI();

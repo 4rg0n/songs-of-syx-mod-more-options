@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.ui;
 
-import init.C;
+import init.constant.C;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.MButt;

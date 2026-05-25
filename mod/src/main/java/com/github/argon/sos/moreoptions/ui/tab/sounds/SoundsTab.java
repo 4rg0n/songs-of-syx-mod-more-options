@@ -50,16 +50,16 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         this.roomWorkSoundSliders = UiMapper.toSliders(soundsConfig.getRoom());
 
         GHeader ambienceSoundsHeader = new GHeader(i18n.t("SoundsTab.header.ambienceSounds.name"));
-        ambienceSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.ambienceSounds.desc"));
+        ambienceSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.ambienceSounds"));
 
         GHeader raceSoundsHeader = new GHeader(i18n.t("SoundsTab.header.raceSounds.name"));
-        raceSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.raceSounds.desc"));
+        raceSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.raceSounds"));
 
         GHeader settlementSoundsHeader = new GHeader(i18n.t("SoundsTab.header.settlementSounds.name"));
-        settlementSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.settlementSounds.desc"));
+        settlementSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.settlementSounds"));
 
         GHeader animalSoundsHeader = new GHeader(i18n.t("SoundsTab.header.animalSounds.name"));
-        animalSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.animalSounds.desc"));
+        animalSoundsHeader.hoverInfoSet(i18n.d("SoundsTab.header.animalSounds"));
 
         Map<String, Slider> ambience = ambienceSoundSliders.entrySet().stream()
             .filter(stringSliderEntry -> !stringSliderEntry.getKey().contains("ROOM_"))

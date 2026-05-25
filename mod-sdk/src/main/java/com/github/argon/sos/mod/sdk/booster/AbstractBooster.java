@@ -3,11 +3,12 @@ package com.github.argon.sos.mod.sdk.booster;
 import game.boosting.BSourceInfo;
 import game.boosting.Boostable;
 import game.boosting.BoosterImp;
+import game.faction.npc.FactionNPC;
 import game.faction.player.Player;
 import game.faction.royalty.Royalty;
-import init.type.POP_CL;
+import init.type.HCLASS_RACE;
 import lombok.Getter;
-import settlement.army.div.Div;
+import game.battle.div.Div;
 import settlement.stats.Induvidual;
 import world.map.regions.Region;
 
@@ -72,7 +73,7 @@ public abstract class AbstractBooster extends BoosterImp {
     }
 
     @Override
-    public double vGet(POP_CL populationClass) {
+    public double vGet(HCLASS_RACE populationClass) {
         return noValue;
     }
 
@@ -82,12 +83,12 @@ public abstract class AbstractBooster extends BoosterImp {
     }
 
     @Override
-    public double vGet(PopTime popTime) {
+    public double vGet(Player f) {
         return noValue;
     }
 
     @Override
-    public double vGet(Player f) {
+    public double vGet(FactionNPC f) {
         return noValue;
     }
 }

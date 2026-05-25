@@ -15,7 +15,11 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Can cache the game JSON configuration by file path
+ * Can cache the game JSON configuration by file path.
+ * <p>
+ * MODDED: keys are normalized {@link Path#toString()} (with {@code \} → {@code /}) so that
+ * lookups succeed across different {@link java.nio.file.spi.FileSystemProvider} instances
+ * (Windows filesystem vs zip), which is required in v71 where mods overlay the base data.zip.
  */
 @RequiredArgsConstructor
 public class GameJsonStore implements Phases {
@@ -23,9 +27,13 @@ public class GameJsonStore implements Phases {
 
     private final IOService ioService;
 
-    private final Map<Path, String> jsonContent = new HashMap<>();
-    private final Map<Path, Json> jsonObjects = new HashMap<>();
+    private final Map<String, String> jsonContent = new HashMap<>();
+    private final Map<String, Json> jsonObjects = new HashMap<>();
     private final Set<Path> filePaths = new HashSet<>();
+
+    private static String key(Path filePath) {
+        return filePath.toString().replace('\\', '/');
+    }
 
     @Override
     public void initBeforeGameCreated() {
@@ -83,7 +91,7 @@ public class GameJsonStore implements Phases {
         }
 
         try {
-            return jsonObjects.get(filePath);
+            return jsonObjects.get(key(filePath));
         } catch (Exception e) {
             log.info("Could not parse json content from %s", filePath, e);
             return null;
@@ -91,10 +99,15 @@ public class GameJsonStore implements Phases {
     }
 
     public void put(Path filePath, String content) {
+        String k = key(filePath);
+        String previous = jsonContent.get(k);
+        if (previous != null && previous.equals(content)) {
+            return;
+        }
         log.debug("Adding json content for %s", filePath);
-        jsonContent.put(filePath, content);
+        jsonContent.put(k, content);
         try {
-            jsonObjects.put(filePath, new Json(content, JsonWriters.jsonEPretty()));
+            jsonObjects.put(k, new Json(content, JsonWriters.jsonEPretty()));
         } catch (JsonParseException e) {
             log.error("Could not add json %s to store", filePath, e);
         }
@@ -102,7 +115,7 @@ public class GameJsonStore implements Phases {
 
     @Nullable
     public String getContent(Path filePath) {
-        return jsonContent.get(filePath);
+        return jsonContent.get(key(filePath));
     }
 
     @Nullable

@@ -1,9 +1,9 @@
 package com.github.argon.sos.mod.testing;
 
-import init.error.ErrorHandler;
+import util.error.ErrorHandler;
 import init.paths.PATHS;
 import init.settings.S;
-import init.text.D;
+import util.text.D;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import snake2d.*;

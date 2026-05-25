@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import snake2d.util.gui.GUI_BOX;
-import util.dic.Dic;
+import util.text.Dic;
 import util.gui.misc.GBox;
 import util.info.GFORMAT;
 

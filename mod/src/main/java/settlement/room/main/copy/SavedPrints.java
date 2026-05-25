@@ -1,6 +1,8 @@
 package settlement.room.main.copy;
 
 import init.paths.PATHS;
+import init.structure.STRUCTURES;
+import init.structure.Structure;
 import settlement.main.SETT;
 import settlement.path.AVAILABILITY;
 import settlement.room.main.*;
@@ -126,7 +128,7 @@ public final class SavedPrints {
 		public final RoomBlueprintImp blue;
 		public final String check;
 		public final int width,height;
-		public final TBuilding structure;
+		public final Structure structure;
 		private final int[] data;
 		private static final RoomWrap wrap = new RoomWrap();
 
@@ -140,7 +142,14 @@ public final class SavedPrints {
 			width = json.i("WIDTH");
 			height = json.i("HEIGHT");
 			data = json.is("DATA");
-			structure = SETT.TERRAIN().BUILDINGS.readTry("STRUCTURE", json);
+			if (json.has("STRUCTURE") || json.value("STRUCTURE").equals("_")) {
+				structure = null;
+			}else
+				structure = STRUCTURES.map().readTry("STRUCTURE", json);
+
+			if (false) {
+				//needs a much harder check. check tile reachability/solidity. Check tile index.
+			}
 		}
 
 		// MODDED: made public
@@ -193,7 +202,8 @@ public final class SavedPrints {
 			width = wrap.body().width()+2;
 			height = wrap.body().height()+2;
 			data = new int[width*height];
-			structure = ConstructionInit.findStructure(mx, my);
+			TBuilding b = ConstructionInit.findStructure(mx, my);
+			structure = b == null ? null : b.structure;
 			
 			for (int dy = 0; dy < height; dy++)
 				for (int dx = 0; dx < width; dx++) {

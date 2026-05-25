@@ -2,19 +2,19 @@ package game.event.engine;
 
 import game.faction.Faction;
 import game.time.TIME;
-import game.values.GVALUES;
-import game.values.Lockable;
 import init.race.RACES;
 import init.race.Race;
 import init.type.CLIMATE;
 import init.type.CLIMATES;
+import init.value.Lockable;
+import init.value.GVALUES;
 import init.type.TERRAIN;
 import init.type.TERRAINS;
 import settlement.main.SETT;
 import settlement.stats.STATS;
 import snake2d.util.file.Json;
 import snake2d.util.gui.GUI_BOX;
-import util.dic.Dic;
+import util.text.Dic;
 import util.gui.misc.GBox;
 import util.info.GFORMAT;
 
@@ -38,7 +38,7 @@ public final class EOccurence {
 			TERRAINS.MAP().readFill("TERRAIN", toccurence, data, 0, 100000);
 			maxSpawns = data.i("MAX_SPAWNS", 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 			
-			onlyAfterTime = data.dTry("ONLY_AFTER_DAYS", 0, 100000, 0)*TIME.secondsPerDay;
+			onlyAfterTime = data.dTry("ONLY_AFTER_DAYS", 0, 100000, 0)*TIME.secondsPerDay();
 			plockable.push(data);
 			data.checkUnused();
 			

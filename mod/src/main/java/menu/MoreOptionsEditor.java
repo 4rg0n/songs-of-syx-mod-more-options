@@ -6,7 +6,7 @@ import com.github.argon.sos.mod.sdk.ui.ButtonMenu;
 import com.github.argon.sos.mod.sdk.ui.Switcher;
 import com.github.argon.sos.mod.sdk.ui.Tabulator;
 import com.github.argon.sos.mod.sdk.util.Maps;
-import init.C;
+import init.constant.C;
 import init.paths.PATHS;
 import lombok.Getter;
 import com.github.argon.sos.moreoptions.ui.json.JsonUITemplates;
@@ -216,7 +216,7 @@ public class MoreOptionsEditor extends GuiSection {
 
                 jsonUiTemplate.header("MILITARY_SUPPLY_USE");
                 jsonUiTemplate.sliders("MILITARY_SUPPLY_USE",
-                    GameAssets.init().resource().armySupply().fileTitles(), true, 0, 100);
+                    GameAssets.init().resource().supply().fileTitles(), true, 0, 100);
 
                 jsonUiTemplate.header("RESOURCE");
                 jsonUiTemplate.sliders("RESOURCE",
@@ -556,7 +556,7 @@ public class MoreOptionsEditor extends GuiSection {
     }
 
     private static JsonUi settlement() {
-        return JsonUi.builder(PATHS.CONFIG())
+        return JsonUi.builder(PATHS.CONFIG().init)
             .template("Sett", jsonUiTemplate -> {
                 jsonUiTemplate.sliderD("HAPPINESS_EXPONENT", 0, 100);
                 jsonUiTemplate.slider("TOURIST_PER_YEAR_MAX", 0, 4096, 32);
