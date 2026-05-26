@@ -99,15 +99,15 @@ public class GameJsonStore implements Phases {
     }
 
     public void put(Path filePath, String content) {
-        String k = key(filePath);
-        String previous = jsonContent.get(k);
+        String key = key(filePath);
+        String previous = jsonContent.get(key);
         if (previous != null && previous.equals(content)) {
             return;
         }
         log.debug("Adding json content for %s", filePath);
-        jsonContent.put(k, content);
+        jsonContent.put(key, content);
         try {
-            jsonObjects.put(k, new Json(content, JsonWriters.jsonEPretty()));
+            jsonObjects.put(key, new Json(content, JsonWriters.jsonEPretty()));
         } catch (JsonParseException e) {
             log.error("Could not add json %s to store", filePath, e);
         }

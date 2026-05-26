@@ -162,7 +162,7 @@ public class Notificator implements Updateable, Hideable, Phases {
         }
 
         // show next from queue
-        Notification nextNotification = queue.get(queue.size() - 1);
+        Notification nextNotification = queue.getLast();
         show(nextNotification);
     }
 

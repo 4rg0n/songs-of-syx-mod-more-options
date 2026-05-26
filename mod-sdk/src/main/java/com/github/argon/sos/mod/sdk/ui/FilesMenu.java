@@ -88,7 +88,7 @@ public class FilesMenu extends Section {
             }
             String[] segments = relativeStr.split("/");
 
-            TreeNode<Path> currentPathNode = this.fileTree;
+            TreeNode<Path> currentPathNode = getFileTree();
             String currentAbsolutePath = "";
             for (int i = 0; i < segments.length; i++) {
                 String segment = segments[i];
@@ -104,6 +104,7 @@ public class FilesMenu extends Section {
                 Path nodeKey = (i == segments.length - 1)
                     ? path
                     : rootPath.resolve(currentAbsolutePath);
+
                 if (currentPathNode.has(nodeKey)) {
                     currentPathNode = currentPathNode.get(nodeKey);
                     continue;
@@ -287,14 +288,12 @@ public class FilesMenu extends Section {
             row.addRightC(0, button);
         }
 
-        ColumnRow<FileNode> columnRow = ColumnRow.<FileNode>builder()
+        return ColumnRow.<FileNode>builder()
             .key(fileNode.getName())
             .valueSupplier(() -> fileNode)
             .searchTerm(fileNode.getPath().toString())
             .column(row)
             .build();
-
-        return columnRow;
     }
     
     @Getter

@@ -30,7 +30,7 @@ public class GameSoundsApi implements Resettable {
 
     public final static String KEY_PREFIX = "sounds";
 
-    /*
+    /**
      * Hardcoded files that contain sound.
      */
     private static final List<String> RACE_FILES = Lists.of("AA_Race");
