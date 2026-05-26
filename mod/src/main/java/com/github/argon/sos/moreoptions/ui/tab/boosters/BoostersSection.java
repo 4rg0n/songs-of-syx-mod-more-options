@@ -138,7 +138,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
                     .horizontal(true)
                     .sameWidth(true)
                     .build())
-                .aktiveKey(activeKey)
+                .activeKey(activeKey)
                 .highlight(true)
                 .build())
             .resetOnToggle(true)

@@ -60,7 +60,7 @@ public class MoreOptionsEditor extends GuiSection {
                     .buttonColor(COLOR.WHITE25)
                     .build())
                 .highlight(true)
-                .aktiveKey("editor")
+                .activeKey("editor")
                 .build())
             .center(true)
             .build();

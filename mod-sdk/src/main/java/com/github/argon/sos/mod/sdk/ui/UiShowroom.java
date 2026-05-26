@@ -1,9 +1,8 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.ui.*;
-import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
 import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
@@ -128,7 +127,7 @@ public class UiShowroom extends GuiSection {
                 .button("button3", new Button("Toggle 3"))
                 .sameWidth(true)
                 .build())
-            .aktiveKey("button1")
+            .activeKey("button1")
             .highlight(true)
             .build();
 
@@ -289,7 +288,7 @@ public class UiShowroom extends GuiSection {
                     .margin(20)
                     .horizontal(true)
                     .build())
-                .aktiveKey("tab1")
+                .activeKey("tab1")
                 .highlight(true)
                 .build())
             .tabs(Maps.of(

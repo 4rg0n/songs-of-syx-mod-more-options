@@ -70,7 +70,7 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         Switcher<String> menu = Switcher.<String>builder()
-            .aktiveKey("ambienceAndRace")
+            .activeKey("ambienceAndRace")
             .highlight(true)
             .menu(ButtonMenu.<String>builder()
                 .margin(10)
