@@ -1,18 +1,15 @@
 package com.github.argon.sos.moreoptions.ui.json.factory;
 
-import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.data.CacheValue;
 import com.github.argon.sos.mod.sdk.game.action.BiAction;
-import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.JsonPath;
 import com.github.argon.sos.mod.sdk.json.element.JsonDouble;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonLong;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
-import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.util.ClassUtil;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import com.github.argon.sos.moreoptions.ModModule;
@@ -282,12 +279,6 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
             .defaultValue(defaultValue)
             .valueChangeAction((element, changedValue) -> {
                 element.writeInto(config);
-                try {
-                    String content = new Json(config, JsonWriters.jsonEPretty()).write();
-                    ModSdkModule.gameJsonStore().put(element.getPath(), content);
-                } catch (Exception e) {
-                    // Logging avoided here to keep value-change hot path quiet on bad input.
-                }
             });
     }
 

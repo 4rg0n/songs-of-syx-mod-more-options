@@ -27,13 +27,8 @@ public class GameJsonStore implements Phases {
 
     private final IOService ioService;
 
-    private final Map<String, String> jsonContent = new HashMap<>();
-    private final Map<String, Json> jsonObjects = new HashMap<>();
+    private final Map<Path, Json> jsonObjects = new HashMap<>();
     private final Set<Path> filePaths = new HashSet<>();
-
-    private static String key(Path filePath) {
-        return filePath.toString().replace('\\', '/');
-    }
 
     @Override
     public void initBeforeGameCreated() {
@@ -49,29 +44,23 @@ public class GameJsonStore implements Phases {
         filePaths.forEach(this::load);
     }
 
-    @Nullable
-    public snake2d.util.file.Json getJsonE(Path filePath) {
-        String content = getContent(filePath);
-
-        if (content == null) {
-            content = load(filePath);
-
-            if (content == null) {
-                return null;
-            }
-        }
-
-        try {
-            return new snake2d.util.file.Json(content, filePath.toString(), false);
-        } catch (Exception e) {
-            log.info("Could not parse jsonE content from %s", filePath, e);
-            return null;
-        }
-    }
-
     public Optional<JsonObject> getJsonObject(@Nullable Path filePath) {
         return Optional.ofNullable(getJson(filePath))
             .map(Json::getRoot);
+    }
+
+    public void put(Path filePath, String content) {
+        try {
+            Json json = new Json(content, JsonWriters.jsonEPretty());
+            put(filePath, json);
+        } catch (JsonParseException e) {
+            log.error("Could not add json %s to store", filePath, e);
+        }
+    }
+
+    public void put(Path filePath, Json json) {
+        log.debug("Adding json for %s", filePath);
+        jsonObjects.put(filePath, json);
     }
 
     @Nullable
@@ -80,42 +69,27 @@ public class GameJsonStore implements Phases {
             return null;
         }
 
-        String content = getContent(filePath);
-
-        if (content == null) {
-            content = load(filePath);
+        Json json = jsonObjects.get(filePath);
+        if (json == null) {
+            String content = load(filePath);
 
             if (content == null) {
                 return null;
             }
         }
 
-        try {
-            return jsonObjects.get(key(filePath));
-        } catch (Exception e) {
-            log.info("Could not parse json content from %s", filePath, e);
-            return null;
-        }
-    }
-
-    public void put(Path filePath, String content) {
-        String key = key(filePath);
-        String previous = jsonContent.get(key);
-        if (previous != null && previous.equals(content)) {
-            return;
-        }
-        log.debug("Adding json content for %s", filePath);
-        jsonContent.put(key, content);
-        try {
-            jsonObjects.put(key, new Json(content, JsonWriters.jsonEPretty()));
-        } catch (JsonParseException e) {
-            log.error("Could not add json %s to store", filePath, e);
-        }
+        return jsonObjects.get(filePath);
     }
 
     @Nullable
     public String getContent(Path filePath) {
-        return jsonContent.get(key(filePath));
+        Json json = jsonObjects.get(filePath);
+
+        if (json == null) {
+            return null;
+        }
+
+        return json.write();
     }
 
     @Nullable

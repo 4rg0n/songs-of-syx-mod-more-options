@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class Json {
 
@@ -28,56 +27,47 @@ public class Json {
 		data = content;
 	}
 
-	// MODDED
-	public Json(String content, String path) {
-		this(content, path, true);
-	}
-
-	// MODDED
-	public Json(String content, String path, boolean doStore) {
-		if (doStore) {
-			String storedJson = gameJsonStore.getContent(Paths.get(path));
-			if (storedJson != null) {
-				content = storedJson;
-			}
-		}
-		data = new JsonValueJson(null, 0, path, content);
-	}
-
-	// MODDED: doStore=true so every game JSON read goes through gameJsonStore first
 	public Json(Path p) {
+		// MODDED
 		this(p, true);
 	}
 
-	// MODDED: added doStore param
+	public Json(String content, String path) {
+		data = new JsonValueJson(null, 0, path, content);
+	}
+
 	public Json(Path p, boolean doStore) {
-		data = read(p, doStore);
+		// MODDED
+		if (doStore) {
+			String storedJson = gameJsonStore.getContent(p);
+
+			if (storedJson != null) {
+				data = new JsonValueJson(null, 0, p.toString(), storedJson);
+			} else {
+				data = read(p);
+			}
+		} else {
+			data = read(p);
+		}
 	}
 
 	public Json(Path[] pp) {
-		this(pp[pp.length - 1]);
-		for (int i = pp.length - 2; i >= 0; i--) {
+		this(pp[pp.length-1]);
+		for (int i = pp.length-2; i >= 0; i--) {
 
-			// MODDED: doStore=true on overlays too, so editor edits override mod overlays
-			JsonValueJson e = read(pp[i], true);
+			JsonValueJson e = read(pp[i]);
 			boolean arrayAdd = e.map.containsKey("_ARRAY_ADD");
 			boolean jsonAdd = e.map.containsKey("_JSON_ADD");
 			data.overwrite(e, arrayAdd, jsonAdd);
 
 		}
+
+
+
 	}
 
-	// MODDED: added doStore param + GameJsonStore interception
-	private JsonValueJson read(Path p, boolean doStore) {
-		String path = "" + p;
-
-		if (doStore) {
-			String storedJson = gameJsonStore.getContent(p);
-			if (storedJson != null) {
-				return new JsonValueJson(null, 0, path, storedJson);
-			}
-		}
-
+	private static JsonValueJson read(Path p) {
+		String path = ""+p;
 		try {
 			byte[] encoded = Files.readAllBytes(p);
 			String s = new String(encoded, StandardCharsets.UTF_8);
@@ -95,9 +85,9 @@ public class Json {
 		if (untest)
 			return;
 
-		for (JsonValue v : data.map.all()) {
+		for (JsonValue v  : data.map.all()) {
 			if (!testMap.containsKey(v.key)) {
-				System.err.println("unknown key: " + v.key + " in object at line: " + v.line + ". " + path());
+				System.err.println("unknown key: " + v.key + " in object at line: " + v.line + ". "  + path());
 				System.err.println("available: ");
 				System.err.println(testMap.keysString());
 				untest = true;
@@ -180,7 +170,7 @@ public class Json {
 			v.throwError("Expecting a string Array");
 
 		if (ss.length != size)
-			v.throwError(" invalid length of array: " + ss.length + " Valid: " + size);
+			v.throwError(" invalid length of array: " + ss.length +" Valid: " + size);
 		return ss;
 	}
 
@@ -190,7 +180,7 @@ public class Json {
 		if (ss == null)
 			v.throwError("Expecting a string Array");
 		if (ss.length < min || ss.length > max)
-			v.throwError(" invalid length of array: " + ss.length + " Valid: " + min + "-" + max);
+			v.throwError(" invalid length of array: " + ss.length +" Valid: " + min + "-" + max);
 		return ss;
 	}
 
@@ -261,7 +251,7 @@ public class Json {
 		if (js.length < minSize)
 			get(key, "Object Array").throwError("Needs at least " + minSize + " entries");
 		if (js.length >= maxSize)
-			get(key, "Object Array").throwError("Needs at most " + (maxSize - 1) + " entries");
+			get(key, "Object Array").throwError("Needs at most " + (maxSize-1) + " entries");
 		return js;
 	}
 
@@ -269,7 +259,7 @@ public class Json {
 		String s = getValue(key, "floating point number (0.0)");
 		try {
 			return Double.parseDouble(s);
-		} catch (Exception e) {
+		}catch(Exception e) {
 			data.map.get(key).throwError("'" + s + "'" + " is not a valid floating point number. Format is X.X");
 		}
 		return 0;
@@ -296,7 +286,7 @@ public class Json {
 		for (int i = 0; i < s.length; i++) {
 			try {
 				res[i] = Double.parseDouble(s[i]);
-			} catch (Exception e) {
+			}catch(Exception e) {
 				data.map.get(key).throwError("'" + s[i] + "'" + " is not a valid floating point number. Format is X.X");
 			}
 		}
@@ -315,7 +305,7 @@ public class Json {
 		String s = getValue(key, "Integer number");
 		try {
 			return Integer.parseInt(s);
-		} catch (Exception e) {
+		}catch(Exception e) {
 			data.map.get(key).throwError("'" + s + "'" + " is not a valid integer.");
 		}
 		return 0;
@@ -343,7 +333,7 @@ public class Json {
 		for (int i = 0; i < s.length; i++) {
 			try {
 				res[i] = Integer.parseInt(s[i]);
-			} catch (Exception e) {
+			}catch(Exception e) {
 				data.map.get(key).throwError("'" + s[i] + "'" + " is not a valid integer");
 			}
 		}
@@ -384,17 +374,21 @@ public class Json {
 	}
 
 	public void error(String message, CharSequence key) {
-		data.throwError(message, "" + key);
+		data.throwError(message, ""+key);
 	}
 
 	public String errorGet(String message, CharSequence key) {
-		return data.getError(message, "" + key);
+		return data.getError(message, ""+key);
 	}
 
 	public int line(String key) {
 		return data.line;
 	}
 
+	/**
+	 *
+	 * @return a list of all keys in the order of which they are declared in the source
+	 */
 	public LIST<String> keys() {
 		return data.keys;
 	}
@@ -423,7 +417,7 @@ public class Json {
 		public final String key;
 		public final double value;
 
-		KeyValue(String key, double value) {
+		KeyValue(String key, double value){
 			this.key = key;
 			this.value = value;
 		}
@@ -434,5 +428,38 @@ public class Json {
 	public String toString() {
 		return data.toString();
 	}
+
+//	public static void main(String[] args) throws IOException {
+//		for (Path p : Files.walk(new File("C:\\Users\\jakob\\Desktop\\jakob\\syx\\code\\syx71\\Syx\\zipdata\\data\\assets\\init").toPath()).toList()) {
+//			File f = p.toFile();
+//			if (!f.isDirectory()) {
+//
+//				System.out.println(p.toAbsolutePath());
+//				Json2 j = new Json2(p);
+//				System.out.println(j.toString());
+//			}
+//		}
+//
+//		ArrayListGrower<Path> pps = new ArrayListGrower<Path>();
+//
+//		for (Path p : Files.walk(new File("C:\\Users\\jakob\\Desktop\\jakob\\syx\\code\\syx71\\Syx\\tool\\tmp").toPath()).toList()) {
+//			File f = p.toFile();
+//
+//			if (!f.isDirectory()) {
+//				System.out.println(p.toAbsolutePath());
+//				pps.add(p);
+//
+//			}
+//
+//		}
+//
+//		Path[] pp = new Path[pps.size()];
+//		for (int i = 0; i < pp.length; i++)
+//			pp[i] = pps.get(i);
+//
+//		System.out.println(new Json(pp).toString());
+//
+//
+//	}
 
 }

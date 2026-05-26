@@ -6,14 +6,14 @@ import com.github.argon.sos.mod.sdk.ui.ButtonMenu;
 import com.github.argon.sos.mod.sdk.ui.Switcher;
 import com.github.argon.sos.mod.sdk.ui.Tabulator;
 import com.github.argon.sos.mod.sdk.util.Maps;
-import init.constant.C;
-import init.paths.PATHS;
-import lombok.Getter;
 import com.github.argon.sos.moreoptions.ui.json.JsonUITemplates;
 import com.github.argon.sos.moreoptions.ui.json.JsonUi;
 import com.github.argon.sos.moreoptions.ui.json.tab.AbstractTab;
 import com.github.argon.sos.moreoptions.ui.json.tab.FilesTab;
 import com.github.argon.sos.moreoptions.ui.json.tab.SimpleTab;
+import init.constant.C;
+import init.paths.PATHS;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
@@ -23,6 +23,7 @@ public class MoreOptionsEditor extends GuiSection {
 
     @Getter
     private final Tabulator<String, AbstractTab, Void> tabulator;
+
     public MoreOptionsEditor(@Nullable StringInputSprite searchInput) {
         int availableHeight = FullWindow.AVAILABLE_HEIGHT;
 
@@ -59,7 +60,7 @@ public class MoreOptionsEditor extends GuiSection {
                     .buttonColor(COLOR.WHITE25)
                     .build())
                 .highlight(true)
-                .aktiveKey("config")
+                .aktiveKey("editor")
                 .build())
             .center(true)
             .build();
