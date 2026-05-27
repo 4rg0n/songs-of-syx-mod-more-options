@@ -211,7 +211,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
             }
 
             // dirty icon
-            Section dirtyIcon = UiUtil.toSection(SPRITES.icons().m.cancel);
+            Section dirtyIcon = UiUtil.toSection(SPRITES.icons().m.flag);
             dirtyIcon.hoverInfoSet("Setting changed.");
 
             // only show when value has changed
@@ -229,7 +229,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
         columnRowBuilder.column(element);
 
         if (jsonPath != null) {
-            Button resetButton = new Button(SPRITES.icons().m.arrow_left);
+            Button resetButton = new Button(SPRITES.icons().m.rotate);
             resetButton.clickActionSet(this::reset);
             resetButton.hoverInfoSet("Reset " + jsonPath  + " to initially loaded from file.");
             columnRowBuilder.column(resetButton);
