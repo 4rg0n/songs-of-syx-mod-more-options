@@ -1,6 +1,6 @@
-Currently supporting **V69** of Songs of Syx.
+# More Options
 
-Port for **V65** done by [Senso](https://github.com/SensoHakai) <3.
+Currently supporting **V71** of Songs of Syx.
 
 * [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3044071344)
 * Songs of Syx [Mod SDK](mod-sdk/src/main/java/com/github/argon/sos/mod/sdk) used under the hood.
@@ -14,22 +14,65 @@ Adds a menu with more options for the game:
 * Collect and export game stats into a CSV file
 * Change the likings between your races
 * Export and import room blueprints
+* Manipulate game config files
 * Game crash detection and backup mechanism
 
+## Credits & Contributions
+
+* [Senso](https://github.com/SensoHakai) - port for **V65** 
+* [VizardAlpha](https://github.com/VizardAlpha) - port for *V71*
+
+## Enable the mod when starting a new random game
+
 ![Enable Script](mod/doc/img/enable_script.png)
+
+## Find the menu in-game
+
 ![Button](mod/doc/img/button.png)
+
+## View game performance statistics
+
 ![Stats Widget](mod/doc/img/stats_widget.png)
+
+## Tune all the sound volumes
+
 ![Sounds](mod/doc/img/sounds.png)
+
+## Disable events you don't like
+
 ![Events](mod/doc/img/events.png)
+
+## Control weather effects
+
 ![Weather](mod/doc/img/weather.png)
+
+## Set boosters to give you or a faction bonuses
+
 ![Boosters](mod/doc/img/boosters.png)
+
+## Record metrics about your settlement in a CSV
+
 ![Metrics](mod/doc/img/metrics.png)
+
+## Tune the likings between races
+
 ![Races](mod/doc/img/races.png)
+
+## Get the current world seed 
+
 ![Advanced](mod/doc/img/advanced.png)
+
+## Export or import blueprints to share them with your friends
+
 ![Export and Import Blueprints](mod/doc/img/blueprint_export_import.png)
+
+## Change the game config files in-game
+
+![Config Editor](mod/doc/img/config_editor.png)
+
+## In case something goes wrong, the mod will automatically heal itself
+
 ![Backup](mod/doc/img/backup.png)
-
-
 
 # Getting started
 
