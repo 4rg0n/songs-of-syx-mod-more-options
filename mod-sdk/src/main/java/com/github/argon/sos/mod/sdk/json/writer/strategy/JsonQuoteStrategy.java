@@ -6,11 +6,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Will force quoting json strings
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ForceQuoting implements JsonWriterStrategy {
+public class JsonQuoteStrategy implements JsonWriterStrategy {
 
     @Getter(lazy = true)
-    private static final ForceQuoting instance = new ForceQuoting();
+    private static final JsonQuoteStrategy instance = new JsonQuoteStrategy();
 
     public JsonWriterStrategyType get(JsonElement element) {
         if (element instanceof JsonString) {

@@ -30,6 +30,9 @@ public abstract class AbstractJsonWriter implements JsonWriter {
 
     protected String lineBreak;
 
+    /**
+     * Contains certain behaviors for json values by a given json key
+     */
     protected final Map<String, JsonWriterStrategy> strategies;
 
     public AbstractJsonWriter(
@@ -42,7 +45,7 @@ public abstract class AbstractJsonWriter implements JsonWriter {
         this.quoteStrings = quoteStrings;
         this.trailingComma = trailingComma;
         this.indent = indent;
-        this.lineBreak = "\n";
+        this.lineBreak = System.lineSeparator();
         this.strategies = getStrategies();
     }
 
@@ -53,6 +56,9 @@ public abstract class AbstractJsonWriter implements JsonWriter {
         return jsonString;
     }
 
+    /**
+     * @return a map with the json key as key and a given strategy to apply to the values
+     */
     protected Map<String, JsonWriterStrategy> getStrategies() {
         return Map.of();
     }
