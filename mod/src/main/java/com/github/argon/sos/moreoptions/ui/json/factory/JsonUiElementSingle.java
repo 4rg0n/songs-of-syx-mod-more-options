@@ -185,13 +185,13 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
                 String labelName = splits[splits.length - 1];
                 label = Label.builder()
                     .name(labelName)
-                    .description(jsonPath)
+                    .description(description)
                     .font(UI.FONT().S)
                     .style(Label.Style.NORMAL)
                     .build();
             } else {
                 label = Label.builder()
-                    .description(jsonPath)
+                    .description(description)
                     .font(UI.FONT().S)
                     .style(Label.Style.NORMAL)
                     .build();
@@ -253,6 +253,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
 
     public static <Value extends JsonElement, Element extends RENDEROBJ> JsonUiElementSingleBuilder<Value, Element> from(
         String jsonPath,
+        Path filePath,
         JsonObject config,
         Value defaultValue,
         Class<Value> valueClass,
@@ -269,11 +270,14 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
                 return defaultValue;
             });
 
-        String description = i18n.pdn(jsonPathO.toStringWithoutIndexes());
+        String i18nKey = JsonUiI18nKeyFactory.build(filePath, jsonPathO.toStringWithoutIndexes());
+        String description = i18n.d(i18nKey);
+
         return builder
             .config(config)
             .element(elementProvider.apply(value))
             .jsonPath(jsonPath)
+            .path(filePath)
             .initValue(value)
             .description(description)
             .defaultValue(defaultValue)
