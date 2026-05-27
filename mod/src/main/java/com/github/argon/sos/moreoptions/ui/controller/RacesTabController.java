@@ -57,7 +57,7 @@ public class RacesTabController extends AbstractUiController<RacesTab> {
         try {
             RacesConfig racesConfig = getElement().getValue();
             JsonElement jsonElement = JsonMapper.mapObject(racesConfig);
-            Json json = new Json(jsonElement, JsonWriters.jsonEPretty());
+            Json json = new Json(jsonElement, JsonWriters.gameJsonUnquotedPretty());
 
             Clipboard.write(json.write());
             messages.notifySuccess("notification.races.config.copy");
@@ -69,7 +69,7 @@ public class RacesTabController extends AbstractUiController<RacesTab> {
     public void importRacesConfigFromClipboard() {
         try {
             Clipboard.read().ifPresent(s -> {
-                Json json = new Json(s, JsonWriters.jsonEPretty());
+                Json json = new Json(s, JsonWriters.gameJsonUnquotedPretty());
                 RacesConfig racesConfig = JsonMapper.mapJson(json.getRoot(), RacesConfig.class);
 
                 getElement().setValue(racesConfig);

@@ -80,7 +80,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
                 .sameWidth(true)
                 .horizontal(true)
                 .build())
-            .aktiveKey(metricsConfig.isEnabled())
+            .activeKey(metricsConfig.isEnabled())
             .highlight(true)
             .build();
         ColumnRow<Void> onOffToggleRow = ColumnRow.<Void>builder()

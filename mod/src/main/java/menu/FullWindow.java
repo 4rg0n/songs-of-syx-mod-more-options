@@ -7,7 +7,7 @@ import com.github.argon.sos.mod.sdk.game.action.Renderable;
 import com.github.argon.sos.mod.sdk.ui.ColorBox;
 import com.github.argon.sos.mod.sdk.ui.Label;
 import com.github.argon.sos.mod.sdk.ui.Switcher;
-import init.C;
+import init.constant.C;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;

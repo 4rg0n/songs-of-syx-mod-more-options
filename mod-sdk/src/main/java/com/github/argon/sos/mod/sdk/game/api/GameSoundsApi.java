@@ -1,8 +1,11 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
+import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
+import com.github.argon.sos.mod.sdk.game.asset.GameFolder;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import game.audio.AUDIO;
@@ -12,108 +15,102 @@ import game.audio.SoundRace;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import settlement.main.SETT;
-import snake2d.util.sets.KeyMap;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * Access to the games sound effects
+ * Access to the game sound effects
  */
 @NoArgsConstructor
 public class GameSoundsApi implements Resettable {
 
     private final Logger log = Loggers.getLogger(GameSoundsApi.class);
 
-    @Nullable
-    private Map<String, Ambiance> ambienceSounds;
-    @Nullable
-    private Map<String, SoundRace> raceSounds;
-    @Nullable
-    private Map<String, Sound> sounds;
-    @Nullable
-    private Map<String, Sound> animalSounds;
-    @Nullable
-    private Map<String, Sound> roomWorkSounds;
-
     public final static String KEY_PREFIX = "sounds";
 
+    /**
+     * Hardcoded files that contain sound.
+     */
+    private static final List<String> RACE_FILES = Lists.of("AA_Race");
+    private static final List<String> SETTLEMENT_FILES = Lists.of("AA_Effects");
 
+    @Nullable private Map<String, Ambiance> ambienceSounds;
+    @Nullable private Map<String, SoundRace> raceSounds;
+    @Nullable private Map<String, SoundRace> animalSounds;
+    @Nullable private Map<String, SoundRace> roomWorkSounds;
+    @Nullable private Map<String, SoundRace> settlementSounds;
 
     @Override
     public void reset() {
         ambienceSounds = null;
         raceSounds = null;
+        animalSounds = null;
+        roomWorkSounds = null;
+        settlementSounds = null;
     }
 
     public Map<String, Ambiance> getAmbienceSounds() {
         if (ambienceSounds == null) {
             ambienceSounds = new HashMap<>();
-            AUDIO.AMBI().all().forEach(ambiance -> {
-                ambienceSounds.put(KEY_PREFIX + "." +  ambiance.key(), ambiance);
-            });
+            AUDIO.AMBI().all().forEach(ambiance ->
+                ambienceSounds.put(KEY_PREFIX + "." + ambiance.key(), ambiance));
         }
-
         return ambienceSounds;
     }
 
     public Map<String, SoundRace> getRaceSounds() {
-        if (raceSounds == null) {
-            raceSounds = new HashMap<>();
-            AUDIO.races().RMAP().all().forEach(soundRace -> {
-                raceSounds.put(KEY_PREFIX + "." + soundRace.key(), soundRace);
-            });
-        }
-
+        if (raceSounds == null) raceSounds = loadCategory(RACE_FILES);
         return raceSounds;
     }
 
-    public Map<String, Sound> getAnimalSounds() {
+    public Map<String, SoundRace> getAnimalSounds() {
         if (animalSounds == null) {
             animalSounds = new HashMap<>();
-
-            SETT.ANIMALS().species.all().forEach(animalSpecies -> {
-                animalSounds.put(KEY_PREFIX + "." + animalSpecies.key(), animalSpecies.sounds);
-            });
+            SETT.ANIMALS().species.forEach(animalSpecies ->
+                animalSounds.put(KEY_PREFIX + "." + animalSpecies.key(), animalSpecies.sound));
         }
-
         return animalSounds;
     }
 
-    public Map<String, Sound> getRoomWorkSounds() {
+    public Map<String, SoundRace> getRoomWorkSounds() {
         if (roomWorkSounds == null) {
             roomWorkSounds = new HashMap<>();
             SETT.ROOMS().imps().forEach(room -> {
-                if (room.employment() == null) {
-                    return;
-                }
-
+                if (room.employment() == null) return;
                 roomWorkSounds.put(KEY_PREFIX + "." + room.key, room.employment().sound());
             });
         }
-
         return roomWorkSounds;
     }
 
-    public Map<String, Sound> getSounds() {
-        if (sounds == null) {
-            sounds = new HashMap<>();
-            sounds.put(KEY_PREFIX + ".BUILD", AUDIO.mono().BUILD);
-            sounds.put(KEY_PREFIX + ".SLAUGHTER", AUDIO.mono().SLAUGHTER);
-            sounds.put(KEY_PREFIX + ".SWORD", AUDIO.mono().SWORD);
+    public Map<String, SoundRace> getSounds() {
+        if (settlementSounds == null) settlementSounds = loadCategory(SETTLEMENT_FILES);
+        return settlementSounds;
+    }
 
-            //noinspection unchecked
-            ReflectionUtil.getDeclaredFieldValue("map", AUDIO.mono())
-                .map(object -> (KeyMap<Sound>) object)
-                .ifPresent(soundMap -> {
-                    soundMap.keys().forEach(key -> {
-                        Sound sound = soundMap.get(key);
-                        sounds.put(KEY_PREFIX + "." + key, sound);
-                    });
-                });
+    /**
+     * Loads all SoundRace keys declared in the given AA_*.txt files under audio/config/mono/.
+     */
+    private Map<String, SoundRace> loadCategory(List<String> fileTitles) {
+        Map<String, SoundRace> map = new HashMap<>();
+        GameFolder mono = GameAssets.audio().mono();
+
+        for (String title : fileTitles) {
+            mono.json(title).ifPresent(json -> {
+                for (String key : json.keys()) {
+                    SoundRace sr = AUDIO.race(key);
+                    if (sr == null) {
+                        log.warn("SoundRace not found in game for key %s (file %s)", key, title);
+                    } else {
+                        map.put(KEY_PREFIX + "." + key, sr);
+                    }
+                }
+            });
         }
 
-        return sounds;
+        return map;
     }
 
     public void setSoundGain(Sound sound, int value) {

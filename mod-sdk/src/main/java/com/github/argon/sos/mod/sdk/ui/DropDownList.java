@@ -117,7 +117,7 @@ public class DropDownList extends AbstractButton<List<String>, DropDownList> imp
             .closeOnSelect(true)
             .menu(Switcher.<String>builder()
                 .highlight(true)
-                .aktiveKey(label)
+                .activeKey(label)
                 .menu(ButtonMenu.<String>builder()
                     .sameWidth(true)
                     .buttons(possibleValues)

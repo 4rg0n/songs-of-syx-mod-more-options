@@ -124,7 +124,7 @@ public class BoostersTabController extends AbstractUiController<BoostersTab> {
                 try {
                     Map<String, Range> boostersPreset = presets.get(key);
                     JsonElement jsonElement = JsonMapper.mapObject(boostersPreset, new TypeInfo<Map<String, Range>>(){});
-                    Json json = new Json(jsonElement, JsonWriters.jsonEPretty());
+                    Json json = new Json(jsonElement, JsonWriters.gameJsonUnquotedPretty());
 
                     Clipboard.write(json.write());
                     messages.notifySuccess("notification.boosters.preset.copy", key);

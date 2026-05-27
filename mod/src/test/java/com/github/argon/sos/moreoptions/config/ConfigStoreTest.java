@@ -61,7 +61,7 @@ class ConfigStoreTest {
         JacksonService jacksonService = ModSdkModule.Factory.newJacksonService(
             new ObjectMapper().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true),
             resourceServiceMock);
-        JsonGameService jsonGameService = ModSdkModule.Factory.newJsonGameService(JsonWriters.jsonEPretty(), resourceServiceMock);
+        JsonGameService jsonGameService = ModSdkModule.Factory.newJsonGameService(JsonWriters.gameJsonUnquotedPretty(), resourceServiceMock);
 
         GameSaveApi gameSaveApiMock = Mockito.mock(GameSaveApi.class);
         Mockito.when(gameSaveApiMock.getSaveStamp()).thenReturn("test-save-stamp");

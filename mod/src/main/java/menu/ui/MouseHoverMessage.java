@@ -1,6 +1,6 @@
 package menu.ui;
 
-import init.C;
+import init.constant.C;
 import lombok.Setter;
 import menu.MenuUi;
 import snake2d.Renderer;

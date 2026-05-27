@@ -34,7 +34,7 @@ public class SimpleTab extends AbstractTab {
         GuiSection bar = new GuiSection();
         StringInputSprite search = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
         MenuInput searchField = new MenuInput(search);
-        Button resetButton = new Button(SPRITES.icons().m.arrow_left);
+        Button resetButton = new Button(SPRITES.icons().m.rotate);
         resetButton.hoverInfoSet("Reset " + getTitle() + " to initially loaded from file.");
         resetButton.clickActionSet(jsonUiTemplate::reset);
 
@@ -48,7 +48,7 @@ public class SimpleTab extends AbstractTab {
         Button exportButton = new Button(SPRITES.icons().m.for_muster);
         exportButton.hoverInfoSet("Export settings to clipboard.");
         exportButton.clickActionSet(() -> {
-            Json json = new Json(jsonUiTemplate.getConfig(), JsonWriters.jsonEPretty());
+            Json json = new Json(jsonUiTemplate.getConfig(), JsonWriters.gameJsonUnquotedPretty());
             Clipboard.write(json.write());
         });
 

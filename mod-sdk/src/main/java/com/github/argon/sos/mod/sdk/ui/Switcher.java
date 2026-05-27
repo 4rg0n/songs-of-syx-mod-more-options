@@ -50,13 +50,13 @@ public class Switcher<Key> extends Section implements
     private final ButtonMenu<Key> menu;
 
     @Builder
-    public Switcher(ButtonMenu<Key> menu, boolean highlight, @Nullable Key aktiveKey) {
+    public Switcher(ButtonMenu<Key> menu, boolean highlight, @Nullable Key activeKey) {
         this.menu = menu;
-        this.activeKey = aktiveKey;
-        this.initKey = aktiveKey;
+        this.activeKey = activeKey;
+        this.initKey = activeKey;
 
         menu.getButtons().forEach((key, button) -> {
-            if (activeKey != null && activeKey.equals(key)) {
+            if (this.activeKey != null && this.activeKey.equals(key)) {
                 activeButton = button;
             }
 

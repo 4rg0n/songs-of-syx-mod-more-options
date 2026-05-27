@@ -1,7 +1,7 @@
 package menu;
 
 import game.faction.player.PTitles;
-import init.C;
+import init.constant.C;
 import init.settings.S;
 import init.sprite.UI.UI;
 import menu.ui.MouseHoverMessage;
@@ -21,7 +21,7 @@ import snake2d.util.light.AmbientLight;
 import snake2d.util.light.PointLight;
 import snake2d.util.sets.LIST;
 import snake2d.util.sprite.TextureCoords;
-import util.dic.Dic;
+import util.text.Dic;
 
 public class Menu extends CORE_STATE {
 
@@ -34,7 +34,8 @@ public class Menu extends CORE_STATE {
 	final ScOptions options;
 	final ScLoad load;
 	final ScLoad[] loads;
-	final ScRandom sandbox;
+	final ScRandom sandbox2;
+	final ScRandomSettings sandboxSettings;
 	final ScCredits credits;
 	final ScCampaign campaigns;
 	private SC current;
@@ -93,14 +94,13 @@ public class Menu extends CORE_STATE {
 
 		// MODDED
 		this.mouseHoverMessage = new MouseHoverMessage();
-		// TODO disabled
-		this.moreOptions = null;
-//		this.moreOptions = Ui.moreOptionsFullsWindow();
+		this.moreOptions = MenuUi.moreOptionsFullsWindow();
 
 		bg = new Background(this, bounds);
 
 		options = new ScOptions(this);
-		sandbox = new ScRandom(this);
+		sandbox2 = new ScRandom(this);
+		sandboxSettings = new ScRandomSettings(this);
 		load = ScLoad.load(this);
 
 		loads = new ScLoad[] {ScLoad.scenarios(this), ScLoad.battle(this), ScLoad.showcase(this)};
@@ -119,6 +119,8 @@ public class Menu extends CORE_STATE {
 		S.get().applyRuntimeConfigs();
 		PTitles.achieve();
 
+		// MODDED
+		MenuUi.getInstance().init(this);
 	}
 
 	private void hover(COORDINATE mCoo, boolean mouseHasMoved) {
@@ -137,10 +139,9 @@ public class Menu extends CORE_STATE {
 		mouseLight.set(mCoo);
 
 		// MODDED
-//		if (hoverTimer >= 0.4) {
-		// todo disabled
-//			moreOptions.hoverInfoGet(mouseHoverMessage.get());
-//		}
+		if (hoverTimer >= 0.4) {
+			moreOptions.hoverInfoGet(mouseHoverMessage.get());
+		}
 	}
 
 	@Override

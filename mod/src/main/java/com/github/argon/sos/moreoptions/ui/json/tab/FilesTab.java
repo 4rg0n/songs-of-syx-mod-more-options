@@ -13,6 +13,7 @@ import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
 
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -67,7 +68,7 @@ public class FilesTab<Tab extends AbstractTab> extends AbstractTab {
 
                 Tab tab = tabMap.get(fileNode.getPath().get());
 
-                Section section = UiUtil.toSection(SPRITES.icons().m.cancel);
+                Section section = UiUtil.toSection(SPRITES.icons().m.flag);
                 section.hoverInfoSet("Settings changed.");
                 // only show when values has changed
                 section.renderAction(ds -> {
@@ -89,8 +90,12 @@ public class FilesTab<Tab extends AbstractTab> extends AbstractTab {
             }
         });
 
+        // v71: tab paths may live on different FileSystemProviders (filesystem vs zip),
+        // so Path#compareTo crashes. Sort by string representation to stay provider-agnostic.
+        TreeMap<Path, Tab> sortedTabs = new TreeMap<>(Comparator.comparing(Path::toString));
+        sortedTabs.putAll(tabMap);
         tabulator = Tabulator.<Path, Tab, Void>builder()
-            .tabs(new TreeMap<>(tabMap)) // sort by title
+            .tabs(sortedTabs)
             .direction(DIR.E)
             .margin(10)
             .center(true)

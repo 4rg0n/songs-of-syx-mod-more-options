@@ -13,7 +13,7 @@ import com.github.argon.sos.mod.sdk.util.MathUtil;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
 import init.sprite.UI.UI;
-import init.text.D;
+import util.text.D;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

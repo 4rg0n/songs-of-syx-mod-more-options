@@ -65,7 +65,7 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
         tributeSection.addDown(5, tributeTable);
 
         Switcher<String> menu = Switcher.<String>builder()
-            .aktiveKey("events")
+            .activeKey("events")
             .highlight(true)
             .menu(ButtonMenu.<String>builder()
                 .margin(10)

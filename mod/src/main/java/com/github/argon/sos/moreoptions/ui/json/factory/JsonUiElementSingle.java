@@ -2,7 +2,6 @@ package com.github.argon.sos.moreoptions.ui.json.factory;
 
 import com.github.argon.sos.mod.sdk.data.CacheValue;
 import com.github.argon.sos.mod.sdk.game.action.BiAction;
-import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.json.JsonPath;
@@ -10,6 +9,7 @@ import com.github.argon.sos.mod.sdk.json.element.JsonDouble;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonLong;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.util.ClassUtil;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import com.github.argon.sos.moreoptions.ModModule;
@@ -71,6 +71,9 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
 
     private final CacheValue<Value> valueCache;
 
+    @Nullable
+    private Value lastSeenValue;
+
     @Builder
     public JsonUiElementSingle(
         Element element,
@@ -101,7 +104,14 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
         this.valueConsumer = (valueConsumer != null) ? valueConsumer : (o1, o2) -> {};
         this.valueChangeAction = (valueChangeAction != null) ? valueChangeAction : (o1, o2) -> {};
         this.jsonPathObject = (jsonPath != null) ? JsonPath.get(jsonPath) : null;
-        this.valueCache = CacheValue.of(500, () -> this.valueSupplier.apply(this));
+        this.valueCache = CacheValue.of(500, () -> {
+            Value current = this.valueSupplier.apply(this);
+            if (lastSeenValue != null && current != null && !lastSeenValue.equals(current)) {
+                this.valueChangeAction.accept(this, current);
+            }
+            lastSeenValue = current;
+            return current;
+        });
 
         if (defaultValue != null) {
             this.valueClass = defaultValue.getClass();
@@ -132,6 +142,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
         }
 
         valueConsumer.accept(this, value);
+        lastSeenValue = value;
     }
 
     public Optional<JsonElement> getRawConfigValue() {
@@ -174,13 +185,13 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
                 String labelName = splits[splits.length - 1];
                 label = Label.builder()
                     .name(labelName)
-                    .description(jsonPath)
+                    .description(description)
                     .font(UI.FONT().S)
                     .style(Label.Style.NORMAL)
                     .build();
             } else {
                 label = Label.builder()
-                    .description(jsonPath)
+                    .description(description)
                     .font(UI.FONT().S)
                     .style(Label.Style.NORMAL)
                     .build();
@@ -200,7 +211,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
             }
 
             // dirty icon
-            Section dirtyIcon = UiUtil.toSection(SPRITES.icons().m.cancel);
+            Section dirtyIcon = UiUtil.toSection(SPRITES.icons().m.flag);
             dirtyIcon.hoverInfoSet("Setting changed.");
 
             // only show when value has changed
@@ -218,7 +229,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
         columnRowBuilder.column(element);
 
         if (jsonPath != null) {
-            Button resetButton = new Button(SPRITES.icons().m.arrow_left);
+            Button resetButton = new Button(SPRITES.icons().m.rotate);
             resetButton.clickActionSet(this::reset);
             resetButton.hoverInfoSet("Reset " + jsonPath  + " to initially loaded from file.");
             columnRowBuilder.column(resetButton);
@@ -242,6 +253,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
 
     public static <Value extends JsonElement, Element extends RENDEROBJ> JsonUiElementSingleBuilder<Value, Element> from(
         String jsonPath,
+        Path filePath,
         JsonObject config,
         Value defaultValue,
         Class<Value> valueClass,
@@ -258,11 +270,14 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
                 return defaultValue;
             });
 
-        String description = i18n.pdn(jsonPathO.toStringWithoutIndexes());
+        String i18nKey = JsonUiI18nKeyFactory.build(filePath, jsonPathO.toStringWithoutIndexes());
+        String description = i18n.d(i18nKey);
+
         return builder
             .config(config)
             .element(elementProvider.apply(value))
             .jsonPath(jsonPath)
+            .path(filePath)
             .initValue(value)
             .description(description)
             .defaultValue(defaultValue)

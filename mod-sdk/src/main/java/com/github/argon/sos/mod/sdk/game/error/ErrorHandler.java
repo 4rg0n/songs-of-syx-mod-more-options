@@ -10,7 +10,7 @@ import snake2d.Errors;
  * @param <Script> type of the mod script
  */
 @RequiredArgsConstructor
-public class ErrorHandler<Script extends Phases> extends init.error.ErrorHandler {
+public class ErrorHandler<Script extends Phases> extends util.error.ErrorHandler {
 
     private final Script script;
 

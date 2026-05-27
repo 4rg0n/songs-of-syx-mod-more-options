@@ -43,7 +43,7 @@ public class UiFactory {
                     .sameWidth(true)
                     .buttons(options)
                     .build())
-                .aktiveKey(jsonString.getValue())
+                .activeKey(jsonString.getValue())
                 .build())
             .build();
     }

@@ -73,26 +73,44 @@ public class FilesMenu extends Section {
         this.root = root;
         this.iconsProvider = iconsProvider;
 
+        // v71: tab paths and root path may live on different FileSystemProviders
+        // (filesystem vs zip), so Path#relativize throws ProviderMismatchException.
+        // Compute the relative segments as strings to stay provider-agnostic.
+        String rootStr = rootPath.toString().replace('\\', '/');
         for (Path path : paths) {
-            folders.put(path, root.folder(path));
-            Path relativePath = rootPath.relativize(path);
+            String pathStr = path.toString().replace('\\', '/');
+            if (!pathStr.startsWith(rootStr)) {
+                continue;
+            }
+            String relativeStr = pathStr.substring(rootStr.length()).replaceFirst("^/+", "");
+            if (relativeStr.isEmpty()) {
+                continue;
+            }
+            String[] segments = relativeStr.split("/");
 
-            TreeNode<Path> currentPathNode = this.fileTree;
+            TreeNode<Path> currentPathNode = getFileTree();
             String currentAbsolutePath = "";
-            for (Path segment : relativePath) {
+            for (int i = 0; i < segments.length; i++) {
+                String segment = segments[i];
+                if (segment.isEmpty()) continue;
                 if (currentAbsolutePath.isEmpty()) {
-                    currentAbsolutePath = segment.toString();
+                    currentAbsolutePath = segment;
                 } else {
-                    currentAbsolutePath = currentAbsolutePath + "/" + segment.toString();
+                    currentAbsolutePath = currentAbsolutePath + "/" + segment;
                 }
 
-                Path absolutePath = rootPath.resolve(currentAbsolutePath);
-                if (currentPathNode.has(absolutePath)) {
-                    currentPathNode = currentPathNode.get(absolutePath);
+                // For the leaf (the actual file), keep the original tab Path so that
+                // downstream consumers (tabMap lookups, selectedPath equality) match.
+                Path nodeKey = (i == segments.length - 1)
+                    ? path
+                    : rootPath.resolve(currentAbsolutePath);
+
+                if (currentPathNode.has(nodeKey)) {
+                    currentPathNode = currentPathNode.get(nodeKey);
                     continue;
                 }
 
-                currentPathNode = currentPathNode.node(absolutePath);
+                currentPathNode = currentPathNode.node(nodeKey);
                 add(currentPathNode);
             }
         }
@@ -270,14 +288,12 @@ public class FilesMenu extends Section {
             row.addRightC(0, button);
         }
 
-        ColumnRow<FileNode> columnRow = ColumnRow.<FileNode>builder()
+        return ColumnRow.<FileNode>builder()
             .key(fileNode.getName())
             .valueSupplier(() -> fileNode)
             .searchTerm(fileNode.getPath().toString())
             .column(row)
             .build();
-
-        return columnRow;
     }
     
     @Getter

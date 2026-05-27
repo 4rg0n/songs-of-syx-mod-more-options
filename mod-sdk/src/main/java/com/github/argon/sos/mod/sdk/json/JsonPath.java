@@ -136,21 +136,33 @@ public class JsonPath {
     }
 
     public void put(JsonObject json, JsonElement value) {
-        get(json, JsonElement.class, 0, getKeys().size() - 1, false).ifPresent(jsonElement -> {
-            if (jsonElement instanceof JsonTuple) {
-                ((JsonTuple) jsonElement).setValue(value);
-            } else if (jsonElement instanceof JsonArray) {
-                String lastKey = lastKey();
-                Integer index = parseIndex(lastKey);
+        resolveContainer(json).ifPresent(container -> writeInto(container, value));
+    }
 
-                if (index != null) {
-                    ((JsonArray) jsonElement).add(index, value);
-                }
-            } else if (jsonElement instanceof JsonObject) {
-                String lastKey = lastKey();
-                ((JsonObject) jsonElement).put(lastKey, value);
+    /**
+     * Returns the container the {@link #lastKey()} should be written into. For single-key
+     * paths the container is the root {@code json}; for nested paths it is the element
+     * pointed to by all but the last key.
+     */
+    private Optional<JsonElement> resolveContainer(JsonObject json) {
+        if (getKeys().size() <= 1) {
+            return Optional.of(json);
+        }
+        return get(json, JsonElement.class, 0, getKeys().size() - 1, false);
+    }
+
+    private void writeInto(JsonElement container, JsonElement value) {
+        String lastKey = lastKey();
+        if (container instanceof JsonTuple) {
+            ((JsonTuple) container).setValue(value);
+        } else if (container instanceof JsonArray) {
+            Integer index = parseIndex(lastKey);
+            if (index != null) {
+                ((JsonArray) container).add(index, value);
             }
-        });
+        } else if (container instanceof JsonObject) {
+            ((JsonObject) container).put(lastKey, value);
+        }
     }
 
     public static JsonPath get(String path) {

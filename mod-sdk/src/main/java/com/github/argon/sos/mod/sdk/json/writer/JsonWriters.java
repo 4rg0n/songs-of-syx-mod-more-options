@@ -13,7 +13,15 @@ public class JsonWriters {
      */
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static JsonWriter jsonEPretty = new JsonEWriter();
+    private final static JsonWriter gameJsonUnquotedPretty = new GameJsonUnquotedWriter();
+
+    /**
+     * Songs of Syx JSON format with indents and quoted strings
+     */
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static JsonWriter gameJsonQuotedPretty = new GameJsonQuotedWriter();
+
     /**
      * Standard JSON with indents
      */
@@ -21,12 +29,6 @@ public class JsonWriters {
     @Accessors(fluent = true)
     private final static JsonWriter jsonPretty = new JsonStandardWriter();
 
-    /**
-     * Songs of Syx JSON format
-     */
-    @Getter(lazy = true)
-    @Accessors(fluent = true)
-    private final static JsonWriter jsonE = new JsonEWriter();
     /**
      * Standard JSON
      */

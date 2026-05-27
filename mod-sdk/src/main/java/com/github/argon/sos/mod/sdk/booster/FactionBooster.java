@@ -1,15 +1,15 @@
 package com.github.argon.sos.mod.sdk.booster;
 
-import game.boosting.BOOSTABLE_O;
 import game.boosting.BSourceInfo;
 import game.boosting.Boostable;
 import game.faction.FACTIONS;
 import game.faction.Faction;
+import game.faction.npc.FactionNPC;
 import game.faction.player.Player;
 import game.faction.royalty.Royalty;
-import init.type.POP_CL;
+import init.type.HCLASS_RACE;
 import lombok.Builder;
-import settlement.army.div.Div;
+import game.battle.div.Div;
 import settlement.stats.Induvidual;
 import world.map.regions.Region;
 
@@ -45,21 +45,17 @@ public class FactionBooster extends AbstractBooster {
     }
 
     @Override
-    public double vGet(POP_CL populationClass) {
+    public double vGet(HCLASS_RACE populationClass) {
         if (populationClass.f() == null) {
             return vGet(FACTIONS.player());
         } else {
-            return vGet(populationClass.f());
+            return vGet((Faction) populationClass.f());
         }
     }
 
     @Override
-    public double vGet(PopTime popTime) {
-        if (popTime.pop.f() == null) {
-            return vGet(FACTIONS.player());
-        } else {
-            return vGet(popTime.pop.f());
-        }
+    public double vGet(FactionNPC f) {
+        return getFactionValue(f);
     }
 
     @Override
@@ -83,36 +79,8 @@ public class FactionBooster extends AbstractBooster {
     }
 
     @Override
-    public double get(BOOSTABLE_O o) {
-        if (o instanceof Player) {
-            return vGet((Player) o);
-        }
-
-        if (o instanceof Faction) {
-            return vGet((Faction) o);
-        }
-
-        if (o instanceof POP_CL) {
-            return vGet((POP_CL) o);
-        }
-
-        if (o instanceof PopTime) {
-            return vGet(((PopTime) o));
-        }
-
-        if (o instanceof Div) {
-            return vGet(((Div) o));
-        }
-
-        if (o instanceof Region) {
-            return vGet(((Region) o));
-        }
-
-        if (o instanceof Induvidual) {
-            return vGet(((Induvidual) o));
-        }
-
-        return noValue;
+    public double getValue(double d) {
+        return d;
     }
 
     public void set(Faction faction, int value) {

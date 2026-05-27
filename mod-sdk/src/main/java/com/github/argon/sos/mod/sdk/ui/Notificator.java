@@ -6,7 +6,7 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.game.action.Updateable;
-import init.C;
+import init.constant.C;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -162,7 +162,7 @@ public class Notificator implements Updateable, Hideable, Phases {
         }
 
         // show next from queue
-        Notification nextNotification = queue.get(queue.size() - 1);
+        Notification nextNotification = queue.getLast();
         show(nextNotification);
     }
 

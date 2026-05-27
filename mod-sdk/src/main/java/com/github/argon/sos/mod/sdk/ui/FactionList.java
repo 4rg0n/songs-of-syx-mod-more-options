@@ -6,8 +6,8 @@ import game.faction.Faction;
 import game.faction.diplomacy.DIP;
 import game.faction.npc.FactionNPC;
 import game.faction.royalty.Royalty;
-import game.faction.royalty.opinion.ROPINIONS;
-import init.C;
+import game.faction.royalty.opinion.ROPINION;
+import init.constant.C;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
 import init.sprite.UI.UI;
@@ -28,7 +28,7 @@ import snake2d.util.sprite.text.StringInputSprite;
 import util.data.DOUBLE;
 import util.data.GETTER;
 import util.data.GETTER.GETTER_IMP;
-import util.dic.Dic;
+import util.text.Dic;
 import util.gui.misc.GButt;
 import util.gui.misc.GMeter;
 import util.gui.misc.GStat;
@@ -42,7 +42,7 @@ import world.region.RD;
 
 public class FactionList extends GuiSection {
 
-	private final ArrayList<Faction> sorted = new ArrayList<>();
+	private final ArrayList<Faction> sorted = new ArrayList<>(64);
 	
 	private final int width = C.SG*264;
 
@@ -213,7 +213,7 @@ public class FactionList extends GuiSection {
 					FactionNPC f = getFactionNPC();
 					if (f == null)
 						return;
-					double c = 0.5 + ROPINIONS.current(f.court().king().roy())/8.0;
+					double c = 0.5 + ROPINION.get(f.court().king().roy())/8.0;
 					GMeter.renderC(r, c, c, X1, X2, Y1, Y2);
 
 				}
@@ -226,7 +226,7 @@ public class FactionList extends GuiSection {
 					Faction f = getFaction();
 					if (f == null)
 						return 0;
-					return RD.RACES().population.faction().get(f)/(10*RD.RACES().maxPop());
+					return RD.RACES().population.faction().get(f)/(10*RD.RACES().maxPopReg());
 				}
 				
 			}, 100, 12), getLastX1(), getLastY2()+1);

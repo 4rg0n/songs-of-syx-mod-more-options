@@ -25,5 +25,8 @@ public class InitResource extends AbstractGameData {
     private final GameFolder minable = folder("minable");
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final GameFolder armySupply = folder("armySupply");
+    private final GameFolder supply = folder("supply");
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final GameFolder work = folder("work");
 }

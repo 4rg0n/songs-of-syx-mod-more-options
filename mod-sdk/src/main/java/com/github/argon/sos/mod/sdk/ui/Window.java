@@ -3,7 +3,7 @@ package com.github.argon.sos.mod.sdk.ui;
 import com.github.argon.sos.mod.sdk.game.action.*;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import init.C;
+import init.constant.C;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

@@ -6,14 +6,14 @@ import com.github.argon.sos.mod.sdk.ui.ButtonMenu;
 import com.github.argon.sos.mod.sdk.ui.Switcher;
 import com.github.argon.sos.mod.sdk.ui.Tabulator;
 import com.github.argon.sos.mod.sdk.util.Maps;
-import init.C;
-import init.paths.PATHS;
-import lombok.Getter;
 import com.github.argon.sos.moreoptions.ui.json.JsonUITemplates;
 import com.github.argon.sos.moreoptions.ui.json.JsonUi;
 import com.github.argon.sos.moreoptions.ui.json.tab.AbstractTab;
 import com.github.argon.sos.moreoptions.ui.json.tab.FilesTab;
 import com.github.argon.sos.moreoptions.ui.json.tab.SimpleTab;
+import init.constant.C;
+import init.paths.PATHS;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
@@ -23,6 +23,7 @@ public class MoreOptionsEditor extends GuiSection {
 
     @Getter
     private final Tabulator<String, AbstractTab, Void> tabulator;
+
     public MoreOptionsEditor(@Nullable StringInputSprite searchInput) {
         int availableHeight = FullWindow.AVAILABLE_HEIGHT;
 
@@ -59,7 +60,7 @@ public class MoreOptionsEditor extends GuiSection {
                     .buttonColor(COLOR.WHITE25)
                     .build())
                 .highlight(true)
-                .aktiveKey("config")
+                .activeKey("editor")
                 .build())
             .center(true)
             .build();
@@ -216,7 +217,7 @@ public class MoreOptionsEditor extends GuiSection {
 
                 jsonUiTemplate.header("MILITARY_SUPPLY_USE");
                 jsonUiTemplate.sliders("MILITARY_SUPPLY_USE",
-                    GameAssets.init().resource().armySupply().fileTitles(), true, 0, 100);
+                    GameAssets.init().resource().supply().fileTitles(), true, 0, 100);
 
                 jsonUiTemplate.header("RESOURCE");
                 jsonUiTemplate.sliders("RESOURCE",
@@ -556,7 +557,7 @@ public class MoreOptionsEditor extends GuiSection {
     }
 
     private static JsonUi settlement() {
-        return JsonUi.builder(PATHS.CONFIG())
+        return JsonUi.builder(PATHS.CONFIG().init)
             .template("Sett", jsonUiTemplate -> {
                 jsonUiTemplate.sliderD("HAPPINESS_EXPONENT", 0, 100);
                 jsonUiTemplate.slider("TOURIST_PER_YEAR_MAX", 0, 4096, 32);

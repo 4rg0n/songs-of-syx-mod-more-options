@@ -22,7 +22,7 @@ class JsonTest {
     @Test
     void parse_JsonEAndProduceJsonE() throws IOException {
         String jsonString = resourceService.read("json/JsonE.txt").orElse("");
-        Json json = new Json(jsonString, JsonWriters.jsonEPretty());
+        Json json = new Json(jsonString, JsonWriters.gameJsonUnquotedPretty());
 
         String parsedJsonString = json.write();
 
@@ -53,7 +53,7 @@ class JsonTest {
             try {
                 String jsonString = resourceService.read(file)
                     .orElseThrow(() -> new AssertionError("No file?" + file));
-                Json json = new Json(jsonString, JsonWriters.jsonEPretty());
+                Json json = new Json(jsonString, JsonWriters.gameJsonUnquotedPretty());
                 assertThat(json.write()).as(file).isNotEmpty();
             } catch (Exception e) {
                 errors.put(file, e);
@@ -72,7 +72,7 @@ class JsonTest {
     @Test
     void prettyPrint_JsonE() throws IOException {
         String jsonEString = resourceService.read("json/MINE_GEM.txt").orElse("");
-        Json json = new Json(jsonEString, JsonWriters.jsonEPretty());
+        Json json = new Json(jsonEString, JsonWriters.gameJsonUnquotedPretty());
 
         System.out.println(json.write());
     }

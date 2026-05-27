@@ -111,11 +111,11 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonString, ColorPicker> color(String jsonPath, JsonString defaultValue) {
         return JsonUiElementSingle.from(
             jsonPath,
+            path,
             config,
             defaultValue,
             JsonString.class,
             UiFactory::color)
-        .path(path)
         .valueSupplier(colorPicker -> new JsonString(colorPicker.getElement().to("_")))
         .valueConsumer((colorPicker, jsonString) -> colorPicker.getElement().set(jsonString.getValue(), "_"))
         .build();
@@ -124,11 +124,11 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonObject, ColorPicker> colorO(String jsonPath, JsonObject defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
+                path,
                 config,
                 defaultValue,
                 JsonObject.class,
                 UiFactory::color)
-            .path(path)
             .valueSupplier(colorPicker -> JsonUiMapper.colors(
                 colorPicker.getElement().getRed(),
                 colorPicker.getElement().getGreen(),
@@ -141,11 +141,11 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonDouble, Slider> sliderD(String jsonPath, int min, int max, int step, int resolution, JsonDouble defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
+                path,
                 config,
                 defaultValue,
                 JsonDouble.class,
                 value -> UiFactory.slider(value, min, max, step, resolution))
-            .path(path)
             .valueConsumer((slider, jsonDouble) -> slider.getElement().setValueD(jsonDouble.getValue()))
             .valueSupplier(slider -> new JsonDouble(slider.getElement().getValueD()))
             .build();
@@ -166,11 +166,11 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonLong, Slider> slider(String jsonPath, int min, int max, int step, List<Integer> allowedValues, JsonLong defaultValue) {
         return JsonUiElementSingle.from(
             jsonPath,
+            path,
             config,
             defaultValue,
             JsonLong.class,
             value -> UiFactory.slider(value, min, max, step, allowedValues))
-        .path(path)
         .valueConsumer((slider, jsonLong) -> slider.getElement().setValue(jsonLong.getValue().intValue()))
         .valueSupplier(slider -> new JsonLong(Long.valueOf(slider.getElement().getValue())))
         .build();
@@ -179,11 +179,11 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonArray, Select<String>> selectS(String jsonPath, List<String> options, JsonArray defaultValue, int maxSelect, boolean maxSelected) {
         return JsonUiElementSingle.from(
                 jsonPath,
+                path,
                 config,
                 defaultValue,
                 JsonArray.class,
                 value -> UiFactory.selectS(value, options, maxSelect, maxSelected))
-            .path(path)
             .valueSupplier(select -> {
                 JsonArray jsonValue = new JsonArray();
                 select.getElement().getSelectedKeys().forEach(entry -> {
@@ -205,11 +205,11 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonString, DropDown<String>> dropDown(String jsonPath, List<String> options, JsonString defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
+                path,
                 config,
                 defaultValue,
                 JsonString.class,
                 value -> UiFactory.dropDown(value, options))
-            .path(path)
             .valueSupplier(dropDown -> new JsonString(dropDown.getElement().getValue()))
             .valueConsumer((dropDown, jsonString) -> dropDown.getElement().setValue(jsonString.getValue()))
             .build();
@@ -218,11 +218,11 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonArray, DropDownList> dropDownList(String jsonPath, String buttonTitle, List<String> options, JsonArray defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
+                path,
                 config,
                 defaultValue,
                 JsonArray.class,
                 value -> UiFactory.dropDownList(buttonTitle, value, options))
-            .path(path)
             .valueSupplier(stringSelect -> {
                 JsonArray jsonValue = new JsonArray();
                 Objects.requireNonNull(stringSelect.getElement().getValue()).forEach(entry -> {
@@ -244,6 +244,7 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonArray, SliderDoubleList> sliderDList(String jsonPath, String buttonTitle, int min, int max, int step, int resolution, JsonArray defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
+                path,
                 config,
                 defaultValue,
                 JsonArray.class,
@@ -254,7 +255,6 @@ public class JsonUiElementFactory implements Resettable {
 
                     return UiFactory.slider(JsonDouble.of(value1), min, max, step, resolution);
                 }))
-            .path(path)
             .valueSupplier(sliders -> {
                 JsonArray jsonValue = new JsonArray();
                 Objects.requireNonNull(sliders.getElement().getValue()).forEach(entry -> {
@@ -276,11 +276,11 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonArray, MultiDropDown<String>> multiDropDown(String jsonPath, String title, List<String> options, JsonArray defaultValue, int maxSelect, boolean maxSelected) {
         return JsonUiElementSingle.from(
                 jsonPath,
+                path,
                 config,
                 defaultValue,
                 JsonArray.class,
                 value -> UiFactory.multiDropDown(title, value, options, maxSelect, maxSelected))
-            .path(path)
             .valueSupplier(stringSelect -> {
                 JsonArray jsonValue = new JsonArray();
                 Objects.requireNonNull(stringSelect.getElement().getValue()).forEach(entry -> {
@@ -302,11 +302,11 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonBoolean, Checkbox> checkbox(String jsonPath, JsonBoolean defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
+                path,
                 config,
                 defaultValue,
                 JsonBoolean.class,
                 UiFactory::checkbox)
-            .path(path)
             .valueSupplier(checkbox -> new JsonBoolean(checkbox.getElement().selectedIs()))
             .valueConsumer((checkbox, jsonBoolean) -> checkbox.getElement().selectedSet(jsonBoolean.getValue()))
             .build();
@@ -315,11 +315,11 @@ public class JsonUiElementFactory implements Resettable {
     public JsonUiElementSingle<JsonString, Input> text(String jsonPath, JsonString defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
+                path,
                 config,
                 defaultValue,
                 JsonString.class,
                 UiFactory::text)
-            .path(path)
             .valueSupplier(text -> JsonString.of(text.getElement().text().toString()))
             .valueConsumer((text, jsonString) -> {
                 text.getElement().text().clear();

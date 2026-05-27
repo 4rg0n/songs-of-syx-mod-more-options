@@ -4,7 +4,7 @@ import com.github.argon.sos.mod.sdk.ui.Button;
 import com.github.argon.sos.mod.sdk.ui.HorizontalLine;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.moreoptions.ModModule;
-import init.C;
+import init.constant.C;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;

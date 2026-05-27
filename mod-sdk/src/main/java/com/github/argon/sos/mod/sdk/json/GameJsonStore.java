@@ -15,7 +15,11 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Can cache the game JSON configuration by file path
+ * Can cache the game JSON configuration by file path.
+ * <p>
+ * MODDED: keys are normalized {@link Path#toString()} (with {@code \} → {@code /}) so that
+ * lookups succeed across different {@link java.nio.file.spi.FileSystemProvider} instances
+ * (Windows filesystem vs zip), which is required in v71 where mods overlay the base data.zip.
  */
 @RequiredArgsConstructor
 public class GameJsonStore implements Phases {
@@ -23,7 +27,7 @@ public class GameJsonStore implements Phases {
 
     private final IOService ioService;
 
-    private final Map<Path, String> jsonContent = new HashMap<>();
+    private final static String TEXT_PATH = "/data/assets/text";
     private final Map<Path, Json> jsonObjects = new HashMap<>();
     private final Set<Path> filePaths = new HashSet<>();
 
@@ -41,29 +45,30 @@ public class GameJsonStore implements Phases {
         filePaths.forEach(this::load);
     }
 
-    @Nullable
-    public snake2d.util.file.Json getJsonE(Path filePath) {
-        String content = getContent(filePath);
-
-        if (content == null) {
-            content = load(filePath);
-
-            if (content == null) {
-                return null;
-            }
-        }
-
-        try {
-            return new snake2d.util.file.Json(content, filePath.toString(), false);
-        } catch (Exception e) {
-            log.info("Could not parse jsonE content from %s", filePath, e);
-            return null;
-        }
-    }
-
     public Optional<JsonObject> getJsonObject(@Nullable Path filePath) {
         return Optional.ofNullable(getJson(filePath))
             .map(Json::getRoot);
+    }
+
+    public void put(Path filePath, String content) {
+        try {
+            Json json;
+            // json in the text assets use quoted strings
+            if (filePath.startsWith(TEXT_PATH)) {
+                json = new Json(content, JsonWriters.gameJsonQuotedPretty());
+            } else {
+                json = new Json(content, JsonWriters.gameJsonUnquotedPretty());
+            }
+
+            put(filePath, json);
+        } catch (JsonParseException e) {
+            log.error("Could not add json %s to store", filePath, e);
+        }
+    }
+
+    public void put(Path filePath, Json json) {
+        log.debug("Adding json for %s", filePath);
+        jsonObjects.put(filePath, json);
     }
 
     @Nullable
@@ -72,37 +77,27 @@ public class GameJsonStore implements Phases {
             return null;
         }
 
-        String content = getContent(filePath);
-
-        if (content == null) {
-            content = load(filePath);
+        Json json = jsonObjects.get(filePath);
+        if (json == null) {
+            String content = load(filePath);
 
             if (content == null) {
                 return null;
             }
         }
 
-        try {
-            return jsonObjects.get(filePath);
-        } catch (Exception e) {
-            log.info("Could not parse json content from %s", filePath, e);
-            return null;
-        }
-    }
-
-    public void put(Path filePath, String content) {
-        log.debug("Adding json content for %s", filePath);
-        jsonContent.put(filePath, content);
-        try {
-            jsonObjects.put(filePath, new Json(content, JsonWriters.jsonEPretty()));
-        } catch (JsonParseException e) {
-            log.error("Could not add json %s to store", filePath, e);
-        }
+        return jsonObjects.get(filePath);
     }
 
     @Nullable
     public String getContent(Path filePath) {
-        return jsonContent.get(filePath);
+        Json json = jsonObjects.get(filePath);
+
+        if (json == null) {
+            return null;
+        }
+
+        return json.write();
     }
 
     @Nullable

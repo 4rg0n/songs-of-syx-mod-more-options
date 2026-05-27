@@ -48,7 +48,7 @@ public class Json {
     private final JsonWriter writer;
 
     public Json(JsonElement root) {
-        this(root, JsonWriters.jsonEPretty());
+        this(root, JsonWriters.gameJsonUnquotedPretty());
     }
 
     public Json(JsonElement root, JsonWriter writer) {
@@ -62,7 +62,7 @@ public class Json {
     }
 
     public Json(JsonObject root) {
-        this(root, JsonWriters.jsonEPretty());
+        this(root, JsonWriters.gameJsonUnquotedPretty());
     }
 
     public Json(JsonObject root, JsonWriter writer) {
@@ -72,7 +72,7 @@ public class Json {
     }
 
     public Json(String rawJson) {
-        this(rawJson, JsonWriters.jsonEPretty());
+        this(rawJson, JsonWriters.gameJsonUnquotedPretty());
     }
 
     public Json(String rawJson, JsonWriter writer) {

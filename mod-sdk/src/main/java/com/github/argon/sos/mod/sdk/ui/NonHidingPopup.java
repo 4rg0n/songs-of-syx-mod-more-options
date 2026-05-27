@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.ui;
 
-import init.C;
+import init.constant.C;
 import org.jetbrains.annotations.Nullable;
 import snake2d.MButt;
 import snake2d.Renderer;
@@ -142,10 +142,8 @@ public class NonHidingPopup {
 		@Override
 		protected boolean otherClick(MButt butt) {
 			hide();
-			if (butt == MButt.RIGHT)
-				return true;
-			return false;
-		}
+            return butt == MButt.RIGHT;
+        }
 
 		@Override
 		protected boolean hover(COORDINATE mCoo, boolean mouseHasMoved) {

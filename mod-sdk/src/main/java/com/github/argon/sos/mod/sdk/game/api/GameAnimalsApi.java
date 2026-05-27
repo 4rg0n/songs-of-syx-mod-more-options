@@ -12,7 +12,7 @@ import java.util.Optional;
 public class GameAnimalsApi {
 
     public List<AnimalSpecies> getAnimalSpecies() {
-        return Lists.fromGameLIST(SETT.ANIMALS().species.all());
+        return Lists.fromGameLIST(SETT.ANIMALS().species);
     }
 
     public Optional<AnimalSpecies> getBySound(String soundKey) {

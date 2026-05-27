@@ -72,7 +72,7 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
                     .sameWidth(true)
                     .build())
                 .highlight(true)
-                .aktiveKey(model.getLogLevel())
+                .activeKey(model.getLogLevel())
                 .build())
             .build();
 

@@ -1,0 +1,123 @@
+NAME: "Test Human",
+NAMES: "Test Humans",
+POSSESSIVE: "Human",
+POSSESSIVES: "Human",
+PRONOUN_HE: ["he", "she",],
+PRONOUN_HEC: ["He", "She",],
+PRONOUN_HIM: ["him", "her",],
+PRONOUN_HIMC: ["Him", "Her",],
+PRONOUN_HIS: ["his", "her",],
+PRONOUN_HISC: ["His", "Her",],
+PRONOUN_HIMSELF: ["himself", "herself",],
+PRONOUN_HIMSELFC: ["Himself", "Herself",],
+PRONOUN_CHILD: ["son", "daughter",],
+PRONOUN_CHILDC: ["Son", "Daughter",],
+
+HELLO: [
+	"Athuri be praised",
+	"Under his eye",
+	"Praise be",
+	"Salutations",
+	"Greetings",
+	"Glory to Athuri",
+	"Salve",
+],
+GOODBYE: [
+	"Praise be",
+	"Until the return",
+	"Until next time",
+	"Bright nights",
+	"Gratitude",
+],
+CURSE: [
+	"Memnon be damned!",
+	"Gods below!",
+	"By regi's genitals!",
+	"By Gmork!"
+	"By the great horn spoon!",
+],
+INSULT: [
+	"imbecile", 
+	"idiot",
+	"fool",
+	"zounderkite",
+	"old cuss!",
+	"freak",
+],
+INSULTING: [
+	"brain-drained", 
+	"foolish",
+	"moronic",
+	"sad looking",
+	"inbred",
+	"frekish",
+],
+LORD: [
+	"Lord",
+	"Liege",
+	"Master",
+],
+CITY: [
+	"town",
+	"city",
+	"metropolis",
+],
+OTHERS: [
+	"exotics",
+	"others",
+],
+SELVES: [
+	"fellows",
+	"subjects",
+],
+SELF: [
+	"fellow",
+	"subject",
+],
+CHILDREN: [
+	"children",
+],
+
+DESC: 
+"Humans, said to be the last creation of the gods. Excel at intelligent jobs and are decent farmers. They can be a constant headache with insanity, criminal behavior, and demands for lavish surroundings."
+",
+DESC_LONG:
+"Humans are regarded as the final creation of the Astarii, possessing free will and a flexible mind. Ancient men were immortal, but when they sided with Aminion in the second war of the gods, they were punished with mortality.
+Humans make excellent researchers and administrators. They are also fairly good at farming. 
+ 
+Bread, Meat, Mushrooms, and Eggs are the their favorite foods.
+",
+
+ARMY_NAMES: [
+	"Shields of Vengeance",
+	"Swords of Tomorrow",
+	"Legends of Lake Hoth",
+	"The Inithil Rangers",
+	"Darth's Opulent Oppressors",
+	"The Boys",
+	"The Moster Hunters",
+	"The Unbreakables",
+	"The Immortals",
+	"The Force of the Astarii",
+	"The Glimmering Blades",
+	"The Deathstalkers",
+	"The Barbarians",
+	"The League of Extraordinary Gentlemen",
+	"The Brotherhood of Ergoth",
+	"The Swordsmen of Naath",
+],
+
+CHALLENGE: "Medium",
+
+PROS: [
+	"Excellent scientists and managers",
+	"Good farmers",
+	"Good learning rate",
+],
+
+CONS: [
+	"Unremarkable in battle",
+	"Criminal and mentally unstable",
+	"Limited natural skills",
+	"Difficult to please",
+],
