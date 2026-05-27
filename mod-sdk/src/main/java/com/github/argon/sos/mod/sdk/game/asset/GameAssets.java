@@ -7,7 +7,6 @@ import com.github.argon.sos.mod.sdk.game.asset.init.Init;
 import com.github.argon.sos.mod.sdk.game.asset.sprite.Sprite;
 import com.github.argon.sos.mod.sdk.game.asset.text.Text;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import init.paths.PATH;
 import lombok.AccessLevel;
@@ -17,7 +16,6 @@ import lombok.experimental.Accessors;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Main access to game resources like config files, folders or sprites.
@@ -43,7 +41,7 @@ public class GameAssets {
         .fileTitles().stream()
         .map(resource -> StringUtil.removeBeginning(resource, "_"))
         .sorted()
-        .collect(Collectors.toList());
+        .toList();
 
     @Getter(lazy = true)
     private final static List<String> races = init().race().fileTitles();
@@ -52,7 +50,7 @@ public class GameAssets {
      * Hardcoded by the game
      */
     @Getter(lazy = true)
-    private final static List<String> humanClasses = Lists.of("CITIZEN", "CHILD", "NOBLE", "OTHER", "SLAVE");
+    private final static List<String> humanClasses = List.of("CITIZEN", "CHILD", "NOBLE", "OTHER", "SLAVE");
 
     @Getter(lazy = true)
     private final static List<String> edibles = init().resource().edible().fileTitles();
@@ -96,33 +94,33 @@ public class GameAssets {
     @Getter(lazy = true)
     private final static List<String> boosters = readResourceLines("game/boosters.txt").stream()
         .sorted()
-        .collect(Collectors.toList());
+        .toList();
 
     /**
      * Hardcoded by the game
      */
     @Getter(lazy = true)
-    private final static List<String> climates = Lists.of("COLD", "HOT", "TEMPERATE");
+    private final static List<String> climates = List.of("COLD", "HOT", "TEMPERATE");
 
     @Getter(lazy = true)
     private static final List<String> monuments = getRooms().stream()
         .filter(name -> name.startsWith("MONUMENT_"))
         .sorted()
-        .collect(Collectors.toList());
+        .toList();
 
     @Getter(lazy = true)
     private final static List<String> stats = text().stats().json("NAMES")
         .map(JsonObject::keys)
-        .orElse(Lists.of())
+        .orElse(List.of())
         .stream()
         .sorted()
-        .collect(Collectors.toList());
+        .toList();
 
     /**
      * Hardcoded by the game
      */
     @Getter(lazy = true)
-    private final static List<String> terrains = Lists.of("OCEAN", "WET", "MOUNTAIN", "FOREST", "NONE");
+    private final static List<String> terrains = List.of("OCEAN", "WET", "MOUNTAIN", "FOREST", "NONE");
 
     public static GameFolder get(PATH path) {
         if (path.get().startsWith(init().getFolder().path().get())) {
@@ -143,7 +141,7 @@ public class GameAssets {
         try {
             return ModSdkModule.resourceService().readLines(path);
         } catch (IOException e) {
-            return Lists.of();
+            return List.of();
         }
     }
 }

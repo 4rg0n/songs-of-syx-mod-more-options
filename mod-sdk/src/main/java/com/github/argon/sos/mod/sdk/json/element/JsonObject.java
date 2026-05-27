@@ -62,7 +62,7 @@ public class JsonObject implements JsonElement {
     public List<JsonElement> values() {
         return entries().stream()
             .map(JsonTuple::getValue)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public <T extends JsonElement> Optional<T> getAs(String key, Class<T> clazz) {

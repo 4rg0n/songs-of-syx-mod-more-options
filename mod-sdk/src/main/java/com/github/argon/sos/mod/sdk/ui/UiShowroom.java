@@ -3,8 +3,6 @@ package com.github.argon.sos.mod.sdk.ui;
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
-import com.github.argon.sos.mod.sdk.util.Lists;
-import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class UiShowroom extends GuiSection {
 
@@ -39,7 +36,7 @@ public class UiShowroom extends GuiSection {
                 GuiSection section = UiUtil.toGuiSection(entry.getValue());
                 section.hoverInfoSet("SPRITES.icons().s." + entry.getKey().getName());
                 return section;
-            }).collect(Collectors.toList());
+            }).toList();
         GuiSection iconsSmallSection = Layouts.flow(iconsSmall, null, null, width, 100, 0);
 
         // Medium Icons
@@ -49,7 +46,7 @@ public class UiShowroom extends GuiSection {
                 GuiSection section = UiUtil.toGuiSection(entry.getValue());
                 section.hoverInfoSet("SPRITES.icons().m." + entry.getKey().getName());
                 return section;
-            }).collect(Collectors.toList());
+            }).toList();
         GuiSection iconsMediumSection = Layouts.flow(iconsMedium, null, null, width,150, 0);
 
         // Large Icons
@@ -59,7 +56,7 @@ public class UiShowroom extends GuiSection {
                 GuiSection section = UiUtil.toGuiSection(entry.getValue());
                 section.hoverInfoSet("SPRITES.icons().l." + entry.getKey().getName());
                 return section;
-            }).collect(Collectors.toList());
+            }).toList();
         GuiSection iconsLargeSection = Layouts.flow(iconsLarge, null, null, width, 100, 0);
 
         // COLOR
@@ -71,7 +68,7 @@ public class UiShowroom extends GuiSection {
                 ColorBox colorBox = new ColorBox(24, 24, entry.getValue());
                 colorBox.hoverInfoSet("COLOR." + entry.getKey().getName());
                 return colorBox;
-            }).collect(Collectors.toList());
+            }).toList();
         GuiSection colorsSection = Layouts.flow(colors, null, null, width, 100, 0);
 
         // COLOR.UNIQUE
@@ -93,7 +90,7 @@ public class UiShowroom extends GuiSection {
                 ColorBox colorBox = new ColorBox(24, 24, entry.getValue());
                 colorBox.hoverInfoSet("GCOLOR.T()." + entry.getKey().getName());
                 return colorBox;
-            }).collect(Collectors.toList());
+            }).toList();
         GuiSection gColorsTextSection = Layouts.flow(gColorsText, null, null, width, 100, 0);
 
         // GCOLOR.UI()
@@ -105,7 +102,7 @@ public class UiShowroom extends GuiSection {
                 ColorBox colorBox = new ColorBox(24, 24, entry.getValue());
                 colorBox.hoverInfoSet("GCOLOR.UI()." + entry.getKey().getName());
                 return colorBox;
-            }).collect(Collectors.toList());
+            }).toList();
         GuiSection gColorsUISection = Layouts.flow(gColorsUI, null, null, width, 100, 0);
 
         // simple button with description
@@ -172,7 +169,7 @@ public class UiShowroom extends GuiSection {
             .sameWidth(true)
             .build();
 
-        List<RENDEROBJ> buttonElements = Lists.of(
+        List<RENDEROBJ> buttonElements = List.of(
             button,
             buttonMenu,
             switcher,
@@ -201,7 +198,7 @@ public class UiShowroom extends GuiSection {
             .description("A label.")
             .build();
 
-        List<RENDEROBJ> otherElements = Lists.of(
+        List<RENDEROBJ> otherElements = List.of(
             label,
             checkbox,
             slider
@@ -266,7 +263,7 @@ public class UiShowroom extends GuiSection {
             .rowPadding(5)
             .evenOdd(true)
             .displayHeight(150)
-            .headerButtons(Maps.of(
+            .headerButtons(Map.of(
                 "column1", new Button("Column 1"),
                 "column2", new Button("Column 2"),
                 "column3", new Button("Column 3")
@@ -291,7 +288,7 @@ public class UiShowroom extends GuiSection {
                 .activeKey("tab1")
                 .highlight(true)
                 .build())
-            .tabs(Maps.of(
+            .tabs(Map.of(
                 "tab1", new GHeader("Tab Content 1"),
                 "tab2", new GHeader("Tab Content 2"),
                 "tab3", new GHeader("Tab Content 3")

@@ -6,7 +6,6 @@ import com.github.argon.sos.mod.sdk.game.api.GameSaveApi;
 import com.github.argon.sos.mod.sdk.json.JsonService;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -128,7 +127,7 @@ public class JsonConfigStore {
 
         if (configDefinition == null) {
             log.debug("Can not read file metas for class %s. No config entry present.", configClass.getSimpleName());
-            return Lists.of();
+            return List.of();
         }
 
         return readMetas(configDefinition);
@@ -374,7 +373,7 @@ public class JsonConfigStore {
 
     private List<FileMeta> readMetas(ConfigDefinition configDefinition) {
         if (!configDefinition.isBoundToSave()) {
-            return Lists.of();
+            return List.of();
         }
 
         return ioService.readMetas(configDefinition.getPath());

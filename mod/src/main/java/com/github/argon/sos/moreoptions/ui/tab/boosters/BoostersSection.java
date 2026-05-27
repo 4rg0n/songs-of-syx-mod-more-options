@@ -43,7 +43,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
                 entry -> entry.getValue().stream()
                     .sorted(Comparator.comparing(boosterEntry -> boosterEntry.getBoosters().getAdd().getOrigin().name.toString()))
                     .map(this::boosterRow)
-                    .collect(Collectors.toList())
+                    .toList()
             ));
 
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("BoostersTab.search.input.name"));

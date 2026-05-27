@@ -3,7 +3,6 @@ package com.github.argon.sos.mod.sdk.ui;
 import com.github.argon.sos.mod.sdk.game.action.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.util.ClassUtil;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -157,7 +156,7 @@ public class ColumnRow<Value> extends Section implements
     private VoidAction clickAction = () -> {};
 
     public void init() {
-        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(Lists.of(columns));
+        List<Integer> maxWidths = UiUtil.getMaxColumnWidths(List.of(columns));
         init(maxWidths);
     }
 

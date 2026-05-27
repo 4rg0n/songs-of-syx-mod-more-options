@@ -2,7 +2,6 @@ package com.github.argon.sos.mod.sdk.game.util;
 
 import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.ui.Section;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +18,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UiUtil {
@@ -106,7 +104,7 @@ public class UiUtil {
      */
     public static <Value> List<Integer> getMaxColumnWidths(@Nullable Collection<ColumnRow<Value>> columnRows) {
         if (columnRows == null) {
-            return Lists.of();
+            return List.of();
         }
 
         List<Integer> columnWidths = new ArrayList<>();
@@ -168,7 +166,7 @@ public class UiUtil {
 
     public static List<Integer> getMaxColumnWidths(@Nullable Map<?, List<List<? extends GuiSection>>> columndRowsMap) {
         if (columndRowsMap == null) {
-            return Lists.of();
+            return List.of();
         }
 
         List<Integer> maxColumnWidths = new ArrayList<>();
@@ -183,7 +181,7 @@ public class UiUtil {
 
     public static List<Integer> getMaxColumnWidths(@Nullable List<List<? extends GuiSection>> gridRows) {
         if (gridRows == null) {
-            return Lists.of();
+            return List.of();
         }
 
         List<Integer> columnWidths = new ArrayList<>();
@@ -289,7 +287,7 @@ public class UiUtil {
     public static List<Integer> getWidths(Collection<? extends RENDEROBJ> renderobjs) {
         return renderobjs.stream()
             .map(value -> value.body().width())
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public static int sumHeights(Collection<? extends RENDEROBJ> renderobjs) {

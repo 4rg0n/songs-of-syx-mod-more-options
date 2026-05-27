@@ -7,7 +7,6 @@ import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
@@ -39,7 +38,7 @@ public class BoosterFactory {
 
     public final static String KEY_PREFIX = "booster";
 
-    private final static List<String> blacklist = Lists.of(
+    private final static List<String> blacklist = List.of(
         /*
         Because MoreOptions boosters have a high max value, this results in a very high possible max world population.
         NPC factions will then have a lot more population compared to vanilla.

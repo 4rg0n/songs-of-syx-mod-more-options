@@ -1,9 +1,9 @@
 package com.github.argon.sos.moreoptions.ui.json.tab;
 
-import com.github.argon.sos.mod.sdk.game.asset.GameFolder;
 import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.game.asset.GameFolder;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.ui.*;
 import init.paths.PATH;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
@@ -58,7 +58,7 @@ public class FilesTab<Tab extends AbstractTab> extends AbstractTab {
             .collapsed(collapsed)
             .paths(tabs.stream()
                 .map(AbstractTab::getPath)
-                .collect(Collectors.toList()))
+                .toList())
             .availableHeight(availableHeight)
             .availableWidth(400)
             .iconsProvider(fileNode -> {

@@ -2,8 +2,6 @@ package com.github.argon.sos.mod.sdk.game;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
-import com.github.argon.sos.mod.sdk.util.Maps;
 import init.race.RACES;
 import init.race.Race;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +32,7 @@ public class StatsExtractor {
     /**
      * Some stats seem broken for some reason
      */
-    private final static List<String> STAT_KEYS_BLACK_LIST = Lists.of(
+    private final static List<String> STAT_KEYS_BLACK_LIST = List.of(
         "HOME_FURNITURE"
     );
 
@@ -169,20 +167,20 @@ public class StatsExtractor {
         }
 
         if (STAT_KEYS_BLACK_LIST.contains(statKey)) {
-            return Maps.of();
+            return Map.of();
         }
 
         String key = statKey + ":" + TOTAL_SUFFIX;
         if (isBlacklisted(key)) {
-            return Maps.of();
+            return Map.of();
         }
 
         try {
-            return Maps.of(key, stat.data().get(null));
+            return Map.of(key, stat.data().get(null));
         } catch (Exception e) {
             log.trace("Could not collect stat %s. Skipping", key, e);
 
-            return Maps.of();
+            return Map.of();
         }
     }
 

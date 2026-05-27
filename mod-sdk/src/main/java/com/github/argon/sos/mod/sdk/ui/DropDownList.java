@@ -15,7 +15,6 @@ import snake2d.util.datatypes.DIR;
 import util.gui.misc.GText;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DropDownList extends AbstractButton<List<String>, DropDownList> implements Refreshable {
 
@@ -69,7 +68,7 @@ public class DropDownList extends AbstractButton<List<String>, DropDownList> imp
 
         List<DropDown<String>> dropDowns = values.stream()
             .map(this::dropDown)
-            .collect(Collectors.toList());
+            .toList();
         uiList = new UiList<>(dropDowns, height, this::dropDown);
         uiList.valueChangeAction(__ -> refresh());
 

@@ -1,16 +1,15 @@
 package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
-import com.github.argon.sos.mod.sdk.ui.*;
-import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
+import com.github.argon.sos.mod.sdk.booster.Boosters;
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
+import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
 import com.github.argon.sos.moreoptions.ModModule;
-import com.github.argon.sos.mod.sdk.booster.Boosters;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
-import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import game.boosting.BoostableCat;
@@ -127,7 +126,7 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
             .sameWidth(true)
             .build();
 
-        GuiSection buttons = Layouts.horizontal(Lists.of(
+        GuiSection buttons = Layouts.horizontal(List.of(
             presetButtons,
             copyPasteButtons,
             resetButtons

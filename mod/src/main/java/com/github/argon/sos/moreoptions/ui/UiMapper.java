@@ -7,7 +7,10 @@ import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.ColorCircle;
+import com.github.argon.sos.mod.sdk.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.Label;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
@@ -28,7 +31,6 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.SPRITE;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -116,7 +118,7 @@ public class UiMapper {
                 entry.getValue().values().stream()
                     .map(this::toBoostersTabEntry)
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toList()));
+                    .toList());
         }
 
         // add player faction
@@ -125,7 +127,7 @@ public class UiMapper {
             boostersConfig.getPlayer().values().stream()
                 .map(this::toBoostersTabEntry)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList()));
+                .toList());
 
         return factionBoosters;
     }
@@ -183,7 +185,7 @@ public class UiMapper {
                     .build();
             })
             .sorted()
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public <Element extends RENDEROBJ> List<ColumnRow<String>> toRoomSoundLabeledColumnRows(Map<String, Element> elements) {
@@ -215,7 +217,7 @@ public class UiMapper {
                     .build();
             })
             .sorted()
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public List<ColumnRow<Boolean>> toEventTabColumnRows(Collection<EventTree> eventTrees) {
@@ -228,7 +230,7 @@ public class UiMapper {
                 eventTree.getTree().get().getEvent().info.desc.length() > 0
             )
             .map(this::toEventTabColumnRow)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public ColumnRow<Boolean> toEventTabColumnRow(EventTree eventTree) {

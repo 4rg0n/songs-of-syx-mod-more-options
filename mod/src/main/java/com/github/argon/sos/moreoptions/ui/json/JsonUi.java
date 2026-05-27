@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.ui.json;
 
+import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.ui.Table;
-import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiElementSingle;
 import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiTemplate;
 import com.github.argon.sos.moreoptions.ui.json.tab.FilesTab;
@@ -18,7 +18,6 @@ import snake2d.util.sprite.text.StringInputSprite;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 @Builder
 public class JsonUi {
@@ -66,7 +65,7 @@ public class JsonUi {
     public MultiTab<SimpleTab> multiTab(int height) {
         List<SimpleTab> tabs = templates.stream()
             .map((JsonUiTemplate jsonUiTemplate) -> tab(jsonUiTemplate, height))
-            .collect(Collectors.toList());
+            .toList();
 
         Objects.requireNonNull(rootPath);
         return new MultiTab<>(rootPath, height, tabs);
@@ -75,7 +74,7 @@ public class JsonUi {
     public FilesTab<SimpleTab> filesTab(int height) {
         List<SimpleTab> tabs = templates.stream()
             .map((JsonUiTemplate jsonUiTemplate) -> tab(jsonUiTemplate, height))
-            .collect(Collectors.toList());
+            .toList();
 
         Objects.requireNonNull(rootPath);
         return new FilesTab<>(rootPath, height, tabs);
@@ -113,7 +112,7 @@ public class JsonUi {
         public JsonUiBuilder templates(PATH path, String startsWith, Consumer<JsonUiTemplate> templateConsumer) {
             List<Path> paths = Arrays.stream(path.getFiles())
                 .map(path::get)
-                .collect(Collectors.toList());
+                .toList();
 
             return templates(paths, startsWith, templateConsumer);
         }
@@ -180,7 +179,7 @@ public class JsonUi {
 
             List<Path> paths = Arrays.stream(pinnedPath.getFiles())
                 .map(pinnedPath::get)
-                .collect(Collectors.toList());
+                .toList();
 
             templates(paths, startsWith, templateConsumer);
             return this;

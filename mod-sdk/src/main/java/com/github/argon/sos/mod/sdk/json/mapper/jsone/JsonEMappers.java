@@ -8,7 +8,6 @@ import snake2d.util.file.JsonE;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Contains all mappers for mapping {@link JsonElement}s into games {@link JsonE}
@@ -32,7 +31,7 @@ public class JsonEMappers {
     public List<JsonEMapper<?>> find(Class<?> clazz) {
         return mappers.stream()
             .filter(mapper -> mapper.supports(clazz))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public Optional<JsonEMapper<?>> findOne(Class<?> clazz) {

@@ -1,8 +1,6 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.*;
-import com.github.argon.sos.mod.sdk.ui.Section;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -71,7 +69,7 @@ public class Select<Key> extends Section implements
         }
 
         if (selectedKeys == null) {
-            selectedKeys = Lists.of();
+            selectedKeys = List.of();
         }
         this.initActiveKeys = selectedKeys;
 

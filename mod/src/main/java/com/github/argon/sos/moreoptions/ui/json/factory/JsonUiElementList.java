@@ -1,11 +1,11 @@
 package com.github.argon.sos.moreoptions.ui.json.factory;
 
-import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.json.element.JsonArray;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
@@ -71,7 +71,7 @@ public class JsonUiElementList<Value extends JsonElement, Element extends RENDER
         return null;
         //        return elements.stream()
 //            .map(JsonUiElement::toColumnRow)
-//            .collect(Collectors.toList());
+//            .toList();
     }
 
     public void writeInto(JsonObject config) {

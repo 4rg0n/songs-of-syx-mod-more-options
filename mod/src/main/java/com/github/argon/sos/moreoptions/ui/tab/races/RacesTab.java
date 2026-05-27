@@ -6,7 +6,6 @@ import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.ui.layout.Layout;
 import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
@@ -86,14 +85,14 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
                         .build();
 
                     likingsSliders.put(key(race, otherRace), likingsSlider);
-                    List<GuiSection> columns = Lists.of(raceIcon, likingsSlider, otherRaceIcon);
+                    List<GuiSection> columns = List.of(raceIcon, likingsSlider, otherRaceIcon);
 
                     return ColumnRow.<Integer>builder()
                         .searchTerm(term(race, otherRace))
                         .highlightable(true)
                         .columns(columns)
                         .build();
-            }).collect(Collectors.toList())));
+            }).toList()));
 
         // Race Likings table with search
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("RacesTab.search.input.name"));

@@ -3,7 +3,6 @@ package com.github.argon.sos.moreoptions.ui.json.factory;
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import snake2d.util.gui.renderable.RENDEROBJ;
@@ -29,11 +28,11 @@ public class JsonUiElementStore implements Resettable {
         return all.stream().flatMap(jsonUiElement -> {
             // todo recursion?!
                 if (jsonUiElement instanceof JsonUiElementSingle) {
-                    return Lists.of(jsonUiElement).stream();
+                    return List.of(jsonUiElement).stream();
                 } else if (jsonUiElement instanceof JsonUiElementList) {
                     return ((JsonUiElementList<? extends JsonElement, ? extends RENDEROBJ>) jsonUiElement).getElements().stream();
                 } else {
-                    return Lists.of().stream();
+                    return List.of().stream();
                 }
             })
             .filter(JsonUiElementSingle.class::isInstance)
@@ -63,7 +62,7 @@ public class JsonUiElementStore implements Resettable {
     public List<JsonUiElementSingle<? extends JsonElement, ? extends RENDEROBJ>> getOrphans() {
         return getAll().stream()
             .filter(JsonUiElement::isOrphan)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public <Json extends JsonUiElement<Value, Element>, Value extends JsonElement, Element extends RENDEROBJ> Json store(Json jsonUiElement) {

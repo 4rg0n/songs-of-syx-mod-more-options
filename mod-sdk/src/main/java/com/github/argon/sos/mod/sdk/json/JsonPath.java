@@ -1,12 +1,11 @@
 package com.github.argon.sos.mod.sdk.json;
 
-import com.github.argon.sos.mod.sdk.log.Logger;
-import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.json.element.JsonArray;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.json.element.JsonTuple;
+import com.github.argon.sos.mod.sdk.log.Logger;
+import com.github.argon.sos.mod.sdk.log.Loggers;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * A json path describes a way to find a value in a json tree.
@@ -168,7 +166,7 @@ public class JsonPath {
     public static JsonPath get(String path) {
         String[] parts = path.split(DELIMITER);
 
-        return new JsonPath(Lists.of(parts));
+        return new JsonPath(List.of(parts));
     }
 
     @Nullable
@@ -215,7 +213,7 @@ public class JsonPath {
                 }
 
                 return s;
-            }).collect(Collectors.toList());
+            }).toList();
     }
 
     public String toStringWithoutIndexes() {

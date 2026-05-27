@@ -38,7 +38,7 @@ public class MultiTab<Tab extends AbstractTab> extends AbstractTab {
             for (String file : path.getFiles()) {
                 paths.add(path.get(file));
             }
-            tabs = paths.stream().map(tabSupplier).collect(Collectors.toList());
+            tabs = paths.stream().map(tabSupplier).toList();
         }
 
         tabMap = tabs.stream().collect(Collectors.toMap(

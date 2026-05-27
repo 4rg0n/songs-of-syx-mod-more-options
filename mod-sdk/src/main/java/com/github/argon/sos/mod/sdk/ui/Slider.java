@@ -2,18 +2,16 @@ package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.mod.sdk.game.util.TextFormatUtil;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
 import init.sprite.UI.UI;
-import util.text.D;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +35,7 @@ import util.gui.misc.GStat;
 import util.gui.misc.GText;
 import util.gui.slider.GSliderInt;
 import util.info.GFORMAT;
+import util.text.D;
 import view.main.VIEW;
 
 import java.util.List;
@@ -127,7 +126,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
         Map<Integer, COLOR> thresholds,
         List<Integer> allowedValues
     ){
-        this.allowedValues = (allowedValues != null) ? allowedValues : Lists.of();
+        this.allowedValues = (allowedValues != null) ? allowedValues : List.of();
         this.resolution = (resolution > 0) ? resolution : 1;
         this.resolutionMulti = MathUtil.precisionMulti(this.resolution);
         min = resolutionMulti * min;

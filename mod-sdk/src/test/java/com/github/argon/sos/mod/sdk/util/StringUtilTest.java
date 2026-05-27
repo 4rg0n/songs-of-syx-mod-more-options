@@ -5,13 +5,16 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.List;
+import java.util.Map;
+
 @ExtendWith(ModSdkExtension.class)
 class StringUtilTest {
 
     @Test
     void testToString() {
         Assertions.assertThat(StringUtil.toString(new Integer[]{1, 2, 3})).isEqualTo("[1, 2, 3]");
-        Assertions.assertThat(StringUtil.toString(Maps.of("key1", 1, "key2", 2))).isEqualTo("{key1=1, key2=2}");
+        Assertions.assertThat(StringUtil.toString(Map.of("key1", 1, "key2", 2))).isEqualTo("{key1=1, key2=2}");
 
     }
 
@@ -61,7 +64,7 @@ class StringUtilTest {
             1.0F,
             new boolean[]{false},
             new String[]{"string"},
-            Maps.of("key1", 1, "key2", 2),
+            Map.of("key1", 1, "key2", 2),
         })).isEqualTo(new Object[]{"string", "1", "1.0000", "1.0000", "[false]", "[string]", "{key1=1, key2=2}"});
     }
 
@@ -114,7 +117,7 @@ class StringUtilTest {
     void quote() {
         Assertions.assertThat(StringUtil.quote("test")).isEqualTo("\"test\"");
         Assertions.assertThat(StringUtil.quote("")).isEqualTo("\"\"");
-        Assertions.assertThat(StringUtil.quote(Lists.of("test", "test"))).isEqualTo(Lists.of("\"test\"", "\"test\""));
+        Assertions.assertThat(StringUtil.quote(List.of("test", "test"))).isEqualTo(List.of("\"test\"", "\"test\""));
     }
 
     @Test

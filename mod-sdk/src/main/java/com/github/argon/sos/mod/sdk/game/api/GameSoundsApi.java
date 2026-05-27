@@ -5,7 +5,6 @@ import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
 import com.github.argon.sos.mod.sdk.game.asset.GameFolder;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import game.audio.AUDIO;
@@ -33,8 +32,8 @@ public class GameSoundsApi implements Resettable {
     /**
      * Hardcoded files that contain sound.
      */
-    private static final List<String> RACE_FILES = Lists.of("AA_Race");
-    private static final List<String> SETTLEMENT_FILES = Lists.of("AA_Effects");
+    private static final List<String> RACE_FILES = List.of("AA_Race");
+    private static final List<String> SETTLEMENT_FILES = List.of("AA_Effects");
 
     @Nullable private Map<String, Ambiance> ambienceSounds;
     @Nullable private Map<String, SoundRace> raceSounds;

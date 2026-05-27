@@ -4,11 +4,12 @@ import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
 import com.github.argon.sos.mod.sdk.json.GameJsonService;
 import com.github.argon.sos.mod.sdk.json.element.JsonArray;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiTemplate;
 import init.paths.PATHS;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * Some more often occurring fragments of configuration
@@ -239,7 +240,7 @@ public class JsonUITemplates {
         for (int i = 0; i < amount; i++) {
             jsonUiTemplate.sliderD("UPGRADES[" + i + "].BOOST", 0, 100);
             for (int j = 0; j < resourceAmount; j++) {
-                jsonUiTemplate.slider("UPGRADES[" + i + "].RESOURCE_MASK[" + j + "]", Lists.of(0, 1, 2, 3, 5));
+                jsonUiTemplate.slider("UPGRADES[" + i + "].RESOURCE_MASK[" + j + "]", List.of(0, 1, 2, 3, 5));
             }
             jsonUiTemplate.space(10);
         }

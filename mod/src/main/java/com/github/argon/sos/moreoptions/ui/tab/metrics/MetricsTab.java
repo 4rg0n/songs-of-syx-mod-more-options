@@ -1,15 +1,13 @@
 package com.github.argon.sos.moreoptions.ui.tab.metrics;
 
+import com.github.argon.sos.mod.sdk.data.domain.Range;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.ui.layout.Layout;
 import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
-import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Sets;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
-import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.sprite.UI.UI;
@@ -27,7 +25,10 @@ import util.gui.misc.GText;
 import util.gui.misc.GTextR;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -179,12 +180,12 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
                     .build())
                 .column(checkbox)
                 .build();
-        }).collect(Collectors.toList());
+        }).toList();
 
         this.onOffSwitcher = switcher;
         this.onOffSwitcher.switch_(metricsConfig.isEnabled());
 
-        List<ColumnRow<Void>> rows = Lists.of(
+        List<ColumnRow<Void>> rows = List.of(
             onOffToggleRow,
             exportFileRow,
             collectionRateRow,

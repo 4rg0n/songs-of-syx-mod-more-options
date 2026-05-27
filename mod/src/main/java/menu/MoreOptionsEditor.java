@@ -5,7 +5,6 @@ import com.github.argon.sos.mod.sdk.ui.Button;
 import com.github.argon.sos.mod.sdk.ui.ButtonMenu;
 import com.github.argon.sos.mod.sdk.ui.Switcher;
 import com.github.argon.sos.mod.sdk.ui.Tabulator;
-import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ui.json.JsonUITemplates;
 import com.github.argon.sos.moreoptions.ui.json.JsonUi;
 import com.github.argon.sos.moreoptions.ui.json.tab.AbstractTab;
@@ -18,6 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.sprite.text.StringInputSprite;
+
+import java.util.Map;
 
 public class MoreOptionsEditor extends GuiSection {
 
@@ -43,7 +44,7 @@ public class MoreOptionsEditor extends GuiSection {
             .filesTab(availableHeight);
 
         tabulator = Tabulator.<String, AbstractTab, Void>builder()
-            .tabs(Maps.of(
+            .tabs(Map.of(
                 "editor", filesTab
             ))
             .tabMenu(Switcher.<String>builder()
@@ -51,7 +52,7 @@ public class MoreOptionsEditor extends GuiSection {
                     .search(searchInput)
                     .maxHeight(FullWindow.TOP_HEIGHT - 10)
                     .maxWidth(C.WIDTH() - 50)
-                    .buttons(Maps.of(
+                    .buttons(Map.of(
                         "editor", new Button("Config Editor")
                     ))
                     .sameWidth(true)

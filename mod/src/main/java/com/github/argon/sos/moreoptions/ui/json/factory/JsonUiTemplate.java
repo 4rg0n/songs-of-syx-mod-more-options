@@ -1,13 +1,11 @@
 package com.github.argon.sos.moreoptions.ui.json.factory;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.element.*;
-import com.github.argon.sos.mod.sdk.util.Lists;
-import menu.ui.ColorPicker;
-import com.github.argon.sos.mod.sdk.ui.Slider;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.moreoptions.ui.json.JsonUiException;
+import menu.ui.ColorPicker;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -77,52 +75,52 @@ public class JsonUiTemplate extends AbstractJsonUiTemplate {
     }
 
     public JsonUiElement<JsonLong, Slider> slider(String jsonPath, int min, int max, int step) {
-        return store.supplier(() -> factory.slider(jsonPath, min, max, step, Lists.of(), JsonLong.of(0L))).store();
+        return store.supplier(() -> factory.slider(jsonPath, min, max, step, List.of(), JsonLong.of(0L))).store();
     }
 
     public JsonUiElement<JsonLong, Slider> slider(String jsonPath, int min, int max) {
-        return store.supplier(() -> factory.slider(jsonPath, min, max, 1, Lists.of(),JsonLong.of(0L))).store();
+        return store.supplier(() -> factory.slider(jsonPath, min, max, 1, List.of(),JsonLong.of(0L))).store();
     }
 
     public JsonUiElementList<JsonLong, Slider> sliders(String jsonPath, List<String> names, int min, int max, int step) {
         return store.supplier(() -> factory.asObject(jsonPath, names, false,
-                jsonPath1 -> factory.slider(jsonPath1, min, max, step, Lists.of(), JsonLong.of(0L)))).store();
+                jsonPath1 -> factory.slider(jsonPath1, min, max, step, List.of(), JsonLong.of(0L)))).store();
     }
 
     public JsonUiElementList<JsonLong, Slider> sliders(String jsonPath, List<String> names, boolean asWildcards, int min, int max, int step) {
         return store.supplier(() -> factory.asObject(jsonPath, names, asWildcards,
-            jsonPath1 -> factory.slider(jsonPath1, min, max, step, Lists.of(), JsonLong.of(0L)))).store();
+            jsonPath1 -> factory.slider(jsonPath1, min, max, step, List.of(), JsonLong.of(0L)))).store();
     }
 
     public JsonUiElementList<JsonLong, Slider> sliders(String jsonPath, List<String> names, boolean asWildcards, int min, int max) {
         return store.supplier(() -> factory.asObject(jsonPath, names, asWildcards,
-            jsonPath1 -> factory.slider(jsonPath1, min, max, 1, Lists.of(), JsonLong.of(0L)))).store();
+            jsonPath1 -> factory.slider(jsonPath1, min, max, 1, List.of(), JsonLong.of(0L)))).store();
     }
 
     public JsonUiElementList<JsonLong, Slider> sliders(String jsonPath, List<String> names, int min, int max) {
         return store.supplier(() -> factory.asObject(jsonPath, names, false,
-            jsonPath1 -> factory.slider(jsonPath1, min, max, 1, Lists.of(), JsonLong.of(0L)))).store();
+            jsonPath1 -> factory.slider(jsonPath1, min, max, 1, List.of(), JsonLong.of(0L)))).store();
     }
 
     public JsonUiElementList<JsonLong, Slider> sliders(String jsonPath, int amount, int min, int max, int step) {
         return store.supplier(() -> factory.asArray(jsonPath, amount,
-            jsonPath1 -> factory.slider(jsonPath1, min, max, step, Lists.of(), JsonLong.of(0L)))).store();
+            jsonPath1 -> factory.slider(jsonPath1, min, max, step, List.of(), JsonLong.of(0L)))).store();
     }
 
     public JsonUiElementList<JsonLong, Slider> sliders(String jsonPath, int amount, int min, int max) {
         return store.supplier(() -> factory.asArray(jsonPath, amount,
-            jsonPath1 -> factory.slider(jsonPath1, min, max, 1, Lists.of(), JsonLong.of(0L)))).store();
+            jsonPath1 -> factory.slider(jsonPath1, min, max, 1, List.of(), JsonLong.of(0L)))).store();
     }
 
 
     public JsonUiElementList<JsonLong, Slider> sliders(String jsonPath, String name, int amount, int min, int max, int step) {
         return store.supplier(() -> factory.asTuples(jsonPath, name, amount,
-            jsonPath1 -> factory.slider(jsonPath1, min, max, step, Lists.of(), JsonLong.of(0L)))).store();
+            jsonPath1 -> factory.slider(jsonPath1, min, max, step, List.of(), JsonLong.of(0L)))).store();
     }
 
     public JsonUiElementList<JsonLong, Slider> sliders(String jsonPath, String name, int amount, int min, int max) {
         return store.supplier(() -> factory.asTuples(jsonPath, name, amount,
-            jsonPath1 -> factory.slider(jsonPath1, min, max, 1, Lists.of(), JsonLong.of(0L)))).store();
+            jsonPath1 -> factory.slider(jsonPath1, min, max, 1, List.of(), JsonLong.of(0L)))).store();
     }
 
 

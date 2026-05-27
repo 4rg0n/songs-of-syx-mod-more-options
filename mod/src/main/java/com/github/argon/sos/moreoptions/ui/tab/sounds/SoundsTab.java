@@ -8,7 +8,6 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.ui.layout.Layout;
 import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
-import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.SoundsConfig;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
@@ -191,7 +190,7 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
         Tabulator<String, RENDEROBJ, Void> tabulator = Tabulator.<String, RENDEROBJ, Void>builder()
             .tabMenu(menu)
             .center(true)
-            .tabs(Maps.of(
+            .tabs(Map.of(
                 "ambienceAndRace", ambienceAndRaceTab,
                 "settlementAndAnimal", settlementAndAnimalTab,
                 "roomWork", roomWorkTab,

@@ -426,7 +426,7 @@ public class YourModScript extends AbstractModSdkScript {
         Tabulator<Object, RENDEROBJ, Object> tabulator = Tabulator.builder()
             // the different views, in our case simple color boxes
             // the keys must match the button keys defined in the switcher menu
-            .tabs(Maps.of(
+            .tabs(Map.of(
                 "RED50", new ColorBox(100, COLOR.RED50),
                 "GREEN40", new ColorBox(100, COLOR.GREEN40),
                 "BLUE50", new ColorBox(100, COLOR.BLUE50)
@@ -467,7 +467,7 @@ public class YourUiElement extends GuiSection {
         Tabulator<String, ColorBox, Void> tabulator = Tabulator.builder()
             // the different views, in our case simple color boxes
             // the keys must match the button keys defined in the switcher menu
-            .tabs(Maps.of(
+            .tabs(Map.of(
                 "RED50", new ColorBox(100, COLOR.RED50),
                 "GREEN40", new ColorBox(100, COLOR.GREEN40),
                 "BLUE50", new ColorBox(100, COLOR.BLUE50)
@@ -498,7 +498,7 @@ public class YourUiElement extends GuiSection {
             .selectable(true) // rows can be selected with a click
             .multiselect(true) // allows multiple rows to be selected
             .displaySearch(true) // shows a default search bar
-            .headerButtons(Maps.of( // this will display a header with the column names
+            .headerButtons(Map.of( // this will display a header with the column names
                 "name", new Button("Name"),
                 "race", new Button("Race"),
                 "age", new Button("Age")

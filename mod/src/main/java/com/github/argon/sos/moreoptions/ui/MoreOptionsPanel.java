@@ -7,7 +7,6 @@ import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.*;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
@@ -160,7 +159,7 @@ public class MoreOptionsPanel extends GuiSection implements
             i18n.t("MoreOptionsPanel.button.share.name"),
             i18n.t("MoreOptionsPanel.button.share.desc"));
 
-        List<Button> buttons = Lists.of(
+        List<Button> buttons = List.of(
             defaultAllButton,
             shareButton,
             reloadButton

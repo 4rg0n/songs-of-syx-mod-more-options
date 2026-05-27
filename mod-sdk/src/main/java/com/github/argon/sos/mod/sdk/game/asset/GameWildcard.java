@@ -1,7 +1,5 @@
 package com.github.argon.sos.mod.sdk.game.asset;
 
-import com.github.argon.sos.mod.sdk.util.Lists;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +45,7 @@ public class GameWildcard {
 
     public static GameWildcard of(String path) {
         String[] parts = path.split(DELIMITER);
-        return new GameWildcard(Lists.of(parts));
+        return new GameWildcard(List.of(parts));
     }
 
     public static Set<String> from(List<String> paths) {

@@ -3,7 +3,6 @@ package com.github.argon.sos.moreoptions.ui.tab.advanced;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.ui.*;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
@@ -18,6 +17,8 @@ import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import util.gui.misc.GText;
 import util.gui.misc.GTextR;
+
+import java.util.List;
 
 /**
  * Contains slider for controlling the intensity of weather effects
@@ -169,9 +170,9 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
             .build();
 
         Table<Void> settings = Table.<Void>builder()
-            .category(i18n.t("AdvancedTab.header.log.name"), Lists.of(logLevelSelect, logFunctions))
-            .category(i18n.t("AdvancedTab.header.mod.name"), Lists.of(modFunctions, saveStampRow))
-            .category(i18n.t("AdvancedTab.header.world.name"), Lists.of(worldFunctions))
+            .category(i18n.t("AdvancedTab.header.log.name"), List.of(logLevelSelect, logFunctions))
+            .category(i18n.t("AdvancedTab.header.mod.name"), List.of(modFunctions, saveStampRow))
+            .category(i18n.t("AdvancedTab.header.world.name"), List.of(worldFunctions))
             .displayHeight(availableHeight)
             .backgroundColor(COLOR.WHITE10)
             .columnMargin(20)

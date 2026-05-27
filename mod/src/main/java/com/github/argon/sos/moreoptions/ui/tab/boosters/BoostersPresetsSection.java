@@ -1,14 +1,14 @@
 package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.BiAction;
+import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.Button;
 import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.ui.Table;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.moreoptions.ModModule;
-import com.github.argon.sos.mod.sdk.data.domain.Range;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;
@@ -76,7 +76,7 @@ public class BoostersPresetsSection extends GuiSection {
                 .column(shareButton)
                 .column(deleteButton)
                 .build();
-        }).collect(Collectors.toList());
+        }).toList();
 
         Table<String> buttonTable = Table.<String>builder()
             .rows(rows)
