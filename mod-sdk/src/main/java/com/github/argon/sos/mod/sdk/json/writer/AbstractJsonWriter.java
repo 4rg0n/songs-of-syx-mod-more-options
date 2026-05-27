@@ -1,10 +1,14 @@
 package com.github.argon.sos.mod.sdk.json.writer;
 
 import com.github.argon.sos.mod.sdk.json.element.*;
+import com.github.argon.sos.mod.sdk.json.writer.strategy.JsonWriterStrategy;
+import com.github.argon.sos.mod.sdk.json.writer.strategy.JsonWriterStrategyType;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.StringJoiner;
 
 public abstract class AbstractJsonWriter implements JsonWriter {
@@ -26,6 +30,8 @@ public abstract class AbstractJsonWriter implements JsonWriter {
 
     protected String lineBreak;
 
+    protected final Map<String, JsonWriterStrategy> strategies;
+
     public AbstractJsonWriter(
         boolean quoteKeys,
         boolean quoteStrings,
@@ -37,30 +43,37 @@ public abstract class AbstractJsonWriter implements JsonWriter {
         this.trailingComma = trailingComma;
         this.indent = indent;
         this.lineBreak = "\n";
+        this.strategies = getStrategies();
     }
 
     public String write(JsonElement json) {
-        String jsonString = build(json).toString();
+        String jsonString = build(json, null).toString();
         printDepth = 0;
 
         return jsonString;
+    }
+
+    protected Map<String, JsonWriterStrategy> getStrategies() {
+        return Map.of();
     }
 
     protected boolean doPrintBlockMarks() {
         return true;
     }
 
-    protected StringBuilder build(JsonObject jsonObject) {
-        return block("{", "}", jsonObject.entries());
+    protected StringBuilder build(JsonObject jsonObject, @Nullable JsonWriterStrategy strategy) {
+        return block("{", "}", jsonObject.entries(), strategy);
     }
 
-    protected StringBuilder build(JsonArray jsonArray) {
-        return block("[", "]", jsonArray.getElements());
+    protected StringBuilder build(JsonArray jsonArray, @Nullable JsonWriterStrategy strategy) {
+        return block("[", "]", jsonArray.getElements(), strategy);
     }
     protected StringBuilder build(JsonTuple jsonTuple) {
         StringBuilder sb = new StringBuilder();
 
         String key = jsonTuple.getKey();
+        JsonWriterStrategy jsonWriterStrategy = strategies.get(key);
+
         if (quoteKeys) {
             key = StringUtil.quote(key);
         }
@@ -68,38 +81,38 @@ public abstract class AbstractJsonWriter implements JsonWriter {
         sb.append(key).append(": ");
 
         JsonElement value = jsonTuple.getValue();
-        sb.append(build(value));
+        sb.append(build(value, jsonWriterStrategy));
 
         return sb;
     }
 
-    protected StringBuilder build(JsonString json) {
-        return jsonString(json);
+    protected StringBuilder build(JsonString json, @Nullable JsonWriterStrategy strategy) {
+        return jsonString(json, strategy);
     }
 
-    protected StringBuilder build(JsonElement json) {
+    protected StringBuilder build(JsonElement json, @Nullable JsonWriterStrategy strategy) {
         if (json instanceof JsonObject) {
-            return build((JsonObject) json);
+            return build((JsonObject) json, strategy);
         } if (json instanceof JsonArray) {
-            return build((JsonArray) json);
+            return build((JsonArray) json, strategy);
         } if (json instanceof JsonString) {
-            return build((JsonString) json);
+            return build((JsonString) json, strategy);
         } if (json instanceof JsonTuple) {
             return build((JsonTuple) json);
         } else if (json instanceof JsonLong)  {
-            return jsonLong((JsonLong) json);
+            return jsonLong((JsonLong) json, strategy);
         } else if (json instanceof JsonDouble)  {
-            return jsonDouble((JsonDouble) json);
+            return jsonDouble((JsonDouble) json, strategy);
         } else if (json instanceof JsonNull)  {
-            return jsonNull((JsonNull) json);
+            return jsonNull((JsonNull) json, strategy);
         } else if (json instanceof JsonBoolean)  {
-            return jsonBoolean((JsonBoolean) json);
+            return jsonBoolean((JsonBoolean) json, strategy);
         } else {
             throw new RuntimeException("Does not support writing json element " + json.getClass().getSimpleName());
         }
     }
 
-    protected StringBuilder block(String start, String end, Collection<? extends JsonElement> elements) {
+    protected StringBuilder block(String start, String end, Collection<? extends JsonElement> elements, @Nullable JsonWriterStrategy strategy) {
         StringBuilder sb = new StringBuilder();
         String indent = "";
         if (doPrintBlockMarks()) {
@@ -115,7 +128,7 @@ public abstract class AbstractJsonWriter implements JsonWriter {
             StringBuilder elementBuilder = new StringBuilder();
             elementBuilder
                 .append(indent)
-                .append(build(element));
+                .append(build(element, strategy));
 
             stringJoiner.add(elementBuilder);
         }
@@ -153,10 +166,14 @@ public abstract class AbstractJsonWriter implements JsonWriter {
     }
 
     @NotNull
-    protected StringBuilder jsonString(JsonElement json) {
+    protected StringBuilder jsonString(JsonElement json, @Nullable JsonWriterStrategy strategy) {
         String jsonString = json.toString();
+        JsonWriterStrategyType strategyType = null;
+        if (strategy != null) {
+            strategyType = strategy.get(json);
+        }
 
-        if (quoteStrings) {
+        if (quoteStrings || JsonWriterStrategyType.QUOTE.equals(strategyType)) {
             jsonString = StringUtil.quote(jsonString);
         }
 
@@ -164,22 +181,22 @@ public abstract class AbstractJsonWriter implements JsonWriter {
     }
 
     @NotNull
-    protected StringBuilder jsonBoolean(JsonBoolean json) {
+    protected StringBuilder jsonBoolean(JsonBoolean json, @Nullable JsonWriterStrategy strategy) {
         return new StringBuilder(json.toString());
     }
 
     @NotNull
-    protected StringBuilder jsonDouble(JsonDouble json) {
+    protected StringBuilder jsonDouble(JsonDouble json, @Nullable JsonWriterStrategy strategy) {
         return new StringBuilder(json.toString());
     }
 
     @NotNull
-    protected StringBuilder jsonLong(JsonLong json) {
+    protected StringBuilder jsonLong(JsonLong json, @Nullable JsonWriterStrategy strategy) {
         return new StringBuilder(json.toString());
     }
 
     @NotNull
-    protected StringBuilder jsonNull(JsonNull json) {
+    protected StringBuilder jsonNull(JsonNull json, @Nullable JsonWriterStrategy strategy) {
         return new StringBuilder(json.toString());
     }
 }

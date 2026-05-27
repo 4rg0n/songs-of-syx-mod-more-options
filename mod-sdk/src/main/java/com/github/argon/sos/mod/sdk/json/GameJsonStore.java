@@ -27,6 +27,7 @@ public class GameJsonStore implements Phases {
 
     private final IOService ioService;
 
+    private final static String TEXT_PATH = "/data/assets/text";
     private final Map<Path, Json> jsonObjects = new HashMap<>();
     private final Set<Path> filePaths = new HashSet<>();
 
@@ -51,7 +52,14 @@ public class GameJsonStore implements Phases {
 
     public void put(Path filePath, String content) {
         try {
-            Json json = new Json(content, JsonWriters.jsonEPretty());
+            Json json;
+            // json in the text assets use quoted strings
+            if (filePath.startsWith(TEXT_PATH)) {
+                json = new Json(content, JsonWriters.gameJsonQuotedPretty());
+            } else {
+                json = new Json(content, JsonWriters.gameJsonUnquotedPretty());
+            }
+
             put(filePath, json);
         } catch (JsonParseException e) {
             log.error("Could not add json %s to store", filePath, e);

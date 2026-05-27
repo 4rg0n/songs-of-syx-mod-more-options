@@ -116,7 +116,7 @@ public class ModSdkModule {
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final static JsonGameService jsonGameService = Factory.newJsonGameService(
-        JsonWriters.jsonEPretty(), // will write game json format as default
+        JsonWriters.gameJsonUnquotedPretty(), // will write game json format as default
         fileService());
 
     /**

@@ -37,7 +37,7 @@ public class MoreOptionsV5Config {
     private RacesConfig races = RacesConfig.builder().build();
 
     public String toJson() {
-        Json json = new Json(JsonMapper.mapObject(this), JsonWriters.jsonEPretty());
+        Json json = new Json(JsonMapper.mapObject(this), JsonWriters.gameJsonUnquotedPretty());
         return json.write();
     }
 }

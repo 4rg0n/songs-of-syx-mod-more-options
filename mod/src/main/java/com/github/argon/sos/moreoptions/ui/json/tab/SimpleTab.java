@@ -48,7 +48,7 @@ public class SimpleTab extends AbstractTab {
         Button exportButton = new Button(SPRITES.icons().m.for_muster);
         exportButton.hoverInfoSet("Export settings to clipboard.");
         exportButton.clickActionSet(() -> {
-            Json json = new Json(jsonUiTemplate.getConfig(), JsonWriters.jsonEPretty());
+            Json json = new Json(jsonUiTemplate.getConfig(), JsonWriters.gameJsonUnquotedPretty());
             Clipboard.write(json.write());
         });
 

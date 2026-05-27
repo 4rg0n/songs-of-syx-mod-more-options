@@ -4,15 +4,16 @@ import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 
 /**
  * For printing {@link JsonElement}s as Songs of Syx JSON string
+ * Quotes strings.
  */
-public class JsonEWriter extends AbstractJsonWriter {
+public class GameJsonQuotedWriter extends AbstractGameJsonWriter {
 
-    public JsonEWriter() {
+    public GameJsonQuotedWriter() {
         this(0);
     }
 
-    public JsonEWriter(int indent) {
-        super(false, false, true, indent);
+    public GameJsonQuotedWriter(int indent) {
+        super(false, true, true, indent);
     }
 
     @Override
