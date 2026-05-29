@@ -118,7 +118,7 @@ public class MoreOptionsEditor extends GuiSection {
             .templates(jsonUiTemplate -> {
                 jsonUiTemplate.header("GAME_TEXTURE");
                 jsonUiTemplate.dropDown("GAME_TEXTURE.FILE", GameAssets.sprite().textures().fileTitles());
-                jsonUiTemplate.slider("GAME_TEXTURE.ROW", 0, 7);
+                jsonUiTemplate.inputInteger("GAME_TEXTURE.ROW", 0, 7);
 
                 jsonUiTemplate.header("ROAD");
                 jsonUiTemplate.dropDown("ROAD.RESOURCE", GameAssets.getResources());
@@ -139,11 +139,9 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.dropDown("SPRITE", GameAssets.sprite().settlement().fortification().fileTitles());
                 jsonUiTemplate.color("COLOR");
                 jsonUiTemplate.color("MINIMAP_COLOR");
-                jsonUiTemplate.text("BUILD_SOUND");
                 jsonUiTemplate.dropDown("RESOURCE", GameAssets.getResources());
                 jsonUiTemplate.slider("RESOURCE_AMOUNT", 1, 1000);
                 jsonUiTemplate.slider("HEIGHT", 1, 20);
-                jsonUiTemplate.sliderPerc("BUILD_TIME", 0, 100);
                 jsonUiTemplate.sliderPerc("DURABILITY", 0, 100);
             }).build();
     }
@@ -154,7 +152,6 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.dropDown("SPRITE", GameAssets.sprite().settlement().structure().fileTitles());
                 jsonUiTemplate.color("COLOR");
                 jsonUiTemplate.color("MINIMAP_COLOR");
-                jsonUiTemplate.text("BUILD_SOUND");
                 jsonUiTemplate.dropDown("RESOURCE", GameAssets.getResources());
                 jsonUiTemplate.slider("RESOURCE_AMOUNT", 1, 1000);
                 jsonUiTemplate.sliderPerc("BUILD_TIME", 0, 100);
@@ -275,9 +272,9 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.slider("INFECTION_DAYS", 0, 100);
                 jsonUiTemplate.color("COLOR");
                 jsonUiTemplate.header("OCCURRENCE_CLIMATE");
-                jsonUiTemplate.slidersPerc("OCCURRENCE_CLIMATE", GameAssets.getClimates(), 0, 100);
+                jsonUiTemplate.slidersPerc("OCCURRENCE_CLIMATE", GameAssets.getClimates(), 0, 100, 3);
                 jsonUiTemplate.header("OCCURRENCE_TERRAIN");
-                jsonUiTemplate.slidersPerc("OCCURRENCE_TERRAIN", GameAssets.getTerrains(), 0, 100);
+                jsonUiTemplate.slidersPerc("OCCURRENCE_TERRAIN", GameAssets.getTerrains(), 0, 100, 3);
             }).build();
     }
 
@@ -839,44 +836,47 @@ public class MoreOptionsEditor extends GuiSection {
         return JsonUi.builder(PATHS.CONFIG().init)
             .template("Sett", jsonUiTemplate -> {
                 jsonUiTemplate.sliderPerc("HAPPINESS_EXPONENT", 0, 100);
+                jsonUiTemplate.inputDouble("MAX_POP", 0, 1, 4);
+                jsonUiTemplate.inputInteger("SECONDS_PER_HOUR", 0, 1000000);
+                jsonUiTemplate.inputInteger("HOURS_PER_DAY", 0, 1000000);
                 jsonUiTemplate.slider("TOURIST_PER_YEAR_MAX", 0, 4096, 32);
                 jsonUiTemplate.slider("TOURIST_CRETIDS", 0, 10000);
+                jsonUiTemplate.slider("POP_RAIDER_WORTH", 0, 10000);
                 jsonUiTemplate.slider("DIMENSION", 64, 2048, 64);
             })
             .template("Battle", jsonUiTemplate -> {
-                jsonUiTemplate.sliderPerc("DAMAGE", 0, 1000000);
-                jsonUiTemplate.sliderPerc("BLOCK_CHANCE", 0, 1000000);
+                jsonUiTemplate.sliderPerc("DAMAGE_REDUCTION", 1, 1000000);
+                jsonUiTemplate.sliderPerc("MORALE_HOLDOUT", 0, 10000);
                 jsonUiTemplate.slider("TRAINING_DEGRADE", 0, 50);
                 jsonUiTemplate.slider("MEN_PER_DIVISION", 1, 255);
                 jsonUiTemplate.slider("DIVISIONS_PER_ARMY", 1, 126);
                 jsonUiTemplate.slider("REGION_MAX_DIV", 0, 127);
             })
             .template("LandingParty", jsonUiTemplate -> {
-                jsonUiTemplate.slider("RESOURCES.STONE", 0, 10000);
-                jsonUiTemplate.slider("RESOURCES.WOOD", 0, 10000);
-                jsonUiTemplate.slider("RESOURCES.RATION", 0, 1000);
-                jsonUiTemplate.slider("RESOURCES.LIVESTOCK", 0, 10000);
+                jsonUiTemplate.sliders("RESOURCES", GameAssets.getResources(), 0, 10000);
             })
             .template("LEAVE_CAUSE", jsonUiTemplate -> {
-                jsonUiTemplate.sliderPerc("EMMIGRATED", 0, 100);
-                jsonUiTemplate.sliderPerc("STARVED", 0, 100);
-                jsonUiTemplate.sliderPerc("SLAYED", 0, 100);
-                jsonUiTemplate.sliderPerc("ANIMAL", 0, 100);
-                jsonUiTemplate.sliderPerc("AGE", 0, 100);
-                jsonUiTemplate.sliderPerc("HEAT", 0, 100);
-                jsonUiTemplate.sliderPerc("COLD", 0, 100);
-                jsonUiTemplate.sliderPerc("MURDER", 0, 100);
-                jsonUiTemplate.sliderPerc("EXECUTED", 0, 100);
-                jsonUiTemplate.sliderPerc("DESERTED", 0, 100);
-                jsonUiTemplate.sliderPerc("DROWNED", 0, 100);
-                jsonUiTemplate.sliderPerc("ARMY", 0, 100);
-                jsonUiTemplate.sliderPerc("OTHER", 0, 100);
-                jsonUiTemplate.sliderPerc("PUNISHED", 0, 100);
-                jsonUiTemplate.sliderPerc("EXILED", 0, 100);
-                jsonUiTemplate.sliderPerc("SACRIFICED", 0, 100);
-                jsonUiTemplate.sliderPerc("DISEASE", 0, 100);
-                jsonUiTemplate.sliderPerc("ACCIDENT", 0, 100);
-                jsonUiTemplate.sliderPerc("BRAWL", 0, 10);
+                jsonUiTemplate.sliderPerc("EMMIGRATED", 0, 1000);
+                jsonUiTemplate.sliderPerc("STARVED", 0, 1000);
+                jsonUiTemplate.sliderPerc("SLAYED", 0, 1000);
+                jsonUiTemplate.sliderPerc("ANIMAL", 0, 1000);
+                jsonUiTemplate.sliderPerc("AGE", 0, 1000);
+                jsonUiTemplate.sliderPerc("HEAT", 0, 1000);
+                jsonUiTemplate.sliderPerc("COLD", 0, 1000);
+                jsonUiTemplate.sliderPerc("MURDER", 0, 1000);
+                jsonUiTemplate.sliderPerc("EXECUTED", 0, 1000);
+                jsonUiTemplate.sliderPerc("DESERTED", 0, 1000);
+                jsonUiTemplate.sliderPerc("DROWNED", 0, 1000);
+                jsonUiTemplate.sliderPerc("ARMY", 0, 1000);
+                jsonUiTemplate.sliderPerc("OTHER", 0, 1000);
+                jsonUiTemplate.sliderPerc("PUNISHED", 0, 1000);
+                jsonUiTemplate.sliderPerc("EXILED", 0, 1000);
+                jsonUiTemplate.sliderPerc("SACRIFICED", 0, 1000);
+                jsonUiTemplate.sliderPerc("DISEASE", 0, 1000);
+                jsonUiTemplate.sliderPerc("ACCIDENT", 0, 1000);
+                jsonUiTemplate.sliderPerc("BRAWL", 0, 1000);
+                jsonUiTemplate.sliderPerc("INSANE", 0, 1000);
+                jsonUiTemplate.sliderPerc("SOLD", 0, 1000);
             }).build();
     }
 }
