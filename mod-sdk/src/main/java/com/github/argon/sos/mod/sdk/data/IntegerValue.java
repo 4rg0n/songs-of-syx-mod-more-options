@@ -42,7 +42,7 @@ public class IntegerValue {
         return getValue() <= min;
     }
 
-    public double inc(int value) {
+    public int inc(int value) {
         return setValue(getValue() + value);
     }
 }

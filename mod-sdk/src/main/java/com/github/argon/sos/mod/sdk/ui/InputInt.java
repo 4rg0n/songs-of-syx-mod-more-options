@@ -59,7 +59,7 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 
 				@Override
 				protected void clickA() {
-					double decreasedValue = inputValue.inc(-Math.max(1, (inputValue.getMax() - inputValue.getMin()) / 5));
+					int decreasedValue = inputValue.inc(-Math.max(1, (inputValue.getMax() - inputValue.getMin()) / 5));
 					updateInputSprite(decreasedValue);
 				}
 
@@ -80,7 +80,7 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.minifier) {
 				@Override
 				protected void clickA() {
-					double decreasedValue = inputValue.inc(-1);
+					int decreasedValue = inputValue.inc(-1);
 					updateInputSprite(decreasedValue);
 				}
 
@@ -100,7 +100,7 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.magnifier) {
 				@Override
 				protected void clickA() {
-					double increasedValue = inputValue.inc(1);
+					int increasedValue = inputValue.inc(1);
 					updateInputSprite(increasedValue);
 				}
 
@@ -118,7 +118,7 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.magnifierBig) {
 				@Override
 				protected void clickA() {
-					double increasedValue = inputValue.inc(Math.max(1, (inputValue.getMax() - inputValue.getMin()) / 5));
+					int increasedValue = inputValue.inc(Math.max(1, (inputValue.getMax() - inputValue.getMin()) / 5));
 					updateInputSprite(increasedValue);
 				}
 
@@ -155,8 +155,7 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 		updateInputSprite(inputValue.getValue());
 	}
 
-	private void updateInputSprite(double value) {
+	private void updateInputSprite(int value) {
 		inputSprite.text().clear().add(value);
 	}
-	
 }

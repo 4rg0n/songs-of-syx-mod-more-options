@@ -410,12 +410,6 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.dropDown("FLOOR2", GameAssets.getFloors());
                 JsonUITemplates.work(jsonUiTemplate);
             })
-            .template( "_SLAVER", jsonUiTemplate -> {
-                JsonUITemplates.roomGeneral(jsonUiTemplate);
-                jsonUiTemplate.space();
-
-                JsonUITemplates.work(jsonUiTemplate);
-            })
             .template( "_STATION", jsonUiTemplate -> {
                 JsonUITemplates.roomGeneral(jsonUiTemplate);
                 jsonUiTemplate.space();

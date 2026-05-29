@@ -228,6 +228,7 @@ public class UiFactory {
             .step(step)
             .controls(true)
             .lockScroll(true)
+            .input(true) // fixme: crashes when clicked
             .allowedValues(allowedValues);
     }
 

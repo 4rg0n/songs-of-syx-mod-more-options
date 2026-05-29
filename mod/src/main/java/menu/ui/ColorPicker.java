@@ -20,6 +20,10 @@ public class ColorPicker extends Section {
     private final IntegerValue blue;
     private final ColorBox colorBox;
 
+    private final InputInt redInput;
+    private final InputInt greenInput;
+    private final InputInt blueInput;
+
     public final static COLOR DUMMY_COLOR = new ColorImp(255, 0, 255);
 
     public ColorPicker(Integer[] colors) {
@@ -35,13 +39,13 @@ public class ColorPicker extends Section {
         this.green = new IntegerValue(0, 255);
         this.blue = new IntegerValue(0, 255);
 
+        this.redInput = new InputInt(this.red, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
+        this.greenInput = new InputInt(this.green, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
+        this.blueInput = new InputInt(this.blue, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
+
         setRed(red);
         setGreen(green);
         setBlue(blue);
-
-        InputInt redInput = new InputInt(this.red, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
-        InputInt greenInput = new InputInt(this.green, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
-        InputInt blueInput = new InputInt(this.blue, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
 
         GuiSection colorInputs = new GuiSection();
 
@@ -68,15 +72,15 @@ public class ColorPicker extends Section {
     }
 
     public void setRed(int value) {
-        red.setValue(value);
+        redInput.setValue(value);
     }
 
     public void setGreen(int value) {
-        green.setValue(value);
+        greenInput.setValue(value);
     }
 
     public void setBlue(int value) {
-        blue.setValue(value);
+        blueInput.setValue(value);
     }
 
     public COLOR color() {
