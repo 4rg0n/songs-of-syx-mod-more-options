@@ -50,7 +50,6 @@ public class InputDouble extends GuiSection implements Valuable<Double>, Resetta
 
 		if (doublebutts) {
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.minifierBig) {
-
 				@Override
 				protected void clickA() {
 					double decreasedValue = inputValue.inc(-Math.max(1, (inputValue.getMax() - inputValue.getMin()) / 5));
@@ -61,8 +60,7 @@ public class InputDouble extends GuiSection implements Valuable<Double>, Resetta
 				@Override
 				protected void renAction() {
 					activeSet(!inputValue.isMin());
-				};
-
+				}
 			};
 			pp.repetativeSet(true);
 			pp.body().setHeight(inn.body.height());
@@ -72,19 +70,16 @@ public class InputDouble extends GuiSection implements Valuable<Double>, Resetta
 
 		if (butts) {
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.minifier) {
-
 				@Override
 				protected void clickA() {
 					double decreasedValue = inputValue.inc(-1);
 					updateInputSprite(decreasedValue);
 				}
 
-
 				@Override
 				protected void renAction() {
 					activeSet(inputValue.getValue() > inputValue.getMin());
-				};
-
+				}
 			};
 			pp.repetativeSet(true);
 			pp.body().setHeight(inn.body.height());
@@ -94,7 +89,6 @@ public class InputDouble extends GuiSection implements Valuable<Double>, Resetta
 		addRightC(0, inn);
 		if (butts) {
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.magnifier) {
-
 				@Override
 				protected void clickA() {
 					double increasedValue = inputValue.inc(1);
@@ -104,8 +98,7 @@ public class InputDouble extends GuiSection implements Valuable<Double>, Resetta
 				@Override
 				protected void renAction() {
 					activeSet(!inputValue.isMax());
-				};
-
+				}
 			};
 			pp.repetativeSet(true);
 			pp.body().setHeight(inn.body.height());
@@ -114,19 +107,16 @@ public class InputDouble extends GuiSection implements Valuable<Double>, Resetta
 
 		if (doublebutts) {
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.magnifierBig) {
-
 				@Override
 				protected void clickA() {
 					double increasedValue = inputValue.inc(Math.max(1, (inputValue.getMax() - inputValue.getMin()) / 5));
 					updateInputSprite(increasedValue);
 				}
 
-
 				@Override
 				protected void renAction() {
 					activeSet(inputValue.isMax());
-				};
-
+				}
 			};
 			pp.repetativeSet(true);
 			pp.body().setHeight(inn.body.height());

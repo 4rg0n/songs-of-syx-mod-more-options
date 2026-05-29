@@ -1,6 +1,7 @@
 package menu.ui;
 
 import com.github.argon.sos.mod.sdk.data.DoubleValue;
+import com.github.argon.sos.mod.sdk.data.IntegerValue;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.game.util.Wildcard;
 import com.github.argon.sos.mod.sdk.json.JsonMapper;
@@ -181,6 +182,18 @@ public class UiFactory {
 
         slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
         return slider;
+    }
+
+    public static InputInt inputInteger(JsonLong jsonElement, int min, int max) {
+        int value = jsonElement.getValue().intValue();
+        IntegerValue integerValue = new IntegerValue(value, min, max);
+
+        return InputInt.builder()
+            .inputValue(integerValue)
+            .inputWidth(100)
+            .butts(true)
+            .mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo())
+            .build();
     }
 
     public static InputDouble inputDouble(JsonDouble jsonElement, double min, double max, int decimals) {

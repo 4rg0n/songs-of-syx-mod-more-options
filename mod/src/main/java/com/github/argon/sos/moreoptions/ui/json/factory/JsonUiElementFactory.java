@@ -135,14 +135,27 @@ public class JsonUiElementFactory implements Resettable {
             .build();
     }
 
-    public JsonUiElementSingle<JsonDouble, InputDouble> inputDouble(String jsonPath, double min, double max, int resolution, JsonDouble defaultValue) {
+    public JsonUiElementSingle<JsonLong, InputInt> inputInteger(String jsonPath, int min, int max, JsonLong defaultValue) {
+        return JsonUiElementSingle.from(
+                jsonPath,
+                path,
+                config,
+                defaultValue,
+                JsonLong.class,
+                value -> UiFactory.inputInteger(value, min, max))
+            .valueConsumer((input, jsonLong) -> input.getElement().setValue(jsonLong.getValue().intValue()))
+            .valueSupplier(input -> new JsonLong(input.getElement().getValue().longValue()))
+            .build();
+    }
+
+    public JsonUiElementSingle<JsonDouble, InputDouble> inputDouble(String jsonPath, double min, double max, int decimals, JsonDouble defaultValue) {
         return JsonUiElementSingle.from(
             jsonPath,
             path,
             config,
             defaultValue,
             JsonDouble.class,
-            value -> UiFactory.inputDouble(value, min, max, resolution))
+            value -> UiFactory.inputDouble(value, min, max, decimals))
         .valueConsumer((input, jsonDouble) -> input.getElement().setValue(jsonDouble.getValue()))
         .valueSupplier(input -> new JsonDouble(input.getElement().getValue()))
         .build();

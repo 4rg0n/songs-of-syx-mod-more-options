@@ -129,6 +129,9 @@ public class GameAssets {
     private final static List<String> religions = init().religion().fileTitles();
 
     @Getter(lazy = true)
+    private final static List<String> sacrifices = List.of("RESOURCE", "ANIMAL", "HUMAN");
+
+    @Getter(lazy = true)
     private final static List<String> needs = init().stats().folder("need").fileTitles();
 
     @Getter(lazy = true)

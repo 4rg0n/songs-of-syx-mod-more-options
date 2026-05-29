@@ -82,12 +82,21 @@ public class JsonUiTemplate extends AbstractJsonUiTemplate {
         return store.supplier(() -> factory.slider(jsonPath, min, max, 1, List.of(),JsonLong.of(0L))).store();
     }
 
+    public JsonUiElement<JsonLong, InputInt> inputInteger(String jsonPath, int min, int max) {
+        return store.supplier(() -> factory.inputInteger(jsonPath, min, max, JsonLong.of(0))).store();
+    }
+
     public JsonUiElement<JsonDouble, InputDouble> inputDouble(String jsonPath, double min, double max) {
         return store.supplier(() -> factory.inputDouble(jsonPath, min, max, 1, JsonDouble.of(0.0))).store();
     }
 
     public JsonUiElement<JsonDouble, InputDouble> inputDouble(String jsonPath, double min, double max, int decimals) {
         return store.supplier(() -> factory.inputDouble(jsonPath, min, max, decimals, JsonDouble.of(0.0))).store();
+    }
+
+    public JsonUiElementList<JsonDouble, InputDouble> inputsDouble(String jsonPath, List<String> names, int min, int max) {
+        return store.supplier(() -> factory.asObject(jsonPath, names, false,
+            jsonPath1 -> factory.inputDouble(jsonPath1, min, max, 2, JsonDouble.of(0.0)))).store();
     }
 
     public JsonUiElementList<JsonLong, Slider> sliders(String jsonPath, List<String> names, int min, int max, int step) {
