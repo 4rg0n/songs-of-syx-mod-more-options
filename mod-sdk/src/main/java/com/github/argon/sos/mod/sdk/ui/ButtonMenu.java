@@ -108,7 +108,7 @@ public class ButtonMenu<Key> extends Section {
         }
 
         if (maxHeight <= 0) {
-            maxHeight = UiUtil.getMaxHeight(buttons.values());
+            maxHeight = UiUtil.getSumHeight(buttons.values());
         }
 
         margin = (spacer) ? 0 : margin;

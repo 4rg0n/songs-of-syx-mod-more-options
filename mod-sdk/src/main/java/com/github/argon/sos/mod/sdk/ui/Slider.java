@@ -591,9 +591,9 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
             if (hover && !lockScroll) {
                 double d = MButt.clearWheelSpin();
                 if (d < 0)
-                    in.inc(-1);
+                    in.inc(-step);
                 else if (d > 0)
-                    in.inc(1);
+                    in.inc(step);
                 return true;
             }
 

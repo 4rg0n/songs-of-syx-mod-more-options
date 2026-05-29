@@ -16,6 +16,7 @@ import lombok.experimental.Accessors;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Main access to game resources like config files, folders or sprites.
@@ -45,12 +46,49 @@ public class GameAssets {
 
     @Getter(lazy = true)
     private final static List<String> races = init().race().fileTitles();
+    @Getter(lazy = true)
+    private final static List<String> raceHomeFiles = init().race().home().fileTitles();
+    @Getter(lazy = true)
+    private final static List<String> raceKingFiles = text().race().king().fileTitles();
+    @Getter(lazy = true)
+    private final static List<String> raceRaiderMessageFiles = text().race().raider().folder("message").fileTitles();
+    @Getter(lazy = true)
+    private final static List<String> raceRaiderNameFiles = text().race().raider().folder("name").fileTitles();
+    @Getter(lazy = true)
+    private final static List<String> raceBioFiles = text().race().bio().fileTitles();
+    @Getter(lazy = true)
+    private final static List<String> raceBioSpecificFiles = text().race().bio().folder("specific").fileTitles();
+
+    @Getter(lazy = true)
+    private final static List<String> worldNameFiles = text().names().folder("world").fileTitles();
+
+    @Getter(lazy = true)
+    private final static List<String> touristTextFiles = text().race().tourist().fileTitles();
 
     /**
      * Hardcoded by the game
      */
     @Getter(lazy = true)
     private final static List<String> humanClasses = List.of("CITIZEN", "CHILD", "NOBLE", "OTHER", "SLAVE");
+
+    @Getter(lazy = true)
+    private final static List<String> allEquipments = Stream.concat(
+        Stream.concat(getBattleEquipments().stream(), getRangedEquipments().stream()),
+        getCivicEquipments().stream()
+    ).toList();
+
+    @Getter(lazy = true)
+    private final static List<String> battleEquipments = init().stats().folder("equip").folder("battle").fileTitles().stream()
+        .map(equip -> "BATTLE_" + equip)
+        .toList();
+    @Getter(lazy = true)
+    private final static List<String> rangedEquipments = init().stats().folder("equip").folder("ranged").fileTitles().stream()
+        .map(equip -> "RANGED_" + equip)
+        .toList();
+    @Getter(lazy = true)
+    private final static List<String> civicEquipments = init().stats().folder("equip").folder("civic").fileTitles().stream()
+        .map(equip -> "CIVIC_" + equip)
+        .toList();;
 
     @Getter(lazy = true)
     private final static List<String> edibles = init().resource().edible().fileTitles();
@@ -72,6 +110,11 @@ public class GameAssets {
 
     @Getter(lazy = true)
     private final static List<String> rooms = init().room().fileTitles();
+
+    @Getter(lazy = true)
+    private final static List<String> poolRooms = init().room().fileTitles().stream()
+        .filter(room -> room.startsWith("POOL_"))
+        .toList();
 
     @Getter(lazy = true)
     private final static List<String> environments = init().settlement().environment().fileTitles();

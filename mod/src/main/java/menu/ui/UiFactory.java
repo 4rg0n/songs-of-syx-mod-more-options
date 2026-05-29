@@ -1,6 +1,8 @@
 package menu.ui;
 
+import com.github.argon.sos.mod.sdk.data.DoubleValue;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.util.Wildcard;
 import com.github.argon.sos.mod.sdk.json.JsonMapper;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.log.Logger;
@@ -70,12 +72,11 @@ public class UiFactory {
             .build();
     }
 
-
     public static MultiDropDown<String> multiDropDown(String buttonTitle, JsonArray jsonArray, List<String> options, int maxSelect, boolean maxSelected) {
         return MultiDropDown.<String>builder()
             .label(buttonTitle)
             .clickAction(dropDown -> MenuUi.getInstance().popups().show(dropDown.getSelect(), dropDown))
-            .select(selectS(jsonArray,options, maxSelect, maxSelected))
+            .select(selectS(jsonArray, options, maxSelect, maxSelected))
             .build();
     }
 
@@ -151,11 +152,14 @@ public class UiFactory {
                 .toList());
         }
 
+        Wildcard wildcard = Wildcard.of(options);
+        List<String> matches = wildcard.matches(selected);
+
         ButtonMenu.ButtonMenuBuilder<String> menuBuilder = ButtonMenu.builder();
-        options.forEach(name -> menuBuilder.button(name, new Button(name)));
+        wildcard.getWildcardValues().forEach(name -> menuBuilder.button(name, new Button(name)));
 
         if (maxSelected) {
-            maxSelect = selected.size();
+            maxSelect = matches.size();
         }
 
         return Select.<String>builder()
@@ -165,11 +169,11 @@ public class UiFactory {
                 .sameWidth(true)
                 .build())
             .maxSelect(maxSelect)
-            .selectedKeys(selected)
+            .selectedKeys(matches)
             .build();
     }
 
-    public static Slider slider(JsonDouble jsonElement, int min, int max, int step, int resolution) {
+    public static Slider sliderPerc(JsonDouble jsonElement, int min, int max, int step, int resolution) {
         Slider slider = slider(min, max, step, List.of())
             .valueD(jsonElement.getValue(), resolution)
             .valueDisplay(Slider.ValueDisplay.PERCENTAGE)
@@ -177,6 +181,19 @@ public class UiFactory {
 
         slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
         return slider;
+    }
+
+    public static InputDouble inputDouble(JsonDouble jsonElement, double min, double max, int decimals) {
+        double value = jsonElement.getValue();
+        DoubleValue doubleValue = new DoubleValue(value, min, max);
+
+        return InputDouble.builder()
+            .inputValue(doubleValue)
+            .inputWidth(100)
+            .decimals(decimals)
+            .butts(true)
+            .mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo())
+            .build();
     }
 
     public static Slider slider(JsonLong jsonElement, int min, int max, int step, List<Integer> allowedValues) {

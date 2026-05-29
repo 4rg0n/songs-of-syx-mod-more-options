@@ -84,4 +84,30 @@ public class MathUtil {
 
         return allowedValues[idx];
     }
+
+    /**
+     * @return the value from the list, which is closed to the given value
+     */
+    public static double nearest(double value, Collection<Double> allowedValues) {
+        return nearest(value, allowedValues.stream()
+            .mapToDouble(Double::doubleValue)
+            .toArray());
+    }
+
+    /**
+     * @return the value from the list, which is closed to the given value
+     */
+    public static double nearest(double value, double[] allowedValues) {
+        double distance = Math.abs(allowedValues[0] - value);
+        int idx = 0;
+        for(int c = 1; c < allowedValues.length; c++){
+            double cdistance = Math.abs(allowedValues[c] - value);
+            if(cdistance < distance){
+                idx = c;
+                distance = cdistance;
+            }
+        }
+
+        return allowedValues[idx];
+    }
 }

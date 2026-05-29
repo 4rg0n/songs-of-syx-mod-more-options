@@ -82,6 +82,14 @@ public class JsonUiTemplate extends AbstractJsonUiTemplate {
         return store.supplier(() -> factory.slider(jsonPath, min, max, 1, List.of(),JsonLong.of(0L))).store();
     }
 
+    public JsonUiElement<JsonDouble, InputDouble> inputDouble(String jsonPath, double min, double max) {
+        return store.supplier(() -> factory.inputDouble(jsonPath, min, max, 1, JsonDouble.of(0.0))).store();
+    }
+
+    public JsonUiElement<JsonDouble, InputDouble> inputDouble(String jsonPath, double min, double max, int decimals) {
+        return store.supplier(() -> factory.inputDouble(jsonPath, min, max, decimals, JsonDouble.of(0.0))).store();
+    }
+
     public JsonUiElementList<JsonLong, Slider> sliders(String jsonPath, List<String> names, int min, int max, int step) {
         return store.supplier(() -> factory.asObject(jsonPath, names, false,
                 jsonPath1 -> factory.slider(jsonPath1, min, max, step, List.of(), JsonLong.of(0L)))).store();
@@ -124,58 +132,58 @@ public class JsonUiTemplate extends AbstractJsonUiTemplate {
     }
 
 
-    public JsonUiElement<JsonDouble, Slider> sliderD(String jsonPath, int min, int max) {
-        return store.supplier(() -> factory.sliderD(jsonPath, min, max, 1, 1, JsonDouble.of(0.0))).store();
+    public JsonUiElement<JsonDouble, Slider> sliderPerc(String jsonPath, int min, int max) {
+        return store.supplier(() -> factory.sliderPerc(jsonPath, min, max, 1, 1, JsonDouble.of(0.0))).store();
     }
 
-    public JsonUiElement<JsonDouble, Slider> sliderD(String jsonPath, int min, int max, int resolution) {
-        return store.supplier(() -> factory.sliderD(jsonPath, min, max, 1, resolution, JsonDouble.of(0.0))).store();
+    public JsonUiElement<JsonDouble, Slider> sliderPerc(String jsonPath, int min, int max, int resolution) {
+        return store.supplier(() -> factory.sliderPerc(jsonPath, min, max, 1, resolution, JsonDouble.of(0.0))).store();
     }
 
-    public JsonUiElementList<JsonDouble, Slider> slidersD(String jsonPath, List<String> names, boolean asWildcards, int min, int max, int resolution) {
+    public JsonUiElementList<JsonDouble, Slider> slidersPerc(String jsonPath, List<String> names, boolean asWildcards, int min, int max, int resolution) {
         return store.supplier(() -> factory.asObject(jsonPath, names, asWildcards,
-            jsonPath1 -> factory.sliderD(jsonPath1, min, max, 1, resolution, JsonDouble.of(0.0)))).store();
+            jsonPath1 -> factory.sliderPerc(jsonPath1, min, max, 1, resolution, JsonDouble.of(0.0)))).store();
     }
 
-    public JsonUiElementList<JsonDouble, Slider> slidersD(String jsonPath, List<String> names, boolean asWildcards, int min, int max) {
+    public JsonUiElementList<JsonDouble, Slider> slidersPerc(String jsonPath, List<String> names, boolean asWildcards, int min, int max) {
         return store.supplier(() -> factory.asObject(jsonPath, names, asWildcards,
-            jsonPath1 -> factory.sliderD(jsonPath1, min, max, 1, 1, JsonDouble.of(0.0)))).store();
+            jsonPath1 -> factory.sliderPerc(jsonPath1, min, max, 1, 1, JsonDouble.of(0.0)))).store();
     }
 
-    public JsonUiElementList<JsonDouble, Slider> slidersD(String jsonPath, List<String> names, int min, int max) {
+    public JsonUiElementList<JsonDouble, Slider> slidersPerc(String jsonPath, List<String> names, int min, int max) {
         return store.supplier(() -> factory.asObject(jsonPath, names, false,
-            jsonPath1 -> factory.sliderD(jsonPath1, min, max, 1, 1, JsonDouble.of(0.0)))).store();
+            jsonPath1 -> factory.sliderPerc(jsonPath1, min, max, 1, 1, JsonDouble.of(0.0)))).store();
     }
 
-    public JsonUiElementList<JsonDouble, Slider> slidersD(String jsonPath, List<String> names, int min, int max, int resolution) {
+    public JsonUiElementList<JsonDouble, Slider> slidersPerc(String jsonPath, List<String> names, int min, int max, int resolution) {
         return store.supplier(() -> factory.asObject(jsonPath, names, false,
-            jsonPath1 -> factory.sliderD(jsonPath1, min, max, 1, resolution, JsonDouble.of(0.0)))).store();
+            jsonPath1 -> factory.sliderPerc(jsonPath1, min, max, 1, resolution, JsonDouble.of(0.0)))).store();
     }
 
 
-    public JsonUiElementList<JsonDouble, Slider> slidersD(String jsonPath, String name, int amount, int min, int max) {
+    public JsonUiElementList<JsonDouble, Slider> slidersPerc(String jsonPath, String name, int amount, int min, int max) {
         return store.supplier(() -> factory.asTuples(jsonPath, name, amount,
-            jsonPath1 -> factory.sliderD(jsonPath1, min, max, 1, 1, JsonDouble.of(0.0)))).store();
+            jsonPath1 -> factory.sliderPerc(jsonPath1, min, max, 1, 1, JsonDouble.of(0.0)))).store();
     }
 
-    public JsonUiElementList<JsonDouble, Slider> slidersD(String jsonPath, String name, int amount, int min, int max, int resolution) {
+    public JsonUiElementList<JsonDouble, Slider> slidersPerc(String jsonPath, String name, int amount, int min, int max, int resolution) {
         return store.supplier(() -> factory.asTuples(jsonPath, name, amount,
-            jsonPath1 -> factory.sliderD(jsonPath1, min, max, 1, resolution, JsonDouble.of(0.0)))).store();
+            jsonPath1 -> factory.sliderPerc(jsonPath1, min, max, 1, resolution, JsonDouble.of(0.0)))).store();
     }
 
 
-    public JsonUiElementList<JsonDouble, Slider> slidersD(String jsonPath, int amount, int min, int max) {
+    public JsonUiElementList<JsonDouble, Slider> slidersPerc(String jsonPath, int amount, int min, int max) {
         return store.supplier(() -> factory.asArray(jsonPath, amount,
-            jsonPath1 -> factory.sliderD(jsonPath1, min, max, 1, 1, JsonDouble.of(0.0)))).store();
+            jsonPath1 -> factory.sliderPerc(jsonPath1, min, max, 1, 1, JsonDouble.of(0.0)))).store();
     }
 
-    public JsonUiElementList<JsonDouble, Slider> slidersD(String jsonPath, int amount, int min, int max, int resolution) {
+    public JsonUiElementList<JsonDouble, Slider> slidersPerc(String jsonPath, int amount, int min, int max, int resolution) {
         return store.supplier(() -> factory.asArray(jsonPath, amount,
-            jsonPath1 -> factory.sliderD(jsonPath1, min, max, 1, resolution, JsonDouble.of(0.0)))).store();
+            jsonPath1 -> factory.sliderPerc(jsonPath1, min, max, 1, resolution, JsonDouble.of(0.0)))).store();
     }
 
-    public JsonUiElement<JsonDouble, Slider> sliderD(String jsonPath, int min, int max, JsonDouble defaultValue) {
-        return store.supplier(() -> factory.sliderD(jsonPath, min, max, 1, 1, defaultValue)).store();
+    public JsonUiElement<JsonDouble, Slider> sliderPerc(String jsonPath, int min, int max, JsonDouble defaultValue) {
+        return store.supplier(() -> factory.sliderPerc(jsonPath, min, max, 1, 1, defaultValue)).store();
     }
 
     public JsonUiElement<JsonString, ColorPicker> color(String jsonPath) {

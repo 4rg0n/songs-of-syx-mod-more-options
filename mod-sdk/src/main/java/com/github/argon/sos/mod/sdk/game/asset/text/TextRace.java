@@ -25,7 +25,7 @@ public class TextRace extends AbstractGameData {
     private final GameFolder opinion = folder("opinion");
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final GameFolder raid = folder("raid");
+    private final GameFolder raider = folder("raider");
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final GameFolder tourist = folder("tourist");

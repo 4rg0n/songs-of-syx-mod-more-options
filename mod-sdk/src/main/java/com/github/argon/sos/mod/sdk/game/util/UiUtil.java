@@ -243,6 +243,21 @@ public class UiUtil {
         return maxHeight;
     }
 
+    public static int getSumHeight(@Nullable Collection<? extends RENDEROBJ> renders) {
+        int sumHeight = 0;
+
+        if (renders == null) {
+            return sumHeight;
+        }
+
+        for (RENDEROBJ section : renders) {
+            int sectionHeight = section.body().height();
+            sumHeight += sectionHeight;
+        }
+
+        return sumHeight;
+    }
+
     public static Section toSection(SPRITE sprite) {
         RENDEROBJ renderobj = toRender(sprite);
         return toSection(renderobj);

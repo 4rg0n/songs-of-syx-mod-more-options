@@ -135,14 +135,27 @@ public class JsonUiElementFactory implements Resettable {
             .build();
     }
 
-    public JsonUiElementSingle<JsonDouble, Slider> sliderD(String jsonPath, int min, int max, int step, int resolution, JsonDouble defaultValue) {
+    public JsonUiElementSingle<JsonDouble, InputDouble> inputDouble(String jsonPath, double min, double max, int resolution, JsonDouble defaultValue) {
+        return JsonUiElementSingle.from(
+            jsonPath,
+            path,
+            config,
+            defaultValue,
+            JsonDouble.class,
+            value -> UiFactory.inputDouble(value, min, max, resolution))
+        .valueConsumer((input, jsonDouble) -> input.getElement().setValue(jsonDouble.getValue()))
+        .valueSupplier(input -> new JsonDouble(input.getElement().getValue()))
+        .build();
+    }
+
+    public JsonUiElementSingle<JsonDouble, Slider> sliderPerc(String jsonPath, int min, int max, int step, int resolution, JsonDouble defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
                 path,
                 config,
                 defaultValue,
                 JsonDouble.class,
-                value -> UiFactory.slider(value, min, max, step, resolution))
+                value -> UiFactory.sliderPerc(value, min, max, step, resolution))
             .valueConsumer((slider, jsonDouble) -> slider.getElement().setValueD(jsonDouble.getValue()))
             .valueSupplier(slider -> new JsonDouble(slider.getElement().getValueD()))
             .build();
@@ -172,7 +185,7 @@ public class JsonUiElementFactory implements Resettable {
         .valueSupplier(slider -> new JsonLong(Long.valueOf(slider.getElement().getValue())))
         .build();
     }
-    
+
     public JsonUiElementSingle<JsonArray, Select<String>> selectS(String jsonPath, List<String> options, JsonArray defaultValue, int maxSelect, boolean maxSelected) {
         return JsonUiElementSingle.from(
                 jsonPath,
@@ -250,7 +263,7 @@ public class JsonUiElementFactory implements Resettable {
                         return null;
                     }
 
-                    return UiFactory.slider(JsonDouble.of(value1), min, max, step, resolution);
+                    return UiFactory.sliderPerc(JsonDouble.of(value1), min, max, step, resolution);
                 }))
             .valueSupplier(sliders -> {
                 JsonArray jsonValue = new JsonArray();
