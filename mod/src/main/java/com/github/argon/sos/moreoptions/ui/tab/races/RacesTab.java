@@ -36,15 +36,15 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
     private final static String RACE_SEPARATOR = "~";
 
     @Getter
-    private final Button folderButton;
+    private final Button<String> folderButton;
     @Getter
-    private final Button fileButton;
+    private final Button<String> fileButton;
     @Getter
-    private final Button loadButton;
+    private final Button<String> loadButton;
     @Getter
-    private final Button exportButton;
+    private final Button<String> exportButton;
     @Getter
-    private final Button importButton;
+    private final Button<String> importButton;
 
     public RacesTab(
         String title,
@@ -99,11 +99,11 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
         Input search = new Input(searchInput);
 
         // menu with buttons
-        this.folderButton = new Button(i18n.t("RacesTab.button.folder.name"), i18n.t("RacesTab.button.folder.desc"));
-        this.fileButton = new Button(i18n.t("RacesTab.button.file.name"), i18n.t("RacesTab.button.file.desc"));
-        this.loadButton = new Button(i18n.t("RacesTab.button.load.name"), i18n.t("RacesTab.button.load.desc"));
-        this.exportButton = new Button(i18n.t("RacesTab.button.export.name"), i18n.t("RacesTab.button.export.desc"));
-        this.importButton = new Button(i18n.t("RacesTab.button.import.name"), i18n.t("RacesTab.button.import.desc"));
+        this.folderButton = new Button<>(i18n.t("RacesTab.button.folder.name"), i18n.t("RacesTab.button.folder.desc"));
+        this.fileButton = new Button<>(i18n.t("RacesTab.button.file.name"), i18n.t("RacesTab.button.file.desc"));
+        this.loadButton = new Button<>(i18n.t("RacesTab.button.load.name"), i18n.t("RacesTab.button.load.desc"));
+        this.exportButton = new Button<>(i18n.t("RacesTab.button.export.name"), i18n.t("RacesTab.button.export.desc"));
+        this.importButton = new Button<>(i18n.t("RacesTab.button.import.name"), i18n.t("RacesTab.button.import.desc"));
         ButtonMenu<String> buttonMenu = ButtonMenu.<String>builder()
             .buttons(Maps.ofLinked(
                 "load", loadButton,

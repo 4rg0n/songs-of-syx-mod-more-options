@@ -46,10 +46,10 @@ public class MultiTab<Tab extends AbstractTab> extends AbstractTab {
             tab -> tab
         ));
 
-        Map<String, Button> buttons = tabs.stream().collect(Collectors.toMap(
+        Map<String, Button<String>> buttons = tabs.stream().collect(Collectors.toMap(
             AbstractTab::getTitle,
             tab -> {
-                Button button = new Button(tab.getTitle(), tab.getPath().toString());
+                Button<String> button = new Button<>(tab.getTitle(), tab.getPath().toString());
                 button.searchTerm(tab.getTitle());
                 return button;
             }

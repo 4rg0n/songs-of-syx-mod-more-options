@@ -56,7 +56,7 @@ public class ScrollRows extends GScrollRows {
             ColumnRow<?> columnRow = (ColumnRow<?>) o;
             return columnRow.search(search.text().toString());
         } else if (o instanceof Button) {
-            Button button = (Button) o;
+            Button<String> button = (Button<String>) o;
             return button.search(search.text().toString());
         }
 

@@ -64,7 +64,7 @@ public final class UISavedPrints extends ISidePanel{
 		list = new List(fi);
 
 		// MODDED
-		Button importButton = new Button(i18n.t("UISavedPrints.button.import.name"), i18n.t("UISavedPrints.button.import.desc"));
+		Button<String> importButton = new Button<>(i18n.t("UISavedPrints.button.import.name"), i18n.t("UISavedPrints.button.import.desc"));
 		importButton.clickActionSet(() -> {
 			Clipboard.read().ifPresent(content -> {
 				try {

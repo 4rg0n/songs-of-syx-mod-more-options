@@ -33,7 +33,7 @@ public class Table<Value> extends ColorBox implements
 
     private final ScrollRows scrollRows;
     @Nullable
-    private final Map<String, Button> headerButtons;
+    private final Map<String, ? extends AbstractButton<String>> headerButtons;
     private final List<Integer> maxColumnWidths;
     @Nullable
     private StringInputSprite search;
@@ -71,7 +71,7 @@ public class Table<Value> extends ColorBox implements
         int rowPadding,
         int columnMargin,
         @Nullable COLOR backgroundColor,
-        @Nullable Map<String, Button> headerButtons,
+        @Nullable Map<String, ? extends AbstractButton<String>> headerButtons,
         @Nullable StringInputSprite search
     ) {
         super((backgroundColor != null) ? backgroundColor : COLOR.WHITE20);

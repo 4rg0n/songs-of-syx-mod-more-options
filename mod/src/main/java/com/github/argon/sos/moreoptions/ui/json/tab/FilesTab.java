@@ -42,7 +42,7 @@ public class FilesTab<Tab extends AbstractTab> extends AbstractTab {
         StringInputSprite search = new StringInputSprite(24, UI.FONT().S).placeHolder("Search");
         MenuInput searchField = new MenuInput(search);
 
-        Button collapseButton = new Button(SPRITES.icons().m.menu2);
+        Button<String> collapseButton = new Button<>(SPRITES.icons().m.menu2);
         collapseButton.hoverInfoSet("Collapse / Expand all");
 
         searchBar.addRightC(0, searchField);

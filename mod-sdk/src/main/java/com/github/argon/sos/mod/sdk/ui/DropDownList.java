@@ -16,7 +16,7 @@ import util.gui.misc.GText;
 
 import java.util.List;
 
-public class DropDownList extends AbstractButton<List<String>, DropDownList> implements Refreshable {
+public class DropDownList extends AbstractButton<List<String>> implements Refreshable {
 
     private final List<String> possibleValues;
 
@@ -131,10 +131,5 @@ public class DropDownList extends AbstractButton<List<String>, DropDownList> imp
         GText gText = new GText(UI.FONT().M, title);
         replaceLabel(gText, DIR.C);
         refreshAction.accept();
-    }
-
-    @Override
-    protected DropDownList element() {
-        return this;
     }
 }

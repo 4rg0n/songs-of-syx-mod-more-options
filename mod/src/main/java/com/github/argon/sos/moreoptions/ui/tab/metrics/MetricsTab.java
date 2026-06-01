@@ -49,12 +49,12 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
     @Getter
     private final Path exportFolderPath;
     @Getter
-    private final Button copyExportFileButton;
+    private final Button<String> copyExportFileButton;
     @Getter
     @Nullable
     private Path exportFilePath;
     @Getter
-    private final Button exportFolderButton;
+    private final Button<String> exportFolderButton;
     @Getter
     private final Switcher<Boolean> checkSwitcher;
 
@@ -76,8 +76,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         // Started / Stopped toggle
         Switcher<Boolean> switcher = Switcher.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
-                .button(true, new Button(i18n.t("MetricsTab.toggle.start.name"), i18n.t("MetricsTab.toggle.start.desc")))
-                .button(false, new Button(i18n.t("MetricsTab.toggle.stop.name"), i18n.t("MetricsTab.toggle.stop.desc")))
+                .button(true, new Button<>(i18n.t("MetricsTab.toggle.start.name"), i18n.t("MetricsTab.toggle.start.desc")))
+                .button(false, new Button<>(i18n.t("MetricsTab.toggle.stop.name"), i18n.t("MetricsTab.toggle.stop.desc")))
                 .sameWidth(true)
                 .horizontal(true)
                 .build())
@@ -129,8 +129,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
         // Export file path with folder button
         this.exportFilePathView = new ViewSwitcher(exportFilePathSection, false);
-        this.exportFolderButton = new Button(i18n.t("MetricsTab.button.folder.name"), i18n.t("MetricsTab.button.folder.desc", exportFolderPath));
-        this.copyExportFileButton = new Button(i18n.t("MetricsTab.button.copy.name"), i18n.t("MetricsTab.button.copy.desc"));
+        this.exportFolderButton = new Button<>(i18n.t("MetricsTab.button.folder.name"), i18n.t("MetricsTab.button.folder.desc", exportFolderPath));
+        this.copyExportFileButton = new Button<>(i18n.t("MetricsTab.button.copy.name"), i18n.t("MetricsTab.button.copy.desc"));
 
         GuiSection exportButtons = new GuiSection();
         exportButtons.addRightC(0, exportFolderButton);
@@ -151,8 +151,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         searchBar.addRightC(0, new Input(searchInput));
         this.checkSwitcher = Switcher.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
-                .button(true, new Button(i18n.t("MetricsTab.search.check.name"), i18n.t("MetricsTab.search.check.desc")))
-                .button(false, new Button(i18n.t("MetricsTab.search.uncheck.name"), i18n.t("MetricsTab.search.uncheck.desc")))
+                .button(true, new Button<>(i18n.t("MetricsTab.search.check.name"), i18n.t("MetricsTab.search.check.desc")))
+                .button(false, new Button<>(i18n.t("MetricsTab.search.uncheck.name"), i18n.t("MetricsTab.search.uncheck.desc")))
                 .horizontal(true)
                 .build())
             .highlight(false)

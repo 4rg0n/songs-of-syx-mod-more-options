@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 @Getter
 public class UiList<Value, Element extends RENDEROBJ> extends Section implements Valuable<List<Value>> {
     private final Table<Value> table;
-    private final Button addButton;
+    private final Button<Value> addButton;
     private final Function<@Nullable Value, Element> elementSupplier;
 
     @Setter
@@ -110,7 +110,7 @@ public class UiList<Value, Element extends RENDEROBJ> extends Section implements
             };
         }
 
-        Button deleteButton = new Button(SPRITES.icons().m.trash);
+        Button<String> deleteButton = new Button<>(SPRITES.icons().m.trash);
         ColumnRow<Value> columnRow = ColumnRow.<Value>builder()
             .valueSupplier(valueSupplier)
             .column(element)

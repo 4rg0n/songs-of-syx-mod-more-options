@@ -54,7 +54,7 @@ public class MoreOptionsEditor extends GuiSection {
                     .maxHeight(FullWindow.TOP_HEIGHT - 10)
                     .maxWidth(C.WIDTH() - 50)
                     .buttons(Map.of(
-                        "editor", new Button("Config Editor")
+                        "editor", new Button<>("Config Editor")
                     ))
                     .sameWidth(true)
                     .horizontal(true)

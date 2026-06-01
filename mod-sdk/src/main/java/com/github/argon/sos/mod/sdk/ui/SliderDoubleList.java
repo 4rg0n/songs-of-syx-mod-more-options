@@ -14,12 +14,6 @@ public class SliderDoubleList extends AbstractSliderList<Double> {
         super(label, description, sliders, height, elementSupplier, clickAction);
     }
 
-    @Override
-    protected SliderDoubleList element() {
-        return this;
-    }
-
-
     public List<Double> getValue() {
         return uiList.getElements().stream()
             .map(Slider::getValueD)

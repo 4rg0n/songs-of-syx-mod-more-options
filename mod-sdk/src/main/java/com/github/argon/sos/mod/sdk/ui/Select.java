@@ -78,7 +78,7 @@ public class Select<Key> extends Section implements
         add(menu);
     }
 
-    private void initButton(Key key, final Button button) {
+    private void initButton(Key key, final AbstractButton<Key> button) {
         button.clickActionSet(() -> {
             clickAction.accept(key);
             toggle(key);
@@ -128,7 +128,7 @@ public class Select<Key> extends Section implements
         selectAction = Action;
     }
 
-    public Optional<Button> get(Key key) {
+    public Optional<? extends AbstractButton<Key>> get(Key key) {
         return menu.getButtons().entrySet().stream()
             .filter(entry -> key.equals(entry.getKey()))
             .map(Map.Entry::getValue)

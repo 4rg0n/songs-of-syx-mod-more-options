@@ -98,12 +98,12 @@ public class RacesSelectionPanel extends GuiSection {
         }).toList();
 
         // header for table columns
-        Map<String, Button> header = Maps.ofLinked(
-            "file", new Button(i18n.t("RacesSelectionPanel.table.file.name"), i18n.t("RacesSelectionPanel.table.file.desc")),
-            "save", new Button(i18n.t("RacesSelectionPanel.table.save.name"), i18n.t("RacesSelectionPanel.table.save.desc")),
-            "active", new Button(i18n.t("RacesSelectionPanel.table.active.name"), i18n.t("RacesSelectionPanel.table.active.desc")),
-            "created", new Button(i18n.t("RacesSelectionPanel.table.created.name"), i18n.t("RacesSelectionPanel.table.created.desc")),
-            "updated", new Button(i18n.t("RacesSelectionPanel.table.updated.name"), i18n.t("RacesSelectionPanel.table.updated.desc"))
+        Map<String, Button<String>> header = Maps.ofLinked(
+            "file", new Button<>(i18n.t("RacesSelectionPanel.table.file.name"), i18n.t("RacesSelectionPanel.table.file.desc")),
+            "save", new Button<>(i18n.t("RacesSelectionPanel.table.save.name"), i18n.t("RacesSelectionPanel.table.save.desc")),
+            "active", new Button<>(i18n.t("RacesSelectionPanel.table.active.name"), i18n.t("RacesSelectionPanel.table.active.desc")),
+            "created", new Button<>(i18n.t("RacesSelectionPanel.table.created.name"), i18n.t("RacesSelectionPanel.table.created.desc")),
+            "updated", new Button<>(i18n.t("RacesSelectionPanel.table.updated.name"), i18n.t("RacesSelectionPanel.table.updated.desc"))
         );
 
         // race config table and search

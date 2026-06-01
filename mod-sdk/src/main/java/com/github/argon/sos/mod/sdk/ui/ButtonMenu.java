@@ -1,8 +1,8 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.Action;
-import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 public class ButtonMenu<Key> extends Section {
 
     @Getter
-    private final Map<Key, Button> buttons;
+    private final Map<Key, ? extends AbstractButton<Key>> buttons;
 
     @Setter
     @Nullable
     @Accessors(fluent = true, chain = false)
     private Action<Key> clickAction;
 
-    public ButtonMenu(Map<Key, Button> buttons) {
+    public ButtonMenu(Map<Key, AbstractButton<Key>> buttons) {
         this(buttons, false, true, false, false, false, false, 0, 0, 0, 0, 0, COLOR.WHITE35, null, null, null);
     }
 
@@ -55,7 +55,7 @@ public class ButtonMenu<Key> extends Section {
      */
     @Builder
     public ButtonMenu(
-        Map<Key, Button> buttons,
+        Map<Key, AbstractButton<Key>> buttons,
         boolean horizontal,
         boolean sameWidth,
         boolean notClickable,
@@ -76,9 +76,9 @@ public class ButtonMenu<Key> extends Section {
         this.buttons = buttons;
         this.clickAction = clickAction;
 
-        for (Map.Entry<Key, Button> entry : buttons.entrySet()) {
+        for (Map.Entry<Key, AbstractButton<Key>> entry : buttons.entrySet()) {
             Key key = entry.getKey();
-            Button newButton = entry.getValue();
+            AbstractButton<Key> newButton = entry.getValue();
 
             newButton.clickable(!notClickable);
             newButton.hoverable(!notHoverable);
@@ -126,45 +126,41 @@ public class ButtonMenu<Key> extends Section {
         }
     }
 
-    public Button get(Key key) {
+    public AbstractButton<Key> get(Key key) {
         return buttons.get(key);
     }
 
     public static class ButtonMenuBuilder<Key> {
 
-        private final Map<Key, Button> buttons = new LinkedHashMap<>();
+        private final Map<Key, AbstractButton<Key>> buttons = new LinkedHashMap<>();
 
-        public static ButtonMenu<String> fromList(List<Button> infoList) {
-            LinkedHashMap<String, Button> collect = infoList.stream().collect(Collectors.toMap(
-                Object::toString, button -> button,
+        public static <Key> ButtonMenu<Key> fromList(List<? extends AbstractButton<Key>> infoList) {
+            LinkedHashMap<Key, AbstractButton<Key>> collect = infoList.stream().collect(Collectors.toMap(
+                button -> button.getValue(), button -> button,
                 (left, right) -> left, LinkedHashMap::new));
 
             return new ButtonMenu<>(collect);
         }
 
-        public ButtonMenuBuilder<Key> buttons(Map<Key, Button> buttons) {
+        public ButtonMenuBuilder<Key> buttons(Map<Key, ? extends AbstractButton<Key>> buttons) {
             this.buttons.putAll(buttons);
             return this;
         }
 
         public ButtonMenuBuilder<Key> buttons(List<Key> names) {
-            Map<Key, Button> buttonMap = new LinkedHashMap<>();
+            Map<Key, AbstractButton<Key>> buttonMap = new LinkedHashMap<>();
             for (Key name : names) {
-
-                if (name instanceof String) {
-                    String key = (String) name;
-                    Button button = new Button(key);
-                    button.setValue(key);
-                    button.searchTerm(key);
-                    buttonMap.put(name, button);
-                }
+                Button<Key> button = new Button<>(name);
+                button.setValue(name);
+                button.searchTerm(name);
+                buttonMap.put(name, button);
             }
 
             this.buttons.putAll(buttonMap);
             return this;
         }
 
-        public ButtonMenuBuilder<Key> button(Key key, Button button) {
+        public ButtonMenuBuilder<Key> button(Key key, AbstractButton<Key> button) {
             this.buttons.put(key, button);
             return this;
         }
