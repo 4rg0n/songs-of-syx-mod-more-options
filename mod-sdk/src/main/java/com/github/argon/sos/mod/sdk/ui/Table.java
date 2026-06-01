@@ -71,7 +71,7 @@ public class Table<Value> extends ColorBox implements
         int rowPadding,
         int columnMargin,
         @Nullable COLOR backgroundColor,
-        @Nullable Map<String, ? extends AbstractButton<String>> headerButtons,
+        @Nullable Map<String, AbstractButton<String>> headerButtons,
         @Nullable StringInputSprite search
     ) {
         super((backgroundColor != null) ? backgroundColor : COLOR.WHITE20);

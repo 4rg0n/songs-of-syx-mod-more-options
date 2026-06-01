@@ -98,7 +98,7 @@ public class RacesSelectionPanel extends GuiSection {
         }).toList();
 
         // header for table columns
-        Map<String, Button<String>> header = Maps.ofLinked(
+        Map<String, AbstractButton<String>> header = Maps.ofLinked(
             "file", new Button<>(i18n.t("RacesSelectionPanel.table.file.name"), i18n.t("RacesSelectionPanel.table.file.desc")),
             "save", new Button<>(i18n.t("RacesSelectionPanel.table.save.name"), i18n.t("RacesSelectionPanel.table.save.desc")),
             "active", new Button<>(i18n.t("RacesSelectionPanel.table.active.name"), i18n.t("RacesSelectionPanel.table.active.desc")),

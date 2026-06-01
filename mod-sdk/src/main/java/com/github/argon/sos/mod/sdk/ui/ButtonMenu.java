@@ -76,7 +76,7 @@ public class ButtonMenu<Key> extends Section {
         this.buttons = buttons;
         this.clickAction = clickAction;
 
-        for (Map.Entry<Key, AbstractButton<Key>> entry : buttons.entrySet()) {
+        for (Map.Entry<Key, ? extends AbstractButton<Key>> entry : buttons.entrySet()) {
             Key key = entry.getKey();
             AbstractButton<Key> newButton = entry.getValue();
 
@@ -142,7 +142,7 @@ public class ButtonMenu<Key> extends Section {
             return new ButtonMenu<>(collect);
         }
 
-        public ButtonMenuBuilder<Key> buttons(Map<Key, ? extends AbstractButton<Key>> buttons) {
+        public ButtonMenuBuilder<Key> buttons(Map<Key, AbstractButton<Key>> buttons) {
             this.buttons.putAll(buttons);
             return this;
         }
