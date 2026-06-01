@@ -34,6 +34,24 @@ public class IntegerValue {
         value = 0;
     }
 
+    public double getValueD() {
+        if (getValue() < 0) {
+            if (getMin() == 0) {
+                return 0;
+            }
+
+            return getValue() / (double) getMin();
+        } else if (getValue() > 0) {
+            if (getMax() == 0) {
+                return 0;
+            }
+
+            return getValue() / (double) getMax();
+        } else {
+            return 0;
+        }
+    }
+
     public boolean isMax() {
         return getValue() >= max;
     }

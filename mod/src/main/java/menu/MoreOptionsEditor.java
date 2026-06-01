@@ -183,7 +183,10 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.slider("PROPERTIES.HEIGHT", 0, 200);
                 jsonUiTemplate.slider("PROPERTIES.WIDTH", 5, 15);
                 jsonUiTemplate.slider("PROPERTIES.ADULT_AT_DAY", 0, 10000);
+                jsonUiTemplate.slider("PROPERTIES.BABY_DAYS", 0, 10000);
+                jsonUiTemplate.slider("PROPERTIES.CHILD_DAYS", 0, 10000);
                 jsonUiTemplate.slider("PROPERTIES.SLAVE_PRICE", 0, 10000);
+                jsonUiTemplate.sliderPerc("PROPERTIES.SLAVE_PRICE_RECOVERY", 0, 1000);
                 jsonUiTemplate.sliderPerc("PROPERTIES.RAID_MERCINARY", 0, 10000000);
                 jsonUiTemplate.checkbox("PROPERTIES.CORPSE_DECAY");
                 jsonUiTemplate.checkbox("PROPERTIES.SLEEPS");
@@ -204,6 +207,13 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.multiDropDown("EQUIPMENT.EQUIPMENT_ENABLED", GameAssets.getAllEquipments());
                 jsonUiTemplate.multiDropDown("EQUIPMENT.EQUIPMENT_NOT_ENABLED", GameAssets.getAllEquipments());
 
+                jsonUiTemplate.header("MILITARY_SUPPLY_USE");
+                jsonUiTemplate.multiDropDown("PREFERRED", GameAssets.getSupplies());
+
+                jsonUiTemplate.header("ROOM_FLOOR_OVERRIDE");
+                GameAssets.getRooms().forEach(room -> {
+                    jsonUiTemplate.dropDown("ROOM_FLOOR_OVERRIDE." + room, GameAssets.getFloors());
+                });
 
                 jsonUiTemplate.header("PREFERRED");
                 jsonUiTemplate.sliderPerc("PREFERRED.RESOURCE_RPICE_MUL", 0, 10000);
@@ -234,6 +244,15 @@ public class MoreOptionsEditor extends GuiSection {
                 jsonUiTemplate.header("PREFERRED.OTHER_RACES_REVERSE");
                 jsonUiTemplate.slidersPerc("PREFERRED.OTHER_RACES_REVERSE",
                     GameAssets.getRaces(), true, 0, 100);
+
+                jsonUiTemplate.header("PREFERRED.WORLD_BUILDING");
+                jsonUiTemplate.slidersPerc("PREFERRED.WORLD_BUILDING", GameAssets.getWorldBuildings(),  0, 10000);
+
+                jsonUiTemplate.header("PREFERRED.CRIME");
+                jsonUiTemplate.sliders("PREFERRED.CRIME", GameAssets.getCrimes(), 0, 10000);
+
+                jsonUiTemplate.header("PREFERRED.PUNISHMENT");
+                jsonUiTemplate.sliders("PREFERRED.PUNISHMENT", GameAssets.getPunishments(), 0, 10000);
 
                 jsonUiTemplate.header("RESOURCE");
                 jsonUiTemplate.sliders("RESOURCE",

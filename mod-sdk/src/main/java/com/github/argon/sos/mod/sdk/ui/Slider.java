@@ -1,6 +1,7 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
+import com.github.argon.sos.mod.sdk.data.IntegerValue;
 import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
@@ -28,7 +29,6 @@ import snake2d.util.misc.CLAMP;
 import snake2d.util.misc.STRING_RECIEVER;
 import snake2d.util.sprite.text.Str;
 import util.colors.GCOLOR;
-import util.data.INT;
 import util.gui.misc.GBox;
 import util.gui.misc.GButt;
 import util.gui.misc.GStat;
@@ -57,10 +57,8 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     private final CharSequence setAmount;
     private final CharSequence setAmountD;
 
-    private final INT.INTE in;
-
-    private final double initialDValue;
-
+    @Getter
+    private final IntegerValue inputValue;
     private final int initialValue;
 
     private final int step;
@@ -108,6 +106,11 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     @Setter
     @Nullable
     @Accessors(fluent = true, chain = false)
+    private Action<Slider> inputClickAction;
+
+    @Setter
+    @Nullable
+    @Accessors(fluent = true, chain = false)
     private Supplier<Coo> mouseCooSupplier = () -> new Coo(VIEW.mouse().x(), VIEW.mouse().y());
 
     @Builder
@@ -132,11 +135,10 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
         min = resolutionMulti * min;
         max = resolutionMulti * max;
 
-        this.in = new INT.IntImp(min, max);
-        this.in.set(value);
+        this.inputValue = new IntegerValue(min, max);
+        this.inputValue.setValue(value);
 
-        this.initialValue = in.get();
-        this.initialDValue = in.getD();
+        this.initialValue = inputValue.getValue();
         this.valueDisplay = valueDisplay;
 
         this.setAmount = i18n.t("Slider.amount.set");
@@ -182,7 +184,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
                 @Override
                 protected void clickA() {
-                    in.inc(-1 * Slider.this.step);
+                    inputValue.inc(-1 * Slider.this.step);
                 }
 
                 @Override
@@ -195,13 +197,13 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
                             clickSpeed = 10;
                         List<Integer> allowedValues = Slider.this.allowedValues;
                         if (allowedValues.isEmpty()) {
-                            in.inc(-(int)(clickSpeed * Slider.this.step));
+                            inputValue.inc(-(int)(clickSpeed * Slider.this.step));
                         } else {
-                            int i = allowedValues.indexOf(in.get());
+                            int i = allowedValues.indexOf(inputValue.getValue());
                             int index;
 
                             if (i < 0) {
-                                int currentValue = in.get();
+                                int currentValue = inputValue.getValue();
                                 int nearest = MathUtil.nearest(currentValue, allowedValues);
                                 i = allowedValues.indexOf(nearest);
                             }
@@ -233,7 +235,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
                 @Override
                 protected void clickA() {
-                    in.inc(1 * Slider.this.step);
+                    inputValue.inc(1 * Slider.this.step);
                 }
 
                 @Override
@@ -245,13 +247,13 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
                             clickSpeed = 10;
                         List<Integer> allowedValues = Slider.this.allowedValues;
                         if (allowedValues.isEmpty()) {
-                            in.inc((int)clickSpeed * Slider.this.step);
+                            inputValue.inc((int)clickSpeed * Slider.this.step);
                         } else {
-                            int i = allowedValues.indexOf(in.get());
+                            int i = allowedValues.indexOf(inputValue.getValue());
                             int index;
 
                             if (i < 0) {
-                                int currentValue = in.get();
+                                int currentValue = inputValue.getValue();
                                 int nearest = MathUtil.nearest(currentValue, allowedValues);
                                 i = allowedValues.indexOf(nearest);
                             }
@@ -279,8 +281,12 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
                     @Override
                     protected void clickA() {
-                        Str.TMP.clear().add(setAmountD).insert(0, in.min()).insert(1, in.max());
-                        VIEW.inters().input.requestInput(rec, Str.TMP);
+                        if (inputClickAction != null) {
+                            inputClickAction.accept(Slider.this);
+                        } else {
+                            Str.TMP.clear().add(setAmountD).insert(0, inputValue.getMin()).insert(1, inputValue.getMax());
+                            VIEW.inters().input.requestInput(rec, Str.TMP);
+                        }
                     }
                 }.hoverInfoSet(setAmount));
             }
@@ -288,9 +294,9 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
         if (valueDisplay != ValueDisplay.NONE) {
             GuiSection section = new GuiSection();
-            int maxValue = Math.max(Math.abs(in.min()), Math.abs(in.max()));
+            int maxValue = Math.max(Math.abs(inputValue.getMin()), Math.abs(inputValue.getMax()));
             String maxString = Integer.toString(maxValue);
-            if (in.min() < 0) {
+            if (inputValue.getMin() < 0) {
                 maxString = "-" + maxString;
             }
 
@@ -302,14 +308,14 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
                     valueText = new GStat() {
                         @Override
                         public void update(GText text) {
-                            GFORMAT.percBig(text, (in.get() / 100d) / Slider.this.resolutionMulti);
+                            GFORMAT.percBig(text, (inputValue.getValue() / 100d) / Slider.this.resolutionMulti);
                         }
                     };
                 } else {
                     valueText = new GStat() {
                         @Override
                         public void update(GText text) {
-                            TextFormatUtil.percentage(text, in.get() / 100d / Slider.this.resolutionMulti);
+                            TextFormatUtil.percentage(text, inputValue.getValue() / 100d / Slider.this.resolutionMulti);
                         }
                     };
                 }
@@ -319,7 +325,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
                 valueText = new GStat() {
                     @Override
                     public void update(GText text) {
-                        GFORMAT.iBig(text, in.get());
+                        GFORMAT.iBig(text, inputValue.getValue());
                     }
                 };
             }
@@ -341,22 +347,22 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
             return valueSupplier.get();
         }
 
-        return in.get();
+        return inputValue.getValue();
     }
 
     public Double getValueD() {
-        return (double) in.get() / 100 / resolutionMulti;
+        return (double) inputValue.getValue() / 100 / resolutionMulti;
     }
 
     @Override
     public void setValue(Integer value) {
         valueConsumer.accept(value);
 
-        if (in.get() != value) {
+        if (inputValue.getValue() != value) {
             valueChangeAction.accept(value);
         }
 
-        in.set(value);
+        inputValue.setValue(value);
     }
 
     public void setValueD(Double value) {
@@ -370,7 +376,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
             String s = ""+string;
             try {
                 int value = Integer.parseInt(s);
-                value = CLAMP.i(value, in.min(), in.max());
+                value = CLAMP.i(value, inputValue.getMin(), inputValue.getMax());
                 int rest = value % step;
 
                 if (rest != 0) {
@@ -390,16 +396,16 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     };
 
     public int getMax() {
-        return in.max();
+        return inputValue.getMax();
     }
 
     public int getMin() {
-        return in.min();
+        return inputValue.getMin();
     }
 
     @Override
     public void render(SPRITE_RENDERER r, float ds) {
-        activeSet(enabled && in.max() > 0);
+        activeSet(enabled && inputValue.getMax() > 0);
         super.render(r, ds);
     }
 
@@ -412,7 +418,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     @Override
     public void hoverInfoGet(GUI_BOX text) {
         GBox b = (GBox) text;
-        b.add(GFORMAT.i(b.text(), in.get()));
+        b.add(GFORMAT.i(b.text(), inputValue.getValue()));
     }
 
     protected void renderPositiveMidColor(SPRITE_RENDERER r, int x1, int width, int y1, int y2) {
@@ -444,7 +450,6 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     }
 
     public void reset() {
-        in.setD(initialDValue);
         setValue(initialValue);
     }
 
@@ -470,7 +475,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
             double clickPos = getClickPos();
             double value;
 
-            if (in.min() < 0) {
+            if (inputValue.getMin() < 0) {
                 value = CLAMP.d(clickPos, -1, 1);
             } else {
                 value = CLAMP.d(clickPos, 0, 1);
@@ -495,7 +500,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
             int clickX = mouseCooSupplier.get().x();
             int clickPos = clickX - barStartX;
 
-            if (in.min() < 0) {
+            if (inputValue.getMin() < 0) {
                 int barLength = body().width() / 2;
                 int barCenterX = barStartX + barLength;
                 int barRange = clickX - barCenterX;
@@ -522,15 +527,15 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
             int slideCursorPos;
 
-            if (in.min() >= 0) {
-                slideCursorPos = (int) (body.x1()+ barFullWidth * in.getD());
+            if (inputValue.getMin() >= 0) {
+                slideCursorPos = (int) (body.x1()+ barFullWidth * inputValue.getValueD());
                 renderWithPositiveValues(r);
             } else {
                 renderWithNegativeValues(r);
                 int barWidth = body().width() / 2;
-                int barColoredLength = (int) (in.getD() * barWidth);
+                int barColoredLength = (int) (inputValue.getValueD() * barWidth);
 
-                if (in.get() < 0) {
+                if (inputValue.getValue() < 0) {
                     slideCursorPos = body().x1() + barWidth - barColoredLength;
                 } else {
                     slideCursorPos = body().x1() + barWidth + barColoredLength;
@@ -553,7 +558,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
         private void renderWithPositiveValues(SPRITE_RENDERER r) {
             int barFullWidth = body().width();
-            int barColoredLength = (int) (in.getD() * barFullWidth);
+            int barColoredLength = (int) (inputValue.getValueD() * barFullWidth);
             int barColoredEndPos = body().x1() + barColoredLength;
             int barColoredStartPos = body().x1();
             int barColoredWidth = barColoredEndPos - barColoredStartPos;
@@ -564,9 +569,9 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
         private void renderWithNegativeValues(SPRITE_RENDERER r) {
             int barWidth = body().width() / 2;
-            int barColoredLength = (int) (in.getD() * barWidth);
+            int barColoredLength = (int) (inputValue.getValueD() * barWidth);
 
-            if (in.get() < 0) {
+            if (inputValue.getValue() < 0) {
                 barColoredLength = - barColoredLength;
             }
 
@@ -574,7 +579,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
             int barColoredStartPos = body().x1() + barWidth + barColoredLength;
             int barColoredWidth = barColoredEndPos - barColoredStartPos;
 
-            if (in.get() < 0) {
+            if (inputValue.getValue() < 0) {
                 // renders negative bar part
                 renderNegativeMidColor(r, barColoredStartPos, barColoredWidth, body().y1(), body().y2());
             } else {
@@ -591,9 +596,9 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
             if (hover && !lockScroll) {
                 double d = MButt.clearWheelSpin();
                 if (d < 0)
-                    in.inc(-step);
+                    inputValue.inc(-step);
                 else if (d > 0)
-                    in.inc(step);
+                    inputValue.inc(step);
                 return true;
             }
 

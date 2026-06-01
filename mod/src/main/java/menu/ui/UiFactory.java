@@ -180,6 +180,10 @@ public class UiFactory {
             .valueDisplay(Slider.ValueDisplay.PERCENTAGE)
             .build();
 
+        InputInt inputInt = new InputInt(slider.getInputValue());
+        slider.inputClickAction(slider1 -> {
+            MenuUi.getInstance().popups().show(inputInt, slider);
+        });
         slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
         return slider;
     }
@@ -216,6 +220,10 @@ public class UiFactory {
             .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
             .build();
 
+        InputInt inputInt = new InputInt(slider.getInputValue());
+        slider.inputClickAction(slider1 -> {
+            MenuUi.getInstance().popups().show(inputInt, slider);
+        });
         slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
         return slider;
     }

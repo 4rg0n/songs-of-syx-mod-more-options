@@ -72,10 +72,27 @@ public class GameAssets {
     private final static List<String> humanClasses = List.of("CITIZEN", "CHILD", "NOBLE", "OTHER", "SLAVE");
 
     @Getter(lazy = true)
+    private final static List<String> supplies = init().resource().supply().fileTitles();
+
+    @Getter(lazy = true)
     private final static List<String> allEquipments = Stream.concat(
         Stream.concat(getBattleEquipments().stream(), getRangedEquipments().stream()),
         getCivicEquipments().stream()
     ).toList();
+
+    @Getter(lazy = true)
+    private final static List<String> crimes = init().config().json("LAW")
+        .map(json -> json.get("CRIMES"))
+        .map(JsonObject.class::cast)
+        .map(JsonObject::keys)
+        .get();
+
+    @Getter(lazy = true)
+    private final static List<String> punishments = init().config().json("LAW")
+        .map(json -> json.get("PUNISHMENTS"))
+        .map(JsonObject.class::cast)
+        .map(JsonObject::keys)
+        .get();
 
     @Getter(lazy = true)
     private final static List<String> battleEquipments = init().stats().folder("equip").folder("battle").fileTitles().stream()
@@ -110,6 +127,12 @@ public class GameAssets {
 
     @Getter(lazy = true)
     private final static List<String> rooms = init().room().fileTitles();
+
+    @Getter(lazy = true)
+    private final static List<String> worldBuildings = init().world().folder("building")
+        .folders().values().stream()
+        .flatMap(folder -> folder.fileTitles().stream())
+        .toList();
 
     @Getter(lazy = true)
     private final static List<String> poolRooms = init().room().fileTitles().stream()
