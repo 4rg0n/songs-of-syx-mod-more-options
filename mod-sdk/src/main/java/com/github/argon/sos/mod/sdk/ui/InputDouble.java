@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.ui;
 
-import com.github.argon.sos.mod.sdk.data.IntegerValue;
+import com.github.argon.sos.mod.sdk.data.DoubleValue;
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
@@ -15,19 +15,16 @@ import util.gui.misc.GButt;
 
 import java.util.function.Supplier;
 
-public class InputInt extends GuiSection implements Valuable<Integer>, Resettable {
+public class InputDouble extends GuiSection implements Valuable<Double>, Resettable {
 
-	private final IntegerValue inputValue;
-	
+	private final DoubleValue inputValue;
 	private final StringInputSprite inputSprite;
-	
-	public InputInt(IntegerValue inputValue) {
-		this(inputValue, false, false, null, 0);
-	}
+	private final int decimals;
 
 	@Builder
-	public InputInt(IntegerValue inputValue, boolean butts, boolean doublebutts, @Nullable Supplier<Coo> mouseCooSupplier, int inputWidth){
+	public InputDouble(DoubleValue inputValue, boolean butts, boolean doublebutts, @Nullable Supplier<Coo> mouseCooSupplier, int decimals, int inputWidth){
 		this.inputValue = inputValue;
+		this.decimals = (decimals > 0) ? decimals : 2;
 
 		this.inputSprite = new StringInputSprite(8, UI.FONT().S) {
 
@@ -42,24 +39,20 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 				}
 
 				try {
-					int value = Integer.parseInt(text().toString());
+					double value = Double.parseDouble(text().toString());
 					setValue(value);
 				} catch (NumberFormatException e) {
 					reset();
 				}
-			};
-
-
-		}.placeHolder("0");
-
+			}
+		}.placeHolder("0." + StringUtil.repeat('0', this.decimals));
 		Input inn = new Input(inputSprite, mouseCooSupplier, inputWidth);
-		
+
 		if (doublebutts) {
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.minifierBig) {
-
 				@Override
 				protected void clickA() {
-					int decreasedValue = inputValue.inc(-Math.max(1, (inputValue.getMax() - inputValue.getMin()) / 5));
+					double decreasedValue = inputValue.inc(-Math.max(1, (inputValue.getMax() - inputValue.getMin()) / 5));
 					updateInputSprite(decreasedValue);
 				}
 
@@ -68,19 +61,18 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 				protected void renAction() {
 					activeSet(!inputValue.isMin());
 				}
-				
 			};
 			pp.repetativeSet(true);
 			pp.body().setHeight(inn.body.height());
 			addRightC(0, pp);
-			
+
 		}
-		
+
 		if (butts) {
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.minifier) {
 				@Override
 				protected void clickA() {
-					int decreasedValue = inputValue.inc(-1);
+					double decreasedValue = inputValue.inc(-1);
 					updateInputSprite(decreasedValue);
 				}
 
@@ -88,7 +80,6 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 				protected void renAction() {
 					activeSet(inputValue.getValue() > inputValue.getMin());
 				}
-				
 			};
 			pp.repetativeSet(true);
 			pp.body().setHeight(inn.body.height());
@@ -100,7 +91,7 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.magnifier) {
 				@Override
 				protected void clickA() {
-					int increasedValue = inputValue.inc(1);
+					double increasedValue = inputValue.inc(1);
 					updateInputSprite(increasedValue);
 				}
 
@@ -113,12 +104,12 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 			pp.body().setHeight(inn.body.height());
 			addRightC(0, pp);
 		}
-		
+
 		if (doublebutts) {
 			GButt.ButtPanel pp = new GButt.ButtPanel(UI.icons().s.magnifierBig) {
 				@Override
 				protected void clickA() {
-					int increasedValue = inputValue.inc(Math.max(1, (inputValue.getMax() - inputValue.getMin()) / 5));
+					double increasedValue = inputValue.inc(Math.max(1, (inputValue.getMax() - inputValue.getMin()) / 5));
 					updateInputSprite(increasedValue);
 				}
 
@@ -130,23 +121,22 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 			pp.repetativeSet(true);
 			pp.body().setHeight(inn.body.height());
 			addRightC(0, pp);
-			
 		}
 	}
-	
+
 	@Override
 	public void render(SPRITE_RENDERER r, float ds) {
 		super.render(r, ds);
 	}
 
 	@Override
-	public @Nullable Integer getValue() {
+	public @Nullable Double getValue() {
 		return inputValue.getValue();
 	}
 
 	@Override
-	public void setValue(Integer value) {
-		int newValue = inputValue.setValue(value);
+	public void setValue(Double value) {
+		double newValue = inputValue.setValue(value);
 		updateInputSprite(newValue);
 	}
 
@@ -155,7 +145,7 @@ public class InputInt extends GuiSection implements Valuable<Integer>, Resettabl
 		updateInputSprite(inputValue.getValue());
 	}
 
-	private void updateInputSprite(int value) {
-		inputSprite.text().clear().add(value);
+	private void updateInputSprite(double value) {
+		inputSprite.text().clear().add(value, decimals + 1);
 	}
 }

@@ -2,10 +2,10 @@ package com.github.argon.sos.mod.sdk.json;
 
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.testing.ModSdkExtension;
-import com.github.argon.sos.mod.sdk.util.Maps;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,11 +64,11 @@ class JsonPathTest {
         jsonArray.add(JsonLong.of(2));
         jsonArray.add(JsonLong.of(3));
 
-        JsonObject json = JsonObject.of(Maps.of("TEST",
+        JsonObject json = JsonObject.of(Map.of("TEST",
             JsonArray.of(
-                JsonObject.of(Maps.of("TEST", jsonArray)),
-                JsonObject.of(Maps.of("TEST", jsonArray)),
-                JsonObject.of(Maps.of("TEST", jsonArray))
+                JsonObject.of(Map.of("TEST", jsonArray)),
+                JsonObject.of(Map.of("TEST", jsonArray)),
+                JsonObject.of(Map.of("TEST", jsonArray))
             )));
 
         Optional<JsonElement> result = jsonPath.get(json);
@@ -89,11 +89,11 @@ class JsonPathTest {
         jsonArray.add(JsonLong.of(2));
         jsonArray.add(JsonLong.of(3));
 
-        JsonObject json = JsonObject.of(Maps.of("TEST",
+        JsonObject json = JsonObject.of(Map.of("TEST",
             JsonArray.of(
-                JsonObject.of(Maps.of("TEST", jsonArray)),
-                JsonObject.of(Maps.of("TEST", jsonArray)),
-                JsonObject.of(Maps.of("TEST", jsonArray))
+                JsonObject.of(Map.of("TEST", jsonArray)),
+                JsonObject.of(Map.of("TEST", jsonArray)),
+                JsonObject.of(Map.of("TEST", jsonArray))
             )));
 
         jsonPath.put(json, JsonLong.of(1337));

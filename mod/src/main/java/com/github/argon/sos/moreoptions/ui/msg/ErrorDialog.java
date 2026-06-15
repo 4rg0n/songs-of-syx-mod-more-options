@@ -17,13 +17,13 @@ public class ErrorDialog extends GuiSection {
     private final static I18nTranslator i18n = ModModule.i18n().get(ErrorDialog.class);
 
     @Getter
-    private Button copyButton;
+    private Button<String> copyButton;
     @Getter
-    private Button reportButton;
+    private Button<String> reportButton;
     @Getter
-    private Button closeButton;
+    private Button<String> closeButton;
     @Getter
-    private Button cleanButton;
+    private Button<String> cleanButton;
     @Getter
     private final Throwable exception;
     @Getter
@@ -64,19 +64,19 @@ public class ErrorDialog extends GuiSection {
     private GuiSection buttons() {
         GuiSection section = new GuiSection();
 
-        this.copyButton = new Button(i18n.t("ErrorDialog.button.copy.name"), COLOR.WHITE15,
+        this.copyButton = new Button<>(i18n.t("ErrorDialog.button.copy.name"), COLOR.WHITE15,
             i18n.t("ErrorDialog.button.copy.desc"));
         section.addRight(0, copyButton);
 
-        this.reportButton = new Button(i18n.t("ErrorDialog.button.report.name"), COLOR.WHITE15,
+        this.reportButton = new Button<>(i18n.t("ErrorDialog.button.report.name"), COLOR.WHITE15,
             i18n.t("ErrorDialog.button.report.desc"));
         section.addRight(20, reportButton);
 
-        this.cleanButton = new Button(i18n.t("ErrorDialog.button.clean.name"), COLOR.WHITE15,
+        this.cleanButton = new Button<>(i18n.t("ErrorDialog.button.clean.name"), COLOR.WHITE15,
             i18n.t("ErrorDialog.button.clean.desc"));
         section.addRight(20, cleanButton);
 
-        this.closeButton = new Button(i18n.t("ErrorDialog.button.close.name"), COLOR.WHITE15,
+        this.closeButton = new Button<>(i18n.t("ErrorDialog.button.close.name"), COLOR.WHITE15,
             i18n.t("ErrorDialog.button.close.desc"));
         section.addRight(20, closeButton);
 

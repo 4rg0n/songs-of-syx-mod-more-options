@@ -56,7 +56,7 @@ class ReflectionUtilTest {
 
         assertThat(declaredFields).hasSize(6);
         assertThat(declaredFields)
-            .allMatch(field -> Lists.of("publicField", "privateField", "privateFinalField", "publicStaticField", "privateStaticField", "privateFinalStaticField")
+            .allMatch(field -> List.of("publicField", "privateField", "privateFinalField", "publicStaticField", "privateStaticField", "privateFinalStaticField")
                 .contains(field.getName()));
     }
 
@@ -180,8 +180,8 @@ class ReflectionUtilTest {
         @Getter
         private final String privateFinalField = "PRIVATE_FINAL";
         public String publicField = "PUBLIC";
-        private final List<String> privateList = Lists.of("TEST1", "TEST2");
-        private final Map<String, Integer> privateMap = Maps.of("TEST1", 1);
+        private final List<String> privateList = List.of("TEST1", "TEST2");
+        private final Map<String, Integer> privateMap = Map.of("TEST1", 1);
 
         @TestAnnotation
         public boolean doSomething() {

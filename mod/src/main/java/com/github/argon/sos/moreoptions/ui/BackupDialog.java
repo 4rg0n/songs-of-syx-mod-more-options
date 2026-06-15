@@ -18,11 +18,11 @@ public class BackupDialog extends GuiSection {
     private final static I18nTranslator i18n = ModModule.i18n().get(BackupDialog.class);
 
     @Getter
-    private Button applyButton;
+    private Button<String> applyButton;
     @Getter
-    private Button editButton;
+    private Button<String> editButton;
     @Getter
-    private Button discardButton;
+    private Button<String> discardButton;
 
     public BackupDialog() {
         GText fileText = new GText(UI.FONT().M, i18n.t("BackupDialog.text.backup.found"));
@@ -41,15 +41,15 @@ public class BackupDialog extends GuiSection {
     private GuiSection buttons() {
         GuiSection section = new GuiSection();
 
-        this.applyButton = new Button(i18n.t("BackupDialog.button.apply.name"), COLOR.WHITE15,
+        this.applyButton = new Button<>(i18n.t("BackupDialog.button.apply.name"), COLOR.WHITE15,
             i18n.t("BackupDialog.button.apply.desc"));
         section.addRight(0, applyButton);
 
-        this.editButton = new Button(i18n.t("BackupDialog.button.edit.name"), COLOR.WHITE15,
+        this.editButton = new Button<>(i18n.t("BackupDialog.button.edit.name"), COLOR.WHITE15,
             i18n.t("BackupDialog.button.edit.desc"));
         section.addRight(20, editButton);
 
-        this.discardButton = new Button(i18n.t("BackupDialog.button.discard.name"), COLOR.WHITE15,
+        this.discardButton = new Button<>(i18n.t("BackupDialog.button.discard.name"), COLOR.WHITE15,
             i18n.t("BackupDialog.button.discard.desc"));
         section.addRight(20, discardButton);
 

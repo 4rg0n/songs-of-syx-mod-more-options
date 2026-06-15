@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Contains all mappers for mapping {@link JsonElement}s into and from objects
@@ -32,7 +31,7 @@ public class Mappers {
     public List<Mapper<?>> find(Class<?> clazz) {
         return mappers.stream()
             .filter(mapper -> mapper.supports(clazz))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public Optional<Mapper<?>> findOne(Class<?> clazz) {

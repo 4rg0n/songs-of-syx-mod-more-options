@@ -1,15 +1,14 @@
 package com.github.argon.sos.moreoptions.ui.json.factory;
 
-import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
+import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class AbstractJsonUiTemplate {
     protected final JsonUiElementFactory factory;
@@ -27,7 +26,7 @@ public abstract class AbstractJsonUiTemplate {
     public List<ColumnRow<JsonUiElementSingle<? extends JsonElement, ? extends RENDEROBJ>>> toColumnRows() {
         return getAll().stream()
             .map(JsonUiElementSingle::toColumnRow)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public boolean isDirty() {

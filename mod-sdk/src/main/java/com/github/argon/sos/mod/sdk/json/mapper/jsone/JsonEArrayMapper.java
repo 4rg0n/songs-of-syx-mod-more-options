@@ -9,7 +9,6 @@ import snake2d.util.file.JsonE;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class JsonEArrayMapper implements JsonEMapper<JsonArray> {
 
@@ -28,13 +27,13 @@ public class JsonEArrayMapper implements JsonEMapper<JsonArray> {
             List<Long> longList = elements.stream()
                 .map(JsonLong.class::cast)
                 .map(JsonLong::getValue)
-                .collect(Collectors.toList());
+                .toList();
             json.add(key, PrimitivesCastUtil.toIntegerArrayLong(longList));
         } else if (jsonElement instanceof JsonDouble) {
             List<Double> doubleList = elements.stream()
                 .map(JsonDouble.class::cast)
                 .map(JsonDouble::getValue)
-                .collect(Collectors.toList());
+                .toList();
             json.add(key, PrimitivesCastUtil.toDoubleArrayDouble(doubleList));
         } else if (jsonElement instanceof JsonBoolean) {
             String[] strings = elements.stream()

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,13 +64,13 @@ class ClassCastUtilTest {
     @Test
     void toStringArrayString() {
         String[] expected = new String[]{"TEST1", "TEST2"};
-        assertThat(ClassCastUtil.toStringArrayString(Lists.of("TEST1", "TEST2"))).isEqualTo(expected);
+        assertThat(ClassCastUtil.toStringArrayString(List.of("TEST1", "TEST2"))).isEqualTo(expected);
     }
 
     @Test
     void toStringArrayEnum() {
         String[] expected = new String[]{"TEST1", "TEST2"};
-        assertThat(ClassCastUtil.toStringArrayEnum(Lists.of(TestEnum.TEST1, TestEnum.TEST2))).isEqualTo(expected);
+        assertThat(ClassCastUtil.toStringArrayEnum(List.of(TestEnum.TEST1, TestEnum.TEST2))).isEqualTo(expected);
     }
 
     @Test
@@ -146,7 +147,7 @@ class ClassCastUtilTest {
 
     @Test
     void toCollection() {
-        assertThat(ClassCastUtil.toCollection(new String[]{"TEST1", "TEST2"})).isEqualTo(Lists.of("TEST1", "TEST2"));
+        assertThat(ClassCastUtil.toCollection(new String[]{"TEST1", "TEST2"})).isEqualTo(List.of("TEST1", "TEST2"));
     }
 
     private static enum TestEnum {

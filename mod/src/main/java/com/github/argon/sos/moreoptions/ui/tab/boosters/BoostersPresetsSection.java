@@ -1,14 +1,14 @@
 package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.action.BiAction;
+import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.Button;
 import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.ui.Table;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.moreoptions.ModModule;
-import com.github.argon.sos.mod.sdk.data.domain.Range;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;
@@ -29,9 +29,9 @@ public class BoostersPresetsSection extends GuiSection {
 
     private final static I18nTranslator i18n = ModModule.i18n().get(BoostersTab.class);
 
-    private final Map<String, Button> presetButtons = new HashMap<>();
-    private final Map<String, Button> deleteButtons = new HashMap<>();
-    private final Map<String, Button> shareButtons = new HashMap<>();
+    private final Map<String, Button<String>> presetButtons = new HashMap<>();
+    private final Map<String, Button<String>> deleteButtons = new HashMap<>();
+    private final Map<String, Button<String>> shareButtons = new HashMap<>();
 
     @Builder
     public BoostersPresetsSection(
@@ -45,19 +45,19 @@ public class BoostersPresetsSection extends GuiSection {
             return;
         }
 
-        Map<String, Button> presetButtons = presets.entrySet().stream().collect(Collectors.toMap(
+        Map<String, Button<String>> presetButtons = presets.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
-            entry -> new Button(entry.getKey())
+            entry -> new Button<>(entry.getKey())
         ));
 
         // all buttons get the same width
         int presetButtonsWidth = UiUtil.getMaxWidth(presetButtons.values());
         List<ColumnRow<String>> rows = presetButtons.entrySet().stream().map(entry -> {
             String key = entry.getKey();
-            Button presetButton = entry.getValue();
+            Button<String> presetButton = entry.getValue();
             presetButton.hoverInfoSet(i18n.t("BoostersTab.button.preset.desc", key));
-            Button deleteButton = new Button(SPRITES.icons().m.trash, i18n.t("BoostersTab.button.preset.delete.desc", key));
-            Button shareButton = new Button(SPRITES.icons().m.openscroll, i18n.t("BoostersTab.button.preset.share.desc", key));
+            Button<String> deleteButton = new Button<>(SPRITES.icons().m.trash, i18n.t("BoostersTab.button.preset.delete.desc", key));
+            Button<String> shareButton = new Button<>(SPRITES.icons().m.openscroll, i18n.t("BoostersTab.button.preset.share.desc", key));
             presetButton.body().setWidth(presetButtonsWidth);
 
             deleteButton.bg(COLOR.RED50);
@@ -76,7 +76,7 @@ public class BoostersPresetsSection extends GuiSection {
                 .column(shareButton)
                 .column(deleteButton)
                 .build();
-        }).collect(Collectors.toList());
+        }).toList();
 
         Table<String> buttonTable = Table.<String>builder()
             .rows(rows)

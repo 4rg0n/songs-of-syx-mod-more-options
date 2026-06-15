@@ -21,9 +21,8 @@ import util.gui.misc.GButt;
  * Basic functionality shared between buttons.
  *
  * @param <Value> a button can hold a value
- * @param <Element> the button class type itself
  */
-public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> extends GButt.ButtPanel
+public abstract class AbstractButton<Value> extends GButt.ButtPanel
     implements Valuable<Value>,
     Searchable<Value, Boolean>,
     Toggleable<Boolean>
@@ -56,6 +55,11 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
     protected Value searchTerm;
     
     public final static COLOR DEFAULT_COLOR = COLOR.WHITE35;
+
+    public AbstractButton(Value value) {
+        this(value.toString());
+        this.value = value;
+    }
 
     public AbstractButton(CharSequence label, Font font) {
         this(label, DEFAULT_COLOR, font, null);
@@ -131,16 +135,16 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
     }
 
     @Override
-    public Element bgClear() {
+    public AbstractButton<Value> bgClear() {
         super.bgClear();
-        return element();
+        return this;
     }
 
     @Override
-    public Element bg(COLOR c) {
+    public AbstractButton<Value> bg(COLOR c) {
         bgColor = c;
         super.bg(c);
-        return element();
+        return this;
     }
 
     @Override
@@ -149,19 +153,20 @@ public abstract class AbstractButton<Value, Element extends GButt.ButtPanel> ext
         super.renAction();
     }
 
-    public Element renActionSet(ACTION action) {
+    public void renActionSet(ACTION action) {
         this.renAction = action;
-        return element();
     }
 
-    protected abstract Element element();
-
     @Override
-    public Boolean search(Value s) {
+    public Boolean search(Value value) {
         if (searchTerm == null) {
             return true;
         }
 
-        return searchTerm.equals(s);
+        if (searchTerm instanceof String searchTermToUse && value instanceof String valueToSearch) {
+            return searchTermToUse.toLowerCase().contains(valueToSearch.toLowerCase());
+        } else {
+            return searchTerm.equals(value);
+        }
     }
 }

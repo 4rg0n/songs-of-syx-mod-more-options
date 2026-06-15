@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -103,7 +102,7 @@ public class ReflectionUtil {
     public static <T extends Annotation> List<Field> getDeclaredFieldsWithAnnotation(Class<T> annotationClass, Class<?> clazz)  {
         return Arrays.stream(clazz.getDeclaredFields())
             .filter(field -> field.isAnnotationPresent(annotationClass))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**
@@ -214,7 +213,7 @@ public class ReflectionUtil {
                 ReflectionUtil.<T>getDeclaredFieldValue(field, instance)
                     .orElse(null))
             .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**

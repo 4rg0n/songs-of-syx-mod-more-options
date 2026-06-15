@@ -2,7 +2,6 @@ package com.github.argon.sos.mod.sdk.file;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AbstractFileService implements IOService {
@@ -65,13 +63,13 @@ public abstract class AbstractFileService implements IOService {
             List<FileMeta> metas = stream
                 .map(this::readMeta)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
 
             log.debug("Loaded %s file metas from folder %s", metas.size(), folderPath);
             return metas;
         } catch (IOException e) {
             log.info("Could not load file metas from folder %s", folderPath, e);
-            return Lists.of();
+            return List.of();
         }
     }
 }

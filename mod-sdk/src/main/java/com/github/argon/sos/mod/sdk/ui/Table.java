@@ -2,7 +2,6 @@ package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.*;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import snake2d.util.sprite.text.StringInputSprite;
 import util.gui.misc.GHeader;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Getter
 public class Table<Value> extends ColorBox implements
@@ -35,7 +33,7 @@ public class Table<Value> extends ColorBox implements
 
     private final ScrollRows scrollRows;
     @Nullable
-    private final Map<String, Button> headerButtons;
+    private final Map<String, ? extends AbstractButton<String>> headerButtons;
     private final List<Integer> maxColumnWidths;
     @Nullable
     private StringInputSprite search;
@@ -73,7 +71,7 @@ public class Table<Value> extends ColorBox implements
         int rowPadding,
         int columnMargin,
         @Nullable COLOR backgroundColor,
-        @Nullable Map<String, Button> headerButtons,
+        @Nullable Map<String, AbstractButton<String>> headerButtons,
         @Nullable StringInputSprite search
     ) {
         super((backgroundColor != null) ? backgroundColor : COLOR.WHITE20);
@@ -222,7 +220,7 @@ public class Table<Value> extends ColorBox implements
         return rows.values().stream()
             .filter(columnRow -> columnRow.search(term))
             .map(ColumnRow::searchTerm)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override
@@ -240,7 +238,7 @@ public class Table<Value> extends ColorBox implements
     public List<ColumnRow<Value>> getSelection() {
         return rows.values().stream()
             .filter(GuiSection::selectedIs)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public void doubleClickAction(Action<ColumnRow<Value>> doubleClickAction) {
@@ -324,7 +322,7 @@ public class Table<Value> extends ColorBox implements
             GuiSection headerSection = UiUtil.toGuiSection(header);
             headerSection.pad(10);
             ColumnRow<Value> headerRow = ColumnRow.<Value>builder()
-                .columns(Lists.of(headerSection))
+                .columns(List.of(headerSection))
                 .build();
             headerRow.isHeader(true);
             add(headerRow);

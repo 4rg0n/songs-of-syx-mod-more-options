@@ -5,7 +5,6 @@ import com.github.argon.sos.mod.sdk.json.GameJsonService;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import init.paths.PATH;
 import lombok.AccessLevel;
@@ -38,7 +37,7 @@ public class GameFolder {
     @Getter(lazy = true)
     @Accessors(fluent = true, chain = false)
     private final List<Path> paths = Stream.concat(filePaths().stream(), folderPaths().stream())
-        .collect(Collectors.toList());
+        .toList();
 
     @Getter(lazy = true)
     @Accessors(fluent = true, chain = false)
@@ -53,7 +52,7 @@ public class GameFolder {
     private final List<String> folderNames = folderPaths().stream()
         .map(Path::getFileName)
         .map(Path::toString)
-        .collect(Collectors.toList());
+        .toList();
 
     @Getter(lazy = true)
     @Accessors(fluent = true, chain = false)
@@ -61,13 +60,13 @@ public class GameFolder {
         .map(Path::getFileName)
         .map(Path::toString)
         .sorted()
-        .collect(Collectors.toList());
+        .toList();
 
     @Getter(lazy = true)
     @Accessors(fluent = true, chain = false)
     private final List<String> fileTitles = fileNames().stream()
         .map(StringUtil::removeFileExtension)
-        .collect(Collectors.toList());
+        .toList();
 
     private final Map<String, GameFolder> folders = new HashMap<>();
 
@@ -150,7 +149,7 @@ public class GameFolder {
             path = gamePath.get();
         } catch (Exception e) {
             log.warn("Game data path does not exist?", e);
-            return Lists.of();
+            return List.of();
         }
 
         List<Path> paths = new ArrayList<>();
@@ -168,7 +167,7 @@ public class GameFolder {
             path = gamePath.get();
         } catch (Exception e) {
             log.warn("Game data path does not exist?", e);
-            return Lists.of();
+            return List.of();
         }
 
         List<Path> paths = new ArrayList<>();

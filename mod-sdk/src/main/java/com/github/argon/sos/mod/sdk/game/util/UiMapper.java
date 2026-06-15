@@ -1,11 +1,11 @@
 package com.github.argon.sos.mod.sdk.game.util;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.Checkbox;
 import com.github.argon.sos.mod.sdk.ui.ColumnRow;
 import com.github.argon.sos.mod.sdk.ui.Label;
 import com.github.argon.sos.mod.sdk.ui.Slider;
-import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import init.sprite.UI.UI;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class UiMapper {
                     .column(element)
                     .build();
             })
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public static <Value, Element extends RENDEROBJ> List<ColumnRow<Value>> toLabeledColumnRows(Map<String, Element> elements) {
@@ -68,7 +68,7 @@ public class UiMapper {
                     .column(element)
                     .build();
             })
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public static Map<String, Checkbox> toCheckboxes(Map<String, Boolean> eventConfig) {

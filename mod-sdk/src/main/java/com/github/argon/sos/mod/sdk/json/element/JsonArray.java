@@ -6,7 +6,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Getter
@@ -39,7 +38,7 @@ public class JsonArray implements JsonElement {
         return elements.stream()
             .filter(clazz::isInstance)
             .map(clazz::cast)
-            .collect(Collectors.toList());
+            .toList();
     }
     public static JsonArray of(Collection<JsonElement> elements) {
         return of(elements.toArray(new JsonElement[0]));
@@ -59,7 +58,7 @@ public class JsonArray implements JsonElement {
     public JsonArray copy() {
         List<JsonElement> clonedElements = elements.stream()
             .map(JsonElement::copy)
-            .collect(Collectors.toList());
+            .toList();
 
         return JsonArray.of(clonedElements);
     }

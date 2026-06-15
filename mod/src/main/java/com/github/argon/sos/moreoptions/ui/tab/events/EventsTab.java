@@ -6,7 +6,6 @@ import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.ui.*;
-import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.EventsConfig;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
@@ -49,7 +48,7 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
         // Siege tributes
         GHeader tributeHeader = new GHeader(i18n.t("EventsTab.header.battle.loot.name"));
         tributeHeader.hoverInfoSet(i18n.t("EventsTab.header.battle.loot.desc"));
-        tributeSliders = UiMapper.toSliders(Maps.of(
+        tributeSliders = UiMapper.toSliders(Map.of(
             "EventsTab.battle.loot.player", eventsConfig.getPlayerBattleLoot(),
             "EventsTab.battle.loot.enemy", eventsConfig.getEnemyBattleLoot()
         ));
@@ -115,7 +114,7 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
         Tabulator<String, RENDEROBJ, Void> tabulator = Tabulator.<String, RENDEROBJ, Void>builder()
             .tabMenu(menu)
             .center(true)
-            .tabs(Maps.of(
+            .tabs(Map.of(
                 "events", eventsTable,
                 "generalEvents", generalEventsTable
             ))

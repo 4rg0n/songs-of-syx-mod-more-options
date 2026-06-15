@@ -5,14 +5,16 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.List;
+
 @ExtendWith(ModSdkExtension.class)
 class MathUtilTest {
 
     @Test
     void sum() {
-        Assertions.assertThat(MathUtil.sum(Lists.of(1, 2, 3))).isEqualTo(6);
-        Assertions.assertThat(MathUtil.sum(Lists.of(0, 0, 0))).isEqualTo(0);
-        Assertions.assertThat(MathUtil.sum(Lists.of())).isEqualTo(0);
+        Assertions.assertThat(MathUtil.sum(List.of(1, 2, 3))).isEqualTo(6);
+        Assertions.assertThat(MathUtil.sum(List.of(0, 0, 0))).isEqualTo(0);
+        Assertions.assertThat(MathUtil.sum(List.of())).isEqualTo(0);
         Assertions.assertThat(MathUtil.sum(null)).isEqualTo(0);
     }
 
@@ -45,6 +47,6 @@ class MathUtilTest {
 
     @Test
     void nearest() {
-        Assertions.assertThat(MathUtil.nearest(11, Lists.of(10, 23, 47, 13))).isEqualTo(10);
+        Assertions.assertThat(MathUtil.nearest(11, List.of(10, 23, 47, 13))).isEqualTo(10);
     }
 }

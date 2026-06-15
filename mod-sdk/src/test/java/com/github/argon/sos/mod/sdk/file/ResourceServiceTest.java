@@ -1,12 +1,12 @@
 package com.github.argon.sos.mod.sdk.file;
 
 import com.github.argon.sos.mod.testing.ModSdkExtension;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Properties;
 
 @ExtendWith(ModSdkExtension.class)
@@ -25,8 +25,8 @@ class ResourceServiceTest {
 
     @Test
     void readResourceLines() throws Exception {
-        Assertions.assertThat(resourceService.readLines("not.present")).isEqualTo(Lists.of());
-        Assertions.assertThat(resourceService.readLines("test.properties")).isEqualTo(Lists.of("test=test"));
+        Assertions.assertThat(resourceService.readLines("not.present")).isEqualTo(List.of());
+        Assertions.assertThat(resourceService.readLines("test.properties")).isEqualTo(List.of("test=test"));
     }
 
     @Test

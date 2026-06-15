@@ -295,7 +295,7 @@ public class StringUtil {
     public static List<String> quote(List<String> strings) {
         return strings.stream()
             .map(StringUtil::quote)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**

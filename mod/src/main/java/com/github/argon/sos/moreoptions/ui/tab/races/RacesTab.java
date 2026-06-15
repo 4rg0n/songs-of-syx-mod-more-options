@@ -6,7 +6,6 @@ import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.ui.layout.Layout;
 import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
@@ -37,15 +36,15 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
     private final static String RACE_SEPARATOR = "~";
 
     @Getter
-    private final Button folderButton;
+    private final Button<String> folderButton;
     @Getter
-    private final Button fileButton;
+    private final Button<String> fileButton;
     @Getter
-    private final Button loadButton;
+    private final Button<String> loadButton;
     @Getter
-    private final Button exportButton;
+    private final Button<String> exportButton;
     @Getter
-    private final Button importButton;
+    private final Button<String> importButton;
 
     public RacesTab(
         String title,
@@ -86,25 +85,25 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
                         .build();
 
                     likingsSliders.put(key(race, otherRace), likingsSlider);
-                    List<GuiSection> columns = Lists.of(raceIcon, likingsSlider, otherRaceIcon);
+                    List<GuiSection> columns = List.of(raceIcon, likingsSlider, otherRaceIcon);
 
                     return ColumnRow.<Integer>builder()
                         .searchTerm(term(race, otherRace))
                         .highlightable(true)
                         .columns(columns)
                         .build();
-            }).collect(Collectors.toList())));
+            }).toList()));
 
         // Race Likings table with search
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("RacesTab.search.input.name"));
         Input search = new Input(searchInput);
 
         // menu with buttons
-        this.folderButton = new Button(i18n.t("RacesTab.button.folder.name"), i18n.t("RacesTab.button.folder.desc"));
-        this.fileButton = new Button(i18n.t("RacesTab.button.file.name"), i18n.t("RacesTab.button.file.desc"));
-        this.loadButton = new Button(i18n.t("RacesTab.button.load.name"), i18n.t("RacesTab.button.load.desc"));
-        this.exportButton = new Button(i18n.t("RacesTab.button.export.name"), i18n.t("RacesTab.button.export.desc"));
-        this.importButton = new Button(i18n.t("RacesTab.button.import.name"), i18n.t("RacesTab.button.import.desc"));
+        this.folderButton = new Button<>(i18n.t("RacesTab.button.folder.name"), i18n.t("RacesTab.button.folder.desc"));
+        this.fileButton = new Button<>(i18n.t("RacesTab.button.file.name"), i18n.t("RacesTab.button.file.desc"));
+        this.loadButton = new Button<>(i18n.t("RacesTab.button.load.name"), i18n.t("RacesTab.button.load.desc"));
+        this.exportButton = new Button<>(i18n.t("RacesTab.button.export.name"), i18n.t("RacesTab.button.export.desc"));
+        this.importButton = new Button<>(i18n.t("RacesTab.button.import.name"), i18n.t("RacesTab.button.import.desc"));
         ButtonMenu<String> buttonMenu = ButtonMenu.<String>builder()
             .buttons(Maps.ofLinked(
                 "load", loadButton,

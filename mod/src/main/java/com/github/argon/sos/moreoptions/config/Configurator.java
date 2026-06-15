@@ -11,7 +11,6 @@ import com.github.argon.sos.mod.sdk.metric.MetricCollector;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
 import com.github.argon.sos.mod.sdk.phase.Phases;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.MathUtil;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.game.api.GameBoosterApi;
@@ -77,7 +76,7 @@ public class Configurator implements Phases {
             fileLogWriter.close();
         }
 
-        List<Boolean> results = Lists.of(
+        List<Boolean> results = List.of(
             applyEventsConfig(config.getEvents()),
             applySoundsConfig(config.getSounds()),
             applyWeatherConfig(config.getWeather()),

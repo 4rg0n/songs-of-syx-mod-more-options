@@ -7,7 +7,6 @@ import com.github.argon.sos.mod.sdk.game.action.Valuable;
 import com.github.argon.sos.mod.sdk.game.action.VoidAction;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.*;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
@@ -65,23 +64,23 @@ public class MoreOptionsPanel extends GuiSection implements
     private final AdvancedTab advancedTab;
 
     @Getter
-    private final Button cancelButton;
+    private final Button<String> cancelButton;
     @Getter
-    private final Button defaultTabButton;
+    private final Button<String> defaultTabButton;
     @Getter
-    private final Button applyButton;
+    private final Button<String> applyButton;
     @Getter
-    private final Button undoButton;
+    private final Button<String> undoButton;
     @Getter
-    private final Button okButton;
+    private final Button<String> okButton;
     @Getter
-    private final Button moreButton;
+    private final Button<String> moreButton;
     @Getter
-    private final Button defaultAllButton;
+    private final Button<String> defaultAllButton;
     @Getter
-    private final Button reloadButton;
+    private final Button<String> reloadButton;
     @Getter
-    private final Button shareButton;
+    private final Button<String> shareButton;
     @Getter
     private final ButtonMenu<String> moreButtonMenu;
     @Getter
@@ -111,23 +110,23 @@ public class MoreOptionsPanel extends GuiSection implements
         this.configStore = configStore;
 
         GuiSection footer = new GuiSection();
-        this.cancelButton = new Button(
+        this.cancelButton = new Button<>(
             i18n.t("MoreOptionsPanel.button.cancel.name"),
             i18n.t("MoreOptionsPanel.button.cancel.desc"));
         footer.addRightC(0, cancelButton);
 
-        this.undoButton = new Button(
+        this.undoButton = new Button<>(
             i18n.t("MoreOptionsPanel.button.undo.name"),
             i18n.t("MoreOptionsPanel.button.undo.desc"));
         undoButton.activeSet(false);
         footer.addRightC(10, undoButton);
 
-        this.defaultTabButton = new Button(
+        this.defaultTabButton = new Button<>(
             i18n.t("MoreOptionsPanel.button.default.tab.name"),
             i18n.t("MoreOptionsPanel.button.default.tab.desc"));
         footer.addRightC(10, defaultTabButton);
 
-        this.moreButton = new Button(
+        this.moreButton = new Button<>(
             i18n.t("MoreOptionsPanel.button.more.name"),
             COLOR.WHITE15,
             i18n.t("MoreOptionsPanel.button.more.desc"));
@@ -142,25 +141,25 @@ public class MoreOptionsPanel extends GuiSection implements
         MoreOptionsV5Config config = moreOptionsModel.getConfig();
         footer.addRightC(50, versions(config.getVersion(), modVersion));
 
-        this.applyButton = new Button(i18n.t("MoreOptionsPanel.button.apply.name"), i18n.t("MoreOptionsPanel.button.apply.desc"));
+        this.applyButton = new Button<>(i18n.t("MoreOptionsPanel.button.apply.name"), i18n.t("MoreOptionsPanel.button.apply.desc"));
         applyButton.activeSet(false);
         footer.addRightC(50, applyButton);
 
-        this.okButton = new Button(i18n.t("MoreOptionsPanel.button.ok.name"), i18n.t("MoreOptionsPanel.button.ok.desc"));
+        this.okButton = new Button<>(i18n.t("MoreOptionsPanel.button.ok.name"), i18n.t("MoreOptionsPanel.button.ok.desc"));
         footer.addRightC(10, okButton);
 
         // More Button Menu
-        this.defaultAllButton = new Button(
+        this.defaultAllButton = new Button<>(
             i18n.t("MoreOptionsPanel.button.default.all.name"),
             i18n.t("MoreOptionsPanel.button.default.all.desc"));
-        this.reloadButton = new Button(
+        this.reloadButton = new Button<>(
             i18n.t("MoreOptionsPanel.button.reload.name"),
             i18n.t("MoreOptionsPanel.button.reload.desc"));
-        this.shareButton = new Button(
+        this.shareButton = new Button<>(
             i18n.t("MoreOptionsPanel.button.share.name"),
             i18n.t("MoreOptionsPanel.button.share.desc"));
 
-        List<Button> buttons = Lists.of(
+        List<Button<String>> buttons = List.of(
             defaultAllButton,
             shareButton,
             reloadButton
@@ -193,25 +192,25 @@ public class MoreOptionsPanel extends GuiSection implements
             ))
             .tabMenu(Switcher.<String>builder()
                 .menu(ButtonMenu.<String>builder()
-                    .button("sounds", new Button(
+                    .button("sounds", new Button<>(
                         i18n.t("MoreOptionsPanel.tab.sounds.name"),
                         i18n.t("MoreOptionsPanel.tab.sounds.desc")))
-                    .button("events", new Button(
+                    .button("events", new Button<>(
                         i18n.t("MoreOptionsPanel.tab.events.name"),
                         i18n.t("MoreOptionsPanel.tab.events.desc")))
-                    .button("weather", new Button(
+                    .button("weather", new Button<>(
                         i18n.t("MoreOptionsPanel.tab.weather.name"),
                         i18n.t("MoreOptionsPanel.tab.weather.desc")))
-                    .button("boosters", new Button(
+                    .button("boosters", new Button<>(
                         i18n.t("MoreOptionsPanel.tab.boosters.name"),
                         i18n.t("MoreOptionsPanel.tab.boosters.desc")))
-                    .button("metrics", new Button(
+                    .button("metrics", new Button<>(
                         i18n.t("MoreOptionsPanel.tab.metrics.name"),
                         i18n.t("MoreOptionsPanel.tab.metrics.desc")))
-                    .button("races", new Button(
+                    .button("races", new Button<>(
                         i18n.t("MoreOptionsPanel.tab.races.name"),
                         i18n.t("MoreOptionsPanel.tab.races.desc")))
-                    .button("advanced", new Button(
+                    .button("advanced", new Button<>(
                         i18n.t("MoreOptionsPanel.tab.advanced.name"),
                         i18n.t("MoreOptionsPanel.tab.advanced.desc")))
                     .sameWidth(true)

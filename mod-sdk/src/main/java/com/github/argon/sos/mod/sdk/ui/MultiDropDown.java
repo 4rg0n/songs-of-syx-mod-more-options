@@ -17,7 +17,7 @@ import util.gui.misc.GText;
 import java.util.List;
 
 
-public class MultiDropDown<Key> extends AbstractButton<List<Key>, MultiDropDown<Key>>
+public class MultiDropDown<Key> extends AbstractButton<List<Key>>
     implements Refreshable
 {
     @Getter
@@ -73,11 +73,6 @@ public class MultiDropDown<Key> extends AbstractButton<List<Key>, MultiDropDown<
     @Override
     public void setValue(List<Key> value) {
         select.setValue(value);
-    }
-
-    @Override
-    protected MultiDropDown<Key> element() {
-        return this;
     }
 
     @Override

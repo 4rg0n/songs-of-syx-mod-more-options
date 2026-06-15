@@ -1,5 +1,6 @@
 package menu.ui;
 
+import com.github.argon.sos.mod.sdk.data.IntegerValue;
 import com.github.argon.sos.mod.sdk.ui.ColorBox;
 import com.github.argon.sos.mod.sdk.ui.InputInt;
 import com.github.argon.sos.mod.sdk.ui.Section;
@@ -9,16 +10,19 @@ import snake2d.SPRITE_RENDERER;
 import snake2d.util.color.COLOR;
 import snake2d.util.color.ColorImp;
 import snake2d.util.gui.GuiSection;
-import util.data.INT;
 
 /**
  * Component to select RGB color values via sliders with a color preview.
  */
 public class ColorPicker extends Section {
-    private final INT.INTE red;
-    private final INT.INTE green;
-    private final INT.INTE blue;
+    private final IntegerValue red;
+    private final IntegerValue green;
+    private final IntegerValue blue;
     private final ColorBox colorBox;
+
+    private final InputInt redInput;
+    private final InputInt greenInput;
+    private final InputInt blueInput;
 
     public final static COLOR DUMMY_COLOR = new ColorImp(255, 0, 255);
 
@@ -31,17 +35,17 @@ public class ColorPicker extends Section {
     }
 
     public ColorPicker(Integer red, Integer green, Integer blue, boolean horizontal) {
-        this.red = new INT.INTE.IntImp(0, 255);
-        this.green = new INT.INTE.IntImp(0, 255);
-        this.blue = new INT.INTE.IntImp(0, 255);
+        this.red = new IntegerValue(0, 255);
+        this.green = new IntegerValue(0, 255);
+        this.blue = new IntegerValue(0, 255);
+
+        this.redInput = new InputInt(this.red, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
+        this.greenInput = new InputInt(this.green, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
+        this.blueInput = new InputInt(this.blue, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
 
         setRed(red);
         setGreen(green);
         setBlue(blue);
-
-        InputInt redInput = new InputInt(this.red, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
-        InputInt greenInput = new InputInt(this.green, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
-        InputInt blueInput = new InputInt(this.blue, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
 
         GuiSection colorInputs = new GuiSection();
 
@@ -68,15 +72,15 @@ public class ColorPicker extends Section {
     }
 
     public void setRed(int value) {
-        red.set(value);
+        redInput.setValue(value);
     }
 
     public void setGreen(int value) {
-        green.set(value);
+        greenInput.setValue(value);
     }
 
     public void setBlue(int value) {
-        blue.set(value);
+        blueInput.setValue(value);
     }
 
     public COLOR color() {
@@ -92,15 +96,15 @@ public class ColorPicker extends Section {
     }
 
     public int getRed() {
-        return this.red.get();
+        return this.red.getValue();
     }
 
     public int getGreen() {
-        return this.green.get();
+        return this.green.getValue();
     }
 
     public int getBlue() {
-        return this.blue.get();
+        return this.blue.getValue();
     }
 
     public String to(String delimiter) {

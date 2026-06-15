@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class SliderDoubleList extends AbstractSliderList<Double> {
 
@@ -15,15 +14,9 @@ public class SliderDoubleList extends AbstractSliderList<Double> {
         super(label, description, sliders, height, elementSupplier, clickAction);
     }
 
-    @Override
-    protected SliderDoubleList element() {
-        return this;
-    }
-
-
     public List<Double> getValue() {
         return uiList.getElements().stream()
             .map(Slider::getValueD)
-            .collect(Collectors.toList());
+            .toList();
     }
 }

@@ -4,7 +4,6 @@ import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
 import com.github.argon.sos.mod.sdk.json.GameJsonService;
 import com.github.argon.sos.mod.sdk.json.element.JsonArray;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiTemplate;
 import init.paths.PATHS;
 import lombok.AccessLevel;
@@ -17,6 +16,35 @@ import lombok.RequiredArgsConstructor;
 public class JsonUITemplates {
 
     private final static GameJsonService jsonService = ModSdkModule.gameJsonService();
+
+    public static void roomGeneral(JsonUiTemplate jsonUiTemplate) {
+        roomIcon(jsonUiTemplate);
+        jsonUiTemplate.color("MINI_COLOR");
+        // todo "MINI_COLOR_PATTERN"
+        resources(jsonUiTemplate);
+        roomAreaCosts(jsonUiTemplate);
+        floor(jsonUiTemplate);
+        // todo REQUIRES
+        climate("BONUS.", jsonUiTemplate);
+        items(jsonUiTemplate);
+    }
+
+    public static void roomIcon(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.text("ICON");
+        jsonUiTemplate.header("ICON");
+        jsonUiTemplate.text("ICON.BG");
+        jsonUiTemplate.text("ICON.FG");
+        jsonUiTemplate.slider("ICON.SHADOW", -100, 100);
+        jsonUiTemplate.slider("ICON.OFFX", -100, 100);
+        jsonUiTemplate.slider("ICON.OFFY", -100, 100);
+    }
+
+    public static void roomAreaCosts(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.inputDouble("AREA_COSTS[0]", 0,100);
+        jsonUiTemplate.inputDouble("AREA_COSTS[1]", 0,100);
+        jsonUiTemplate.inputDouble("AREA_COSTS[2]", 0,100);
+        jsonUiTemplate.inputDouble("AREA_COSTS[3]", 0,100);
+    }
 
     public static void roomHead(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.color("MINI_COLOR");
@@ -41,8 +69,8 @@ public class JsonUITemplates {
     public static void boosters(String prefix, JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header(prefix);
         GameAssets.getBoosters().forEach(s -> {
-            jsonUiTemplate.slider(prefix + "." + s + ">ADD", -10000, 10000);
-            jsonUiTemplate.sliderD(prefix + "." + s + ">MUL", 0, 1000000);
+            jsonUiTemplate.inputDouble(prefix + "." + s + ">ADD", -10000, 10000);
+            jsonUiTemplate.inputDouble(prefix + "." + s + ">MUL", 0, 1000000);
             jsonUiTemplate.space(10);
         });
     }
@@ -51,28 +79,15 @@ public class JsonUITemplates {
         standing("STANDING", jsonUiTemplate);
     }
 
-    public static void standingWithDefault(JsonUiTemplate jsonUiTemplate) {
-        standing(jsonUiTemplate);
-        defaultStanding(jsonUiTemplate);
-    }
-
-    private static void standing(String prefix, JsonUiTemplate jsonUiTemplate) {
+    public static void standing(String prefix, JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header(prefix);
-        jsonUiTemplate.slidersD(prefix, GameAssets.getHumanClasses(), 0, 100000);
+        jsonUiTemplate.slidersPerc(prefix, GameAssets.getHumanClasses(), 0, 100000000);
         jsonUiTemplate.space(10);
-        jsonUiTemplate.slider(prefix + ".MULTIPLIER", 0, 100000);
-        jsonUiTemplate.sliderD(prefix + ".EXPONENT", 0, 100, 3);
+        jsonUiTemplate.inputDouble(prefix + ".MULTIPLIER", 0, 10000, 3);
+        jsonUiTemplate.inputDouble(prefix + ".EXPONENT", 0.01, 100000, 3);
         jsonUiTemplate.checkbox(prefix + ".INVERTED");
         jsonUiTemplate.checkbox(prefix + ".DISMISS");
         jsonUiTemplate.slider(prefix + ".PRIO", 0, 100000);
-    }
-
-    public static void defaultStanding(JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.header("DEFAULT_STANDING");
-        jsonUiTemplate.slider("DEFAULT_STANDING.MULTIPLIER", 0, 100000);
-        jsonUiTemplate.sliderD("DEFAULT_STANDING.EXPONENT", 0, 100, 3);
-        jsonUiTemplate.checkbox("DEFAULT_STANDING.INVERTED");
-        jsonUiTemplate.checkbox("DEFAULT_STANDING.DISMISS");
     }
 
     public static void serviceStanding(JsonUiTemplate jsonUiTemplate) {
@@ -83,14 +98,13 @@ public class JsonUITemplates {
         jsonUiTemplate.header(key);
         jsonUiTemplate.color(key + ".COLOR");
         jsonUiTemplate.slider(key + ".FPS", 0, 100000);
-        jsonUiTemplate.sliderD(key + ".FPS_INTERVAL", 0, 100);
+        jsonUiTemplate.sliderPerc(key + ".FPS_INTERVAL", 0, 100);
         jsonUiTemplate.slider(key + ".SHADOW_LENGTH", 0, 100);
         jsonUiTemplate.slider(key + ".SHADOW_HEIGHT", 0, 100);
         jsonUiTemplate.checkbox(key + ".TINT");
         jsonUiTemplate.checkbox(key + ".CIRCULAR");
         jsonUiTemplate.checkbox(key + ".ROTATES");
         jsonUiTemplate.checkbox(key + ".OVERWRITE");
-
 
         // TODO
         //  * This would be a very long list... too much noise. Needs a better solution
@@ -102,119 +116,99 @@ public class JsonUITemplates {
 
     public static void service(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("SERVICE");
-        jsonUiTemplate.sliderD("SERVICE.DEFAULT_ACCESS", 0, 10000);
-        jsonUiTemplate.sliderD("SERVICE.DEFAULT_VALUE", 0, 10000);
         jsonUiTemplate.slider("SERVICE.RADIUS", 0, 50000);
-        jsonUiTemplate.text("SERVICE.SOUND");
+        standing("SERVICE.STANDING", jsonUiTemplate);
         jsonUiTemplate.dropDown("SERVICE.NEED", GameAssets.getNeeds());
         jsonUiTemplate.space(10);
         boosters("SERVICE.BOOST", jsonUiTemplate);
-        serviceStanding(jsonUiTemplate);
+    }
+
+    public static void projectile(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.dropDown("PROJECTILE_RESOURCE", GameAssets.getResources());
+        jsonUiTemplate.header("PROJECTILE");
+        jsonUiTemplate.color("PROJECTILE.COLOR");
+        jsonUiTemplate.text("PROJECTILE.SPRITE_FILE");
+
+        projectileFrom(jsonUiTemplate);
+        projectileTo(jsonUiTemplate);
+    }
+
+    public static void projectileFrom(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header("PROJECTILE.FROM");
+        jsonUiTemplate.inputDouble("PROJECTILE.FROM.MASS", 0.01, 100000);
+        jsonUiTemplate.inputDouble("PROJECTILE.FROM.TILE_SPEED", 0.5, 250);
+        jsonUiTemplate.inputDouble("PROJECTILE.FROM.RELOAD_SECONDS", 0.01, 10000);
+        jsonUiTemplate.sliderPerc("PROJECTILE.FROM.ACCURACY", 1, 100);
+        jsonUiTemplate.inputDouble("PROJECTILE.FROM.DEXTERITY", 0, 10000000);
+        jsonUiTemplate.inputDouble("PROJECTILE.FROM.TILE_RADIUS_DAMAGE", 0, 10000);
+        jsonUiTemplate.inputDouble("PROJECTILE.FROM.MAX_ARCH_ANGLE_DEGREES", 0, 75);
+        GameAssets.getDamages().forEach(damageType -> {
+            jsonUiTemplate.inputDouble("PROJECTILE.FROM.DAMAGE." + damageType, 0, 100000);
+        });
+    }
+
+    public static void projectileTo(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header("PROJECTILE.TO");
+        jsonUiTemplate.inputDouble("PROJECTILE.TO.MASS", 0.01, 100000);
+        jsonUiTemplate.inputDouble("PROJECTILE.TO.TILE_SPEED", 0.5, 250);
+        jsonUiTemplate.inputDouble("PROJECTILE.TO.RELOAD_SECONDS", 0.01, 10000);
+        jsonUiTemplate.sliderPerc("PROJECTILE.TO.ACCURACY", 1, 100);
+        jsonUiTemplate.inputDouble("PROJECTILE.TO.DEXTERITY", 0, 10000000);
+        jsonUiTemplate.inputDouble("PROJECTILE.TO.TILE_RADIUS_DAMAGE", 0, 10000);
+        jsonUiTemplate.inputDouble("PROJECTILE.TO.MAX_ARCH_ANGLE_DEGREES", 0, 75);
+        GameAssets.getDamages().forEach(damageType -> {
+            jsonUiTemplate.inputDouble("PROJECTILE.TO.DAMAGE." + damageType, 0, 100000);
+        });
     }
 
     public static void work(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("WORK");
-        jsonUiTemplate.sliderD("WORK.SHIFT_OFFSET", 0, 100, 3);
-        jsonUiTemplate.text("WORK.SOUND");
-        jsonUiTemplate.checkbox("WORK.USES_TOOL");
-        jsonUiTemplate.slider("WORK.LARGE_WORKFORCE", 0, 10000);
-        jsonUiTemplate.sliderD("WORK.NIGHT_SHIFT", 0, 99);
-        jsonUiTemplate.sliderD("WORK.HEALTH_FACTOR", 0, 100);
-        jsonUiTemplate.sliderD("WORK.FULFILLMENT", 0, 100);
-        jsonUiTemplate.sliderD("WORK.ACCIDENTS_PER_YEAR", 0, 100, 4);
+        jsonUiTemplate.inputDouble("WORK.SHIFT_OFFSET", 0, 0.99, 3);
+        jsonUiTemplate.inputDouble("WORK.NIGHT_SHIFT", 0, 0.99, 3);
+        jsonUiTemplate.sliderPerc("WORK.HEALTH_FACTOR", 0, 100);
+        jsonUiTemplate.sliderPerc("WORK.FULFILLMENT", -100000, 100000);
+        jsonUiTemplate.sliderPerc("WORK.ACCIDENTS_PER_YEAR", 0, 100, 3);
 
         employment(jsonUiTemplate);
     }
 
-    private static void employment(JsonUiTemplate jsonUiTemplate) {
+    public static void knowledgeValues(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.inputDouble("VALUE_DEGRADE_PER_YEAR", 0, 10, 3);
+        jsonUiTemplate.inputDouble("VALUE_PER_WORKER", 0, 100000, 3);
+        jsonUiTemplate.inputDouble("VALUE_WORK_SPEED", 0, 1000, 3);
+    }
+
+    public static void employment(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("EMPLOYMENT");
-        jsonUiTemplate.sliderD("EMPLOYTMENT.SHIFT_OFFSET", 0, 100, 3);
-        jsonUiTemplate.text("EMPLOYTMENT.SOUND");
-        jsonUiTemplate.checkbox("EMPLOYTMENT.USES_TOOL");
-        jsonUiTemplate.sliderD("EMPLOYTMENT.FULFILLMENT", 0, 100);
-        jsonUiTemplate.sliderD("EMPLOYTMENT.EDUCATION_FACTOR", 0, 100);
+        jsonUiTemplate.sliderPerc("EMPLOYMENT.SHIFT_OFFSET", 0, 99, 3);
+        jsonUiTemplate.checkbox("EMPLOYMENT.NIGHT_SHIFT");
+        jsonUiTemplate.sliderPerc("EMPLOYMENT.FULFILLMENT", 0, 10000);
+        jsonUiTemplate.sliderPerc("EMPLOYMENT.HEALTH_FACTOR", 0, 100);
+        jsonUiTemplate.sliderPerc("EMPLOYMENT.ACCIDENTS_PER_YEAR", 0, 1000000);
     }
 
     public static void environmentEmit(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("ENVIRONMENT");
         GameAssets.getEnvironments().forEach(s -> {
-            jsonUiTemplate.sliderD("ENVIRONMENT_EMI." + s + ".VALUE", 0, 100);
-            jsonUiTemplate.sliderD("ENVIRONMENT_EMI." + s + ".RADIUS", 0, 100);
+            jsonUiTemplate.sliderPerc("ENVIRONMENT_EMI." + s + ".VALUE", 0, 100);
+            jsonUiTemplate.sliderPerc("ENVIRONMENT_EMI." + s + ".RADIUS", 0, 100);
         });
     }
 
-    public static void room(JsonUiTemplate jsonUiTemplate) {
-        work(jsonUiTemplate);
-        jsonUiTemplate.space();
-        environmentEmit(jsonUiTemplate);
-        jsonUiTemplate.space();
-        // fixme these are not boosters
-        //boosters("BONUS", jsonUiTemplate);
+    public static void industries(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header("INDUSTRIES");
+        jsonUiTemplate.inputsDouble("INDUSTRIES.INDUSTRY.IN", GameAssets.getResources(), 0, 10000);
+        jsonUiTemplate.inputsDouble("INDUSTRIES.INDUSTRY.OUT", GameAssets.getResources(), 0, 10000);
     }
 
-    public static void industryServiceRoom(JsonUiTemplate jsonUiTemplate) {
-        industry(jsonUiTemplate);
-        jsonUiTemplate.space();
-        service(jsonUiTemplate);
-        jsonUiTemplate.space();
-        room(jsonUiTemplate);
-    }
-
-    public static void industryRoom(JsonUiTemplate jsonUiTemplate) {
-        industry(jsonUiTemplate);
-        jsonUiTemplate.space();
-        room(jsonUiTemplate);
-    }
-
-    public static void serviceRoom(JsonUiTemplate jsonUiTemplate) {
-        service(jsonUiTemplate);
-        jsonUiTemplate.space();
-        standingWithDefault(jsonUiTemplate);
-        jsonUiTemplate.space();
-        room(jsonUiTemplate);
-    }
-
-    public static void admin(JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.sliderD("VALUE_DEGRADE_PER_YEAR", 0, 1000, 3);
-        jsonUiTemplate.slider("VALUE_PER_WORKER", 0, 100000);
-        jsonUiTemplate.slider("VALUE_WORK_SPEED", 0, 1000);
-    }
-
-    public static void industry(JsonUiTemplate jsonUiTemplate) {
+    public static void industryIn(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.header("INDUSTRY.IN");
-        jsonUiTemplate.slidersD("INDUSTRY.IN", GameAssets.getResources(), 0, 1000);
-        jsonUiTemplate.header("INDUSTRY.OUT");
-        jsonUiTemplate.slidersD("INDUSTRY.OUT", GameAssets.getResources(), 0, 1000, 4);
+        jsonUiTemplate.inputsDouble("INDUSTRY.IN", GameAssets.getResources(), 0, 10000);
     }
 
-    public static void projectile(JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.header("PROJECTILE");
-        jsonUiTemplate.color("PROJECTILE.COLOR");
-        jsonUiTemplate.text("PROJECTILE.SPRITE_FILE");
-        jsonUiTemplate.text("PROJECTILE.SOUND_RELEASE");
-        jsonUiTemplate.text("PROJECTILE.SOUND_HIT");
-        jsonUiTemplate.space(10);
-
-        jsonUiTemplate.header("PROJECTILE.FROM");
-        jsonUiTemplate.slider("PROJECTILE.FROM.MASS", 1, 250);
-        jsonUiTemplate.sliderD("PROJECTILE.FROM.TILE_SPEED", 1, 300);
-        jsonUiTemplate.sliderD("PROJECTILE.FROM.ACCURACY", 1, 100);
-        jsonUiTemplate.slider("PROJECTILE.FROM.TILE_RADIUS_DAMAGE", 1, 10000);
-        jsonUiTemplate.slider("PROJECTILE.FROM.RELOAD_SECONDS", 1, 10000);
-        jsonUiTemplate.slider("PROJECTILE.FROM.MAX_ARCH_ANGLE_DEGREES", 0, 75);
-        jsonUiTemplate.space(10);
-
-        jsonUiTemplate.header("PROJECTILE.TO");
-        jsonUiTemplate.sliderD("PROJECTILE.TO.TILE_SPEED", 1, 250);
-        jsonUiTemplate.slider("PROJECTILE.TO.MASS", 1, 250);
-        jsonUiTemplate.sliderD("PROJECTILE.TO.ACCURACY", 1, 100);
-        jsonUiTemplate.slider("PROJECTILE.TO.TILE_RADIUS_DAMAGE", 1, 10000);
-        jsonUiTemplate.slider("PROJECTILE.TO.RELOAD_SECONDS", 1, 10000);
-        jsonUiTemplate.slider("PROJECTILE.TO.MAX_ARCH_ANGLE_DEGREES", 0, 75);
-        jsonUiTemplate.space(10);
-
-        jsonUiTemplate.header("PROJECTILE.FROM.DAMAGE");
-        damage("PROJECTILE.FROM.", jsonUiTemplate);
+    public static void industryOut(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header("INDUSTRY.OUT");
+        jsonUiTemplate.inputsDouble("INDUSTRY.OUT", GameAssets.getResources(), 0, 10000);
     }
 
     public static void stats(JsonUiTemplate jsonUiTemplate) {
@@ -223,6 +217,10 @@ public class JsonUITemplates {
             standing("STATS." + s, jsonUiTemplate);
             jsonUiTemplate.space(10);
         });
+    }
+
+    public static void upgrades(JsonUiTemplate jsonUiTemplate) {
+        upgrades(jsonUiTemplate, 3);
     }
 
     public static void upgrades(JsonUiTemplate jsonUiTemplate, int amount) {
@@ -237,10 +235,11 @@ public class JsonUITemplates {
     private static void upgrades(JsonUiTemplate jsonUiTemplate, int amount, int resourceAmount) {
         jsonUiTemplate.header("UPGRADES");
         for (int i = 0; i < amount; i++) {
-            jsonUiTemplate.sliderD("UPGRADES[" + i + "].BOOST", 0, 100);
+            jsonUiTemplate.sliderPerc("UPGRADES[" + i + "].BOOST", 0, 100000);
             for (int j = 0; j < resourceAmount; j++) {
-                jsonUiTemplate.slider("UPGRADES[" + i + "].RESOURCE_MASK[" + j + "]", Lists.of(0, 1, 2, 3, 5));
+                jsonUiTemplate.slider("UPGRADES[" + i + "].RESOURCE_MASK[" + j + "]", 0, 100);
             }
+            jsonUiTemplate.sliderPerc("AI", 0, 1000000);
             jsonUiTemplate.space(10);
         }
     }
@@ -268,24 +267,24 @@ public class JsonUITemplates {
         jsonUiTemplate.header("ITEMS");
         for (int i = 0; i < itemsAmount; i++) {
             for (int j = 0; j < resourcesAmount; j++) {
-                jsonUiTemplate.slider("ITEMS[" + i + "].COSTS[" + j + "]", 0, 10000);
+                jsonUiTemplate.inputDouble("ITEMS[" + i + "].COSTS[" + j + "]", 0, 10000);
             }
             jsonUiTemplate.space(10);
             for (int j = 0; j < statsAmount; j++) {
-                jsonUiTemplate.sliderD("ITEMS[" + i + "].STATS[" + j + "]", 0, 10000, 3);
+                jsonUiTemplate.inputDouble("ITEMS[" + i + "].STATS[" + j + "]", 0, 10000, 3);
             }
             jsonUiTemplate.space(10);
         }
     }
 
-    public static void climate(JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.header("CLIMATE");
-        jsonUiTemplate.slidersD("CLIMATE", GameAssets.getClimates(), 1, 100);
+    public static void climate(String prefix, JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header(prefix + "CLIMATE");
+        jsonUiTemplate.slidersPerc(prefix + "CLIMATE", GameAssets.getClimates(), 0, 10000);
     }
 
-    public static void terrain(JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.header("TERRAIN");
-        jsonUiTemplate.slidersD("TERRAIN", GameAssets.getTerrains(), 1, 100);
+    public static void terrain(String prefix, JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header(prefix + "TERRAIN");
+        jsonUiTemplate.slidersPerc(prefix+ "TERRAIN", GameAssets.getTerrains(), 0, 10000000);
     }
     
     public static void floor(JsonUiTemplate jsonUiTemplate) {
@@ -302,11 +301,31 @@ public class JsonUITemplates {
 
     public static void training(JsonUiTemplate jsonUiTemplate) {
         jsonUiTemplate.slider("TRAINING.FULL_TRAINING_IN_DAYS", 0, 1000);
-        boosters("BOOST", jsonUiTemplate);
+        boosters("TRAINING.BOOST", jsonUiTemplate);
     }
 
     public static void damage(String prefix, JsonUiTemplate jsonUiTemplate) {
-        jsonUiTemplate.slidersD(prefix + "DAMAGE", GameAssets.getDamages(), 0, 100);
+        jsonUiTemplate.slidersPerc(prefix + "DAMAGE", GameAssets.getDamages(), 0, 10000);
 
+    }
+
+    public static void consumption(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header("CONSUMPTION");
+        GameAssets.getResources().forEach(resource -> {
+            jsonUiTemplate.sliderPerc("CONSUMPTION." + resource + ".RATE0", 0, 1000000);
+            jsonUiTemplate.sliderPerc("CONSUMPTION." + resource + ".BONUS", 0, 100000);
+            jsonUiTemplate.space(10);
+        });
+    }
+
+    public static void experienceBonus(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.header("EXPERIENCE_BONUS");
+        jsonUiTemplate.inputDouble("EXPERIENCE_BONUS.BONUS", Double.MIN_VALUE, Double.MAX_VALUE);
+        jsonUiTemplate.slider("EXPERIENCE_BONUS.MAX_EMPLOYEES", 50, 60000);
+    }
+
+    public static void storage(JsonUiTemplate jsonUiTemplate) {
+        jsonUiTemplate.slider("STORAGE", 4, 500);
+        jsonUiTemplate.sliderPerc("DEGRADE_RATE", 0, 100);
     }
 }

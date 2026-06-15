@@ -102,7 +102,7 @@ public class FactionList extends GuiSection {
 		});
 
 
-		Button playerButton = new Button("You: " + FACTIONS.player().name, "Your faction");
+		Button<String> playerButton = new Button<>("You: " + FACTIONS.player().name, "Your faction");
 		playerButton.clickActionSet(() -> {
 			getter.set(FACTIONS.player());
 			clickAction.accept(FACTIONS.player());
