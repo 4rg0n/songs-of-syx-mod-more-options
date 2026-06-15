@@ -1,10 +1,7 @@
 package menu;
 
 import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
-import com.github.argon.sos.mod.sdk.ui.Button;
-import com.github.argon.sos.mod.sdk.ui.ButtonMenu;
-import com.github.argon.sos.mod.sdk.ui.Switcher;
-import com.github.argon.sos.mod.sdk.ui.Tabulator;
+import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.moreoptions.ui.json.JsonUITemplates;
 import com.github.argon.sos.moreoptions.ui.json.JsonUi;
 import com.github.argon.sos.moreoptions.ui.json.tab.AbstractTab;
@@ -27,8 +24,25 @@ public class MoreOptionsEditor extends GuiSection {
     private final Tabulator<String, AbstractTab, Void> tabulator;
 
     public MoreOptionsEditor(@Nullable StringInputSprite searchInput) {
-        int availableHeight = FullWindow.AVAILABLE_HEIGHT;
+        Button<String> saveButton = new Button<>("Save");
+        saveButton.hoverInfoSet("Not implemented yet =(");
+        Button<String> saveAsModButton = new Button<>("Save as Mod");
+        saveAsModButton.hoverInfoSet("Not implemented yet =(");
 
+        ButtonMenu<String> buttonMenu = ButtonMenu.<String>builder()
+            .horizontal(true)
+            .spacer(true)
+            .margin(21)
+            .button("save", saveButton)
+            .button("save_as_mod", saveAsModButton)
+            .build();
+
+        ColorBox bottom = new ColorBox(COLOR.WHITE15);
+        bottom.body().setWidth(C.WIDTH());
+        bottom.body().setHeight(saveButton.body().height() + 10);
+        bottom.addCenter(buttonMenu);
+
+        int availableHeight = FullWindow.AVAILABLE_HEIGHT - bottom.body().height() - 20;
         FilesTab<SimpleTab> filesTab = JsonUi.builder(PATHS.INIT())
             .templates(settlement())
             .templates(environments())
@@ -68,6 +82,7 @@ public class MoreOptionsEditor extends GuiSection {
             .build();
 
         addDownC(0, tabulator);
+        addDownC(10, bottom);
     }
 
     private JsonUi animals() {
