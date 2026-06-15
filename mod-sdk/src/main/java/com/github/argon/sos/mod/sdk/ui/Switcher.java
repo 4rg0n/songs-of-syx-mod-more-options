@@ -33,7 +33,7 @@ public class Switcher<Key> extends Section implements
 
     @Getter
     @Nullable
-    private Button activeButton;
+    private AbstractButton<Key> activeButton;
 
     @Setter
     @Accessors(fluent = true, chain = false)
@@ -65,7 +65,7 @@ public class Switcher<Key> extends Section implements
         add(menu);
     }
 
-    private void initButton(Key key, final Button button, boolean highlight) {
+    private void initButton(Key key, final AbstractButton<Key> button, boolean highlight) {
         button.clickActionSet(() -> {
             activeButton = button;
             clickAction.accept(key);
@@ -97,7 +97,7 @@ public class Switcher<Key> extends Section implements
         });
     }
 
-    public Optional<Button> get(Key key) {
+    public Optional<? extends AbstractButton<Key>> get(Key key) {
         return menu.getButtons().entrySet().stream()
             .filter(entry -> key.equals(entry.getKey()))
             .map(Map.Entry::getValue)

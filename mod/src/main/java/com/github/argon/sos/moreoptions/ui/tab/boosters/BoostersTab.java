@@ -1,16 +1,15 @@
 package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
-import com.github.argon.sos.mod.sdk.ui.*;
-import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
+import com.github.argon.sos.mod.sdk.booster.Boosters;
+import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
+import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
 import com.github.argon.sos.moreoptions.ModModule;
-import com.github.argon.sos.mod.sdk.booster.Boosters;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
-import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import game.boosting.BoostableCat;
@@ -48,19 +47,19 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
 
     private final int tableHeight;
     @Getter
-    private final Button loadPresetButton;
+    private final Button<String> loadPresetButton;
     @Getter
-    private final Button savePresetButton;
+    private final Button<String> savePresetButton;
     @Getter
-    private final Button copyButton;
+    private final Button<String> copyButton;
     @Getter
-    private final Button pasteButton;
+    private final Button<String> pasteButton;
     @Getter
-    private final Button pasteFactionsButton;
+    private final Button<String> pasteFactionsButton;
     @Getter
-    private final Button resetCurrentButton;
+    private final Button<String> resetCurrentButton;
     @Getter
-    private final Button resetFactionsButton;
+    private final Button<String> resetFactionsButton;
 
     @Getter
     private BoostersSection currentBoosterSection;
@@ -82,25 +81,25 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
         GETTER.GETTER_IMP<Faction> getter = new GETTER.GETTER_IMP<>();
         FactionList factionList = new FactionList(getter, availableHeight);
 
-        loadPresetButton = new Button(
+        loadPresetButton = new Button<>(
             i18n.t("BoostersTab.button.preset.load.name"),
             i18n.t("BoostersTab.button.preset.load.desc"));
-        savePresetButton = new Button(
+        savePresetButton = new Button<>(
             i18n.t("BoostersTab.button.preset.save.name"),
             i18n.t("BoostersTab.button.preset.save.desc"));
-        copyButton = new Button(
+        copyButton = new Button<>(
             i18n.t("BoostersTab.button.boosters.copy.name"),
             i18n.t("BoostersTab.button.boosters.copy.desc"));
-        pasteButton = new Button(
+        pasteButton = new Button<>(
             i18n.t("BoostersTab.button.boosters.paste.name"),
             i18n.t("BoostersTab.button.boosters.paste.desc"));
-        pasteFactionsButton = new Button(
+        pasteFactionsButton = new Button<>(
             i18n.t("BoostersTab.button.boosters.paste.factions.name"),
             i18n.t("BoostersTab.button.boosters.paste.factions.desc"));
-        resetCurrentButton = new Button(
+        resetCurrentButton = new Button<>(
             i18n.t("BoostersTab.button.boosters.reset.name"),
             i18n.t("BoostersTab.button.boosters.reset.desc"));
-        resetFactionsButton = new Button(
+        resetFactionsButton = new Button<>(
             i18n.t("BoostersTab.button.boosters.reset.factions.name"),
             i18n.t("BoostersTab.button.boosters.reset.factions.desc"));
 
@@ -127,7 +126,7 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
             .sameWidth(true)
             .build();
 
-        GuiSection buttons = Layouts.horizontal(Lists.of(
+        GuiSection buttons = Layouts.horizontal(List.of(
             presetButtons,
             copyPasteButtons,
             resetButtons

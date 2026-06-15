@@ -11,7 +11,7 @@ import snake2d.util.sprite.SPRITE;
 import snake2d.util.sprite.text.Font;
 
 
-public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
+public class DropDown<Key> extends AbstractButton<Key> {
     @Getter
     private final Switcher<Key> menu;
 
@@ -38,7 +38,7 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
     ) {
         super(label, description, (font != null) ? font : UI.FONT().H2);
         this.menu = menu;
-        Button activeButton = menu.getActiveButton();
+        AbstractButton<Key> activeButton = menu.getActiveButton();
 
         int menuWidth = menu.body().width();
         if (menuWidth > body().width()) {
@@ -67,11 +67,10 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
                 replaceLabel(selectedButton.getLabel(), DIR.C);
                 bg(selectedButton.getBgColor());
 
-                String value = selectedButton.getValue();
+                Key value = selectedButton.getValue();
                 if (value != null) {
                     try {
-                        //noinspection unchecked
-                        setValue((Key) value);
+                        setValue(value);
                     } catch (Exception e) {
                         // ignore
                     }
@@ -96,10 +95,5 @@ public class DropDown<Key> extends AbstractButton<Key, DropDown<Key>> {
     @Override
     public void setValue(Key value) {
         menu.setValue(value);
-    }
-
-    @Override
-    protected DropDown<Key> element() {
-        return this;
     }
 }

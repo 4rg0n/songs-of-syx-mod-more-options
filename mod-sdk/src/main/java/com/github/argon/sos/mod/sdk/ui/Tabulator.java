@@ -1,6 +1,9 @@
 package com.github.argon.sos.mod.sdk.ui;
 
-import com.github.argon.sos.mod.sdk.game.action.*;
+import com.github.argon.sos.mod.sdk.game.action.Refreshable;
+import com.github.argon.sos.mod.sdk.game.action.Resettable;
+import com.github.argon.sos.mod.sdk.game.action.Valuable;
+import com.github.argon.sos.mod.sdk.game.action.VoidAction;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +15,6 @@ import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Builds a row with buttons and displays the associated ui element when a button is toggled
@@ -171,7 +173,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends Section im
         tabs.values().stream()
             .filter(element -> element instanceof Refreshable)
             .map(Refreshable.class::cast)
-            .collect(Collectors.toList())
+            .toList()
             .forEach(Refreshable::refresh);
     }
 }

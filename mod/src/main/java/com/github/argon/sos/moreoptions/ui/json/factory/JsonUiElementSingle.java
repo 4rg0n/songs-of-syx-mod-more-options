@@ -229,7 +229,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
         columnRowBuilder.column(element);
 
         if (jsonPath != null) {
-            Button resetButton = new Button(SPRITES.icons().m.rotate);
+            Button<String> resetButton = new Button<>(SPRITES.icons().m.rotate);
             resetButton.clickActionSet(this::reset);
             resetButton.hoverInfoSet("Reset " + jsonPath  + " to initially loaded from file.");
             columnRowBuilder.column(resetButton);

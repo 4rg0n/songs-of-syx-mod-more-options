@@ -2,7 +2,6 @@ package com.github.argon.sos.mod.sdk.file;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -53,7 +52,7 @@ public class FileService extends AbstractFileService {
         if (!Files.exists(path)) {
             // do not load what's not there
             log.info("%s is not a folder, does not exists or is not readable", path);
-            return Lists.of();
+            return List.of();
         }
 
         try (InputStream inputStream = Files.newInputStream(path)) {

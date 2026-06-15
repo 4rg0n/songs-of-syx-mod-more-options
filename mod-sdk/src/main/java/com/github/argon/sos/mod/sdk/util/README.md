@@ -13,9 +13,9 @@ public class YourModScript extends AbstractModSdkScript {
         super.initBeforeGameCreated();
 
         // create simple lists
-        List<String> list = Lists.of("foo", "bar", "blub");
+        List<String> list = List.of("foo", "bar", "blub");
         // create simple maps
-        Map<String, Integer> map = Maps.of(
+        Map<String, Integer> map = Map.of(
             "key1", 1,
             "key2", 2,
             "key3", 3);

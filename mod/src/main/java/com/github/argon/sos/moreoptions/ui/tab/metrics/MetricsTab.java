@@ -1,15 +1,13 @@
 package com.github.argon.sos.moreoptions.ui.tab.metrics;
 
+import com.github.argon.sos.mod.sdk.data.domain.Range;
+import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.ui.layout.Layout;
 import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
-import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Sets;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
-import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.ui.Slider;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.sprite.UI.UI;
@@ -27,7 +25,10 @@ import util.gui.misc.GText;
 import util.gui.misc.GTextR;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -48,12 +49,12 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
     @Getter
     private final Path exportFolderPath;
     @Getter
-    private final Button copyExportFileButton;
+    private final Button<String> copyExportFileButton;
     @Getter
     @Nullable
     private Path exportFilePath;
     @Getter
-    private final Button exportFolderButton;
+    private final Button<String> exportFolderButton;
     @Getter
     private final Switcher<Boolean> checkSwitcher;
 
@@ -75,8 +76,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         // Started / Stopped toggle
         Switcher<Boolean> switcher = Switcher.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
-                .button(true, new Button(i18n.t("MetricsTab.toggle.start.name"), i18n.t("MetricsTab.toggle.start.desc")))
-                .button(false, new Button(i18n.t("MetricsTab.toggle.stop.name"), i18n.t("MetricsTab.toggle.stop.desc")))
+                .button(true, new Button<>(i18n.t("MetricsTab.toggle.start.name"), i18n.t("MetricsTab.toggle.start.desc")))
+                .button(false, new Button<>(i18n.t("MetricsTab.toggle.stop.name"), i18n.t("MetricsTab.toggle.stop.desc")))
                 .sameWidth(true)
                 .horizontal(true)
                 .build())
@@ -128,8 +129,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
         // Export file path with folder button
         this.exportFilePathView = new ViewSwitcher(exportFilePathSection, false);
-        this.exportFolderButton = new Button(i18n.t("MetricsTab.button.folder.name"), i18n.t("MetricsTab.button.folder.desc", exportFolderPath));
-        this.copyExportFileButton = new Button(i18n.t("MetricsTab.button.copy.name"), i18n.t("MetricsTab.button.copy.desc"));
+        this.exportFolderButton = new Button<>(i18n.t("MetricsTab.button.folder.name"), i18n.t("MetricsTab.button.folder.desc", exportFolderPath));
+        this.copyExportFileButton = new Button<>(i18n.t("MetricsTab.button.copy.name"), i18n.t("MetricsTab.button.copy.desc"));
 
         GuiSection exportButtons = new GuiSection();
         exportButtons.addRightC(0, exportFolderButton);
@@ -150,8 +151,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         searchBar.addRightC(0, new Input(searchInput));
         this.checkSwitcher = Switcher.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
-                .button(true, new Button(i18n.t("MetricsTab.search.check.name"), i18n.t("MetricsTab.search.check.desc")))
-                .button(false, new Button(i18n.t("MetricsTab.search.uncheck.name"), i18n.t("MetricsTab.search.uncheck.desc")))
+                .button(true, new Button<>(i18n.t("MetricsTab.search.check.name"), i18n.t("MetricsTab.search.check.desc")))
+                .button(false, new Button<>(i18n.t("MetricsTab.search.uncheck.name"), i18n.t("MetricsTab.search.uncheck.desc")))
                 .horizontal(true)
                 .build())
             .highlight(false)
@@ -179,12 +180,12 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
                     .build())
                 .column(checkbox)
                 .build();
-        }).collect(Collectors.toList());
+        }).toList();
 
         this.onOffSwitcher = switcher;
         this.onOffSwitcher.switch_(metricsConfig.isEnabled());
 
-        List<ColumnRow<Void>> rows = Lists.of(
+        List<ColumnRow<Void>> rows = List.of(
             onOffToggleRow,
             exportFileRow,
             collectionRateRow,

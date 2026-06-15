@@ -1,7 +1,6 @@
 package com.github.argon.sos.mod.sdk.data;
 
 import com.github.argon.sos.mod.testing.ModSdkExtension;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -30,7 +29,7 @@ class TreeNodeTest {
         assertThat(leaf.depth()).isEqualTo(2);
         assertThat(leaf.isLeaf()).isTrue();
 
-        List<String> nodeList = Lists.of("root", "branch", "leaf");
+        List<String> nodeList = List.of("root", "branch", "leaf");
         for (TreeNode<String> node : root) {
             assertThat(nodeList).contains(node.get());
         }

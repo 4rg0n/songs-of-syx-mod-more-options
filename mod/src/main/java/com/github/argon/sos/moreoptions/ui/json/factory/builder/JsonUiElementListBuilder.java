@@ -1,12 +1,12 @@
 package com.github.argon.sos.moreoptions.ui.json.factory.builder;
 
-import com.github.argon.sos.mod.sdk.game.asset.GameWildcard;
+import com.github.argon.sos.mod.sdk.game.util.Wildcard;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
+import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiElementList;
+import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiElementSingle;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiElementList;
-import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiElementSingle;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class JsonUiElementListBuilder<Value extends JsonElement, Element extends
 
     /**
      * Creates a list of {@link JsonUiElementSingle}s and wraps it into {@link JsonUiElementList}.
-     * It will therefor extend the json path by the names of the given list.
+     * It will therefore extend the json path by the names of the given list.
      */
     public JsonUiElementList<Value, Element> asObject(List<String> names, boolean asWildcards) {
         JsonUiElementList.JsonUiElementListBuilder<Value, Element> builder = JsonUiElementList.builder();
@@ -41,7 +41,7 @@ public class JsonUiElementListBuilder<Value extends JsonElement, Element extends
             .jsonPath(jsonPath);
         
         if (asWildcards) {
-            GameWildcard.from(names).forEach(name -> {
+            Wildcard.of(names).getWildcardValues().forEach(name -> {
                 builder.element(asObjectElement(name));
             });
         } else {

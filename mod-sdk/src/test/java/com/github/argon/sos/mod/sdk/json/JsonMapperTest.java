@@ -5,7 +5,6 @@ import com.github.argon.sos.mod.sdk.json.annotation.JsonProperty;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.json.mapper.TypeInfo;
 import com.github.argon.sos.mod.testing.ModSdkExtension;
-import com.github.argon.sos.mod.sdk.util.Maps;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -106,7 +105,7 @@ class JsonMapperTest {
         jsonStringKeyObject.put("3", new JsonLong(3L));
 
         Map<String, Long> mappedJsonObject = JsonMapper.mapJson(jsonStringKeyObject, new TypeInfo<Map<String, Long>>(){});
-        assertThat(mappedJsonObject).isEqualTo(Maps.of(
+        assertThat(mappedJsonObject).isEqualTo(Map.of(
             "1", 1L,
             "2", 2L,
             "3", 3L
@@ -119,7 +118,7 @@ class JsonMapperTest {
         jsonEnumKeyObject.put(TestEnum.TEST3, new JsonLong(3L));
 
         Map<TestEnum, Long> mappedJsonEnumKeyObject = JsonMapper.mapJson(jsonEnumKeyObject, new TypeInfo<Map<TestEnum, Long>>(){});
-        assertThat(mappedJsonEnumKeyObject).isEqualTo(Maps.of(
+        assertThat(mappedJsonEnumKeyObject).isEqualTo(Map.of(
             TestEnum.TEST1, 1L,
             TestEnum.TEST2, 2L,
             TestEnum.TEST3, 3L
@@ -135,18 +134,18 @@ class JsonMapperTest {
             jsonObjectObject,
             new TypeInfo<Map<String, Map<String, Long>>>(){});
 
-        assertThat(mappedJsonObjectObject).isEqualTo(Maps.of(
-            "1", Maps.of(
+        assertThat(mappedJsonObjectObject).isEqualTo(Map.of(
+            "1", Map.of(
                 "1", 1L,
                 "2", 2L,
                 "3", 3L
             ),
-            "2", Maps.of(
+            "2", Map.of(
                 "1", 1L,
                 "2", 2L,
                 "3", 3L
             ),
-            "3", Maps.of(
+            "3", Map.of(
                 "1", 1L,
                 "2", 2L,
                 "3", 3L
@@ -193,7 +192,7 @@ class JsonMapperTest {
         ComplexPojo complexPojo = new ComplexPojo();
         complexPojo.setTestSimplePojo(simplePojo);
         complexPojo.setTestSimplePojoList(Arrays.asList(simplePojo, simplePojo, simplePojo));
-        complexPojo.setTestSimplePojoMap(Maps.of("1", simplePojo, "2", simplePojo, "3", simplePojo));
+        complexPojo.setTestSimplePojoMap(Map.of("1", simplePojo, "2", simplePojo, "3", simplePojo));
 
         ComplexPojo mappedComplexPojo = JsonMapper.mapJson(jsonObjectComplex, ComplexPojo.class);
         assertThat(mappedComplexPojo).isEqualTo(complexPojo);
@@ -307,7 +306,7 @@ class JsonMapperTest {
     @Test
     void mapObject_mapTypes() {
         // String key Map
-        JsonElement jsonElementObject = JsonMapper.mapObject(Maps.of(
+        JsonElement jsonElementObject = JsonMapper.mapObject(Map.of(
                 "1", 1,
                 "2", 2,
                 "3", 3),
@@ -325,7 +324,7 @@ class JsonMapperTest {
         assertThat(jsonObject).isEqualTo(jsonObjectExpected);
 
         // Enum key Map
-        jsonElementObject = JsonMapper.mapObject(Maps.of(
+        jsonElementObject = JsonMapper.mapObject(Map.of(
                 TestEnum.TEST1, 1,
                 TestEnum.TEST2, 2,
                 TestEnum.TEST3, 3),
@@ -343,16 +342,16 @@ class JsonMapperTest {
         assertThat(jsonObject).isEqualTo(jsonObjectEnumExpected);
 
         // Map in Map
-        jsonElementObject = JsonMapper.mapObject(Maps.of(
-                "1", Maps.of(
+        jsonElementObject = JsonMapper.mapObject(Map.of(
+                "1", Map.of(
                     "1", 1,
                     "2", 2,
                     "3", 3),
-                "2", Maps.of(
+                "2", Map.of(
                     "1", 1,
                     "2", 2,
                     "3", 3),
-                "3", Maps.of(
+                "3", Map.of(
                     "1", 1,
                     "2", 2,
                     "3", 3)),
@@ -397,7 +396,7 @@ class JsonMapperTest {
         ComplexPojo complexPojo = new ComplexPojo();
         complexPojo.setTestSimplePojo(simplePojo);
         complexPojo.setTestSimplePojoList(Arrays.asList(simplePojo, simplePojo, simplePojo));
-        complexPojo.setTestSimplePojoMap(Maps.of("1", simplePojo, "2", simplePojo, "3", simplePojo));
+        complexPojo.setTestSimplePojoMap(Map.of("1", simplePojo, "2", simplePojo, "3", simplePojo));
 
         jsonElementObject = JsonMapper.mapObject(complexPojo);
         assertThat(jsonElementObject).isInstanceOf(JsonObject.class);

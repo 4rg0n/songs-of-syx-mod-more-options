@@ -2,7 +2,6 @@ package com.github.argon.sos.mod.sdk.file;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -81,7 +80,7 @@ public class ResourceService extends AbstractFileService {
         ClassLoader classLoader = getClass().getClassLoader();
         try (InputStream inputStream = classLoader.getResourceAsStream(filePath)) {
             if (inputStream == null) {
-                return Lists.of();
+                return List.of();
             }
 
             return readLinesFromInputStream(inputStream);

@@ -3,7 +3,6 @@ package com.github.argon.sos.moreoptions.ui.tab.races;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.*;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
@@ -25,7 +24,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * For selecting a races config file from another save game.
@@ -41,7 +39,7 @@ public class RacesSelectionPanel extends GuiSection {
         // show modal with "empty" message
         if (raceConfigEntries.isEmpty()) {
             racesConfigTable = Table.<Entry>builder()
-                .rows(Lists.of())
+                .rows(List.of())
                 .build();
             addDownC(0, new GText(UI.FONT().H2, i18n.t("RacesSelectionPanel.nothing.desc")));
             return;
@@ -89,7 +87,7 @@ public class RacesSelectionPanel extends GuiSection {
             }
 
             // prepare row with columns
-            List<GuiSection> columns = Lists.of(configPathGui, saveFileGui, activeMarker, creationDateGui, updateDateGui);
+            List<GuiSection> columns = List.of(configPathGui, saveFileGui, activeMarker, creationDateGui, updateDateGui);
             ColumnRow<Entry> row = ColumnRow.<Entry>builder()
                 .columns(columns)
                 .searchTerm(fileName)
@@ -97,15 +95,15 @@ public class RacesSelectionPanel extends GuiSection {
             row.setValue(entry);
             row.hoverInfoSet(i18n.t("RacesSelectionPanel.text.select.name"));
             return row;
-        }).collect(Collectors.toList());
+        }).toList();
 
         // header for table columns
-        Map<String, Button> header = Maps.ofLinked(
-            "file", new Button(i18n.t("RacesSelectionPanel.table.file.name"), i18n.t("RacesSelectionPanel.table.file.desc")),
-            "save", new Button(i18n.t("RacesSelectionPanel.table.save.name"), i18n.t("RacesSelectionPanel.table.save.desc")),
-            "active", new Button(i18n.t("RacesSelectionPanel.table.active.name"), i18n.t("RacesSelectionPanel.table.active.desc")),
-            "created", new Button(i18n.t("RacesSelectionPanel.table.created.name"), i18n.t("RacesSelectionPanel.table.created.desc")),
-            "updated", new Button(i18n.t("RacesSelectionPanel.table.updated.name"), i18n.t("RacesSelectionPanel.table.updated.desc"))
+        Map<String, AbstractButton<String>> header = Maps.ofLinked(
+            "file", new Button<>(i18n.t("RacesSelectionPanel.table.file.name"), i18n.t("RacesSelectionPanel.table.file.desc")),
+            "save", new Button<>(i18n.t("RacesSelectionPanel.table.save.name"), i18n.t("RacesSelectionPanel.table.save.desc")),
+            "active", new Button<>(i18n.t("RacesSelectionPanel.table.active.name"), i18n.t("RacesSelectionPanel.table.active.desc")),
+            "created", new Button<>(i18n.t("RacesSelectionPanel.table.created.name"), i18n.t("RacesSelectionPanel.table.created.desc")),
+            "updated", new Button<>(i18n.t("RacesSelectionPanel.table.updated.name"), i18n.t("RacesSelectionPanel.table.updated.desc"))
         );
 
         // race config table and search

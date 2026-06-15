@@ -40,7 +40,7 @@ public class MetricCsvWriter {
                 toLineMetric(headersMetric, metric) +
                 delimiter +
                 toLineStats(headersStats, metric.getValues()))
-            .collect(Collectors.toList());
+            .toList();
 
         File file = path.toFile();
 
@@ -83,7 +83,7 @@ public class MetricCsvWriter {
     public String toLineStats(List<String> header, Map<String, Object> stats) {
         List<Object> values = header.stream()
             .map(stats::get)
-            .collect(Collectors.toList());
+            .toList();
 
         return values.stream()
             .map(this::escapeSpecialCharacters)
@@ -93,7 +93,7 @@ public class MetricCsvWriter {
     public String toLineMetric(List<String> headers, Metric metric) {
         List<Object> values = headers.stream()
             .map(metric::get)
-            .collect(Collectors.toList());
+            .toList();
 
         return values.stream()
             .map(this::escapeSpecialCharacters)
@@ -122,7 +122,7 @@ public class MetricCsvWriter {
     public List<String> headersStats(Metric metric) {
         return metric.getValues().keySet().stream()
             .sorted()
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public List<String> headersMetric() {

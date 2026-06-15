@@ -1,16 +1,14 @@
 package com.github.argon.sos.moreoptions.ui.json.factory;
 
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
-import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.json.element.*;
-import menu.ui.ColorPicker;
-import com.github.argon.sos.mod.sdk.ui.Slider;
-import com.github.argon.sos.mod.sdk.ui.SliderDoubleList;
+import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.moreoptions.ui.json.JsonUiMapper;
 import com.github.argon.sos.moreoptions.ui.json.factory.builder.JsonUiElementListBuilder;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import com.github.argon.sos.moreoptions.ui.json.JsonUiMapper;
+import menu.ui.ColorPicker;
 import menu.ui.UiFactory;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.text.Font;
@@ -19,7 +17,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * For creating {@link JsonUiElementSingle}s.
@@ -138,14 +135,40 @@ public class JsonUiElementFactory implements Resettable {
             .build();
     }
 
-    public JsonUiElementSingle<JsonDouble, Slider> sliderD(String jsonPath, int min, int max, int step, int resolution, JsonDouble defaultValue) {
+    public JsonUiElementSingle<JsonLong, InputInt> inputInteger(String jsonPath, int min, int max, JsonLong defaultValue) {
+        return JsonUiElementSingle.from(
+                jsonPath,
+                path,
+                config,
+                defaultValue,
+                JsonLong.class,
+                value -> UiFactory.inputInteger(value, min, max))
+            .valueConsumer((input, jsonLong) -> input.getElement().setValue(jsonLong.getValue().intValue()))
+            .valueSupplier(input -> new JsonLong(input.getElement().getValue().longValue()))
+            .build();
+    }
+
+    public JsonUiElementSingle<JsonDouble, InputDouble> inputDouble(String jsonPath, double min, double max, int decimals, JsonDouble defaultValue) {
+        return JsonUiElementSingle.from(
+            jsonPath,
+            path,
+            config,
+            defaultValue,
+            JsonDouble.class,
+            value -> UiFactory.inputDouble(value, min, max, decimals))
+        .valueConsumer((input, jsonDouble) -> input.getElement().setValue(jsonDouble.getValue()))
+        .valueSupplier(input -> new JsonDouble(input.getElement().getValue()))
+        .build();
+    }
+
+    public JsonUiElementSingle<JsonDouble, Slider> sliderPerc(String jsonPath, int min, int max, int step, int resolution, JsonDouble defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
                 path,
                 config,
                 defaultValue,
                 JsonDouble.class,
-                value -> UiFactory.slider(value, min, max, step, resolution))
+                value -> UiFactory.sliderPerc(value, min, max, step, resolution))
             .valueConsumer((slider, jsonDouble) -> slider.getElement().setValueD(jsonDouble.getValue()))
             .valueSupplier(slider -> new JsonDouble(slider.getElement().getValueD()))
             .build();
@@ -175,7 +198,7 @@ public class JsonUiElementFactory implements Resettable {
         .valueSupplier(slider -> new JsonLong(Long.valueOf(slider.getElement().getValue())))
         .build();
     }
-    
+
     public JsonUiElementSingle<JsonArray, Select<String>> selectS(String jsonPath, List<String> options, JsonArray defaultValue, int maxSelect, boolean maxSelected) {
         return JsonUiElementSingle.from(
                 jsonPath,
@@ -195,7 +218,7 @@ public class JsonUiElementFactory implements Resettable {
             .valueConsumer((select, jsonArray) -> {
                 List<String> selected = jsonArray.as(JsonString.class).stream()
                     .map(JsonString::getValue)
-                    .collect(Collectors.toList());
+                    .toList();
 
                 select.getElement().setValue(selected);
             })
@@ -234,7 +257,7 @@ public class JsonUiElementFactory implements Resettable {
             .valueConsumer((stringSelect, jsonArray) -> {
                 List<String> selected = jsonArray.as(JsonString.class).stream()
                     .map(JsonString::getValue)
-                    .collect(Collectors.toList());
+                    .toList();
 
                 stringSelect.getElement().setValue(selected);
             })
@@ -253,7 +276,7 @@ public class JsonUiElementFactory implements Resettable {
                         return null;
                     }
 
-                    return UiFactory.slider(JsonDouble.of(value1), min, max, step, resolution);
+                    return UiFactory.sliderPerc(JsonDouble.of(value1), min, max, step, resolution);
                 }))
             .valueSupplier(sliders -> {
                 JsonArray jsonValue = new JsonArray();
@@ -266,7 +289,7 @@ public class JsonUiElementFactory implements Resettable {
             .valueConsumer((stringSelect, jsonArray) -> {
                 List<Double> selected = jsonArray.as(JsonDouble.class).stream()
                     .map(JsonDouble::getValue)
-                    .collect(Collectors.toList());
+                    .toList();
 
                 stringSelect.getElement().setValue(selected);
             })
@@ -292,7 +315,7 @@ public class JsonUiElementFactory implements Resettable {
             .valueConsumer((stringSelect, jsonArray) -> {
                 List<String> selected = jsonArray.as(JsonString.class).stream()
                     .map(JsonString::getValue)
-                    .collect(Collectors.toList());
+                    .toList();
 
                 stringSelect.getElement().setValue(selected);
             })

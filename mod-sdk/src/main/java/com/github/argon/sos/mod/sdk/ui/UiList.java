@@ -1,8 +1,6 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
-import com.github.argon.sos.mod.sdk.ui.Section;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import init.sprite.SPRITES;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,12 +15,11 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Getter
 public class UiList<Value, Element extends RENDEROBJ> extends Section implements Valuable<List<Value>> {
     private final Table<Value> table;
-    private final Button addButton;
+    private final Button<Value> addButton;
     private final Function<@Nullable Value, Element> elementSupplier;
 
     @Setter
@@ -36,7 +33,7 @@ public class UiList<Value, Element extends RENDEROBJ> extends Section implements
         this.elements = elements;
         List<ColumnRow<Value>> rows = elements.stream()
             .map(this::listEntry)
-            .collect(Collectors.toList());
+            .toList();
 
         this.elementSupplier = elementSupplier;
         this.addButton = new Button(SPRITES.icons().m.plus);
@@ -72,12 +69,12 @@ public class UiList<Value, Element extends RENDEROBJ> extends Section implements
         Map<String, @Nullable Value> values = table.getValue();
 
         if (values == null) {
-            return Lists.of();
+            return List.of();
         }
 
         return values.entrySet().stream()
             .map(Map.Entry::getValue)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Override
@@ -113,7 +110,7 @@ public class UiList<Value, Element extends RENDEROBJ> extends Section implements
             };
         }
 
-        Button deleteButton = new Button(SPRITES.icons().m.trash);
+        Button<String> deleteButton = new Button<>(SPRITES.icons().m.trash);
         ColumnRow<Value> columnRow = ColumnRow.<Value>builder()
             .valueSupplier(valueSupplier)
             .column(element)

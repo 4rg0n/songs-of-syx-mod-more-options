@@ -20,9 +20,4 @@ public class SliderIntegerList extends AbstractSliderList<Integer> {
     ) {
         super(label, description, sliders, height, elementSupplier, clickAction);
     }
-
-    @Override
-    protected SliderIntegerList element() {
-        return this;
-    }
 }

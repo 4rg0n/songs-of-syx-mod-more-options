@@ -1,8 +1,6 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.*;
-import com.github.argon.sos.mod.sdk.ui.Section;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -71,7 +69,7 @@ public class Select<Key> extends Section implements
         }
 
         if (selectedKeys == null) {
-            selectedKeys = Lists.of();
+            selectedKeys = List.of();
         }
         this.initActiveKeys = selectedKeys;
 
@@ -80,7 +78,7 @@ public class Select<Key> extends Section implements
         add(menu);
     }
 
-    private void initButton(Key key, final Button button) {
+    private void initButton(Key key, final AbstractButton<Key> button) {
         button.clickActionSet(() -> {
             clickAction.accept(key);
             toggle(key);
@@ -130,7 +128,7 @@ public class Select<Key> extends Section implements
         selectAction = Action;
     }
 
-    public Optional<Button> get(Key key) {
+    public Optional<? extends AbstractButton<Key>> get(Key key) {
         return menu.getButtons().entrySet().stream()
             .filter(entry -> key.equals(entry.getKey()))
             .map(Map.Entry::getValue)

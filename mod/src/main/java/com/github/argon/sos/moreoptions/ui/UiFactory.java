@@ -178,27 +178,27 @@ public class UiFactory {
     public static ButtonMenu.ButtonMenuBuilder<Level> buildLogLevelButtonMenu() {
         double shade = 0.5;
         return ButtonMenu.<Level>builder()
-            .button(Level.CRIT, new Button(
+            .button(Level.CRIT, new Button<Level>(
                 i18n.t("log.level.crit.name"),
                 i18n.t("log.level.crit.desc")
             ).bg(COLOR.RED50.shade(shade)))
-            .button(Level.ERROR, new Button(
+            .button(Level.ERROR, new Button<Level>(
                 i18n.t("log.level.error.name"),
                 i18n.t("log.level.error.desc")
             ).bg(COLOR.RED200.shade(shade)))
-            .button(Level.WARN, new Button(
+            .button(Level.WARN, new Button<Level>(
                 i18n.t("log.level.warn.name"),
                 i18n.t("log.level.warn.desc")
             ).bg(COLOR.YELLOW100.shade(shade)))
-            .button(Level.INFO, new Button(
+            .button(Level.INFO, new Button<Level>(
                 i18n.t("log.level.info.name"),
                 i18n.t("log.level.info.desc")
             ).bg(COLOR.BLUE100.shade(shade)))
-            .button(Level.DEBUG, new Button(
+            .button(Level.DEBUG, new Button<Level>(
                 i18n.t("log.level.debug.name"),
                 i18n.t("log.level.debug.desc")
             ).bg(COLOR.GREEN100.shade(shade)))
-            .button(Level.TRACE, new Button(
+            .button(Level.TRACE, new Button<Level>(
                 i18n.t("log.level.trace.name"),
                 i18n.t("log.level.trace.desc")
             ).bg(COLOR.WHITE100.shade(shade)));

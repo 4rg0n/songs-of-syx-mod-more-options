@@ -1,6 +1,5 @@
 package com.github.argon.sos.mod.sdk.metric;
 
-import com.github.argon.sos.mod.sdk.util.Lists;
 import game.time.TIME;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -104,7 +103,7 @@ public class Metric {
         }
 
         public static List<String> getHeaders() {
-            return Lists.of("AGE", "SEASONS", "SEASON", "YEARS", "DAYS", "HOURS", "CURRENT_SECONDS", "PLAY_TIME_SECONDS");
+            return List.of("AGE", "SEASONS", "SEASON", "YEARS", "DAYS", "HOURS", "CURRENT_SECONDS", "PLAY_TIME_SECONDS");
         }
     }
 }

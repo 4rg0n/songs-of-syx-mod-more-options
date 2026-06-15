@@ -48,7 +48,7 @@ public class ListMapper implements Mapper<JsonArray> {
         } else if (isAssignableFrom(type, List.class) || isAssignableFrom(type, ArrayList.class)) {
             return json.getElements().stream()
                 .map(jsonElement ->  JsonMapper.mapJson(jsonElement, elementType))
-                .collect(Collectors.toList());
+                .toList();
         } else {
             throw new JsonMapperException("Can not map " + JsonArray.class.getSimpleName() + " to type " + type.getTypeName());
         }

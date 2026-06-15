@@ -16,7 +16,7 @@ import util.gui.misc.GText;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class AbstractSliderList<Value> extends AbstractButton<List<Value>, AbstractSliderList> implements Refreshable {
+public abstract class AbstractSliderList<Value> extends AbstractButton<List<Value>> implements Refreshable {
 
     @Nullable
     protected final Action<AbstractSliderList<Value>> clickAction;
@@ -52,11 +52,6 @@ public abstract class AbstractSliderList<Value> extends AbstractButton<List<Valu
                ModSdkModule.gameApis().ui().popup().show(this.uiList, this);
             });
         }
-    }
-
-    @Override
-    protected AbstractSliderList<Value> element() {
-        return this;
     }
 
     @NotNull

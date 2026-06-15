@@ -3,7 +3,6 @@ package com.github.argon.sos.moreoptions.ui.tab.advanced;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.ui.*;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
@@ -19,6 +18,8 @@ import snake2d.util.gui.GuiSection;
 import util.gui.misc.GText;
 import util.gui.misc.GTextR;
 
+import java.util.List;
+
 /**
  * Contains slider for controlling the intensity of weather effects
  */
@@ -27,22 +28,22 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
 
     private final DropDown<Level> logLevelDropDown;
     @Getter
-    private final Button resetButton;
+    private final Button<String> resetButton;
     @Getter
-    private final Button folderButton;
+    private final Button<String> folderButton;
     @Getter
-    private final Button dumpLogsButton;
+    private final Button<String> dumpLogsButton;
     @Getter
-    private final Button gameLogsFolderButton;
+    private final Button<String> gameLogsFolderButton;
     @Getter
-    private final Button copyWorldSeedButton;
+    private final Button<String> copyWorldSeedButton;
     private final ViewSwitcher saveStampView;
     @Getter
-    private final Button copySaveStampButton;
+    private final Button<String> copySaveStampButton;
     @Getter
-    private final Button uiShowRoomButton;
+    private final Button<String> uiShowRoomButton;
     @Getter
-    private final Button modLogsButton;
+    private final Button<String> modLogsButton;
     @Getter
     private final Checkbox logToFileCheckbox;
 
@@ -79,7 +80,7 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
         logToFileCheckbox = new Checkbox(model.isLogToFile());
         logToFileCheckbox.hoverInfoSet(i18n.t("AdvancedTab.label.file.logging.desc", model.getLogFilePath()));
 
-        this.modLogsButton = new Button(
+        this.modLogsButton = new Button<>(
             i18n.t("AdvancedTab.button.logs.mod.name"),
             i18n.t("AdvancedTab.button.logs.mod.desc", model.getLogFilePath()));
 
@@ -96,10 +97,10 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
             .column(loggingSection)
             .build();
 
-        this.dumpLogsButton = new Button(
+        this.dumpLogsButton = new Button<>(
             i18n.t("AdvancedTab.button.logs.dump.name"),
             i18n.t("AdvancedTab.button.logs.dump.desc"));
-        this.gameLogsFolderButton = new Button(
+        this.gameLogsFolderButton = new Button<>(
             i18n.t("AdvancedTab.button.logs.folder.name"),
             i18n.t("AdvancedTab.button.logs.folder.desc", PATHS.local().LOGS.get().toString()));
 
@@ -108,7 +109,7 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
                 .name(i18n.t("AdvancedTab.label.log.functions.name"))
                 .description(i18n.t("AdvancedTab.label.log.functions.desc"))
                 .build())
-            .column(ButtonMenu.builder()
+            .column(ButtonMenu.<String>builder()
                 .button("dumpLogs", dumpLogsButton)
                 .button("gameLogsFolder", gameLogsFolderButton)
                 .horizontal(true)
@@ -118,13 +119,13 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
                 .build())
             .build();
 
-        this.resetButton = new Button(
+        this.resetButton = new Button<>(
             i18n.t("AdvancedTab.button.reset.name"),
             i18n.t("AdvancedTab.button.reset.desc"));
-        this.folderButton = new Button(
+        this.folderButton = new Button<>(
             i18n.t("AdvancedTab.button.folder.name"),
             i18n.t("AdvancedTab.button.folder.desc"));
-        this.uiShowRoomButton = new Button(
+        this.uiShowRoomButton = new Button<>(
             i18n.t("AdvancedTab.button.uiShowRoom.name"),
             i18n.t("AdvancedTab.button.uiShowRoom.desc"));
 
@@ -133,7 +134,7 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
                 .name(i18n.t("AdvancedTab.label.mod.functions.name"))
                 .description(i18n.t("AdvancedTab.label.mod.functions.desc"))
                 .build())
-            .column(ButtonMenu.builder()
+            .column(ButtonMenu.<String>builder()
                 .button("resetMod", resetButton)
                 .button("folderMod", folderButton)
                 .button("uiShowRoom", uiShowRoomButton)
@@ -144,7 +145,7 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
             .build();
 
         this.saveStampView = new ViewSwitcher(saveStamp(saveStamp), false);
-        this.copySaveStampButton = new Button(
+        this.copySaveStampButton = new Button<>(
             i18n.t("AdvancedTab.button.mod.saveStamp.copy.name"),
             i18n.t("AdvancedTab.button.mod.saveStamp.copy.desc"));
         ColumnRow<Void> saveStampRow = ColumnRow.<Void>builder()
@@ -156,7 +157,7 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
             .column(copySaveStampButton)
             .build();
 
-        this.copyWorldSeedButton = new Button(
+        this.copyWorldSeedButton = new Button<>(
             i18n.t("AdvancedTab.button.world.seed.copy.name"),
             i18n.t("AdvancedTab.button.world.seed.copy.desc", worldSeed));
         ColumnRow<Void> worldFunctions = ColumnRow.<Void>builder()
@@ -169,9 +170,9 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
             .build();
 
         Table<Void> settings = Table.<Void>builder()
-            .category(i18n.t("AdvancedTab.header.log.name"), Lists.of(logLevelSelect, logFunctions))
-            .category(i18n.t("AdvancedTab.header.mod.name"), Lists.of(modFunctions, saveStampRow))
-            .category(i18n.t("AdvancedTab.header.world.name"), Lists.of(worldFunctions))
+            .category(i18n.t("AdvancedTab.header.log.name"), List.of(logLevelSelect, logFunctions))
+            .category(i18n.t("AdvancedTab.header.mod.name"), List.of(modFunctions, saveStampRow))
+            .category(i18n.t("AdvancedTab.header.world.name"), List.of(worldFunctions))
             .displayHeight(availableHeight)
             .backgroundColor(COLOR.WHITE10)
             .columnMargin(20)

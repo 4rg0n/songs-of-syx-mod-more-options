@@ -3,7 +3,6 @@ package com.github.argon.sos.mod.sdk.json;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.Lists;
 import init.paths.PATH;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -34,10 +32,10 @@ public class GameJsonService {
                 .filter(file -> !Files.isDirectory(file))
                 .filter(path1 -> path1.toString().endsWith(".txt"))
                 .map(path -> get(path).orElse(null))
-                .collect(Collectors.toList());
+                .toList();
         } catch (Exception e) {
             log.debug("Could not read jsons", e);
-            return Lists.of();
+            return List.of();
         }
     }
 

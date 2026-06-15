@@ -20,7 +20,6 @@ import world.army.AD;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Access to the games races
@@ -34,7 +33,7 @@ public class GameRaceApi implements Phases {
     /**
      * List of vanilla game races
      */
-    private final List<String> vanillaRaces = Lists.of(
+    private final List<String> vanillaRaces = List.of(
         "ARGONOSH",
         "CANTOR",
         "CRETONIAN",
@@ -123,7 +122,7 @@ public class GameRaceApi implements Phases {
     public List<Race> getVanillaRaces() {
         return getAll().stream()
             .filter(race -> vanillaRaces.contains(race.key))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**
@@ -132,7 +131,7 @@ public class GameRaceApi implements Phases {
     public List<Race> getCustomRaces() {
         return getAll().stream()
             .filter(race -> !vanillaRaces.contains(race.key))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public List<RaceLiking> getVanillaLikings() {
@@ -254,7 +253,7 @@ public class GameRaceApi implements Phases {
     public List<Race> getCitizenRaces() {
        return getAll().stream()
            .filter(this::isCitizen)
-           .collect(Collectors.toList());
+           .toList();
     }
 
     @Getter

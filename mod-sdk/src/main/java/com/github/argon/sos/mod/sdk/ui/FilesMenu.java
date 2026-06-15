@@ -199,7 +199,7 @@ public class FilesMenu extends Section {
         if (node.isFolder()) {
             return;
         }
-        Button button = node.getButton();
+        Button<String> button = node.getButton();
         button.selectedSet(select);
     }
 
@@ -216,7 +216,7 @@ public class FilesMenu extends Section {
             color =  COLOR.WHITE50;
         }
 
-        Button button = new Button(UI.FONT().S.getText(name));
+        Button<String> button = new Button<>(UI.FONT().S.getText(name));
         button.bg(color);
         button.hoverInfoSet(path.toString());
 
@@ -236,7 +236,7 @@ public class FilesMenu extends Section {
                 fileClickAction.accept(fileNode);
                 button.selectedSet(true);
                 files.values().forEach(node -> {
-                    Button otherButton = node.getButton();
+                    Button<String> otherButton = node.getButton();
                     if (button.equals(otherButton)) {
                         return;
                     }
@@ -252,7 +252,7 @@ public class FilesMenu extends Section {
     private ColumnRow<FileNode> buildRow(int indents, FileNode fileNode, int availableWidth) {
         GuiSection row = new GuiSection();
         COLOR bgColor = COLOR.WHITE15;
-        Button button = fileNode.getButton();
+        Button<String> button = fileNode.getButton();
         int buttonHeight = button.body.height();
 
         for (int i = 0; i < indents; i++) {
@@ -301,7 +301,7 @@ public class FilesMenu extends Section {
     public static class FileNode {
         private final String name;
         private final TreeNode<Path> path;
-        private final Button button;
+        private final Button<String> button;
         private final boolean folder;
         private boolean collapsed;
 

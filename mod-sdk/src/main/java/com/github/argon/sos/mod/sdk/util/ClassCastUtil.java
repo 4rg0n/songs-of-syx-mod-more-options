@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 /**
  * For transforming all kind of classes into different classes.
@@ -172,6 +171,6 @@ public class ClassCastUtil {
 
     public static <T> Collection<T> toCollection(T[] objects) {
        return Arrays.stream(objects)
-           .collect(Collectors.toList());
+           .toList();
     }
 }

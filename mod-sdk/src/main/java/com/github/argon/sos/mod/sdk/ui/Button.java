@@ -7,7 +7,11 @@ import snake2d.util.sprite.SPRITE;
 /**
  * A simple button with a text or icon and a description.
  */
-public class Button extends AbstractButton<String, Button> {
+public class Button<Value> extends AbstractButton<Value> {
+
+    public Button(Value value) {
+        super(value);
+    }
 
     public Button(CharSequence label) {
         super(label);
@@ -34,22 +38,8 @@ public class Button extends AbstractButton<String, Button> {
     }
 
     @Override
-    public Button searchTerm(@Nullable String searchTerm) {
+    public Button<Value> searchTerm(@Nullable Value searchTerm) {
         super.searchTerm(searchTerm);
         return this;
-    }
-
-    @Override
-    protected Button element() {
-        return this;
-    }
-
-    @Override
-    public Boolean search(String s) {
-        if (searchTerm == null) {
-            return true;
-        }
-
-        return searchTerm.toLowerCase().contains(s.toLowerCase());
     }
 }
