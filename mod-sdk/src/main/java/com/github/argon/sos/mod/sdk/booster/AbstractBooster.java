@@ -12,17 +12,38 @@ import game.battle.div.Div;
 import settlement.stats.Induvidual;
 import world.map.regions.Region;
 
+/**
+ * Base class for game boosters
+ */
 public abstract class AbstractBooster extends BoosterImp {
 
+    /**
+     * Used as default value for boosts having no value
+     */
     protected final double noValue;
 
     @Getter
     private final Boostable origin;
 
+    /**
+     * Which mode the booster will use to calculate its values
+     */
     protected final BoostMode boostMode;
 
+    /**
+     * Will be multiplied with the calculated value
+     */
     protected final double scale;
 
+    /**
+     * Default constructor has to be called from child class
+     *
+     * @param origin other booster this one is attached to
+     * @param bSourceInfo general information about this booster
+     * @param min minimum value
+     * @param max maximum value
+     * @param boostMode which mode shall be used to calculate the value
+     */
     public AbstractBooster(
         Boostable origin,
         BSourceInfo bSourceInfo,

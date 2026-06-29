@@ -8,7 +8,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * Holds type the information of an object such as e.g. List<String>
+ * Holds type the information of an object such as e.g. {@code List<String>}
  * Usage:
  * <pre>{@code
  *     // for simple classes

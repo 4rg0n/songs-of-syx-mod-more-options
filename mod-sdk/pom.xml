@@ -4,13 +4,37 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.github.argon.sos</groupId>
+        <groupId>io.github.4rg0n</groupId>
         <artifactId>songs-of-syx-mod-parent</artifactId>
         <version>local</version>
     </parent>
 
-    <version>sdk-0</version>
+    <name>Songs of Syx Mod SDK</name>
+    <description>Provides a framework for developing code mods in the game Songs of Syx.</description>
+    <version>0.1.0</version>
     <artifactId>sos-mod-sdk</artifactId>
+    <url>https://github.com/4rg0n/songs-of-syx-mod-more-options/tree/main/mod-sdk/src/main/java/com/github/argon/sos/mod/sdk#readme</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Dominic Rönicke</name>
+            <email>argonthechecker@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/4rg0n/songs-of-syx-mod-more-options.git</connection>
+        <developerConnection>scm:git:ssh://github.com/4rg0n/songs-of-syx-mod-more-options.git</developerConnection>
+        <url>https://github.com/4rg0n/songs-of-syx-mod-more-options/tree/main</url>
+    </scm>
 
     <properties>
         <mod.version>${project.version}</mod.version>
@@ -37,8 +61,9 @@
             <artifactId>jackson-dataformat-properties</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.argon.sos</groupId>
+            <groupId>io.github.4rg0n</groupId>
             <artifactId>sos-mod-test</artifactId>
+            <version>0.1.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -86,6 +111,31 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
+
+            <!-- Publishing to Maven Central -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.9.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <!-- Generate Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
+                <configuration>
+                    <!-- ignore vanilla game classes -->
+                    <excludePackageNames>game.*:settlement.*:snake2d.*:init.*:menu.*:util.*:view.*:world.*</excludePackageNames>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

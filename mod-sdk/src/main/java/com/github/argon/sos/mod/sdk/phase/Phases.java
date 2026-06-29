@@ -43,6 +43,9 @@ public interface Phases {
     /**
      * (4.) PHASE: can be called multiple times
      * When the game loaded a save game
+     *
+     * @param saveFilePath file path to the save game used
+     * @param fileGetter to read data from the save game
      */
     default void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
         throw new PhaseNotImplemented(Phase.ON_GAME_SAVE_LOADED);
@@ -76,6 +79,8 @@ public interface Phases {
     /**
      * (8.) PHASE: can be called multiple times
      * Called by the games update loop
+     *
+     * @param seconds delta seconds since the last update loop
      */
     default void onGameUpdate(double seconds)  {
         throw new PhaseNotImplemented(Phase.ON_GAME_UPDATE);
@@ -99,6 +104,9 @@ public interface Phases {
 
     /**
      * When the game saves
+     *
+     * @param saveFilePath file path to the save game used
+     * @param filePutter to write data into the save game
      */
     default void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         throw new PhaseNotImplemented(Phase.ON_GAME_SAVED);
@@ -106,6 +114,8 @@ public interface Phases {
 
     /**
      * When the game crashes
+     *
+     * @param e the thrown exception
      */
     default void onCrash(Throwable e) {
         throw new PhaseNotImplemented(Phase.ON_CRASH);

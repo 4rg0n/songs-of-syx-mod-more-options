@@ -77,7 +77,7 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     public abstract CharSequence desc();
 
     /**
-     * Triggered by {@link this#initBeforeGameCreated()}
+     * Triggered by {@link AbstractModSdkScript#initBeforeGameCreated()}
      */
     protected abstract void registerPhases(PhaseManager phaseManager);
 
@@ -120,7 +120,7 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     }
 
     /**
-     * Triggered by {@link this#createInstance()}
+     * Triggered by {@link AbstractModSdkScript#createInstance()}
      */
     @Override
     public void initModCreateInstance() {

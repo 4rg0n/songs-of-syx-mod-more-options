@@ -9,7 +9,7 @@ import snake2d.util.file.JsonE;
 /**
  * For mapping objects into and from a {@link JsonElement}.
  * Also supports mapping {@link JsonElement} into the games {@link JsonE}.
- * See {@link this#mapJson(JsonObject)}
+ * See {@link JsonMapper#mapJson(JsonObject)}
  */
 public class JsonMapper {
 
@@ -68,7 +68,7 @@ public class JsonMapper {
          The game json allows for key value structures in an array, which isn't valid in standard json.
          A key value pair is identified by containing a ":".
          And guess who added keys as Strings in a list, which contain a ":" as some kind of delimiter in their own config...
-         Now this stuff get's interpreted as a key value pair... this circumvents the issue for now :x
+         Now this stuff gets interpreted as a key value pair... this circumvents the issue for now :x
          */
         if (mapper instanceof StringMapper && json instanceof JsonTuple) {
             JsonTuple jsonTuple = (JsonTuple) json;

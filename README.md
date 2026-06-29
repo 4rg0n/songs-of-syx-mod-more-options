@@ -20,7 +20,7 @@ Adds a menu with more options for the game:
 ## Credits & Contributions
 
 * [Senso](https://github.com/SensoHakai) - port for **V65** 
-* [VizardAlpha](https://github.com/VizardAlpha) - port for *V71*
+* [VizardAlpha](https://github.com/VizardAlpha) - port for **V71**
 
 ## Enable the mod when starting a new random game
 

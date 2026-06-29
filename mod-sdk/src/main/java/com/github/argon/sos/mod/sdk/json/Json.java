@@ -29,7 +29,7 @@ public class Json {
 
     /**
      * For parsing the json with {@link JsonParser}.
-     * Points to the current character in {@link this#rawJson} to parse.
+     * Points to the current character in {@link Json#rawJson} to parse.
      */
     @Setter
     @Getter
@@ -83,16 +83,16 @@ public class Json {
     }
 
     /**
-     * For parsing the {@link this#rawJson}
+     * For parsing the {@link Json#rawJson}
      *
-     * @return current character the index is pointing at
+     * @return the current character the index is pointing at
      */
     public char currentChar(){
         return rawJson.charAt(index);
     }
 
     /**
-     * For parsing the {@link this#rawJson}
+     * For parsing the {@link Json#rawJson}
      * Moves the index to the next character.
      */
     public void indexMove(){
@@ -101,7 +101,7 @@ public class Json {
 
     /**
      * Moves the index until the next non whitespace character.
-     * See {@link this#isWhiteSpace(char)}
+     * See {@link Json#isWhiteSpace(char)}
      */
     public void skipBlank(){
         while (!atEnd() && isWhiteSpace(currentChar())){
@@ -115,7 +115,7 @@ public class Json {
 
     /**
      * Returns the string until a stop character is reached.
-     * See {@link this#isEndOfValue(char)}
+     * See {@link Json#isEndOfValue(char)}
      *
      * @param checkWhitespace whether whitespaces shall be included or not
      */

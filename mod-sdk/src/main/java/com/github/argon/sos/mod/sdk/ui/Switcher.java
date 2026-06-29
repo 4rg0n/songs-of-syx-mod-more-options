@@ -13,8 +13,10 @@ import java.util.Optional;
 
 /**
  * Builds a row or pillar with buttons to toggle / click.
- * When a button is clicked it will be marked "active".
+ * When a button is clicked, it will be marked "active".
  * Only one button can be active.
+ *
+ * @param <Key> the type of the key used for switching
  */
 public class Switcher<Key> extends Section implements
     Valuable<Key>,

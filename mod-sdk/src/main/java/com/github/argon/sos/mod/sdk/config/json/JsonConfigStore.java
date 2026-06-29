@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Manages and contains config objects loaded from JSON files.
  *
- * You can register a data class under a given file path via {@link this#bind(Class, Path, boolean)} or {@link this#bindToSave(Class, String, Path, boolean)}.
+ * You can register a data class under a given file path via {@link JsonConfigStore#bind(Class, Path, boolean)} or {@link JsonConfigStore#bindToSave(Class, String, Path, boolean)}.
  * The store will then be able to manage these, and you can access the data through the store.
  */
 @RequiredArgsConstructor
@@ -648,7 +648,7 @@ public class JsonConfigStore {
     }
 
     /**
-     * Will rewrite a path / filename with a {@link this#BACKUP_FILE_PREFIX} in it.
+     * Will rewrite a path / filename with a {@link JsonConfigStore#BACKUP_FILE_PREFIX} in it.
      *
      * @param path to create a backup path from
      * @return created backup path

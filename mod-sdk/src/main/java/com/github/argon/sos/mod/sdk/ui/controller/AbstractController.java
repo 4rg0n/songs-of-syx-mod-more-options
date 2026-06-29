@@ -26,6 +26,11 @@ public abstract class AbstractController<UiElement> implements Controller<UiElem
     @Getter(lazy = true, value = AccessLevel.PROTECTED)
     private final Controllers controllers = ModSdkModule.controllers();
 
+    /**
+     * Create a controller with an ui element to control
+     *
+     * @param element the actual ui element to control
+     */
     public AbstractController(UiElement element) {
         this.element = element;
         getControllers().add(this);

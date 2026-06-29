@@ -6,6 +6,8 @@ import snake2d.util.sprite.SPRITE;
 
 /**
  * A simple button with a text or icon and a description.
+ *
+ * @param <Value> used for searching
  */
 public class Button<Value> extends AbstractButton<Value> {
 

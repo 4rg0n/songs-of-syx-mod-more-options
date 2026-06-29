@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 /**
  * Container, which aligns elements evenly in the row.
  * Used by the {@link Table} element.
+ *
+ * @param <Value> the type of the value
  */
 @Builder
 public class ColumnRow<Value> extends Section implements

@@ -27,6 +27,9 @@ public abstract class AbstractButton<Value> extends GButt.ButtPanel
     Searchable<Value, Boolean>,
     Toggleable<Boolean>
 {
+    /**
+     * Background color used for the button
+     */
     @Getter
     protected COLOR bgColor = COLOR.WHITE35;
 
@@ -34,53 +37,128 @@ public abstract class AbstractButton<Value> extends GButt.ButtPanel
     @Accessors(fluent = true, chain = false)
     private Action<Boolean> toggleAction = o -> {};
 
+    /**
+     * Holds the value of the button. This is usually the button name.
+     */
     @Getter
     @Setter
     protected Value value;
 
+    /**
+     * Whether the button can be clicked or not
+     */
     @Setter
     @Accessors(fluent = true)
     protected boolean clickable = true;
 
+    /**
+     * Whether the button will react when hovered with the mouse
+     */
     @Setter
     @Accessors(fluent = true)
     protected boolean hoverable = true;
+
+    /**
+     * Will be called when the button is rendered
+     */
     @Nullable
     protected ACTION renAction;
 
+    /**
+     * Used for filtering buttons when searching
+     */
     @Nullable
     @Setter
     @Getter
     @Accessors(fluent = true)
     protected Value searchTerm;
-    
-    public final static COLOR DEFAULT_COLOR = COLOR.WHITE35;
 
+    /**
+     * The default background color for the button
+     */
+    public final static COLOR DEFAULT_BG_COLOR = COLOR.WHITE35;
+
+    /**
+     * The default font for the button
+     */
+    public final static Font DEFAULT_FONT = UI.FONT().H2;
+
+    /**
+     * For creating a button with a value only.
+     *
+     * @param value of the button. The {@link Object#toString()} result will be used as label.
+     */
     public AbstractButton(Value value) {
         this(value.toString());
         this.value = value;
     }
 
+    /**
+     * For creating a button with a label and a font to be used for it.
+     * {@link AbstractButton#DEFAULT_BG_COLOR} will be used as background color.
+     *
+     * @param label to display on the button
+     * @param font to use for the label
+     */
     public AbstractButton(CharSequence label, Font font) {
-        this(label, DEFAULT_COLOR, font, null);
+        this(label, DEFAULT_BG_COLOR, font, null);
     }
 
+    /**
+     * For creating a button with a label.
+     * {@link AbstractButton#DEFAULT_BG_COLOR} will be used as background color.
+     * {@link AbstractButton#DEFAULT_FONT} will be used as font.
+     *
+     * @param label to display on the button
+     */
     public AbstractButton(CharSequence label) {
-        this(label, DEFAULT_COLOR, UI.FONT().H2, null);
+        this(label, DEFAULT_BG_COLOR, DEFAULT_FONT, null);
     }
 
+    /**
+     * For creating a button with a label, an optional description and a font for the label.
+     * {@link AbstractButton#DEFAULT_BG_COLOR} will be used as background color.
+     *
+     * @param label to display on the button
+     * @param description to display when hovering
+     * @param font to use for the label
+     */
     public AbstractButton(CharSequence label, @Nullable CharSequence description, Font font) {
-        this(label, DEFAULT_COLOR, font , description);
+        this(label, DEFAULT_BG_COLOR, font , description);
     }
 
+    /**
+     * For creating a button with a label, the background color and an optional description.
+     * {@link AbstractButton#DEFAULT_BG_COLOR} will be used as background color.
+     *
+     * @param label to display on the button
+     * @param bgColor background color
+     * @param description to display when hovering
+     */
     public AbstractButton(CharSequence label, COLOR bgColor, @Nullable CharSequence description) {
-        this(label, bgColor, UI.FONT().H2, description);
+        this(label, bgColor, DEFAULT_FONT, description);
     }
 
+    /**
+     * For creating a button with a label and an optional description.
+     * {@link AbstractButton#DEFAULT_BG_COLOR} will be used as background color.
+     * {@link AbstractButton#DEFAULT_FONT} will be used as font.
+     *
+     * @param label to display on the button
+     * @param description to display when hovering
+     */
     public AbstractButton(CharSequence label, @Nullable CharSequence description) {
-        this(label, DEFAULT_COLOR, UI.FONT().H2, description);
+        this(label, DEFAULT_BG_COLOR, DEFAULT_FONT, description);
     }
 
+    /**
+     * For creating a button with a label, the font for the label, the background color and an optional description.
+     *
+     * @param label to display on the button
+     * @param bgColor background color
+     * @param font to use for the label
+     * @param description to display when hovering
+     */
     public AbstractButton(CharSequence label, COLOR bgColor, Font font, @Nullable CharSequence description) {
         super(font.getText(label));
         this.bgColor = bgColor;
@@ -88,21 +166,43 @@ public abstract class AbstractButton<Value> extends GButt.ButtPanel
         hoverInfoSet(description);
     }
 
-    public AbstractButton(SPRITE label) {
-        super(label);
+    /**
+     * For creating a button with an image.
+     *
+     * @param icon to show on the button
+     */
+    public AbstractButton(SPRITE icon) {
+        super(icon);
     }
 
-    public AbstractButton(SPRITE label, @Nullable CharSequence description) {
-        super(label);
+    /**
+     * For creating a button with an image and an optional description.
+     *
+     * @param icon to show on the button
+     * @param description to display when hovering
+     */
+    public AbstractButton(SPRITE icon, @Nullable CharSequence description) {
+        super(icon);
         hoverInfoSet(description);
     }
 
-    public AbstractButton(SPRITE label, COLOR bgColor) {
-        super(label);
+    /**
+     * For creating a button with an image and the background color.
+     *
+     * @param icon to show on the button
+     * @param bgColor background color
+     */
+    public AbstractButton(SPRITE icon, COLOR bgColor) {
+        super(icon);
         this.bgColor = bgColor;
         bg(bgColor);
     }
 
+    /**
+     * Will return the label / name of the button
+     *
+     * @return label as a sprite
+     */
     public SPRITE getLabel() {
         return label;
     }
@@ -128,6 +228,9 @@ public abstract class AbstractButton<Value> extends GButt.ButtPanel
         }
     }
 
+    /**
+     * Will switch the button "selected" state on or off
+     */
     @Override
     public void toggle() {
         selectedToggle();
@@ -153,10 +256,22 @@ public abstract class AbstractButton<Value> extends GButt.ButtPanel
         super.renAction();
     }
 
+    /**
+     * Will set a render action
+     * 
+     * @param action to be called when rendering
+     */
     public void renActionSet(ACTION action) {
         this.renAction = action;
     }
 
+    /**
+     * In the case of the given value and {@link AbstractButton#searchTerm} being a {@link String} both will be lowercased and checked with {@link Object#equals(Object)}.
+     * If not, both will be checked just with {@link Object#equals(Object)}
+     * 
+     * @param value to search for
+     * @return whether the term was found
+     */
     @Override
     public Boolean search(Value value) {
         if (searchTerm == null) {
