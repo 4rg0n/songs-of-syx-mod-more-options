@@ -19,6 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Will build a menu with multiple buttons
+ *
+ * @param <Key> type of the key used for each button in the menu
+ */
 public class ButtonMenu<Key> extends Section {
 
     @Getter
@@ -29,6 +34,11 @@ public class ButtonMenu<Key> extends Section {
     @Accessors(fluent = true, chain = false)
     private Action<Key> clickAction;
 
+    /**
+     * Will create a button menu from a map with buttons
+     *
+     * @param buttons map with the key and there corresponding button
+     */
     public ButtonMenu(Map<Key, AbstractButton<Key>> buttons) {
         this(buttons, false, true, false, false, false, false, 0, 0, 0, 0, 0, COLOR.WHITE35, null, null, null);
     }
@@ -126,40 +136,78 @@ public class ButtonMenu<Key> extends Section {
         }
     }
 
+    /**
+     * Will look for a button with the given key in the menu.
+     *
+     * @param key of the button to look for
+     * @return the actual found button or null
+     */
+    @Nullable
     public AbstractButton<Key> get(Key key) {
         return buttons.get(key);
     }
 
+    /**
+     * Overridden lombok builder with additional methods to build a button menu
+     *
+     * @param <Key> type of the key used for each button in the menu
+     */
     public static class ButtonMenuBuilder<Key> {
 
         private final Map<Key, AbstractButton<Key>> buttons = new LinkedHashMap<>();
 
-        public static <Key> ButtonMenu<Key> fromList(List<? extends AbstractButton<Key>> infoList) {
-            LinkedHashMap<Key, AbstractButton<Key>> collect = infoList.stream().collect(Collectors.toMap(
+        /**
+         * Will create a button menu from a list of buttons
+         *
+         * @param buttonList to create the menu from
+         * @return the built button menu
+         * @param <Key> type of the key used for each button in the menu
+         */
+        public static <Key> ButtonMenu<Key> fromList(List<? extends AbstractButton<Key>> buttonList) {
+            LinkedHashMap<Key, AbstractButton<Key>> collect = buttonList.stream().collect(Collectors.toMap(
                 button -> button.getValue(), button -> button,
                 (left, right) -> left, LinkedHashMap::new));
 
             return new ButtonMenu<>(collect);
         }
 
+        /**
+         * Will add the given button map to the actual entries of the builder
+         *
+         * @param buttons to add
+         * @return builder with added button map
+         */
         public ButtonMenuBuilder<Key> buttons(Map<Key, AbstractButton<Key>> buttons) {
             this.buttons.putAll(buttons);
             return this;
         }
 
-        public ButtonMenuBuilder<Key> buttons(List<Key> names) {
+        /**
+         * Will create buttons from the given list of keys and add them to the builder
+         *
+         * @param keys to add as buttons
+         * @return builder with added buttons
+         */
+        public ButtonMenuBuilder<Key> buttons(List<Key> keys) {
             Map<Key, AbstractButton<Key>> buttonMap = new LinkedHashMap<>();
-            for (Key name : names) {
-                Button<Key> button = new Button<>(name);
-                button.setValue(name);
-                button.searchTerm(name);
-                buttonMap.put(name, button);
+            for (Key key : keys) {
+                Button<Key> button = new Button<>(key);
+                button.setValue(key);
+                button.searchTerm(key);
+                buttonMap.put(key, button);
             }
 
             this.buttons.putAll(buttonMap);
             return this;
         }
 
+        /**
+         * Will add a single button with given key to the builder
+         *
+         * @param key of the button
+         * @param button actual button to add
+         * @return builder with added button
+         */
         public ButtonMenuBuilder<Key> button(Key key, AbstractButton<Key> button) {
             this.buttons.put(key, button);
             return this;
