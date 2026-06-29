@@ -39,12 +39,11 @@ public class PhaseManager implements Phases {
 
     /**
      * Adds a class implementing the {@link Phases} to a certain phase.
-     * E.g. you can add an object with {@link Phase#ON_VIEW_SETUP}, which would then call
-     * {@link Phases#onViewSetup()} on that object whenever the game builds a completely new UI.
+     * E.g. you can add an object with {@link Phase#INIT_BEFORE_GAME_CREATED}, which would then call
+     * {@link Phases#initBeforeGameCreated()} on that object before a game instance was created.
      *
      * This is useful when you have to e.g. reset something whenever the game is in a certain phase.
-     *
-     *
+     *     *
      * @param phase to register the impl for
      * @param phasesImpl to register
      */
@@ -66,72 +65,108 @@ public class PhaseManager implements Phases {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initBeforeGameCreated() {
         log.debug("PHASE: initBeforeGameCreated");
         phases.get(Phase.INIT_BEFORE_GAME_CREATED).forEach(init -> execute(init, init::initBeforeGameCreated));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initModCreateInstance() {
         log.debug("PHASE: initModCreateInstance");
         phases.get(Phase.INIT_MOD_CREATE_INSTANCE).forEach(init -> execute(init, init::initModCreateInstance));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
         log.debug("PHASE: onGameLoaded");
         phases.get(Phase.ON_GAME_SAVE_LOADED).forEach(init -> execute(init, () -> init.onGameLoaded(saveFilePath, fileGetter)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameSaveReloaded() {
         log.debug("PHASE: onGameSaveReloaded");
         phases.get(Phase.ON_GAME_SAVE_RELOADED).forEach(init -> execute(init, init::onGameSaveReloaded));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initNewGameSession() {
         log.debug("PHASE: initNewGameSession");
         phases.get(Phase.INIT_NEW_GAME_SESSION).forEach(init -> execute(init, init::initNewGameSession));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initGameUpdating() {
         log.debug("PHASE: initGameUpdating");
         phases.get(Phase.INIT_GAME_UPDATING).forEach(init -> execute(init, init::initGameUpdating));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameUpdate(double seconds) {
         //log.trace("PHASE: onGameUpdate");
         phases.get(Phase.ON_GAME_UPDATE).forEach(init -> init.onGameUpdate(seconds));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initGameUiPresent() {
         log.debug("PHASE: initGameUiPresent");
         phases.get(Phase.INIT_GAME_UI_PRESENT).forEach(init -> execute(init, init::initGameUiPresent));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         log.debug("PHASE: onGameSaved");
         phases.get(Phase.ON_GAME_SAVED).forEach(init -> execute(init, () -> init.onGameSaved(saveFilePath, filePutter)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initSettlementUiPresent() {
         log.debug("PHASE: initSettlementUiPresent");
         phases.get(Phase.INIT_SETTLEMENT_UI_PRESENT).forEach(init -> execute(init, init::initSettlementUiPresent));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initGameResourcesLoaded() {
         log.debug("PHASE: initResourcesLoaded");
         phases.get(Phase.INIT_GAME_RESOURCES_LOADED).forEach(init -> execute(init, init::initGameResourcesLoaded));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCrash(Throwable throwable) {
         log.debug("PHASE: onCrash");
