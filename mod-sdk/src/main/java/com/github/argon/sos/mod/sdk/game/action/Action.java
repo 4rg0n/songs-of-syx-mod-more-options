@@ -10,8 +10,19 @@ import java.util.function.Consumer;
  * @param <Param> type of parameter handed to the action function
  */
 public interface Action<Param>  {
+    /**
+     * Executes the action
+     *
+     * @param param for the action
+     */
     void accept(Param param);
 
+    /**
+     * For chaining multiple actions.
+     *
+     * @param after to execute after this one
+     * @return the after consumer
+     */
     default Consumer<Param> andThen(Consumer<? super Param> after) {
         Objects.requireNonNull(after);
         return (Param param) -> { accept(param); after.accept(param); };
