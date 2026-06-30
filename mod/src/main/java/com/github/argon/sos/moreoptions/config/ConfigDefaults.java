@@ -140,7 +140,7 @@ public class ConfigDefaults {
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
         // General Sounds
-        Map<String, Range> sounds = gameApis.sounds().getSounds().keySet().stream()
+        Map<String, Range> sounds = gameApis.sounds().getSettlementSounds().keySet().stream()
             .collect(Collectors.toMap(key -> key, o -> ConfigDefaults.sound()));
 
         // Animal Sounds

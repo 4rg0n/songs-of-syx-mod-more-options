@@ -19,6 +19,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * For interacting with the game factions
+ */
 @NoArgsConstructor
 public class GameFactionApi implements Phases, Resettable {
 
@@ -33,6 +36,8 @@ public class GameFactionApi implements Phases, Resettable {
     private Player player;
 
     /**
+     * Returns the player faction.
+     *
      * @return the player faction
      */
     public Player getPlayer() {
@@ -44,17 +49,28 @@ public class GameFactionApi implements Phases, Resettable {
     }
 
     /**
+     * Checks whether a given faction is the player faction.
+     *
      * @return whether a faction is the player faction
      */
     public boolean isPlayer(Faction faction) {
         return faction.equals(getPlayer());
     }
 
+    /**
+     * Returns the {@link Faction} by the given name.
+     *
+     * @param name of the faction
+     * @return faction or null
+     */
     @Nullable
     public Faction getByName(String name) {
         return getFactions().get(name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reset() {
         factions.clear();
@@ -62,6 +78,9 @@ public class GameFactionApi implements Phases, Resettable {
         player = null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initSettlementUiPresent() {
         reloadFactions();

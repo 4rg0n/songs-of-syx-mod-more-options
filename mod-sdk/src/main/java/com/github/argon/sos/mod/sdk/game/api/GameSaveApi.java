@@ -36,7 +36,13 @@ public class GameSaveApi implements Phases {
     @Nullable
     private SaveFile currentFile;
 
-    public @Nullable SaveFile getCurrentFile() {
+    /**
+     * Returns the current latest {@link SaveFile} for the game session.
+     *
+     * @return current save file or null when not saved yet
+     */
+    @Nullable
+    public SaveFile getCurrentFile() {
         if (currentPath == null) {
             return null;
         }
@@ -57,18 +63,26 @@ public class GameSaveApi implements Phases {
     }
 
     /**
+     * Returns a list of all save files for the game session.
+     *
      * @return all available game save files
      */
     public List<SaveFile> getFiles() {
         return Arrays.asList(SaveFile.list());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         // update save info on game save
         setCurrent(saveFilePath);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
         // update save info on game loaded
@@ -77,7 +91,9 @@ public class GameSaveApi implements Phases {
 
     /**
      * Find a {@link SaveFile} by a path or a part of it.
-     * @return first matching
+     *
+     * @param saveFilePath to find
+     * @return first matching save file
      */
     public Optional<SaveFile> findByPathContains(Path saveFilePath) {
         return getFiles().stream()
@@ -86,9 +102,10 @@ public class GameSaveApi implements Phases {
     }
 
     /**
-     * Finds a {@link SaveFile} by exact save file name
+     * Finds a {@link SaveFile} by exact save file name.
      *
-     * @return first matching
+     * @param saveFileName to look for
+     * @return first matching save file
      */
     public Optional<SaveFile> findByName(String saveFileName) {
         return getFiles().stream()
@@ -97,6 +114,8 @@ public class GameSaveApi implements Phases {
     }
 
     /**
+     * Returns the unique identifier of save files for the current game session.
+     *
      * @return unique save file identifier
      */
     @Nullable

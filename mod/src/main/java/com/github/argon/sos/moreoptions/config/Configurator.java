@@ -136,7 +136,7 @@ public class Configurator implements Phases {
                 }
             });
 
-            Map<String, SoundRace> settlementSounds = gameApis.sounds().getSounds();
+            Map<String, SoundRace> settlementSounds = gameApis.sounds().getSettlementSounds();
             sounds.getSounds().forEach((key, range) -> {
                 if (settlementSounds.containsKey(key)) {
                     SoundRace sound = settlementSounds.get(key);

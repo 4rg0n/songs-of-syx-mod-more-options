@@ -75,7 +75,7 @@ public class UiFactory {
         Map<String, EventTree> eventTrees = uiMapper.toEventsTabEvents(config.getEvents().getGeneralEvents());
 
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
-        ModInfo modInfo = gameApis.mod().getCurrentMod(MoreOptionsScript.MOD_INFO.name.toString()).orElse(null);
+        ModInfo modInfo = gameApis.mod().getModByName(MoreOptionsScript.MOD_INFO.name.toString()).orElse(null);
         Path exportFolder = metricExporter.getExportFolder();
         Path exportFile = metricExporter.getExportFile();
         String saveStamp = gameApis.save().getSaveStamp();

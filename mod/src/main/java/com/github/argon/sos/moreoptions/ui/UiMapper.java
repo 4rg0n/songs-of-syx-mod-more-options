@@ -196,7 +196,7 @@ public class UiMapper {
 
                 String name = key;
                 SPRITE sprite = SPRITES.icons().m.clear_structure;
-                RoomBlueprintImp room = gameApis.rooms().getBySound(key).orElse(null);
+                RoomBlueprintImp room = gameApis.rooms().getRoomBySound(key).orElse(null);
 
                 if (room != null) {
                     name = room.info.name.toString();
