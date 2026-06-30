@@ -1,5 +1,8 @@
 package com.github.argon.sos.mod.sdk.booster;
 
+/**
+ * Applicable boost modes
+ */
 public enum BoostMode {
     /**
      * The boost will be added to the original booster

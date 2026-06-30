@@ -107,16 +107,16 @@ public class BoosterFactory {
     private static Boosters createMoreOptionsBoosters(Boostable booster, @Nullable Boosters presentBooster) {
         FactionBooster boosterMulti;
         if (presentBooster != null && BoosterUtil.alreadyExtended(booster, true)) {
-            log.trace("Reuse present multi booster: %s", presentBooster.getMulti().info.name);
-            boosterMulti = presentBooster.getMulti();
+            log.trace("Reuse present multi booster: %s", presentBooster.multi().info.name);
+            boosterMulti = presentBooster.multi();
         } else {
             boosterMulti = createMoreOptionsBooster(booster, ConfigDefaults.boosterPercent());
         }
 
         FactionBooster boosterAdd;
         if (presentBooster != null && BoosterUtil.alreadyExtended(booster, false)) {
-            log.trace("Reuse present add booster: %s", presentBooster.getAdd().info.name);
-            boosterAdd = presentBooster.getAdd();
+            log.trace("Reuse present add booster: %s", presentBooster.add().info.name);
+            boosterAdd = presentBooster.add();
         }  else {
             boosterAdd = createMoreOptionsBooster(booster, ConfigDefaults.boosterAdd());
         }

@@ -40,7 +40,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 entry -> entry.getValue().stream()
-                    .sorted(Comparator.comparing(boosterEntry -> boosterEntry.getBoosters().getAdd().getOrigin().name.toString()))
+                    .sorted(Comparator.comparing(boosterEntry -> boosterEntry.getBoosters().add().getOrigin().name.toString()))
                     .map(this::boosterRow)
                     .toList()
             ));
@@ -76,12 +76,12 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         Range.ApplyMode activeKey;
 
         if (boosterEntry.getRange().getApplyMode().equals(Range.ApplyMode.PERCENT)) {
-            boostable = boosterEntry.getBoosters().getMulti().getOrigin();
+            boostable = boosterEntry.getBoosters().multi().getOrigin();
             rangePerc = boosterEntry.getRange();
             rangeAdd = ConfigDefaults.boosterAdd();
             activeKey = Range.ApplyMode.PERCENT;
         } else {
-            boostable = boosterEntry.getBoosters().getAdd().getOrigin();
+            boostable = boosterEntry.getBoosters().add().getOrigin();
             rangePerc = ConfigDefaults.boosterPercent();
             rangeAdd = boosterEntry.getRange();
             activeKey = Range.ApplyMode.ADD;

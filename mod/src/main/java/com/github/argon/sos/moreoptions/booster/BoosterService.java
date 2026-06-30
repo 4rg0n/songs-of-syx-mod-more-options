@@ -86,12 +86,12 @@ public class BoosterService implements Resettable {
 
             switch (range.getApplyMode()) {
                 case PERCENT:
-                    gameBooster.getMulti().set(faction, range.getValue());
-                    gameBooster.getAdd().reset(faction);
+                    gameBooster.multi().set(faction, range.getValue());
+                    gameBooster.add().reset(faction);
                     break;
                 case ADD:
-                    gameBooster.getAdd().set(faction, range.getValue());
-                    gameBooster.getMulti().reset(faction);
+                    gameBooster.add().set(faction, range.getValue());
+                    gameBooster.multi().reset(faction);
                     break;
             }
         });
@@ -109,6 +109,6 @@ public class BoosterService implements Resettable {
         this.boosters = boosters;
         this.boosterCategories = boosters.entrySet().stream().collect(Collectors.toMap(
             Map.Entry::getKey,
-            entry -> entry.getValue().getAdd().getOrigin().cat));
+            entry -> entry.getValue().add().getOrigin().cat));
     }
 }
