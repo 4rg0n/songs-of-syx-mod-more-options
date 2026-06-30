@@ -95,7 +95,7 @@ public class JsonConfigStore {
     }
 
     /**
-     * Remove a config class from the store
+     * Remove a config class from the store.
      *
      * @param configClass to remove
      */
@@ -106,7 +106,7 @@ public class JsonConfigStore {
     }
 
     /**
-     * Clears all stored configs and definitions
+     * Clears all stored configs and definitions.
      */
     public void clear() {
         log.debug("Clearing");
@@ -116,6 +116,8 @@ public class JsonConfigStore {
     }
 
     /**
+     * Whether there are backup configs in the store.
+     *
      * @return whether there are any backup configs loaded
      */
     public boolean hasBackups() {
@@ -134,6 +136,8 @@ public class JsonConfigStore {
     }
 
     /**
+     * Returns the file path of the current loaded config.
+     *
      * @return file path of the currently loaded config class
      */
     public Optional<Path> getPath(Class<?> configClass) {
@@ -142,6 +146,8 @@ public class JsonConfigStore {
     }
 
     /**
+     * Returns the file path of the current loaded backup config.
+     *
      * @return backup file path of the currently loaded config class
      */
     public Optional<Path> getBackupPath(Class<?> configClass) {
