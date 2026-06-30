@@ -6,7 +6,13 @@ import init.paths.PATHS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents the game "text" folder structure.
+ */
 public class Text extends AbstractGameData {
+    /**
+     * Creates a new "text" folder structure instance
+     */
     public Text() {
         super(PATHS.TEXT());
     }

@@ -6,7 +6,13 @@ import init.paths.PATHS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents the game "sprite/settlement" folder structure.
+ */
 public class SpriteSettlement extends AbstractGameData {
+    /**
+     * Creates a new "sprite/settlement" folder structure instance
+     */
     public SpriteSettlement() {
         super(PATHS.SETT().sprite);
     }

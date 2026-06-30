@@ -70,10 +70,22 @@ public class GameFolder {
 
     private final Map<String, GameFolder> folders = new HashMap<>();
 
+    /**
+     * Will create new {@link GameFolder} instance for the given game {@link PATH}.
+     *
+     * @param path of the folder
+     * @return created game folder instance
+     */
     public GameFolder folder(PATH path) {
         return folder(path.get());
     }
 
+    /**
+     * Will create new {@link GameFolder} instance for the given game path in this folder.
+     *
+     * @param path of the folder
+     * @return created game folder instance
+     */
     public GameFolder folder(Path path) {
         if (path.startsWith(this.path.get())) {
             path = this.path.get().relativize(path);
@@ -93,15 +105,12 @@ public class GameFolder {
         return currentFolder;
     }
 
-    private boolean isFileName(String elementName) {
-        return elementName.contains("."); //fishy :x
-    }
-
-    public Map<String, GameFolder> folders() {
-        return folderNames().stream()
-            .collect(Collectors.toMap(name -> name, this::folder));
-    }
-
+    /**
+     * Will create new {@link GameFolder} instance for the given folder name in this folder.
+     *
+     * @param name of the folder
+     * @return created game folder instance
+     */
     public GameFolder folder(String name) {
         if (folders.containsKey(name)) {
             return folders.get(name);
@@ -113,11 +122,22 @@ public class GameFolder {
         return gameFolder;
     }
 
-    private void store(String name, GameFolder gameFolder) {
-        log.debug("Storing game folder for %s", path.get());
-        folders.put(name, gameFolder);
+    /**
+     * Gives a map with all folder names and their corresponding {@link GameFolder} in this folder.
+     *
+     * @return map with folder names and the game folder in this folder
+     */
+    public Map<String, GameFolder> folders() {
+        return folderNames().stream()
+            .collect(Collectors.toMap(name -> name, this::folder));
     }
 
+    /**
+     * Will try to read the content of a file with the given title as {@link JsonObject}
+     *
+     * @param title of the file to read
+     * @return read json if present and parsable
+     */
     public Optional<JsonObject> json(String title) {
         if (!path.exists(title)) {
             return Optional.empty();
@@ -126,6 +146,22 @@ public class GameFolder {
         return json(path.get(title));
     }
 
+    /**
+     * Will try to read the content of a file with the given path as {@link JsonObject}
+     *
+     * @param filePath to read
+     * @return read json if present and parsable
+     */
+    public Optional<JsonObject> json(@Nullable Path filePath) {
+        return gameJsonService.get(filePath);
+    }
+
+    /**
+     * Will create new {@link GameFolder} instance for the given game {@link PATH}.
+     *
+     * @param path of the folder
+     * @return created game folder instance
+     */
     public static GameFolder of(PATH path) {
         GameFolder gameFolder = gameFolderStore.get(path);
 
@@ -139,8 +175,13 @@ public class GameFolder {
         return gameFolder;
     }
 
-    private Optional<JsonObject> json(@Nullable Path filePath) {
-        return gameJsonService.get(filePath);
+    private void store(String name, GameFolder gameFolder) {
+        log.debug("Storing game folder for %s", path.get());
+        folders.put(name, gameFolder);
+    }
+
+    private boolean isFileName(String elementName) {
+        return elementName.contains("."); //fishy :x
     }
 
     private static List<Path> readFilePaths(PATH gamePath) {

@@ -6,7 +6,13 @@ import init.paths.PATHS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents the game "sprite/resource" folder structure.
+ */
 public class SpriteResource extends AbstractGameData {
+    /**
+     * Creates a new "sprite/resource" folder structure instance
+     */
     public SpriteResource() {
         super(PATHS.SPRITE().getFolder("resource"));
     }

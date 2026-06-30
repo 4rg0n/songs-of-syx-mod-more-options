@@ -191,6 +191,12 @@ public class GameAssets {
     @Getter(lazy = true)
     private final static List<String> terrains = List.of("OCEAN", "WET", "MOUNTAIN", "FOREST", "NONE");
 
+    /**
+     * Will try to get a {@link GameFolder} instance from already present game folders or create a new one
+     *
+     * @param path of the folder
+     * @return already present game folder instance or a new one
+     */
     public static GameFolder get(PATH path) {
         if (path.get().startsWith(init().getFolder().path().get())) {
             // init?

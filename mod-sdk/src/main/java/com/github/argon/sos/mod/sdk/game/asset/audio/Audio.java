@@ -6,7 +6,13 @@ import init.paths.PATHS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents the game "audio" folder structure.
+ */
 public class Audio extends AbstractGameData {
+    /**
+     * Creates a new "audio" folder structure instance
+     */
     public Audio() {
         super(PATHS.AUDIO().config);
     }
