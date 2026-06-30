@@ -49,15 +49,15 @@ public class MetricCollector {
 
         for (int i = 0; i < STATS.all().size(); i++) {
             STAT stat = STATS.all().get(i);
-            stats.putAll(statsExtractor.getRaceStats(stat));
-            stats.putAll(statsExtractor.getStat(stat));
+            stats.putAll(statsExtractor.extractRaceStats(stat));
+            stats.putAll(statsExtractor.extractStat(stat));
         }
 
         // Population
-        stats.putAll(statsExtractor.getStat(STATS.POP().key, STATS.POP().POP));
+        stats.putAll(statsExtractor.extractStat(STATS.POP().key, STATS.POP().POP));
         // Religion
-        stats.putAll(statsExtractor.getReligionStats(STATS.RELIGION().ALL));
-        stats.putAll(statsExtractor.getReligionRaceStats(STATS.RELIGION().ALL));
+        stats.putAll(statsExtractor.extractReligionStats(STATS.RELIGION().ALL));
+        stats.putAll(statsExtractor.extractReligionRaceStats(STATS.RELIGION().ALL));
 
         for (int i = 0; i < GAME.count().ALL.size(); i++) {
             GCOUNTS.SAccumilator accumulator = GAME.count().ALL.get(i);
