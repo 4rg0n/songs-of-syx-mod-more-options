@@ -1,7 +1,7 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import init.sprite.SPRITES;
@@ -33,7 +33,7 @@ public class UiShowroom extends GuiSection {
         List<GuiSection> iconsSmall = ReflectionUtil.<Icons.S.IconS>getDeclaredFieldValuesMap(Icons.S.IconS.class, SPRITES.icons().s)
             .entrySet().stream()
             .map(entry -> {
-                GuiSection section = UiUtil.toGuiSection(entry.getValue());
+                GuiSection section = UiMapper.toGuiSection(entry.getValue());
                 section.hoverInfoSet("SPRITES.icons().s." + entry.getKey().getName());
                 return section;
             }).toList();
@@ -43,7 +43,7 @@ public class UiShowroom extends GuiSection {
         List<GuiSection> iconsMedium = ReflectionUtil.<Icon>getDeclaredFieldValuesMap(Icon.class, SPRITES.icons().m)
             .entrySet().stream()
             .map(entry -> {
-                GuiSection section = UiUtil.toGuiSection(entry.getValue());
+                GuiSection section = UiMapper.toGuiSection(entry.getValue());
                 section.hoverInfoSet("SPRITES.icons().m." + entry.getKey().getName());
                 return section;
             }).toList();
@@ -53,7 +53,7 @@ public class UiShowroom extends GuiSection {
         List<GuiSection> iconsLarge = ReflectionUtil.<Icon>getDeclaredFieldValuesMap(Icon.class, SPRITES.icons().l)
             .entrySet().stream()
             .map(entry -> {
-                GuiSection section = UiUtil.toGuiSection(entry.getValue());
+                GuiSection section = UiMapper.toGuiSection(entry.getValue());
                 section.hoverInfoSet("SPRITES.icons().l." + entry.getKey().getName());
                 return section;
             }).toList();

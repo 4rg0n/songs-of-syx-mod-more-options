@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.tab.races;
 
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.*;
@@ -51,14 +52,14 @@ public class RacesSelectionPanel extends GuiSection {
 
             // race config file name
             String fileName = entry.getConfigPath().getFileName().toString();
-            GuiSection configPathGui = UiUtil.toGuiSection(new GText(UI.FONT().S, fileName)
+            GuiSection configPathGui = UiMapper.toGuiSection(new GText(UI.FONT().S, fileName)
                 .setMaxWidth(300));
             configPathGui.hoverInfoSet(fileName);
             configPathGui.pad(5);
 
             // game save name
             String saveFileName = (saveFile != null) ? saveFile.name : "";
-            GuiSection saveFileGui = UiUtil.toGuiSection(new GText(UI.FONT().S, saveFileName)
+            GuiSection saveFileGui = UiMapper.toGuiSection(new GText(UI.FONT().S, saveFileName)
                 .setMaxWidth(300)
                 .lablifySub());
             saveFileGui.hoverInfoSet(saveFileName);
@@ -66,22 +67,22 @@ public class RacesSelectionPanel extends GuiSection {
 
             // race config creation date
             String creationDate = LocalDateTime.ofInstant(entry.getCreationDate(), ZoneOffset.UTC).format(UiConfig.TIME_FORMAT);
-            GuiSection creationDateGui = UiUtil.toGuiSection(new GText(UI.FONT().S, creationDate));
+            GuiSection creationDateGui = UiMapper.toGuiSection(new GText(UI.FONT().S, creationDate));
             creationDateGui.pad(5);
 
             // race config update date
             String updateDate = LocalDateTime.ofInstant(entry.getCreationDate(), ZoneOffset.UTC).format(UiConfig.TIME_FORMAT);
-            GuiSection updateDateGui = UiUtil.toGuiSection(new GText(UI.FONT().S, updateDate).lablifySub());
+            GuiSection updateDateGui = UiMapper.toGuiSection(new GText(UI.FONT().S, updateDate).lablifySub());
             creationDateGui.pad(5);
 
             // row is currently loaded race config? mark it!
             Icon activeMarkerIcon = SPRITES.icons().m.flag;
             GuiSection activeMarker;
             if (currentConfig != null && currentConfig.getConfigPath().equals(entry.getConfigPath())) {
-                activeMarker = UiUtil.toGuiSection(activeMarkerIcon);
+                activeMarker = UiMapper.toGuiSection(activeMarkerIcon);
                 activeMarker.hoverInfoSet(i18n.t("RacesSelectionPanel.marker.active.desc"));
             } else {
-                activeMarker = UiUtil.toGuiSection(new Spacer(
+                activeMarker = UiMapper.toGuiSection(new Spacer(
                     activeMarkerIcon.width(),
                     activeMarkerIcon.height()));
             }

@@ -27,6 +27,12 @@ public class Wildcard {
         this.wildcardValues = buildWildcardValues(originalValues);
     }
 
+    /**
+     * Returns a list of matches from given texts to match.
+     *
+     * @param texts to match
+     * @return matched texts
+     */
     public List<String> matches(@Nullable List<String> texts) {
         if (texts == null) {
             return List.of();
@@ -67,6 +73,26 @@ public class Wildcard {
         }
     }
 
+    /**
+     * Creates a new {@link Wildcard} instance from given texts.
+     *
+     * @param texts to create wildcard with
+     * @return created wildcard
+     */
+    public static Wildcard of(List<String> texts) {
+        return new Wildcard(texts);
+    }
+
+    /**
+     * Creates a new {@link Wildcard} instance from a given text.
+     *
+     * @param text to create wildcard with
+     * @return created wildcard
+     */
+    public static Wildcard of(String text) {
+        return new Wildcard(List.of(text));
+    }
+
     private static List<String> buildWildcardValues(List<String> values) {
         return values.stream()
             .flatMap(value -> buildWildcardValues(value).stream())
@@ -104,13 +130,5 @@ public class Wildcard {
         }
 
         return values;
-    }
-
-    public static Wildcard of(List<String> values) {
-        return new Wildcard(values);
-    }
-
-    public static Wildcard of(String value) {
-        return new Wildcard(List.of(value));
     }
 }

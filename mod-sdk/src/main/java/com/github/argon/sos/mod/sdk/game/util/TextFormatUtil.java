@@ -1,40 +1,52 @@
 package com.github.argon.sos.mod.sdk.game.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import snake2d.util.color.ColorImp;
 import util.colors.GCOLOR;
 import util.gui.misc.GText;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+/**
+ * Utility class for transforming and formatting game texts
+ */
+@UtilityClass
 public class TextFormatUtil {
 
-    public static GText percentage(GText text, double f) {
-        return percentage(text, f, 0);
+    /**
+     * Will format a text with a % sign and a - sign if negative
+     *
+     * @param text to add the formatted text to
+     * @param value percentage value
+     * @return text displayed as positive or negative percent
+     */
+    public static GText percentage(GText text, double value) {
+        return percentage(text, value, 0);
     }
 
     /**
+     * Will format a text with a % sign and a - sign if negative
+     * @param text to add the formatted text to
+     * @param value percentage value
      * @return text displayed as positive or negative percent
      */
-    public static GText percentage(GText text, double f, int decimals) {
-        if (!Double.isFinite(f)) {
+    public static GText percentage(GText text, double value, int decimals) {
+        if (!Double.isFinite(value)) {
             text.add('-').add('-').add('-');
             text.color(GCOLOR.T().INACTIVE);
             return text;
         }
 
-        f*= 100;
+        value*= 100;
 
-        if (f < 0) {
+        if (value < 0) {
             text.color(GCOLOR.T().IBAD);
             text.add('-');
-            f = -f;
-        }else if (f > 0) {
-            text.color(ColorImp.TMP.interpolate(GCOLOR.T().IBAD, GCOLOR.T().IGOOD, f > 1 ? 1 : f));
+            value = -value;
+        }else if (value > 0) {
+            text.color(ColorImp.TMP.interpolate(GCOLOR.T().IBAD, GCOLOR.T().IGOOD, value > 1 ? 1 : value));
         }else {
             text.color(GCOLOR.T().INACTIVE);
         }
-        text.add(f, decimals, true);
+        text.add(value, decimals, true);
         text.add('%');
 
         return text;

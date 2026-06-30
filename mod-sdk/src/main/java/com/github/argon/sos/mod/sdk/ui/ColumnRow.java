@@ -1,6 +1,7 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.*;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.util.ClassUtil;
 import lombok.Builder;
@@ -329,7 +330,7 @@ public class ColumnRow<Value> extends Section implements
         }
 
         public ColumnRowBuilder<Value> column(RENDEROBJ column) {
-            columns.add(UiUtil.toGuiSection(column));
+            columns.add(UiMapper.toGuiSection(column));
             return this;
         }
     }

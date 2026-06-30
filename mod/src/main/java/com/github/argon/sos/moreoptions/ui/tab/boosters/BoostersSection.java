@@ -2,7 +2,6 @@ package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.util.Maps;
@@ -100,7 +99,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             .build();
 
         // Icon
-        GuiSection icon = UiUtil.toGuiSection(new RENDEROBJ.Sprite(boostable.icon));
+        GuiSection icon = com.github.argon.sos.mod.sdk.game.util.UiMapper.toGuiSection(new RENDEROBJ.Sprite(boostable.icon));
         icon.pad(5);
 
 

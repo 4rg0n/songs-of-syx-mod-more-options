@@ -2,6 +2,7 @@ package menu.ui;
 
 import com.github.argon.sos.mod.sdk.data.DoubleValue;
 import com.github.argon.sos.mod.sdk.data.IntegerValue;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.game.util.Wildcard;
 import com.github.argon.sos.mod.sdk.json.JsonMapper;
@@ -59,7 +60,7 @@ public class UiFactory {
 
     public static Section header(String text, Font font) {
         GHeader gHeader = new GHeader(text, font);
-        Section section = UiUtil.toSection(gHeader);
+        Section section = UiMapper.toSection(gHeader);
         section.pad(0, 5);
 
         return section;

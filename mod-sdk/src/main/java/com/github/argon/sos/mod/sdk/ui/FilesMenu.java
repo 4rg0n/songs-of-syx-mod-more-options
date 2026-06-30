@@ -3,7 +3,7 @@ package com.github.argon.sos.mod.sdk.ui;
 import com.github.argon.sos.mod.sdk.data.TreeNode;
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.asset.GameFolder;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Builder;
@@ -262,9 +262,9 @@ public class FilesMenu extends Section {
         // set folder or file icon
         ColorBox colorBox;
         if (!fileNode.isFolder()) {
-            colorBox = ColorBox.of(UiUtil.toRender(SPRITES.icons().m.minus), buttonHeight, bgColor);
+            colorBox = ColorBox.of(UiMapper.toRender(SPRITES.icons().m.minus), buttonHeight, bgColor);
         } else {
-            colorBox = ColorBox.of(UiUtil.toRender(SPRITES.icons().m.menu2), buttonHeight, bgColor);
+            colorBox = ColorBox.of(UiMapper.toRender(SPRITES.icons().m.menu2), buttonHeight, bgColor);
         }
 
         row.addRightC(0, colorBox);

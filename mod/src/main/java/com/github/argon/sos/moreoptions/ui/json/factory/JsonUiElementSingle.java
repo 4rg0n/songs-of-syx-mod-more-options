@@ -2,6 +2,7 @@ package com.github.argon.sos.moreoptions.ui.json.factory;
 
 import com.github.argon.sos.mod.sdk.data.CacheValue;
 import com.github.argon.sos.mod.sdk.game.action.BiAction;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.json.JsonPath;
@@ -203,7 +204,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
 
             // orphan icon
             if (orphan) {
-                GuiSection optionalIcon = UiUtil.toGuiSection(SPRITES.icons().m.cancel)
+                GuiSection optionalIcon = UiMapper.toGuiSection(SPRITES.icons().m.cancel)
                     .hoverInfoSet("Not present in vanilla game config.");
                 columnRowBuilder.column(optionalIcon);
             } else {
@@ -211,7 +212,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
             }
 
             // dirty icon
-            Section dirtyIcon = UiUtil.toSection(SPRITES.icons().m.flag);
+            Section dirtyIcon = UiMapper.toSection(SPRITES.icons().m.flag);
             dirtyIcon.hoverInfoSet("Setting changed.");
 
             // only show when value has changed

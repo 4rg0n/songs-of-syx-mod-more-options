@@ -1,6 +1,7 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.*;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import init.sprite.UI.UI;
 import lombok.Builder;
@@ -319,7 +320,7 @@ public class Table<Value> extends ColorBox implements
 
         public TableBuilder<Value> category(String title, List<ColumnRow<Value>> rows) {
             GHeader header = new GHeader(title, UI.FONT().H2);
-            GuiSection headerSection = UiUtil.toGuiSection(header);
+            GuiSection headerSection = UiMapper.toGuiSection(header);
             headerSection.pad(10);
             ColumnRow<Value> headerRow = ColumnRow.<Value>builder()
                 .columns(List.of(headerSection))

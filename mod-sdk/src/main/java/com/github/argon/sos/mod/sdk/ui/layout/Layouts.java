@@ -62,7 +62,7 @@ public class Layouts {
             section = new GuiSection();
         }
 
-        Integer maxWidths = UiUtil.getMaxWidths(elements, margin);
+        Integer maxWidths = UiUtil.getMaxWidth(elements, margin);
         if (maxWidths > maxWidth) {
             Layouts.flow(elements, section,  null, maxWidth, maxHeight, margin);
         } else {

@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui.json.tab;
 
 import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
 import com.github.argon.sos.mod.sdk.game.asset.GameFolder;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.ui.*;
 import init.paths.PATH;
 import init.sprite.SPRITES;
@@ -68,7 +68,7 @@ public class FilesTab<Tab extends AbstractTab> extends AbstractTab {
 
                 Tab tab = tabMap.get(fileNode.getPath().get());
 
-                Section section = UiUtil.toSection(SPRITES.icons().m.flag);
+                Section section = UiMapper.toSection(SPRITES.icons().m.flag);
                 section.hoverInfoSet("Settings changed.");
                 // only show when values has changed
                 section.renderAction(ds -> {

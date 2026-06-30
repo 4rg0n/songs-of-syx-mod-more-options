@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.tab.races;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.*;
 import com.github.argon.sos.mod.sdk.ui.layout.Layout;
@@ -66,9 +66,9 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
                     Range range = entry.getRange();
 
                     // Race icons
-                    GuiSection raceIcon = UiUtil.toGuiSection(race.appearance().icon);
+                    GuiSection raceIcon = UiMapper.toGuiSection(race.appearance().icon);
                     raceIcon.hoverInfoSet(race.info.name);
-                    GuiSection otherRaceIcon = UiUtil.toGuiSection(otherRace.appearance().icon);
+                    GuiSection otherRaceIcon = UiMapper.toGuiSection(otherRace.appearance().icon);
                     otherRaceIcon.hoverInfoSet(otherRace.info.name);
 
                     // Likings Slider
