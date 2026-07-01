@@ -3,7 +3,6 @@ package com.github.argon.sos.moreoptions.ui.json.factory;
 import com.github.argon.sos.mod.sdk.data.CacheValue;
 import com.github.argon.sos.mod.sdk.game.action.BiAction;
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.json.JsonPath;
 import com.github.argon.sos.mod.sdk.json.element.JsonDouble;
@@ -104,7 +103,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
         this.valueSupplier = (valueSupplier != null) ? valueSupplier : o -> null;
         this.valueConsumer = (valueConsumer != null) ? valueConsumer : (o1, o2) -> {};
         this.valueChangeAction = (valueChangeAction != null) ? valueChangeAction : (o1, o2) -> {};
-        this.jsonPathObject = (jsonPath != null) ? JsonPath.get(jsonPath) : null;
+        this.jsonPathObject = (jsonPath != null) ? JsonPath.of(jsonPath) : null;
         this.valueCache = CacheValue.of(500, () -> {
             Value current = this.valueSupplier.apply(this);
             if (lastSeenValue != null && current != null && !lastSeenValue.equals(current)) {
@@ -151,7 +150,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
             return Optional.empty();
         }
 
-        return jsonPathObject.get(config);
+        return jsonPathObject.of(config);
     }
 
     public Optional<JsonElement> getConfigValue() {
@@ -261,8 +260,8 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
         Function<Value, Element> elementProvider
     ) {
         JsonUiElementSingleBuilder<Value, Element> builder = JsonUiElementSingle.builder();
-        JsonPath jsonPathO = JsonPath.get(jsonPath);
-        Value value = jsonPathO.get(config)
+        JsonPath jsonPathO = JsonPath.of(jsonPath);
+        Value value = jsonPathO.of(config)
             .map(element -> normalizeValue(element, valueClass))
             .filter(valueClass::isInstance)
             .map(valueClass::cast)

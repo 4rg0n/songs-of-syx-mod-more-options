@@ -80,11 +80,11 @@ public class JsonObject implements JsonElement {
     }
 
     public <T extends JsonElement> Optional<T> extract(String jsonPath, Class<T> clazz) {
-        return JsonPath.get(jsonPath).get(this, clazz);
+        return JsonPath.of(jsonPath).of(this, clazz);
     }
 
     public <T extends JsonElement> Optional<T> extract(JsonPath jsonPath, Class<T> clazz) {
-        return jsonPath.get(this, clazz);
+        return jsonPath.of(this, clazz);
     }
 
     @Override

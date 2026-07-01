@@ -47,10 +47,22 @@ public class Json {
     @Getter
     private final JsonWriter writer;
 
+    /**
+     * Creates a new {@link Json} instance with given {@link JsonElement} as content.
+     * Will use {@link JsonWriters#gameJsonUnquotedPretty()} as writer.
+     *
+     * @param root to use as content
+     */
     public Json(JsonElement root) {
         this(root, JsonWriters.gameJsonUnquotedPretty());
     }
 
+    /**
+     * Creates a new {@link Json} instance with given {@link JsonElement} as content.
+     *
+     * @param root to use as content
+     * @param writer used for writing content as string
+     */
     public Json(JsonElement root, JsonWriter writer) {
         if (!(root instanceof JsonObject)) {
             throw new IllegalArgumentException("Given element must be of type " + JsonObject.class.getName());
@@ -61,20 +73,44 @@ public class Json {
         this.rawJson = "";
     }
 
+    /**
+     * Creates a new {@link Json} instance with given {@link JsonObject} as content.
+     * Will use {@link JsonWriters#gameJsonUnquotedPretty()} as writer.
+     *
+     * @param root to use as content
+     */
     public Json(JsonObject root) {
         this(root, JsonWriters.gameJsonUnquotedPretty());
     }
 
+    /**
+     * Creates a new {@link Json} instance with given {@link JsonElement} as content.
+     *
+     * @param root to use as content
+     * @param writer used for writing content as string
+     */
     public Json(JsonObject root, JsonWriter writer) {
         this.root = root;
         this.writer = writer;
         this.rawJson = "";
     }
 
+    /**
+     * Creates a new {@link Json} instance with given raw json parsed as content.
+     * Will use {@link JsonWriters#gameJsonUnquotedPretty()} as writer.
+     *
+     * @param rawJson to use as content
+     */
     public Json(String rawJson) {
         this(rawJson, JsonWriters.gameJsonUnquotedPretty());
     }
 
+    /**
+     * Creates a new {@link Json} instance with given raw json parsed as content.
+     *
+     * @param rawJson to use as content
+     * @param writer used for writing content as string
+     */
     public Json(String rawJson, JsonWriter writer) {
         this.rawJson = JsonUtil.normalizeGameJson(rawJson.trim());
         this.writer = writer;
@@ -109,6 +145,12 @@ public class Json {
         }
     }
 
+    /**
+     * Returns the string until a stop character is reached.
+     * See {@link Json#isEndOfValue(char)}
+     *
+     * @return the next value
+     */
     public String getNextValue() {
         return getNextValue(false);
     }
@@ -118,6 +160,7 @@ public class Json {
      * See {@link Json#isEndOfValue(char)}
      *
      * @param checkWhitespace whether whitespaces shall be included or not
+     * @return the next value
      */
     public String getNextValue(boolean checkWhitespace) {
         StringBuilder sb = new StringBuilder();
@@ -135,6 +178,7 @@ public class Json {
      * Returns the string until the given character is reached.
      *
      * @param stopChar marking the end
+     * @return the next value
      */
     public String getNextValue(char stopChar) {
         StringBuilder sb = new StringBuilder();
@@ -149,10 +193,21 @@ public class Json {
     }
 
     /**
+     * Checks whether end of content is reached.
+     *
      * @return whether the end of the json string is reached
      */
     public boolean atEnd(){
         return getIndex() >= rawJson.length() - 1;
+    }
+
+    /**
+     * Dependent on set {@link JsonWriter}, will transform the {@link JsonElement}s to a human-readable string.
+     *
+     * @return objects as readable json string
+     */
+    public String write() {
+        return writer.write(this.getRoot());
     }
 
     private boolean isEndOfValue(char c) {
@@ -166,14 +221,5 @@ public class Json {
             || c=='\f'
             || c=='\r'
         );
-    }
-
-    /**
-     * Dependent on set {@link JsonWriter}, will transform the {@link JsonElement}s to a human-readable string.
-     *
-     * @return objects as readable json string
-     */
-    public String write() {
-        return writer.write(this.getRoot());
     }
 }

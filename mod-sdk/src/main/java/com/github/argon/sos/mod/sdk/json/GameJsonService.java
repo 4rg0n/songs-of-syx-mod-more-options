@@ -19,15 +19,16 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class GameJsonService {
     private final static Logger log = Loggers.getLogger(GameJsonService.class);
-
     private final GameJsonStore gameJsonStore;
 
     /**
-     * @param filePath game path of the json config to read
+     * Reads and parses all game config files in a given folder.
+     *
+     * @param folderPath game folder path of the json configs to read
      * @return parsed {@link JsonObject} when file was readable
      */
-    public List<JsonObject> get(PATH filePath) {
-        try (Stream<Path> stream = Files.list(filePath.get())) {
+    public List<JsonObject> get(PATH folderPath) {
+        try (Stream<Path> stream = Files.list(folderPath.get())) {
             return stream
                 .filter(file -> !Files.isDirectory(file))
                 .filter(path1 -> path1.toString().endsWith(".txt"))
@@ -40,6 +41,8 @@ public class GameJsonService {
     }
 
     /**
+     * Reads and parses a config file.
+     *
      * @param filePath of the json config to read
      * @return parsed {@link JsonObject} when file was readable
      */

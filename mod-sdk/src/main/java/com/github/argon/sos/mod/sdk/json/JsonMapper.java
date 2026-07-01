@@ -16,6 +16,19 @@ public class JsonMapper {
     private final static Mappers mappers = Mappers.getDefault();
     private final static JsonEMappers JSON_E_MAPPERS = JsonEMappers.getDefault();
 
+    /**
+     * Maps the content of a {@link Json} to a given class containing data from the json.
+     * The class has to have setter methods.
+     *
+     * <pre>{@code
+     *     MyPojo pojo = JsonMapper.mapJson(json, MyPojo.class);
+     * }</pre>
+     *
+     * @param json to map
+     * @param clazz of the mapped result
+     * @return instance of the desired class with inserted values from json
+     * @param <T> type of the mapped result
+     */
     public static <T> T mapJson(Json json, Class<T> clazz) {
         return mapJson(json.getRoot(), TypeInfo.get(clazz));
     }

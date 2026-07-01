@@ -497,7 +497,7 @@ public class JsonConfigStore {
         }
 
         log.debug("Reading config from %s into %s", savePath, configClass.getSimpleName());
-        return jsonService.load(savePath, configClass);
+        return jsonService.read(savePath, configClass);
     }
 
     private <T> Optional<ConfigObject<T>> load(Class<T> configClass, ConfigDefinition configDefinition, boolean asBackup) {
@@ -509,7 +509,7 @@ public class JsonConfigStore {
         }
 
         try {
-            return jsonService.load(path, configClass).map(config -> ConfigObject.<T>builder()
+            return jsonService.read(path, configClass).map(config -> ConfigObject.<T>builder()
                 .config(config)
                 .path(path)
                 .build());
@@ -537,7 +537,7 @@ public class JsonConfigStore {
         }
 
         // store newly saved config
-        jsonService.save(savePath, config);
+        jsonService.write(savePath, config);
         store(config.getClass(), config, savePath);
         return savePath;
     }
