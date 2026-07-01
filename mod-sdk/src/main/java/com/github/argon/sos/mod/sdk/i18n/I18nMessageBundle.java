@@ -18,9 +18,16 @@ import java.util.ResourceBundle;
 public class I18nMessageBundle implements Phases {
 
     private final static Logger log = Loggers.getLogger(I18nMessageBundle.class);
+    /**
+     * Used as default bundle name.
+     * The bundle name is the name of the properties file located in the .jar file in src/main/resources.
+     * In this case, the files would be named:
+     * i18n.properties, i18n_fr.properties, i18n_ru.properties... and so on.
+     */
     public static final String BUNDLE_NAME_DEFAULT = "i18n";
-    public final String bundleName;
+    public final static Locale LOCALE_FALLBACK = GameLangApi.DEFAULT_LOCALE;
 
+    private final String bundleName;
     private final GameLangApi gameLangApi;
 
     @Getter
@@ -30,18 +37,32 @@ public class I18nMessageBundle implements Phases {
     @Nullable
     private ResourceBundle messages;
 
-    private final static Locale LOCALE_FALLBACK = GameLangApi.DEFAULT_LOCALE;
-
+    /**
+     * Creates a new {@link I18nMessageBundle} with {@link I18nMessageBundle#BUNDLE_NAME_DEFAULT} as bundle name.
+     *
+     * @param gameLangApi used for accessing the games language
+     */
     public I18nMessageBundle(GameLangApi gameLangApi) {
         this(BUNDLE_NAME_DEFAULT, gameLangApi);
     }
 
+    /**
+     * Creates a new {@link I18nMessageBundle} with given bundle name.
+     *
+     * @param bundleName prefix name for the translation property files
+     * @param gameLangApi used for accessing the games language
+     */
     public I18nMessageBundle(String bundleName, GameLangApi gameLangApi) {
         this.bundleName = bundleName;
         this.gameLangApi = gameLangApi;
     }
 
     /**
+     * Reads the translation message properties for the given {@link Locale}.
+     * If the {@link Locale} is null, the {@link I18nMessageBundle#LOCALE_FALLBACK} will be used.
+     * Also, if there's no message properties file for the given {@link Locale},
+     * the {@link I18nMessageBundle#LOCALE_FALLBACK} will also be used.
+     *
      * @param locale to load messages from
      * @return messages with given local or default english
      */
@@ -55,7 +76,7 @@ public class I18nMessageBundle implements Phases {
         try {
             return ResourceBundle.getBundle(bundleName, locale);
         } catch (MissingResourceException e) {
-            log.debug("No translation messages for locale %s found. Using fallback %s", locale, LOCALE_FALLBACK);
+            log.warn("No translation messages for locale %s found. Using fallback %s", locale, LOCALE_FALLBACK);
             return ResourceBundle.getBundle(bundleName, LOCALE_FALLBACK);
         }
     }
@@ -68,6 +89,9 @@ public class I18nMessageBundle implements Phases {
         this.messages = load(locale);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initBeforeGameCreated() {
         loadWithCurrentGameLocale();
