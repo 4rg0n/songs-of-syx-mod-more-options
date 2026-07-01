@@ -1,11 +1,19 @@
 package com.github.argon.sos.mod.sdk.data.domain;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Utility methods for data related stuff
+ */
+@UtilityClass
 public class DataUtil {
 
     /**
+     * Extracts range values from a given range map
+     *
      * @return values from ranges
      */
     public static Map<String, Integer> extractValues(Map<String, Range> rangeMap) {

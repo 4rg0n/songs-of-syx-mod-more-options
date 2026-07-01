@@ -528,12 +528,12 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
             int slideCursorPos;
 
             if (inputValue.getMin() >= 0) {
-                slideCursorPos = (int) (body.x1()+ barFullWidth * inputValue.getValueD());
+                slideCursorPos = (int) (body.x1()+ barFullWidth * inputValue.getValueDistance());
                 renderWithPositiveValues(r);
             } else {
                 renderWithNegativeValues(r);
                 int barWidth = body().width() / 2;
-                int barColoredLength = (int) (inputValue.getValueD() * barWidth);
+                int barColoredLength = (int) (inputValue.getValueDistance() * barWidth);
 
                 if (inputValue.getValue() < 0) {
                     slideCursorPos = body().x1() + barWidth - barColoredLength;
@@ -558,7 +558,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
         private void renderWithPositiveValues(SPRITE_RENDERER r) {
             int barFullWidth = body().width();
-            int barColoredLength = (int) (inputValue.getValueD() * barFullWidth);
+            int barColoredLength = (int) (inputValue.getValueDistance() * barFullWidth);
             int barColoredEndPos = body().x1() + barColoredLength;
             int barColoredStartPos = body().x1();
             int barColoredWidth = barColoredEndPos - barColoredStartPos;
@@ -569,7 +569,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
         private void renderWithNegativeValues(SPRITE_RENDERER r) {
             int barWidth = body().width() / 2;
-            int barColoredLength = (int) (inputValue.getValueD() * barWidth);
+            int barColoredLength = (int) (inputValue.getValueDistance() * barWidth);
 
             if (inputValue.getValue() < 0) {
                 barColoredLength = - barColoredLength;
