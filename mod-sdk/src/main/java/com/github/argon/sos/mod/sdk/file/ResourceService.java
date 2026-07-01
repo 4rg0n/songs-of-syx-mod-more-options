@@ -8,15 +8,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
 /**
  * For reading files from the class path a.k.a. "src/main/resources" folder a.k.a. from inside a *.jar file.
  *
  * All files in the "resource" folder will be packaged into the built *.jar file.
- * This is where all the compiled "byte code" of your Java classes lives for example.
- * These files are than called "Resources" and can be accessed through this service.
+ * This is where all the compiled "byte code" of your Java classes lives, for example.
+ * These files are then called "Resources" and can be accessed through this service.
  *
  * This service can not write into or delete resource files from inside a *.jar file.
  */
@@ -24,49 +23,46 @@ public class ResourceService extends AbstractFileService {
 
     private final static Logger log = Loggers.getLogger(ResourceService.class);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
+    @Nullable
     public String read(Path path) throws IOException {
-        return read(path.toString()).orElse(null);
+        return read(path.toString());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> readLines(Path path) throws IOException {
         return readLines(path.toString());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void write(Path path, String content) throws IOException {
-        throw new UnsupportedOperationException("Can not write into resources");
+        throw new UnsupportedOperationException("Can not write into resources within a *.jar file");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean delete(Path path) throws IOException {
-        throw new UnsupportedOperationException("Can not delete resources");
+        throw new UnsupportedOperationException("Can not delete resources within a *.jar file");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Nullable
     public Properties readProperties(Path filePath) throws IOException {
         return readProperties(filePath.toString());
-    }
-
-    /**
-     * For reading content from a resource file
-     *
-     * @return the content of the resource file as string if file is present
-     */
-    public Optional<String> read(String filePath) throws IOException {
-        log.debug("Reading from resource file %s", filePath);
-        try (InputStream inputStream = getResourceInputStream(filePath)) {
-            if (inputStream == null) {
-                return Optional.empty();
-            }
-
-            return Optional.of(readFromInputStream(inputStream));
-        } catch (Exception e) {
-            log.error("Could not read resource from path %s", filePath);
-            throw e;
-        }
     }
 
     /**
@@ -75,7 +71,7 @@ public class ResourceService extends AbstractFileService {
      * @return the lines of the file as list of strings
      * @throws IOException when file is inaccessible
      */
-    public List<String> readLines(String filePath) throws IOException {
+    private List<String> readLines(String filePath) throws IOException {
         log.debug("Reading from resource file %s", filePath);
         ClassLoader classLoader = getClass().getClassLoader();
         try (InputStream inputStream = classLoader.getResourceAsStream(filePath)) {
@@ -93,11 +89,12 @@ public class ResourceService extends AbstractFileService {
     /**
      * For reading *.properties files.
      *
+     * @param filePath of the properties file to read
      * @return {@link Properties} read and parsed from a file path
      * @throws IOException when property file can not be accessed
      */
     @Nullable
-    public Properties readProperties(String filePath) throws IOException {
+    private Properties readProperties(String filePath) throws IOException {
         log.debug("Reading from resource properties file %s", filePath);
 
         Properties properties = new Properties();
@@ -125,5 +122,26 @@ public class ResourceService extends AbstractFileService {
     private InputStream getResourceInputStream(String filePath) {
         ClassLoader classLoader = getClass().getClassLoader();
         return classLoader.getResourceAsStream(filePath);
+    }
+
+    /**
+     * For reading content from a resource file
+     *
+     * @param filePath of the file to read
+     * @return the content of the resource file as string if file is present
+     */
+    @Nullable
+    private String read(String filePath) throws IOException {
+        log.debug("Reading from resource file %s", filePath);
+        try (InputStream inputStream = getResourceInputStream(filePath)) {
+            if (inputStream == null) {
+                return null;
+            }
+
+            return readFromInputStream(inputStream);
+        } catch (Exception e) {
+            log.error("Could not read resource from path %s", filePath);
+            throw e;
+        }
     }
 }

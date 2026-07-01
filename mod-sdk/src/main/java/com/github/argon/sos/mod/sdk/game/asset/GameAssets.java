@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -214,7 +215,7 @@ public class GameAssets {
 
     private static List<String> readResourceLines(String path) {
         try {
-            return ModSdkModule.resourceService().readLines(path);
+            return ModSdkModule.resourceService().readLines(Paths.get(path));
         } catch (IOException e) {
             return List.of();
         }
