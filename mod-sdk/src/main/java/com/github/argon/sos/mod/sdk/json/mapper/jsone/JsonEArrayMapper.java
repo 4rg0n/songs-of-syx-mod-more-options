@@ -10,8 +10,20 @@ import snake2d.util.file.JsonE;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * For mapping standard JSON objects to the game JSON format.
+ * Maps arrays.
+ */
 public class JsonEArrayMapper implements JsonEMapper<JsonArray> {
 
+    /**
+     * Maps a {@link JsonArray} to the games {@link JsonE}.
+     *
+     * @param json game json to map into
+     * @param key of the json element
+     * @param jsonArray to map
+     * @return mapped game json object
+     */
     @Override
     public JsonE mapJsonE(JsonE json, String key, JsonArray jsonArray) {
         List<JsonElement> elements = jsonArray.getElements();
@@ -21,7 +33,7 @@ public class JsonEArrayMapper implements JsonEMapper<JsonArray> {
             return json;
         }
 
-        JsonElement jsonElement = elements.get(0);
+        JsonElement jsonElement = elements.getFirst();
 
         if (jsonElement instanceof JsonLong) {
             List<Long> longList = elements.stream()
@@ -62,6 +74,9 @@ public class JsonEArrayMapper implements JsonEMapper<JsonArray> {
         return json;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean supports(Class<?> clazz) {
         return ClassUtil.instanceOf(clazz, JsonArray.class);
