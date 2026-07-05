@@ -12,7 +12,7 @@ public interface JsonEMapper<T extends JsonElement> {
     /**
      * Maps a standard {@link JsonElement} to the games {@link JsonE}.
      *
-     * @param json game json
+     * @param json game json to map into
      * @param key of the json element
      * @param jsonElement to map
      * @return mapped game json object
@@ -22,8 +22,8 @@ public interface JsonEMapper<T extends JsonElement> {
     /**
      * Checks whether this class supports the mapping of given class type.
      *
-     * @param clazz
-     * @return
+     * @param clazz to check
+     * @return whether the mapper supports mapping the given class
      */
     boolean supports(Class<?> clazz);
 }
