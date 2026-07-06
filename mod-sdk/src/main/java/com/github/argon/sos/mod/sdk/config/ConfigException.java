@@ -1,7 +1,7 @@
 package com.github.argon.sos.mod.sdk.config;
 
 /**
- * Exception thrown form within the config namespace.
+ * Exception thrown from within the "config" namespace.
  */
 public class ConfigException extends RuntimeException {
     /**

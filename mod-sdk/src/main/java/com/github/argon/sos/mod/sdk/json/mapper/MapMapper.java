@@ -4,25 +4,37 @@ import com.github.argon.sos.mod.sdk.json.JsonMapper;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.util.ClassCastUtil;
 import com.github.argon.sos.mod.sdk.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.TypeUtil;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.argon.sos.mod.sdk.util.TypeUtil.getRawType;
-import static com.github.argon.sos.mod.sdk.util.TypeUtil.isAssignableFrom;
-
+/**
+ * For mapping {@link JsonObject} to a java {@link Map} and visa versa.
+ */
 public class MapMapper implements Mapper<JsonObject> {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean supports(Class<?> clazz) {
         return ClassUtil.instanceOf(clazz, Map.class);
     }
 
+    /**
+     * Maps a {@link JsonObject} to an {@link Map} with {@link String} or {@link Enum} as key.
+     *
+     * @param json json to map
+     * @param typeInfo to map the json into
+     * @return mapped java object
+     * @throws JsonMapperException when given type can not be mapped.
+     */
     @Override
     public Object mapJson(JsonObject json, TypeInfo<?> typeInfo) {
         Type type = typeInfo.getType();
 
-        if (!isAssignableFrom(type, Map.class)) {
+        if (!TypeUtil.isAssignableFrom(type, Map.class)) {
             throw new JsonMapperException("Can not map " + JsonObject.class.getSimpleName() + " to type " + type.getTypeName());
         }
 
@@ -35,7 +47,7 @@ public class MapMapper implements Mapper<JsonObject> {
         Type valueType = genericTypes[1];
         TypeInfo<?> valueTypeInfo = TypeInfo.get(valueType);
 
-        if (isAssignableFrom(keyType, CharSequence.class)) {
+        if (TypeUtil.isAssignableFrom(keyType, CharSequence.class)) {
             // do string key mapping
             HashMap<String, Object> map = new HashMap<>();
             json.entries().forEach(tuple -> {
@@ -43,11 +55,11 @@ public class MapMapper implements Mapper<JsonObject> {
             });
 
             return map;
-        } else if (isAssignableFrom(keyType, Enum.class)) {
+        } else if (TypeUtil.isAssignableFrom(keyType, Enum.class)) {
             // do enum key mapping
             HashMap<Enum<?>, Object> map = new HashMap<>();
             json.entries().forEach(tuple -> {
-                Enum<?> keyEnum = ClassCastUtil.toEnum(tuple.getKey(), getRawType(keyType));
+                Enum<?> keyEnum = ClassCastUtil.toEnum(tuple.getKey(), TypeUtil.getRawType(keyType));
                 map.put(keyEnum, JsonMapper.mapJson(tuple.getValue(), valueTypeInfo));
             });
 
@@ -58,11 +70,19 @@ public class MapMapper implements Mapper<JsonObject> {
 
     }
 
+    /**
+     * Maps a {@link Map} with a {@link String} ot {@link Enum} as key to a {@link JsonObject}.
+     *
+     * @param object to map
+     * @param typeInfo information about the type of the given object
+     * @return mapped object json element
+     * @throws JsonMapperException when given type can not be mapped.
+     */
     @Override
     public JsonObject mapObject(Object object, TypeInfo<?> typeInfo) {
         Type type = typeInfo.getType();
 
-        if (!isAssignableFrom(type, Map.class)) {
+        if (!TypeUtil.isAssignableFrom(type, Map.class)) {
             throw new JsonMapperException("Can not map" + type.getTypeName() + " to " + JsonObject.class.getSimpleName());
         }
 

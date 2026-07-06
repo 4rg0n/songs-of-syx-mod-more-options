@@ -5,9 +5,9 @@ import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 /**
  * Common class for mapping objects into {@link JsonElement}
  *
- * @param <T> mapping result
+ * @param <JSON> mapping result
  */
-public interface Mapper<T extends JsonElement> {
+public interface Mapper<JSON extends JsonElement> {
     /**
      * Checks whether this class supports the mapping of given class type.
      *
@@ -19,10 +19,10 @@ public interface Mapper<T extends JsonElement> {
      * Maps a standard {@link JsonElement} to Java types.
      *
      * @param json json to map
-     * @param typeInfo for mapping the
-     * @return mapped java type
+     * @param typeInfo to map the json into
+     * @return mapped java object
      */
-    Object mapJson(T json, TypeInfo<?> typeInfo);
+    Object mapJson(JSON json, TypeInfo<?> typeInfo);
 
     /**
      * Maps a Java type to a {@link JsonElement}
@@ -31,5 +31,5 @@ public interface Mapper<T extends JsonElement> {
      * @param typeInfo information about the type of the given object
      * @return mapped json element
      */
-    T mapObject(Object object, TypeInfo<?> typeInfo);
+    JSON mapObject(Object object, TypeInfo<?> typeInfo);
 }

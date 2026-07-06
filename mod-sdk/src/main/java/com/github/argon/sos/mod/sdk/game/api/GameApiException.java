@@ -1,7 +1,7 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
 /**
- * Exception thrown from within the game api namespace
+ * Exception thrown from within the "game.api" namespace
  */
 public class GameApiException extends Exception {
     /**
