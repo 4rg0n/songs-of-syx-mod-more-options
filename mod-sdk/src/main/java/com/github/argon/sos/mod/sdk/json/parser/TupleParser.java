@@ -9,6 +9,12 @@ import com.github.argon.sos.mod.sdk.json.element.JsonTuple;
  */
 public class TupleParser implements Parser {
 
+    /**
+     * Parses a json key value pair into a {@link JsonTuple}.
+     *
+     * @param json to parse
+     * @return parsed json tuple
+     */
     @Override
     public JsonElement parse(Json json) {
         String key = parseKey(json);

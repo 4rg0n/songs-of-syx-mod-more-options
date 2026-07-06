@@ -1,9 +1,7 @@
 package com.github.argon.sos.mod.sdk.json.parser;
 
 import com.github.argon.sos.mod.sdk.json.Json;
-import com.github.argon.sos.mod.sdk.json.element.JsonDouble;
-import com.github.argon.sos.mod.sdk.json.element.JsonElement;
-import com.github.argon.sos.mod.sdk.json.element.JsonLong;
+import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 
 /**
@@ -14,6 +12,12 @@ public class ValueParser implements Parser {
 
     private final TupleParser tupleParser = new TupleParser();
 
+    /**
+     * Parses simple value types from a json string into a {@link JsonDouble}, {@link JsonLong}, {@link JsonString} or {@link JsonTuple}.
+     *
+     * @param json to parse
+     * @return parsed json value
+     */
     @Override
     public JsonElement parse(Json json) {
         int startIndex = json.getIndex();
