@@ -31,6 +31,9 @@ public class PhaseManager implements Phases {
 
     private final Map<Phase, List<Phases>> phases =new HashMap<>();
 
+    /**
+     * Creates a new {@link PhaseManager}.
+     */
     public PhaseManager() {
         for (Phase phase : Phase.values()) {
             phases.put(phase, new ArrayList<>());
