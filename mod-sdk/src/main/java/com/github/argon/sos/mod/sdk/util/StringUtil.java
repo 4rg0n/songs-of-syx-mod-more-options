@@ -482,4 +482,18 @@ public class StringUtil {
     public static boolean isBlank(@Nullable String text) {
         return text == null || text.isEmpty() || text.trim().isEmpty();
     }
+
+    public static String escapeSpecialCharacters(String text) {
+        if (text == null) {
+            return "null";
+        }
+
+        String escapedData = text.replaceAll("\\R", " ");
+        if (text.contains(",") || text.contains("\"") || text.contains("'")) {
+            text = text.replace("\"", "\"\"");
+            escapedData = "\"" + text + "\"";
+        }
+
+        return escapedData;
+    }
 }

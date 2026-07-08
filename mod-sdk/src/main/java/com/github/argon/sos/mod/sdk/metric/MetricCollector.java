@@ -18,12 +18,16 @@ import java.util.*;
 public class MetricCollector {
 
     private final static Logger log = Loggers.getLogger(MetricCollector.class);
-
     private final List<Metric> buffered = Collections.synchronizedList(new ArrayList<>());
 
-    public void buffer(Set<String> whitelist) {
+    /**
+     * Buffers and collects values for the given stat names.
+     *
+     * @param statNames to buffer and collect values from.
+     */
+    public void buffer(Set<String> statNames) {
         try {
-            buffered.add(collect(whitelist));
+            buffered.add(collect(statNames));
         } catch (Exception e) {
             log.warn("Could not collect metrics for buffering", e);
         }
@@ -31,6 +35,11 @@ public class MetricCollector {
         log.trace("Buffered %s metrics", buffered.size());
     }
 
+    /**
+     * Clears the buffered stats and returns them as {@link Metric}s
+     *
+     * @return buffered metrics
+     */
     public List<Metric> flush() {
         ArrayList<Metric> bufferedMetrics = new ArrayList<>(buffered);
         buffered.clear();
@@ -39,13 +48,24 @@ public class MetricCollector {
         return bufferedMetrics;
     }
 
+    /**
+     * Collects all possible stats from the game as a key value map.
+     *
+     * @return map with stat name as key and the stat value as value
+     */
     public Map<String, Object> collectStats() {
         return collectStats(Collections.emptySet());
     }
 
-    public Map<String, Object> collectStats(Set<String> whitelist) {
+    /**
+     * Collects only stats which are present in the given stat name list.
+     *
+     * @param statNames to collect
+     * @return map with stat name as key and the stat value as value
+     */
+    public Map<String, Object> collectStats(Set<String> statNames) {
         final Map<String, Object> stats = new HashMap<>();
-        StatsExtractor statsExtractor = new StatsExtractor(new HashSet<>(whitelist));
+        StatsExtractor statsExtractor = new StatsExtractor(new HashSet<>(statNames));
 
         for (int i = 0; i < STATS.all().size(); i++) {
             STAT stat = STATS.all().get(i);
@@ -67,8 +87,14 @@ public class MetricCollector {
         return stats;
     }
 
-    public Metric collect(Set<String> whitelist) {
-        Map<String, Object> stats = collectStats(whitelist);
+    /**
+     * Collects only stats which are present in the given stat name list as a {@link Metric}.
+     *
+     * @param statNames to collect
+     * @return metric with stats and their values
+     */
+    public Metric collect(Set<String> statNames) {
+        Map<String, Object> stats = collectStats(statNames);
         log.debug("Collected %s game stats", stats.size());
         log.trace("Stats: %s", stats);
 
