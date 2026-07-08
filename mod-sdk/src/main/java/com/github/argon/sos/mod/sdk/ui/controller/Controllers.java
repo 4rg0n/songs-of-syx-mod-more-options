@@ -11,17 +11,35 @@ import java.util.Optional;
 public class Controllers {
     private final Map<Class<?>, Controller<?>> controllers = new HashMap<>();
 
+    /**
+     * Creates new {@link Controllers} holding the given list of controllers.
+     *
+     * @param controllerList to hold
+     */
     public Controllers(List<Controller<?>> controllerList) {
         controllerList.forEach(this::add);
     }
 
+    /**
+     * Adds an controller.
+     *
+     * @param controller to add
+     * @return this
+     */
     public Controllers add(Controller<?> controller) {
         controllers.put(controller.getClass(), controller);
         return this;
     }
 
-    public <T extends Controller<?>> Optional<T> get(Class<T> key) {
-        Controller<?> controller = controllers.get(key);
+    /**
+     * Returns a controller instance by the given class.
+     *
+     * @param clazz of the controller
+     * @return controller instance if present
+     * @param <T> type of the controller class
+     */
+    public <T extends Controller<?>> Optional<T> get(Class<T> clazz) {
+        Controller<?> controller = controllers.get(clazz);
 
         if (controller == null) {
             return Optional.empty();

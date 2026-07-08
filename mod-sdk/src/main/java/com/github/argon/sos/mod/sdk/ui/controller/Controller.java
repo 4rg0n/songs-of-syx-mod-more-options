@@ -8,5 +8,10 @@ import com.github.argon.sos.mod.sdk.phase.Phases;
  * @param <UiElement> type of ui element to control
  */
 public interface Controller<UiElement> extends Phases {
+    /**
+     * Returns the controlled ui element.
+     *
+     * @return controller ui element
+     */
     UiElement getElement();
 }
