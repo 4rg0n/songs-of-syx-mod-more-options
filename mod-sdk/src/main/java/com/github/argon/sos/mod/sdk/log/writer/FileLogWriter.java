@@ -39,9 +39,13 @@ public class FileLogWriter extends AbstractLogWriter implements Phases {
     public boolean open() {
         File file = logFile.toFile();
         try {
-            file.createNewFile();
-            FileWriter fileWriter = new FileWriter(file, true);
-            bufferedWriter = new BufferedWriter(fileWriter);
+            boolean created = file.createNewFile();
+            if (created) {
+                FileWriter fileWriter = new FileWriter(file, true);
+                bufferedWriter = new BufferedWriter(fileWriter);
+            } else {
+                return false;
+            }
         } catch (IOException e) {
             problemLogging("NONE", new Object[]{}, e);
             return false;

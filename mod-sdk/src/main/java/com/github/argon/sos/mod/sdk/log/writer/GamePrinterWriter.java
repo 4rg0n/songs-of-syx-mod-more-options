@@ -8,12 +8,21 @@ import static com.github.argon.sos.mod.sdk.util.StringUtil.stringifyValues;
 /**
  * Writes to the game {@link Printer#ln(Object)} or {@link Printer#err(Object)}
  */
-public class GamePrinter extends AbstractLogWriter {
+public class GamePrinterWriter extends AbstractLogWriter {
 
-    public GamePrinter(String prefix, String messageFormat) {
+    /**
+     * Creates a new {@link GamePrinterWriter} with given prefix and message format.
+     *
+     * @param prefix to use for each message
+     * @param messageFormat to print the message
+     */
+    public GamePrinterWriter(String prefix, String messageFormat) {
         super(prefix, messageFormat);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void error(String name, String msgPrefix, String formatMsg, Object[] args) {
         try {
@@ -28,6 +37,9 @@ public class GamePrinter extends AbstractLogWriter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void log(String name, String msgPrefix, String formatMsg, Object[] args) {
         try {
@@ -42,6 +54,9 @@ public class GamePrinter extends AbstractLogWriter {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void exception(Throwable ex) {
         String exceptionString = StringUtil.stringify(ex);

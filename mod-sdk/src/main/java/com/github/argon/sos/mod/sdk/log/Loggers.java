@@ -1,22 +1,21 @@
 package com.github.argon.sos.mod.sdk.log;
 
 import com.github.argon.sos.mod.sdk.log.writer.LogWriter;
-import com.github.argon.sos.mod.sdk.log.writer.StdOut;
+import com.github.argon.sos.mod.sdk.log.writer.StdOutWriter;
 import lombok.Getter;
 import snake2d.LOG;
 
 import java.util.*;
 
 /**
- * For registering and receiving Loggers.
+ * For creating, registering and receiving {@link Logger}s.
  */
 public class Loggers {
     private final static Map<String, Logger> loggers = new HashMap<>();
-
     private final static Set<LogWriter> writers = new LinkedHashSet<>();
 
     static {
-        registerWriter(new StdOut(Logger.PREFIX_MOD, Logger.LOG_MSG_FORMAT));
+        registerWriter(new StdOutWriter(Logger.PREFIX_MOD, Logger.LOG_MSG_FORMAT));
     }
 
     public final static Level LOG_LEVEL_DEFAULT = Level.INFO;
