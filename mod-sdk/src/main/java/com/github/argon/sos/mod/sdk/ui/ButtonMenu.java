@@ -2,7 +2,7 @@ package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.game.action.Action;
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
+import com.github.argon.sos.mod.sdk.ui.layout.LayoutUtil;
 import init.sprite.UI.UI;
 import lombok.Builder;
 import lombok.Getter;
@@ -112,7 +112,7 @@ public class ButtonMenu<Key> extends Section {
             searchBarMargin = 10;
         }
 
-        List<? extends RENDEROBJ> renders = Layouts.align(buttons.values(), horizontal, margin, spacer, sameWidth, width, minWidth, widths);
+        List<? extends RENDEROBJ> renders = LayoutUtil.align(buttons.values(), horizontal, margin, spacer, sameWidth, width, minWidth, widths);
         if (maxWidth <= 0) {
             maxWidth = UiUtil.sumWidths(renders);
         }
@@ -126,12 +126,12 @@ public class ButtonMenu<Key> extends Section {
         if (horizontal) {
             Integer maxWidths = UiUtil.getMaxWidth(renders, margin);
             if (maxWidths > maxWidth) {
-                Layouts.flow(renders, this, search, maxWidth, maxHeight, margin);
+                LayoutUtil.flow(renders, this, search, maxWidth, maxHeight, margin);
             } else {
-                Layouts.horizontal(renders, this, margin, maxWidth, maxHeight, true);
+                LayoutUtil.horizontal(renders, this, margin, maxWidth, maxHeight, true);
             }
         } else {
-            GuiSection vertical = Layouts.vertical(renders, null, search, margin, maxHeight - searchBarHeight, true);
+            GuiSection vertical = LayoutUtil.vertical(renders, null, search, margin, maxHeight - searchBarHeight, true);
             addDownC(searchBarMargin, vertical);
         }
     }

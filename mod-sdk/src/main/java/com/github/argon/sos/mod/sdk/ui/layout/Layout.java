@@ -7,13 +7,22 @@ import util.gui.misc.GText;
 
 
 /**
- * TODO: PoC
+ * For aligning ui elements.
  */
 public class Layout {
     private final static I18nTranslator i18n = ModSdkModule.i18n().get(Layout.class);
 
+    /**
+     * Ui element shown when there's not enough space to fit something.
+     */
     public final static GText NO_SPACE = new GText(UI.FONT().S, i18n.t("Layout.text.no.space")).warnify();
 
+    /**
+     * Creates a new {@link VerticalLayout} with given max height.
+     *
+     * @param maxHeight in pixels
+     * @return created vertical layout
+     */
     public static VerticalLayout vertical(int maxHeight) {
         return new VerticalLayout(maxHeight);
     }

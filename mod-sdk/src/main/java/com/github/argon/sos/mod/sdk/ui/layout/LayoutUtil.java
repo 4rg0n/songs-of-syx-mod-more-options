@@ -1,11 +1,10 @@
 package com.github.argon.sos.mod.sdk.ui.layout;
 
+import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.ui.HorizontalLine;
 import com.github.argon.sos.mod.sdk.ui.ScrollRows;
 import com.github.argon.sos.mod.sdk.ui.VerticalLine;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.Rec;
 import snake2d.util.gui.GuiSection;
@@ -16,9 +15,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class Layouts {
+/**
+ * Utility methods for aligning ui elements.
+ */
+@UtilityClass
+public class LayoutUtil {
 
+    /**
+     * Aligns given ui elements vertically.
+     * Will add a scrollbar when max height is exceeded.
+     *
+     * @param elements to align
+     * @param section optional section used as container for the ui elements
+     * @param search optional search field to filter ui elements
+     * @param margin space between each element
+     * @param maxHeight max height of all elements when aligned
+     * @param center whether the elements shall be centered
+     * @return section with vertically aligned ui elements
+     */
     public static GuiSection vertical(
         Collection<? extends RENDEROBJ> elements,
         @Nullable GuiSection section,
@@ -50,6 +64,18 @@ public class Layouts {
         return section;
     }
 
+    /**
+     * Aligns given ui elements horizontally.
+     * Will start a new row of elements if max width is exceeded.
+     *
+     * @param elements to align
+     * @param section optional section used as container for the ui elements
+     * @param margin space between each element
+     * @param maxWidth max width of all elements when aligned
+     * @param maxHeight max height of the section
+     * @param center whether the elements shall be centered
+     * @return section with horizontally aligned ui elements
+     */
     public static GuiSection horizontal(
         Collection<? extends RENDEROBJ> elements,
         @Nullable GuiSection section,
@@ -64,7 +90,7 @@ public class Layouts {
 
         Integer maxWidths = UiUtil.getMaxWidth(elements, margin);
         if (maxWidths > maxWidth) {
-            Layouts.flow(elements, section,  null, maxWidth, maxHeight, margin);
+            LayoutUtil.flow(elements, section,  null, maxWidth, maxHeight, margin);
         } else {
             int pos = 0;
             for (RENDEROBJ element : elements) {
@@ -81,7 +107,25 @@ public class Layouts {
         return section;
     }
 
-    public static GuiSection flow(Collection<? extends RENDEROBJ> elements, @Nullable GuiSection section, @Nullable StringInputSprite search, int maxWidth, int maxHeight, int margin) {
+    /**
+     * Aligns given ui elements next to each other beginning from left.
+     * Will start a new row of elements if max width is exceeded.
+     *
+     * @param elements to align
+     * @param section optional section used as container for the ui elements
+     * @param margin space between each element
+     * @param maxWidth max width of all elements when aligned
+     * @param maxHeight max height of the section
+     * @return section with aligned ui elements
+     */
+    public static GuiSection flow(
+        Collection<? extends RENDEROBJ> elements,
+        @Nullable GuiSection section,
+        @Nullable StringInputSprite search,
+        int maxWidth,
+        int maxHeight,
+        int margin
+    ) {
         if (section == null) {
             section = new GuiSection();
         }
@@ -138,8 +182,29 @@ public class Layouts {
         }
     }
 
-
-    public static List<? extends RENDEROBJ> align(Collection<? extends RENDEROBJ> elements, boolean horizontal, int margin, boolean spacer, boolean sameWidth, int width, int minWidth, List<Integer> widths) {
+    /**
+     * Prepares a list of given ui elements to be aligned.
+     *
+     * @param elements to align
+     * @param horizontal whether they shall be aligned horizontally or vertically
+     * @param margin space between each element
+     * @param spacer whether to insert a line as spacer
+     * @param sameWidth whether all elements shall have the same width
+     * @param width optional width to set all elements to. 0 for ignoring.
+     * @param minWidth min width of an element
+     * @param widths of each element
+     * @return list of prepared elements to align
+     */
+    public static List<? extends RENDEROBJ> align(
+        Collection<? extends RENDEROBJ> elements,
+        boolean horizontal,
+        int margin,
+        boolean spacer,
+        boolean sameWidth,
+        int width,
+        int minWidth,
+        List<Integer> widths
+    ) {
         int elementsMaxWidth = UiUtil.getMaxWidth(elements);
         int elementsMaxHeight = UiUtil.getMaxHeight(elements);
         int maxWidth = 0;
