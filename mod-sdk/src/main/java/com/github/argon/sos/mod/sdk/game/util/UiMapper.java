@@ -2,7 +2,11 @@ package com.github.argon.sos.mod.sdk.game.util;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.input.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.slider.Slider;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.text.Label;
+import com.github.argon.sos.mod.sdk.ui.util.Section;
 import lombok.experimental.UtilityClass;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
@@ -27,8 +31,8 @@ public class UiMapper {
         return Slider.SliderBuilder
             .fromRange(range)
             .lockScroll(true)
-            .input(true)
-            .controls(true)
+            .showInput(true)
+            .showControls(true)
             .width(300)
             .build();
     }

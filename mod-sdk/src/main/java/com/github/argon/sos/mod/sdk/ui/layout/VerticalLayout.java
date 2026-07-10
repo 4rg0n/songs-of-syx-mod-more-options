@@ -1,7 +1,7 @@
 package com.github.argon.sos.mod.sdk.ui.layout;
 
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
-import com.github.argon.sos.mod.sdk.ui.Section;
+import com.github.argon.sos.mod.sdk.ui.util.Section;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.BODY_HOLDER;

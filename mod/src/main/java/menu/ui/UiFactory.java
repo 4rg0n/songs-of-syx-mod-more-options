@@ -3,13 +3,24 @@ package menu.ui;
 import com.github.argon.sos.mod.sdk.data.DoubleValue;
 import com.github.argon.sos.mod.sdk.data.IntegerValue;
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.game.util.Wildcard;
 import com.github.argon.sos.mod.sdk.json.JsonMapper;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.*;
+import com.github.argon.sos.mod.sdk.ui.input.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
+import com.github.argon.sos.mod.sdk.ui.input.InputDouble;
+import com.github.argon.sos.mod.sdk.ui.input.InputInteger;
+import com.github.argon.sos.mod.sdk.ui.input.InputString;
+import com.github.argon.sos.mod.sdk.ui.simple.Spacer;
+import com.github.argon.sos.mod.sdk.ui.slider.Slider;
+import com.github.argon.sos.mod.sdk.ui.slider.SliderDoubleList;
+import com.github.argon.sos.mod.sdk.ui.slider.SliderIntegerList;
+import com.github.argon.sos.mod.sdk.ui.switcher.Switcher;
+import com.github.argon.sos.mod.sdk.ui.text.Label;
+import com.github.argon.sos.mod.sdk.ui.util.Section;
 import com.github.argon.sos.moreoptions.ui.json.JsonUiMapper;
 import init.sprite.UI.UI;
 import lombok.AccessLevel;
@@ -74,8 +85,8 @@ public class UiFactory {
             .build();
     }
 
-    public static MultiDropDown<String> multiDropDown(String buttonTitle, JsonArray jsonArray, List<String> options, int maxSelect, boolean maxSelected) {
-        return MultiDropDown.<String>builder()
+    public static MultiSelectDropDown<String> multiDropDown(String buttonTitle, JsonArray jsonArray, List<String> options, int maxSelect, boolean maxSelected) {
+        return MultiSelectDropDown.<String>builder()
             .label(buttonTitle)
             .clickAction(dropDown -> MenuUi.getInstance().popups().show(dropDown.getSelect(), dropDown))
             .select(selectS(jsonArray, options, maxSelect, maxSelected))
@@ -181,23 +192,23 @@ public class UiFactory {
             .valueDisplay(Slider.ValueDisplay.PERCENTAGE)
             .build();
 
-        InputInt inputInt = new InputInt(slider.getInputValue());
+        InputInteger inputInteger = new InputInteger(slider.getInputValue());
         slider.inputClickAction(slider1 -> {
-            MenuUi.getInstance().popups().show(inputInt, slider);
+            MenuUi.getInstance().popups().show(inputInteger, slider);
         });
         slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
         return slider;
     }
 
-    public static InputInt inputInteger(JsonLong jsonElement, int min, int max) {
+    public static InputInteger inputInteger(JsonLong jsonElement, int min, int max) {
         int value = jsonElement.getValue().intValue();
         IntegerValue integerValue = new IntegerValue(value, min, max);
 
-        return InputInt.builder()
+        return InputInteger.builder()
             .inputValue(integerValue)
             .inputWidth(100)
-            .butts(true)
-            .mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo())
+            .showButtons(true)
+            .mouseCoordinatesSupplier(() -> MenuUi.getInstance().getMouseCoo())
             .build();
     }
 
@@ -209,8 +220,8 @@ public class UiFactory {
             .inputValue(doubleValue)
             .inputWidth(100)
             .decimals(decimals)
-            .butts(true)
-            .mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo())
+            .showButtons(true)
+            .mouseCoordinatesSupplier(() -> MenuUi.getInstance().getMouseCoo())
             .build();
     }
 
@@ -221,9 +232,9 @@ public class UiFactory {
             .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
             .build();
 
-        InputInt inputInt = new InputInt(slider.getInputValue());
+        InputInteger inputInteger = new InputInteger(slider.getInputValue());
         slider.inputClickAction(slider1 -> {
-            MenuUi.getInstance().popups().show(inputInt, slider);
+            MenuUi.getInstance().popups().show(inputInteger, slider);
         });
         slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
         return slider;
@@ -235,9 +246,9 @@ public class UiFactory {
             .max(max)
             .width(400)
             .step(step)
-            .controls(true)
+            .showControls(true)
             .lockScroll(true)
-            .input(true) // fixme: crashes when clicked
+            .showInput(true)
             .allowedValues(allowedValues);
     }
 
@@ -275,7 +286,7 @@ public class UiFactory {
         return null;
     }
 
-    public static Input text(JsonString jsonString) {
+    public static InputString text(JsonString jsonString) {
         StringInputSprite inputSprite = new StringInputSprite(32, UI.FONT().S);
         MenuInput input = new MenuInput(inputSprite);
         input.text().add(jsonString.getValue());

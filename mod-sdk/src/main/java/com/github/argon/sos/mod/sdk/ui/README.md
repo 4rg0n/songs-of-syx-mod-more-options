@@ -86,7 +86,7 @@ public class YourModScript extends AbstractModSdkScript {
 
 In the `NotificationDialog` we added the logic of the button directly into the dialog class itself. 
 This works well for self-contained ui components, but if you want to reuse this dialog and maybe do something else on a button click, you would have no option to do so.
-A `Controller` can come in handy here. You can have different controllers for the same ui component. And you could also provide some commonly used components with an [AbstractController](controller/AbstractController.java).
+A `Controller` can come in handy here. You can have different uiControllers for the same ui component. And you could also provide some commonly used components with an [AbstractController](uiController/AbstractController.java).
 This `Controller` thingy is a commonly used pattern for controlling UI elements. A more powerful model would be an [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel), this would require some more effort though ;P
 
 ```java
@@ -99,7 +99,7 @@ public class NotificationDialog extends GuiSection {
     private final Button notifyButton;
 }
 
-// the actual controller
+// the actual uiController
 public class NotificationController extends AbstractController<NotificationDialog> {
     public NotificationController(Window<NotificationDialog> notificationDialogWindow) {
         super(notificationDialogWindow.getSection());
@@ -108,7 +108,7 @@ public class NotificationController extends AbstractController<NotificationDialo
         getElement().getNotifyButton().clickActionSet(this::clickNotify);
     }
     
-    // if you make this "public", you can access the functionality from other controllers too
+    // if you make this "public", you can access the functionality from other uiControllers too
     public void clickNotify() {
         // this was in the NotificationDialog class itself
         getNotificator().notify(getElement().getInput().text().toString());
@@ -128,7 +128,7 @@ public class YourModScript extends AbstractModSdkScript {
         Button notifyButton = new Button("Notify");
         notifyButton.clickActionSet(() -> {
             Window<NotificationDialog> notificationDialogWindow = new Window<NotificationDialog>("Notify", new NotificationDialog());
-            // add the wanted functionality to the dialog window via a controller
+            // add the wanted functionality to the dialog window via a uiController
             new NotificationController(notificationDialogWindow, ModSdkModule.notificator());
             notificationDialogWindow.show();
         });
@@ -139,8 +139,8 @@ public class YourModScript extends AbstractModSdkScript {
 }
 ```
 
-All [AbstractController](controller/AbstractController.java)s will be added into `ModSdkModule.controllers()` and can be accessed through it.
-You can also access any other controller from inside an `AbstractController` via `getControllers().get(YourOtherController.class);`
+All [AbstractController](uiController/AbstractController.java)s will be added into `ModSdkModule.uiControllers()` and can be accessed through it.
+You can also access any other uiController from inside an `AbstractController` via `getControllers().get(YourOtherController.class);`
 
 ## Elements
 

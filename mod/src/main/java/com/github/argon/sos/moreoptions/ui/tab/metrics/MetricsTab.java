@@ -2,9 +2,18 @@ package com.github.argon.sos.moreoptions.ui.tab.metrics;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.input.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
+import com.github.argon.sos.mod.sdk.ui.input.InputString;
 import com.github.argon.sos.mod.sdk.ui.layout.Layout;
 import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
+import com.github.argon.sos.mod.sdk.ui.slider.Slider;
+import com.github.argon.sos.mod.sdk.ui.switcher.Switcher;
+import com.github.argon.sos.mod.sdk.ui.switcher.ViewSwitcher;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.table.Table;
+import com.github.argon.sos.mod.sdk.ui.text.Label;
 import com.github.argon.sos.mod.sdk.util.Sets;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
@@ -95,8 +104,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         // Collection rate slider
         this.collectionRate = Slider.SliderBuilder
             .fromRange(metricsConfig.getCollectionRateSeconds())
-            .controls(true)
-            .input(true)
+            .showControls(true)
+            .showInput(true)
             .width(200)
             .build();
         ColumnRow<Void> collectionRateRow = ColumnRow.<Void>builder()
@@ -111,8 +120,8 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         // Export rate slider
         this.exportRate = Slider.SliderBuilder
             .fromRange(metricsConfig.getExportRateMinutes())
-            .controls(true)
-            .input(true)
+            .showControls(true)
+            .showInput(true)
             .width(200)
             .build();
         ColumnRow<Void> exportRateRow = ColumnRow.<Void>builder()
@@ -148,7 +157,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         // Search Bar with uncheck and check buttons
         GuiSection searchBar = new GuiSection();
         this.searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("MetricsTab.search.input.name"));
-        searchBar.addRightC(0, new Input(searchInput));
+        searchBar.addRightC(0, new InputString(searchInput));
         this.checkSwitcher = Switcher.<Boolean>builder()
             .menu(ButtonMenu.<Boolean>builder()
                 .button(true, new Button<>(i18n.t("MetricsTab.search.check.name"), i18n.t("MetricsTab.search.check.desc")))
@@ -183,7 +192,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
         }).toList();
 
         this.onOffSwitcher = switcher;
-        this.onOffSwitcher.switch_(metricsConfig.isEnabled());
+        this.onOffSwitcher.doSwitch(metricsConfig.isEnabled());
 
         List<ColumnRow<Void>> rows = List.of(
             onOffToggleRow,
@@ -249,7 +258,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
     @Override
     public void setValue(MetricsConfig metricsConfig) {
-        onOffSwitcher.switch_(metricsConfig.isEnabled());
+        onOffSwitcher.doSwitch(metricsConfig.isEnabled());
         collectionRate.setValue(metricsConfig.getCollectionRateSeconds().getValue());
         exportRate.setValue(metricsConfig.getExportRateMinutes().getValue());
         setCheckedStats(metricsConfig.getStats());

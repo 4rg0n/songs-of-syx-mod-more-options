@@ -1,7 +1,7 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
-import com.github.argon.sos.mod.sdk.ui.NonHidingPopup;
-import com.github.argon.sos.mod.sdk.ui.NotificationPopup;
+import com.github.argon.sos.mod.sdk.ui.window.NonHidingPopup;
+import com.github.argon.sos.mod.sdk.ui.notification.NotificationPopup;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phase;

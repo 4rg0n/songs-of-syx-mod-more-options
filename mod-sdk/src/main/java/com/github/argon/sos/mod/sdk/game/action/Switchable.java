@@ -11,7 +11,7 @@ public interface Switchable<Key> {
      *
      * @param key of the ui element to switch to
      */
-    default void switch_(Key key) {}
+    default void doSwitch(Key key) {}
 
     /**
      * Optional action to be executed when an ui element is switched.

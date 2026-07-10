@@ -10,6 +10,11 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
+import com.github.argon.sos.mod.sdk.ui.switcher.Switcher;
+import com.github.argon.sos.mod.sdk.ui.window.FullWindow;
+import com.github.argon.sos.mod.sdk.ui.window.Window;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
@@ -17,7 +22,7 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.ModProperties;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
-import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogController;
+import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogUiController;
 import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import game.event.engine.EventTree;
@@ -235,7 +240,7 @@ public class UiFactory {
             .orElse("https://example.com/");
 
         // add functionality to error dialog
-        new ErrorDialogController(errorDialog, errorReportUrl);
+        new ErrorDialogUiController(errorDialog, errorReportUrl);
 
         return errorDialog;
     }

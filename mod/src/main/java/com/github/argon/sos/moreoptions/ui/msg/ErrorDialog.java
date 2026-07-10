@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.msg;
 
-import com.github.argon.sos.mod.sdk.ui.Button;
-import com.github.argon.sos.mod.sdk.ui.HorizontalLine;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.line.HorizontalLine;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.moreoptions.ModModule;
 import init.constant.C;

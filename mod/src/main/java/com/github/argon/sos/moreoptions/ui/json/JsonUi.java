@@ -1,8 +1,8 @@
 package com.github.argon.sos.moreoptions.ui.json;
 
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
-import com.github.argon.sos.mod.sdk.ui.ColumnRow;
-import com.github.argon.sos.mod.sdk.ui.Table;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.table.Table;
 import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiElementSingle;
 import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiTemplate;
 import com.github.argon.sos.moreoptions.ui.json.tab.FilesTab;

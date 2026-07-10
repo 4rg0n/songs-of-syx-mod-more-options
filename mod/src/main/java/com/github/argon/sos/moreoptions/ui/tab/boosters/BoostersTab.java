@@ -6,8 +6,13 @@ import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.line.VerticalLine;
+import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
 import com.github.argon.sos.mod.sdk.ui.layout.LayoutUtil;
+import com.github.argon.sos.mod.sdk.ui.menu.FactionMenu;
+import com.github.argon.sos.mod.sdk.ui.simple.ColorBox;
+import com.github.argon.sos.mod.sdk.ui.switcher.AbstractUiSwitcher;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
@@ -24,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
-import util.data.GETTER;
 
 import java.util.HashMap;
 import java.util.List;
@@ -78,8 +82,7 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
         super(title, model.getDefaultConfig(), availableWidth, availableHeight);
         this.boosterPresets = boosterPresetValues(model.getPresets());
 
-        GETTER.GETTER_IMP<Faction> getter = new GETTER.GETTER_IMP<>();
-        FactionList factionList = new FactionList(getter, availableHeight);
+        FactionMenu factionMenu = new FactionMenu(availableHeight);
 
         loadPresetButton = new Button<>(
             i18n.t("BoostersTab.button.preset.load.name"),
@@ -141,19 +144,19 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
 
         int maxWidth = UiUtil.getMaxWidth(boostersSections.values());
         GuiSection section = new GuiSection();
-        AbstractUISwitcher boosterSwitcher = new AbstractUISwitcher(maxWidth, tableHeight, false) {
+        AbstractUiSwitcher boosterSwitcher = new AbstractUiSwitcher(maxWidth, tableHeight, false) {
             @Override
             protected RENDEROBJ pget() {
                 return currentBoosterSection;
             }
         };
-        factionList.clickAction(faction -> currentBoosterSection = boostersSections.get(faction));
+        factionMenu.clickAction(faction -> currentBoosterSection = boostersSections.get(faction));
 
         section.addDownC(0, buttonBox);
         section.addDownC(20, boosterSwitcher);
 
-        addRightC(0, factionList);
-        addRightC(0, new VerticalLine(40, factionList.body().height(), 1));
+        addRightC(0, factionMenu);
+        addRightC(0, new VerticalLine(40, factionMenu.body().height(), 1));
         addRightC(0, section);
     }
 

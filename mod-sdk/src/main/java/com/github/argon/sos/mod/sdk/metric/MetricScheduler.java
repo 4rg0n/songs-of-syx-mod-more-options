@@ -117,7 +117,6 @@ public class MetricScheduler implements Phases {
      * @param period delay between each task
      * @param timeUnit for the initialDelay and period
      */
-    @Getter
     @Builder
     public record Trigger(long initialDelay, long period, TimeUnit timeUnit) {}
 }

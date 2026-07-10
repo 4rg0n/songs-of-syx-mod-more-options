@@ -1,9 +1,9 @@
 package com.github.argon.sos.mod.sdk.ui.layout;
 
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.ui.HorizontalLine;
-import com.github.argon.sos.mod.sdk.ui.ScrollRows;
-import com.github.argon.sos.mod.sdk.ui.VerticalLine;
+import com.github.argon.sos.mod.sdk.ui.line.HorizontalLine;
+import com.github.argon.sos.mod.sdk.ui.scroll.ScrollRows;
+import com.github.argon.sos.mod.sdk.ui.line.VerticalLine;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.Rec;
@@ -54,7 +54,7 @@ public class LayoutUtil {
                 .slide(true)
                 .build();
 
-            section.add(scrollRows.view());
+            section.add(scrollRows.getView());
         } else {
             for (RENDEROBJ element : elements) {
                 addDown(section, margin, element, center);
@@ -156,7 +156,7 @@ public class LayoutUtil {
                 .slide(true)
                 .build();
 
-            section.add(scrollRows.view());
+            section.add(scrollRows.getView());
         } else {
             for (GuiSection row : rows) {
                 section.addDown(margin, row);

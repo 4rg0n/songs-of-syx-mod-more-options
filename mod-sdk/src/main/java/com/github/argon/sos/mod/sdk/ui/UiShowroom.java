@@ -2,7 +2,20 @@ package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.input.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
+import com.github.argon.sos.mod.sdk.ui.button.DropDown;
+import com.github.argon.sos.mod.sdk.ui.input.InputString;
 import com.github.argon.sos.mod.sdk.ui.layout.LayoutUtil;
+import com.github.argon.sos.mod.sdk.ui.menu.Tabulator;
+import com.github.argon.sos.mod.sdk.ui.notification.Notificator;
+import com.github.argon.sos.mod.sdk.ui.simple.ColorBox;
+import com.github.argon.sos.mod.sdk.ui.slider.Slider;
+import com.github.argon.sos.mod.sdk.ui.switcher.Switcher;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.table.Table;
+import com.github.argon.sos.mod.sdk.ui.text.Label;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
@@ -23,10 +36,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This contains examples of ui elements and how to use them.
+ */
 public class UiShowroom extends GuiSection {
 
     private final Notificator notificator = ModSdkModule.notificator();
 
+    /**
+     * Creates a new {@link UiShowroom}.
+     */
     public UiShowroom() {
         int width = 900;
         // Small Icons
@@ -180,8 +199,8 @@ public class UiShowroom extends GuiSection {
 
         // Slider with negative values
         Slider slider = Slider.builder()
-            .controls(true)
-            .input(true)
+            .showControls(true)
+            .showInput(true)
             .min(-1337)
             .max(1337)
             .value(420)
@@ -208,7 +227,7 @@ public class UiShowroom extends GuiSection {
         // Table with searchable rows
         GuiSection tableWithSearch = new GuiSection();
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
-        Input search = new Input(searchInput);
+        InputString search = new InputString(searchInput);
         Table<Object> table = Table.builder()
             .row(ColumnRow.builder()
                 .searchTerm("row 1")
@@ -314,9 +333,15 @@ public class UiShowroom extends GuiSection {
         addDown(20, tableAndTabulator);
     }
 
+    /**
+     * Executed when the showroom is rendered.
+     *
+     * @param renderer to use
+     * @param deltaSeconds since last render loop
+     */
     @Override
-    public void render(SPRITE_RENDERER r, float ds) {
-        notificator.update(ds);
-        super.render(r, ds);
+    public void render(SPRITE_RENDERER renderer, float deltaSeconds) {
+        notificator.update(deltaSeconds);
+        super.render(renderer, deltaSeconds);
     }
 }

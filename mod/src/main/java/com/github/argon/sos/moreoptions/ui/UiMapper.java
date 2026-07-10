@@ -3,14 +3,13 @@ package com.github.argon.sos.moreoptions.ui;
 import com.github.argon.sos.mod.sdk.data.TreeNode;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.game.api.GameEventsApi;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.ui.Checkbox;
-import com.github.argon.sos.mod.sdk.ui.ColorCircle;
-import com.github.argon.sos.mod.sdk.ui.ColumnRow;
-import com.github.argon.sos.mod.sdk.ui.Label;
+import com.github.argon.sos.mod.sdk.ui.input.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.simple.ColorCircle;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.text.Label;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
@@ -170,7 +169,7 @@ public class UiMapper {
                     .build();
 
                 if (animalSpecies != null) {
-                    label.hoverGuiAction(animalSpecies::hover);
+                    label.hoverAction(animalSpecies::hover);
                 }
 
                 // label with element
@@ -250,7 +249,7 @@ public class UiMapper {
             .column(colorCircle)
             .column(Label.builder()
                 .name(event.info.name.toString())
-                .hoverGuiAction(eventTree::hover)
+                .hoverAction(eventTree::hover)
                 .build())
             .column(com.github.argon.sos.mod.sdk.game.util.UiMapper.toRender(event.info.icon))
             .column(checkbox)

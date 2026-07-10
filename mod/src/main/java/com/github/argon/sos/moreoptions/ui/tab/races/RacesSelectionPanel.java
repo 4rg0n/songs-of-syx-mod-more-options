@@ -1,9 +1,13 @@
 package com.github.argon.sos.moreoptions.ui.tab.races;
 
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.AbstractButton;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.input.InputString;
+import com.github.argon.sos.mod.sdk.ui.simple.Spacer;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.table.Table;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.ui.UiConfig;
@@ -90,7 +94,7 @@ public class RacesSelectionPanel extends GuiSection {
             // prepare row with columns
             List<GuiSection> columns = List.of(configPathGui, saveFileGui, activeMarker, creationDateGui, updateDateGui);
             ColumnRow<Entry> row = ColumnRow.<Entry>builder()
-                .columns(columns)
+                .columnsFromRenderObjects(columns)
                 .searchTerm(fileName)
                 .build();
             row.setValue(entry);
@@ -121,7 +125,7 @@ public class RacesSelectionPanel extends GuiSection {
             .rowPadding(5)
             .build();
 
-        addDownC(0, new Input(searchInput));
+        addDownC(0, new InputString(searchInput));
         addDownC(10, racesConfigTable);
     }
 

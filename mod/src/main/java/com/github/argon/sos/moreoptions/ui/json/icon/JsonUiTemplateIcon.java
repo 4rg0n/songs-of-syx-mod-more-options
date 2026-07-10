@@ -1,8 +1,7 @@
 package com.github.argon.sos.moreoptions.ui.json.icon;
 
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
-import com.github.argon.sos.mod.sdk.ui.Section;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.ui.util.Section;
 import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiTemplate;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
@@ -31,9 +30,9 @@ public class JsonUiTemplateIcon extends Section {
     }
 
     @Override
-    public void render(SPRITE_RENDERER r, float ds) {
+    public void render(SPRITE_RENDERER renderer, float deltaSeconds) {
         if (!visible) return;
-        super.render(r, ds);
+        super.render(renderer, deltaSeconds);
     }
 
     @Override

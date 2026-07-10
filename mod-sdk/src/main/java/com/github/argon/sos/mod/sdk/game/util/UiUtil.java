@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.game.util;
 
-import com.github.argon.sos.mod.sdk.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.datatypes.Coo;

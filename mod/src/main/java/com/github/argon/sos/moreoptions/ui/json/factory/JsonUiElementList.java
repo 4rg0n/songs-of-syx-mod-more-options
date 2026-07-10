@@ -5,7 +5,7 @@ import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
