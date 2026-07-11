@@ -25,6 +25,8 @@ public class ReflectionUtil {
     private static final Type[] NO_TYPES = {};
 
     /**
+     * Tries to get a {@link Field} with the given name form the given class.
+     *
      * @param fieldName of the field to look for
      * @param clazz containing the field
      * @return found field matching the given name
@@ -39,7 +41,7 @@ public class ReflectionUtil {
     }
 
     /**
-     * Sets a given value into a {@link Field}
+     * Sets a given value into a {@link Field}.
      *
      * @param fieldName to set the value in
      * @param instance containing the field
@@ -54,7 +56,7 @@ public class ReflectionUtil {
     }
 
     /**
-     * Sets a given value into a {@link Field}
+     * Sets a given value into a {@link Field}.
      *
      * @param field to set the value in
      * @param instance containing the field
@@ -67,7 +69,7 @@ public class ReflectionUtil {
             throw new IllegalAccessException(String.format("Cannot set values into FINAL field %s in %s", field.getName(), instance.getClass().getName()));
         }
 
-        boolean accessible = field.isAccessible();
+        boolean accessible = field.canAccess(instance);
         field.setAccessible(true);
 
         try {
@@ -82,21 +84,19 @@ public class ReflectionUtil {
     }
 
     /**
+     * Tries to get a {@link Field} with the given name form the given object instance.
+     *
      * @param fieldName of the field to look for
      * @param instance containing the field
      * @return the found field
      */
     public static Optional<Field> getDeclaredField(String fieldName, Object instance)  {
-        try {
-            Field field = instance.getClass().getDeclaredField(fieldName);
-            return Optional.of(field);
-        } catch (NoSuchFieldException e) {
-            log.warn("Field %s does not exist", fieldName, e);
-            return Optional.empty();
-        }
+        return getDeclaredField(fieldName, instance.getClass());
     }
 
     /**
+     * Returns a list with {@link Field}s, which have the given annotation class on it.
+     *
      * @return all fields with a given annotation attached to it
      */
     public static <T extends Annotation> List<Field> getDeclaredFieldsWithAnnotation(Class<T> annotationClass, Class<?> clazz)  {
@@ -106,6 +106,8 @@ public class ReflectionUtil {
     }
 
     /**
+     * Tries to get a {@link Field} with the given name form the given class.
+     *
      * @param fieldName of the field to look for
      * @param clazz containing the field
      * @return the found field
@@ -120,6 +122,8 @@ public class ReflectionUtil {
     }
 
     /**
+     * Returns a list of {@link Field}s with given field class from the given class.
+     *
      * @param fieldClazz of the field to look for
      * @param clazz containing the field
      * @return a list of fields matching the given fieldClass
@@ -137,12 +141,14 @@ public class ReflectionUtil {
     }
 
     /**
+     * Returns the value contained in the given {@link Field} from the given instance.
+     *
      * @param field to get the value from
      * @param instance containing the field
      * @return the value of a {@link Field} if present
      */
     public static <T> Optional<T> getDeclaredFieldValue(Field field, Object instance) {
-        boolean accessible = field.isAccessible();
+        boolean accessible = field.canAccess(instance);
         field.setAccessible(true);
 
         try {
@@ -158,6 +164,8 @@ public class ReflectionUtil {
     }
 
     /**
+     * Returns the value contained in the given field name from the given instance.
+     *
      * @param fieldName of the field to get the value from
      * @param instance containing the field
      * @return the value of a {@link Field} if present
@@ -171,6 +179,9 @@ public class ReflectionUtil {
     }
 
     /**
+     * Returns the value contained in the given field name from the given class.
+     * The field must be static for this.
+     *
      * @param fieldName of the field to get the value from
      * @param clazz containing the field
      * @return the value of a {@link Field} if present
@@ -184,7 +195,7 @@ public class ReflectionUtil {
                 return null;
             }
 
-            boolean accessible = field.isAccessible();
+            boolean accessible = field.canAccess(clazz);
             field.setAccessible(true);
                 try {
                     //noinspection unchecked
@@ -201,6 +212,8 @@ public class ReflectionUtil {
     }
 
     /**
+     * Returns a list of values with given field class from the given object instance.
+     *
      * @param fieldClazz of the field to look for
      * @param instance containing the field
      * @return a list of field values from fields matching the given fieldClass
@@ -271,22 +284,18 @@ public class ReflectionUtil {
     }
 
     /**
-     * Read an {@link Annotation} from a {@link Field}
+     * Read an {@link Annotation} from a {@link Field}.
      *
      * @param field to read annotations from
      * @param annotationClass which annotation class to look for
      * @return found annotation matching the given class
      */
     public static <T extends Annotation> Optional<T> getAnnotation(Field field, Class<T> annotationClass) {
-        boolean accessible = field.isAccessible();
-        field.setAccessible(true);
-
         if (!field.isAnnotationPresent(annotationClass)) {
             return Optional.empty();
         }
 
         T annotation = field.getAnnotation(annotationClass);
-        field.setAccessible(accessible);
 
         return Optional.of(annotation);
     }
@@ -299,15 +308,11 @@ public class ReflectionUtil {
      * @return found annotation matching the given class
      */
     public static <T extends Annotation> Optional<T> getAnnotation(Method method, Class<T> annotationClass) {
-        boolean accessible = method.isAccessible();
-        method.setAccessible(true);
-
         if (!method.isAnnotationPresent(annotationClass)) {
             return Optional.empty();
         }
 
         T annotation = method.getAnnotation(annotationClass);
-        method.setAccessible(accessible);
 
         return Optional.of(annotation);
     }
@@ -432,7 +437,7 @@ public class ReflectionUtil {
             return Optional.empty();
         }
 
-        return Optional.of(classes.get(0));
+        return Optional.of(classes.getFirst());
     }
 
     /**

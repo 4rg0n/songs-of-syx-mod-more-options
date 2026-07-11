@@ -1,15 +1,11 @@
 package com.github.argon.sos.mod.sdk.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
- * For creating simple maps with just a few lines of code:
+ * For creating simple unmodifiable maps with just a few lines of code:
  * <pre>
  *     Maps.of(
  *      "key1", 1,
@@ -17,18 +13,43 @@ import java.util.Map;
  *      "key3", 3);
  * </pre>
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class Maps {
+    /**
+     * Creates an unmodifiable empty {@link Map}.
+     *
+     * @return unmodifiable empty map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of() {
         return Collections.emptyMap();
     }
 
+    /**
+     * Creates an unmodifiable {@link Map} with one entry.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @return unmodifiable map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of(K key1, V value1) {
-        return Collections.unmodifiableMap(Modifiable.of(
-            key1, value1
-        ));
+        return Collections.singletonMap(key1, value1);
     }
 
+    /**
+     * Creates an unmodifiable {@link Map} with two entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @return unmodifiable map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of(
         K key1, V value1,
         K key2, V value2
@@ -39,6 +60,19 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable {@link Map} with three entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @return unmodifiable map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of(
         K key1, V value1,
         K key2, V value2,
@@ -51,6 +85,21 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable {@link Map} with four entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @return unmodifiable map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of(
         K key1, V value1,
         K key2, V value2,
@@ -65,6 +114,23 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable {@link Map} with five entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @return unmodifiable map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of(
         K key1, V value1,
         K key2, V value2,
@@ -81,6 +147,25 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable {@link Map} with six entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @param key6 sixth key
+     * @param value6 sixth value
+     * @return unmodifiable map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of(
         K key1, V value1,
         K key2, V value2,
@@ -99,6 +184,27 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable {@link Map} with seven entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @param key6 sixth key
+     * @param value6 sixth value
+     * @param key7 seventh key
+     * @param value7 seventh value
+     * @return unmodifiable map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of(
         K key1, V value1,
         K key2, V value2,
@@ -119,6 +225,29 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable {@link Map} with eight entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @param key6 sixth key
+     * @param value6 sixth value
+     * @param key7 seventh key
+     * @param value7 seventh value
+     * @param key8 eight key
+     * @param value8 eight value
+     * @return unmodifiable map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of(
         K key1, V value1,
         K key2, V value2,
@@ -141,6 +270,31 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable {@link Map} with nine entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @param key6 sixth key
+     * @param value6 sixth value
+     * @param key7 seventh key
+     * @param value7 seventh value
+     * @param key8 eight key
+     * @param value8 eight value
+     * @param key9 ninth key
+     * @param value9 ninth value
+     * @return unmodifiable map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of(
         K key1, V value1,
         K key2, V value2,
@@ -165,6 +319,33 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable {@link Map} with ten entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @param key6 sixth key
+     * @param value6 sixth value
+     * @param key7 seventh key
+     * @param value7 seventh value
+     * @param key8 eight key
+     * @param value8 eight value
+     * @param key9 ninth key
+     * @param value9 ninth value
+     * @param key10 tenth key
+     * @param value10 tenth value
+     * @return unmodifiable map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> of(
         K key1, V value1,
         K key2, V value2,
@@ -191,16 +372,43 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable empty linked {@link Map}.
+     *
+     * @return unmodifiable empty linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V, M> Map<K, V> ofLinked() {
         return Collections.unmodifiableMap(Modifiable.ofLinked());
     }
 
+    /**
+     * Creates an unmodifiable linked {@link Map} with one entry.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @return unmodifiable linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V, M> Map<K, V> ofLinked(K key1, V value1) {
         return Collections.unmodifiableMap(Modifiable.ofLinked(
             key1, value1
         ));
     }
 
+    /**
+     * Creates an unmodifiable linked {@link Map} with two entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @return unmodifiable linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> ofLinked(
         K key1, V value1,
         K key2, V value2
@@ -211,6 +419,19 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable linked {@link Map} with three entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @return unmodifiable linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> ofLinked(
         K key1, V value1,
         K key2, V value2,
@@ -223,6 +444,21 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable linked {@link Map} with four entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @return unmodifiable linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> ofLinked(
         K key1, V value1,
         K key2, V value2,
@@ -237,6 +473,23 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable linked {@link Map} with five entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @return unmodifiable linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> ofLinked(
         K key1, V value1,
         K key2, V value2,
@@ -253,6 +506,25 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable linked {@link Map} with six entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @param key6 sixth key
+     * @param value6 sixth value
+     * @return unmodifiable linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> ofLinked(
         K key1, V value1,
         K key2, V value2,
@@ -271,6 +543,27 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable linked {@link Map} with seven entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @param key6 sixth key
+     * @param value6 sixth value
+     * @param key7 seventh key
+     * @param value7 seventh value
+     * @return unmodifiable linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> ofLinked(
         K key1, V value1,
         K key2, V value2,
@@ -291,6 +584,29 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable linked {@link Map} with eight entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @param key6 sixth key
+     * @param value6 sixth value
+     * @param key7 seventh key
+     * @param value7 seventh value
+     * @param key8 eight key
+     * @param value8 eight value
+     * @return unmodifiable linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> ofLinked(
         K key1, V value1,
         K key2, V value2,
@@ -313,6 +629,31 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable linked {@link Map} with nine entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @param key6 sixth key
+     * @param value6 sixth value
+     * @param key7 seventh key
+     * @param value7 seventh value
+     * @param key8 eight key
+     * @param value8 eight value
+     * @param key9 ninth key
+     * @param value9 ninth value
+     * @return unmodifiable linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> ofLinked(
         K key1, V value1,
         K key2, V value2,
@@ -337,6 +678,33 @@ public class Maps {
         ));
     }
 
+    /**
+     * Creates an unmodifiable linked {@link Map} with ten entries.
+     *
+     * @param key1 first key
+     * @param value1 first value
+     * @param key2 second key
+     * @param value2 second value
+     * @param key3 third key
+     * @param value3 third value
+     * @param key4 fourth key
+     * @param value4 fourth value
+     * @param key5 fifth key
+     * @param value5 fifth value
+     * @param key6 sixth key
+     * @param value6 sixth value
+     * @param key7 seventh key
+     * @param value7 seventh value
+     * @param key8 eight key
+     * @param value8 eight value
+     * @param key9 ninth key
+     * @param value9 ninth value
+     * @param key10 tenth key
+     * @param value10 tenth value
+     * @return unmodifiable linked map
+     * @param <K> type of the keys in the map
+     * @param <V> type of the values in the map
+     */
     public static <K, V> Map<K, V> ofLinked(
         K key1, V value1,
         K key2, V value2,
@@ -363,11 +731,37 @@ public class Maps {
         ));
     }
 
+    /**
+     * For creating simple modifiable maps with just a few lines of code:
+     * <pre>
+     *     Maps.Modifiable.of(
+     *      "key1", 1,
+     *      "key2", 2,
+     *      "key3", 3);
+     * </pre>
+     */
+    @UtilityClass
     public static class Modifiable {
+        /**
+         * Creates a modifiable empty {@link Map}.
+         *
+         * @return modifiable empty map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of() {
             return new HashMap<>();
         }
 
+        /**
+         * Creates a modifiable {@link Map} with one entry.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @return modifiable map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of(K key1, V value1) {
             HashMap<K, V> map = new HashMap<>();
             map.put(key1, value1);
@@ -375,6 +769,17 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable {@link Map} with two entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @return modifiable map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of(
             K key1, V value1,
             K key2, V value2
@@ -386,6 +791,19 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable {@link Map} with three entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @return modifiable map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of(
             K key1, V value1,
             K key2, V value2,
@@ -399,6 +817,21 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable {@link Map} with four entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @return modifiable map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of(
             K key1, V value1,
             K key2, V value2,
@@ -414,6 +847,23 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable {@link Map} with five entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @return modifiable map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of(
             K key1, V value1,
             K key2, V value2,
@@ -431,6 +881,25 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable {@link Map} with six entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @param key6 sixth key
+         * @param value6 sixth value
+         * @return modifiable map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of(
             K key1, V value1,
             K key2, V value2,
@@ -450,6 +919,27 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable {@link Map} with seven entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @param key6 sixth key
+         * @param value6 sixth value
+         * @param key7 seventh key
+         * @param value7 seventh value
+         * @return modifiable map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of(
             K key1, V value1,
             K key2, V value2,
@@ -471,6 +961,29 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable {@link Map} with eight entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @param key6 sixth key
+         * @param value6 sixth value
+         * @param key7 seventh key
+         * @param value7 seventh value
+         * @param key8 eight key
+         * @param value8 eight value
+         * @return modifiable map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of(
             K key1, V value1,
             K key2, V value2,
@@ -494,6 +1007,31 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable {@link Map} with nine entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @param key6 sixth key
+         * @param value6 sixth value
+         * @param key7 seventh key
+         * @param value7 seventh value
+         * @param key8 eight key
+         * @param value8 eight value
+         * @param key9 ninth key
+         * @param value9 ninth value
+         * @return modifiable map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of(
             K key1, V value1,
             K key2, V value2,
@@ -519,6 +1057,33 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable {@link Map} with ten entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @param key6 sixth key
+         * @param value6 sixth value
+         * @param key7 seventh key
+         * @param value7 seventh value
+         * @param key8 eight key
+         * @param value8 eight value
+         * @param key9 ninth key
+         * @param value9 ninth value
+         * @param key10 tenth key
+         * @param value10 tenth value
+         * @return modifiable map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> of(
             K key1, V value1,
             K key2, V value2,
@@ -546,10 +1111,26 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable empty linked {@link Map}.
+         *
+         * @return modifiable empty linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked() {
             return new LinkedHashMap<>();
         }
 
+        /**
+         * Creates a modifiable linked {@link Map} with one entry.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @return modifiable linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked(K key1, V value1) {
             LinkedHashMap<K, V> map = new LinkedHashMap<>();
             map.put(key1, value1);
@@ -557,6 +1138,17 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable linked {@link Map} with two entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @return modifiable linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked(
             K key1, V value1,
             K key2, V value2
@@ -568,6 +1160,19 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable linked {@link Map} with three entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @return modifiable linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked(
             K key1, V value1,
             K key2, V value2,
@@ -581,6 +1186,21 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable linked {@link Map} with four entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @return modifiable linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked(
             K key1, V value1,
             K key2, V value2,
@@ -596,6 +1216,23 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable linked {@link Map} with five entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @return modifiable linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked(
             K key1, V value1,
             K key2, V value2,
@@ -613,6 +1250,25 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable linked {@link Map} with six entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @param key6 sixth key
+         * @param value6 sixth value
+         * @return modifiable linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked(
             K key1, V value1,
             K key2, V value2,
@@ -632,6 +1288,27 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable linked {@link Map} with seven entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @param key6 sixth key
+         * @param value6 sixth value
+         * @param key7 seventh key
+         * @param value7 seventh value
+         * @return modifiable linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked(
             K key1, V value1,
             K key2, V value2,
@@ -653,6 +1330,29 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable linked {@link Map} with eight entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @param key6 sixth key
+         * @param value6 sixth value
+         * @param key7 seventh key
+         * @param value7 seventh value
+         * @param key8 eight key
+         * @param value8 eight value
+         * @return modifiable linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked(
             K key1, V value1,
             K key2, V value2,
@@ -676,6 +1376,31 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable linked {@link Map} with nine entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @param key6 sixth key
+         * @param value6 sixth value
+         * @param key7 seventh key
+         * @param value7 seventh value
+         * @param key8 eight key
+         * @param value8 eight value
+         * @param key9 ninth key
+         * @param value9 ninth value
+         * @return modifiable linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked(
             K key1, V value1,
             K key2, V value2,
@@ -701,6 +1426,33 @@ public class Maps {
             return map;
         }
 
+        /**
+         * Creates a modifiable linked {@link Map} with ten entries.
+         *
+         * @param key1 first key
+         * @param value1 first value
+         * @param key2 second key
+         * @param value2 second value
+         * @param key3 third key
+         * @param value3 third value
+         * @param key4 fourth key
+         * @param value4 fourth value
+         * @param key5 fifth key
+         * @param value5 fifth value
+         * @param key6 sixth key
+         * @param value6 sixth value
+         * @param key7 seventh key
+         * @param value7 seventh value
+         * @param key8 eight key
+         * @param value8 eight value
+         * @param key9 ninth key
+         * @param value9 ninth value
+         * @param key10 tenth key
+         * @param value10 tenth value
+         * @return modifiable linked map
+         * @param <K> type of the keys in the map
+         * @param <V> type of the values in the map
+         */
         public static <K, V> Map<K, V> ofLinked(
             K key1, V value1,
             K key2, V value2,

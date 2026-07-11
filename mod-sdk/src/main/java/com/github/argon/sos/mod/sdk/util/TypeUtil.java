@@ -1,12 +1,11 @@
 package com.github.argon.sos.mod.sdk.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class TypeUtil {
 
     /**
@@ -17,8 +16,7 @@ public class TypeUtil {
      * @return raw type
      */
     public static Class<?> getRawType(Type type) {
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
+        if (type instanceof ParameterizedType parameterizedType) {
             Type rawType = parameterizedType.getRawType();
             return (Class<?>) rawType;
         } else {
@@ -27,6 +25,8 @@ public class TypeUtil {
     }
 
     /**
+     * Checks whether a given class is assignable from a given {@link Type}.
+     *
      * @return whether a type is assignable to a given class
      */
     public static boolean isAssignableFrom(Type type, Class<?> clazz) {
@@ -34,6 +34,8 @@ public class TypeUtil {
     }
 
     /**
+     * Checks whether a given {@link Type} is equal to a given class.
+     *
      * @return whether a type is the same as a given class
      */
     public static boolean sameAs(Type type, Class<?> clazz) {

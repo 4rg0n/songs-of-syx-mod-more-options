@@ -2,6 +2,7 @@ package com.github.argon.sos.mod.sdk.util;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -13,28 +14,31 @@ import java.util.Optional;
 /**
  * For reading and writing to the OS clipboard
  */
+@UtilityClass
 public class Clipboard {
 
     private final static Logger log = Loggers.getLogger(Clipboard.class);
 
     /**
-     * Writes a given text into the clipboard
+     * Writes a given text into the clipboard.
+     *
+     * @param text to write into the clipboard
      */
-    public static void write(@Nullable String string) {
-        if (string == null) {
+    public static void write(@Nullable String text) {
+        if (text == null) {
             return;
         }
 
         java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        StringSelection stringSelection = new StringSelection(string);
+        StringSelection stringSelection = new StringSelection(text);
 
         clipboard.setContents(stringSelection, stringSelection);
     }
 
     /**
-     * Reads everything from the clipboard
+     * Reads everything from the clipboard.
      *
-     * @return empty in case of an error
+     * @return clipboard content or empty in case of an error
      */
     public static Optional<String> read() {
         java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

@@ -47,10 +47,21 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     @Nullable
     private final Level envLogLevel;
 
+    /**
+     * Creates a new mod sdk script with default {@link PhaseManager}, {@link StateManager} and game apis.
+     */
     public AbstractModSdkScript() {
         this(ModSdkModule.phaseManager(), ModSdkModule.stateManager(), ModSdkModule.gameApis(), ModSdkModule.propertiesStore());
     }
 
+    /**
+     * Creates a new mod sdk script with given dependencies
+     *
+     * @param phaseManager to use
+     * @param stateManager to use
+     * @param gameApis to use
+     * @param propertiesStore to use
+     */
     public AbstractModSdkScript(PhaseManager phaseManager, StateManager stateManager, GameApis gameApis, PropertiesStore propertiesStore) {
         this.phaseManager = phaseManager;
         this.stateManager = stateManager;
@@ -70,9 +81,19 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
         Loggers.setLevels(level);
     }
 
+    /**
+     * Returns the name of the mod / script.
+     *
+     * @return name of the mod / script
+     */
     @Override
     public abstract CharSequence name();
 
+    /**
+     * Returns the description of the mod / script.
+     *
+     * @return description of the mod / script
+     */
     @Override
     public abstract CharSequence desc();
 
@@ -98,7 +119,7 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     }
 
     /**
-     * Triggered by the game
+     * {@inheritDoc}
      */
     @Override
     public void initBeforeGameCreated() {
@@ -113,14 +134,14 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     }
 
     /**
-     * Triggered when {@link AbstractModSdkScript} is instantiated
+     * Triggered when {@link AbstractModSdkScript} is instantiated.
      */
     protected Level initLogging() {
         return Loggers.LOG_LEVEL_DEFAULT;
     }
 
     /**
-     * Triggered by {@link AbstractModSdkScript#createInstance()}
+     * Triggered by {@link AbstractModSdkScript#createInstance()}.
      */
     @Override
     public void initModCreateInstance() {
@@ -128,7 +149,7 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     }
 
     /**
-     * Triggered by the game
+     * {@inheritDoc}
      */
     @Override
     public SCRIPT_INSTANCE createInstance() {
@@ -162,7 +183,7 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     }
 
     /**
-     * Triggered by the game
+     * {@inheritDoc}
      */
     @Override
     public void initSettlementUiPresent() {
@@ -170,7 +191,7 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     }
 
     /**
-     * Triggered by the game
+     * {@inheritDoc}
      */
     @Override
     public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
@@ -178,7 +199,7 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     }
 
     /**
-     * Triggered by the game
+     * {@inheritDoc}
      */
     @Override
     public void onGameSaved(Path saveFilePath, FilePutter filePutter) {

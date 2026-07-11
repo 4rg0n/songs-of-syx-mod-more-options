@@ -1,7 +1,6 @@
 package com.github.argon.sos.mod.sdk.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.sprite.text.Str;
 
@@ -15,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class StringUtil {
 
     private static final Pattern numericPattern = Pattern.compile("-?\\d+(\\.\\d+)?");
@@ -60,7 +59,9 @@ public class StringUtil {
     }
 
     /**
-     * @return e.g. Test to test
+     * Will lowercase the first character of a {@link String}.
+     *
+     * @return e.g. TesT to tesT
      */
     public static String unCapitalize(String text) {
         if (text.isEmpty()) {
@@ -76,7 +77,7 @@ public class StringUtil {
 
     /**
      * Extracts the last part of a segmented string.
-     * E.g. for "test.foo.bar" and "\\." as delimiter it would return "bar".
+     * E.g. for "test.foo.bar" and "\\." as delimiter, it would return "bar".
      *
      * @param text to extract the last part from
      * @param delimiterRegex to split the text
@@ -438,6 +439,8 @@ public class StringUtil {
     }
 
     /**
+     * Checks whether the given string is a number.
+     *
      * @return whether the given string is a number
      */
     public static boolean isNumeric(@Nullable String strNum) {
@@ -449,6 +452,8 @@ public class StringUtil {
     }
 
     /**
+     * Checks whether the given character is a number.
+     *
      * @return whether the given character is a number
      */
     public static boolean isNumeric(@Nullable Character character) {
@@ -460,6 +465,8 @@ public class StringUtil {
     }
 
     /**
+     * Checks whether thw given string is an {@link Integer}
+     *
      * @return whether the given character is an integer
      */
     public static boolean isInteger(@Nullable String strNum) {
@@ -470,6 +477,8 @@ public class StringUtil {
     }
 
     /**
+     * Checks whether the given string is a decimal number.
+     *
      * @return whether the given string is a decimal number
      */
     public static boolean isDecimal(@Nullable String strNum) {
@@ -479,10 +488,22 @@ public class StringUtil {
         return decimalPattern.matcher(strNum).matches();
     }
 
+    /**
+     * Checks whether the given string has no characters in it.
+     *
+     * @param text to check
+     * @return whether the string has no characters in it
+     */
     public static boolean isBlank(@Nullable String text) {
         return text == null || text.isEmpty() || text.trim().isEmpty();
     }
 
+    /**
+     * Escapes special character in a string.
+     *
+     * @param text to escape characters in it
+     * @return string with escaped characters
+     */
     public static String escapeSpecialCharacters(String text) {
         if (text == null) {
             return "null";
