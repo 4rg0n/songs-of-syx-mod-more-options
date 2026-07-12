@@ -216,7 +216,7 @@ public class ModSdkModule {
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final static MetricExporter metricExporter = Factory.newMetricExporter(
-        PATHS.local().PROFILE.get().resolve("/Metric Exports"),
+        PATHS.local().PROFILE.get().resolve("Metric Exports"),
         metricCollector());
 
     /**
