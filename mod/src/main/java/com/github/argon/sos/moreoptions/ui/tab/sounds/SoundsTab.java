@@ -164,7 +164,7 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
                 .build()))
             .build(settlementAndAnimalTab);
 
-        // Room
+        // Room Work
         Layout.vertical(tableHeight)
             .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<String>builder()
                 .rows(ModModule.uiMapper().toRoomSoundLabeledColumnRows(roomWorkSoundSliders))
@@ -178,7 +178,7 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
                 .build()))
             .build(roomWorkTab);
 
-        // Room
+        // Room Ambience
         Layout.vertical(tableHeight)
             .addDownC(5, new VerticalLayout.Scalable(150, height -> Table.<String>builder()
                 .rows(ModModule.uiMapper().toRoomSoundLabeledColumnRows(roomAmbience))
@@ -289,7 +289,7 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
             }
         });
 
-        soundsConfig.getRace().forEach((key, range) -> {
+        soundsConfig.getRoom().forEach((key, range) -> {
             if (roomWorkSoundSliders.containsKey(key)) {
                 roomWorkSoundSliders.get(key).setValue(range.getValue());
             } else {

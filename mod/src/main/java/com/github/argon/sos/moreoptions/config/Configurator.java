@@ -146,6 +146,17 @@ public class Configurator implements Phases {
                     log.trace("API Result: %s", settlementSounds);
                 }
             });
+
+            Map<String, SoundRace> roomWorkSounds = gameApis.sounds().getRoomWorkSounds();
+            sounds.getRoom().forEach((key, range) -> {
+                if (roomWorkSounds.containsKey(key)) {
+                    SoundRace sound = roomWorkSounds.get(key);
+                    gameApis.sounds().setSoundGain(sound, range.getValue());
+                } else {
+                    log.warn("Could not find entry %s in game api result.", key);
+                    log.trace("API Result: %s", roomWorkSounds);
+                }
+            });
         } catch (Exception e) {
             log.error("Could not apply SOUND config to game", e);
             return false;
