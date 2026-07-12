@@ -14,7 +14,7 @@
     <url>https://github.com/4rg0n/songs-of-syx-mod-more-options/tree/main/mod-sdk/src/main/java/com/github/argon/sos/mod/sdk#readme</url>
     <groupId>io.github.4rg0n</groupId> <!-- Required for publishing to Maven Central -->
     <artifactId>sos-mod-sdk</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 
     <licenses>
         <license>
