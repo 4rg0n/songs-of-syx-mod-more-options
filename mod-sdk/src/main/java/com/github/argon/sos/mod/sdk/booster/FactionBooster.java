@@ -85,7 +85,7 @@ public class FactionBooster extends AbstractBooster implements Resettable {
      */
     @Override
     public double vGet(Induvidual induvidual) {
-        return super.vGet(induvidual.faction());
+        return vGet(induvidual.faction());
     }
 
     /**
@@ -93,7 +93,7 @@ public class FactionBooster extends AbstractBooster implements Resettable {
      */
     @Override
     public double vGet(Region region) {
-        return super.vGet(region.faction());
+        return vGet(region.faction());
     }
 
     /**
@@ -101,7 +101,7 @@ public class FactionBooster extends AbstractBooster implements Resettable {
      */
     @Override
     public double vGet(Royalty royalty) {
-        return super.vGet(royalty.induvidual.faction());
+        return vGet(royalty.induvidual.faction());
     }
 
     /**
@@ -109,7 +109,7 @@ public class FactionBooster extends AbstractBooster implements Resettable {
      */
     @Override
     public double vGet(Div division) {
-        return super.vGet(division.faction());
+        return vGet(division.faction());
     }
 
     /**
