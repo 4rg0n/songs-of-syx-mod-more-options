@@ -1,5 +1,5 @@
 * Boosters are not applied to production outputs, e.g. fishery
-* Freelands have 0 population
+* ~~Freelands have 0 population~~
 * [DISABLED CONFIG EDITOR] Mod may make other mods incompatible
 * [DISABLED CONFIG EDITOR] NullPointerException in config editor when trying to add things to a list
 * [DISABLED CONFIG EDITOR] OutOfMemoryException in config editor when other mods add content
