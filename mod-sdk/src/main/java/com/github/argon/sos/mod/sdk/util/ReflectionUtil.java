@@ -201,7 +201,7 @@ public class ReflectionUtil {
                 return null;
             }
 
-            boolean accessible = field.canAccess(clazz);
+            boolean accessible = field.canAccess(null);
             field.setAccessible(true);
                 try {
                     //noinspection unchecked

@@ -13,7 +13,6 @@ Adds a menu with more options for the game:
 * Influence bonuses
 * Collect and export game stats into a CSV file
 * Change the likings between your races
-* Export and import room blueprints
 * Manipulate game config files
 * Game crash detection and backup mechanism
 
@@ -61,10 +60,6 @@ Adds a menu with more options for the game:
 ## Get the current world seed 
 
 ![Advanced](mod/doc/img/advanced.png)
-
-## Export or import blueprints to share them with your friends
-
-![Export and Import Blueprints](mod/doc/img/blueprint_export_import.png)
 
 ## Change the game config files in-game
 

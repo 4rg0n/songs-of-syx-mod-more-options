@@ -2,8 +2,7 @@ package com.github.argon.sos.mod.sdk.game.api;
 
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
-import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
-import init.paths.PATHS;
+import init.paths.PATHSAccess;
 import lombok.RequiredArgsConstructor;
 import snake2d.util.sets.LIST;
 
@@ -31,9 +30,7 @@ public class GameLangApi {
      */
     public Locale getCurrent() {
         try {
-            LIST<Path> paths = ReflectionUtil.<PATHS>getDeclaredFieldValue("i", PATHS.class)
-                .flatMap(gamePaths -> ReflectionUtil.<LIST<Path>>getDeclaredFieldValue("paths", gamePaths))
-                .orElse(null);
+            LIST<Path> paths = PATHSAccess.getPaths();
 
             if (paths == null) {
                 return DEFAULT_LOCALE;

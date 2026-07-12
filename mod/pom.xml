@@ -21,6 +21,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.github.4rg0n</groupId>
             <artifactId>sos-mod-sdk</artifactId>
             <version>0.1.0</version>

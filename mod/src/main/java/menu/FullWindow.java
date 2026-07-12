@@ -58,11 +58,11 @@ public class FullWindow<Section extends GuiSection> extends ColorBox implements
         top.body().setWidth(C.WIDTH());
 
         GButt.ButtPanel exit = new GButt.ButtPanel(SPRITES.icons().m.exit) {
-            @Override
-            protected void clickA() {
-                Menu menu = MenuUi.getInstance().getMenu();
-                menu.switchScreen(menu.main);
-            }
+//            @Override
+//            protected void clickA() {
+//                MenuDisabled menu = MenuUi.getInstance().getMenu();
+//                menu.switchScreen(menu.main);
+//            }
         };
 
         int width = 0;
@@ -108,7 +108,12 @@ public class FullWindow<Section extends GuiSection> extends ColorBox implements
 
     @Override
     public boolean back(Menu menu) {
-        menu.switchScreen(menu.main);
-        return true;
+        return false;
     }
+
+    //    @Override
+//    public boolean back(MenuDisabled menu) {
+//        menu.switchScreen(menu.main);
+//        return true;
+//    }
 }
