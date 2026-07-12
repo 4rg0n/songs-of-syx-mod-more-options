@@ -13,6 +13,7 @@ import snake2d.util.file.JsonE;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -474,7 +475,7 @@ class JsonMapperTest {
         complexJsonObject.put("TEST_ARRAY_NULL", jsonNullArray);
 
         JsonE jsonE = JsonMapper.mapJson(complexJsonObject);
-        String expectedJsonE = new ResourceService().read("json/JsonEWritten.txt").orElse("");
+        String expectedJsonE = new ResourceService().read(Path.of("json/JsonEWritten.txt"));
 
         assertThat(jsonE.toString()).isEqualToIgnoringWhitespace(expectedJsonE);
     }
