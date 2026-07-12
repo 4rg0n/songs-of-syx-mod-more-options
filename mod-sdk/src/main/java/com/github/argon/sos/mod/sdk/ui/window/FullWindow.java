@@ -241,6 +241,9 @@ public class FullWindow<Section extends GuiSection> extends Interrupter implemen
          */
         public static final int HEIGHT = C.HEIGHT() - TOP_HEIGHT;
 
+        /**
+         * Title displayed in the top bar.
+         */
         public final String title;
 
         @Getter

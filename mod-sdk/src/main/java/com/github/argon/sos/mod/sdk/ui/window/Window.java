@@ -31,12 +31,21 @@ public class Window<Section extends GuiSection> extends Interrupter implements
 {
     private final static Logger log = Loggers.getLogger(Window.class);
 
+    /**
+     * The ui element displayed as content of the window.
+     */
     @Getter
     protected final Section section;
 
+    /**
+     * The panel used as frame around the window content.
+     */
     @Getter
     protected final GPanel panel;
 
+    /**
+     * Contains {@link Window#panel} and {@link Window#section} together.
+     */
     protected final GuiSection panelSection;
 
     private double hideUpdateTimerSeconds = 0d;

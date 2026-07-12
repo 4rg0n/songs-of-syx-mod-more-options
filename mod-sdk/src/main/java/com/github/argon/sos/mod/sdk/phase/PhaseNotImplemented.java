@@ -7,6 +7,9 @@ import lombok.Getter;
  */
 public class PhaseNotImplemented extends RuntimeException {
 
+    /**
+     * The phase which isn't implemented.
+     */
     @Getter
     private final Phase phase;
 

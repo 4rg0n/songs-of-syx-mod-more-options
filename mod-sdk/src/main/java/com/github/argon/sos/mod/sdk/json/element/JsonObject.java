@@ -15,6 +15,10 @@ public class JsonObject implements JsonElement {
 
     private final Map<String, JsonTuple> map = new HashMap<>();
 
+    /** Creates a new {@link JsonObject}. */
+    public JsonObject() {
+    }
+
     /**
      * Returns the entries in the objects as a collection of {@link JsonTuple}s.
      *

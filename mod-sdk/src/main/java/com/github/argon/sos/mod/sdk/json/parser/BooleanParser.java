@@ -10,6 +10,12 @@ import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 public class BooleanParser implements Parser {
 
     /**
+     * Creates a new {@link BooleanParser}.
+     */
+    public BooleanParser() {
+    }
+
+    /**
      * Parses json booleans into a {@link JsonBoolean}.
      *
      * @param json to parse

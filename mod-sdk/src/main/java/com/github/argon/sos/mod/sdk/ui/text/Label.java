@@ -110,32 +110,32 @@ public class Label extends Section {
      */
     public enum Style {
         /**
-         * With {@link GCOLOR#T()#H1} as color.
+         * With {@code GCOLOR.T().H1} as color.
          */
         LABEL,
 
         /**
-         * With {@link GCOLOR#T()#WARNING} as color.
+         * With {@code GCOLOR.T().WARNING} as color.
          */
         WARNING,
 
         /**
-         * With {@link GCOLOR#T()#ERROR} as color.
+         * With {@code GCOLOR.T().ERROR} as color.
          */
         ERROR,
 
         /**
-         * With {@link GCOLOR#T()#LABEL_SUB} as color.
+         * With {@code GCOLOR.T().LABEL_SUB} as color.
          */
         LABEL_SUB,
 
         /**
-         * With {@link GCOLOR#T()#NORMAL} as color.
+         * With {@code GCOLOR.T().NORMAL} as color.
          */
         NORMAL,
 
         /**
-         * With {@link GCOLOR#T()#HOVER} as color.
+         * With {@code GCOLOR.T().HOVER} as color.
          */
         HOVER
     }

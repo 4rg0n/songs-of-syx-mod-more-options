@@ -15,6 +15,10 @@ public class JsonParser {
     private final static BooleanParser booleanParser = new BooleanParser();
     private final static ValueParser valueParser = new ValueParser();
 
+    /** Creates a new {@link JsonParser}. */
+    public JsonParser() {
+    }
+
     /**
      * Writes a json string into a json object
      *

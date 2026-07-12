@@ -158,6 +158,9 @@ public class VerticalLayout implements Resettable {
     }
 
     /**
+     * Builds a {@link Scalable} with a new section containing {@link VerticalLayout#elements}.
+     *
+     * @return scalable with elements
      * @see VerticalLayout#build(GuiSection)
      */
     public Scalables build() {
@@ -352,6 +355,12 @@ public class VerticalLayout implements Resettable {
         private final List<RENDEROBJ> uiElements = new ArrayList<>();
 
         /**
+         * Creates a new {@link Scalables}.
+         */
+        public Scalables() {
+        }
+
+        /**
          * Adds a new ui element.
          *
          * @param uiElement to add
@@ -361,6 +370,13 @@ public class VerticalLayout implements Resettable {
             return uiElements.add(uiElement);
         }
 
+        /**
+         * Returns the ui element at the given index cast to the requested type.
+         *
+         * @param index of the ui element
+         * @return ui element at the given index
+         * @param <T> type to cast the ui element to
+         */
         public <T> T getAs(int index) {
             //noinspection unchecked
             return (T) uiElements.get(index);

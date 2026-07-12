@@ -378,6 +378,7 @@ public class Maps {
      * @return unmodifiable empty linked map
      * @param <K> type of the keys in the map
      * @param <V> type of the values in the map
+     * @param <M> unused type parameter
      */
     public static <K, V, M> Map<K, V> ofLinked() {
         return Collections.unmodifiableMap(Modifiable.ofLinked());
@@ -391,6 +392,7 @@ public class Maps {
      * @return unmodifiable linked map
      * @param <K> type of the keys in the map
      * @param <V> type of the values in the map
+     * @param <M> unused type parameter
      */
     public static <K, V, M> Map<K, V> ofLinked(K key1, V value1) {
         return Collections.unmodifiableMap(Modifiable.ofLinked(

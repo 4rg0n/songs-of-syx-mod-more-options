@@ -14,6 +14,8 @@ public interface Initializable<Value> {
 
     /**
      * Initializes the element
+     *
+     * @param value to initialize the element with
      */
     default void init(Value value) {};
 

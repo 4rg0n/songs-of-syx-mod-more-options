@@ -11,6 +11,9 @@ import lombok.experimental.UtilityClass;
 public class GameEventUtil {
 
     /**
+     * Checks whether an event is suppressed or not.
+     *
+     * @param event to check
      * @return whether given event will execute or not
      */
     public static Boolean isEnabled(EVENTS.EventResource event) {

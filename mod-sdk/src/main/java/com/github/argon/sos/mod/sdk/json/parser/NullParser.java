@@ -9,6 +9,12 @@ import com.github.argon.sos.mod.sdk.json.element.JsonNull;
  */
 public class NullParser implements Parser {
     /**
+     * Creates a new {@link NullParser}.
+     */
+    public NullParser() {
+    }
+
+    /**
      * Parses a null value in a json string
      *
      * @param json to parse

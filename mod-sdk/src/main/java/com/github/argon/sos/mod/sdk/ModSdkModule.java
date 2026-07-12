@@ -227,33 +227,79 @@ public class ModSdkModule {
     @Accessors(fluent = true)
     private final static Notificator notificator = Factory.newNotificator(ModSdkModule.gameApis().ui());
 
+    /**
+     * Creates the actual instances of the components managed by {@link ModSdkModule}.
+     */
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Factory {
 
+        /**
+         * Creates the default {@link UiControllers}.
+         *
+         * @return new controllers instance
+         */
         public static UiControllers newControllers() {
             return new UiControllers();
         }
+
+        /**
+         * Creates a new {@link GameJsonService} for the given {@link GameJsonStore}.
+         *
+         * @param gameJsonStore to use for reading/writing game json configs
+         * @return new game json service
+         */
         public static GameJsonService newGameJsonService(GameJsonStore gameJsonStore) {
             return new GameJsonService(gameJsonStore);
         }
 
+        /**
+         * Creates a new {@link GameJsonStore} using the given {@link IOService}.
+         *
+         * @param ioService to use for reading/writing files
+         * @return new game json store
+         */
         public static GameJsonStore newGameJsonStore(IOService ioService) {
             return new GameJsonStore(ioService);
         }
 
+        /**
+         * Creates a new {@link JsonConfigStore} wired up with the given save API and services.
+         *
+         * @param saveApi to use for locating save folders
+         * @param jsonService to use for reading/writing json
+         * @param ioService to use for reading/writing files
+         * @return new json config store
+         */
         public static JsonConfigStore newJsonConfigStore(GameSaveApi saveApi, JsonService jsonService, IOService ioService) {
             return new JsonConfigStore(saveApi, jsonService, ioService);
         }
 
+        /**
+         * Creates a new {@link JavaPropsMapper} for parsing Java properties.
+         *
+         * @return new java props mapper
+         */
         public static JavaPropsMapper newJavaPropsMapper() {
             return new JavaPropsMapper();
         }
 
+        /**
+         * Creates a new {@link ObjectMapper} configured for pretty printed JSON.
+         *
+         * @return new object mapper
+         */
         public static ObjectMapper newJacksonObjectMapper() {
             return new ObjectMapper()
                 .enable(SerializationFeature.INDENT_OUTPUT);
         }
 
+        /**
+         * Creates a new {@link JacksonService} for reading and writing JSON.
+         *
+         * @param objectMapper to use for mapping json
+         * @param ioService to use for reading/writing files
+         * @return new jackson service
+         */
         public static JacksonService newJacksonService(
             ObjectMapper objectMapper,
             IOService ioService
@@ -264,36 +310,82 @@ public class ModSdkModule {
                 ioService);
         }
 
+        /**
+         * Creates a new {@link JsonEService} for reading and writing GAME JSON with the vanilla parser.
+         *
+         * @return new json e service
+         */
         public static JsonEService newJsonEService() {
             return new JsonEService();
         }
 
+        /**
+         * Creates a new {@link JsonGameService} using the given writer and {@link IOService}.
+         *
+         * @param jsonWriter to use for writing json
+         * @param ioService to use for reading/writing files
+         * @return new json game service
+         */
         public static JsonGameService newJsonGameService(JsonWriter jsonWriter, IOService ioService) {
             return new JsonGameService(
                 jsonWriter,
                 ioService);
         }
 
+        /**
+         * Creates a new {@link PropertiesService} for reading Java properties.
+         *
+         * @param ioService to use for reading files
+         * @param javaPropsMapper to use for mapping properties
+         * @return new properties service
+         */
         public static PropertiesService newPropertiesService(IOService ioService, JavaPropsMapper javaPropsMapper) {
             return new PropertiesService(ioService, javaPropsMapper);
         }
 
+        /**
+         * Creates a new {@link PropertiesStore} for caching and accessing Java properties.
+         *
+         * @param propertiesService to use for reading properties
+         * @return new properties store
+         */
         public static PropertiesStore newPropertiesStore(PropertiesService propertiesService) {
             return new PropertiesStore(propertiesService);
         }
 
+        /**
+         * Creates a new {@link ResourceService} for reading files from within a *.jar file.
+         *
+         * @return new resource service
+         */
         public static ResourceService newResourceService() {
             return new ResourceService();
         }
 
+        /**
+         * Creates a new {@link FileService} for reading, writing and deleting files.
+         *
+         * @return new file service
+         */
         public static FileService newFileService() {
             return new FileService();
         }
 
+        /**
+         * Creates a new {@link PhaseManager} for executing code on certain game phases.
+         *
+         * @return new phase manager
+         */
         public static PhaseManager newPhaseManager() {
             return new PhaseManager();
         }
 
+        /**
+         * Creates a new {@link GameApis} wired up with all game API implementations and the given {@link MetricCollector}.
+         *
+         * @param metricCollector to collect game stats with
+         * @return new game apis
+         */
         public static GameApis newGameApis(MetricCollector metricCollector) {
             return new GameApis(
                 new GameEventsApi(),
@@ -311,34 +403,80 @@ public class ModSdkModule {
             );
         }
 
+        /**
+         * Creates a new {@link I18nMessageBundle} loading its texts through the given {@link GameLangApi}.
+         *
+         * @param langApi to load the language files with
+         * @return new i18n message bundle
+         */
         public static I18nMessageBundle newI18nMessages(GameLangApi langApi) {
             return new I18nMessageBundle(langApi);
         }
 
+        /**
+         * Creates a new {@link I18n} using the given {@link I18nMessageBundle}.
+         *
+         * @param i18NMessageBundle to translate messages with
+         * @return new i18n instance
+         */
         public static I18n newI18n(I18nMessageBundle i18NMessageBundle) {
             return new I18n(i18NMessageBundle);
         }
 
+        /**
+         * Creates a new {@link MetricCollector} for collecting game stats as metrics.
+         *
+         * @return new metric collector
+         */
         public static MetricCollector newMetricCollector() {
             return new MetricCollector();
         }
 
+        /**
+         * Creates a new {@link MetricScheduler} for scheduling metric collections and exports.
+         *
+         * @return new metric scheduler
+         */
         public static MetricScheduler newMetricScheduler() {
             return new MetricScheduler();
         }
 
+        /**
+         * Creates a new {@link MetricExporter} writing metrics into the given export folder.
+         *
+         * @param exportFolder to write metric exports into
+         * @param metricCollector to export the collected metrics of
+         * @return new metric exporter
+         */
         public static MetricExporter newMetricExporter(Path exportFolder, MetricCollector metricCollector) {
             return new MetricExporter(exportFolder, metricCollector, new MetricCsvWriter());
         }
 
+        /**
+         * Creates a new {@link Notificator} using the given {@link GameUiApi}.
+         *
+         * @param ui to display notifications with
+         * @return new notificator
+         */
         public static Notificator newNotificator(GameUiApi ui) {
             return new Notificator(ui);
         }
 
+        /**
+         * Creates a new {@link StateManager} for holding information about the current game.
+         *
+         * @return new state manager
+         */
         public static StateManager newStateManager() {
             return new StateManager();
         }
 
+        /**
+         * Creates a new {@link FileLogWriter} writing log messages into the given file.
+         *
+         * @param logFile to write log messages into
+         * @return new file log writer
+         */
         public static FileLogWriter newFileLogWriter(Path logFile) {
             return new FileLogWriter(Logger.PREFIX_MOD, Logger.LOG_MSG_FORMAT, logFile);
         }

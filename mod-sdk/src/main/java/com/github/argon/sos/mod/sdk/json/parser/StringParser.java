@@ -9,6 +9,12 @@ import com.github.argon.sos.mod.sdk.json.element.JsonString;
  */
 public class StringParser implements Parser {
     /**
+     * Creates a new {@link StringParser}.
+     */
+    public StringParser() {
+    }
+
+    /**
      * Parses json string into a {@link JsonString}.
      *
      * @param json to parse

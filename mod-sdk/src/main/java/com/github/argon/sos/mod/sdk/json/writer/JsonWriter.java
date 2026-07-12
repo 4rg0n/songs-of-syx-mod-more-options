@@ -9,6 +9,7 @@ public interface JsonWriter {
     /**
      * Writes given {@link JsonElement} as a readable string
      *
+     * @param json to write as a string
      * @return readable json string
      */
     String write(JsonElement json);

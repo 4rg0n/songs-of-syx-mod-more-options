@@ -7,6 +7,11 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode
 public class JsonNull implements JsonElement {
+
+    /** Creates a new {@link JsonNull}. */
+    public JsonNull() {
+    }
+
     /**
      * Transforms the {@link JsonNull} element to a {@link String}
      *

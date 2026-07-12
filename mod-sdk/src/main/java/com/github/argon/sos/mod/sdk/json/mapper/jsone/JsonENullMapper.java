@@ -10,6 +10,10 @@ import snake2d.util.file.JsonE;
  */
 public class JsonENullMapper implements JsonEMapper<JsonNull> {
 
+    /** Creates a new {@link JsonENullMapper}. */
+    public JsonENullMapper() {
+    }
+
     /**
      * Maps a {@link JsonNull} to the games {@link JsonE}.
      *

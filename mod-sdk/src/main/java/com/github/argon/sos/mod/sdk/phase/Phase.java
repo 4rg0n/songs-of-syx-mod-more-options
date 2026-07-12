@@ -53,6 +53,14 @@ public enum Phase {
      * 10. Phase
      */
     INIT_SETTLEMENT_UI_PRESENT,
+
+    /**
+     * 11. Phase
+     */
     ON_GAME_SAVED,
+
+    /**
+     * 12. Phase
+     */
     ON_CRASH,
 }

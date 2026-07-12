@@ -51,6 +51,7 @@ public class GameFactionApi implements Phases, Resettable {
     /**
      * Checks whether a given faction is the player faction.
      *
+     * @param faction to check
      * @return whether a faction is the player faction
      */
     public boolean isPlayer(Faction faction) {

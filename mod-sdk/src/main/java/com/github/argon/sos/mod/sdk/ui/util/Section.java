@@ -8,11 +8,17 @@ import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
 
 /**
- * A section is something like a <pre><div></pre> container in HTML.
+ * A section is something like a {@code <div>} container in HTML.
  * It holds and aligns multiple other ui elements in it.
  * Adds some common used functionality to the games default {@link GuiSection}.
  */
 public class Section extends GuiSection implements Hideable, Showable, Renderable {
+    /**
+     * Creates a new {@link Section}.
+     */
+    public Section() {
+    }
+
     @Setter
     @Accessors(fluent = true, chain = false)
     private Action<Float> renderAction = o -> {};

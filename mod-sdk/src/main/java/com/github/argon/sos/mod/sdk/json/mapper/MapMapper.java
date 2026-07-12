@@ -14,6 +14,13 @@ import java.util.Map;
  * For mapping {@link JsonObject} to a java {@link Map} and visa versa.
  */
 public class MapMapper implements Mapper<JsonObject> {
+
+    /**
+     * Creates a new {@link MapMapper}.
+     */
+    public MapMapper() {
+    }
+
     /**
      * {@inheritDoc}
      */

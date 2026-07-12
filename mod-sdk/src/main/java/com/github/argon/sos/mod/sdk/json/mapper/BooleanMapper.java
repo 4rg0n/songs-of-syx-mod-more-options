@@ -10,6 +10,12 @@ import java.util.Arrays;
  */
 public class BooleanMapper implements Mapper<JsonBoolean> {
     /**
+     * Creates a new {@link BooleanMapper}.
+     */
+    public BooleanMapper() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

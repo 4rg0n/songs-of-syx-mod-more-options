@@ -35,9 +35,21 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
      */
     public final static String LOG_LEVEL_ENV_NAME = "MOD.LOG_LEVEL";
 
+    /**
+     * Manages registration and triggering of the mod's {@link Phase}s
+     */
     protected final PhaseManager phaseManager;
+    /**
+     * Manages the state of the mod across game sessions
+     */
     protected final StateManager stateManager;
+    /**
+     * Provides access to the game's APIs
+     */
     protected final GameApis gameApis;
+    /**
+     * Provides access to the mod's configurable properties
+     */
     protected final PropertiesStore propertiesStore;
 
     @Nullable
@@ -99,11 +111,15 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
 
     /**
      * Triggered by {@link AbstractModSdkScript#initBeforeGameCreated()}
+     *
+     * @param phaseManager to register the mod's phases with
      */
     protected abstract void registerPhases(PhaseManager phaseManager);
 
     /**
      * Will register classes to phases required by the Mod SDK
+     *
+     * @param phaseManager to register the SDK's phases with
      */
     protected void registerSdkPhases(PhaseManager phaseManager) {
         GAME.addOnInit(phaseManager::initGameResourcesLoaded);
@@ -135,6 +151,8 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
 
     /**
      * Triggered when {@link AbstractModSdkScript} is instantiated.
+     *
+     * @return log level to use
      */
     protected Level initLogging() {
         return Loggers.LOG_LEVEL_DEFAULT;

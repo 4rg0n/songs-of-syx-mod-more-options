@@ -8,6 +8,12 @@ import com.github.argon.sos.mod.sdk.util.ClassCastUtil;
  */
 public class EnumMapper implements Mapper<JsonString> {
     /**
+     * Creates a new {@link EnumMapper}.
+     */
+    public EnumMapper() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

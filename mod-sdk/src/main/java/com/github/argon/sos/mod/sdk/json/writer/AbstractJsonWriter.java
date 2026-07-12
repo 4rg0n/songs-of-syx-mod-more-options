@@ -161,6 +161,7 @@ public abstract class AbstractJsonWriter implements JsonWriter {
      * Will create a {@link StringBuilder} for writing {@link JsonString} as a json string.
      *
      * @param jsonString to write
+     * @param strategy optional strategy influencing how the string is built
      * @return string builder for writing json string as a string
      */
     protected StringBuilder build(JsonString jsonString, @Nullable JsonWriterStrategy strategy) {
@@ -172,6 +173,7 @@ public abstract class AbstractJsonWriter implements JsonWriter {
      * Delegates the building to other build methods.
      *
      * @param jsonElement to write
+     * @param strategy optional strategy influencing how the string is built
      * @return string builder for writing json element as a string
      */
     protected StringBuilder build(JsonElement jsonElement, @Nullable JsonWriterStrategy strategy) {

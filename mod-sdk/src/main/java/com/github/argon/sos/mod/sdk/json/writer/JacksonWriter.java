@@ -10,6 +10,12 @@ import java.io.IOException;
  */
 public class JacksonWriter extends DefaultPrettyPrinter {
     /**
+     * Creates a new {@link JacksonWriter}.
+     */
+    public JacksonWriter() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

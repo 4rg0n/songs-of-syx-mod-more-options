@@ -10,6 +10,10 @@ import snake2d.util.file.JsonE;
  */
 public class JsonELongMapper implements JsonEMapper<JsonLong> {
 
+    /** Creates a new {@link JsonELongMapper}. */
+    public JsonELongMapper() {
+    }
+
     /**
      * Maps a {@link JsonLong} to the games {@link JsonE}.
      *

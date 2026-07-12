@@ -196,6 +196,9 @@ public class Notificator implements Updateable, Hideable, Phases {
         show(nextNotification);
     }
 
+    /**
+     * Closes the currently displayed notification.
+     */
     public void close() {
         log.debug("Close notifications");
         gameUiApi.notification().close();

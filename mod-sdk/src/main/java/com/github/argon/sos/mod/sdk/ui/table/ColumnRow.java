@@ -343,7 +343,7 @@ public class ColumnRow<Value> extends Section implements
     /**
      * Overridden lombok builder with extra methods.
      *
-     * @param <Value>
+     * @param <Value> the type of the value contained in the column row
      */
     public static class ColumnRowBuilder<Value> {
 

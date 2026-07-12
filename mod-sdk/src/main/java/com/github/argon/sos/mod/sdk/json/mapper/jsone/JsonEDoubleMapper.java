@@ -10,6 +10,10 @@ import snake2d.util.file.JsonE;
  */
 public class JsonEDoubleMapper implements JsonEMapper<JsonDouble> {
 
+    /** Creates a new {@link JsonEDoubleMapper}. */
+    public JsonEDoubleMapper() {
+    }
+
     /**
      * Maps a {@link JsonDouble} to the games {@link JsonE}.
      *

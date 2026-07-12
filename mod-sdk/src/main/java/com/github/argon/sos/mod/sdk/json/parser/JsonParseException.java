@@ -8,12 +8,17 @@ import com.github.argon.sos.mod.sdk.util.StringUtil;
  */
 public class JsonParseException extends RuntimeException {
     /**
+     * Creates a new {@link JsonParseException}.
+     *
      * @see RuntimeException#RuntimeException()
      */
     public JsonParseException() {
     }
 
     /**
+     * Creates a new {@link JsonParseException} with a message.
+     *
+     * @param message describing the error
      * @see RuntimeException#RuntimeException(String)
      */
     public JsonParseException(String message) {
@@ -21,6 +26,10 @@ public class JsonParseException extends RuntimeException {
     }
 
     /**
+     * Creates a new {@link JsonParseException} with a message and cause.
+     *
+     * @param message describing the error
+     * @param cause of the error
      * @see RuntimeException#RuntimeException(String, Throwable)
      */
     public JsonParseException(String message, Throwable cause) {
@@ -28,6 +37,9 @@ public class JsonParseException extends RuntimeException {
     }
 
     /**
+     * Creates a new {@link JsonParseException} with a cause.
+     *
+     * @param cause of the error
      * @see RuntimeException#RuntimeException(Throwable)
      */
     public JsonParseException(Throwable cause) {

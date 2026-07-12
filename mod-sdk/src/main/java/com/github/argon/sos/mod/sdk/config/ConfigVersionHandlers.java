@@ -14,6 +14,12 @@ public class ConfigVersionHandlers<CONFIG> implements ConfigVersionHandler<CONFI
     private final Map<Integer, ConfigVersionHandler<CONFIG>> handlers = new HashMap<>();
 
     /**
+     * Creates a new {@link ConfigVersionHandlers}.
+     */
+    public ConfigVersionHandlers() {
+    }
+
+    /**
      * Will handle mapping between different config versions.
      * So your mod can have backwards compatibility for configuration.
      *
@@ -31,6 +37,7 @@ public class ConfigVersionHandlers<CONFIG> implements ConfigVersionHandler<CONFI
      *
      * @param version to register the handler for
      * @param versionHandler to register
+     * @return this
      */
     public ConfigVersionHandlers<CONFIG> register(int version, ConfigVersionHandler<CONFIG> versionHandler) {
         handlers.put(version, versionHandler);

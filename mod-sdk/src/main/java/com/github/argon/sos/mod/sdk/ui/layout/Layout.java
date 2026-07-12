@@ -10,6 +10,13 @@ import util.gui.misc.GText;
  * For aligning ui elements.
  */
 public class Layout {
+
+    /**
+     * Creates a new {@link Layout}.
+     */
+    public Layout() {
+    }
+
     private final static I18nTranslator i18n = ModSdkModule.i18n().get(Layout.class);
 
     /**

@@ -12,6 +12,9 @@ import snake2d.util.sprite.SPRITE;
 public class Button<Value> extends AbstractButton<Value> {
 
     /**
+     * For creating a button with a value only.
+     *
+     * @param value of the button
      * @see AbstractButton#AbstractButton(Object)
      */
     public Button(Value value) {
@@ -19,6 +22,9 @@ public class Button<Value> extends AbstractButton<Value> {
     }
 
     /**
+     * For creating a button with a label.
+     *
+     * @param label to display on the button
      * @see AbstractButton#AbstractButton(CharSequence)
      */
     public Button(CharSequence label) {
@@ -26,6 +32,10 @@ public class Button<Value> extends AbstractButton<Value> {
     }
 
     /**
+     * For creating a button with a label and a description.
+     *
+     * @param label to display on the button
+     * @param description to display when hovering
      * @see AbstractButton#AbstractButton(CharSequence, CharSequence)
      */
     public Button(CharSequence label, CharSequence description) {
@@ -33,6 +43,11 @@ public class Button<Value> extends AbstractButton<Value> {
     }
 
     /**
+     * For creating a button with a label, a background color and an optional description.
+     *
+     * @param label to display on the button
+     * @param color background color
+     * @param description to display when hovering
      * @see AbstractButton#AbstractButton(CharSequence, COLOR, CharSequence)
      */
     public Button(CharSequence label, COLOR color, @Nullable CharSequence description) {
@@ -40,6 +55,9 @@ public class Button<Value> extends AbstractButton<Value> {
     }
 
     /**
+     * For creating a button with an image.
+     *
+     * @param label icon to show on the button
      * @see AbstractButton#AbstractButton(SPRITE)
      */
     public Button(SPRITE label) {
@@ -47,6 +65,10 @@ public class Button<Value> extends AbstractButton<Value> {
     }
 
     /**
+     * For creating a button with an image and a background color.
+     *
+     * @param label icon to show on the button
+     * @param color background color
      * @see AbstractButton#AbstractButton(SPRITE, COLOR)
      */
     public Button(SPRITE label, COLOR color) {
@@ -54,6 +76,10 @@ public class Button<Value> extends AbstractButton<Value> {
     }
 
     /**
+     * For creating a button with an image and an optional description.
+     *
+     * @param label icon to show on the button
+     * @param description to display when hovering
      * @see AbstractButton#AbstractButton(SPRITE, CharSequence)
      */
     public Button(SPRITE label, @Nullable CharSequence description) {
@@ -61,7 +87,10 @@ public class Button<Value> extends AbstractButton<Value> {
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the term used for filtering this button when searching.
+     *
+     * @param searchTerm to search for
+     * @return this button
      */
     @Override
     public Button<Value> searchTerm(@Nullable Value searchTerm) {

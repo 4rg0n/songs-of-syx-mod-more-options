@@ -3,7 +3,7 @@ package com.github.argon.sos.mod.sdk.game.action;
 /**
  * For switching ui elements by hiding one and displaying another
  *
- * @param <Key>
+ * @param <Key> type of the key identifying an ui element to switch to
  */
 public interface Switchable<Key> {
     /**

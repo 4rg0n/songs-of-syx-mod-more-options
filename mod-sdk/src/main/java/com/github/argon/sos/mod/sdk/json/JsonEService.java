@@ -17,6 +17,10 @@ public class JsonEService {
 
     private final static Logger log = Loggers.getLogger(JsonEService.class);
 
+    /** Creates a new {@link JsonEService}. */
+    public JsonEService() {
+    }
+
     /**
      * Reads and parses game json from given folder path and file name.
      *

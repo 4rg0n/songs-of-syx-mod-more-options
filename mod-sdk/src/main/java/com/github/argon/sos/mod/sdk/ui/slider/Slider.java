@@ -706,16 +706,38 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
         }
     }
 
+    /**
+     * How the current value shall be displayed next to the slider.
+     */
     public enum ValueDisplay {
+        /**
+         * Does not display the value at all.
+         */
         NONE,
+        /**
+         * Displays the value as an absolute number.
+         */
         ABSOLUTE,
+        /**
+         * Displays the value as a percentage.
+         */
         PERCENTAGE
     }
 
+    /**
+     * Overridden lombok builder with extra methods.
+     */
     public static class SliderBuilder {
 
         private Map<Integer, COLOR> thresholds = new TreeMap<>();
 
+        /**
+         * Sets the value and resolution from a decimal value and a given precision.
+         *
+         * @param value decimal value to set
+         * @param precision amount of decimal places to display / resolve
+         * @return this builder
+         */
         public SliderBuilder valueD(Double value, int precision) {
             int precisionMulti = MathUtil.precisionMulti(precision);
 
@@ -725,6 +747,12 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
             return this;
         }
 
+        /**
+         * Creates a builder pre-configured with min, max, value and display mode from a {@link Range}.
+         *
+         * @param range to configure the slider from
+         * @return pre-configured builder
+         */
         public static SliderBuilder fromRange(Range range) {
             return Slider.builder()
                 .min(range.getMin())
@@ -733,11 +761,24 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
                 .valueDisplay(UiMapper.toValueDisplay(range.getDisplayMode()));
         }
 
+        /**
+         * Sets the colors to display at certain value thresholds.
+         *
+         * @param thresholds percent to color mapping
+         * @return this builder
+         */
         public SliderBuilder thresholds(Map<Integer, COLOR> thresholds) {
             this.thresholds = thresholds;
             return this;
         }
 
+        /**
+         * Adds a color to display at a certain value threshold.
+         *
+         * @param percent at which to display the color
+         * @param color to display at the given threshold
+         * @return this builder
+         */
         public SliderBuilder threshold(Integer percent, COLOR color) {
             thresholds.put(percent, color);
             return this;

@@ -13,6 +13,13 @@ import java.util.stream.Collectors;
  * For mapping {@link JsonArray} to a java {@link List}, {@link LinkedList} {@link Set}, or {@link TreeSet} and visa versa.
  */
 public class ListMapper implements Mapper<JsonArray> {
+
+    /**
+     * Creates a new {@link ListMapper}.
+     */
+    public ListMapper() {
+    }
+
     /**
      * {@inheritDoc}
      */

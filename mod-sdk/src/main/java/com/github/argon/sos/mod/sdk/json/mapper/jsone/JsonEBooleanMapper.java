@@ -10,6 +10,10 @@ import snake2d.util.file.JsonE;
  */
 public class JsonEBooleanMapper implements JsonEMapper<JsonBoolean> {
 
+    /** Creates a new {@link JsonEBooleanMapper}. */
+    public JsonEBooleanMapper() {
+    }
+
     /**
      * Maps a {@link JsonBoolean} to the games {@link JsonE}.
      *

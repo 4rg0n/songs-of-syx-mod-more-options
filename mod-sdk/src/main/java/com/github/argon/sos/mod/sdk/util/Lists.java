@@ -315,6 +315,8 @@ public class Lists {
     /**
      * Compares a {@link List<String>} with another one.
      *
+     * @param list list to compare
+     * @param toCompare list to compare against
      * @return whether both lists contain the same entries in the same order
      */
     public static boolean compare(List<String> list, List<String> toCompare) {
@@ -328,6 +330,8 @@ public class Lists {
     /**
      *  Compares a {@link List<String>} with a {@link Set<String>}.
      *
+     * @param list list to compare
+     * @param toCompare set to compare against
      * @return whether entries from the list are all present in the set
      */
     public static boolean compare(List<String> list, Set<String> toCompare) {
@@ -373,6 +377,12 @@ public class Lists {
      * </pre>
      */
     public static class Modifiable {
+
+        /**
+         * Creates a new {@link Modifiable}.
+         */
+        public Modifiable() {
+        }
 
         /**
          * Creates a modifiable empty {@link List}.

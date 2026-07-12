@@ -28,8 +28,17 @@ public class Range {
      * How the range value shall be displayed in the ui
      */
     public enum DisplayMode {
+        /**
+         * Value is not displayed at all.
+         */
         NONE,
+        /**
+         * Value is displayed as its absolute number.
+         */
         ABSOLUTE,
+        /**
+         * Value is displayed as a percentage.
+         */
         PERCENTAGE;
     }
 
@@ -37,8 +46,17 @@ public class Range {
      * How the range value shall be applied
      */
     public enum ApplyMode {
+        /**
+         * Value is added.
+         */
         ADD,
+        /**
+         * Value is multiplied.
+         */
         MULTI,
+        /**
+         * Value is applied as a percentage.
+         */
         PERCENT;
     }
 

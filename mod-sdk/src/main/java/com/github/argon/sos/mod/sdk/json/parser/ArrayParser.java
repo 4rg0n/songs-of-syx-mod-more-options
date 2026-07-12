@@ -9,6 +9,12 @@ import com.github.argon.sos.mod.sdk.json.element.JsonElement;
  */
 public class ArrayParser implements Parser {
     /**
+     * Creates a new {@link ArrayParser}.
+     */
+    public ArrayParser() {
+    }
+
+    /**
      * Parses json array strings into a {@link JsonArray}.
      *
      * @param json to parse

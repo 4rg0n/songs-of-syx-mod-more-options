@@ -292,6 +292,12 @@ public class Sets {
     public static class Modifiable {
 
         /**
+         * Creates a new {@link Modifiable}.
+         */
+        public Modifiable() {
+        }
+
+        /**
          * Creates a modifiable empty {@link Set}.
          *
          * @return modifiable empty set

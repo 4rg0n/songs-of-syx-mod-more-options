@@ -84,6 +84,12 @@ public class ScrollRows extends AbstractScrollRows {
     public static class ScrollRowsBuilder {
         private Collection<RENDEROBJ> rows;
 
+        /**
+         * Sets the rows to add.
+         *
+         * @param rows to add
+         * @return this
+         */
         public ScrollRowsBuilder rows(Collection<? extends RENDEROBJ> rows) {
             this.rows = new LinkedList<>(rows);
 

@@ -36,6 +36,9 @@ public class TypeInfo<T> {
         this.rawType = (Class<? super T>) TypeUtil.getRawType(this.type);
     }
 
+    /**
+     * Creates a new {@link TypeInfo} reading the type from the generic superclass.
+     */
     protected TypeInfo() {
         this.type = getOwnTypeArgument();
         //noinspection unchecked
@@ -75,6 +78,7 @@ public class TypeInfo<T> {
      *
      * @param clazz to create the class info with
      * @return type info with given class
+     * @param <T> type information
      */
     public static <T> TypeInfo<T> get(Class<T> clazz) {
         return new TypeInfo<>(clazz);

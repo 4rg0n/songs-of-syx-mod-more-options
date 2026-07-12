@@ -35,6 +35,12 @@ import java.util.stream.Collectors;
  */
 public class GameEventsApi implements Resettable {
 
+    /**
+     * Creates a new {@link GameEventsApi}.
+     */
+    public GameEventsApi() {
+    }
+
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
     @Nullable
@@ -130,6 +136,7 @@ public class GameEventsApi implements Resettable {
     /**
      * Checks whether an event is suppressed or not.
      *
+     * @param event to check
      * @return whether given event will execute or not
      */
     public Boolean isEnabled(EVENTS.EventResource event) {
@@ -182,6 +189,11 @@ public class GameEventsApi implements Resettable {
         return events;
     }
 
+    /**
+     * Reads a map with the event key and the corresponding {@link Event} directly from the game.
+     *
+     * @return a map with all game events
+     */
     public Map<String, Event> readEvents() {
         Map<String, Event> events = new HashMap<>();
         try {
@@ -205,11 +217,22 @@ public class GameEventsApi implements Resettable {
         return events;
     }
 
+    /**
+     * Reads the enabled status of all event resources directly from the game.
+     *
+     * @return a map with event keys and whether they are enabled
+     */
     public Map<String, Boolean> readEventResourcesEnabledStatus() {
         return getEventResources().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> GameEventUtil.isEnabled(entry.getValue())));
     }
 
+    /**
+     * Will enable or disable the given {@link game.events.EVENTS.EventResource}.
+     *
+     * @param event to enable or disable
+     * @param enabled whether the event shall be enabled or disabled
+     */
     public void enableEventResource(EVENTS.EventResource event, Boolean enabled) {
         event.supress(!enabled);
     }
@@ -217,6 +240,9 @@ public class GameEventsApi implements Resettable {
     /**
      * Calls the private clear() method of {@link EVENTS.EventResource} for the given event.
      * This will reset any timers and progress in the event.
+     *
+     * @param event to reset
+     * @return whether the reset was successful or not
      */
     public boolean reset(EVENTS.EventResource event) {
         try {
@@ -340,16 +366,33 @@ public class GameEventsApi implements Resettable {
         return eventLocks;
     }
 
+    /**
+     * A {@link Locker} to lock or unlock an event for a specific or any faction.
+     */
     public static class EventLocker extends Locker<Faction> {
         @Nullable
         private final Faction faction;
 
         @Setter
         private boolean locked = false;
+
+        /**
+         * Creates a new {@link EventLocker} unbound to any specific faction.
+         *
+         * @param name of the locker
+         * @param icon of the locker
+         */
         public EventLocker(CharSequence name, SPRITE icon) {
             this(null, name, icon);
         }
 
+        /**
+         * Creates a new {@link EventLocker} bound to the given faction.
+         *
+         * @param faction the locker is bound to, or null for any faction
+         * @param name of the locker
+         * @param icon of the locker
+         */
         public EventLocker(@Nullable Faction faction, CharSequence name, SPRITE icon) {
             super(name, icon);
             this.faction = faction;
@@ -366,28 +409,63 @@ public class GameEventsApi implements Resettable {
         }
     }
 
+    /**
+     * Wraps an {@link Event} together with the {@link Context} it is used in inside an event tree.
+     */
     @Getter
     @Builder
     @AllArgsConstructor
     public static class EventContainer {
+        /**
+         * Used as prefix for event keys to identify them as an event.
+         */
         public final static String KEY_PREFIX = "event";
 
         private Event event;
         @Builder.Default
         private Context context = Context.ROOT;
 
+        /**
+         * Creates a new {@link EventContainer} with {@link Context#ROOT} as context.
+         *
+         * @param event to wrap
+         */
         public EventContainer(Event event) {
             this.event = event;
             this.context = Context.ROOT;
         }
 
+        /**
+         * The place inside an event where another event can be triggered from.
+         */
         public enum Context {
+            /**
+             * The root/topmost event, not triggered from within another event.
+             */
             ROOT,
+            /**
+             * Triggered when the events duration expires.
+             */
             DURATION,
+            /**
+             * Triggered by one of the events choices.
+             */
             CHOICE,
+            /**
+             * Triggered on spawn of the event.
+             */
             ON_SPAWN,
+            /**
+             * Triggered when the events selection fails.
+             */
             SELECTION,
+            /**
+             * Triggered when one of the events aborters is fulfilled.
+             */
             ABORTER,
+            /**
+             * Triggered when the events condition is fulfilled.
+             */
             CONDITION
         }
     }

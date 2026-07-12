@@ -31,6 +31,12 @@ public class ObjectMapper implements Mapper<JsonObject> {
     private final static Logger log = Loggers.getLogger(ObjectMapper.class);
 
     /**
+     * Creates a new {@link ObjectMapper}.
+     */
+    public ObjectMapper() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

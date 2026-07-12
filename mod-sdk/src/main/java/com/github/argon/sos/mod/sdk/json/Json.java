@@ -49,7 +49,7 @@ public class Json {
 
     /**
      * Creates a new {@link Json} instance with given {@link JsonElement} as content.
-     * Will use {@link JsonWriters#gameJsonUnquotedPretty()} as writer.
+     * Will use {@code JsonWriters.gameJsonUnquotedPretty()} as writer.
      *
      * @param root to use as content
      */
@@ -75,7 +75,7 @@ public class Json {
 
     /**
      * Creates a new {@link Json} instance with given {@link JsonObject} as content.
-     * Will use {@link JsonWriters#gameJsonUnquotedPretty()} as writer.
+     * Will use {@code JsonWriters.gameJsonUnquotedPretty()} as writer.
      *
      * @param root to use as content
      */
@@ -97,7 +97,7 @@ public class Json {
 
     /**
      * Creates a new {@link Json} instance with given raw json parsed as content.
-     * Will use {@link JsonWriters#gameJsonUnquotedPretty()} as writer.
+     * Will use {@code JsonWriters.gameJsonUnquotedPretty()} as writer.
      *
      * @param rawJson to use as content
      */

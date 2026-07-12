@@ -16,6 +16,10 @@ import java.util.List;
  */
 public class JsonEArrayMapper implements JsonEMapper<JsonArray> {
 
+    /** Creates a new {@link JsonEArrayMapper}. */
+    public JsonEArrayMapper() {
+    }
+
     /**
      * Maps a {@link JsonArray} to the games {@link JsonE}.
      *

@@ -124,6 +124,12 @@ public class JsonConfigStore {
         return !backupConfigStore.isEmpty();
     }
 
+    /**
+     * Reads the file metas of a bound config class without loading its content.
+     *
+     * @param configClass to read the file metas for
+     * @return file metas or an empty list when the config isn't bound or not bound to a save
+     */
     public List<FileMeta> readMetas(Class<?> configClass) {
         ConfigDefinition configDefinition = this.configDefinitions.get(configClass);
 
@@ -138,6 +144,7 @@ public class JsonConfigStore {
     /**
      * Returns the file path of the current loaded config.
      *
+     * @param configClass of the loaded config
      * @return file path of the currently loaded config class
      */
     public Optional<Path> getPath(Class<?> configClass) {
@@ -148,6 +155,7 @@ public class JsonConfigStore {
     /**
      * Returns the file path of the current loaded backup config.
      *
+     * @param configClass of the loaded backup config
      * @return backup file path of the currently loaded config class
      */
     public Optional<Path> getBackupPath(Class<?> configClass) {
@@ -309,6 +317,8 @@ public class JsonConfigStore {
      * Will delete the config file associated with the given class.
      * Will also remove the config object from the store.
      *
+     * @param configClass to delete the config file for
+     * @param removeFromStore whether the config object shall also be removed from the store
      * @return whether deletion was successful
      */
     public boolean delete(Class<?> configClass, boolean removeFromStore) {
@@ -389,6 +399,8 @@ public class JsonConfigStore {
      * Will delete only the backup config file associated with the given class.
      * Will also remove the config object from the backup store.
      *
+     * @param configClass to delete the backup config file for
+     * @param removeFromStore whether the config object shall also be removed from the backup store
      * @return whether deletion was successful
      */
     public boolean deleteBackup(Class<?> configClass, boolean removeFromStore) {
@@ -408,6 +420,7 @@ public class JsonConfigStore {
      * Will delete all backup config files bound to the store.
      * Will also remove the config objects from the backup store.
      *
+     * @param removeFromStore whether the config objects shall also be removed from the backup store
      * @return whether deletion of all backups was successful
      */
     public boolean deleteBackups(boolean removeFromStore) {
@@ -429,6 +442,7 @@ public class JsonConfigStore {
      * Will delete all backup original config files bound to the store.
      * Will also remove the config objects from the backup store.
      *
+     * @param removeFromStore whether the config objects shall also be removed from the backup store
      * @return whether deletions were successful
      */
     public boolean deleteBackupOriginals(boolean removeFromStore) {
@@ -453,6 +467,8 @@ public class JsonConfigStore {
      * Will delete only the backup original config file associated with the given class.
      * Will also remove the config object from the backup store.
      *
+     * @param configClass to delete the backup original config file for
+     * @param removeFromStore whether the config object shall also be removed from the backup store
      * @return whether deletion was successful
      */
     public boolean deleteBackupOriginal(Class<?> configClass, boolean removeFromStore) {

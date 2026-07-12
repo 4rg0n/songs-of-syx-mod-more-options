@@ -8,6 +8,12 @@ import com.github.argon.sos.mod.sdk.util.ClassUtil;
  */
 public class StringMapper implements Mapper<JsonString> {
     /**
+     * Creates a new {@link StringMapper}.
+     */
+    public StringMapper() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

@@ -8,6 +8,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public class NullMapper implements Mapper<JsonNull> {
     /**
+     * Creates a new {@link NullMapper}.
+     */
+    public NullMapper() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

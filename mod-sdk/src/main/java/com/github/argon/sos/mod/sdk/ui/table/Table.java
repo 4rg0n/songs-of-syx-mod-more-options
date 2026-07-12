@@ -343,7 +343,7 @@ public class Table<Value> extends ColorBox implements
     }
 
     /**
-     * Adds a row at the end or replaces a row with the same {@link ColumnRow#getKey()} in the table.
+     * Adds a row at the end or replaces a row with the same {@code ColumnRow.getKey()} in the table.
      *
      * @param row to add
      * @return added row
@@ -442,8 +442,8 @@ public class Table<Value> extends ColorBox implements
         /**
          * Adds a two-dimensional list with {@link GuiSection}s as rows and columns.
          *
-         * @param grid
-         * @return
+         * @param grid rows containing columns of ui elements
+         * @return this
          */
         public TableBuilder<Value> rowsWithColumns(List<List<GuiSection>> grid) {
             grid.stream()

@@ -14,6 +14,7 @@ public class DataUtil {
     /**
      * Extracts range values from a given range map
      *
+     * @param rangeMap to extract the values from
      * @return values from ranges
      */
     public static Map<String, Integer> extractValues(Map<String, Range> rangeMap) {

@@ -25,6 +25,9 @@ public class I18nMessageBundle implements Phases {
      * i18n.properties, i18n_fr.properties, i18n_ru.properties... and so on.
      */
     public static final String BUNDLE_NAME_DEFAULT = "i18n";
+    /**
+     * Fallback locale used when no translation for the current locale is found.
+     */
     public final static Locale LOCALE_FALLBACK = GameLangApi.DEFAULT_LOCALE;
 
     private final String bundleName;

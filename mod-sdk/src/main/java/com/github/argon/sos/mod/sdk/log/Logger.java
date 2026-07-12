@@ -98,7 +98,7 @@ public class Logger {
      * The message can contain placeholders like %s or %d, which will be replaced with the given arguments.
      * @see String#format(String, Object...)
      *
-     * The arguments can also contain a {@link Throwable} exception, which will be printed.
+     * The arguments can also contain a {@code Throwable} exception, which will be printed.
      * Example: <pre>log.info("This is an %s log", "info", new Exception())</pre>
      *
      * @param formatMsg message with or without placeholders
@@ -113,7 +113,7 @@ public class Logger {
      * The message can contain placeholders like %s or %d, which will be replaced with the given arguments.
      * @see String#format(String, Object...)
      *
-     * The arguments can also contain a {@link Throwable} exception, which will be printed.
+     * The arguments can also contain a {@code Throwable} exception, which will be printed.
      * Example: <pre>log.debug("This is a %s log", "debug", new Exception())</pre>
      *
      * @param formatMsg message with or without placeholders
@@ -128,7 +128,7 @@ public class Logger {
      * The message can contain placeholders like %s or %d, which will be replaced with the given arguments.
      * @see String#format(String, Object...)
      *
-     * The arguments can also contain a {@link Throwable} exception, which will be printed.
+     * The arguments can also contain a {@code Throwable} exception, which will be printed.
      * Example: <pre>log.trace("This is a %s log", "trace", new Exception())</pre>
      *
      * @param formatMsg message with or without placeholders
@@ -143,7 +143,7 @@ public class Logger {
      * The message can contain placeholders like %s or %d, which will be replaced with the given arguments.
      * @see String#format(String, Object...)
      *
-     * The arguments can also contain a {@link Throwable} exception, which will be printed.
+     * The arguments can also contain a {@code Throwable} exception, which will be printed.
      * Example: <pre>log.warn("This is a %s log", "warn", new Exception())</pre>
      *
      * @param formatMsg message with or without placeholders
@@ -158,7 +158,7 @@ public class Logger {
      * The message can contain placeholders like %s or %d, which will be replaced with the given arguments.
      * @see String#format(String, Object...)
      *
-     * The arguments can also contain a {@link Throwable} exception, which will be printed.
+     * The arguments can also contain a {@code Throwable} exception, which will be printed.
      * Example: <pre>log.error("This is a %s log", "error", new Exception())</pre>
      *
      * @param formatMsg message with or without placeholders
@@ -173,7 +173,7 @@ public class Logger {
      * The message can contain placeholders like %s or %d, which will be replaced with the given arguments.
      * @see String#format(String, Object...)
      *
-     * The arguments can also contain a {@link Throwable} exception, which will be printed.
+     * The arguments can also contain a {@code Throwable} exception, which will be printed.
      * Example: <pre>log.crit("This is a %s log", "crit", new Exception())</pre>
      *
      * @param formatMsg message with or without placeholders

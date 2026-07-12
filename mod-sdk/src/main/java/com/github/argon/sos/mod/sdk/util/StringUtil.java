@@ -14,6 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Utility class for common string operations.
+ */
 @UtilityClass
 public class StringUtil {
 
@@ -61,6 +64,7 @@ public class StringUtil {
     /**
      * Will lowercase the first character of a {@link String}.
      *
+     * @param text to lowercase the first character of
      * @return e.g. TesT to tesT
      */
     public static String unCapitalize(String text) {
@@ -335,6 +339,10 @@ public class StringUtil {
 
     /**
      * Replaces tokens like {0} {1} etc. in a string with the given argument on that place
+     *
+     * @param template containing tokens to replace
+     * @param args to replace the tokens with
+     * @return string with replaced tokens
      */
     public static String replaceTokens(String template, Object... args) {
         if (args.length == 0 || !template.contains("{")) {
@@ -441,6 +449,7 @@ public class StringUtil {
     /**
      * Checks whether the given string is a number.
      *
+     * @param strNum to check whether it is a number
      * @return whether the given string is a number
      */
     public static boolean isNumeric(@Nullable String strNum) {
@@ -454,6 +463,7 @@ public class StringUtil {
     /**
      * Checks whether the given character is a number.
      *
+     * @param character to check whether it is a number
      * @return whether the given character is a number
      */
     public static boolean isNumeric(@Nullable Character character) {
@@ -467,6 +477,7 @@ public class StringUtil {
     /**
      * Checks whether thw given string is an {@link Integer}
      *
+     * @param strNum to check whether it is an integer
      * @return whether the given character is an integer
      */
     public static boolean isInteger(@Nullable String strNum) {
@@ -479,6 +490,7 @@ public class StringUtil {
     /**
      * Checks whether the given string is a decimal number.
      *
+     * @param strNum to check whether it is a decimal number
      * @return whether the given string is a decimal number
      */
     public static boolean isDecimal(@Nullable String strNum) {

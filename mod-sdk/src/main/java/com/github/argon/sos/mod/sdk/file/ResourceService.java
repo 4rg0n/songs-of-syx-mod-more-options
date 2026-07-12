@@ -24,6 +24,12 @@ public class ResourceService extends AbstractFileService {
     private final static Logger log = Loggers.getLogger(ResourceService.class);
 
     /**
+     * Creates a new {@link ResourceService}.
+     */
+    public ResourceService() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

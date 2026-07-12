@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Holds and gives access to {@link UiController}s.
+ */
 @NoArgsConstructor
 public class UiControllers {
     private final Map<Class<?>, UiController<?>> controllers = new HashMap<>();

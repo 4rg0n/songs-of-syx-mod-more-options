@@ -17,6 +17,9 @@ import java.io.Serial;
  */
 public abstract class AbstractUiSwitcher implements CLICKABLE {
 
+    /**
+     * Whether the body needs to be re-aligned before the next render.
+     */
     public boolean dirty = false;
     private final Rec body = new Rec() {
         @Serial
@@ -109,6 +112,11 @@ public abstract class AbstractUiSwitcher implements CLICKABLE {
         this.body.unify(o.body());
         return o;
     }
+    /**
+     * Returns the currently displayed content to render.
+     *
+     * @return content to render
+     */
     protected abstract RENDEROBJ pget();
 
     /**

@@ -15,6 +15,9 @@ public class UninitializedException extends RuntimeException {
     }
 
     /**
+     * Creates a new {@link UninitializedException} with the given message.
+     *
+     * @param message describing why this exception was thrown
      * @see RuntimeException#RuntimeException()
      */
     public UninitializedException(String message) {

@@ -3,7 +3,7 @@ package com.github.argon.sos.mod.sdk.game.action;
 /**
  * Toggles the selected state of an ui element
  *
- * @param <Value>
+ * @param <Value> type of the value passed to the toggle action
  */
 public interface Toggleable<Value> {
     /**

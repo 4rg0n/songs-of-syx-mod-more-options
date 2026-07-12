@@ -17,6 +17,9 @@ public class MetricExporter implements Phases {
 
     private final static Logger log = Loggers.getLogger(MetricExporter.class);
 
+    /**
+     * Suffix appended to the name of each generated export CSV file.
+     */
     public final static String EXPORT_FILE_NAME_SUFFIX = "MetricExport.csv";
 
     /**

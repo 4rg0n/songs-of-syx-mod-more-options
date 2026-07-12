@@ -113,9 +113,10 @@ public class LayoutUtil {
      *
      * @param elements to align
      * @param section optional section used as container for the ui elements
-     * @param margin space between each element
+     * @param search optional search field to filter ui elements
      * @param maxWidth max width of all elements when aligned
      * @param maxHeight max height of the section
+     * @param margin space between each element
      * @return section with aligned ui elements
      */
     public static GuiSection flow(

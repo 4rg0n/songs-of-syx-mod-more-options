@@ -147,12 +147,18 @@ public class GameRaceApi implements Phases {
     /**
      * Checks whether a given race is a vanilla race or a newly added modded one.
      *
+     * @param key to check
      * @return whether race is a vanilla or modded
      */
     public boolean isCustom(String key) {
         return !vanillaRaces.contains(key);
     }
 
+    /**
+     * Returns a list of all vanilla (not modded) races.
+     *
+     * @return list of vanilla races
+     */
     public List<Race> getVanillaRaces() {
         return getAll().stream()
             .filter(race -> vanillaRaces.contains(race.key))
@@ -338,6 +344,10 @@ public class GameRaceApi implements Phases {
 
     /**
      * Data container presenting the liking between two races
+     *
+     * @param race the race the liking is from
+     * @param otherRace the race the liking is towards
+     * @param liking how much race likes otherRace
      */
     @Builder
     public record RaceLiking(String race, String otherRace, double liking) {}

@@ -24,6 +24,12 @@ public abstract class AbstractFileService implements IOService {
     private final static Logger log = Loggers.getLogger(AbstractFileService.class);
 
     /**
+     * Creates a new {@link AbstractFileService}.
+     */
+    protected AbstractFileService() {
+    }
+
+    /**
      * Will read the content from an {@link InputStream}.
      * Each line will be separated by a "\n" linebreak.
      *

@@ -29,6 +29,12 @@ public class FileService extends AbstractFileService {
     public final static Charset CHARSET = StandardCharsets.UTF_8;
 
     /**
+     * Creates a new {@link FileService}.
+     */
+    public FileService() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

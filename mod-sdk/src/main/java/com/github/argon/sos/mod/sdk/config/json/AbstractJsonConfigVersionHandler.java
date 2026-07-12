@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * Contains dependencies used in the config version handlers
  *
- * @param <CONFIG>
+ * @param <CONFIG> type of the config object
  */
 @RequiredArgsConstructor
 public abstract class AbstractJsonConfigVersionHandler<CONFIG> implements ConfigVersionHandler<CONFIG> {

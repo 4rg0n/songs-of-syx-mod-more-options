@@ -16,6 +16,10 @@ public class JsonMapper {
     private final static Mappers mappers = Mappers.getDefault();
     private final static JsonEMappers JSON_E_MAPPERS = JsonEMappers.getDefault();
 
+    /** Creates a new {@link JsonMapper}. */
+    public JsonMapper() {
+    }
+
     /**
      * Maps the content of a {@link Json} to a given class containing data from the json.
      * The class has to have setter methods.

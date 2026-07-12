@@ -5,6 +5,9 @@ package com.github.argon.sos.mod.sdk.game.error;
  */
 public class DumpLogsException extends Throwable {
     /**
+     * Creates a new {@link DumpLogsException} with a message.
+     *
+     * @param message describing why the logs are dumped
      * @see Throwable#Throwable(String)
      */
     public DumpLogsException(String message) {

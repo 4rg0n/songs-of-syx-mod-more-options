@@ -161,6 +161,12 @@ public class ButtonMenu<Key> extends Section {
         private final Map<Key, AbstractButton<Key>> buttons = new LinkedHashMap<>();
 
         /**
+         * Creates a new {@link ButtonMenuBuilder}.
+         */
+        public ButtonMenuBuilder() {
+        }
+
+        /**
          * Will create a button menu from a list of buttons
          *
          * @param buttonList to create the menu from

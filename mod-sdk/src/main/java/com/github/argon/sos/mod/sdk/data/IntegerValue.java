@@ -41,7 +41,7 @@ public class IntegerValue {
 
     /**
      * Sets a new value.
-     * Will clamp the value according to {@link IntegerValue#getMin()} and {@link IntegerValue#getMax()}.
+     * Will clamp the value according to {@code getMin()} and {@code getMax()}.
      *
      * @param value to set
      * @return set and clamped value
@@ -60,8 +60,8 @@ public class IntegerValue {
 
     /**
      * Will calculate a distance
-     * on how far the integer is from {@link IntegerValue#getMin()},
-     * if the value is negative and how far it is from {@link IntegerValue#getMax()}, if the value is positive.
+     * on how far the integer is from {@code getMin()},
+     * if the value is negative and how far it is from {@code getMax()}, if the value is positive.
      *
      * @return the distance to max / min, where 1.0 means it is at max / min.
      */

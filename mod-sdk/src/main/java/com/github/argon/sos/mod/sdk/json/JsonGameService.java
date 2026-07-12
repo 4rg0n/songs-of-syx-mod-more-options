@@ -32,6 +32,12 @@ public class JsonGameService implements JsonService {
             });
     }
 
+    /**
+     * Reads and parses the json content of the given path.
+     *
+     * @param path of the file to load
+     * @return parsed json or empty when the file does not exist
+     */
     public Optional<Json> load(Path path) {
         String jsonString;
         try {
@@ -64,6 +70,12 @@ public class JsonGameService implements JsonService {
         save(filePath, json);
     }
 
+    /**
+     * Writes the given {@link Json} content into the given path.
+     *
+     * @param path to write into
+     * @param json to write
+     */
     public void save(Path path, Json json) {
         try {
             ioService.write(path, json.write());

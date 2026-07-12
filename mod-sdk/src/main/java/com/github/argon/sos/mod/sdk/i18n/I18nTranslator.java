@@ -115,6 +115,8 @@ public class I18nTranslator {
     /**
      * Get translated message by given key.
      *
+     * @param key translation key
+     * @param args optional used to replace tokens in the translated message
      * @return found translation for key or null
      */
     @Nullable

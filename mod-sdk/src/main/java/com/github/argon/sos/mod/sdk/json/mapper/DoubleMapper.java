@@ -14,6 +14,12 @@ import java.util.Arrays;
  */
 public class DoubleMapper implements Mapper<JsonDouble> {
     /**
+     * Creates a new {@link DoubleMapper}.
+     */
+    public DoubleMapper() {
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

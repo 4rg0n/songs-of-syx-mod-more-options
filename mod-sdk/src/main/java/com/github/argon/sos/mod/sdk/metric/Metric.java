@@ -76,6 +76,9 @@ public class Metric {
         };
     }
 
+    /**
+     * Holds information about the current in-game time when a {@link Metric} was collected.
+     */
     @Getter
     @Builder
     @ToString

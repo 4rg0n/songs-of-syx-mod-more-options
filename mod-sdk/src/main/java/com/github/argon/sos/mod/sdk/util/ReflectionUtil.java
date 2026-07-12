@@ -97,7 +97,10 @@ public class ReflectionUtil {
     /**
      * Returns a list with {@link Field}s, which have the given annotation class on it.
      *
+     * @param annotationClass to look for on the fields
+     * @param clazz containing the fields
      * @return all fields with a given annotation attached to it
+     * @param <T> the type of the annotation
      */
     public static <T extends Annotation> List<Field> getDeclaredFieldsWithAnnotation(Class<T> annotationClass, Class<?> clazz)  {
         return Arrays.stream(clazz.getDeclaredFields())
@@ -146,6 +149,7 @@ public class ReflectionUtil {
      * @param field to get the value from
      * @param instance containing the field
      * @return the value of a {@link Field} if present
+     * @param <T> the expected type of the field value
      */
     public static <T> Optional<T> getDeclaredFieldValue(Field field, Object instance) {
         boolean accessible = field.canAccess(instance);
@@ -169,6 +173,7 @@ public class ReflectionUtil {
      * @param fieldName of the field to get the value from
      * @param instance containing the field
      * @return the value of a {@link Field} if present
+     * @param <T> the expected type of the field value
      */
     public static <T> Optional<T> getDeclaredFieldValue(String fieldName, Object instance) {
 
@@ -185,6 +190,7 @@ public class ReflectionUtil {
      * @param fieldName of the field to get the value from
      * @param clazz containing the field
      * @return the value of a {@link Field} if present
+     * @param <T> the expected type of the field value
      */
     public static <T> Optional<T> getDeclaredFieldValue(String fieldName, Class<?> clazz) {
 
@@ -217,6 +223,7 @@ public class ReflectionUtil {
      * @param fieldClazz of the field to look for
      * @param instance containing the field
      * @return a list of field values from fields matching the given fieldClass
+     * @param <T> the expected type of the field values
      */
     public static <T> List<T> getDeclaredFieldValues(Class<T> fieldClazz, Object instance) {
         return ReflectionUtil.getDeclaredFields(
@@ -235,6 +242,7 @@ public class ReflectionUtil {
      * @param fieldClazz of the field to look for
      * @param instance containing the field
      * @return a map of field names with values from fields matching the given fieldClass
+     * @param <T> the expected type of the field values
      */
     public static <T> Map<Field, T> getDeclaredFieldValuesMap(Class<?> fieldClazz, Object instance) {
         Map<Field, T> fieldValues = new HashMap<>();
@@ -257,6 +265,7 @@ public class ReflectionUtil {
      * @param fieldClazz of the field to look for
      * @param clazz containing the field
      * @return a map of field names with values from fields matching the given fieldClass
+     * @param <T> the expected type of the field values
      */
     public static <T> Map<Field, T> getDeclaredFieldValuesMap(Class<?> fieldClazz, Class<?> clazz) {
         Map<Field, T> fieldValues = new HashMap<>();
@@ -273,6 +282,14 @@ public class ReflectionUtil {
         return fieldValues;
     }
 
+    /**
+     * Tries to get a declared {@link Method} with the given name and parameter types from the given class.
+     *
+     * @param clazz containing the method
+     * @param methodName of the method to look for
+     * @param parameters types of the method
+     * @return the found method matching name and parameters
+     */
     public static Optional<Method> getMethod(Class<?> clazz, String methodName, Class<?>... parameters) {
         try {
             return Optional.of(clazz.getDeclaredMethod(methodName, parameters));
@@ -289,6 +306,7 @@ public class ReflectionUtil {
      * @param field to read annotations from
      * @param annotationClass which annotation class to look for
      * @return found annotation matching the given class
+     * @param <T> the type of the annotation
      */
     public static <T extends Annotation> Optional<T> getAnnotation(Field field, Class<T> annotationClass) {
         if (!field.isAnnotationPresent(annotationClass)) {
@@ -306,6 +324,7 @@ public class ReflectionUtil {
      * @param method to read annotations from
      * @param annotationClass which annotation class to look for
      * @return found annotation matching the given class
+     * @param <T> the type of the annotation
      */
     public static <T extends Annotation> Optional<T> getAnnotation(Method method, Class<T> annotationClass) {
         if (!method.isAnnotationPresent(annotationClass)) {
@@ -323,6 +342,7 @@ public class ReflectionUtil {
      * @param clazz to read annotations from
      * @param annotationClass which annotation class to look for
      * @return found annotation matching the given class
+     * @param <T> the type of the annotation
      */
     public static <T extends Annotation> Optional<T> getAnnotation(Class<?> clazz, Class<T> annotationClass) {
         if (!clazz.isAnnotationPresent(annotationClass)) {
@@ -413,7 +433,7 @@ public class ReflectionUtil {
     }
 
     /**
-     * Returns the "Generic" class of a given field. E.g. String for a List<String>
+     * Returns the "Generic" class of a given field. E.g. {@code String} for a {@code List<String>}
      *
      * @param fieldName to get the generic from
      * @param clazz containing the field
@@ -425,7 +445,7 @@ public class ReflectionUtil {
     }
 
     /**
-     * Returns the "Generic" class of a given field. E.g. String for a List<String>
+     * Returns the "Generic" class of a given field. E.g. {@code String} for a {@code List<String>}
      *
      * @param field to get the generic from
      * @return the found generic
@@ -441,7 +461,7 @@ public class ReflectionUtil {
     }
 
     /**
-     * Returns the "Generic" classes of a given field. E.g. String and Integer for a Map<String, Integer>
+     * Returns the "Generic" classes of a given field. E.g. {@code String} and {@code Integer} for a {@code Map<String, Integer>}
      *
      * @param field to get the generic from
      * @return the found generics
@@ -498,6 +518,9 @@ public class ReflectionUtil {
     }
 
     /**
+     * Checks whether the given class has a constructor without any arguments.
+     *
+     * @param clazz to check
      * @return whether the given class has a constructor without any arguments
      */
     public static boolean hasNoArgsConstructor(Class<?> clazz) {

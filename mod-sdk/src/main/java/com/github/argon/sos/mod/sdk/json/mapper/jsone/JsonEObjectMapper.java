@@ -11,6 +11,10 @@ import snake2d.util.file.JsonE;
  */
 public class JsonEObjectMapper implements JsonEMapper<JsonObject> {
 
+    /** Creates a new {@link JsonEObjectMapper}. */
+    public JsonEObjectMapper() {
+    }
+
     /**
      * Maps a {@link JsonObject} to the games {@link JsonE}.
      *

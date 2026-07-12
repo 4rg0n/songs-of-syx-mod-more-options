@@ -49,6 +49,7 @@ public class PhaseManager implements Phases {
      *     *
      * @param phase to register the impl for
      * @param phasesImpl to register
+     * @return this manager instance for chaining
      */
     public PhaseManager register(Phase phase, Phases phasesImpl) {
         if (this.phases.get(phase).contains(phasesImpl)) {

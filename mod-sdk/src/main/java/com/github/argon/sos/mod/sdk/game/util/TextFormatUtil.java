@@ -26,6 +26,7 @@ public class TextFormatUtil {
      * Will format a text with a % sign and a - sign if negative
      * @param text to add the formatted text to
      * @param value percentage value
+     * @param decimals amount of decimal places to display
      * @return text displayed as positive or negative percent
      */
     public static GText percentage(GText text, double value, int decimals) {

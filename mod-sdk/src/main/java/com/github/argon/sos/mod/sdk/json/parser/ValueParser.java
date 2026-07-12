@@ -13,6 +13,12 @@ public class ValueParser implements Parser {
     private final TupleParser tupleParser = new TupleParser();
 
     /**
+     * Creates a new {@link ValueParser}.
+     */
+    public ValueParser() {
+    }
+
+    /**
      * Parses simple value types from a json string into a {@link JsonDouble}, {@link JsonLong}, {@link JsonString} or {@link JsonTuple}.
      *
      * @param json to parse

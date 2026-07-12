@@ -53,6 +53,7 @@ public class Tabulator<Key, Element extends RENDEROBJ, Value> extends Section im
      * Creates a new {@link Tabulator}.
      *
      * @param tabs list of ui elements to toggle with info for buttons
+     * @param tabMenu optional menu with buttons to switch tabs
      * @param direction where shall the element be placed: DIR.N, DIR.S, DIR.E, DIR.W
      * @param margin space between element and buttons
      * @param center whether elements shall be centered

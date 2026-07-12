@@ -28,11 +28,17 @@ public class Notification extends Section {
     private final GText displayText;
 
     private boolean marked = false;
+
+    /**
+     * Executed when the notification is hidden.
+     */
     @Setter
     @Accessors(fluent = true, chain = false)
     protected Action<Notification> hideAction = o -> {};
 
     /**
+     * Creates a new {@link Notification}.
+     *
      * @param text which text to display as notification
      * @param width of the content area
      * @param height of the content area

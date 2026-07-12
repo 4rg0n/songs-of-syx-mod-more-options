@@ -21,6 +21,13 @@ public class FileLogWriter extends AbstractLogWriter implements Phases {
 
     private final Path logFile;
 
+    /**
+     * Creates a new {@link FileLogWriter}.
+     *
+     * @param prefix for each log message
+     * @param messageFormat for writing the log messages
+     * @param logFile to write log messages into
+     */
     public FileLogWriter(
         String prefix,
         String messageFormat,
@@ -55,6 +62,8 @@ public class FileLogWriter extends AbstractLogWriter implements Phases {
     }
 
     /**
+     * Checks whether the writer currently has a file open to log into.
+     *
      * @return whether the writer has a file open to log into
      */
     public boolean isOpen() {

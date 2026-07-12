@@ -8,6 +8,10 @@ import lombok.experimental.Accessors;
  */
 public class JsonWriters {
 
+    /** Creates a new {@link JsonWriters}. */
+    public JsonWriters() {
+    }
+
     /**
      * Songs of Syx JSON format with indents
      */

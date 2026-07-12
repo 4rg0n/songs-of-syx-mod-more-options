@@ -16,5 +16,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 public @interface JsonProperty {
+    /**
+     * The json key to map the field to.
+     *
+     * @return the json key
+     */
     String key() default "";
 }

@@ -13,6 +13,13 @@ import java.util.Arrays;
  * For mapping {@link JsonLong} to a java {@link Long}, {@link Integer}, {@link Byte}, {@link Short} or {@link BigInteger} and visa versa.
  */
 public class LongMapper implements Mapper<JsonLong> {
+
+    /**
+     * Creates a new {@link LongMapper}.
+     */
+    public LongMapper() {
+    }
+
     /**
      * {@inheritDoc}
      */

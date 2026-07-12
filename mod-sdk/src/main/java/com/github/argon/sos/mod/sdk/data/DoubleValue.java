@@ -41,7 +41,7 @@ public class DoubleValue {
 
     /**
      * Sets a new value.
-     * Will clamp the value according to {@link DoubleValue#getMin()} and {@link DoubleValue#getMax()}.
+     * Will clamp the value according to {@code getMin()} and {@code getMax()}.
      *
      * @param value to set
      * @return set and clamped value

@@ -40,6 +40,9 @@ public abstract class AbstractScrollRows implements Refreshable, Initializable<V
 		};
 	};
 
+	/**
+	 * The scroll target driving how many rows are shown / scrolled through.
+	 */
 	public final INTE target = new INTE() {
 
 		@Override

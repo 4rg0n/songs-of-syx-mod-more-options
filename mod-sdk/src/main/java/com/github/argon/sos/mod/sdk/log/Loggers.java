@@ -11,6 +11,13 @@ import java.util.*;
  * For creating, registering and receiving {@link Logger}s.
  */
 public class Loggers {
+
+    /**
+     * Creates a new {@link Loggers}.
+     */
+    public Loggers() {
+    }
+
     private final static Map<String, Logger> loggers = new HashMap<>();
     private final static Set<LogWriter> writers = new LinkedHashSet<>();
 
@@ -18,6 +25,9 @@ public class Loggers {
         registerWriter(new StdOutWriter(Logger.PREFIX_MOD, Logger.LOG_MSG_FORMAT));
     }
 
+    /**
+     * Log level used when nothing was configured.
+     */
     public final static Level LOG_LEVEL_DEFAULT = Level.INFO;
 
     @Getter
@@ -26,17 +36,27 @@ public class Loggers {
     /**
      * Will register an additional writer.
      * Each newly created Logger will receive all registered writers.
+     *
+     * @param writer to register
      */
     public static void registerWriter(LogWriter writer) {
         writers.add(writer);
     }
 
+    /**
+     * Adds a writer to all currently registered loggers.
+     *
+     * @param writer to add
+     */
     public static void addWriter(LogWriter writer) {
         loggers.forEach((name, logger) -> logger.addWriter(writer));
     }
 
     /**
      * Returns a registered Logger. Or register it when not already present.
+     *
+     * @param clazz for which the logger is responsible
+     * @return the registered logger
      */
     public static Logger getLogger(Class<?> clazz) {
         if (!loggers.containsKey(clazz.getName())) {
@@ -50,6 +70,9 @@ public class Loggers {
 
     /**
      * Changes the log level of the given logger
+     *
+     * @param clazz of the logger to change
+     * @param level to set
      */
     public static void setLevel(Class<?> clazz, Level level) {
         setLevels(clazz.getName(), level);
@@ -57,6 +80,8 @@ public class Loggers {
 
     /**
      * Sets the log level of all registered loggers
+     *
+     * @param level to set
      */
     public static void setLevels(Level level) {
         if (level.equals(rootLevel)) {
@@ -70,6 +95,9 @@ public class Loggers {
 
     /**
      * Sets the level of all loggers which class name starts with (including package name)
+     *
+     * @param nameStartsWith prefix the logger's class name must start with
+     * @param level to set
      */
     public static void setLevels(String nameStartsWith, Level level) {
         loggers.forEach((name, logger) -> {
