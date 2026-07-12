@@ -24,21 +24,22 @@ public class MenuUi {
     @Accessors(fluent = true, chain = false)
     private final Popups popups = new Popups();
 
-    public final static Supplier<Coo> MOUSE_COO_SUPPLIER = () -> getInstance().getMouseCoo();
+//    public final static Supplier<Coo> MOUSE_COO_SUPPLIER = () -> getInstance().getMouseCoo();
+    public final static Supplier<Coo> MOUSE_COO_SUPPLIER = () -> {return null;};
 
     @Nullable
-    private Menu menu;
+    private MenuDisabled menu;
 
-    public Menu getMenu() {
+    public MenuDisabled getMenu() {
         Objects.requireNonNull(menu);
         return menu;
     }
 
-    public Coo getMouseCoo() {
-        return getMenu().getMCoo();
-    }
+//    public Coo getMouseCoo() {
+//        return getMenu().getMCoo();
+//    }
 
-    public void init(Menu menu) {
+    public void init(MenuDisabled menu) {
         log.debug("init");
         this.menu = menu;
     }

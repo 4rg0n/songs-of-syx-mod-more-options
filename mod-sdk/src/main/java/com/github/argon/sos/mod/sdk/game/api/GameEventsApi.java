@@ -10,6 +10,7 @@ import game.GAME;
 import game.event.actions.EventAction;
 import game.event.actions._EVENT;
 import game.event.engine.Event;
+import game.event.engine.EventAccess;
 import game.events.EVENTS;
 import game.faction.FACTIONS;
 import game.faction.Faction;
@@ -197,14 +198,7 @@ public class GameEventsApi implements Resettable {
     public Map<String, Event> readEvents() {
         Map<String, Event> events = new HashMap<>();
         try {
-            ArrayListGrower<Event> all = ReflectionUtil.getDeclaredField("all", Event.class)
-                .map(field ->
-                     ReflectionUtil.getDeclaredFieldValue(field, Event.class)
-                        .orElseThrow(() -> new RuntimeException("Got empty 'all' from event class " + Event.class.getName()))
-                ).filter(ArrayListGrower.class::isInstance)
-                .map(list -> (ArrayListGrower<Event>) list)
-                .orElse(new ArrayListGrower<>());
-
+            ArrayListGrower<Event> all = EventAccess.getAll();
 
             for (Event event : all) {
                 events.put(KEY_PREFIX + "." + event.key, event);

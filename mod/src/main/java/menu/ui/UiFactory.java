@@ -4,16 +4,15 @@ import com.github.argon.sos.mod.sdk.data.DoubleValue;
 import com.github.argon.sos.mod.sdk.data.IntegerValue;
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.game.util.Wildcard;
-import com.github.argon.sos.mod.sdk.json.JsonMapper;
 import com.github.argon.sos.mod.sdk.json.element.*;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.ui.button.*;
 import com.github.argon.sos.mod.sdk.ui.input.Checkbox;
-import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
 import com.github.argon.sos.mod.sdk.ui.input.InputDouble;
 import com.github.argon.sos.mod.sdk.ui.input.InputInteger;
 import com.github.argon.sos.mod.sdk.ui.input.InputString;
+import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
 import com.github.argon.sos.mod.sdk.ui.simple.Spacer;
 import com.github.argon.sos.mod.sdk.ui.slider.Slider;
 import com.github.argon.sos.mod.sdk.ui.slider.SliderDoubleList;
@@ -27,8 +26,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import menu.MenuUi;
 import org.jetbrains.annotations.Nullable;
-import snake2d.util.file.Json;
-import snake2d.util.file.JsonE;
 import snake2d.util.gui.renderable.RENDEROBJ;
 import snake2d.util.sprite.text.Font;
 import snake2d.util.sprite.text.StringInputSprite;
@@ -196,7 +193,7 @@ public class UiFactory {
         slider.inputClickAction(slider1 -> {
             MenuUi.getInstance().popups().show(inputInteger, slider);
         });
-        slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
+//        slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
         return slider;
     }
 
@@ -208,7 +205,7 @@ public class UiFactory {
             .inputValue(integerValue)
             .inputWidth(100)
             .showButtons(true)
-            .mouseCoordinatesSupplier(() -> MenuUi.getInstance().getMouseCoo())
+//            .mouseCoordinatesSupplier(() -> MenuUi.getInstance().getMouseCoo())
             .build();
     }
 
@@ -221,7 +218,7 @@ public class UiFactory {
             .inputWidth(100)
             .decimals(decimals)
             .showButtons(true)
-            .mouseCoordinatesSupplier(() -> MenuUi.getInstance().getMouseCoo())
+//            .mouseCoordinatesSupplier(() -> MenuUi.getInstance().getMouseCoo())
             .build();
     }
 
@@ -236,7 +233,7 @@ public class UiFactory {
         slider.inputClickAction(slider1 -> {
             MenuUi.getInstance().popups().show(inputInteger, slider);
         });
-        slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
+//        slider.mouseCooSupplier(() -> MenuUi.getInstance().getMouseCoo());
         return slider;
     }
 
@@ -250,40 +247,6 @@ public class UiFactory {
             .lockScroll(true)
             .showInput(true)
             .allowedValues(allowedValues);
-    }
-
-    @Nullable
-    public static IconView icon(JsonObject jsonObject) {
-        try {
-            JsonE jsonE = JsonMapper.mapJson(jsonObject);
-            Json json = new Json(jsonE.toString(), "");
-            return new IconView(UI.icons().get(json), null, json, jsonObject);
-        } catch (Exception e) {
-            log.warn("", e);
-        }
-
-        return null;
-    }
-
-    @Nullable
-    public static IconView icon(JsonString jsonString) {
-        try {
-            JsonE jsonE = new JsonE();
-            jsonE.add("ICON", jsonString.getValue());
-            Json json = new Json(jsonE.toString(), "BOCKWURST");
-
-            // fixme can not load icons, because of no content in fileGetter
-            return new IconView(
-                UI.icons().get(json),
-                jsonString.getValue(),
-                null,
-                null
-            );
-        } catch (Exception e) {
-            log.warn("", e);
-        }
-
-        return null;
     }
 
     public static InputString text(JsonString jsonString) {
