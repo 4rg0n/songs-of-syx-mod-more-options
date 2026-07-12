@@ -79,11 +79,6 @@ public abstract class AbstractButton<Value> extends GButt.ButtPanel
     public final static COLOR DEFAULT_BG_COLOR = COLOR.WHITE35;
 
     /**
-     * The default font for the button
-     */
-    public final static Font DEFAULT_FONT = UI.FONT().H2;
-
-    /**
      * For creating a button with a value only.
      *
      * @param value of the button. The {@link Object#toString()} result will be used as label.
@@ -107,12 +102,12 @@ public abstract class AbstractButton<Value> extends GButt.ButtPanel
     /**
      * For creating a button with a label.
      * {@link AbstractButton#DEFAULT_BG_COLOR} will be used as background color.
-     * {@link AbstractButton#DEFAULT_FONT} will be used as font.
+     * {@link init.sprite.UI.UIFonts#H2} will be used as font.
      *
      * @param label to display on the button
      */
     public AbstractButton(CharSequence label) {
-        this(label, DEFAULT_BG_COLOR, DEFAULT_FONT, null);
+        this(label, DEFAULT_BG_COLOR, UI.FONT().H2, null);
     }
 
     /**
@@ -136,19 +131,19 @@ public abstract class AbstractButton<Value> extends GButt.ButtPanel
      * @param description to display when hovering
      */
     public AbstractButton(CharSequence label, COLOR bgColor, @Nullable CharSequence description) {
-        this(label, bgColor, DEFAULT_FONT, description);
+        this(label, bgColor, UI.FONT().H2, description);
     }
 
     /**
      * For creating a button with a label and an optional description.
      * {@link AbstractButton#DEFAULT_BG_COLOR} will be used as background color.
-     * {@link AbstractButton#DEFAULT_FONT} will be used as font.
+     * {@link init.sprite.UI.UIFonts#H2} will be used as font.
      *
      * @param label to display on the button
      * @param description to display when hovering
      */
     public AbstractButton(CharSequence label, @Nullable CharSequence description) {
-        this(label, DEFAULT_BG_COLOR, DEFAULT_FONT, description);
+        this(label, DEFAULT_BG_COLOR, UI.FONT().H2, description);
     }
 
     /**
