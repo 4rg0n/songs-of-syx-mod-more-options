@@ -6,7 +6,13 @@ import init.paths.PATHS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents the game "text/race" folder structure.
+ */
 public class TextRace extends AbstractGameData {
+    /**
+     * Creates a new "text/race" folder structure instance
+     */
     public TextRace() {
         super(PATHS.RACE().text);
     }

@@ -8,17 +8,29 @@ import com.github.argon.sos.mod.sdk.json.element.JsonElement;
  * For parsing boolean values: true and false
  */
 public class BooleanParser implements Parser {
+
+    /**
+     * Creates a new {@link BooleanParser}.
+     */
+    public BooleanParser() {
+    }
+
+    /**
+     * Parses json booleans into a {@link JsonBoolean}.
+     *
+     * @param json to parse
+     * @return parsed json boolean
+     * @throws JsonParseException when the value isn't "true" or "false"
+     */
     @Override
     public JsonElement parse(Json json) {
         String value = json.getNextValue(true);
 
-        switch (value) {
-            case "true":
-                return new JsonBoolean(true);
-            case "false":
-                return new JsonBoolean(false);
-            default:
+        return switch (value) {
+            case "true" -> new JsonBoolean(true);
+            case "false" -> new JsonBoolean(false);
+            default ->
                 throw new JsonParseException("Could not parse boolean value from '" + value + "' at position " + json.getIndex());
-        }
+        };
     }
 }

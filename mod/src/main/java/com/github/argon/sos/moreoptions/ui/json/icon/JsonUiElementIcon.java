@@ -1,13 +1,13 @@
 package com.github.argon.sos.moreoptions.ui.json.icon;
 
-import com.github.argon.sos.mod.sdk.ui.Section;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
+import com.github.argon.sos.mod.sdk.ui.util.Section;
+import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiElementSingle;
 import init.sprite.SPRITES;
 import init.sprite.UI.UI;
 import lombok.Getter;
 import lombok.Setter;
-import com.github.argon.sos.moreoptions.ui.json.factory.JsonUiElementSingle;
 import snake2d.SPRITE_RENDERER;
 import snake2d.util.gui.GUI_BOX;
 import snake2d.util.gui.renderable.RENDEROBJ;
@@ -27,13 +27,13 @@ public class JsonUiElementIcon<Value extends JsonElement, Element extends RENDER
 
     public JsonUiElementIcon(JsonUiElementSingle<Value, Element> jsonUiElement) {
         this.jsonUiElement = jsonUiElement;
-        add(UiUtil.toRender(SPRITES.icons().m.cog_big));
+        add(UiMapper.toRender(SPRITES.icons().m.cog_big));
     }
 
     @Override
-    public void render(SPRITE_RENDERER r, float ds) {
+    public void render(SPRITE_RENDERER renderer, float deltaSeconds) {
         if (!visible) return;
-        super.render(r, ds);
+        super.render(renderer, deltaSeconds);
     }
 
     @Override

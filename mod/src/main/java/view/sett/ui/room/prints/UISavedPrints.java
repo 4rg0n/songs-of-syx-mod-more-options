@@ -1,7 +1,7 @@
 package view.sett.ui.room.prints;
 
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.ui.Button;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
 import com.github.argon.sos.mod.sdk.util.Clipboard;
 import com.github.argon.sos.moreoptions.ModModule;
 import game.faction.FACTIONS;

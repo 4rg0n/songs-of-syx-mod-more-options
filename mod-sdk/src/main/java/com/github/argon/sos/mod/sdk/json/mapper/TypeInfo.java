@@ -8,7 +8,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * Holds type the information of an object such as e.g. List<String>
+ * Holds type the information of an object such as e.g. {@code List<String>}
  * Usage:
  * <pre>{@code
  *     // for simple classes
@@ -36,26 +36,52 @@ public class TypeInfo<T> {
         this.rawType = (Class<? super T>) TypeUtil.getRawType(this.type);
     }
 
+    /**
+     * Creates a new {@link TypeInfo} reading the type from the generic superclass.
+     */
     protected TypeInfo() {
         this.type = getOwnTypeArgument();
         //noinspection unchecked
         this.rawType = (Class<? super T>) TypeUtil.getRawType(this.type);
     }
 
+    /**
+     * Returns the class of this type info.
+     *
+     * @return class of this type info
+     */
     public Class<? super T> getTypeClass() {
         return rawType;
     }
 
+    /**
+     * Returns the generic types.
+     *
+     * @return generics of this type info
+     */
     public Type[] getGenericTypes() {
         return ReflectionUtil.getGenericTypes(type);
     }
 
+    /**
+     * Creates a new {@link TypeInfo} with the given type.
+     *
+     * @param type to create the type info with
+     * @return type info with given type
+     */
     public static TypeInfo<?> get(Type type) {
         return new TypeInfo<>(type);
     }
 
-    public static <T> TypeInfo<T> get(Class<T> type) {
-        return new TypeInfo<>(type);
+    /**
+     * Creates a new {@link TypeInfo} with the given class.
+     *
+     * @param clazz to create the class info with
+     * @return type info with given class
+     * @param <T> type information
+     */
+    public static <T> TypeInfo<T> get(Class<T> clazz) {
+        return new TypeInfo<>(clazz);
     }
 
     /**
@@ -65,8 +91,7 @@ public class TypeInfo<T> {
      */
     private Type getOwnTypeArgument() {
         Type superclass = getClass().getGenericSuperclass();
-        if (superclass instanceof ParameterizedType) {
-            ParameterizedType parameterized = (ParameterizedType) superclass;
+        if (superclass instanceof ParameterizedType parameterized) {
             if (parameterized.getRawType() == TypeInfo.class) {
                 return parameterized.getActualTypeArguments()[0];
             }

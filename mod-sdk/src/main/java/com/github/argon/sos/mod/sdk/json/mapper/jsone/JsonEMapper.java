@@ -9,6 +9,21 @@ import snake2d.util.file.JsonE;
  * @param <T> {@link JsonElement} to map from
  */
 public interface JsonEMapper<T extends JsonElement> {
+    /**
+     * Maps a standard {@link JsonElement} to the games {@link JsonE}.
+     *
+     * @param json game json to map into
+     * @param key of the json element
+     * @param jsonElement to map
+     * @return mapped game json object
+     */
     JsonE mapJsonE(JsonE json, String key, T jsonElement);
+
+    /**
+     * Checks whether this class supports the mapping of given class type.
+     *
+     * @param clazz to check
+     * @return whether the mapper supports mapping the given class
+     */
     boolean supports(Class<?> clazz);
 }

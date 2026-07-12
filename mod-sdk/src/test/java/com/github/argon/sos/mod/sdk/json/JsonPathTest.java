@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JsonPathTest {
 
     @Test
-    void get_Simple() {
-        JsonPath jsonPath = JsonPath.get("TEST.TEST");
+    void of_Simple() {
+        JsonPath jsonPath = JsonPath.of("TEST.TEST");
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.put("TEST", new JsonBoolean(true));
@@ -23,7 +23,7 @@ class JsonPathTest {
         JsonObject json = new JsonObject();
         json.put("TEST", jsonObject);
 
-        Optional<JsonElement> result = jsonPath.get(json);
+        Optional<JsonElement> result = jsonPath.of(json);
 
         assertThat(result.isPresent()).isTrue();
         assertThat(result.get()).isInstanceOf(JsonBoolean.class);
@@ -35,8 +35,8 @@ class JsonPathTest {
 
 
     @Test
-    void get_Array() {
-        JsonPath jsonPath = JsonPath.get("TEST.TEST[1]");
+    void of_Array() {
+        JsonPath jsonPath = JsonPath.of("TEST.TEST[1]");
 
         JsonArray jsonArray = new JsonArray();
         jsonArray.add(JsonLong.of(1));
@@ -46,7 +46,7 @@ class JsonPathTest {
         JsonObject json = new JsonObject();
         json.put("TEST", jsonArray);
 
-        Optional<JsonElement> result = jsonPath.get(json);
+        Optional<JsonElement> result = jsonPath.of(json);
         assertThat(result.isPresent()).isTrue();
         assertThat(result.get()).isInstanceOf(JsonLong.class);
         assertThat(result.get())
@@ -56,8 +56,8 @@ class JsonPathTest {
     }
 
     @Test
-    void get_ArrayNested() {
-        JsonPath jsonPath = JsonPath.get("TEST[1].TEST[2]");
+    void of_ArrayNested() {
+        JsonPath jsonPath = JsonPath.of("TEST[1].TEST[2]");
 
         JsonArray jsonArray = new JsonArray();
         jsonArray.add(JsonLong.of(1));
@@ -71,7 +71,7 @@ class JsonPathTest {
                 JsonObject.of(Map.of("TEST", jsonArray))
             )));
 
-        Optional<JsonElement> result = jsonPath.get(json);
+        Optional<JsonElement> result = jsonPath.of(json);
         assertThat(result.isPresent()).isTrue();
         assertThat(result.get()).isInstanceOf(JsonLong.class);
         assertThat(result.get())
@@ -82,7 +82,7 @@ class JsonPathTest {
 
     @Test
     void put_ArrayNested() {
-        JsonPath jsonPath = JsonPath.get("TEST.TEST[1].TEST.TEST[2]");
+        JsonPath jsonPath = JsonPath.of("TEST.TEST[1].TEST.TEST[2]");
 
         JsonArray jsonArray = new JsonArray();
         jsonArray.add(JsonLong.of(1));
@@ -102,7 +102,7 @@ class JsonPathTest {
 
     @Test
     void put_Simple() {
-        JsonPath jsonPath = JsonPath.get("TEST.TEST");
+        JsonPath jsonPath = JsonPath.of("TEST.TEST");
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.put("TEST", JsonBoolean.of(true));
@@ -123,66 +123,66 @@ class JsonPathTest {
             JsonTuple.of("TEST", JsonLong.of(3))
         ));
 
-        JsonPath jsonPath = JsonPath.get("TEST[1].TEST");
+        JsonPath jsonPath = JsonPath.of("TEST[1].TEST");
         jsonPath.put(json, JsonLong.of(1337));
         assertThat(testTuple.getValue()).isEqualTo(JsonLong.of(1337));
     }
 
     @Test
-    void get_Tuple() {
+    void of_Tuple() {
         JsonObject json = JsonObject.of("TEST", JsonArray.of(
             JsonTuple.of("MUH", JsonLong.of(1)),
             JsonTuple.of("TEST", JsonLong.of(1337)),
             JsonTuple.of("BLUB", JsonLong.of(3))
         ));
 
-        JsonPath jsonPath = JsonPath.get("TEST[1].TEST");
-        Optional<JsonElement> jsonElement = jsonPath.get(json);
+        JsonPath jsonPath = JsonPath.of("TEST[1].TEST");
+        Optional<JsonElement> jsonElement = jsonPath.of(json);
         assertThat(jsonElement).isPresent();
         assertThat(jsonElement.get()).isEqualTo(JsonLong.of(1337));
     }
 
     @Test
-    void get_Empty() {
+    void of_Empty() {
         JsonObject json = new JsonObject();
 
-        JsonPath jsonPath = JsonPath.get("NOT.PRESENT");
-        Optional<JsonElement> jsonElement = jsonPath.get(json);
+        JsonPath jsonPath = JsonPath.of("NOT.PRESENT");
+        Optional<JsonElement> jsonElement = jsonPath.of(json);
         assertThat(jsonElement).isEmpty();
     }
 
     @Test
-    void get_EmptyTuple() {
+    void of_EmptyTuple() {
         JsonObject json = JsonObject.of("TEST", JsonArray.of(
             JsonTuple.of("MUH", JsonLong.of(1)),
             JsonTuple.of("TEST", JsonLong.of(1337)),
             JsonTuple.of("BLUB", JsonLong.of(3))
         ));
 
-        JsonPath jsonPath = JsonPath.get("TEST[1].FOO");
-        Optional<JsonElement> jsonElement = jsonPath.get(json);
+        JsonPath jsonPath = JsonPath.of("TEST[1].FOO");
+        Optional<JsonElement> jsonElement = jsonPath.of(json);
         assertThat(jsonElement).isEmpty();
     }
 
     @Test
-    void get_EmptyArray() {
+    void of_EmptyArray() {
         JsonObject json = JsonObject.of("TEST", JsonArray.of(
             JsonLong.of(1),
             JsonLong.of(1337),
             JsonLong.of(3)
         ));
 
-        JsonPath jsonPath = JsonPath.get("TEST[4]");
-        Optional<JsonElement> jsonElement = jsonPath.get(json);
+        JsonPath jsonPath = JsonPath.of("TEST[4]");
+        Optional<JsonElement> jsonElement = jsonPath.of(json);
         assertThat(jsonElement).isEmpty();
     }
 
     @Test
-    void get_EmptyObject() {
+    void of_EmptyObject() {
         JsonObject json = JsonObject.of("TEST", JsonObject.of("TEST", JsonLong.of(1337)));
 
-        JsonPath jsonPath = JsonPath.get("TEST.NOT.PRESENT");
-        Optional<JsonElement> jsonElement = jsonPath.get(json);
+        JsonPath jsonPath = JsonPath.of("TEST.NOT.PRESENT");
+        Optional<JsonElement> jsonElement = jsonPath.of(json);
         assertThat(jsonElement).isEmpty();
     }
 }

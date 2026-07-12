@@ -2,9 +2,16 @@ package com.github.argon.sos.moreoptions.ui.tab.boosters;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.action.Valuable;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
+import com.github.argon.sos.mod.sdk.ui.input.InputString;
+import com.github.argon.sos.mod.sdk.ui.menu.Tabulator;
+import com.github.argon.sos.mod.sdk.ui.slider.Slider;
+import com.github.argon.sos.mod.sdk.ui.switcher.Switcher;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.table.Table;
+import com.github.argon.sos.mod.sdk.ui.text.Label;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
@@ -41,13 +48,13 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 entry -> entry.getValue().stream()
-                    .sorted(Comparator.comparing(boosterEntry -> boosterEntry.getBoosters().getAdd().getOrigin().name.toString()))
+                    .sorted(Comparator.comparing(boosterEntry -> boosterEntry.getBoosters().add().getOrigin().name.toString()))
                     .map(this::boosterRow)
                     .toList()
             ));
 
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("BoostersTab.search.input.name"));
-        Input search = new Input(searchInput);
+        InputString search = new InputString(searchInput);
 
         GHeader titleHeader = new GHeader(faction.name, UI.FONT().H1);
         GuiSection header = new GuiSection();
@@ -77,12 +84,12 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         Range.ApplyMode activeKey;
 
         if (boosterEntry.getRange().getApplyMode().equals(Range.ApplyMode.PERCENT)) {
-            boostable = boosterEntry.getBoosters().getMulti().getOrigin();
+            boostable = boosterEntry.getBoosters().multi().getOrigin();
             rangePerc = boosterEntry.getRange();
             rangeAdd = ConfigDefaults.boosterAdd();
             activeKey = Range.ApplyMode.PERCENT;
         } else {
-            boostable = boosterEntry.getBoosters().getAdd().getOrigin();
+            boostable = boosterEntry.getBoosters().add().getOrigin();
             rangePerc = ConfigDefaults.boosterPercent();
             rangeAdd = boosterEntry.getRange();
             activeKey = Range.ApplyMode.ADD;
@@ -91,7 +98,7 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
         // Label with hover
         Label boosterLabel = Label.builder()
             .name(boostable.name.toString())
-            .hoverGuiAction(guiBox -> {
+            .hoverAction(guiBox -> {
                 guiBox.title(faction.name + ": " + boostable.name);
                 guiBox.text(boostable.desc);
                 guiBox.NL(8);
@@ -100,13 +107,13 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             .build();
 
         // Icon
-        GuiSection icon = UiUtil.toGuiSection(new RENDEROBJ.Sprite(boostable.icon));
+        GuiSection icon = com.github.argon.sos.mod.sdk.game.util.UiMapper.toGuiSection(new RENDEROBJ.Sprite(boostable.icon));
         icon.pad(5);
 
 
         Slider multiSlider = Slider.SliderBuilder.fromRange(rangePerc)
-            .controls(true)
-            .input(true)
+            .showControls(true)
+            .showInput(true)
             .lockScroll(true)
             .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))
             .threshold((int) (0.50 * rangeAdd.getMax()), COLOR.ORANGE100.shade(0.7d))
@@ -115,8 +122,8 @@ public class BoostersSection extends GuiSection implements Valuable<Map<String, 
             .width(300)
             .build();
         Slider additiveSlider = Slider.SliderBuilder.fromRange(rangeAdd)
-            .controls(true)
-            .input(true)
+            .showControls(true)
+            .showInput(true)
             .lockScroll(true)
             .threshold((int) (0.10 * rangeAdd.getMax()), COLOR.YELLOW100.shade(0.7d))
             .threshold((int) (0.50 * rangeAdd.getMax()), COLOR.ORANGE100.shade(0.7d))

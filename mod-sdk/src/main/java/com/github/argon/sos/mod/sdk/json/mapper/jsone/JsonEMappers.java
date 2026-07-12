@@ -16,6 +16,11 @@ import java.util.Optional;
 public class JsonEMappers {
     private final List<JsonEMapper<?>> mappers;
 
+    /**
+     * All {@link JsonEMapper}s provided by the sdk.
+     *
+     * @return default mappers from the sdk
+     */
     public static JsonEMappers getDefault() {
         return new JsonEMappers(Arrays.asList(
             new JsonEBooleanMapper(),
@@ -28,12 +33,25 @@ public class JsonEMappers {
         ));
     }
 
+    /**
+     * Will find mappers supporting the mapping of a given type class.
+     *
+     * @param clazz to check
+     * @return found supported mappers
+     */
     public List<JsonEMapper<?>> find(Class<?> clazz) {
         return mappers.stream()
             .filter(mapper -> mapper.supports(clazz))
             .toList();
     }
 
+    /**
+     * Will find exactly one mapper supporting the mapping of a given type class.
+     *
+     * @param clazz to check
+     * @return found supported mapper
+     * @throws JsonMapperException if more than one mapper was found
+     */
     public Optional<JsonEMapper<?>> findOne(Class<?> clazz) {
         List<JsonEMapper<?>> foundMappers = find(clazz);
 
@@ -45,6 +63,6 @@ public class JsonEMappers {
             throw new JsonMapperException("Found " + foundMappers.size() + " for mapping " + clazz.getTypeName() + ". Required one.");
         }
 
-        return Optional.of(foundMappers.get(0));
+        return Optional.of(foundMappers.getFirst());
     }
 }

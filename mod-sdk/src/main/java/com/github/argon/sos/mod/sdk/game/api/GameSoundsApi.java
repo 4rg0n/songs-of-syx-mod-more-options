@@ -27,6 +27,9 @@ public class GameSoundsApi implements Resettable {
 
     private final Logger log = Loggers.getLogger(GameSoundsApi.class);
 
+    /**
+     * Used as prefix for sound keys to identify them as a sound.
+     */
     public final static String KEY_PREFIX = "sounds";
 
     /**
@@ -41,6 +44,9 @@ public class GameSoundsApi implements Resettable {
     @Nullable private Map<String, SoundRace> roomWorkSounds;
     @Nullable private Map<String, SoundRace> settlementSounds;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reset() {
         ambienceSounds = null;
@@ -50,6 +56,11 @@ public class GameSoundsApi implements Resettable {
         settlementSounds = null;
     }
 
+    /**
+     * Returns a map with sound keys and the corresponding {@link Ambiance} sounds.
+     *
+     * @return map of keys with ambience sounds
+     */
     public Map<String, Ambiance> getAmbienceSounds() {
         if (ambienceSounds == null) {
             ambienceSounds = new HashMap<>();
@@ -59,11 +70,21 @@ public class GameSoundsApi implements Resettable {
         return ambienceSounds;
     }
 
+    /**
+     * Returns a map with sound keys and the corresponding {@link SoundRace} sounds.
+     *
+     * @return map of keys with race sounds
+     */
     public Map<String, SoundRace> getRaceSounds() {
         if (raceSounds == null) raceSounds = loadCategory(RACE_FILES);
         return raceSounds;
     }
 
+    /**
+     * Returns a map with sound keys and the corresponding {@link SoundRace} animal sounds.
+     *
+     * @return map of keys with animal sounds
+     */
     public Map<String, SoundRace> getAnimalSounds() {
         if (animalSounds == null) {
             animalSounds = new HashMap<>();
@@ -73,6 +94,11 @@ public class GameSoundsApi implements Resettable {
         return animalSounds;
     }
 
+    /**
+     * Returns a map with sound keys and the corresponding {@link SoundRace} room work sounds.
+     *
+     * @return map of keys with room work sounds
+     */
     public Map<String, SoundRace> getRoomWorkSounds() {
         if (roomWorkSounds == null) {
             roomWorkSounds = new HashMap<>();
@@ -84,9 +110,54 @@ public class GameSoundsApi implements Resettable {
         return roomWorkSounds;
     }
 
-    public Map<String, SoundRace> getSounds() {
+    /**
+     * Returns a map with sound keys and the corresponding {@link SoundRace} settlement sounds.
+     *
+     * @return map of keys with settlement sounds
+     */
+    public Map<String, SoundRace> getSettlementSounds() {
         if (settlementSounds == null) settlementSounds = loadCategory(SETTLEMENT_FILES);
         return settlementSounds;
+    }
+
+    /**
+     * Set the volume of a given {@link Sound}.
+     *
+     * @param sound to set the volume
+     * @param value of the volume
+     */
+    public void setSoundGain(Sound sound, int value) {
+        sound.setGainLimit(MathUtil.toPercentage(value));
+    }
+
+    /**
+     * Set the volume of a given {@link SoundRace}.
+     *
+     * @param sound to set the volume
+     * @param value of the volume
+     */
+    public void setSoundGain(SoundRace sound, int value) {
+        Sound[] sounds = (Sound[]) ReflectionUtil.getDeclaredFieldValue("all", sound)
+            .orElse(null);
+
+        if (sounds == null) {
+            log.warn("No sounds in SoundRace %s to set. Bug?", sound.key());
+            return;
+        }
+
+        for (Sound ssound : sounds) {
+            setSoundGain(ssound, value);
+        }
+    }
+
+    /**
+     * Set the volume of a given {@link Ambiance} sound.
+     *
+     * @param sound to set the volume
+     * @param value of the volume
+     */
+    public void setSoundGain(Ambiance sound, int value) {
+        sound.setGainLimit(MathUtil.toPercentage(value));
     }
 
     /**
@@ -110,28 +181,5 @@ public class GameSoundsApi implements Resettable {
         }
 
         return map;
-    }
-
-    public void setSoundGain(Sound sound, int value) {
-        sound.setGainLimit(MathUtil.toPercentage(value));
-    }
-
-    public void setSoundGain(SoundRace raceSound, int value) {
-        Sound[] sounds = ReflectionUtil.getDeclaredFieldValue("all", raceSound)
-            .map(object -> (Sound[]) object)
-            .orElse(null);
-
-        if (sounds == null) {
-            log.warn("No sounds in SoundRace %s to set. Bug?", raceSound.key());
-            return;
-        }
-
-        for (Sound sound : sounds) {
-            setSoundGain(sound, value);
-        }
-    }
-
-    public void setSoundGain(Ambiance ambienceSound, int value) {
-        ambienceSound.setGainLimit(MathUtil.toPercentage(value));
     }
 }

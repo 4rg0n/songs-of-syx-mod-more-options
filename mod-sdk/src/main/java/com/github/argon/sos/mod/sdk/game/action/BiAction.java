@@ -6,15 +6,28 @@ import java.util.Objects;
  * Simple function with two parameters and void return type
  * For things triggering actions e.g. onShow
  *
- * @param <Param> type of first parameter handed to the action function
- * @param <Element> type of second parameter handed to the action function
+ * @param <Param1> type of first parameter handed to the action function
+ * @param <Param2> type of second parameter handed to the action function
  */
 @FunctionalInterface
-public interface BiAction<Param, Element> {
-    void accept(Param param, Element element);
+public interface BiAction<Param1, Param2> {
 
-    default BiAction<Param, Element> andThen(BiAction<? super Param, ? super Element> after) {
+    /**
+     * Executes the action
+     *
+     * @param param1 first parameter for the action
+     * @param param2 second parameter for the action
+     */
+    void accept(Param1 param1, Param2 param2);
+
+    /**
+     * For chaining multiple actions.
+     *
+     * @param after to execute after this one
+     * @return the after consumer
+     */
+    default BiAction<Param1, Param2> andThen(BiAction<? super Param1, ? super Param2> after) {
         Objects.requireNonNull(after);
-        return (Param param, Element element) -> { accept(param, element); after.accept(param, element); };
+        return (Param1 param1, Param2 param2) -> { accept(param1, param2); after.accept(param1, param2); };
     }
 }

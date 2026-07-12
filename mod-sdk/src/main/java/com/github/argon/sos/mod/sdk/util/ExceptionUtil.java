@@ -1,13 +1,19 @@
 package com.github.argon.sos.mod.sdk.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+/**
+ * Utility class for {@link Exception}s / {@link Throwable}s.
+ */
+@UtilityClass
 public class ExceptionUtil {
 
     /**
+     * Checks whether the needle exception is in the cause chain of the haystack exception.
+     *
+     * @param haystack exception to search the cause chain of
+     * @param needle exception to search for
      * @return whether the needle exception is in the cause chain of the haystack exception
      */
     public static boolean contains(@Nullable Throwable haystack, @Nullable Throwable needle) {
@@ -30,7 +36,11 @@ public class ExceptionUtil {
     }
 
     /**
-     * @return when the last argument is a Throwable, it will be returned
+     * Extracts the last object from an array of objects.
+     * If it is an {@link Throwable}, it will be returned.
+     *
+     * @param args to extract the last {@link Throwable} from
+     * @return when the last argument is a Throwable, it will be returned. Else it will return null.
      */
     @Nullable
     public static Throwable extractThrowableLast(Object[] args) {

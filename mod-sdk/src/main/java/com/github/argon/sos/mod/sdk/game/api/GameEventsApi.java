@@ -35,6 +35,12 @@ import java.util.stream.Collectors;
  */
 public class GameEventsApi implements Resettable {
 
+    /**
+     * Creates a new {@link GameEventsApi}.
+     */
+    public GameEventsApi() {
+    }
+
     private final static Logger log = Loggers.getLogger(GameEventsApi.class);
 
     @Nullable
@@ -46,9 +52,14 @@ public class GameEventsApi implements Resettable {
     @Nullable
     private Map<String, EventLocker> eventLocks;
 
-    // TODO get rid of this in API layers
+    /**
+     * Used as prefix for event keys to identify them as an event.
+     */
     public final static String KEY_PREFIX = "event";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reset() {
         eventResources = null;
@@ -56,7 +67,12 @@ public class GameEventsApi implements Resettable {
         eventLocks = null;
     }
 
-    public Map<String, EventLocker> getEventLocks() {
+    /**
+     * Returns all available {@link EventLocker}s.
+     *
+     * @return map with event key and their locks
+     */
+    public Map<String, EventLocker> getEventLockers() {
         if (eventLocks == null) {
             eventLocks = newEventLocks();
         }
@@ -64,8 +80,14 @@ public class GameEventsApi implements Resettable {
         return eventLocks;
     }
 
+    /**
+     * Will lock or unlock an event by the given key.
+     *
+     * @param key of the event to lock or unlock
+     * @param locked whether the event shall be locked
+     */
     public void lockEvent(String key, boolean locked) {
-        GameEventsApi.EventLocker locker = getEventLocks().get(key);
+        GameEventsApi.EventLocker locker = getEventLockers().get(key);
 
         if (locker == null) {
             log.warn("Could not find event lock %s in game api result.", key);
@@ -77,6 +99,8 @@ public class GameEventsApi implements Resettable {
     }
 
     /**
+     * Returns a map with event keys and their {@link game.events.EVENTS.EventResource}s.
+     *
      * @return a map with all game events
      */
     public Map<String, EVENTS.EventResource> getEventResources() {
@@ -87,26 +111,32 @@ public class GameEventsApi implements Resettable {
         return eventResources;
     }
 
-    public void enableEventResource(String key, boolean locked) {
+    /**
+     * Will enable or disable an {@link game.events.EVENTS.EventResource} with the given key.
+     *
+     * @param key of the event to enable or disable
+     * @param enabled whether an event shall be enabled or disabled
+     */
+    public void enableEventResource(String key, boolean enabled) {
         getEventResource(key).ifPresent(eventResource -> {
-            enableEventResource(eventResource, locked);
+            enableEventResource(eventResource, enabled);
         });
     }
 
+    /**
+     * Returns the {@link game.events.EVENTS.EventResource} with the given key.
+     *
+     * @param key of the event
+     * @return event resource if present
+     */
     public Optional<EVENTS.EventResource> getEventResource(String key) {
         return Optional.ofNullable(getEventResources().get(KEY_PREFIX + "." + key));
     }
 
-    public Map<String, EVENTS.EventResource> readEventResources() {
-        Map<String, EVENTS.EventResource> eventResources = new HashMap<>();
-        for (EVENTS.EventResource eventResource : GAME.events().all()) {
-            eventResources.put(KEY_PREFIX + "." + eventResource.key, eventResource);
-        }
-
-        return eventResources;
-    }
-
     /**
+     * Checks whether an event is suppressed or not.
+     *
+     * @param event to check
      * @return whether given event will execute or not
      */
     public Boolean isEnabled(EVENTS.EventResource event) {
@@ -122,16 +152,116 @@ public class GameEventsApi implements Resettable {
         }).orElse(true);
     }
 
+    /**
+     * Checks whether an event is locked for the player.
+     * E.g. when he doesn't meet the requirements for a certain event.
+     *
+     * @param event to check
+     * @return whether it is locked or not
+     */
     public boolean isLockedForPlayer(Event event) {
         return event.occurence.plockable.passes(FACTIONS.player());
     }
 
+    /**
+     * Returns all event chains as a tree.
+     *
+     * @return event chains as tree
+     */
     public Map<String, TreeNode<EventContainer>> getEventTrees() {
         if (eventTrees == null) {
             eventTrees = readEventTrees();
         }
 
         return eventTrees;
+    }
+
+    /**
+     * Returns a map with the event key and the corresponding {@link Event}.
+     *
+     * @return a map with all game events
+     */
+    public Map<String, Event> getEvents() {
+        if (events == null) {
+            events = readEvents();
+        }
+
+        return events;
+    }
+
+    /**
+     * Reads a map with the event key and the corresponding {@link Event} directly from the game.
+     *
+     * @return a map with all game events
+     */
+    public Map<String, Event> readEvents() {
+        Map<String, Event> events = new HashMap<>();
+        try {
+            ArrayListGrower<Event> all = ReflectionUtil.getDeclaredField("all", Event.class)
+                .map(field ->
+                     ReflectionUtil.getDeclaredFieldValue(field, Event.class)
+                        .orElseThrow(() -> new RuntimeException("Got empty 'all' from event class " + Event.class.getName()))
+                ).filter(ArrayListGrower.class::isInstance)
+                .map(list -> (ArrayListGrower<Event>) list)
+                .orElse(new ArrayListGrower<>());
+
+
+            for (Event event : all) {
+                events.put(KEY_PREFIX + "." + event.key, event);
+            }
+
+        } catch (Exception e) {
+            log.warn("Could not read '%s.all' field", Event.class, e);
+        }
+
+        return events;
+    }
+
+    /**
+     * Reads the enabled status of all event resources directly from the game.
+     *
+     * @return a map with event keys and whether they are enabled
+     */
+    public Map<String, Boolean> readEventResourcesEnabledStatus() {
+        return getEventResources().entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> GameEventUtil.isEnabled(entry.getValue())));
+    }
+
+    /**
+     * Will enable or disable the given {@link game.events.EVENTS.EventResource}.
+     *
+     * @param event to enable or disable
+     * @param enabled whether the event shall be enabled or disabled
+     */
+    public void enableEventResource(EVENTS.EventResource event, Boolean enabled) {
+        event.supress(!enabled);
+    }
+
+    /**
+     * Calls the private clear() method of {@link EVENTS.EventResource} for the given event.
+     * This will reset any timers and progress in the event.
+     *
+     * @param event to reset
+     * @return whether the reset was successful or not
+     */
+    public boolean reset(EVENTS.EventResource event) {
+        try {
+            _reset(event);
+        } catch (Exception e) {
+            log.warn("Could not reset %s", event.getClass().getName(), e);
+            return false;
+        }
+
+        return true;
+    }
+
+    private Map<String, EVENTS.EventResource> readEventResources() {
+        Map<String, EVENTS.EventResource> eventResources = new HashMap<>();
+        for (EVENTS.EventResource eventResource : GAME.events().all()) {
+            eventResources.put(KEY_PREFIX + "." + eventResource.key, eventResource);
+        }
+
+        return eventResources;
     }
 
     private Map<String, TreeNode<EventContainer>> readEventTrees() {
@@ -218,65 +348,6 @@ public class GameEventsApi implements Resettable {
         });
     }
 
-
-    /**
-     * @return a map with all game events
-     */
-    public Map<String, Event> getEvents() {
-        if (events == null) {
-            events = readEvents();
-        }
-
-        return events;
-    }
-
-    public Map<String, Event> readEvents() {
-        Map<String, Event> events = new HashMap<>();
-        try {
-            ArrayListGrower<Event> all = ReflectionUtil.getDeclaredField("all", Event.class)
-                .map(field ->
-                     ReflectionUtil.getDeclaredFieldValue(field, Event.class)
-                        .orElseThrow(() -> new RuntimeException("Got empty 'all' from event class " + Event.class.getName()))
-                ).filter(ArrayListGrower.class::isInstance)
-                .map(list -> (ArrayListGrower<Event>) list)
-                .orElse(new ArrayListGrower<>());
-
-
-            for (Event event : all) {
-                events.put(KEY_PREFIX + "." + event.key, event);
-            }
-
-        } catch (Exception e) {
-            log.warn("Could not read '%s.all' field", Event.class, e);
-        }
-
-        return events;
-    }
-
-    public Map<String, Boolean> readEventResourcesEnabledStatus() {
-        return getEventResources().entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> GameEventUtil.isEnabled(entry.getValue())));
-    }
-
-    public void enableEventResource(EVENTS.EventResource event, Boolean enabled) {
-        event.supress(!enabled);
-    }
-
-    /**
-     * Calls the {@link EVENTS.EventResource#clear()} for the given event.
-     * This will reset any timers and progress in the event.
-     */
-    public boolean reset(EVENTS.EventResource event) {
-        try {
-            _reset(event);
-        } catch (Exception e) {
-            log.warn("Could not reset %s", event.getClass().getName(), e);
-            return false;
-        }
-
-        return true;
-    }
-
     private void _reset(EVENTS.EventResource event) {
         log.trace("Resetting event %s", event.getClass().getSimpleName());
         ReflectionUtil.invokeMethod("clear", event);
@@ -295,16 +366,33 @@ public class GameEventsApi implements Resettable {
         return eventLocks;
     }
 
+    /**
+     * A {@link Locker} to lock or unlock an event for a specific or any faction.
+     */
     public static class EventLocker extends Locker<Faction> {
         @Nullable
         private final Faction faction;
 
         @Setter
         private boolean locked = false;
+
+        /**
+         * Creates a new {@link EventLocker} unbound to any specific faction.
+         *
+         * @param name of the locker
+         * @param icon of the locker
+         */
         public EventLocker(CharSequence name, SPRITE icon) {
             this(null, name, icon);
         }
 
+        /**
+         * Creates a new {@link EventLocker} bound to the given faction.
+         *
+         * @param faction the locker is bound to, or null for any faction
+         * @param name of the locker
+         * @param icon of the locker
+         */
         public EventLocker(@Nullable Faction faction, CharSequence name, SPRITE icon) {
             super(name, icon);
             this.faction = faction;
@@ -321,28 +409,63 @@ public class GameEventsApi implements Resettable {
         }
     }
 
+    /**
+     * Wraps an {@link Event} together with the {@link Context} it is used in inside an event tree.
+     */
     @Getter
     @Builder
     @AllArgsConstructor
     public static class EventContainer {
+        /**
+         * Used as prefix for event keys to identify them as an event.
+         */
         public final static String KEY_PREFIX = "event";
 
         private Event event;
         @Builder.Default
         private Context context = Context.ROOT;
 
+        /**
+         * Creates a new {@link EventContainer} with {@link Context#ROOT} as context.
+         *
+         * @param event to wrap
+         */
         public EventContainer(Event event) {
             this.event = event;
             this.context = Context.ROOT;
         }
 
+        /**
+         * The place inside an event where another event can be triggered from.
+         */
         public enum Context {
+            /**
+             * The root/topmost event, not triggered from within another event.
+             */
             ROOT,
+            /**
+             * Triggered when the events duration expires.
+             */
             DURATION,
+            /**
+             * Triggered by one of the events choices.
+             */
             CHOICE,
+            /**
+             * Triggered on spawn of the event.
+             */
             ON_SPAWN,
+            /**
+             * Triggered when the events selection fails.
+             */
             SELECTION,
+            /**
+             * Triggered when one of the events aborters is fulfilled.
+             */
             ABORTER,
+            /**
+             * Triggered when the events condition is fulfilled.
+             */
             CONDITION
         }
     }

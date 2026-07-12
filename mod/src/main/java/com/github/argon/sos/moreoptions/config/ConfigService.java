@@ -60,7 +60,7 @@ public class ConfigService implements Phases {
      */
     private Optional<ConfigMeta> readMetaLegacy() {
         try {
-            return jsonGameService.load(ConfigDefaults.CONFIG_FILE_PATH, JsonMeta.class)
+            return jsonGameService.read(ConfigDefaults.CONFIG_FILE_PATH, JsonMeta.class)
                 .map(ConfigMapper::mapMeta);
         } catch (JsonParseException | JsonException e) {
             // this is expected

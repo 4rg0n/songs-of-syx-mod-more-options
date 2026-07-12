@@ -9,6 +9,18 @@ import com.github.argon.sos.mod.sdk.json.element.JsonTuple;
  * For parsing key value pairs present in objects e.g. {NAME: FOO, SIZE: 1,}
  */
 public class ObjectParser implements Parser {
+    /**
+     * Creates a new {@link ObjectParser}.
+     */
+    public ObjectParser() {
+    }
+
+    /**
+     * Parses json object strings into a {@link JsonObject}.
+     *
+     * @param json to parse
+     * @return parsed json object
+     */
     @Override
     public JsonElement parse(Json json) {
         JsonObject jsonObject = new JsonObject();

@@ -22,14 +22,22 @@ public class I18nTranslator {
      */
     private final String prefix;
 
-    public I18nTranslator(Class<?> clazz, I18nMessageBundle i18NMessageBundle) {
-        this.i18NMessageBundle = i18NMessageBundle;
+    /**
+     * Creates a new {@link I18nTranslator} for the given class and with given {@link I18nMessageBundle}.
+     *
+     * @param clazz to create the translator for
+     * @param i18nMessageBundle containing the translated messages
+     */
+    public I18nTranslator(Class<?> clazz, I18nMessageBundle i18nMessageBundle) {
+        this.i18NMessageBundle = i18nMessageBundle;
         this.prefix = prefix(clazz);
     }
 
     /**
      * Description: <pre>key + ".desc"</pre>
      *
+     * @param key translation key
+     * @param args optional used to replace tokens in the translated message
      * @return found translation for ".desc" or the key
      */
     public String d(String key, Object... args) {
@@ -39,6 +47,8 @@ public class I18nTranslator {
     /**
      * Prefixed Description: <pre>prefix + "." + key +  ".desc"</pre>
      *
+     * @param key translation key
+     * @param args optional used to replace tokens in the translated message
      * @return found translation for ".desc" or the key
      */
     public String pd(String key, Object... args) {
@@ -48,6 +58,8 @@ public class I18nTranslator {
     /**
      * Description: <pre>key + ".desc" nullable</pre>
      *
+     * @param key translation key
+     * @param args optional used to replace tokens in the translated message
      * @return found translation for ".desc" or null
      */
     @Nullable
@@ -58,6 +70,8 @@ public class I18nTranslator {
     /**
      * Prefixed description: <pre>prefix + "." + key +  ".desc" nullable</pre>
      *
+     * @param key translation key
+     * @param args optional used to replace tokens in the translated message
      * @return found translation for ".desc" or the key
      */
     @Nullable
@@ -68,6 +82,8 @@ public class I18nTranslator {
     /**
      * Name: <pre>key + ".name"</pre>
      *
+     * @param key translation key
+     * @param args optional used to replace tokens in the translated message
      * @return found translation for ".name" or the key
      */
     public String n(String key, Object... args) {
@@ -77,6 +93,8 @@ public class I18nTranslator {
     /**
      * Prefixed name: <pre>prefix + "." + key + ".name"</pre>
      *
+     * @param key translation key
+     * @param args optional used to replace tokens in the translated message
      * @return found translation for ".name" or the key
      */
     public String pn(String key, Object... args) {
@@ -84,6 +102,10 @@ public class I18nTranslator {
     }
 
     /**
+     * Get translated message by given key.
+     *
+     * @param key translation key
+     * @param args optional used to replace tokens in the translated message
      * @return found translation for key or the key itself
      */
     public String t(String key, Object... args) {
@@ -91,12 +113,17 @@ public class I18nTranslator {
     }
 
     /**
+     * Get translated message by given key.
+     *
+     * @param key translation key
+     * @param args optional used to replace tokens in the translated message
      * @return found translation for key or null
      */
     @Nullable
     public String tn(@Nullable String key, Object... args) {
         return translateNullable(key, args);
     }
+
     private String translate(String key, Object[] args) {
         String translated = translateNullable(key, args);
 

@@ -189,16 +189,16 @@ public class YourModScript extends AbstractModSdkScript {
     @Override
     public void initBeforeGameCreated() {
         Path jsonConfigPath = PATHS.local().SETTINGS.get().resolve("YourConfig.json");
-        
+
         // read JSON file "YourConfig.json" from games "settings" folder
         YourConfigJson yourConfigJson = ModSdkModule.jacksonService()
-            .load(jsonConfigPath, YourConfigJson.class)
+            .read(jsonConfigPath, YourConfigJson.class)
             .orElse(null);
         log.info("Name: %s", yourConfigJson.getName());
-        
+
         // change name and save in file
         yourConfigJson.setName("bar");
-        ModSdkModule.jacksonService().save(jsonConfigPath, yourConfigJson);
+        ModSdkModule.jacksonService().write(jsonConfigPath, yourConfigJson);
     }
 }
 

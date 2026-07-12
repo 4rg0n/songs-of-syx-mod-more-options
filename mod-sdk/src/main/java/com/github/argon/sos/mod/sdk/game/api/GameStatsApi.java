@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
+/**
+ * For interacting with game stats.
+ */
 @RequiredArgsConstructor
 public class GameStatsApi {
 
@@ -18,6 +21,8 @@ public class GameStatsApi {
 
     /**
      * For providing a default whitelist of stats to collect
+     *
+     * @return set of all available game stat keys
      */
     public Set<String> getAvailableStatKeys() {
         if (availableStatKeys == null) {

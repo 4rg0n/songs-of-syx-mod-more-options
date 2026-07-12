@@ -15,8 +15,8 @@ public class JsonQuoteStrategy implements JsonWriterStrategy {
     @Getter(lazy = true)
     private static final JsonQuoteStrategy instance = new JsonQuoteStrategy();
 
-    public JsonWriterStrategyType get(JsonElement element) {
-        if (element instanceof JsonString) {
+    public JsonWriterStrategyType get(JsonElement jsonElement) {
+        if (jsonElement instanceof JsonString) {
             return JsonWriterStrategyType.QUOTE;
         }
 

@@ -2,10 +2,18 @@ package com.github.argon.sos.mod.sdk.game.util;
 
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import game.events.EVENTS;
+import lombok.experimental.UtilityClass;
 
+/**
+ * Utility class for game events
+ */
+@UtilityClass
 public class GameEventUtil {
 
     /**
+     * Checks whether an event is suppressed or not.
+     *
+     * @param event to check
      * @return whether given event will execute or not
      */
     public static Boolean isEnabled(EVENTS.EventResource event) {

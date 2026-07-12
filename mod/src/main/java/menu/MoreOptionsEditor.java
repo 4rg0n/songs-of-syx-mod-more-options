@@ -1,7 +1,11 @@
 package menu;
 
 import com.github.argon.sos.mod.sdk.game.asset.GameAssets;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
+import com.github.argon.sos.mod.sdk.ui.menu.Tabulator;
+import com.github.argon.sos.mod.sdk.ui.simple.ColorBox;
+import com.github.argon.sos.mod.sdk.ui.switcher.Switcher;
 import com.github.argon.sos.moreoptions.ui.json.JsonUITemplates;
 import com.github.argon.sos.moreoptions.ui.json.JsonUi;
 import com.github.argon.sos.moreoptions.ui.json.tab.AbstractTab;

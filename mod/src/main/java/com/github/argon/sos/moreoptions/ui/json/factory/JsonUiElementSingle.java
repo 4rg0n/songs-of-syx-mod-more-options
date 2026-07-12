@@ -2,14 +2,18 @@ package com.github.argon.sos.moreoptions.ui.json.factory;
 
 import com.github.argon.sos.mod.sdk.data.CacheValue;
 import com.github.argon.sos.mod.sdk.game.action.BiAction;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.json.JsonPath;
 import com.github.argon.sos.mod.sdk.json.element.JsonDouble;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonLong;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.simple.Spacer;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.text.Label;
+import com.github.argon.sos.mod.sdk.ui.util.Section;
 import com.github.argon.sos.mod.sdk.util.ClassUtil;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import com.github.argon.sos.moreoptions.ModModule;
@@ -103,7 +107,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
         this.valueSupplier = (valueSupplier != null) ? valueSupplier : o -> null;
         this.valueConsumer = (valueConsumer != null) ? valueConsumer : (o1, o2) -> {};
         this.valueChangeAction = (valueChangeAction != null) ? valueChangeAction : (o1, o2) -> {};
-        this.jsonPathObject = (jsonPath != null) ? JsonPath.get(jsonPath) : null;
+        this.jsonPathObject = (jsonPath != null) ? JsonPath.of(jsonPath) : null;
         this.valueCache = CacheValue.of(500, () -> {
             Value current = this.valueSupplier.apply(this);
             if (lastSeenValue != null && current != null && !lastSeenValue.equals(current)) {
@@ -150,7 +154,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
             return Optional.empty();
         }
 
-        return jsonPathObject.get(config);
+        return jsonPathObject.of(config);
     }
 
     public Optional<JsonElement> getConfigValue() {
@@ -203,7 +207,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
 
             // orphan icon
             if (orphan) {
-                GuiSection optionalIcon = UiUtil.toGuiSection(SPRITES.icons().m.cancel)
+                GuiSection optionalIcon = UiMapper.toGuiSection(SPRITES.icons().m.cancel)
                     .hoverInfoSet("Not present in vanilla game config.");
                 columnRowBuilder.column(optionalIcon);
             } else {
@@ -211,7 +215,7 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
             }
 
             // dirty icon
-            Section dirtyIcon = UiUtil.toSection(SPRITES.icons().m.flag);
+            Section dirtyIcon = UiMapper.toSection(SPRITES.icons().m.flag);
             dirtyIcon.hoverInfoSet("Setting changed.");
 
             // only show when value has changed
@@ -260,8 +264,8 @@ public class JsonUiElementSingle<Value extends JsonElement, Element extends REND
         Function<Value, Element> elementProvider
     ) {
         JsonUiElementSingleBuilder<Value, Element> builder = JsonUiElementSingle.builder();
-        JsonPath jsonPathO = JsonPath.get(jsonPath);
-        Value value = jsonPathO.get(config)
+        JsonPath jsonPathO = JsonPath.of(jsonPath);
+        Value value = jsonPathO.of(config)
             .map(element -> normalizeValue(element, valueClass))
             .filter(valueClass::isInstance)
             .map(valueClass::cast)

@@ -4,8 +4,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Contains handlers for each config version.
+ * Will delegate handling of mapping one config version to another.
+ *
+ * @param <CONFIG> type of the config object
+ */
 public class ConfigVersionHandlers<CONFIG> implements ConfigVersionHandler<CONFIG> {
     private final Map<Integer, ConfigVersionHandler<CONFIG>> handlers = new HashMap<>();
+
+    /**
+     * Creates a new {@link ConfigVersionHandlers}.
+     */
+    public ConfigVersionHandlers() {
+    }
 
     /**
      * Will handle mapping between different config versions.
@@ -25,6 +37,7 @@ public class ConfigVersionHandlers<CONFIG> implements ConfigVersionHandler<CONFI
      *
      * @param version to register the handler for
      * @param versionHandler to register
+     * @return this
      */
     public ConfigVersionHandlers<CONFIG> register(int version, ConfigVersionHandler<CONFIG> versionHandler) {
         handlers.put(version, versionHandler);

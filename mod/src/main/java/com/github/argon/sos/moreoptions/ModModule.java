@@ -18,7 +18,7 @@ import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
-import com.github.argon.sos.mod.sdk.ui.Notificator;
+import com.github.argon.sos.mod.sdk.ui.notification.Notificator;
 import com.github.argon.sos.moreoptions.booster.BoosterService;
 import com.github.argon.sos.moreoptions.config.*;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;

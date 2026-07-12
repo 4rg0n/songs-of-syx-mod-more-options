@@ -17,15 +17,26 @@ import java.util.Optional;
 public class GameModApi {
     private final static Logger log = Loggers.getLogger(GameModApi.class);
 
+    /**
+     * Returns all currently enabled mods as {@link ModInfo}s
+     *
+     * @return list of enabled mods
+     */
     public List<ModInfo> getCurrentMods() {
         return Lists.fromGameLIST(PATHS.currentMods());
     }
 
-    public Optional<ModInfo> getCurrentMod(String currentModName) {
+    /**
+     * Returns the {@link ModInfo} of a mod by the given name.
+     *
+     * @param modName of the mod
+     * @return found mod info
+     */
+    public Optional<ModInfo> getModByName(String modName) {
         return getCurrentMods().stream().filter(modInfo -> {
             log.trace("Checking mod %s in %s", modInfo.name, modInfo.absolutePath);
 
-            return modInfo.name.contains(currentModName);
+            return modInfo.name.contains(modName);
         }).findFirst();
     }
 }

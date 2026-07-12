@@ -1,15 +1,14 @@
 package com.github.argon.sos.mod.sdk.game.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import game.save.SaveFile;
+import lombok.experimental.UtilityClass;
 
 import java.nio.file.Path;
 
 /**
  * For dealing with the game save systems
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class SaveUtil {
 
     /**

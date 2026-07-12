@@ -1,13 +1,18 @@
 package com.github.argon.sos.mod.sdk.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.Method;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+/**
+ * Utility class for {@link Method}s
+ */
+@UtilityClass
 public class MethodUtil {
     /**
+     * Checks whether given method is a "getter" method.
+     *
+     * @param method to check
      * @return whether a given method counts as a "getter" method, based on some naming conventions
      */
     public static boolean isGetterMethod(Method method) {
@@ -41,6 +46,9 @@ public class MethodUtil {
     }
 
     /**
+     * Checks whether given method is a "setter" method.
+     *
+     * @param method to check
      * @return whether a given method counts as a "setter" method, based on some naming conventions
      */
     public static boolean isSetterMethod(Method method) {
@@ -70,6 +78,9 @@ public class MethodUtil {
     }
 
     /**
+     * Extract the field name from a "getter" or "setter" method.
+     *
+     * @param method to extract the name from
      * @return the name of the method without "set", "get" or "is"
      */
     public static String extractSetterGetterFieldName(Method method) {

@@ -1,11 +1,16 @@
 package com.github.argon.sos.moreoptions.ui.tab.races;
 
 import com.github.argon.sos.mod.sdk.data.domain.Range;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
+import com.github.argon.sos.mod.sdk.ui.input.InputString;
 import com.github.argon.sos.mod.sdk.ui.layout.Layout;
 import com.github.argon.sos.mod.sdk.ui.layout.VerticalLayout;
+import com.github.argon.sos.mod.sdk.ui.slider.Slider;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.table.Table;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
@@ -66,17 +71,17 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
                     Range range = entry.getRange();
 
                     // Race icons
-                    GuiSection raceIcon = UiUtil.toGuiSection(race.appearance().icon);
+                    GuiSection raceIcon = UiMapper.toGuiSection(race.appearance().icon);
                     raceIcon.hoverInfoSet(race.info.name);
-                    GuiSection otherRaceIcon = UiUtil.toGuiSection(otherRace.appearance().icon);
+                    GuiSection otherRaceIcon = UiMapper.toGuiSection(otherRace.appearance().icon);
                     otherRaceIcon.hoverInfoSet(otherRace.info.name);
 
                     // Likings Slider
                     Slider likingsSlider = Slider.SliderBuilder
                         .fromRange(range)
                         .width(300)
-                        .controls(true)
-                        .input(true)
+                        .showControls(true)
+                        .showInput(true)
                         .lockScroll(true)
                         .threshold(0, COLOR.RED100.shade(0.5d))
                         .threshold((int) (0.25 * range.getMax()), COLOR.ORANGE100.shade(0.5d))
@@ -90,13 +95,13 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
                     return ColumnRow.<Integer>builder()
                         .searchTerm(term(race, otherRace))
                         .highlightable(true)
-                        .columns(columns)
+                        .columnsFromRenderObjects(columns)
                         .build();
             }).toList()));
 
         // Race Likings table with search
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder(i18n.t("RacesTab.search.input.name"));
-        Input search = new Input(searchInput);
+        InputString search = new InputString(searchInput);
 
         // menu with buttons
         this.folderButton = new Button<>(i18n.t("RacesTab.button.folder.name"), i18n.t("RacesTab.button.folder.desc"));

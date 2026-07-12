@@ -8,7 +8,7 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.log.writer.FileLogWriter;
 import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
-import com.github.argon.sos.mod.sdk.ui.Window;
+import com.github.argon.sos.mod.sdk.ui.window.Window;
 import com.github.argon.sos.moreoptions.config.ConfigApplier;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.ModProperties;

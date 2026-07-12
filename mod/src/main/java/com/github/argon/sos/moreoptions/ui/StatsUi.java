@@ -1,6 +1,6 @@
 package com.github.argon.sos.moreoptions.ui;
 
-import com.github.argon.sos.mod.sdk.ui.ColorBox;
+import com.github.argon.sos.mod.sdk.ui.simple.ColorBox;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.moreoptions.ModModule;
 import init.sprite.SPRITES;
@@ -36,25 +36,25 @@ public class StatsUi extends ColorBox {
     }
 
     @Override
-    public void render(SPRITE_RENDERER r, float ds) {
+    public void render(SPRITE_RENDERER renderer, float deltaSeconds) {
         if (!visible) return;
-        super.render(r, ds);
+        super.render(renderer, deltaSeconds);
 
         statsText.clear();
         GFORMAT.i(statsText, (int) CoreStats.updatePercentage.ave);
-        render(r, SPRITES.icons().s.clock, 0);
+        render(renderer, SPRITES.icons().s.clock, 0);
 
         statsText.clear();
         GFORMAT.i(statsText, (int) CoreStats.renderPercentage.ave);
-        render(r, SPRITES.icons().s.clock, 1);
+        render(renderer, SPRITES.icons().s.clock, 1);
 
         statsText.clear();
         GFORMAT.i(statsText, (int) CoreStats.FPS.ave);
-        render(r, SPRITES.icons().s.camera, 2);
+        render(renderer, SPRITES.icons().s.camera, 2);
 
         statsText.clear();
         GFORMAT.i(statsText, (int) CoreStats.usedHeap.ave);
-        render(r, SPRITES.icons().s.money, 3);
+        render(renderer, SPRITES.icons().s.money, 3);
     }
 
     private void render(SPRITE_RENDERER r, SPRITE s, int i) {

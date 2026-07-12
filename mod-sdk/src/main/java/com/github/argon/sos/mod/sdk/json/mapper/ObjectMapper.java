@@ -5,13 +5,16 @@ import com.github.argon.sos.mod.sdk.json.annotation.JsonIgnore;
 import com.github.argon.sos.mod.sdk.json.annotation.JsonProperty;
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
+import com.github.argon.sos.mod.sdk.json.util.JsonUtil;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.util.ClassUtil;
+import com.github.argon.sos.mod.sdk.util.MethodUtil;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -20,13 +23,22 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import static com.github.argon.sos.mod.sdk.util.MethodUtil.*;
-import static com.github.argon.sos.mod.sdk.util.ReflectionUtil.getAnnotation;
-import static com.github.argon.sos.mod.sdk.json.util.JsonUtil.toJsonEKey;
+/**
+ * For mapping {@link JsonObject} to a java pojo and visa versa.
+ */
 public class ObjectMapper implements Mapper<JsonObject> {
 
     private final static Logger log = Loggers.getLogger(ObjectMapper.class);
 
+    /**
+     * Creates a new {@link ObjectMapper}.
+     */
+    public ObjectMapper() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean supports(Class<?> clazz) {
         return clazz != null
@@ -56,6 +68,15 @@ public class ObjectMapper implements Mapper<JsonObject> {
             && !ClassUtil.instanceOf(clazz, CharSequence.class);
     }
 
+
+    /**
+     * Maps a {@link JsonObject} to the given type / pojo if possible.
+     *
+     * @param jsonObject json to map
+     * @param typeInfo to map the json into
+     * @return mapped java object
+     * @throws JsonMapperException when given type can not be mapped.
+     */
     @Override
     public Object mapJson(JsonObject jsonObject, TypeInfo<?> typeInfo) {
         Class<?> clazz = typeInfo.getTypeClass();
@@ -66,18 +87,18 @@ public class ObjectMapper implements Mapper<JsonObject> {
 
         Object instance;
         try {
-            instance = clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            instance = clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new JsonMapperException("Can not create instance of class " + clazz.getCanonicalName(), e);
         }
 
         for (Method method : clazz.getDeclaredMethods()) {
-            if (!isSetterMethod(method)) {
+            if (!MethodUtil.isSetterMethod(method)) {
                 continue;
             }
 
             // get field for setter
-            String fieldName = extractSetterGetterFieldName(method);
+            String fieldName = MethodUtil.extractSetterGetterFieldName(method);
             Field field = ReflectionUtil.getDeclaredField(fieldName, clazz)
                 .orElse(null);
 
@@ -87,7 +108,7 @@ public class ObjectMapper implements Mapper<JsonObject> {
             }
 
             // ignore field?
-            JsonIgnore ignoreFile = getAnnotation(field, JsonIgnore.class).orElse(null);
+            JsonIgnore ignoreFile = ReflectionUtil.getAnnotation(field, JsonIgnore.class).orElse(null);
             if (ignoreFile != null) {
                 log.trace("Ignore field %s for setting");
                 continue;
@@ -96,7 +117,7 @@ public class ObjectMapper implements Mapper<JsonObject> {
             // read json key from annotation or generate from method name
             String jsonKey = ReflectionUtil.getAnnotation(field, JsonProperty.class)
                 .map(JsonProperty::key)
-                .orElse(toJsonEKey(method));
+                .orElse(JsonUtil.toJsonEKey(method));
 
             if (!jsonObject.containsKey(jsonKey)) {
                 log.debug("Json does not contain key %s for %s", jsonKey, method.getName());
@@ -140,16 +161,23 @@ public class ObjectMapper implements Mapper<JsonObject> {
         }
     }
 
+    /**
+     * Maps a java pojo to a {@link JsonObject}.
+     *
+     * @param object json to map
+     * @param clazz of the given object
+     * @return mapped json object
+     */
     @NotNull
-    private static JsonObject mapObject(Object object, Class<?> clazz) {
+    private JsonObject mapObject(Object object, Class<?> clazz) {
         JsonObject jsonObject = new JsonObject();
         for (Method method : clazz.getDeclaredMethods()) {
-            if (!isGetterMethod(method)) {
+            if (!MethodUtil.isGetterMethod(method)) {
                 continue;
             }
 
             // get field for getter
-            String fieldName = extractSetterGetterFieldName(method);
+            String fieldName = MethodUtil.extractSetterGetterFieldName(method);
             Field field = ReflectionUtil.getDeclaredField(fieldName, clazz)
                 .orElse(null);
 
@@ -159,16 +187,16 @@ public class ObjectMapper implements Mapper<JsonObject> {
             }
 
             // ignore field?
-            JsonIgnore ignoreFile = getAnnotation(field, JsonIgnore.class).orElse(null);
+            JsonIgnore ignoreFile = ReflectionUtil.getAnnotation(field, JsonIgnore.class).orElse(null);
             if (ignoreFile != null) {
                 log.trace("Ignore field %s for getting");
                 continue;
             }
 
             // read json key from annotation or generate from method name
-            String jsonKey = getAnnotation(field, JsonProperty.class)
+            String jsonKey = ReflectionUtil.getAnnotation(field, JsonProperty.class)
                 .map(JsonProperty::key)
-                .orElse(toJsonEKey(method));
+                .orElse(JsonUtil.toJsonEKey(method));
 
             Type fieldType = field.getGenericType();
             TypeInfo<?> fieldTypeInfo = TypeInfo.get(fieldType);

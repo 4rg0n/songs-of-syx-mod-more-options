@@ -1,6 +1,16 @@
 package com.github.argon.sos.mod.sdk.json.writer.strategy;
 
+/**
+ * Contains different strategies for writing json as a string.
+ */
 public enum JsonWriterStrategyType {
-    NONE,   // do nothing
-    QUOTE   // force quotation of strings
+    /**
+     * Do nothing.
+     */
+    NONE,
+
+    /**
+     * Force quotation of strings.
+     */
+    QUOTE
 }

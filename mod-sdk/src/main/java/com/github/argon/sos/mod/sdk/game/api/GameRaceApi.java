@@ -27,6 +27,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class GameRaceApi implements Phases {
     private final static Logger log = Loggers.getLogger(GameRaceApi.class);
+    @Getter
     private List<RaceLiking> vanillaLikings;
     private final Map<String, Integer> raceIndexMap = new HashMap<>();
 
@@ -44,6 +45,9 @@ public class GameRaceApi implements Phases {
         "TILAPI"
     );
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initModCreateInstance() {
         // initialize all game races
@@ -59,24 +63,48 @@ public class GameRaceApi implements Phases {
         log.debug("Initialized %s races", raceIndexMap.size());
     }
 
+    /**
+     * Increases or decreases the happiness value of a given race.
+     *
+     * @param race to increase or decrease happiness
+     * @param inc amount to increase or decrease (when negative)
+     */
     public void increaseHappiness(Race race, double inc) {
         increaseStanding(STANDINGS.CITIZEN().happiness, race, inc);
     }
 
+    /**
+     * Increases or decreases the expectation value of a given race.
+     *
+     * @param race to increase or decrease expectation
+     * @param inc amount to increase or decrease (when negative)
+     */
     public void increaseExpectation(Race race, double inc) {
         increaseStanding(STANDINGS.CITIZEN().expectation, race, inc);
     }
 
+    /**
+     * Increases or decreases the fulfillment value of a given race.
+     *
+     * @param race to increase or decrease fulfillment
+     * @param inc amount to increase or decrease (when negative)
+     */
     public void increaseFulfillment(Race race, double inc) {
         increaseStanding(STANDINGS.CITIZEN().fullfillment, race, inc);
     }
 
+    /**
+     * Increases or decreases the loyalty value of a given race.
+     *
+     * @param race to increase or decrease loyalty
+     * @param inc amount to increase or decrease (when negative)
+     */
     public void increaseLoyalty(Race race, double inc) {
         increaseStanding(STANDINGS.CITIZEN().loyalty, race, inc);
     }
 
     /**
-     * Standings influence the races Expectations, Fulfillment, Happiness and Loyalty
+     * Standings influence the races Expectations, Fulfillment, Happiness and Loyalty.
      *
      * @param standing which of the 4 standings to influence
      * @param race which race
@@ -104,7 +132,11 @@ public class GameRaceApi implements Phases {
     }
 
     /**
-     * Sets the liking between two races
+     * Sets the liking between two races.
+     *
+     * @param raceKey of the first race
+     * @param otherRaceKey of the race to set the liking for
+     * @param liking the actual liking. 1.0 would be 100%
      */
     public void setLiking(String raceKey, String otherRaceKey, double liking) {
         getRace(raceKey)
@@ -113,12 +145,20 @@ public class GameRaceApi implements Phases {
     }
 
     /**
+     * Checks whether a given race is a vanilla race or a newly added modded one.
+     *
+     * @param key to check
      * @return whether race is a vanilla or modded
      */
     public boolean isCustom(String key) {
         return !vanillaRaces.contains(key);
     }
 
+    /**
+     * Returns a list of all vanilla (not modded) races.
+     *
+     * @return list of vanilla races
+     */
     public List<Race> getVanillaRaces() {
         return getAll().stream()
             .filter(race -> vanillaRaces.contains(race.key))
@@ -126,6 +166,8 @@ public class GameRaceApi implements Phases {
     }
 
     /**
+     * Returns a list of all newly added races.
+     *
      * @return list of custom modded races
      */
     public List<Race> getCustomRaces() {
@@ -134,11 +176,9 @@ public class GameRaceApi implements Phases {
             .toList();
     }
 
-    public List<RaceLiking> getVanillaLikings() {
-        return vanillaLikings;
-    }
-
     /**
+     * Returns a list of all likings for all races.
+     *
      * @return flat list of likings of each race to another race
      */
     public List<RaceLiking> getAllLikings() {
@@ -162,12 +202,23 @@ public class GameRaceApi implements Phases {
         return likings;
     }
 
+    /**
+     * Returns the liking value between two races. 1.0 is 100%
+     *
+     * @param race to check the liking between the other race
+     * @param otherRace to check the liking between the race
+     * @return liking value (1.0 is 100%)
+     */
     public double getLiking(Race race, Race otherRace) {
         return race.pref().race(otherRace);
     }
 
     /**
      * Injects liking into the games races
+     *
+     * @param race to set the liking for the other race
+     * @param otherRace to set the liking for the race
+     * @param liking between the two races (1.0 is 100%).
      */
     public void setLiking(Race race, Race otherRace, double liking) {
         try {
@@ -183,8 +234,14 @@ public class GameRaceApi implements Phases {
         }
     }
 
-    public Optional<Race> getRace(String name) {
-        Integer raceIdx = raceIndexMap.get(name);
+    /**
+     * Returns the {@link Race} by the given race key.
+     *
+     * @param key of the race
+     * @return the found race
+     */
+    public Optional<Race> getRace(String key) {
+        Integer raceIdx = raceIndexMap.get(key);
         if (raceIdx == null) {
             return Optional.empty();
         }
@@ -192,16 +249,29 @@ public class GameRaceApi implements Phases {
         return Optional.of(getAll().get(raceIdx));
     }
 
+    /**
+     * Returns a list of all modded and vanilla races.
+     *
+     * @return all races in the game
+     */
     public List<Race> getAll() {
         return Lists.fromGameLIST(RACES.all());
     }
 
+    /**
+     * Returns the amount of citizens of a given {@link Race}
+     *
+     * @param race to receive the citizen count
+     * @return the count of citizens of the race
+     */
     public int citizenCount(Race race) {
         HCLASS cl = HCLASSES.CITIZEN();
         return STATS.POP().POP.data(cl).get(race, 0) + AD.cityDivs().total(race);
     }
 
     /**
+     * Return the average of happiness for all races in the settlement.
+     *
      * @return average happiness of races in the current settlement
      */
     public double getAvgHappiness() {
@@ -215,6 +285,8 @@ public class GameRaceApi implements Phases {
     }
 
     /**
+     * Return the average of loyalty for all races in the settlement.
+     *
      * @return average loyalty of races in the current settlement
      */
     public double getAvgLoyalty() {
@@ -227,27 +299,41 @@ public class GameRaceApi implements Phases {
         return allLoyalty / races.size();
     }
 
+    /**
+     * Returns the happiness of a given {@link Race}.
+     *
+     * @param race to look for
+     * @return happiness value (1.0 is 100%)
+     */
     public double getHappiness(Race race) {
         StandingCitizen standings = STANDINGS.CITIZEN();
         return standings.happiness.getD(race);
     }
 
+    /**
+     * Returns the loyalty of a given {@link Race}.
+     *
+     * @param race to look for
+     * @return loyalty value (1.0 is 100%)
+     */
     public double getLoyalty(Race race) {
         StandingCitizen standings = STANDINGS.CITIZEN();
         return standings.loyalty.getD(race);
     }
 
+    /**
+     * Checks whether a given {@link Race} is present as citizen in your settlement.
+     *
+     * @param race to check
+     * @return whether the race is a citizen or not
+     */
     public boolean isCitizen(Race race) {
-        return countCitizen(race) != 0;
-    }
-
-    public int countCitizen(Race race) {
-        return STATS.POP().POP
-            .data(HCLASSES.CITIZEN())
-            .get(race, 0);
+        return citizenCount(race) != 0;
     }
 
     /**
+     * Return all races present in your settlement
+     *
      * @return races in the settlement
      */
     public List<Race> getCitizenRaces() {
@@ -256,13 +342,13 @@ public class GameRaceApi implements Phases {
            .toList();
     }
 
-    @Getter
+    /**
+     * Data container presenting the liking between two races
+     *
+     * @param race the race the liking is from
+     * @param otherRace the race the liking is towards
+     * @param liking how much race likes otherRace
+     */
     @Builder
-    @RequiredArgsConstructor
-    public static class RaceLiking {
-        private final String race;
-        private final String otherRace;
-
-        private final double liking;
-    }
+    public record RaceLiking(String race, String otherRace, double liking) {}
 }

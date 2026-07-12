@@ -27,12 +27,21 @@ public class MetricCsvWriter {
     @Setter
     private String delimiter = ";";
 
+    /**
+     * Writes collected {@link Metric}s into the given file path as CSV.
+     *
+     * @param path for the CSV file
+     * @param metrics to write
+     * @throws IOException when writing the file fails
+     */
     public void write(Path path, List<Metric> metrics) throws IOException {
         if (metrics.isEmpty()) {
             return;
         }
-        List<String> headersMetric = headersMetric();
-        List<String> headersStats = headersStats(metrics.iterator().next());
+
+        Metric metricsFirst = metrics.getFirst();
+        List<String> headersMetric = Metric.getHeaders();
+        List<String> headersStats = metricsFirst.getHeaderStats();
 
         List<String> lines = metrics.stream()
             .map(metric ->
@@ -42,15 +51,15 @@ public class MetricCsvWriter {
                 toLineStats(headersStats, metric.getValues()))
             .toList();
 
-        File file = path.toFile();
+        File csvFile = path.toFile();
 
         // build CSV header if needed
-        if (needsHeader(file)) {
+        if (needsHeader(csvFile)) {
             List<String> headers = new ArrayList<>();
             headers.addAll(headersMetric);
             headers.addAll(headersStats);
 
-            log.debug("Create new CSV file %s", file.toPath());
+            log.debug("Create new CSV file %s", csvFile.toPath());
             String headerLine = toHeaderLine(headers);
             log.trace("Header: %s", headerLine);
 
@@ -61,27 +70,47 @@ public class MetricCsvWriter {
             lines = newLines;
         }
 
-        write(file, lines);
+        write(csvFile, lines);
     }
 
-    public void write(File file, List<String> lines) throws IOException {
+    private void write(File file, List<String> lines) throws IOException {
         Files.write(
             file.toPath(),
             (lines.stream().collect(Collectors.joining(System.lineSeparator())) + System.lineSeparator()).getBytes(),
             StandardOpenOption.APPEND);
     }
 
+    /**
+     * Checks whether a file is not written yet and therefore needs a header.
+     *
+     * @param file to check
+     * @return whether file needs headers
+     * @throws IOException when creating the file fails.
+     */
     public boolean needsHeader(File file) throws IOException {
         return file.createNewFile();
     }
 
-    public String toHeaderLine(List<String> keys) {
-        return keys.stream()
+    /**
+     * Creates the CSV headers.
+     *
+     * @param headerNames to create the header with
+     * @return created header line
+     */
+    public String toHeaderLine(List<String> headerNames) {
+        return headerNames.stream()
             .collect(Collectors.joining(delimiter));
     }
 
-    public String toLineStats(List<String> header, Map<String, Object> stats) {
-        List<Object> values = header.stream()
+    /**
+     * Creates the content to write into a CSV file from given header names and stats.
+     *
+     * @param headerNames to use as CSV headers
+     * @param stats to use for each line
+     * @return build CSV content
+     */
+    public String toLineStats(List<String> headerNames, Map<String, Object> stats) {
+        List<Object> values = headerNames.stream()
             .map(stats::get)
             .toList();
 
@@ -90,8 +119,15 @@ public class MetricCsvWriter {
             .collect(Collectors.joining(delimiter));
     }
 
-    public String toLineMetric(List<String> headers, Metric metric) {
-        List<Object> values = headers.stream()
+    /**
+     * Creates the content to write into a CSV file from given header names and {@link Metric}.
+     *
+     * @param headerNames to use as CSV headers
+     * @param metric to use for each line
+     * @return build CSV content
+     */
+    public String toLineMetric(List<String> headerNames, Metric metric) {
+        List<Object> values = headerNames.stream()
             .map(metric::get)
             .toList();
 
@@ -100,32 +136,15 @@ public class MetricCsvWriter {
             .collect(Collectors.joining(delimiter));
     }
 
-    public String escapeSpecialCharacters(Object data) {
+    private String escapeSpecialCharacters(Object data) {
         if (data == null) {
            return "null";
         }
 
-        if (data instanceof String) {
-            String dataString = (String) data;
-            String escapedData = dataString.replaceAll("\\R", " ");
-            if (dataString.contains(",") || dataString.contains("\"") || dataString.contains("'")) {
-                dataString = dataString.replace("\"", "\"\"");
-                escapedData = "\"" + dataString + "\"";
-            }
-
-            return escapedData;
+        if (data instanceof String dataString) {
+            return StringUtil.escapeSpecialCharacters(dataString);
         }
 
         return StringUtil.stringify(data);
-    }
-
-    public List<String> headersStats(Metric metric) {
-        return metric.getValues().keySet().stream()
-            .sorted()
-            .toList();
-    }
-
-    public List<String> headersMetric() {
-        return Metric.getHeaders();
     }
 }

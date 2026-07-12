@@ -12,13 +12,21 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * For interaction with the game language.
+ */
 @RequiredArgsConstructor
 public class GameLangApi {
     private final static Logger log = Loggers.getLogger(GameLangApi.class);
 
+    /**
+     * The games default language is english
+     */
     public final static Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     /**
+     * Returns the current set language of the game as a {@link Locale}
+     *
      * @return the current selected language of the game
      */
     public Locale getCurrent() {

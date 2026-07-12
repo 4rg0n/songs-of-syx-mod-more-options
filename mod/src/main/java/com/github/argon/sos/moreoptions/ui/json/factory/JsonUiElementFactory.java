@@ -2,7 +2,18 @@ package com.github.argon.sos.moreoptions.ui.json.factory;
 
 import com.github.argon.sos.mod.sdk.game.action.Resettable;
 import com.github.argon.sos.mod.sdk.json.element.*;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.DropDown;
+import com.github.argon.sos.mod.sdk.ui.button.DropDownList;
+import com.github.argon.sos.mod.sdk.ui.button.MultiSelectDropDown;
+import com.github.argon.sos.mod.sdk.ui.button.Select;
+import com.github.argon.sos.mod.sdk.ui.input.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.input.InputDouble;
+import com.github.argon.sos.mod.sdk.ui.input.InputInteger;
+import com.github.argon.sos.mod.sdk.ui.input.InputString;
+import com.github.argon.sos.mod.sdk.ui.simple.Spacer;
+import com.github.argon.sos.mod.sdk.ui.slider.Slider;
+import com.github.argon.sos.mod.sdk.ui.slider.SliderDoubleList;
+import com.github.argon.sos.mod.sdk.ui.util.Section;
 import com.github.argon.sos.moreoptions.ui.json.JsonUiMapper;
 import com.github.argon.sos.moreoptions.ui.json.factory.builder.JsonUiElementListBuilder;
 import init.sprite.UI.UI;
@@ -135,7 +146,7 @@ public class JsonUiElementFactory implements Resettable {
             .build();
     }
 
-    public JsonUiElementSingle<JsonLong, InputInt> inputInteger(String jsonPath, int min, int max, JsonLong defaultValue) {
+    public JsonUiElementSingle<JsonLong, InputInteger> inputInteger(String jsonPath, int min, int max, JsonLong defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
                 path,
@@ -296,7 +307,7 @@ public class JsonUiElementFactory implements Resettable {
             .build();
     }
 
-    public JsonUiElementSingle<JsonArray, MultiDropDown<String>> multiDropDown(String jsonPath, String title, List<String> options, JsonArray defaultValue, int maxSelect, boolean maxSelected) {
+    public JsonUiElementSingle<JsonArray, MultiSelectDropDown<String>> multiDropDown(String jsonPath, String title, List<String> options, JsonArray defaultValue, int maxSelect, boolean maxSelected) {
         return JsonUiElementSingle.from(
                 jsonPath,
                 path,
@@ -335,7 +346,7 @@ public class JsonUiElementFactory implements Resettable {
             .build();
     }
 
-    public JsonUiElementSingle<JsonString, Input> text(String jsonPath, JsonString defaultValue) {
+    public JsonUiElementSingle<JsonString, InputString> text(String jsonPath, JsonString defaultValue) {
         return JsonUiElementSingle.from(
                 jsonPath,
                 path,

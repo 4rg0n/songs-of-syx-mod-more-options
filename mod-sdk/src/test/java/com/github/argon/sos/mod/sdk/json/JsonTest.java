@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ class JsonTest {
 
     @Test
     void parse_JsonEAndProduceJsonE() throws IOException {
-        String jsonString = resourceService.read("json/JsonE.txt").orElse("");
+        String jsonString = resourceService.read(Path.of("json/JsonE.txt"));
         Json json = new Json(jsonString, JsonWriters.gameJsonUnquotedPretty());
 
         String parsedJsonString = json.write();
@@ -30,8 +31,8 @@ class JsonTest {
 
     @Test
     void parse_JsonEAndProduceJson() throws IOException {
-        String jsonEString = resourceService.read("json/JsonE.txt").orElse("");
-        String jsonString = resourceService.read("json/Json.txt").orElse("");
+        String jsonEString = resourceService.read(Path.of("json/JsonE.txt"));
+        String jsonString = resourceService.read(Path.of("json/Json.txt"));
         Json json = new Json(jsonEString, JsonWriters.jsonPretty());
 
         String parsedJsonString = json.write();
@@ -50,8 +51,8 @@ class JsonTest {
 
         files.forEach(file -> {
             try {
-                String jsonString = resourceService.read(file)
-                    .orElseThrow(() -> new AssertionError("No file?" + file));
+                String jsonString = resourceService.read(Path.of(file));
+                assertThat(jsonString).isNotNull();
                 Json json = new Json(jsonString, JsonWriters.gameJsonUnquotedPretty());
                 assertThat(json.write()).as(file).isNotEmpty();
             } catch (Exception e) {
@@ -70,7 +71,8 @@ class JsonTest {
 
     @Test
     void prettyPrint_JsonE() throws IOException {
-        String jsonEString = resourceService.read("json/MINE_GEM.txt").orElse("");
+        String jsonEString = resourceService.read(Path.of("json/MINE_GEM.txt"));
+        assertThat(jsonEString).isNotNull();
         Json json = new Json(jsonEString, JsonWriters.gameJsonUnquotedPretty());
 
         System.out.println(json.write());

@@ -3,7 +3,17 @@ package com.github.argon.sos.moreoptions.ui.json.factory;
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.json.element.*;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.button.DropDown;
+import com.github.argon.sos.mod.sdk.ui.button.DropDownList;
+import com.github.argon.sos.mod.sdk.ui.button.MultiSelectDropDown;
+import com.github.argon.sos.mod.sdk.ui.button.Select;
+import com.github.argon.sos.mod.sdk.ui.input.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.input.InputDouble;
+import com.github.argon.sos.mod.sdk.ui.input.InputInteger;
+import com.github.argon.sos.mod.sdk.ui.input.InputString;
+import com.github.argon.sos.mod.sdk.ui.simple.Spacer;
+import com.github.argon.sos.mod.sdk.ui.slider.Slider;
+import com.github.argon.sos.mod.sdk.ui.util.Section;
 import com.github.argon.sos.moreoptions.ui.json.JsonUiException;
 import menu.ui.ColorPicker;
 
@@ -34,27 +44,27 @@ public class JsonUiTemplate extends AbstractJsonUiTemplate {
         return store.supplier(() -> factory.selectS(jsonPath, options, new JsonArray(), 0, false)).store();
     }
 
-    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String jsonPath, List<String> options, boolean maxSelected) {
+    public JsonUiElement<JsonArray, MultiSelectDropDown<String>> multiDropDown(String jsonPath, List<String> options, boolean maxSelected) {
         return store.supplier(() -> factory.multiDropDown(jsonPath, jsonPath, options, new JsonArray(), 0, maxSelected)).store();
     }
 
-    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String jsonPath, String title, List<String> options, boolean maxSelected) {
+    public JsonUiElement<JsonArray, MultiSelectDropDown<String>> multiDropDown(String jsonPath, String title, List<String> options, boolean maxSelected) {
         return store.supplier(() -> factory.multiDropDown(jsonPath, title, options, new JsonArray(), 0, maxSelected)).store();
     }
 
-    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String jsonPath, List<String> options, int maxSelect) {
+    public JsonUiElement<JsonArray, MultiSelectDropDown<String>> multiDropDown(String jsonPath, List<String> options, int maxSelect) {
         return store.supplier(() -> factory.multiDropDown(jsonPath, jsonPath, options, new JsonArray(), maxSelect, false)).store();
     }
 
-    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String jsonPath, String title, List<String> options, int maxSelect) {
+    public JsonUiElement<JsonArray, MultiSelectDropDown<String>> multiDropDown(String jsonPath, String title, List<String> options, int maxSelect) {
         return store.supplier(() -> factory.multiDropDown(jsonPath, title, options, new JsonArray(), maxSelect, false)).store();
     }
 
-    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String jsonPath, List<String> options) {
+    public JsonUiElement<JsonArray, MultiSelectDropDown<String>> multiDropDown(String jsonPath, List<String> options) {
         return store.supplier(() -> factory.multiDropDown(jsonPath, jsonPath, options, new JsonArray(), 0, false)).store();
     }
 
-    public JsonUiElement<JsonArray, MultiDropDown<String>> multiDropDown(String jsonPath, String title, List<String> options) {
+    public JsonUiElement<JsonArray, MultiSelectDropDown<String>> multiDropDown(String jsonPath, String title, List<String> options) {
         return store.supplier(() -> factory.multiDropDown(jsonPath, title, options, new JsonArray(), 0, false)).store();
     }
 
@@ -82,7 +92,7 @@ public class JsonUiTemplate extends AbstractJsonUiTemplate {
         return store.supplier(() -> factory.slider(jsonPath, min, max, 1, List.of(),JsonLong.of(0L))).store();
     }
 
-    public JsonUiElement<JsonLong, InputInt> inputInteger(String jsonPath, int min, int max) {
+    public JsonUiElement<JsonLong, InputInteger> inputInteger(String jsonPath, int min, int max) {
         return store.supplier(() -> factory.inputInteger(jsonPath, min, max, JsonLong.of(0))).store();
     }
 
@@ -211,7 +221,7 @@ public class JsonUiTemplate extends AbstractJsonUiTemplate {
         return store.supplier(() -> factory.header(text)).store();
     }
 
-    public JsonUiElement<JsonString, Input> text(String jsonPath) {
+    public JsonUiElement<JsonString, InputString> text(String jsonPath) {
         return store.supplier(() -> factory.text(jsonPath, JsonString.of(""))).store();
     }
 

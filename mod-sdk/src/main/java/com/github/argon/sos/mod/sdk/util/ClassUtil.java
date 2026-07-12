@@ -1,16 +1,19 @@
 package com.github.argon.sos.mod.sdk.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * For handling {@link Class} related things :)
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class ClassUtil {
 
     /**
+     * Checks whether the given object is an instance of the given class.
+     *
+     * @param object to check
+     * @param clazz to check against
      * @return whether the given object is an instance of the given class
      */
     public static boolean instanceOf(Object object, Class<?> clazz) {
@@ -18,6 +21,10 @@ public class ClassUtil {
     }
 
     /**
+     * Checks whether the given object is an instance of the other object.
+     *
+     * @param object to check
+     * @param otherObject to check against
      * @return whether the given object is an instance of the other object
      */
     public static boolean instanceOf(Object object, Object otherObject) {
@@ -25,6 +32,10 @@ public class ClassUtil {
     }
 
     /**
+     * Checks whether the given class is an instance of the other class.
+     *
+     * @param clazz to check
+     * @param otherClazz to check against
      * @return whether the given class is an instance of the other class
      */
     public static boolean instanceOf(@Nullable Class<?> clazz, @Nullable Class<?> otherClazz) {
@@ -48,6 +59,10 @@ public class ClassUtil {
     }
 
     /**
+     * Checks whether the given classes are canonically the same.
+     *
+     * @param clazz1 to check
+     * @param clazz2 to check against
      * @return whether the given classes are canonically the same
      */
     public static boolean sameAs(Class<?> clazz1, Class<?> clazz2) {

@@ -16,14 +16,39 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+/**
+ * Provides basic methods to deal with reading and writing files and their content
+ */
 public abstract class AbstractFileService implements IOService {
 
     private final static Logger log = Loggers.getLogger(AbstractFileService.class);
 
+    /**
+     * Creates a new {@link AbstractFileService}.
+     */
+    protected AbstractFileService() {
+    }
+
+    /**
+     * Will read the content from an {@link InputStream}.
+     * Each line will be separated by a "\n" linebreak.
+     *
+     * @param inputStream to read content from
+     * @return the actual file content
+     * @throws IOException when reading of the file fails
+     */
     protected String readFromInputStream(InputStream inputStream) throws IOException {
         return String.join("\n", readLinesFromInputStream(inputStream));
     }
 
+    /**
+     * Will read the content from an {@link InputStream} as list.
+     * Where each entry is a line in the file.
+     *
+     * @param inputStream to read lines from
+     * @return read file content as list
+     * @throws IOException when reading of the file fails
+     */
     protected List<String> readLinesFromInputStream(InputStream inputStream) throws IOException {
         List<String> lines = new ArrayList<>();
 
@@ -37,6 +62,8 @@ public abstract class AbstractFileService implements IOService {
     }
 
     /**
+     * Will read the metadata of a file by the given file path.
+     *
      * @return meta information of a file or null if the file does not exist or can not be read
      */
     @Override
@@ -55,7 +82,9 @@ public abstract class AbstractFileService implements IOService {
     }
 
     /**
-     * @return meta information of a folder or null if the file does not exist or can not be read
+     * Will read the metadata of all files in a folder (not recursive).
+     *
+     * @return meta information of a all files in a folder or an empty list if the folder does not exist or can not be read
      */
     @Override
     public List<FileMeta> readMetas(Path folderPath) {

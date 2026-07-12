@@ -6,7 +6,13 @@ import init.paths.PATHS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents the game "init" folder structure.
+ */
 public class Init extends AbstractGameData {
+    /**
+     * Creates a new "init" folder structure instance
+     */
     public Init() {
         super(PATHS.INIT());
     }

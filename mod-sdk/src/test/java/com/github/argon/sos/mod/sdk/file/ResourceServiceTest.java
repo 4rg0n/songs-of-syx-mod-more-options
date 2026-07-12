@@ -17,16 +17,16 @@ class ResourceServiceTest {
     @Test
     void readResource() throws Exception {
         Assertions.assertThat(resourceService.read(Paths.get("not.present"))).isNull();
-        Assertions.assertThat(resourceService.read(Paths.get("test.properties"))).isNotNull();
-        Assertions.assertThat(resourceService.read("not.present")).isEmpty();
-        Assertions.assertThat(resourceService.read("test.properties")).isPresent();
-        Assertions.assertThat(resourceService.read("test.properties")).hasValue("test=test");
+
+        String propertyContent = resourceService.read(Paths.get("test.properties"));
+        Assertions.assertThat(propertyContent).isNotNull();
+        Assertions.assertThat(propertyContent).contains("test=test");
     }
 
     @Test
     void readResourceLines() throws Exception {
-        Assertions.assertThat(resourceService.readLines("not.present")).isEqualTo(List.of());
-        Assertions.assertThat(resourceService.readLines("test.properties")).isEqualTo(List.of("test=test"));
+        Assertions.assertThat(resourceService.readLines(Paths.get("not.present"))).isEqualTo(List.of());
+        Assertions.assertThat(resourceService.readLines(Paths.get("test.properties"))).isEqualTo(List.of("test=test"));
     }
 
     @Test
@@ -34,7 +34,7 @@ class ResourceServiceTest {
         Properties expected = new Properties();
         expected.put("test", "test");
 
-        Assertions.assertThat(resourceService.readProperties("not.present")).isNull();
-        Assertions.assertThat(resourceService.readProperties("test.properties")).isEqualTo(expected);
+        Assertions.assertThat(resourceService.readProperties(Paths.get("not.present"))).isNull();
+        Assertions.assertThat(resourceService.readProperties(Paths.get("test.properties"))).isEqualTo(expected);
     }
 }

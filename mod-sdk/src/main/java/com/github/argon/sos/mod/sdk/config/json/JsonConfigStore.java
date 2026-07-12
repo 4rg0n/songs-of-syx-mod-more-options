@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Manages and contains config objects loaded from JSON files.
  *
- * You can register a data class under a given file path via {@link this#bind(Class, Path, boolean)} or {@link this#bindToSave(Class, String, Path, boolean)}.
+ * You can register a data class under a given file path via {@link JsonConfigStore#bind(Class, Path, boolean)} or {@link JsonConfigStore#bindToSave(Class, String, Path, boolean)}.
  * The store will then be able to manage these, and you can access the data through the store.
  */
 @RequiredArgsConstructor
@@ -95,7 +95,7 @@ public class JsonConfigStore {
     }
 
     /**
-     * Remove a config class from the store
+     * Remove a config class from the store.
      *
      * @param configClass to remove
      */
@@ -106,7 +106,7 @@ public class JsonConfigStore {
     }
 
     /**
-     * Clears all stored configs and definitions
+     * Clears all stored configs and definitions.
      */
     public void clear() {
         log.debug("Clearing");
@@ -116,12 +116,20 @@ public class JsonConfigStore {
     }
 
     /**
+     * Whether there are backup configs in the store.
+     *
      * @return whether there are any backup configs loaded
      */
     public boolean hasBackups() {
         return !backupConfigStore.isEmpty();
     }
 
+    /**
+     * Reads the file metas of a bound config class without loading its content.
+     *
+     * @param configClass to read the file metas for
+     * @return file metas or an empty list when the config isn't bound or not bound to a save
+     */
     public List<FileMeta> readMetas(Class<?> configClass) {
         ConfigDefinition configDefinition = this.configDefinitions.get(configClass);
 
@@ -134,6 +142,9 @@ public class JsonConfigStore {
     }
 
     /**
+     * Returns the file path of the current loaded config.
+     *
+     * @param configClass of the loaded config
      * @return file path of the currently loaded config class
      */
     public Optional<Path> getPath(Class<?> configClass) {
@@ -142,6 +153,9 @@ public class JsonConfigStore {
     }
 
     /**
+     * Returns the file path of the current loaded backup config.
+     *
+     * @param configClass of the loaded backup config
      * @return backup file path of the currently loaded config class
      */
     public Optional<Path> getBackupPath(Class<?> configClass) {
@@ -303,6 +317,8 @@ public class JsonConfigStore {
      * Will delete the config file associated with the given class.
      * Will also remove the config object from the store.
      *
+     * @param configClass to delete the config file for
+     * @param removeFromStore whether the config object shall also be removed from the store
      * @return whether deletion was successful
      */
     public boolean delete(Class<?> configClass, boolean removeFromStore) {
@@ -383,6 +399,8 @@ public class JsonConfigStore {
      * Will delete only the backup config file associated with the given class.
      * Will also remove the config object from the backup store.
      *
+     * @param configClass to delete the backup config file for
+     * @param removeFromStore whether the config object shall also be removed from the backup store
      * @return whether deletion was successful
      */
     public boolean deleteBackup(Class<?> configClass, boolean removeFromStore) {
@@ -402,6 +420,7 @@ public class JsonConfigStore {
      * Will delete all backup config files bound to the store.
      * Will also remove the config objects from the backup store.
      *
+     * @param removeFromStore whether the config objects shall also be removed from the backup store
      * @return whether deletion of all backups was successful
      */
     public boolean deleteBackups(boolean removeFromStore) {
@@ -423,6 +442,7 @@ public class JsonConfigStore {
      * Will delete all backup original config files bound to the store.
      * Will also remove the config objects from the backup store.
      *
+     * @param removeFromStore whether the config objects shall also be removed from the backup store
      * @return whether deletions were successful
      */
     public boolean deleteBackupOriginals(boolean removeFromStore) {
@@ -447,6 +467,8 @@ public class JsonConfigStore {
      * Will delete only the backup original config file associated with the given class.
      * Will also remove the config object from the backup store.
      *
+     * @param configClass to delete the backup original config file for
+     * @param removeFromStore whether the config object shall also be removed from the backup store
      * @return whether deletion was successful
      */
     public boolean deleteBackupOriginal(Class<?> configClass, boolean removeFromStore) {
@@ -491,7 +513,7 @@ public class JsonConfigStore {
         }
 
         log.debug("Reading config from %s into %s", savePath, configClass.getSimpleName());
-        return jsonService.load(savePath, configClass);
+        return jsonService.read(savePath, configClass);
     }
 
     private <T> Optional<ConfigObject<T>> load(Class<T> configClass, ConfigDefinition configDefinition, boolean asBackup) {
@@ -503,7 +525,7 @@ public class JsonConfigStore {
         }
 
         try {
-            return jsonService.load(path, configClass).map(config -> ConfigObject.<T>builder()
+            return jsonService.read(path, configClass).map(config -> ConfigObject.<T>builder()
                 .config(config)
                 .path(path)
                 .build());
@@ -531,7 +553,7 @@ public class JsonConfigStore {
         }
 
         // store newly saved config
-        jsonService.save(savePath, config);
+        jsonService.write(savePath, config);
         store(config.getClass(), config, savePath);
         return savePath;
     }
@@ -648,7 +670,7 @@ public class JsonConfigStore {
     }
 
     /**
-     * Will rewrite a path / filename with a {@link this#BACKUP_FILE_PREFIX} in it.
+     * Will rewrite a path / filename with a {@link JsonConfigStore#BACKUP_FILE_PREFIX} in it.
      *
      * @param path to create a backup path from
      * @return created backup path

@@ -2,8 +2,8 @@ package com.github.argon.sos.moreoptions.ui;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
-import com.github.argon.sos.mod.sdk.ui.FullWindow;
-import com.github.argon.sos.mod.sdk.ui.Window;
+import com.github.argon.sos.mod.sdk.ui.window.FullWindow;
+import com.github.argon.sos.mod.sdk.ui.window.Window;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
@@ -17,7 +17,7 @@ import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.moreoptions.ui.controller.*;
-import com.github.argon.sos.mod.sdk.ui.Notificator;
+import com.github.argon.sos.mod.sdk.ui.notification.Notificator;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
@@ -180,25 +180,25 @@ public class UiConfig implements Phases {
 
     public void initControls(FullWindow<MoreOptionsPanel> moreOptionsWindow) {
         MoreOptionsPanel moreOptionsPanel = moreOptionsWindow.getSection();
-        new MoreOptionsPanelController(moreOptionsPanel, moreOptionsWindow);
+        new MoreOptionsPanelUiController(moreOptionsPanel, moreOptionsWindow);
 
         // BOOSTERS
         BoostersTab boostersTab = moreOptionsPanel.getBoostersTab();
-        new BoostersTabController(boostersTab);
+        new BoostersTabUiController(boostersTab);
 
         moreOptionsPanel.showAction(boostersTab::refresh);
 
         // METRICS
         MetricsTab metricsTab = moreOptionsPanel.getMetricsTab();
-        new MetricsTabController(metricsTab);
+        new MetricsTabUiController(metricsTab);
 
         // RACES
         RacesTab racesTab = moreOptionsPanel.getRacesTab();
-        new RacesTabController(racesTab);
+        new RacesTabUiController(racesTab);
 
         // ADVANCED
         AdvancedTab advancedTab = moreOptionsPanel.getAdvancedTab();
-        phaseManager.register(Phase.ON_GAME_SAVED, new AdvancedTabController(advancedTab, moreOptionsPanel));
+        phaseManager.register(Phase.ON_GAME_SAVED, new AdvancedTabUiController(advancedTab, moreOptionsPanel));
     }
 
     public void initBackupControls(
@@ -207,6 +207,6 @@ public class UiConfig implements Phases {
         MoreOptionsPanel moreOptionsPanel
     ) {
         initControls(backupMoreOptionsModal);
-        new BackupPanelController(backupMoreOptionsModal, backupDialog, moreOptionsPanel);
+        new BackupPanelUiController(backupMoreOptionsModal, backupDialog, moreOptionsPanel);
     }
 }

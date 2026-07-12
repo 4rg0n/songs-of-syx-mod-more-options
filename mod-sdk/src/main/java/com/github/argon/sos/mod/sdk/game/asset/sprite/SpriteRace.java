@@ -6,7 +6,13 @@ import init.paths.PATHS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents the game "sprite/race" folder structure.
+ */
 public class SpriteRace extends AbstractGameData {
+    /**
+     * Creates a new "sprite/race" folder structure instance
+     */
     public SpriteRace() {
         super(PATHS.RACE().sprite);
     }

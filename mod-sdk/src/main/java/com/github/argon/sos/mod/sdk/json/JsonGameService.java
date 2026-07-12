@@ -21,17 +21,23 @@ public class JsonGameService implements JsonService {
     private final JsonWriter jsonWriter;
     private final IOService ioService;
 
-    public <T> Optional<T> load(Path path, Class<T> clazz) {
-        return load(path)
+    public <T> Optional<T> read(Path filePath, Class<T> clazz) {
+        return load(filePath)
             .map(json -> {
                 try {
                     return JsonMapper.mapJson(json.getRoot(), clazz);
                 }  catch (Exception e) {
-                    throw new JsonException(String.format("Could not map json from %s for %s", path, clazz.getSimpleName()), e);
+                    throw new JsonException(String.format("Could not map json from %s for %s", filePath, clazz.getSimpleName()), e);
                 }
             });
     }
 
+    /**
+     * Reads and parses the json content of the given path.
+     *
+     * @param path of the file to load
+     * @return parsed json or empty when the file does not exist
+     */
     public Optional<Json> load(Path path) {
         String jsonString;
         try {
@@ -51,19 +57,25 @@ public class JsonGameService implements JsonService {
         }
     }
 
-    public void save(Path path, Object object) {
+    public void write(Path filePath, Object object) {
         Json json;
         try {
             JsonElement jsonElement = JsonMapper.mapObject(object);
             json = new Json(jsonElement, jsonWriter);
         } catch (Exception e) {
             throw new JsonException(String.format("Could not create json from object %s for saving in %s",
-                path, object.getClass().getSimpleName()), e);
+                filePath, object.getClass().getSimpleName()), e);
         }
 
-        save(path, json);
+        save(filePath, json);
     }
 
+    /**
+     * Writes the given {@link Json} content into the given path.
+     *
+     * @param path to write into
+     * @param json to write
+     */
     public void save(Path path, Json json) {
         try {
             ioService.write(path, json.write());
@@ -72,11 +84,11 @@ public class JsonGameService implements JsonService {
         }
     }
 
-    public boolean delete(Path path) {
+    public boolean delete(Path filePath) {
         try {
-            return ioService.delete(path);
+            return ioService.delete(filePath);
         } catch (Exception e) {
-            throw new JsonException(String.format("Could not delete json file %s", path), e);
+            throw new JsonException(String.format("Could not delete json file %s", filePath), e);
         }
     }
 }

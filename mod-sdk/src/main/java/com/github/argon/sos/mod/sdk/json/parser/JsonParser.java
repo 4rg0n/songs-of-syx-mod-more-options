@@ -15,8 +15,15 @@ public class JsonParser {
     private final static BooleanParser booleanParser = new BooleanParser();
     private final static ValueParser valueParser = new ValueParser();
 
+    /** Creates a new {@link JsonParser}. */
+    public JsonParser() {
+    }
+
     /**
      * Writes a json string into a json object
+     *
+     * @param json to parse
+     * @return parsed json element
      */
     public static JsonElement parse(Json json){
         try {
@@ -28,6 +35,9 @@ public class JsonParser {
 
     /**
      * Delegates to responsible parser when at certain character
+     *
+     * @param json to parse
+     * @return parsed json element
      */
     private static JsonElement delegate(Json json) {
         char currentChar = json.currentChar();

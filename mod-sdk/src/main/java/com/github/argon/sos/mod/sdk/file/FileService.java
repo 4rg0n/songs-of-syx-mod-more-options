@@ -22,8 +22,21 @@ import java.util.Properties;
  */
 public class FileService extends AbstractFileService {
     private final static Logger log = Loggers.getLogger(FileService.class);
+
+    /**
+     * Charset used for reading and writing files
+     */
     public final static Charset CHARSET = StandardCharsets.UTF_8;
 
+    /**
+     * Creates a new {@link FileService}.
+     */
+    public FileService() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Properties readProperties(Path filePath) throws IOException {
         log.debug("Reading from resource properties file %s", filePath);
@@ -45,6 +58,9 @@ public class FileService extends AbstractFileService {
         return properties;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> readLines(Path path) throws IOException {
         log.debug("Reading from file %s", path);
@@ -64,10 +80,14 @@ public class FileService extends AbstractFileService {
     }
 
     /**
+     * Reads the content of a file as a {@link String}.
+     *
+     * @param path of the file to read
      * @return content of the file as string or null if the file does not exist
      * @throws IOException if something goes wrong when reading the file
      */
     @Nullable
+    @Override
     public String read(Path path) throws IOException {
         log.debug("Reading from file %s", path);
 
@@ -86,10 +106,13 @@ public class FileService extends AbstractFileService {
     }
 
     /**
-     * Writes content into a file. Will create the file if it does not exist.
+     * Writes content into a file. Will create the file and directories if they do not exist.
      *
+     * @param path of the file to write
+     * @param content to write into the file
      * @throws IOException if something goes wrong when writing the file
      */
+    @Override
     public void write(Path path, String content) throws IOException {
         log.debug("Writing into file %s", path);
         File parentDirectory = path.getParent().toFile();
@@ -112,9 +135,13 @@ public class FileService extends AbstractFileService {
     }
 
     /**
+     * Deletes a file.
+     *
+     * @param path of the file to delete
      * @return whether the file is present anymore
      * @throws IOException if something goes wrong when deleting the file
      */
+    @Override
     public boolean delete(Path path) throws IOException {
         log.debug("Deleting file %s", path);
         try {

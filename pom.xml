@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.argon.sos</groupId>
+    <groupId>io.github.4rg0n</groupId>
     <artifactId>songs-of-syx-mod-parent</artifactId>
     <version>local</version>
     <packaging>pom</packaging>

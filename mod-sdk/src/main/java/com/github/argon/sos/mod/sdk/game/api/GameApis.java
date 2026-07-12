@@ -54,6 +54,9 @@ public class GameApis implements Phases, Resettable {
     @Accessors(fluent = true)
     private final GameAnimalsApi animals;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reset() {
         // game will initialize new instances of the cached class references on load
@@ -63,26 +66,44 @@ public class GameApis implements Phases, Resettable {
         faction().reset();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initGameUiPresent() {}
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initGameUpdating() {
         ui().initGameUpdating();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initBeforeGameCreated() {}
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initModCreateInstance() {
         race().initModCreateInstance();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initNewGameSession() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initSettlementUiPresent() {
         faction.initSettlementUiPresent();
@@ -93,25 +114,37 @@ public class GameApis implements Phases, Resettable {
         save().onGameSaved(saveFilePath, filePutter);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
         save().onGameLoaded(saveFilePath, fileGetter);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameSaveReloaded() {
         reset();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void onGameUpdate(double seconds) {
-    }
+    public void onGameUpdate(double seconds) {}
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void onCrash(Throwable e) {
-    }
+    public void onCrash(Throwable e) {}
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void initGameResourcesLoaded() {
-    }
+    public void initGameResourcesLoaded() {}
 }

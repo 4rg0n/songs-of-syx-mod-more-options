@@ -1,9 +1,12 @@
 package com.github.argon.sos.mod.sdk.data.domain;
 
 import com.github.argon.sos.mod.sdk.game.util.UiMapper;
-import com.github.argon.sos.mod.sdk.ui.Slider;
+import com.github.argon.sos.mod.sdk.ui.slider.Slider;
 import lombok.*;
 
+/**
+ * Data object which defines a range of values with min and max
+ */
 @Data
 @Builder
 @EqualsAndHashCode
@@ -21,18 +24,48 @@ public class Range {
     @Builder.Default
     private DisplayMode displayMode = DisplayMode.PERCENTAGE;
 
+    /**
+     * How the range value shall be displayed in the ui
+     */
     public enum DisplayMode {
+        /**
+         * Value is not displayed at all.
+         */
         NONE,
+        /**
+         * Value is displayed as its absolute number.
+         */
         ABSOLUTE,
+        /**
+         * Value is displayed as a percentage.
+         */
         PERCENTAGE;
     }
 
+    /**
+     * How the range value shall be applied
+     */
     public enum ApplyMode {
+        /**
+         * Value is added.
+         */
         ADD,
+        /**
+         * Value is multiplied.
+         */
         MULTI,
+        /**
+         * Value is applied as a percentage.
+         */
         PERCENT;
     }
 
+    /**
+     * Crates a copy of this range
+     *
+     * @return new copied instance
+     */
+    @Override
     public Range clone() {
         return Range.builder()
             .displayMode(displayMode)
@@ -43,6 +76,12 @@ public class Range {
             .build();
     }
 
+    /**
+     * Reads the values from a {@link Slider} and creates a {@link Range} from it
+     *
+     * @param slider to extract values from
+     * @return range with extracted values
+     */
     public static Range fromSlider(Slider slider) {
         return Range.builder()
             .value(slider.getValue())

@@ -42,7 +42,10 @@ public class StatsExtractor {
     private final static String TOTAL_SUFFIX = "_TOTAL";
 
     /**
-     * For checking whether a game stat shall be collected or not
+     * For checking whether a game stat shall be collected.
+     *
+     * @param statName to check whether it is whitelisted
+     * @return whether a stat is whitelisted
      */
     public boolean isWhitelisted(String statName) {
         // no whitelist = accept all
@@ -53,49 +56,83 @@ public class StatsExtractor {
         return whitelist.contains(statName);
     }
 
+    /**
+     * For checking whether a stat shall not be collected.
+     *
+     * @param statName to check whether it is blacklisted
+     * @return whether stat is blacklisted
+     */
     public boolean isBlacklisted(String statName) {
         return !isWhitelisted(statName);
     }
 
-    public Map<String, Integer> getReligionStats(LIST<StatsReligion.StatReligion> statList) {
+    /**
+     * Extracts a map of religion stats from a list of {@link StatsReligion.StatReligion}.
+     *
+     * @param statList to extract from
+     * @return map with stat name and the actual religion stat
+     */
+    public Map<String, Integer> extractReligionStats(LIST<StatsReligion.StatReligion> statList) {
         Map<String, Integer> stats = new HashMap<>();
 
         for (StatsReligion.StatReligion statReligion : statList) {
-            stats.putAll(getReligionStats(statReligion));
+            stats.putAll(extractReligionStats(statReligion));
         }
 
         return stats;
     }
 
-    public Map<String, Integer> getReligionRaceStats(LIST<StatsReligion.StatReligion> statList) {
+    /**
+     * Extracts a map of race religion stats from a list of {@link StatsReligion.StatReligion}.
+     *
+     * @param statList to extract from
+     * @return map with stat name and the actual race religion stat
+     */
+    public Map<String, Integer> extractReligionRaceStats(LIST<StatsReligion.StatReligion> statList) {
         Map<String, Integer> stats = new HashMap<>();
 
         for (StatsReligion.StatReligion statReligion : statList) {
-            stats.putAll(getReligionRaceStats(statReligion));
+            stats.putAll(extractReligionRaceStats(statReligion));
         }
 
         return stats;
     }
 
-    private Map<String, Integer> getReligionRaceStats(StatsReligion.StatReligion stat) {
+    /**
+     * Extracts a map of religion race stat key with its value from a {@link StatsReligion.StatReligion}.
+     *
+     * @param stat to extract from
+     * @return map with stat name and the value
+     */
+    private Map<String, Integer> extractReligionRaceStats(StatsReligion.StatReligion stat) {
         Map<String, Integer> stats = new HashMap<>();
         String key = stat.religion.key;
 
-        stats.putAll(getRaceStats(key, stat.followers));
+        stats.putAll(extractRaceStats(key, stat.followers));
 
         return stats;
     }
 
-    private Map<String, Integer> getReligionStats(StatsReligion.StatReligion stat) {
-        Map<String, Integer> stats = new HashMap<>();
+    /**
+     * Extracts a map of religion stat key with its value from a {@link StatsReligion.StatReligion}.
+     *
+     * @param stat to extract from
+     * @return map with stat key and the value
+     */
+    private Map<String, Integer> extractReligionStats(StatsReligion.StatReligion stat) {
         String key = stat.religion.key;
 
-        stats.putAll(getStat(key, stat.followers));
-
-        return stats;
+        return new HashMap<>(extractStat(key, stat.followers));
     }
 
-    public Map<String, Integer> getStat(String keyPrefix, SETT_STATISTICS.SettStatistics stat) {
+    /**
+     * Extracts a map of settlement stat key with its value from a {@link SETT_STATISTICS.SettStatistics}.
+     *
+     * @param keyPrefix to identify the stat
+     * @param stat to extract the name and key from
+     * @return map with stat key and the value
+     */
+    public Map<String, Integer> extractStat(String keyPrefix, SETT_STATISTICS.SettStatistics stat) {
         Map<String, Integer> stats = new HashMap<>();
         String key = keyPrefix + ":" + stat.info().name + ":" + TOTAL_SUFFIX;
 
@@ -112,7 +149,14 @@ public class StatsExtractor {
         return stats;
     }
 
-    public Map<String, Integer> getStat(String keyPrefix, SETT_STATISTICS stat) {
+    /**
+     * Extracts a map of settlement stat key with its value from a {@link SETT_STATISTICS}.
+     *
+     * @param keyPrefix to identify the stat
+     * @param stat to extract the name and key from
+     * @return map with stat key and the value
+     */
+    public Map<String, Integer> extractStat(String keyPrefix, SETT_STATISTICS stat) {
         Map<String, Integer> stats = new HashMap<>();
         String key = keyPrefix + ":" + stat.info().name + ":" + TOTAL_SUFFIX;
 
@@ -129,7 +173,14 @@ public class StatsExtractor {
         return stats;
     }
 
-    public Map<String, Integer> getRaceStats(@Nullable String keyPrefix, SETT_STATISTICS.SettStatistics stat) {
+    /**
+     * Extracts a map of race stat key with its value from a {@link SETT_STATISTICS.SettStatistics}.
+     *
+     * @param keyPrefix to identify the stat
+     * @param stat to extract the name and key from
+     * @return map with stat key and the value
+     */
+    public Map<String, Integer> extractRaceStats(@Nullable String keyPrefix, SETT_STATISTICS.SettStatistics stat) {
         Map<String, Integer> stats = new HashMap<>();
 
         LIST<Race> races = RACES.all();
@@ -159,7 +210,13 @@ public class StatsExtractor {
         return stats;
     }
 
-    public Map<String, Integer> getStat(STAT stat) {
+    /**
+     * Extracts a map of a stat with its value from a {@link STAT}.
+     *
+     * @param stat to extract the name and key from
+     * @return map with stat key and the value
+     */
+    public Map<String, Integer> extractStat(STAT stat) {
 
         String statKey = stat.key();
         if (statKey == null) {
@@ -184,7 +241,13 @@ public class StatsExtractor {
         }
     }
 
-    public Map<String, Integer> getRaceStats(STAT stat) {
+    /**
+     * Extracts a map of a race stat with its value from a {@link STAT}.
+     *
+     * @param stat to extract the name and key from
+     * @return map with stat key and the value
+     */
+    public Map<String, Integer> extractRaceStats(STAT stat) {
         Map<String, Integer> stats = new HashMap<>();
 
         // filter not race stats

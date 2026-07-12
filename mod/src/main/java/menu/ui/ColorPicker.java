@@ -1,9 +1,9 @@
 package menu.ui;
 
 import com.github.argon.sos.mod.sdk.data.IntegerValue;
-import com.github.argon.sos.mod.sdk.ui.ColorBox;
-import com.github.argon.sos.mod.sdk.ui.InputInt;
-import com.github.argon.sos.mod.sdk.ui.Section;
+import com.github.argon.sos.mod.sdk.ui.simple.ColorBox;
+import com.github.argon.sos.mod.sdk.ui.input.InputInteger;
+import com.github.argon.sos.mod.sdk.ui.util.Section;
 import menu.MenuUi;
 import org.jetbrains.annotations.Nullable;
 import snake2d.SPRITE_RENDERER;
@@ -20,9 +20,9 @@ public class ColorPicker extends Section {
     private final IntegerValue blue;
     private final ColorBox colorBox;
 
-    private final InputInt redInput;
-    private final InputInt greenInput;
-    private final InputInt blueInput;
+    private final InputInteger redInput;
+    private final InputInteger greenInput;
+    private final InputInteger blueInput;
 
     public final static COLOR DUMMY_COLOR = new ColorImp(255, 0, 255);
 
@@ -39,9 +39,9 @@ public class ColorPicker extends Section {
         this.green = new IntegerValue(0, 255);
         this.blue = new IntegerValue(0, 255);
 
-        this.redInput = new InputInt(this.red, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
-        this.greenInput = new InputInt(this.green, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
-        this.blueInput = new InputInt(this.blue, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
+        this.redInput = new InputInteger(this.red, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
+        this.greenInput = new InputInteger(this.green, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
+        this.blueInput = new InputInteger(this.blue, true, true, MenuUi.MOUSE_COO_SUPPLIER, 40);
 
         setRed(red);
         setGreen(green);
@@ -66,9 +66,9 @@ public class ColorPicker extends Section {
     }
 
     @Override
-    public void render(SPRITE_RENDERER r, float ds) {
+    public void render(SPRITE_RENDERER renderer, float deltaSeconds) {
         colorBox.setColor(color());
-        super.render(r, ds);
+        super.render(renderer, deltaSeconds);
     }
 
     public void setRed(int value) {

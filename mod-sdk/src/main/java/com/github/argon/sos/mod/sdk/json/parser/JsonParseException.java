@@ -3,26 +3,65 @@ package com.github.argon.sos.mod.sdk.json.parser;
 import com.github.argon.sos.mod.sdk.json.Json;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 
+/**
+ * Exception thrown from within the "json.parser" namespace.
+ */
 public class JsonParseException extends RuntimeException {
+    /**
+     * Creates a new {@link JsonParseException}.
+     *
+     * @see RuntimeException#RuntimeException()
+     */
     public JsonParseException() {
     }
 
+    /**
+     * Creates a new {@link JsonParseException} with a message.
+     *
+     * @param message describing the error
+     * @see RuntimeException#RuntimeException(String)
+     */
     public JsonParseException(String message) {
         super(message);
     }
 
+    /**
+     * Creates a new {@link JsonParseException} with a message and cause.
+     *
+     * @param message describing the error
+     * @param cause of the error
+     * @see RuntimeException#RuntimeException(String, Throwable)
+     */
     public JsonParseException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Creates a new {@link JsonParseException} with a cause.
+     *
+     * @param cause of the error
+     * @see RuntimeException#RuntimeException(Throwable)
+     */
     public JsonParseException(Throwable cause) {
         super(cause);
     }
 
-    public JsonParseException(Json json, Exception e) {
-        super(error(json), e);
+    /**
+     * Creates a new {@link JsonParseException} with the faulty json as information.
+     *
+     * @param json containing the faulty json string
+     * @param cause thrown cause exception
+     */
+    public JsonParseException(Json json, Throwable cause) {
+        super(error(json), cause);
     }
 
+    /**
+     * Creates a descriptive error message with the faulty json part.
+     *
+     * @param json containing the faulty json
+     * @return error message
+     */
     private static String error(Json json) {
         String rawJson = json.getRawJson();
         if (rawJson.isEmpty()) {

@@ -24,7 +24,17 @@ public class FileMeta {
     private Instant updateTime;
     private Instant accessTime;
 
+    /**
+     * Extends the lombok builder and adds methods to build the {@link FileMeta} object.
+     */
     public static class FileMetaBuilder {
+        /**
+         * Builds a {@link FileMeta} instance from the file {@link Path} and {@link BasicFileAttributes}.
+         *
+         * @param path of the file
+         * @param fileAttributes with information about the file
+         * @return builder
+         */
         public FileMetaBuilder fromFileAttributes(Path path, BasicFileAttributes fileAttributes) {
             return FileMeta.builder()
                 .path(path)

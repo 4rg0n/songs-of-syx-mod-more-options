@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -29,6 +30,11 @@ public class Metric {
     @Builder.Default
     private Map<String, Object> values = new HashMap<>();
 
+    /**
+     * Returns the header names to be used in a table format like CSV
+     *
+     * @return all header names
+     */
     public static List<String> getHeaders() {
         List<String> headersMetric = new ArrayList<>();
         headersMetric.add("TIMESTAMP");
@@ -37,31 +43,42 @@ public class Metric {
         return headersMetric;
     }
 
-    public Object get(String key) {
-        switch (key) {
-            case "TIMESTAMP":
-                return getTimestamp().getEpochSecond();
-            case "AGE":
-                return getGameTime().getAge();
-            case "SEASONS":
-                return getGameTime().getSeasons();
-            case "SEASON":
-                return getGameTime().getSeason();
-            case "YEARS":
-                return getGameTime().getYears();
-            case "DAYS":
-                return getGameTime().getDays();
-            case "HOURS":
-                return getGameTime().getHours();
-            case "CURRENT_SECONDS":
-                return getGameTime().getCurrentSeconds();
-            case "PLAY_TIME_SECONDS":
-                return getGameTime().getPlayTimeSeconds();
-            default:
-                return null;
-        }
+    /**
+     * Returns the header names of stats only.
+     *
+     * @return stat header names
+     */
+    public List<String> getHeaderStats() {
+        return getValues().keySet().stream()
+            .sorted()
+            .toList();
     }
 
+    /**
+     * Returns the value for the given header or null when there is no value for it.
+     *
+     * @param headerName to get the value from
+     * @return header value or null if not present
+     */
+    @Nullable
+    public Object get(String headerName) {
+        return switch (headerName) {
+            case "TIMESTAMP" -> getTimestamp().getEpochSecond();
+            case "AGE" -> getGameTime().getAge();
+            case "SEASONS" -> getGameTime().getSeasons();
+            case "SEASON" -> getGameTime().getSeason();
+            case "YEARS" -> getGameTime().getYears();
+            case "DAYS" -> getGameTime().getDays();
+            case "HOURS" -> getGameTime().getHours();
+            case "CURRENT_SECONDS" -> getGameTime().getCurrentSeconds();
+            case "PLAY_TIME_SECONDS" -> getGameTime().getPlayTimeSeconds();
+            default -> null;
+        };
+    }
+
+    /**
+     * Holds information about the current in-game time when a {@link Metric} was collected.
+     */
     @Getter
     @Builder
     @ToString
@@ -91,17 +108,11 @@ public class Metric {
         @Builder.Default
         private double playTimeSeconds = TIME.playedGame();
 
-        public String formatted() {
-            return "age=" + age +
-                " seasons=" + seasons +
-                " season=" + season +
-                " years=" + years +
-                " days=" + days +
-                " hours=" + hours +
-                " currentSeconds=" + currentSeconds +
-                " playTimeSeconds=" + playTimeSeconds;
-        }
-
+        /**
+         * Returns the header names for the game time.
+         *
+         * @return header names
+         */
         public static List<String> getHeaders() {
             return List.of("AGE", "SEASONS", "SEASON", "YEARS", "DAYS", "HOURS", "CURRENT_SECONDS", "PLAY_TIME_SECONDS");
         }

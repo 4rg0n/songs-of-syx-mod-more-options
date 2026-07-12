@@ -6,7 +6,13 @@ import init.paths.PATHS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents the game "text/settlement" folder structure.
+ */
 public class TextSettlement extends AbstractGameData {
+    /**
+     * Creates a new "text/settlement" folder structure instance
+     */
     public TextSettlement() {
         super(PATHS.SETT().text);
     }

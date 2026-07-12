@@ -10,11 +10,26 @@ import java.util.List;
  * @param <Element> type of selected element
  */
 public interface Selectable<Key, Element> {
+    /**
+     * Selects multiple ui elements by the given keys
+     *
+     * @param keys to select
+     */
     default void select(List<Key> keys) {};
 
+    /**
+     * Returns all selected elements.
+     *
+     * @return the selected elements
+     */
     List<Element> getSelection();
 
-    default void selectAction(BiAction<Key, Element> toggleAction) {
+    /**
+     * Optional action to be executed when an element is selected.
+     *
+     * @param selectAction to be executed when selecting
+     */
+    default void selectAction(BiAction<Key, Element> selectAction) {
         throw new UnsupportedOperationException("Method is not implemented");
     }
 }

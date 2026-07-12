@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -191,6 +192,12 @@ public class GameAssets {
     @Getter(lazy = true)
     private final static List<String> terrains = List.of("OCEAN", "WET", "MOUNTAIN", "FOREST", "NONE");
 
+    /**
+     * Will try to get a {@link GameFolder} instance from already present game folders or create a new one
+     *
+     * @param path of the folder
+     * @return already present game folder instance or a new one
+     */
     public static GameFolder get(PATH path) {
         if (path.get().startsWith(init().getFolder().path().get())) {
             // init?
@@ -208,7 +215,7 @@ public class GameAssets {
 
     private static List<String> readResourceLines(String path) {
         try {
-            return ModSdkModule.resourceService().readLines(path);
+            return ModSdkModule.resourceService().readLines(Paths.get(path));
         } catch (IOException e) {
             return List.of();
         }

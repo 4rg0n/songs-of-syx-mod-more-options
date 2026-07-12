@@ -1,8 +1,21 @@
 package com.github.argon.sos.mod.sdk.ui;
 
 import com.github.argon.sos.mod.sdk.ModSdkModule;
-import com.github.argon.sos.mod.sdk.game.util.UiUtil;
-import com.github.argon.sos.mod.sdk.ui.layout.Layouts;
+import com.github.argon.sos.mod.sdk.game.util.UiMapper;
+import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.input.Checkbox;
+import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
+import com.github.argon.sos.mod.sdk.ui.button.DropDown;
+import com.github.argon.sos.mod.sdk.ui.input.InputString;
+import com.github.argon.sos.mod.sdk.ui.layout.LayoutUtil;
+import com.github.argon.sos.mod.sdk.ui.menu.Tabulator;
+import com.github.argon.sos.mod.sdk.ui.notification.Notificator;
+import com.github.argon.sos.mod.sdk.ui.simple.ColorBox;
+import com.github.argon.sos.mod.sdk.ui.slider.Slider;
+import com.github.argon.sos.mod.sdk.ui.switcher.Switcher;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.table.Table;
+import com.github.argon.sos.mod.sdk.ui.text.Label;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import init.sprite.SPRITES;
 import init.sprite.UI.Icon;
@@ -23,41 +36,47 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This contains examples of ui elements and how to use them.
+ */
 public class UiShowroom extends GuiSection {
 
     private final Notificator notificator = ModSdkModule.notificator();
 
+    /**
+     * Creates a new {@link UiShowroom}.
+     */
     public UiShowroom() {
         int width = 900;
         // Small Icons
         List<GuiSection> iconsSmall = ReflectionUtil.<Icons.S.IconS>getDeclaredFieldValuesMap(Icons.S.IconS.class, SPRITES.icons().s)
             .entrySet().stream()
             .map(entry -> {
-                GuiSection section = UiUtil.toGuiSection(entry.getValue());
+                GuiSection section = UiMapper.toGuiSection(entry.getValue());
                 section.hoverInfoSet("SPRITES.icons().s." + entry.getKey().getName());
                 return section;
             }).toList();
-        GuiSection iconsSmallSection = Layouts.flow(iconsSmall, null, null, width, 100, 0);
+        GuiSection iconsSmallSection = LayoutUtil.flow(iconsSmall, null, null, width, 100, 0);
 
         // Medium Icons
         List<GuiSection> iconsMedium = ReflectionUtil.<Icon>getDeclaredFieldValuesMap(Icon.class, SPRITES.icons().m)
             .entrySet().stream()
             .map(entry -> {
-                GuiSection section = UiUtil.toGuiSection(entry.getValue());
+                GuiSection section = UiMapper.toGuiSection(entry.getValue());
                 section.hoverInfoSet("SPRITES.icons().m." + entry.getKey().getName());
                 return section;
             }).toList();
-        GuiSection iconsMediumSection = Layouts.flow(iconsMedium, null, null, width,150, 0);
+        GuiSection iconsMediumSection = LayoutUtil.flow(iconsMedium, null, null, width,150, 0);
 
         // Large Icons
         List<GuiSection> iconsLarge = ReflectionUtil.<Icon>getDeclaredFieldValuesMap(Icon.class, SPRITES.icons().l)
             .entrySet().stream()
             .map(entry -> {
-                GuiSection section = UiUtil.toGuiSection(entry.getValue());
+                GuiSection section = UiMapper.toGuiSection(entry.getValue());
                 section.hoverInfoSet("SPRITES.icons().l." + entry.getKey().getName());
                 return section;
             }).toList();
-        GuiSection iconsLargeSection = Layouts.flow(iconsLarge, null, null, width, 100, 0);
+        GuiSection iconsLargeSection = LayoutUtil.flow(iconsLarge, null, null, width, 100, 0);
 
         // COLOR
         List<ColorBox> colors = ReflectionUtil.<COLOR>getDeclaredFieldValuesMap(COLOR.class, COLOR.class)
@@ -69,7 +88,7 @@ public class UiShowroom extends GuiSection {
                 colorBox.hoverInfoSet("COLOR." + entry.getKey().getName());
                 return colorBox;
             }).toList();
-        GuiSection colorsSection = Layouts.flow(colors, null, null, width, 100, 0);
+        GuiSection colorsSection = LayoutUtil.flow(colors, null, null, width, 100, 0);
 
         // COLOR.UNIQUE
         List<ColorBox> colorsUnique = new ArrayList<>();
@@ -79,7 +98,7 @@ public class UiShowroom extends GuiSection {
             colorBox.hoverInfoSet("COLOR.UNIQUE[" + i  + "]");
             colorsUnique.add(colorBox);
         }
-        GuiSection colorsUniqueSection = Layouts.flow(colorsUnique, null, null, width, 100, 0);
+        GuiSection colorsUniqueSection = LayoutUtil.flow(colorsUnique, null, null, width, 100, 0);
 
         // GCOLOR.T()
         List<ColorBox> gColorsText = ReflectionUtil.<COLOR>getDeclaredFieldValuesMap(COLOR.class, GCOLOR.T())
@@ -91,7 +110,7 @@ public class UiShowroom extends GuiSection {
                 colorBox.hoverInfoSet("GCOLOR.T()." + entry.getKey().getName());
                 return colorBox;
             }).toList();
-        GuiSection gColorsTextSection = Layouts.flow(gColorsText, null, null, width, 100, 0);
+        GuiSection gColorsTextSection = LayoutUtil.flow(gColorsText, null, null, width, 100, 0);
 
         // GCOLOR.UI()
         List<ColorBox> gColorsUI = ReflectionUtil.<COLOR>getDeclaredFieldValuesMap(COLOR.class, GCOLOR.UI())
@@ -103,7 +122,7 @@ public class UiShowroom extends GuiSection {
                 colorBox.hoverInfoSet("GCOLOR.UI()." + entry.getKey().getName());
                 return colorBox;
             }).toList();
-        GuiSection gColorsUISection = Layouts.flow(gColorsUI, null, null, width, 100, 0);
+        GuiSection gColorsUISection = LayoutUtil.flow(gColorsUI, null, null, width, 100, 0);
 
         // simple button with description
         Button<String> button = new Button<>("Button", "A button.");
@@ -176,12 +195,12 @@ public class UiShowroom extends GuiSection {
             dropDown,
             notificationButtons
         );
-        GuiSection buttonElementsSection = Layouts.flow(buttonElements, null, null, width, 200, 20);
+        GuiSection buttonElementsSection = LayoutUtil.flow(buttonElements, null, null, width, 200, 20);
 
         // Slider with negative values
         Slider slider = Slider.builder()
-            .controls(true)
-            .input(true)
+            .showControls(true)
+            .showInput(true)
             .min(-1337)
             .max(1337)
             .value(420)
@@ -203,12 +222,12 @@ public class UiShowroom extends GuiSection {
             checkbox,
             slider
         );
-        GuiSection otherElementsSection = Layouts.flow(otherElements, null, null, width, 200, 20);
+        GuiSection otherElementsSection = LayoutUtil.flow(otherElements, null, null, width, 200, 20);
 
         // Table with searchable rows
         GuiSection tableWithSearch = new GuiSection();
         StringInputSprite searchInput = new StringInputSprite(16, UI.FONT().M).placeHolder("Search");
-        Input search = new Input(searchInput);
+        InputString search = new InputString(searchInput);
         Table<Object> table = Table.builder()
             .row(ColumnRow.builder()
                 .searchTerm("row 1")
@@ -314,9 +333,15 @@ public class UiShowroom extends GuiSection {
         addDown(20, tableAndTabulator);
     }
 
+    /**
+     * Executed when the showroom is rendered.
+     *
+     * @param renderer to use
+     * @param deltaSeconds since last render loop
+     */
     @Override
-    public void render(SPRITE_RENDERER r, float ds) {
-        notificator.update(ds);
-        super.render(r, ds);
+    public void render(SPRITE_RENDERER renderer, float deltaSeconds) {
+        notificator.update(deltaSeconds);
+        super.render(renderer, deltaSeconds);
     }
 }

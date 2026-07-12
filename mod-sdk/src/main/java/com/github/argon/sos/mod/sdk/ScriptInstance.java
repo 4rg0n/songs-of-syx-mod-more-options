@@ -24,6 +24,9 @@ public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 	private final Phases scriptPhases;
 	private final StateManager stateManager;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void update(double v) {
 		State state = stateManager.getState();
@@ -46,6 +49,9 @@ public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void save(FilePutter filePutter) {
 		State state = stateManager.getState();
@@ -53,6 +59,9 @@ public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 		scriptPhases.onGameSaved(filePutter.path, filePutter);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void load(FileGetter fileGetter) throws IOException {
 		State state = stateManager.getState();

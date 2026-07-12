@@ -5,6 +5,11 @@ package com.github.argon.sos.mod.sdk.game.action;
  */
 public interface Renderable {
 
+    /**
+     * Optional action to be executed when an ui element is rendered.
+     *
+     * @param renderAction to be executed when rendering
+     */
     default void renderAction(Action<Float> renderAction) {
         throw new UnsupportedOperationException("Method is not implemented");
     }

@@ -2,7 +2,7 @@ package com.github.argon.sos.moreoptions.ui.json.factory;
 
 import com.github.argon.sos.mod.sdk.json.element.JsonElement;
 import com.github.argon.sos.mod.sdk.json.element.JsonObject;
-import com.github.argon.sos.mod.sdk.ui.ColumnRow;
+import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
 import com.github.argon.sos.mod.sdk.util.StringUtil;
 import snake2d.util.gui.renderable.RENDEROBJ;
 

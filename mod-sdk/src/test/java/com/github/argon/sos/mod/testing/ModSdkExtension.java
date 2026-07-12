@@ -9,11 +9,20 @@ import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
+/**
+ * JUnit extension for injecting mod-sdk test dependencies into test instances.
+ */
 public class ModSdkExtension implements TestInstancePostProcessor {
 
     private final static Logger log = Loggers.getLogger(ModSdkExtension.class);
 
     private final ResourceService resourceService = new ResourceService();
+
+    /**
+     * Creates a new {@link ModSdkExtension}.
+     */
+    public ModSdkExtension() {
+    }
 
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext extensionContext) throws Exception {

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.argon.sos.mod.sdk.file.IOService;
-import com.github.argon.sos.mod.sdk.log.Logger;
-import com.github.argon.sos.mod.sdk.log.Loggers;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -19,43 +17,57 @@ import java.util.Optional;
 public class JacksonService implements JsonService {
 
     private final ObjectMapper objectMapper;
-    private final PrettyPrinter prettyPrinter;
+    private final PrettyPrinter printer;
     private final IOService ioService;
 
-    public <T> Optional<T> load(Path path, Class<T> clazz) {
-        return load(path)
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> Optional<T> read(Path filePath, Class<T> clazz) {
+        return read(filePath)
             .map(json -> {
                 try {
                     return objectMapper.readValue(json, clazz);
                 } catch (JsonProcessingException e) {
-                    throw new JsonException(String.format("Could not map json from %s for %s", path, clazz.getSimpleName()), e);
+                    throw new JsonException(String.format("Could not map json from %s for %s", filePath, clazz.getSimpleName()), e);
                 }
             });
     }
 
-    public Optional<String> load(Path path) {
-        try {
-            return Optional.ofNullable(ioService.read(path));
-        } catch (IOException e) {
-            throw new JsonException(String.format("Could not rad json file %s", path), e);
-        }
-    }
-
-    public void save(Path path, Object object) {
+    /**
+     * {@inheritDoc}
+     *
+     * @throws JsonException when parsing fails
+     */
+    @Override
+    public void write(Path filePath, Object object) {
         String jsonString;
         try {
             jsonString = objectMapper
-                .writer(prettyPrinter)
+                .writer(printer)
                 .writeValueAsString(object);
         } catch (Exception e) {
             throw new JsonException(String.format("Could not create json from object %s for saving in %s",
-                path, object.getClass().getSimpleName()), e);
+                filePath, object.getClass().getSimpleName()), e);
         }
 
-        save(path, jsonString);
+        write(filePath, jsonString);
     }
 
-    public void save(Path path, String json) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean delete(Path filePath) {
+        try {
+            return ioService.delete(filePath);
+        } catch (Exception e) {
+            throw new JsonException(String.format("Could not delete json file %s", filePath), e);
+        }
+    }
+
+    private void write(Path path, String json) {
         try {
             ioService.write(path, json);
         } catch (Exception e) {
@@ -63,11 +75,11 @@ public class JacksonService implements JsonService {
         }
     }
 
-    public boolean delete(Path path) {
+    private Optional<String> read(Path path) {
         try {
-            return ioService.delete(path);
-        } catch (Exception e) {
-            throw new JsonException(String.format("Could not delete json file %s", path), e);
+            return Optional.ofNullable(ioService.read(path));
+        } catch (IOException e) {
+            throw new JsonException(String.format("Could not read json file %s", path), e);
         }
     }
 }
