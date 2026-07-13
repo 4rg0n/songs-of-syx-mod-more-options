@@ -7,6 +7,7 @@ import lombok.*;
  */
 @Data
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class State {
@@ -63,4 +64,10 @@ public class State {
      */
     @Builder.Default
     private boolean gameSaved = false;
+
+    /**
+     * Whether the game is in a battle state.
+     */
+    @Builder.Default
+    private boolean battle = false;
 }

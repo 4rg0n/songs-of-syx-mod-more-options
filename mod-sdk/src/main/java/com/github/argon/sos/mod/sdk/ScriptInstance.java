@@ -1,5 +1,6 @@
 package com.github.argon.sos.mod.sdk;
 
+import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.state.State;
@@ -11,6 +12,7 @@ import snake2d.util.file.FilePutter;
 import view.main.VIEW;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Represents one instance of the "script".
@@ -23,6 +25,7 @@ public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 
 	private final Phases scriptPhases;
 	private final StateManager stateManager;
+	private final GameApis gameApis;
 
 	/**
 	 * {@inheritDoc}
@@ -56,7 +59,15 @@ public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 	public void save(FilePutter filePutter) {
 		State state = stateManager.getState();
 		state.setGameSaved(true);
-		scriptPhases.onGameSaved(filePutter.path, filePutter);
+		Path savePath = filePutter.path;
+		scriptPhases.onGameSaved(savePath, filePutter);
+
+		if (gameApis.save().isBeforeBattleSave(savePath)) {
+			scriptPhases.onBeforeBattle();
+		} else if (gameApis.save().isBattleSave(savePath)) {
+			state.setBattle(true);
+			scriptPhases.onBattle();
+		}
 	}
 
 	/**
@@ -68,13 +79,19 @@ public final class ScriptInstance implements SCRIPT.SCRIPT_INSTANCE {
 		state.setGameSaveLoaded(true);
 		scriptPhases.onGameLoaded(fileGetter.path, fileGetter);
 
-		if (state.isNewGameSession()) {
+		if (state.isNewGameSession() && !state.isBattle()) {
 			state.setNewGameSession(false);
 			state.setNewGame(false);
 			scriptPhases.initNewGameSession();
 		} else {
 			state.setGameSaveReloaded(true);
 			scriptPhases.onGameSaveReloaded();
+		}
+
+		// reset battle state after game loads
+		if (state.isBattle()) {
+			state.setBattle(false);
+			scriptPhases.onAfterBattle();
 		}
 	}
 }

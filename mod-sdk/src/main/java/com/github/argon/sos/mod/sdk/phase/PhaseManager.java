@@ -172,6 +172,33 @@ public class PhaseManager implements Phases {
      * {@inheritDoc}
      */
     @Override
+    public void onBeforeBattle() {
+        log.debug("PHASE: onBeforeBattle");
+        phases.get(Phase.ON_BEFORE_BATTLE).forEach(init -> execute(init, init::onBeforeBattle));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBattle() {
+        log.debug("PHASE: onBattle");
+        phases.get(Phase.ON_BATTLE).forEach(init -> execute(init, init::onBattle));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onAfterBattle() {
+        log.debug("PHASE: onAfterBattle");
+        phases.get(Phase.ON_AFTER_BATTLE).forEach(init -> execute(init, init::onAfterBattle));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void onCrash(Throwable throwable) {
         log.debug("PHASE: onCrash");
         if (throwable instanceof DumpLogsException) {

@@ -160,7 +160,7 @@ public class UiFactory {
                 .updateDate(configMeta.getUpdateTime())
                 .saveFile(saveFile)
                 .build();
-            SaveFile currentFile = gameApis.save().getCurrentFile();
+            SaveFile currentFile = gameApis.save().getSaveFile();
 
             // is the file the currently active one?
             if (current == null && (
