@@ -82,7 +82,7 @@
                                 <configuration>
                                     <outputDirectory>${mod.uploader.directory}</outputDirectory>
                                     <includeEmptyDirs>true</includeEmptyDirs>
-                                    <overwrite>true</overwrite>
+                                    <changeDetection>always</changeDetection>
                                     <resources>
                                         <resource>
                                             <directory>${mod.build.output.directory}</directory>
