@@ -1,10 +1,10 @@
 package com.github.argon.sos.mod.sdk.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.github.argon.sos.mod.sdk.file.IOService;
 import lombok.RequiredArgsConstructor;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,8 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JacksonService implements JsonService {
 
-    private final ObjectMapper objectMapper;
-    private final PrettyPrinter printer;
+    private final JsonMapper jsonMapper;
     private final IOService ioService;
 
     /**
@@ -28,8 +27,8 @@ public class JacksonService implements JsonService {
         return read(filePath)
             .map(json -> {
                 try {
-                    return objectMapper.readValue(json, clazz);
-                } catch (JsonProcessingException e) {
+                    return jsonMapper.readValue(json, clazz);
+                } catch (JacksonException e) {
                     throw new JsonException(String.format("Could not map json from %s for %s", filePath, clazz.getSimpleName()), e);
                 }
             });
@@ -44,8 +43,7 @@ public class JacksonService implements JsonService {
     public void write(Path filePath, Object object) {
         String jsonString;
         try {
-            jsonString = objectMapper
-                .writer(printer)
+            jsonString = jsonMapper
                 .writeValueAsString(object);
         } catch (Exception e) {
             throw new JsonException(String.format("Could not create json from object %s for saving in %s",

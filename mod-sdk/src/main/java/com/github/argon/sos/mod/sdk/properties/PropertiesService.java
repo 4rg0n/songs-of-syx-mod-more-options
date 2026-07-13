@@ -1,6 +1,6 @@
 package com.github.argon.sos.mod.sdk.properties;
 
-import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
+import tools.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.github.argon.sos.mod.sdk.file.IOService;
 
 import java.nio.file.Path;

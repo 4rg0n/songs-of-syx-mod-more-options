@@ -1,8 +1,5 @@
 package com.github.argon.sos.mod.sdk;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
 import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.mod.sdk.file.IOService;
@@ -11,7 +8,6 @@ import com.github.argon.sos.mod.sdk.game.api.*;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.i18n.I18nMessageBundle;
 import com.github.argon.sos.mod.sdk.json.*;
-import com.github.argon.sos.mod.sdk.json.writer.JacksonWriter;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriter;
 import com.github.argon.sos.mod.sdk.json.writer.JsonWriters;
 import com.github.argon.sos.mod.sdk.log.Logger;
@@ -24,13 +20,16 @@ import com.github.argon.sos.mod.sdk.phase.PhaseManager;
 import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import com.github.argon.sos.mod.sdk.properties.PropertiesService;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
-import com.github.argon.sos.mod.sdk.ui.notification.Notificator;
 import com.github.argon.sos.mod.sdk.ui.controller.UiControllers;
+import com.github.argon.sos.mod.sdk.ui.notification.Notificator;
 import init.paths.PATHS;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.javaprop.JavaPropsMapper;
 
 import java.nio.file.Path;
 
@@ -89,7 +88,7 @@ public class ModSdkModule {
      */
     @Getter(lazy = true)
     @Accessors(fluent = true)
-    private final static ObjectMapper jacksonJsonMapper = Factory.newJacksonObjectMapper();
+    private final static JsonMapper jacksonJsonMapper = Factory.newJacksonJsonMapper();
 
     /**
      * For reading and writing JSON
@@ -284,30 +283,28 @@ public class ModSdkModule {
         }
 
         /**
-         * Creates a new {@link ObjectMapper} configured for pretty printed JSON.
+         * Creates a new {@link JsonMapper} configured for pretty printed JSON.
          *
          * @return new object mapper
          */
-        public static ObjectMapper newJacksonObjectMapper() {
-            return new ObjectMapper()
-                .enable(SerializationFeature.INDENT_OUTPUT);
+        public static JsonMapper newJacksonJsonMapper() {
+            return JsonMapper.builder()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .build();
         }
 
         /**
          * Creates a new {@link JacksonService} for reading and writing JSON.
          *
-         * @param objectMapper to use for mapping json
+         * @param jsonMapper to use for mapping json
          * @param ioService to use for reading/writing files
          * @return new jackson service
          */
         public static JacksonService newJacksonService(
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             IOService ioService
         ) {
-            return new JacksonService(
-                objectMapper,
-                new JacksonWriter(),
-                ioService);
+            return new JacksonService(jsonMapper, ioService);
         }
 
         /**

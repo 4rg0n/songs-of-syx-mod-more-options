@@ -61,8 +61,10 @@
                                 <excludes>
                                     <exclude>com.songsofsyx:*</exclude>
                                     <exclude>org.jetbrains:*</exclude>
-                                    <exclude>com.fasterxml.jackson.core:*</exclude>
-                                    <exclude>com.fasterxml.jackson.dataformat:*</exclude>
+                                    <exclude>tools.jackson.core:*</exclude>
+                                    <exclude>tools.jackson.dataformat:*</exclude>
+                                    <!-- jackson-annotations deliberately stayed on the Jackson 2.x groupId/package in Jackson 3 -->
+                                    <exclude>com.fasterxml.jackson.core:jackson-annotations</exclude>
                                     <exclude>com.github.argon.sos:sos-mod-sdk</exclude>
                                 </excludes>
                             </artifactSet>

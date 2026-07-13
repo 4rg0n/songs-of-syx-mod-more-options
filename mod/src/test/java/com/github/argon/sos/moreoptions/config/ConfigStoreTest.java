@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 import com.github.argon.sos.mod.sdk.ModSdkModule;
 import com.github.argon.sos.mod.sdk.config.ConfigVersionHandlers;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
@@ -59,7 +59,9 @@ class ConfigStoreTest {
         };
 
         JacksonService jacksonService = ModSdkModule.Factory.newJacksonService(
-            new ObjectMapper().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true),
+            JsonMapper.builder()
+                .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
+                .build(),
             resourceServiceMock);
         JsonGameService jsonGameService = ModSdkModule.Factory.newJsonGameService(JsonWriters.gameJsonUnquotedPretty(), resourceServiceMock);
 
