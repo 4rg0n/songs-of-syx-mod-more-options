@@ -140,6 +140,7 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     @Override
     public void initBeforeGameCreated() {
         log.debug("Initializing Script");
+        log.debug("%s", stateManager.getState());
         // custom error handling
         Errors.setHandler(new ErrorHandler<>(this));
 
@@ -174,7 +175,7 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
         if (scriptInstance == null) {
             initModCreateInstance();
             log.debug("Creating Instance");
-            scriptInstance = new ScriptInstance(this, stateManager);
+            scriptInstance = new ScriptInstance(this, stateManager, gameApis);
         }
 
         log.debug("World Seed: " + WORLD.GEN().seed);
@@ -246,6 +247,21 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
     @Override
     public void onGameUpdate(double seconds) {
         phaseManager.onGameUpdate(seconds);
+    }
+
+    @Override
+    public void onBeforeBattle() {
+        phaseManager.onBeforeBattle();
+    }
+
+    @Override
+    public void onBattle() {
+        phaseManager.onBattle();
+    }
+
+    @Override
+    public void onAfterBattle() {
+        phaseManager.onAfterBattle();
     }
 
     /**

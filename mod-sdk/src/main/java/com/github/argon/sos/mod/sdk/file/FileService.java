@@ -127,7 +127,7 @@ public class FileService extends AbstractFileService {
         }
 
         try {
-            Files.write(path, content.getBytes(CHARSET), StandardOpenOption.CREATE);
+            Files.write(path, content.getBytes(CHARSET), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             log.error("Could not write into %s", path);
             throw e;

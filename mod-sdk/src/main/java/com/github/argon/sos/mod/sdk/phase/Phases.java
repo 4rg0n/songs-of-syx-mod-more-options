@@ -18,7 +18,7 @@ import java.nio.file.Path;
 public interface Phases {
     /**
      * 1. PHASE
-     * Before a game is loaded
+     * Before a game is loaded.
      */
     default void initBeforeGameCreated() {
         throw new PhaseNotImplemented(Phase.INIT_BEFORE_GAME_CREATED);
@@ -26,7 +26,7 @@ public interface Phases {
 
     /**
      * 2. PHASE
-     * After the game loaded all necessary resources
+     * After the game loaded all necessary resources.
      */
     default void initGameResourcesLoaded() {
         throw new PhaseNotImplemented(Phase.INIT_GAME_RESOURCES_LOADED);
@@ -34,15 +34,15 @@ public interface Phases {
 
     /**
      * 3. PHASE
-     * When the mod instance is created
+     * When the mod instance is created.
      */
     default void initModCreateInstance() {
         throw new PhaseNotImplemented(Phase.INIT_MOD_CREATE_INSTANCE);
     }
 
     /**
-     * (4.) PHASE: can be called multiple times
-     * When the game loaded a save game
+     * (4.) PHASE: can be called multiple times.
+     * When the game loaded a save game.
      *
      * @param saveFilePath file path to the save game used
      * @param fileGetter to read data from the save game
@@ -52,8 +52,8 @@ public interface Phases {
     }
 
     /**
-     * (5.) PHASE: can be called multiple times
-     * When the player loads into game while already playing another one
+     * (5.) PHASE: can be called multiple times.
+     * When the player loads into the game while already playing another one.
      */
     default void onGameSaveReloaded() {
         throw new PhaseNotImplemented(Phase.ON_GAME_SAVE_RELOADED);
@@ -61,7 +61,7 @@ public interface Phases {
 
     /**
      * 6. PHASE
-     * When a new game session is started (not when a player starts a fresh new game)
+     * When a new game session is started (not when a player starts a fresh new game).
      * This will not fire when the player loads from an existing game into another one.
      */
     default void initNewGameSession() {
@@ -70,15 +70,15 @@ public interface Phases {
 
     /**
      * 7. PHASE
-     * When the game starts the update() process
+     * When the game starts the update() process.
      */
     default void initGameUpdating() {
         throw new PhaseNotImplemented(Phase.INIT_GAME_UPDATING);
     }
 
     /**
-     * (8.) PHASE: can be called multiple times
-     * Called by the games update loop
+     * (8.) PHASE: can be called multiple times.
+     * Called by the games update loop.
      *
      * @param seconds delta seconds since the last update loop
      */
@@ -88,7 +88,7 @@ public interface Phases {
 
     /**
      * 9. PHASE
-     * When the game UI is loaded
+     * When the game UI is loaded.
      */
     default void initGameUiPresent() {
         throw new PhaseNotImplemented(Phase.INIT_GAME_UI_PRESENT);
@@ -103,13 +103,34 @@ public interface Phases {
     }
 
     /**
-     * When the game saves
+     * When the game saves.
      *
      * @param saveFilePath file path to the save game used
      * @param filePutter to write data into the save game
      */
     default void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         throw new PhaseNotImplemented(Phase.ON_GAME_SAVED);
+    }
+
+    /**
+     * WHen a battle starts.
+     */
+    default void onBeforeBattle() {
+        throw new PhaseNotImplemented(Phase.ON_BEFORE_BATTLE);
+    }
+
+    /**
+     * When battle is happening.
+     */
+    default void onBattle() {
+        throw new PhaseNotImplemented(Phase.ON_BATTLE);
+    }
+
+    /**
+     * When a battle ends.
+     */
+    default void onAfterBattle() {
+        throw new PhaseNotImplemented(Phase.ON_AFTER_BATTLE);
     }
 
     /**

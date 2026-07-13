@@ -53,14 +53,14 @@ public class BoosterService implements Resettable {
 
     public void setBoosterValues(BoostersConfig config) {
         config.getFaction().forEach((factionName, boostersConfig) -> {
+            Faction faction = factionApi.getByName(factionName);
+
+            if (faction == null) {
+                log.info("Faction %s not found in-game", factionName);
+                return;
+            }
+
             boostersConfig.forEach((boosterKey, boosterConfig) -> {
-                Faction faction = factionApi.getByName(factionName);
-
-                if (faction == null) {
-                    log.info("Faction %s not found in-game", factionName);
-                    return;
-                }
-
                 applyBooster(faction, boosterConfig);
             });
         });

@@ -24,17 +24,105 @@ public class GameSaveApi implements Phases {
     private final static Logger log = Loggers.getLogger(GameSaveApi.class);
 
     /**
-     * Path to the current game save file
+     * The game uses a single save file when a battle starts.
+     */
+    public final static String BEFORE_BATTLE_SAVE = "__beforeBattle.save";
+
+    /**
+     * The game uses a single save file when in a battle.
+     */
+    public final static String BATTLE_SAVE = "__battle.save";
+
+    /**
+     * When starting a new settlement, the game will create a save file with this as prefix.
+     */
+    public final static String NEW_GAME_SAVE_PREFIX = "A new Beginning";
+
+    /**
+     * The game will save periodically and will use prefix for it.
+     */
+    public final static String AUTO_SAVE_PREFIX = "AutoSave";
+
+    /**
+     * Current game battle save {@link Path} or null when not in battle.
      */
     @Getter
     @Nullable
-    private Path currentPath;
+    private Path battleSavePath;
 
     /**
-     * Currently used game save file
+     * Current game battle {@link SaveFile} or null when not in battle.
+     */
+    @Getter
+    @Nullable
+    private SaveFile battleSaveFile;
+
+    /**
+     * Current game before battle save {@link Path} or null when not in battle.
+     */
+    @Getter
+    @Nullable
+    private Path beforeBattleSavePath;
+
+    /**
+     * Current game before battle {@link SaveFile} or null when not in battle.
+     */
+    @Getter
+    @Nullable
+    private SaveFile beforeBattleSaveFile;
+
+    /**
+     * Current game save {@link Path} or null when no save exists yet.
+     */
+    @Getter
+    @Nullable
+    private Path savePath;
+
+    /**
+     * Currently used game {@link SaveFile} or null when no save exists yet.
      */
     @Nullable
-    private SaveFile currentFile;
+    private SaveFile saveFile;
+
+    /**
+     * Checks whether given save path is a battle save.
+     *
+     * @param savePath to check
+     * @return whether given save path is a battle save
+     */
+    public boolean isBattleSave(Path savePath) {
+        return savePath.endsWith(BATTLE_SAVE);
+    }
+
+    /**
+     * Checks whether given save path is a before battle save.
+     *
+     * @param savePath to check
+     * @return whether given save path is a before battle save
+     */
+    public boolean isBeforeBattleSave(Path savePath) {
+        return savePath.endsWith(BEFORE_BATTLE_SAVE);
+    }
+
+    /**
+     * Checks whether given save path is a new game save.
+     *
+     * @param savePath to check
+     * @return whether given save path is a new game save
+     */
+    public boolean isNewGameSave(Path savePath) {
+        return savePath.getFileName().startsWith(NEW_GAME_SAVE_PREFIX);
+    }
+
+    /**
+     * Checks whether given save path is an auto save.
+     *
+     * @param savePath to check
+     * @return whether given save path is an auto save
+     */
+    public boolean isAutoSave(Path savePath) {
+        return savePath.getFileName().startsWith(AUTO_SAVE_PREFIX);
+    }
 
     /**
      * Returns the current latest {@link SaveFile} for the game session.
@@ -42,24 +130,16 @@ public class GameSaveApi implements Phases {
      * @return current save file or null when not saved yet
      */
     @Nullable
-    public SaveFile getCurrentFile() {
-        if (currentPath == null) {
+    public SaveFile getSaveFile() {
+        if (savePath == null) {
             return null;
         }
 
-        if (currentFile == null) {
-            currentFile = findByPathContains(currentPath).orElse(null);
+        if (saveFile == null) {
+            saveFile = findByPathContains(savePath).orElse(null);
         }
 
-        return currentFile;
-    }
-
-    private void setCurrent(Path saveFilePath) {
-        SaveFile saveFile = findByPathContains(saveFilePath).orElse(null);
-        log.debug("Set current saveFilePath: %s", saveFilePath);
-
-        this.currentPath = saveFilePath;
-        this.currentFile = saveFile;
+        return saveFile;
     }
 
     /**
@@ -120,14 +200,53 @@ public class GameSaveApi implements Phases {
      */
     @Nullable
     public String getSaveStamp() {
-        if (currentFile == null) {
-            if (currentPath != null) {
-                return SaveUtil.extractSaveStamp(currentPath);
+        if (saveFile == null) {
+            if (savePath != null) {
+                return SaveUtil.extractSaveStamp(savePath);
             }
 
             return null;
         }
 
-        return SaveUtil.extractSaveStamp(currentFile);
+        return SaveUtil.extractSaveStamp(saveFile);
+    }
+
+    private void setCurrent(Path saveFilePath) {
+        if (isBeforeBattleSave(saveFilePath)) {
+            setCurrentBeforeBattle(saveFilePath);
+        } else if (isBattleSave(saveFilePath)) {
+            setCurrentBattle(saveFilePath);
+        } else {
+            setCurrentSave(saveFilePath);
+        }
+    }
+
+    private void setCurrentSave(Path saveFilePath) {
+        SaveFile saveFile = findByPathContains(saveFilePath).orElse(null);
+        log.debug("Set current saveFilePath: %s", saveFilePath);
+
+        this.savePath = saveFilePath;
+        this.saveFile = saveFile;
+        // reset the battle saves, because we aren't in a battle anymore
+        this.battleSavePath = null;
+        this.battleSaveFile = null;
+        this.beforeBattleSavePath = null;
+        this.beforeBattleSaveFile = null;
+    }
+
+    private void setCurrentBeforeBattle(Path battleSavePath) {
+        SaveFile battleSaveFile = findByPathContains(battleSavePath).orElse(null);
+        log.debug("Set current beforeBattleSavePath: %s", battleSavePath);
+
+        this.beforeBattleSavePath = battleSavePath;
+        this.beforeBattleSaveFile = battleSaveFile;
+    }
+
+    private void setCurrentBattle(Path battleSavePath) {
+        SaveFile battleSaveFile = findByPathContains(battleSavePath).orElse(null);
+        log.debug("Set current battleSavePath: %s", battleSavePath);
+
+        this.battleSavePath = battleSavePath;
+        this.battleSaveFile = battleSaveFile;
     }
 }

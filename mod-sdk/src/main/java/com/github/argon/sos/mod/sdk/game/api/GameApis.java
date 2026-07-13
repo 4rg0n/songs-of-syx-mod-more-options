@@ -106,7 +106,7 @@ public class GameApis implements Phases, Resettable {
      */
     @Override
     public void initSettlementUiPresent() {
-        faction.initSettlementUiPresent();
+        faction().initSettlementUiPresent();
     }
 
     @Override
@@ -147,4 +147,22 @@ public class GameApis implements Phases, Resettable {
      */
     @Override
     public void initGameResourcesLoaded() {}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBeforeBattle() {}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBattle() {}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onAfterBattle() {}
 }

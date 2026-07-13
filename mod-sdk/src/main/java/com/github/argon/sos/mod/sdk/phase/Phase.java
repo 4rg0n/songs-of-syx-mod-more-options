@@ -63,4 +63,19 @@ public enum Phase {
      * 12. Phase
      */
     ON_CRASH,
+
+    /**
+     * Before a battle starts.
+     */
+    ON_BEFORE_BATTLE,
+
+    /**
+     * When in a battle.
+     */
+    ON_BATTLE,
+
+    /**
+     * After a battle ends.
+     */
+    ON_AFTER_BATTLE
 }
