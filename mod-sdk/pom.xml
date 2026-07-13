@@ -66,6 +66,17 @@
                             <keyname>Dominic R├Ânicke</keyname>
                         </configuration>
                     </plugin>
+
+                    <!-- Publishing to Maven Central -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${central-publishing-maven-plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
