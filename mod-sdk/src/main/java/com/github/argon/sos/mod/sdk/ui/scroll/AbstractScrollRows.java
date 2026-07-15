@@ -2,6 +2,7 @@ package com.github.argon.sos.mod.sdk.ui.scroll;
 
 import com.github.argon.sos.mod.sdk.game.action.Initializable;
 import com.github.argon.sos.mod.sdk.game.action.Refreshable;
+import com.github.argon.sos.mod.sdk.game.action.WheelScrollable;
 import snake2d.MButt;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
@@ -23,11 +24,11 @@ public abstract class AbstractScrollRows implements Refreshable, Initializable<V
 	private final List<RENDEROBJ> current;
 	private final GuiSection srows = new GuiSection();
 	private final GuiSection section = new GuiSection() {
-		
+
 		@Override
 		public void render(snake2d.SPRITE_RENDERER r, float ds) {
 
-			if (hoveredIs()) {
+			if (hoveredIs() && !hoveredWantsWheelScroll(getHovered())) {
 				double d = MButt.clearWheelSpin();
 				if (d > 0) {
 					first--;
@@ -39,6 +40,30 @@ public abstract class AbstractScrollRows implements Refreshable, Initializable<V
 			super.render(r, ds);
 		};
 	};
+
+	/**
+	 * Walks down the chain of currently hovered elements (following nested
+	 * {@link GuiSection}s) to check whether the deepest hovered element wants
+	 * to handle the mouse wheel itself, so this container can yield it.
+	 *
+	 * @param hovered the currently hovered element to start the walk from
+	 * @return whether a hovered nested element wants wheel scroll priority
+	 */
+	private static boolean hoveredWantsWheelScroll(RENDEROBJ hovered) {
+		while (hovered != null) {
+			if (hovered instanceof WheelScrollable && ((WheelScrollable) hovered).wantsWheelScroll()) {
+				return true;
+			}
+
+			if (hovered instanceof GuiSection) {
+				hovered = ((GuiSection) hovered).getHovered();
+			} else {
+				break;
+			}
+		}
+
+		return false;
+	}
 
 	/**
 	 * The scroll target driving how many rows are shown / scrolled through.

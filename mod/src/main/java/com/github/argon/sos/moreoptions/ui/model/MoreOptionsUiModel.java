@@ -1,10 +1,12 @@
-package com.github.argon.sos.moreoptions.ui;
+package com.github.argon.sos.moreoptions.ui.model;
 
+import com.github.argon.sos.mod.sdk.data.ByteUnit;
 import com.github.argon.sos.mod.sdk.log.Level;
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
-import game.event.engine.EventTree;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
+import game.event.engine.EventTree;
 import game.faction.Faction;
 import init.paths.ModInfo;
 import lombok.*;
@@ -20,7 +22,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MoreOptionsModel {
+public class MoreOptionsUiModel {
 
     @NonNull
     private MoreOptionsV5Config config;
@@ -43,6 +45,8 @@ public class MoreOptionsModel {
     private Weather weather;
     @Nullable
     private ModInfo modInfo;
+    @Nullable
+    private MoreOptionsUiModel.Jvm jvm;
 
     @Data
     @Builder
@@ -150,5 +154,19 @@ public class MoreOptionsModel {
         private WeatherConfig defaultConfig;
         @NonNull
         private WeatherConfig config;
+    }
+
+    @Data
+    @Builder
+    @EqualsAndHashCode
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Jvm {
+        @Builder.Default
+        private ByteUnit maxMemoryMb = ConfigDefaults.MAX_MEMORY_MB;
+        @Builder.Default
+        private ByteUnit minMemoryMb = ConfigDefaults.MIN_MEMORY_MB;
+        @Builder.Default
+        private String jvmArgs = "";
     }
 }

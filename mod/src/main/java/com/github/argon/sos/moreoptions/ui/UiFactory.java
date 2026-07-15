@@ -9,33 +9,33 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
-import com.github.argon.sos.mod.sdk.ui.*;
+import com.github.argon.sos.mod.sdk.ui.UiShowroom;
 import com.github.argon.sos.mod.sdk.ui.button.Button;
 import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
 import com.github.argon.sos.mod.sdk.ui.switcher.Switcher;
 import com.github.argon.sos.mod.sdk.ui.window.FullWindow;
 import com.github.argon.sos.mod.sdk.ui.window.Window;
 import com.github.argon.sos.moreoptions.ModModule;
-import com.github.argon.sos.moreoptions.MoreOptionsScript;
 import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.ModProperties;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.ui.controller.ErrorDialogUiController;
+import com.github.argon.sos.moreoptions.ui.model.MoreOptionsUiModel;
 import com.github.argon.sos.moreoptions.ui.msg.ErrorDialog;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
-import game.event.engine.EventTree;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesSelectionPanel;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
+import game.event.engine.EventTree;
 import game.faction.Faction;
+import game.save.SaveFile;
 import init.paths.ModInfo;
 import init.sprite.SPRITES;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
 import util.gui.misc.GButt;
-import game.save.SaveFile;
 import view.ui.top.UIPanelTop;
 import world.WORLD;
 
@@ -80,17 +80,17 @@ public class UiFactory {
         Map<String, EventTree> eventTrees = uiMapper.toEventsTabEvents(config.getEvents().getGeneralEvents());
 
         Set<String> availableStats = gameApis.stats().getAvailableStatKeys();
-        ModInfo modInfo = gameApis.mod().getModByName(MoreOptionsScript.MOD_INFO.name.toString()).orElse(null);
+        ModInfo modInfo = gameApis.mod().getModByName(MOD_INFO.name.toString()).orElse(null);
         Path exportFolder = metricExporter.getExportFolder();
         Path exportFile = metricExporter.getExportFile();
         String saveStamp = gameApis.save().getSaveStamp();
         MoreOptionsV5Config defaultConfig = configStore.getDefaultConfig();
 
-        MoreOptionsModel moreOptionsModel = MoreOptionsModel.builder()
+        MoreOptionsUiModel moreOptionsUiModel = MoreOptionsUiModel.builder()
             .config(config)
             .defaultConfig(defaultConfig)
             .modInfo(modInfo)
-            .advanced(MoreOptionsModel.Advanced.builder()
+            .advanced(MoreOptionsUiModel.Advanced.builder()
                 .saveStamp(saveStamp)
                 .logLevel(config.getLogLevel())
                 .logFilePath(ConfigDefaults.LOG_FILE_PATH)
@@ -102,42 +102,43 @@ public class UiFactory {
                     .logToFile(defaultConfig.isLogToFile())
                     .build())
                 .build())
-            .boosters(MoreOptionsModel.Boosters.builder()
+            .boosters(MoreOptionsUiModel.Boosters.builder()
                 .config(config.getBoosters())
                 .defaultConfig(defaultConfig.getBoosters())
                 .entries(boosterEntries)
                 .presets(config.getBoosters().getPresets())
                 .build())
-            .events(MoreOptionsModel.Events.builder()
+            .events(MoreOptionsUiModel.Events.builder()
                 .config(config.getEvents())
                 .defaultConfig(defaultConfig.getEvents())
                 .eventTrees(eventTrees)
                 .build())
-            .metrics(MoreOptionsModel.Metrics.builder()
+            .metrics(MoreOptionsUiModel.Metrics.builder()
                 .config(config.getMetrics())
                 .defaultConfig(defaultConfig.getMetrics())
                 .exportFolder(exportFolder)
                 .exportFile(exportFile)
                 .availableStats(availableStats)
                 .build())
-            .sounds(MoreOptionsModel.Sounds.builder()
+            .sounds(MoreOptionsUiModel.Sounds.builder()
                 .config(config.getSounds())
                 .defaultConfig(defaultConfig.getSounds())
                 .build())
-            .races(MoreOptionsModel.Races.builder()
+            .races(MoreOptionsUiModel.Races.builder()
                 .config(config.getRaces())
                 .defaultConfig(defaultConfig.getRaces())
                 .entries(raceEntries)
                 .build())
-            .weather(MoreOptionsModel.Weather.builder()
+            .weather(MoreOptionsUiModel.Weather.builder()
                 .config(config.getWeather())
                 .defaultConfig(defaultConfig.getWeather())
                 .build())
+            .jvm(MoreOptionsUiModel.Jvm.builder().build())
             .build();
 
         // available width and height have to be set outside or else they will be 0
         return MoreOptionsPanel.builder()
-            .moreOptionsModel(moreOptionsModel)
+            .moreOptionsUiModel(moreOptionsUiModel)
             .configStore(configStore);
     }
 

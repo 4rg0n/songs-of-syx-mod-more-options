@@ -15,7 +15,7 @@ import com.github.argon.sos.mod.sdk.ui.simple.ColorBox;
 import com.github.argon.sos.mod.sdk.ui.switcher.AbstractUiSwitcher;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.BoostersConfig;
-import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
+import com.github.argon.sos.moreoptions.ui.model.MoreOptionsUiModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import game.boosting.BoostableCat;
 import game.faction.FACTIONS;
@@ -75,7 +75,7 @@ public class BoostersTab extends AbstractConfigTab<BoostersConfig, BoostersTab> 
 
     public BoostersTab(
         String title,
-        MoreOptionsModel.Boosters model,
+        MoreOptionsUiModel.Boosters model,
         int availableWidth,
         int availableHeight
     ) {

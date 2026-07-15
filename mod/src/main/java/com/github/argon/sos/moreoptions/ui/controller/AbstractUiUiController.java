@@ -64,8 +64,6 @@ public abstract class AbstractUiUiController<Element> extends com.github.argon.s
             log.info("Config NOT applied =(");
         }
 
-
-
         return success;
     }
 

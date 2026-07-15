@@ -1,5 +1,6 @@
 package com.github.argon.sos.moreoptions.config;
 
+import com.github.argon.sos.mod.sdk.data.ByteUnit;
 import com.github.argon.sos.mod.sdk.data.domain.Range;
 import com.github.argon.sos.mod.sdk.game.api.GameApis;
 import com.github.argon.sos.mod.sdk.log.Level;
@@ -28,6 +29,8 @@ public class ConfigDefaults {
     private final static Logger log = Loggers.getLogger(ConfigDefaults.class);
 
     public final static Level LOG_LEVEL = Level.INFO;
+    public final static ByteUnit MAX_MEMORY_MB = new ByteUnit(4096, ByteUnit.Unit.MEGABYTE);
+    public final static ByteUnit MIN_MEMORY_MB = new ByteUnit(512, ByteUnit.Unit.MEGABYTE);
 
     public final static Path PROFILE_PATH = PATHS.local().PROFILE.get().resolve(MoreOptionsScript.MOD_INFO.name.toString());
     public final static Path CONFIG_PATH = PATHS.local().SETTINGS.get();

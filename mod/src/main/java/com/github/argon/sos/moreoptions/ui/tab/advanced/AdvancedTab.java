@@ -3,9 +3,9 @@ package com.github.argon.sos.moreoptions.ui.tab.advanced;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.log.Level;
 import com.github.argon.sos.mod.sdk.ui.button.Button;
+import com.github.argon.sos.mod.sdk.ui.button.DropDown;
 import com.github.argon.sos.mod.sdk.ui.input.Checkbox;
 import com.github.argon.sos.mod.sdk.ui.menu.ButtonMenu;
-import com.github.argon.sos.mod.sdk.ui.button.DropDown;
 import com.github.argon.sos.mod.sdk.ui.switcher.Switcher;
 import com.github.argon.sos.mod.sdk.ui.switcher.ViewSwitcher;
 import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
@@ -13,8 +13,8 @@ import com.github.argon.sos.mod.sdk.ui.table.Table;
 import com.github.argon.sos.mod.sdk.ui.text.Label;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
-import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
 import com.github.argon.sos.moreoptions.ui.UiFactory;
+import com.github.argon.sos.moreoptions.ui.model.MoreOptionsUiModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.paths.PATHS;
 import init.sprite.UI.UI;
@@ -29,7 +29,7 @@ import util.gui.misc.GTextR;
 import java.util.List;
 
 /**
- * Contains slider for controlling the intensity of weather effects
+ * Contains advanced settings. Such as setting the log level or the game min and max memory.
  */
 public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
     private static final I18nTranslator i18n = ModModule.i18n().get(AdvancedTab.class);
@@ -55,6 +55,7 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
     @Getter
     private final Checkbox logToFileCheckbox;
 
+
     @Getter
     private String saveStamp;
 
@@ -63,7 +64,7 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
 
     public AdvancedTab(
         String title,
-        MoreOptionsModel.Advanced model,
+        MoreOptionsUiModel.Advanced model,
         int availableWidth,
         int availableHeight
     ) {
@@ -200,9 +201,9 @@ public class AdvancedTab extends AbstractConfigTab<ConfigMeta, AdvancedTab> {
     }
 
     @Override
-    public void setValue(ConfigMeta configMeta) {
-        logLevelDropDown.setValue(configMeta.getLogLevel());
-        logToFileCheckbox.setValue(configMeta.isLogToFile());
+    public void setValue(ConfigMeta config) {
+        logLevelDropDown.setValue(config.getLogLevel());
+        logToFileCheckbox.setValue(config.isLogToFile());
     }
 
     protected AdvancedTab element() {
