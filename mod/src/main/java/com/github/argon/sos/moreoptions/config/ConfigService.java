@@ -1,9 +1,10 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.mod.sdk.config.ConfigVersionHandler;
-import com.github.argon.sos.mod.sdk.config.ConfigVersionHandlers;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
 import com.github.argon.sos.mod.sdk.file.FileMeta;
+import com.github.argon.sos.mod.sdk.game.jvm.JvmArgs;
+import com.github.argon.sos.mod.sdk.game.jvm.JvmArgsService;
 import com.github.argon.sos.mod.sdk.json.JsonException;
 import com.github.argon.sos.mod.sdk.json.JsonGameService;
 import com.github.argon.sos.mod.sdk.json.parser.JsonParseException;
@@ -11,12 +12,14 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
+import com.github.argon.sos.moreoptions.config.domain.JvmConfig;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
 import com.github.argon.sos.moreoptions.config.json.JsonMeta;
 import com.github.argon.sos.moreoptions.config.json.v5.JsonBoostersV5Config;
 import com.github.argon.sos.moreoptions.config.json.v5.JsonMoreOptionsV5Config;
 import com.github.argon.sos.moreoptions.config.json.v5.JsonRacesV5Config;
+import lombok.RequiredArgsConstructor;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -24,23 +27,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+@RequiredArgsConstructor
 public class ConfigService implements Phases {
     private final static Logger log = Loggers.getLogger(ConfigService.class);
 
     private final JsonConfigStore jsonConfigStore;
     private final JsonGameService jsonGameService;
-
+    private final JvmArgsService jvmArgsService;
     private final ConfigVersionHandler<MoreOptionsV5Config> versionHandler;
-
-    public ConfigService(
-        JsonConfigStore jsonConfigStore,
-        ConfigVersionHandlers<MoreOptionsV5Config> versionHandler,
-        JsonGameService jsonGameService
-    ) {
-        this.jsonConfigStore = jsonConfigStore;
-        this.versionHandler = versionHandler;
-        this.jsonGameService = jsonGameService;
-    }
 
     public Optional<ConfigMeta> getMeta() {
         // try reading legacy meta first and then normal meta
@@ -73,6 +67,10 @@ public class ConfigService implements Phases {
         }
     }
 
+    public Optional<JvmArgs> getJvmArgs() {
+        return jvmArgsService.read();
+    }
+
     public Optional<MoreOptionsV5Config> getConfig() {
         return Stream.of(readMetaLegacy(), getMeta())
             .filter(Optional::isPresent)
@@ -83,7 +81,13 @@ public class ConfigService implements Phases {
                 return configMeta;
             })
             .map(ConfigMeta::getVersion)
-            .flatMap(versionHandler::handle);
+            .flatMap(versionHandler::handle)
+            .flatMap(config ->
+                getJvmArgs().map(jvmArgs -> {
+                    config.setJvm(JvmConfig.from(jvmArgs));
+                    return config;
+                })
+            );
     }
 
     public Optional<MoreOptionsV5Config> getBackup() {
@@ -137,7 +141,8 @@ public class ConfigService implements Phases {
         return Stream.of(
             jsonConfigStore.save(ConfigMapper.mapConfig(config)),
             jsonConfigStore.save(ConfigMapper.mapRacesConfig(config)),
-            jsonConfigStore.save(ConfigMapper.mapBoostersConfig(config))
+            jsonConfigStore.save(ConfigMapper.mapBoostersConfig(config)),
+            jvmArgsService.write(config.getJvm().getJvmArgs())
         )
         // all succeeded?
         .noneMatch(Objects::isNull);

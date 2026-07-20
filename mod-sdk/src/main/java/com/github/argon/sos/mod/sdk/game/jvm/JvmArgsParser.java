@@ -15,6 +15,7 @@ public class JvmArgsParser {
     @Setter
     @Getter
     private int index;
+    private final int length;
 
     /**
      * Creates a new {@link JvmArgsParser} instance with given raw json parsed as content.
@@ -24,6 +25,7 @@ public class JvmArgsParser {
      */
     public JvmArgsParser(String rawContent) {
         this.rawContent = rawContent;
+        this.length = rawContent.length();
     }
 
     /**
@@ -52,9 +54,11 @@ public class JvmArgsParser {
      */
     public String getNextValue() {
         StringBuilder sb = new StringBuilder();
-        while (true) {
+        while (!atEnd()) {
             char c = currentChar();
-            if (isEndOfValue(c)) break;
+            if (isEndOfValue(c)) {
+                break;
+            }
             sb.append(c);
             indexMove();
         }
@@ -67,7 +71,7 @@ public class JvmArgsParser {
      * @return whether the end of the arguments string is reached
      */
     public boolean atEnd(){
-        return getIndex() >= rawContent.length() - 1;
+        return getIndex() >= length;
     }
 
     private boolean isEndOfValue(char c) {

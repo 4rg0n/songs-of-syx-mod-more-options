@@ -37,7 +37,7 @@ public class UiValidationResult {
         this.errors.put(uiElement, errors);
     }
 
-    public boolean hasError() {
+    public boolean hasErrors() {
         return !errors.isEmpty();
     }
 

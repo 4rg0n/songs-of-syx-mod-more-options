@@ -20,6 +20,7 @@ import com.github.argon.sos.moreoptions.ui.controller.*;
 import com.github.argon.sos.mod.sdk.ui.notification.Notificator;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
+import com.github.argon.sos.moreoptions.ui.tab.jvm.JvmTab;
 import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import com.github.argon.sos.moreoptions.ui.tab.weather.WeatherTab;
@@ -199,6 +200,10 @@ public class UiConfig implements Phases {
         // ADVANCED
         AdvancedTab advancedTab = moreOptionsPanel.getAdvancedTab();
         phaseManager.register(Phase.ON_GAME_SAVED, new AdvancedTabUiController(advancedTab, moreOptionsPanel));
+
+        // JVM
+        JvmTab jvmTab = moreOptionsPanel.getJvmTab();
+        new JvmTabUiController(jvmTab);
     }
 
     public void initBackupControls(

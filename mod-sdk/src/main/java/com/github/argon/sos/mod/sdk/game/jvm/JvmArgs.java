@@ -1,8 +1,7 @@
 package com.github.argon.sos.mod.sdk.game.jvm;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import com.github.argon.sos.mod.sdk.util.StringUtil;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -24,13 +23,13 @@ public class JvmArgs {
 
     public List<JvmArg> getByKey(String key) {
         return jvmArgs.stream()
-            .filter(jvmArg -> key.equals(jvmArg.key()))
+            .filter(jvmArg -> key.equals(jvmArg.getKey()))
             .toList();
     }
 
     public List<JvmArg> getByValue(String value) {
         return jvmArgs.stream()
-            .filter(jvmArg -> value.equals(jvmArg.value()))
+            .filter(jvmArg -> value.equals(jvmArg.getValue()))
             .toList();
     }
 
@@ -40,14 +39,14 @@ public class JvmArgs {
 
     public List<JvmArg> getByValueContains(String value) {
         return jvmArgs.stream()
-            .filter(jvmArg -> jvmArg.value().contains(value))
+            .filter(jvmArg -> jvmArg.getValue().contains(value))
             .toList();
     }
 
     private static List<JvmArg> parse(@Nullable final String content) {
         List<JvmArg> jvmArgs = new ArrayList<>();
 
-        if (content == null) {
+        if (content == null || StringUtil.isBlank(content)) {
             return jvmArgs;
         }
 
@@ -85,7 +84,13 @@ public class JvmArgs {
         return stringBuilder.toString();
     }
 
-    public record JvmArg(@Nullable String key, String value) {
+    @Data
+    @AllArgsConstructor
+    public static class JvmArg {
+
+        private @Nullable String key;
+        private String value;
+
         @NonNull
         @Override
         public String toString() {

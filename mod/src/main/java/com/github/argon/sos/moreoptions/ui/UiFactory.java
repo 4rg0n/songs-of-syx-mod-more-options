@@ -133,7 +133,10 @@ public class UiFactory {
                 .config(config.getWeather())
                 .defaultConfig(defaultConfig.getWeather())
                 .build())
-            .jvm(MoreOptionsUiModel.Jvm.builder().build())
+            .jvm(MoreOptionsUiModel.Jvm.builder()
+                .config(config.getJvm())
+                .defaultConfig(defaultConfig.getJvm())
+                .build())
             .build();
 
         // available width and height have to be set outside or else they will be 0

@@ -1,8 +1,6 @@
 package com.github.argon.sos.moreoptions.ui.model;
 
-import com.github.argon.sos.mod.sdk.data.ByteUnit;
 import com.github.argon.sos.mod.sdk.log.Level;
-import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import com.github.argon.sos.moreoptions.config.domain.*;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
@@ -162,11 +160,9 @@ public class MoreOptionsUiModel {
     @NoArgsConstructor
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Jvm {
-        @Builder.Default
-        private ByteUnit maxMemoryMb = ConfigDefaults.MAX_MEMORY_MB;
-        @Builder.Default
-        private ByteUnit minMemoryMb = ConfigDefaults.MIN_MEMORY_MB;
-        @Builder.Default
-        private String jvmArgs = "";
+        @NonNull
+        private JvmConfig defaultConfig;
+        @NonNull
+        private JvmConfig config;
     }
 }

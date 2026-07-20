@@ -1,7 +1,8 @@
 package com.github.argon.sos.moreoptions.ui.tab.jvm;
 
+import com.github.argon.sos.mod.sdk.config.ConfigDefaults;
 import com.github.argon.sos.mod.sdk.data.ByteUnit;
-import com.github.argon.sos.mod.sdk.game.jvm.JvmArgsService;
+import com.github.argon.sos.mod.sdk.game.jvm.JvmArgs;
 import com.github.argon.sos.mod.sdk.i18n.I18nTranslator;
 import com.github.argon.sos.mod.sdk.ui.input.InputArea;
 import com.github.argon.sos.mod.sdk.ui.simple.ColorBox;
@@ -14,6 +15,7 @@ import com.github.argon.sos.mod.sdk.ui.validation.UiValidationResult;
 import com.github.argon.sos.mod.sdk.util.ByteUtil;
 import com.github.argon.sos.mod.sdk.util.OperationSystemUtil;
 import com.github.argon.sos.moreoptions.ModModule;
+import com.github.argon.sos.moreoptions.config.domain.JvmConfig;
 import com.github.argon.sos.moreoptions.ui.model.MoreOptionsUiModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.sprite.UI.UI;
@@ -25,7 +27,7 @@ import util.gui.misc.GText;
 
 import java.util.List;
 
-public class JvmTab extends AbstractConfigTab<MoreOptionsUiModel.Jvm, JvmTab> implements UiValidation {
+public class JvmTab extends AbstractConfigTab<JvmConfig, JvmTab> implements UiValidation {
     private static final I18nTranslator i18n = ModModule.i18n().get(JvmTab.class);
 
     @Getter
@@ -35,8 +37,8 @@ public class JvmTab extends AbstractConfigTab<MoreOptionsUiModel.Jvm, JvmTab> im
     @Getter
     private final InputArea jvmArgsInputArea;
 
-    public JvmTab(String title, MoreOptionsUiModel.Jvm defaultConfig, int availableWidth, int availableHeight) {
-        super(title, defaultConfig, availableWidth, availableHeight);
+    public JvmTab(String title, MoreOptionsUiModel.Jvm config, int availableWidth, int availableHeight) {
+        super(title, config.getDefaultConfig(), availableWidth, availableHeight);
 
         double maxAvailableMemory = ByteUtil.fromBytes(OperationSystemUtil.getTotalMemorySize(), ByteUnit.Unit.MEGABYTE);
         this.memoryMinSlider = Slider.builder()
@@ -50,6 +52,7 @@ public class JvmTab extends AbstractConfigTab<MoreOptionsUiModel.Jvm, JvmTab> im
             .threshold((int) (0.75 * maxAvailableMemory), COLOR.RED100.shade(0.7d))
             .threshold((int) (0.90 * maxAvailableMemory), COLOR.RED2RED)
             .build();
+
         ColumnRow<Void> memoryMinRow = ColumnRow.<Void>builder()
             .column(Label.builder()
                 .name(i18n.t("JvmTab.label.jvm.memoryMin.name"))
@@ -93,7 +96,7 @@ public class JvmTab extends AbstractConfigTab<MoreOptionsUiModel.Jvm, JvmTab> im
         disclaimerBox.addDown(5, disclaimerText1);
         GText disclaimerText2= new GText(UI.FONT().S, i18n.t("JvmTab.text.disclaimer.2"));
         disclaimerBox.addDown(0, disclaimerText2);
-        GText disclaimerText3 = new GText(UI.FONT().S, i18n.t("JvmTab.text.disclaimer.3", JvmArgsService.JVM_ARGS_LAUNCHER_FILE_PATH));
+        GText disclaimerText3 = new GText(UI.FONT().S, i18n.t("JvmTab.text.disclaimer.3", ConfigDefaults.JVM_ARGS_LAUNCHER_FILE_PATH));
         disclaimerBox.addDown(0, disclaimerText3);
 
         disclaimerBox.pad(10);
@@ -109,6 +112,7 @@ public class JvmTab extends AbstractConfigTab<MoreOptionsUiModel.Jvm, JvmTab> im
             .rowPadding(10)
             .build();
         addDownC(10, settings);
+        setValue(config.getConfig());
     }
 
     @Override
@@ -120,7 +124,7 @@ public class JvmTab extends AbstractConfigTab<MoreOptionsUiModel.Jvm, JvmTab> im
             uiValidationResult.addError(
                 memoryMinSlider,
                 memoryMinSlider.getClass(),
-                i18n.t("JvmTab.validation.memoryMin.higher.memoryMax")
+                "JvmTab.validation.memoryMin.higher.memoryMax"
             );
         }
 
@@ -133,21 +137,33 @@ public class JvmTab extends AbstractConfigTab<MoreOptionsUiModel.Jvm, JvmTab> im
     }
 
     @Override
-    public @Nullable MoreOptionsUiModel.Jvm getValue() {
+    public @Nullable JvmConfig getValue() {
         ByteUnit minByteUnit = new ByteUnit(memoryMinSlider.getValue(), ByteUnit.Unit.MEGABYTE);
         ByteUnit maxByteUnit = new ByteUnit(memoryMaxSlider.getValue(), ByteUnit.Unit.MEGABYTE);
 
-        return MoreOptionsUiModel.Jvm.builder()
+        JvmArgs jvmArgs = null;
+        try {
+            jvmArgs = JvmArgs.fromString(jvmArgsInputArea.getValue());
+        } catch (Exception e) {
+            // ignored
+        }
+
+        return JvmConfig.builder()
             .minMemoryMb(minByteUnit)
             .maxMemoryMb(maxByteUnit)
-            .jvmArgs(jvmArgsInputArea.getValue())
+            .jvmArgs(jvmArgs)
             .build();
     }
 
     @Override
-    public void setValue(MoreOptionsUiModel.Jvm jvmUiModel) {
-        memoryMinSlider.setValue((int) jvmUiModel.getMinMemoryMb().value());
-        memoryMaxSlider.setValue((int) jvmUiModel.getMaxMemoryMb().value());
-        jvmArgsInputArea.setValue(jvmUiModel.getJvmArgs());
+    public void setValue(JvmConfig jvmConfig) {
+        memoryMinSlider.setValue((int) jvmConfig.getMinMemoryMb().value());
+        memoryMaxSlider.setValue((int) jvmConfig.getMaxMemoryMb().value());
+
+        JvmArgs jvmArgs = jvmConfig.getJvmArgs();
+
+        if (jvmArgs != null) {
+            jvmArgsInputArea.setValue(jvmArgs.toString());
+        }
     }
 }

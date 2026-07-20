@@ -246,7 +246,6 @@ public class MoreOptionsPanel extends GuiSection implements
         addDownC(0, new Spacer(body().width(), 20));
     }
 
-    // todo use ui model
     @Override
     public MoreOptionsV5Config getValue() {
         return MoreOptionsV5Config.builder()
@@ -258,10 +257,10 @@ public class MoreOptionsPanel extends GuiSection implements
             .boosters(boostersTab.getValue())
             .metrics(metricsTab.getValue())
             .races(racesTab.getValue())
+            .jvm(jvmTab.getValue())
             .build();
     }
 
-    // todo use ui model
     @Override
     public void setValue(@Nullable MoreOptionsV5Config config) {
         if (config == null) {
@@ -278,7 +277,7 @@ public class MoreOptionsPanel extends GuiSection implements
             .logLevel(config.getLogLevel())
             .logToFile(config.isLogToFile())
             .build());
-        // todo jvmTab
+        jvmTab.setValue(config.getJvm());
     }
 
     /**

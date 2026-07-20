@@ -43,7 +43,7 @@ public record ByteUnit(double value, Unit unit) {
 
         @Override
         public String toString() {
-            return bytes + unit;
+            return unit;
         }
 
         public String toStringSingleUnit() {

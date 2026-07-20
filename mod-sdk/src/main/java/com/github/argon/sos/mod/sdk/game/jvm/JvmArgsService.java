@@ -8,35 +8,45 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class JvmArgsService {
     private final static Logger log = Loggers.getLogger(JvmArgsService.class);
 
-    public final static String JVM_ARGS_LAUNCHER_FILE = "jvmargs-launcher.txt";
-    public final static Path JVM_ARGS_LAUNCHER_FOLDER = Path.of(System.getProperty("user.dir"));
-    public final static Path JVM_ARGS_LAUNCHER_FILE_PATH = JVM_ARGS_LAUNCHER_FOLDER.resolve(JVM_ARGS_LAUNCHER_FILE);
-
     private final FileService fileService;
+    private final Path jvmArgsFile;
 
-    public JvmArgs read() {
+    public Optional<JvmArgs> read() {
         String content = null;
 
         try {
-            content = fileService.read(JVM_ARGS_LAUNCHER_FILE_PATH);
+            content = fileService.read(jvmArgsFile);
         } catch (IOException e) {
-            log.warn("Could not read jvm arguments from %s", JVM_ARGS_LAUNCHER_FILE_PATH, e);
+            log.warn("Could not read jvm arguments from %s", jvmArgsFile, e);
         }
 
-        return JvmArgs.fromString(content);
+        if (content == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(JvmArgs.fromString(content));
     }
 
-    public void write(@Nullable final JvmArgs jvmArgs) throws IOException {
+    @Nullable
+    public Path write(@Nullable final JvmArgs jvmArgs)  {
         String content = "";
         if (jvmArgs != null) {
             content = jvmArgs.toString();
         }
 
-        fileService.write(JVM_ARGS_LAUNCHER_FILE_PATH, content);
+        try {
+            fileService.write(jvmArgsFile, content);
+        } catch (IOException e) {
+            log.error("Error while writing JVM arguments.", e);
+            return null;
+        }
+
+        return jvmArgsFile;
     }
 }
