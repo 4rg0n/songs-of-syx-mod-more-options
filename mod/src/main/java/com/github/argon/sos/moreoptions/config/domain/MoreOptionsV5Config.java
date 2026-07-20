@@ -35,6 +35,8 @@ public class MoreOptionsV5Config {
     private MetricsConfig metrics = MetricsConfig.builder().build();
     @Builder.Default
     private RacesConfig races = RacesConfig.builder().build();
+    @Builder.Default
+    private JvmConfig jvm = JvmConfig.builder().build();
 
     public String toJson() {
         Json json = new Json(JsonMapper.mapObject(this), JsonWriters.gameJsonUnquotedPretty());

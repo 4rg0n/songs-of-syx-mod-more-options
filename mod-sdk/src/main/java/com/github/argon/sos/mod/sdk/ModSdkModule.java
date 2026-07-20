@@ -1,10 +1,12 @@
 package com.github.argon.sos.mod.sdk;
 
+import com.github.argon.sos.mod.sdk.config.ConfigDefaults;
 import com.github.argon.sos.mod.sdk.config.json.JsonConfigStore;
 import com.github.argon.sos.mod.sdk.file.FileService;
 import com.github.argon.sos.mod.sdk.file.IOService;
 import com.github.argon.sos.mod.sdk.file.ResourceService;
 import com.github.argon.sos.mod.sdk.game.api.*;
+import com.github.argon.sos.mod.sdk.game.jvm.JvmArgsService;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.i18n.I18nMessageBundle;
 import com.github.argon.sos.mod.sdk.json.*;
@@ -225,6 +227,16 @@ public class ModSdkModule {
     @Getter(lazy = true)
     @Accessors(fluent = true)
     private final static Notificator notificator = Factory.newNotificator(ModSdkModule.gameApis().ui());
+
+    /**
+     * For showing a small message box in the right-hand corner
+     * See: {@link Notificator}
+     */
+    @Getter(lazy = true)
+    @Accessors(fluent = true)
+    private final static JvmArgsService jvmArgsService = Factory.newJvmArgsService(
+        fileService(),
+        ConfigDefaults.JVM_ARGS_LAUNCHER_FILE_PATH);
 
     /**
      * Creates the actual instances of the components managed by {@link ModSdkModule}.
@@ -476,6 +488,16 @@ public class ModSdkModule {
          */
         public static FileLogWriter newFileLogWriter(Path logFile) {
             return new FileLogWriter(Logger.PREFIX_MOD, Logger.LOG_MSG_FORMAT, logFile);
+        }
+
+        /**
+         * Creates a new {@link JvmArgsService} for reading and writing from the game "jvmargs-launcher.txt"
+         *
+         * @param fileService to read and write the arguments
+         * @return new jvm args service
+         */
+        public static JvmArgsService newJvmArgsService(FileService fileService, Path jvmArgsFile) {
+            return new JvmArgsService(fileService, jvmArgsFile);
         }
     }
 }

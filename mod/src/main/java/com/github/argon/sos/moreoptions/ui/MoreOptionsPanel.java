@@ -17,10 +17,12 @@ import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.ConfigStore;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
+import com.github.argon.sos.moreoptions.ui.model.MoreOptionsUiModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import com.github.argon.sos.moreoptions.ui.tab.advanced.AdvancedTab;
 import com.github.argon.sos.moreoptions.ui.tab.boosters.BoostersTab;
 import com.github.argon.sos.moreoptions.ui.tab.events.EventsTab;
+import com.github.argon.sos.moreoptions.ui.tab.jvm.JvmTab;
 import com.github.argon.sos.moreoptions.ui.tab.metrics.MetricsTab;
 import com.github.argon.sos.moreoptions.ui.tab.races.RacesTab;
 import com.github.argon.sos.moreoptions.ui.tab.sounds.SoundsTab;
@@ -43,7 +45,7 @@ import java.util.List;
 
 /**
  * Main window containing all other UI elements.
- * Will pop up in the middle of the game and pauses the game.
+ * Will pop up in the middle of the game and pause the game.
  */
 public class MoreOptionsPanel extends GuiSection implements
     Showable,
@@ -67,6 +69,8 @@ public class MoreOptionsPanel extends GuiSection implements
     private final RacesTab racesTab;
     @Getter
     private final AdvancedTab advancedTab;
+    @Getter
+    private final JvmTab jvmTab;
 
     @Getter
     private final Button<String> cancelButton;
@@ -107,7 +111,7 @@ public class MoreOptionsPanel extends GuiSection implements
      */
     @Builder
     public MoreOptionsPanel(
-        MoreOptionsModel moreOptionsModel,
+        MoreOptionsUiModel moreOptionsUiModel,
         ConfigStore configStore,
         int availableWidth,
         int availableHeight
@@ -138,12 +142,12 @@ public class MoreOptionsPanel extends GuiSection implements
         footer.addRightC(50, moreButton);
 
         String modVersion = "NO_VER";
-        ModInfo modInfo = moreOptionsModel.getModInfo();
+        ModInfo modInfo = moreOptionsUiModel.getModInfo();
         if (modInfo != null) {
             modVersion = modInfo.version;
         }
 
-        MoreOptionsV5Config config = moreOptionsModel.getConfig();
+        MoreOptionsV5Config config = moreOptionsUiModel.getConfig();
         footer.addRightC(50, versions(config.getVersion(), modVersion));
 
         this.applyButton = new Button<>(i18n.t("MoreOptionsPanel.button.apply.name"), i18n.t("MoreOptionsPanel.button.apply.desc"));
@@ -177,13 +181,15 @@ public class MoreOptionsPanel extends GuiSection implements
         HorizontalLine horizontalLine = new HorizontalLine(footer.body().width(), 20, 1);
         availableHeight = availableHeight - footer.body().height() - horizontalLine.body().height() - 40;
 
-        soundsTab = new SoundsTab(i18n.t("MoreOptionsPanel.tab.sounds.name"), moreOptionsModel.getSounds(), availableWidth, availableHeight);
-        eventsTab = new EventsTab(i18n.t("MoreOptionsPanel.tab.events.name"), moreOptionsModel.getEvents(), availableWidth, availableHeight);
-        weatherTab = new WeatherTab(i18n.t("MoreOptionsPanel.tab.weather.name"), moreOptionsModel.getWeather(), availableWidth, availableHeight);
-        boostersTab = new BoostersTab(i18n.t("MoreOptionsPanel.tab.boosters.name"), moreOptionsModel.getBoosters(), availableWidth, availableHeight);
-        metricsTab = new MetricsTab(i18n.t("MoreOptionsPanel.tab.metrics.name"), moreOptionsModel.getMetrics(), availableWidth, availableHeight);
-        racesTab = new RacesTab(i18n.t("MoreOptionsPanel.tab.races.name"), moreOptionsModel.getRaces(), availableWidth, availableHeight);
-        advancedTab = new AdvancedTab(i18n.t("MoreOptionsPanel.tab.advanced.name"), moreOptionsModel.getAdvanced(), availableWidth, availableHeight);
+        soundsTab = new SoundsTab(i18n.t("MoreOptionsPanel.tab.sounds.name"), moreOptionsUiModel.getSounds(), availableWidth, availableHeight);
+        eventsTab = new EventsTab(i18n.t("MoreOptionsPanel.tab.events.name"), moreOptionsUiModel.getEvents(), availableWidth, availableHeight);
+        weatherTab = new WeatherTab(i18n.t("MoreOptionsPanel.tab.weather.name"), moreOptionsUiModel.getWeather(), availableWidth, availableHeight);
+        boostersTab = new BoostersTab(i18n.t("MoreOptionsPanel.tab.boosters.name"), moreOptionsUiModel.getBoosters(), availableWidth, availableHeight);
+        metricsTab = new MetricsTab(i18n.t("MoreOptionsPanel.tab.metrics.name"), moreOptionsUiModel.getMetrics(), availableWidth, availableHeight);
+        racesTab = new RacesTab(i18n.t("MoreOptionsPanel.tab.races.name"), moreOptionsUiModel.getRaces(), availableWidth, availableHeight);
+        advancedTab = new AdvancedTab(i18n.t("MoreOptionsPanel.tab.advanced.name"), moreOptionsUiModel.getAdvanced(), availableWidth, availableHeight);
+
+        jvmTab = new JvmTab(i18n.t("MoreOptionsPanel.tab.jvm.name"), moreOptionsUiModel.getJvm(), availableWidth, availableHeight);
 
         tabulator = Tabulator.<String, AbstractConfigTab<?, ?>, Void>builder()
             .tabs(Maps.ofLinked(
@@ -193,7 +199,8 @@ public class MoreOptionsPanel extends GuiSection implements
                 "boosters", boostersTab,
                 "metrics", metricsTab,
                 "races", racesTab,
-                "advanced", advancedTab
+                "advanced", advancedTab,
+                "jvm", jvmTab
             ))
             .tabMenu(Switcher.<String>builder()
                 .menu(ButtonMenu.<String>builder()
@@ -218,6 +225,9 @@ public class MoreOptionsPanel extends GuiSection implements
                     .button("advanced", new Button<>(
                         i18n.t("MoreOptionsPanel.tab.advanced.name"),
                         i18n.t("MoreOptionsPanel.tab.advanced.desc")))
+                    .button("jvm", new Button<>(
+                        i18n.t("MoreOptionsPanel.tab.jvm.name"),
+                        i18n.t("MoreOptionsPanel.tab.jvm.desc")))
                     .sameWidth(true)
                     .maxWidth(availableWidth)
                     .horizontal(true)
@@ -247,6 +257,7 @@ public class MoreOptionsPanel extends GuiSection implements
             .boosters(boostersTab.getValue())
             .metrics(metricsTab.getValue())
             .races(racesTab.getValue())
+            .jvm(jvmTab.getValue())
             .build();
     }
 
@@ -266,6 +277,7 @@ public class MoreOptionsPanel extends GuiSection implements
             .logLevel(config.getLogLevel())
             .logToFile(config.isLogToFile())
             .build());
+        jvmTab.setValue(config.getJvm());
     }
 
     /**
@@ -314,8 +326,9 @@ public class MoreOptionsPanel extends GuiSection implements
         if (updateTimerSeconds >= UPDATE_INTERVAL_SECONDS) {
             updateTimerSeconds = 0d;
 
-            if (applyButton != null) applyButton.activeSet(isDirty());
-            if (undoButton != null) undoButton.activeSet(isDirty());
+            boolean dirty = isDirty();
+            if (applyButton != null) applyButton.activeSet(dirty);
+            if (undoButton != null) undoButton.activeSet(dirty);
         }
         super.render(r, seconds);
     }

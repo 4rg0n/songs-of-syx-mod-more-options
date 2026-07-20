@@ -17,7 +17,7 @@ import com.github.argon.sos.mod.sdk.ui.text.Label;
 import com.github.argon.sos.mod.sdk.util.Sets;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.MetricsConfig;
-import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
+import com.github.argon.sos.moreoptions.ui.model.MoreOptionsUiModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.sprite.UI.UI;
 import lombok.Getter;
@@ -73,7 +73,7 @@ public class MetricsTab extends AbstractConfigTab<MetricsConfig, MetricsTab> {
 
     public MetricsTab(
         String title,
-        MoreOptionsModel.Metrics model,
+        MoreOptionsUiModel.Metrics model,
         int availableWidth,
         int availableHeight
     ) {

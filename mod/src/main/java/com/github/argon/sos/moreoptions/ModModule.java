@@ -7,6 +7,7 @@ import com.github.argon.sos.mod.sdk.file.IOService;
 import com.github.argon.sos.mod.sdk.game.api.GameFactionApi;
 import com.github.argon.sos.mod.sdk.game.api.GameLangApi;
 import com.github.argon.sos.mod.sdk.game.api.GameSaveApi;
+import com.github.argon.sos.mod.sdk.game.jvm.JvmArgsService;
 import com.github.argon.sos.mod.sdk.i18n.I18n;
 import com.github.argon.sos.mod.sdk.i18n.I18nMessageBundle;
 import com.github.argon.sos.mod.sdk.json.JacksonService;
@@ -104,8 +105,9 @@ public class ModModule {
     @Accessors(fluent = true)
     private final static ConfigService configService = Factory.newConfigService(
         jsonConfigStore(),
-        configVersionHandlers(),
-        ModSdkModule.jsonGameService());
+        ModSdkModule.jsonGameService(),
+        ModSdkModule.jvmArgsService(),
+        configVersionHandlers());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
@@ -222,13 +224,15 @@ public class ModModule {
 
         public static ConfigService newConfigService(
             JsonConfigStore jsonConfigStore,
-            ConfigVersionHandlers<MoreOptionsV5Config> versionHandlers,
-            JsonGameService jsonGameService
+            JsonGameService jsonGameService,
+            JvmArgsService jvmArgsService,
+            ConfigVersionHandlers<MoreOptionsV5Config> versionHandlers
         ) {
             return new ConfigService(
                 jsonConfigStore,
-                versionHandlers,
-                jsonGameService);
+                jsonGameService,
+                jvmArgsService,
+                versionHandlers);
         }
 
         public static ConfigDefaults newConfigDefaults(

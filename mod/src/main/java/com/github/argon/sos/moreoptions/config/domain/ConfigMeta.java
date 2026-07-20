@@ -1,7 +1,7 @@
 package com.github.argon.sos.moreoptions.config.domain;
 
 import com.github.argon.sos.mod.sdk.log.Level;
-import com.github.argon.sos.mod.sdk.log.Loggers;
+import com.github.argon.sos.moreoptions.config.ConfigDefaults;
 import lombok.*;
 
 @Data
@@ -13,7 +13,7 @@ public class ConfigMeta {
     @Builder.Default
     private int version = MoreOptionsV5Config.VERSION;
     @Builder.Default
-    private Level logLevel = Loggers.LOG_LEVEL_DEFAULT;
+    private Level logLevel = ConfigDefaults.LOG_LEVEL;
     @Builder.Default
     private boolean logToFile = false;
 }

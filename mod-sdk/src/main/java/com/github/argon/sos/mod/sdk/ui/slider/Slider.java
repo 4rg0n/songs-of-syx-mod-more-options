@@ -102,7 +102,7 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
 
     @Setter
     @Accessors(fluent = true, chain = false)
-    private Action<Integer> valueChangeAction = o -> {};
+    private Consumer<Integer> valueChangeAction = o -> {};
 
     @Setter
     @Nullable
@@ -112,6 +112,10 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     @Setter
     @Accessors(fluent = true, chain = false)
     private VoidAction resetAction = () -> {};
+
+    @Setter
+    @Accessors(fluent = true, chain = false)
+    private Supplier<Integer> limitSupplier;
 
     @Setter
     @Nullable
@@ -154,10 +158,11 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
         this.allowedValues = (allowedValues != null) ? allowedValues : List.of();
         this.resolution = (resolution > 0) ? resolution : 1;
         this.resolutionMulti = MathUtil.precisionMulti(this.resolution);
-        min = resolutionMulti * min;
-        max = resolutionMulti * max;
+        int minSliderValue = resolutionMulti * min;
+        int maxSliderValue = resolutionMulti * max;
+        this.limitSupplier = () -> maxSliderValue;
 
-        this.inputValue = new IntegerValue(min, max);
+        this.inputValue = new IntegerValue(minSliderValue, maxSliderValue);
         this.inputValue.setValue(value);
 
         this.initialValue = inputValue.getValue();
@@ -364,6 +369,15 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     }
 
     /**
+     * Reads the maximum limit of the slider from {@link Slider#limitSupplier}.
+     *
+     * @return maximum limit of the value
+     */
+    public Integer getLimit() {
+        return limitSupplier.get();
+    }
+
+    /**
      * Returns the current value of the slider.
      *
      * @return current value of the slider
@@ -398,6 +412,12 @@ public class Slider extends GuiSection implements Valuable<Integer>, Resettable 
     @Override
     public void setValue(Integer value) {
         valueConsumer.accept(value);
+
+        Integer limit = getLimit();
+
+        if (value > limit) {
+            value = limit;
+        }
 
         if (inputValue.getValue() != value) {
             valueChangeAction.accept(value);

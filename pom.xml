@@ -129,7 +129,7 @@
         <mod.files.directory>${project.basedir}/src/main/resources/${mod.files.name}</mod.files.directory>
 
         <!-- Dependency versions -->
-        <junit-jupiter-engine.version>6.1.2</junit-jupiter-engine.version>
+        <junit-jupiter.version>6.1.2</junit-jupiter.version>
         <mockito-core.version>5.23.0</mockito-core.version>
         <assertj-core.version>3.27.7</assertj-core.version>
         <lombok.version>1.18.46</lombok.version>
@@ -177,10 +177,13 @@
                 <artifactId>jackson-dataformat-properties</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
+            <!-- Testing -->
             <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit-jupiter-engine.version}</version>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>com.github.argon.sos</groupId>
@@ -207,7 +210,7 @@
         <!-- Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

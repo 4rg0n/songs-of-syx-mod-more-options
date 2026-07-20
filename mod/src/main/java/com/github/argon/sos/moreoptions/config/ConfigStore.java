@@ -1,6 +1,7 @@
 package com.github.argon.sos.moreoptions.config;
 
 import com.github.argon.sos.mod.sdk.file.FileMeta;
+import com.github.argon.sos.mod.sdk.game.action.Initializable;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phase;
@@ -24,7 +25,7 @@ import java.util.Optional;
  * Handles loading and saving of {@link MoreOptionsV5Config}
  */
 @RequiredArgsConstructor
-public class ConfigStore implements Phases {
+public class ConfigStore implements Phases, Initializable<Void> {
     private final static Logger log = Loggers.getLogger(ConfigStore.class);
 
     private final ConfigService configService;
@@ -90,6 +91,7 @@ public class ConfigStore implements Phases {
      * Loads configs from files and caches it
      * Used once when a game starts
      */
+    @Override
     public void init() {
         MoreOptionsV5Config defaultConfig = configDefaults.newConfig();
         setDefaultConfig(defaultConfig);

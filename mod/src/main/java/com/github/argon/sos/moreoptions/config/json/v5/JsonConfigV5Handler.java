@@ -18,8 +18,10 @@ public class JsonConfigV5Handler extends AbstractJsonConfigVersionHandler<MoreOp
             .map(ConfigMapper::mapConfig)
             // add other configs
             .map(domainConfig -> {
+                // Race likings
                 jsonConfigStore.get(JsonRacesV5Config.class)
                     .ifPresent(racesConfig -> ConfigMapper.mapInto(racesConfig, domainConfig));
+                // Boosters
                 jsonConfigStore.get(JsonBoostersV5Config.class)
                     .ifPresent(boostersConfig -> ConfigMapper.mapInto(boostersConfig, domainConfig));
                 return domainConfig;

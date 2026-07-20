@@ -80,10 +80,18 @@ class ConfigStoreTest {
         );
         JsonConfigStore jsonConfigStore = jsonConfigStoreFactory.newJsonConfigStoreV5();
         ConfigVersionHandlers<MoreOptionsV5Config> configVersionHandlers = ModModule.Factory.newConfigVersionHandlers(jsonConfigStore, jsonConfigStoreFactory);
-        ConfigService configService = ModModule.Factory.newConfigService(jsonConfigStore, configVersionHandlers, ModSdkModule.jsonGameService());
+        ConfigService configService = ModModule.Factory.newConfigService(
+            jsonConfigStore,
+            ModSdkModule.jsonGameService(),
+            ModSdkModule.jvmArgsService(),
+            configVersionHandlers
+        );
 
         configDefaultsMock = Mockito.mock(ConfigDefaults.class);
-        configStore = ModModule.Factory.newConfigStore(configService, configDefaultsMock, ModSdkModule.stateManager());
+        configStore = ModModule.Factory.newConfigStore(
+            configService,
+            configDefaultsMock,
+            ModSdkModule.stateManager());
     }
 
     @Test

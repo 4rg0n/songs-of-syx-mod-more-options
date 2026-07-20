@@ -14,7 +14,7 @@ import com.github.argon.sos.mod.sdk.ui.table.Table;
 import com.github.argon.sos.mod.sdk.util.Maps;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.RacesConfig;
-import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
+import com.github.argon.sos.moreoptions.ui.model.MoreOptionsUiModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.race.Race;
 import init.sprite.UI.UI;
@@ -53,7 +53,7 @@ public class RacesTab extends AbstractConfigTab<RacesConfig, RacesTab> {
 
     public RacesTab(
         String title,
-        MoreOptionsModel.Races model,
+        MoreOptionsUiModel.Races model,
         int availableWidth,
         int availableHeight
     ) {

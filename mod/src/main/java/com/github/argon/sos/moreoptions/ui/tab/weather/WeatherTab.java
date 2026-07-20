@@ -12,7 +12,7 @@ import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.WeatherConfig;
-import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
+import com.github.argon.sos.moreoptions.ui.model.MoreOptionsUiModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import lombok.Getter;
 import snake2d.util.color.COLOR;
@@ -32,7 +32,7 @@ public class WeatherTab extends AbstractConfigTab<WeatherConfig, WeatherTab> {
     private final Map<String, Slider> sliders;
     public WeatherTab(
         String title,
-        MoreOptionsModel.Weather model,
+        MoreOptionsUiModel.Weather model,
         int availableWidth,
         int availableHeight
     ) {

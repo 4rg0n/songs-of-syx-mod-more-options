@@ -15,7 +15,7 @@ import com.github.argon.sos.mod.sdk.ui.switcher.Switcher;
 import com.github.argon.sos.mod.sdk.ui.table.Table;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.SoundsConfig;
-import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
+import com.github.argon.sos.moreoptions.ui.model.MoreOptionsUiModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import snake2d.util.color.COLOR;
 import snake2d.util.gui.GuiSection;
@@ -40,7 +40,7 @@ public class SoundsTab extends AbstractConfigTab<SoundsConfig, SoundsTab> {
 
     public SoundsTab(
         String title,
-        MoreOptionsModel.Sounds model,
+        MoreOptionsUiModel.Sounds model,
         int availableWidth,
         int availableHeight
     ) {

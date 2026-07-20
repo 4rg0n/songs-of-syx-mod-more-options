@@ -15,7 +15,7 @@ import com.github.argon.sos.mod.sdk.ui.table.ColumnRow;
 import com.github.argon.sos.mod.sdk.ui.table.Table;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.EventsConfig;
-import com.github.argon.sos.moreoptions.ui.MoreOptionsModel;
+import com.github.argon.sos.moreoptions.ui.model.MoreOptionsUiModel;
 import com.github.argon.sos.moreoptions.ui.tab.AbstractConfigTab;
 import init.sprite.UI.UI;
 import snake2d.util.color.COLOR;
@@ -41,7 +41,7 @@ public class EventsTab extends AbstractConfigTab<EventsConfig, EventsTab> {
 
     public EventsTab(
         String title,
-        MoreOptionsModel.Events model,
+        MoreOptionsUiModel.Events model,
         int availableWidth,
         int availableHeight
     ) {

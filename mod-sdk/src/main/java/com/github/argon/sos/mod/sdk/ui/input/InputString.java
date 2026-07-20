@@ -1,6 +1,8 @@
 package com.github.argon.sos.mod.sdk.ui.input;
 
 import com.github.argon.sos.mod.sdk.game.util.UiUtil;
+import init.sprite.UI.UI;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import snake2d.MButt;
 import snake2d.Mouse;
@@ -18,10 +20,20 @@ import java.util.function.Supplier;
  */
 public class InputString extends CLICKABLE.ClickableAbs {
 
+	@Getter
 	private final StringInputSprite input;
 	private boolean dragging = false;
 
 	private Supplier<Coo> mouseCooSupplier = UiUtil.MOUSE_COO_SUPPLIER;
+
+	/**
+	 * Creates a new {@link InputString} with given size.
+	 *
+	 * @param size of the input field
+	 */
+	public InputString(int size) {
+		this(new StringInputSprite(size, UI.FONT().S));
+	}
 
 	/**
 	 * Creates a new {@link InputString}.
@@ -51,7 +63,6 @@ public class InputString extends CLICKABLE.ClickableAbs {
 
 		body.setWidth(w);
 		body.setHeight(input.height()+12);
-		//input.text().clear();
 	}
 
 	/**
