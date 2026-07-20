@@ -41,25 +41,6 @@ public class JvmTab extends AbstractConfigTab<JvmConfig, JvmTab> implements UiVa
         super(title, config.getDefaultConfig(), availableWidth, availableHeight);
 
         double maxAvailableMemory = ByteUtil.fromBytes(OperationSystemUtil.getTotalMemorySize(), ByteUnit.Unit.MEGABYTE);
-        this.memoryMinSlider = Slider.builder()
-            .width(600)
-            .min(512)
-            .max((int) maxAvailableMemory)
-            .step(64)
-            .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
-            .threshold((int) (0.25 * maxAvailableMemory), COLOR.YELLOW100.shade(0.7d))
-            .threshold((int) (0.50 * maxAvailableMemory), COLOR.ORANGE100.shade(0.7d))
-            .threshold((int) (0.75 * maxAvailableMemory), COLOR.RED100.shade(0.7d))
-            .threshold((int) (0.90 * maxAvailableMemory), COLOR.RED2RED)
-            .build();
-
-        ColumnRow<Void> memoryMinRow = ColumnRow.<Void>builder()
-            .column(Label.builder()
-                .name(i18n.t("JvmTab.label.jvm.memoryMin.name"))
-                .description(i18n.t("JvmTab.label.jvm.memoryMin.desc"))
-                .build())
-            .column(memoryMinSlider)
-             .build();
 
         this.memoryMaxSlider = Slider.builder()
             .width(600)
@@ -78,6 +59,28 @@ public class JvmTab extends AbstractConfigTab<JvmConfig, JvmTab> implements UiVa
                 .description(i18n.t("JvmTab.label.jvm.memoryMax.desc"))
                 .build())
             .column(memoryMaxSlider)
+            .build();
+
+        this.memoryMinSlider = Slider.builder()
+            .width(600)
+            .min(512)
+            .max((int) maxAvailableMemory)
+            .step(64)
+            .valueDisplay(Slider.ValueDisplay.ABSOLUTE)
+            .threshold((int) (0.25 * maxAvailableMemory), COLOR.YELLOW100.shade(0.7d))
+            .threshold((int) (0.50 * maxAvailableMemory), COLOR.ORANGE100.shade(0.7d))
+            .threshold((int) (0.75 * maxAvailableMemory), COLOR.RED100.shade(0.7d))
+            .threshold((int) (0.90 * maxAvailableMemory), COLOR.RED2RED)
+            .build();
+
+        this.memoryMinSlider.limitSupplier(this.memoryMaxSlider::getValue);
+
+        ColumnRow<Void> memoryMinRow = ColumnRow.<Void>builder()
+            .column(Label.builder()
+                .name(i18n.t("JvmTab.label.jvm.memoryMin.name"))
+                .description(i18n.t("JvmTab.label.jvm.memoryMin.desc"))
+                .build())
+            .column(memoryMinSlider)
             .build();
 
         this.jvmArgsInputArea = new InputArea(600, 400);
