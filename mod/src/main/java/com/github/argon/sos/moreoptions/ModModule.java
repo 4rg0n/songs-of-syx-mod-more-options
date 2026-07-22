@@ -17,7 +17,6 @@ import com.github.argon.sos.mod.sdk.metric.MetricCollector;
 import com.github.argon.sos.mod.sdk.metric.MetricExporter;
 import com.github.argon.sos.mod.sdk.metric.MetricScheduler;
 import com.github.argon.sos.mod.sdk.phase.PhaseManager;
-import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import com.github.argon.sos.mod.sdk.properties.PropertiesStore;
 import com.github.argon.sos.mod.sdk.ui.notification.Notificator;
 import com.github.argon.sos.moreoptions.booster.BoosterService;
@@ -119,8 +118,7 @@ public class ModModule {
     @Accessors(fluent = true)
     private final static ConfigStore configStore = Factory.newConfigStore(
         configService(),
-        configDefaults(),
-        ModSdkModule.stateManager());
+        configDefaults());
 
     @Getter(lazy = true)
     @Accessors(fluent = true)
@@ -246,10 +244,9 @@ public class ModModule {
 
         public static ConfigStore newConfigStore(
             ConfigService configService,
-            ConfigDefaults configDefaults,
-            StateManager stateManager
+            ConfigDefaults configDefaults
         ) {
-            return new ConfigStore(configService, configDefaults, stateManager);
+            return new ConfigStore(configService, configDefaults);
         }
 
         public static Configurator newConfigurator(

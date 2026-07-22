@@ -170,6 +170,7 @@ public class GameSaveApi implements Phases {
 
     private void setSaveStamp(Path saveFilePath) {
         saveStamp = SaveUtil.extractSaveStamp(saveFilePath);
+        log.debug("Set save stamp: %s", saveStamp);
     }
 
     /**
@@ -179,6 +180,7 @@ public class GameSaveApi implements Phases {
     public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
         // update save info on game loaded
         setCurrent(saveFilePath);
+        setSaveStamp(saveFilePath);
     }
 
     /**

@@ -90,8 +90,7 @@ class ConfigStoreTest {
         configDefaultsMock = Mockito.mock(ConfigDefaults.class);
         configStore = ModModule.Factory.newConfigStore(
             configService,
-            configDefaultsMock,
-            ModSdkModule.stateManager());
+            configDefaultsMock);
     }
 
     @Test
