@@ -65,7 +65,7 @@
                                     <exclude>tools.jackson.dataformat:*</exclude>
                                     <!-- jackson-annotations deliberately stayed on the Jackson 2.x groupId/package in Jackson 3 -->
                                     <exclude>com.fasterxml.jackson.core:jackson-annotations</exclude>
-                                    <exclude>com.github.argon.sos:sos-mod-sdk</exclude>
+                                    <exclude>io.github.4rg0n:sos-mod-sdk</exclude>
                                 </excludes>
                             </artifactSet>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
