@@ -32,6 +32,7 @@ import game.faction.Faction;
 import game.save.SaveFile;
 import init.paths.ModInfo;
 import init.sprite.SPRITES;
+import init.sprite.UI.UI;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import snake2d.util.color.COLOR;
@@ -211,6 +212,15 @@ public class UiFactory {
                 i18n.t("log.level.trace.name"),
                 i18n.t("log.level.trace.desc")
             ).bg(COLOR.WHITE100.shade(shade)));
+    }
+
+    public static GButt.Glow buildMoreOptionsMenuButton(FullWindow<MoreOptionsPanel> moreOptionsModal) {
+        return new GButt.Glow(UI.FONT().H1.getText(MOD_INFO.name)) {
+            @Override
+            protected void clickA() {
+                moreOptionsModal.show();
+            }
+        };
     }
 
     public static GButt.ButtPanel buildMoreOptionsButton(FullWindow<MoreOptionsPanel> moreOptionsModal) {

@@ -79,7 +79,7 @@ public class UiShowroom extends GuiSection {
         GuiSection iconsLargeSection = LayoutUtil.flow(iconsLarge, null, null, width, 100, 0);
 
         // COLOR
-        List<ColorBox> colors = ReflectionUtil.<COLOR>getDeclaredFieldValuesMap(COLOR.class, COLOR.class)
+        List<ColorBox> colors = ReflectionUtil.<COLOR>getDeclaredStaticFieldValuesMap(COLOR.class, COLOR.class)
             .entrySet().stream()
             // sort by "color name"
             .sorted(Map.Entry.comparingByKey(Comparator.comparing(Field::getName)))

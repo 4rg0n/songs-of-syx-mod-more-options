@@ -1,12 +1,12 @@
 package com.github.argon.sos.mod.sdk.game.api;
 
-import com.github.argon.sos.mod.sdk.ui.window.NonHidingPopup;
-import com.github.argon.sos.mod.sdk.ui.notification.NotificationPopup;
 import com.github.argon.sos.mod.sdk.log.Logger;
 import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.UninitializedException;
+import com.github.argon.sos.mod.sdk.ui.notification.NotificationPopup;
+import com.github.argon.sos.mod.sdk.ui.window.NonHidingPopup;
 import com.github.argon.sos.mod.sdk.util.ReflectionUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 import snake2d.util.datatypes.DIR;
 import snake2d.util.gui.GuiSection;
 import snake2d.util.gui.renderable.RENDEROBJ;
+import util.gui.misc.GButt;
 import view.main.Interrupters;
 import view.main.VIEW;
 import view.sett.SettView;
@@ -218,6 +219,12 @@ public class GameUiApi implements Phases {
 
         GuiSection right = (GuiSection) object;
         right.addRelBody(8, DIR.W, element);
+    }
+
+    public void injectIntoPauseMenu(GButt.Glow button) {
+        ReflectionUtil.<GuiSection>getDeclaredFieldValue("main", inters().menu).ifPresent(main -> {
+            main.addRelBody(6, DIR.S, button);
+        });
     }
 
     /**
