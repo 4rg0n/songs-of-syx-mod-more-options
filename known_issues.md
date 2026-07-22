@@ -8,4 +8,5 @@
 * ~~Exporting metrics results in an error~~
 * ~~Race likings seem to reset on game reload~~
 * [NOT REPRODUCIBLE] Some or all events won't stop (tested with drought)
-* Extra Info mod adds additional elements in the top navbar, which makes the More Options button move under the center speed menu.
+* ~~Extra Info mod adds additional elements in the top navbar, which makes the More Options button move under the center speed menu.~~
+* Sliders don't respect the set limit if clicking or dragging
