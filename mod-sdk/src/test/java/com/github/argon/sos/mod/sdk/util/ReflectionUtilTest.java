@@ -61,12 +61,12 @@ class ReflectionUtilTest {
     }
 
     @Test
-    void getDeclaredFieldValue() {
-        assertThat(ReflectionUtil.getDeclaredFieldValue("doesNotExist", TestClass.class)).isEmpty();
-        assertThat(ReflectionUtil.getDeclaredFieldValue("publicField", TestClass.class)).isEmpty();
-        assertThat(ReflectionUtil.getDeclaredFieldValue("publicStaticField", TestClass.class)).hasValue("PUBLIC_STATIC");
-        assertThat(ReflectionUtil.getDeclaredFieldValue("privateStaticField", TestClass.class)).hasValue("PRIVATE_STATIC");
-        assertThat(ReflectionUtil.getDeclaredFieldValue("privateFinalStaticField", TestClass.class)).hasValue("PRIVATE_FINAL_STATIC");
+    void getDeclaredStaticFieldValue() {
+        assertThat(ReflectionUtil.getDeclaredStaticFieldValue("doesNotExist", TestClass.class)).isEmpty();
+        assertThat(ReflectionUtil.getDeclaredStaticFieldValue("publicField", TestClass.class)).isEmpty();
+        assertThat(ReflectionUtil.getDeclaredStaticFieldValue("publicStaticField", TestClass.class)).hasValue("PUBLIC_STATIC");
+        assertThat(ReflectionUtil.getDeclaredStaticFieldValue("privateStaticField", TestClass.class)).hasValue("PRIVATE_STATIC");
+        assertThat(ReflectionUtil.getDeclaredStaticFieldValue("privateFinalStaticField", TestClass.class)).hasValue("PRIVATE_FINAL_STATIC");
 
         assertThat(ReflectionUtil.getDeclaredFieldValue("doesNotExist", new TestClass())).isEmpty();
         assertThat(ReflectionUtil.getDeclaredFieldValue("publicField", new TestClass())).hasValue("PUBLIC");
@@ -75,14 +75,14 @@ class ReflectionUtilTest {
     }
 
     @Test
-    void getDeclaredFieldValues() {
+    void getDeclaredStaticFieldValues() {
         List<String> declaredFieldValues = ReflectionUtil.getDeclaredFieldValues(String.class, new TestClass());
         assertThat(declaredFieldValues)
             .containsExactlyInAnyOrder("PUBLIC_STATIC", "PRIVATE_STATIC", "PRIVATE_FINAL_STATIC", "PUBLIC", "PRIVATE", "PRIVATE_FINAL");
     }
 
     @Test
-    void getDeclaredFieldValuesMap() {
+    void getDeclaredStaticFieldValuesMap() {
         Map<Field, String> declaredFieldValuesMap = ReflectionUtil.getDeclaredFieldValuesMap(String.class, new TestClass());
 
         assertThat(declaredFieldValuesMap.keySet())

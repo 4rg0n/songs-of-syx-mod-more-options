@@ -176,10 +176,16 @@ public class ReflectionUtil {
      * @param <T> the expected type of the field value
      */
     public static <T> Optional<T> getDeclaredFieldValue(String fieldName, Object instance) {
-
         //noinspection unchecked
         return getDeclaredField(fieldName, instance.getClass()).map(field ->
             (T) getDeclaredFieldValue(field, instance).orElse(null)
+        );
+    }
+
+    public static <T> Optional<T> getDeclaredStaticFieldValue(String fieldName, Class<?> clazz) {
+        //noinspection unchecked
+        return getDeclaredField(fieldName, clazz).map(field ->
+            (T) getDeclaredStaticFieldValue(field, clazz).orElse(null)
         );
     }
 
@@ -187,34 +193,25 @@ public class ReflectionUtil {
      * Returns the value contained in the given field name from the given class.
      * The field must be static for this.
      *
-     * @param fieldName of the field to get the value from
+     * @param field field to get the value from
      * @param clazz containing the field
      * @return the value of a {@link Field} if present
      * @param <T> the expected type of the field value
      */
-    public static <T> Optional<T> getDeclaredFieldValue(String fieldName, Class<?> clazz) {
+    public static <T> Optional<T> getDeclaredStaticFieldValue(Field field, Class<?> clazz) {
+        boolean accessible = field.canAccess(null);
+        field.setAccessible(true);
 
-        return getDeclaredField(fieldName, clazz).map(field -> {
-            if (!Modifier.isStatic(field.getModifiers())) {
-                log.error("Can not access non static field %s in class %s.",
-                    field.getName(), clazz.getSimpleName());
-                return null;
-            }
-
-            boolean accessible = field.canAccess(null);
-            field.setAccessible(true);
-                try {
-                    //noinspection unchecked
-                    return (T) field.get(null);
-                } catch (Exception e) {
-                    log.error("Can not access field %s in class %s.",
-                        field.getName(), clazz.getSimpleName(), e);
-                    return null;
-                } finally {
-                    field.setAccessible(accessible);
-                }
-            }
-        );
+        try {
+            //noinspection unchecked
+            return Optional.of((T) field.get(null));
+        } catch (Exception e) {
+            log.error("Can not access field %s in class %s.",
+                field.getName(), clazz.getSimpleName(), e);
+            return Optional.empty();
+        } finally {
+            field.setAccessible(accessible);
+        }
     }
 
     /**
@@ -267,14 +264,14 @@ public class ReflectionUtil {
      * @return a map of field names with values from fields matching the given fieldClass
      * @param <T> the expected type of the field values
      */
-    public static <T> Map<Field, T> getDeclaredFieldValuesMap(Class<?> fieldClazz, Class<?> clazz) {
+    public static <T> Map<Field, T> getDeclaredStaticFieldValuesMap(Class<?> fieldClazz, Class<?> clazz) {
         Map<Field, T> fieldValues = new HashMap<>();
 
         ReflectionUtil.getDeclaredFields(
                 fieldClazz,
                 clazz)
             .forEach(field -> {
-                T value = ReflectionUtil.<T>getDeclaredFieldValue(field, clazz)
+                T value = ReflectionUtil.<T>getDeclaredStaticFieldValue(field, clazz)
                     .orElse(null);
                 fieldValues.put(field, value);
             });

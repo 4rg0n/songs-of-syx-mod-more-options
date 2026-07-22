@@ -105,7 +105,8 @@ public class UiConfig implements Phases {
         // create More Options ui
         moreOptionsFull = uiFactory.buildMoreOptionsFullScreen(MOD_INFO.name.toString(), moreOptionsConfig);
         initControls(moreOptionsFull);
-        injectIntoUITopPanel(moreOptionsFull);
+        injectIntoUITopPanels(moreOptionsFull);
+        injectIntoPauseMenu(moreOptionsFull);
 
         // create backup configuration dialog if needed
         configStore.getBackup().ifPresent(backupConfig -> {
@@ -149,14 +150,25 @@ public class UiConfig implements Phases {
         }
     }
 
-    public void injectIntoUITopPanel(FullWindow<MoreOptionsPanel> moreOptionsModal) {
-        log.debug("Injecting %s buttons into game ui", MOD_INFO.name);
+    public void injectIntoPauseMenu(FullWindow<MoreOptionsPanel> moreOptionsModal) {
+        log.debug("Injecting %s button into pause menu", MOD_INFO.name);
+        GButt.Glow moreOptionsMenuButton = UiFactory.buildMoreOptionsMenuButton(moreOptionsModal);
+
+        try {
+            gameApis.ui().injectIntoPauseMenu(moreOptionsMenuButton);
+        } catch (Exception e) {
+            log.error("Could not inject %s button into pause menu", MOD_INFO.name, e);
+        }
+    }
+
+    public void injectIntoUITopPanels(FullWindow<MoreOptionsPanel> moreOptionsModal) {
+        log.debug("Injecting %s button into top panels", MOD_INFO.name);
         GButt.ButtPanel moreOptionsButton = UiFactory.buildMoreOptionsButton(moreOptionsModal);
 
         try {
             gameApis.ui().injectIntoUITopPanels(moreOptionsButton);
         } catch (Exception e) {
-            log.error("Could not inject %s buttons into game ui", MOD_INFO.name, e);
+            log.error("Could not inject %s buttons into top panels", MOD_INFO.name, e);
         }
     }
 
