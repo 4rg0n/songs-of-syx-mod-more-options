@@ -85,6 +85,13 @@ public class GameSaveApi implements Phases {
     private SaveFile saveFile;
 
     /**
+     * Contains the unique identifier of save files for the current game session.
+     */
+    @Getter
+    @Nullable
+    private String saveStamp;
+
+    /**
      * Checks whether given save path is a battle save.
      *
      * @param savePath to check
@@ -158,6 +165,12 @@ public class GameSaveApi implements Phases {
     public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         // update save info on game save
         setCurrent(saveFilePath);
+        setSaveStamp(saveFilePath);
+    }
+
+    private void setSaveStamp(Path saveFilePath) {
+        saveStamp = SaveUtil.extractSaveStamp(saveFilePath);
+        log.debug("Set save stamp: %s", saveStamp);
     }
 
     /**
@@ -167,6 +180,7 @@ public class GameSaveApi implements Phases {
     public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
         // update save info on game loaded
         setCurrent(saveFilePath);
+        setSaveStamp(saveFilePath);
     }
 
     /**
@@ -191,24 +205,6 @@ public class GameSaveApi implements Phases {
         return getFiles().stream()
             .filter(saveFile -> saveFile.fullName.equals(saveFileName))
             .findFirst();
-    }
-
-    /**
-     * Returns the unique identifier of save files for the current game session.
-     *
-     * @return unique save file identifier
-     */
-    @Nullable
-    public String getSaveStamp() {
-        if (saveFile == null) {
-            if (savePath != null) {
-                return SaveUtil.extractSaveStamp(savePath);
-            }
-
-            return null;
-        }
-
-        return SaveUtil.extractSaveStamp(saveFile);
     }
 
     private void setCurrent(Path saveFilePath) {

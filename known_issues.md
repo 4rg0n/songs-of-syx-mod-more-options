@@ -6,6 +6,6 @@
 * [DISABLED CONFIG EDITOR] Json parser can not handle ** comments
 * ~~Sound sliders seem to have no effect (tested with lavatory)~~
 * ~~Exporting metrics results in an error~~
-* Race likings seem to reset on game reload
+* ~~Race likings seem to reset on game reload~~
 * [NOT REPRODUCIBLE] Some or all events won't stop (tested with drought)
 * Extra Info mod adds additional elements in the top navbar, which makes the More Options button move under the center speed menu.

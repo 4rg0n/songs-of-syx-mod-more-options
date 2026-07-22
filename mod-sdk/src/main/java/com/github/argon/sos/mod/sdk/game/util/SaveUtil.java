@@ -38,7 +38,7 @@ public class SaveUtil {
         String saveStamp = saveFileName;
         // remove file ending
         if (saveFileName.endsWith("." + SAVE_FILE_ENDING)) {
-            saveStamp = saveFileName.substring(saveFileName.indexOf("." + SAVE_FILE_ENDING), saveFileName.length() - 1);
+            saveStamp = saveFileName.substring(0, saveFileName.indexOf("." + SAVE_FILE_ENDING));
         }
 
         return saveStamp;

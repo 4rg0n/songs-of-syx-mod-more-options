@@ -7,7 +7,6 @@ import com.github.argon.sos.mod.sdk.log.Loggers;
 import com.github.argon.sos.mod.sdk.phase.Phase;
 import com.github.argon.sos.mod.sdk.phase.Phases;
 import com.github.argon.sos.mod.sdk.phase.UninitializedException;
-import com.github.argon.sos.mod.sdk.phase.state.StateManager;
 import com.github.argon.sos.moreoptions.ModModule;
 import com.github.argon.sos.moreoptions.config.domain.ConfigMeta;
 import com.github.argon.sos.moreoptions.config.domain.MoreOptionsV5Config;
@@ -30,7 +29,6 @@ public class ConfigStore implements Phases, Initializable<Void> {
 
     private final ConfigService configService;
     private final ConfigDefaults configDefaults;
-    private final StateManager stateManager;
 
     @Nullable
     private MoreOptionsV5Config currentConfig;
@@ -38,6 +36,9 @@ public class ConfigStore implements Phases, Initializable<Void> {
     private MoreOptionsV5Config defaultConfig;
     private ConfigMeta configMeta;
 
+    /**
+     * @return cached config meta information, loading it from disk on first access
+     */
     public ConfigMeta getConfigMeta() {
         if (configMeta == null) {
             ConfigMeta configMetaDefault = configDefaults.newConfigMeta();
@@ -55,6 +56,9 @@ public class ConfigStore implements Phases, Initializable<Void> {
         return configMeta;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initSettlementUiPresent() {
         try {
@@ -64,18 +68,28 @@ public class ConfigStore implements Phases, Initializable<Void> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameLoaded(Path saveFilePath, FileGetter fileGetter) {
         configService.reloadBoundToSave();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameSaved(Path saveFilePath, FilePutter filePutter) {
         MoreOptionsV5Config currentConfig = getCurrentConfig();
-        if (currentConfig != null && !stateManager.getState().isNewGame()) {
+        if (currentConfig != null) {
             save(currentConfig);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCrash(Throwable e) {
         if (!configService.saveBackups()) {
@@ -83,6 +97,9 @@ public class ConfigStore implements Phases, Initializable<Void> {
         }
     }
 
+    /**
+     * @return whether the backup originals were deleted successfully
+     */
     public boolean deleteBackupOriginals() {
         return configService.deleteBackupOriginals(true);
     }
@@ -110,6 +127,12 @@ public class ConfigStore implements Phases, Initializable<Void> {
         }
     }
 
+    /**
+     * Persists the given config to disk and sets it as the current config on success.
+     *
+     * @param config config to save; a no-op returning {@code false} when {@code null}
+     * @return whether the config was saved successfully
+     */
     public boolean save(@Nullable MoreOptionsV5Config config) {
         if (config == null) {
             return false;
@@ -124,10 +147,16 @@ public class ConfigStore implements Phases, Initializable<Void> {
         return false;
     }
 
+    /**
+     * @return the backed up config, if one exists
+     */
     public Optional<MoreOptionsV5Config> getBackup() {
         return configService.getBackup();
     }
 
+    /**
+     * Clears stored config files and resets the current config to defaults.
+     */
     public void clear() {
         configService.clear();
         setCurrentConfig(getDefaultConfig());
@@ -142,11 +171,17 @@ public class ConfigStore implements Phases, Initializable<Void> {
         this.currentConfig = currentConfig;
     }
 
+    /**
+     * @return the currently active config, or {@code null} if none has been set yet
+     */
     @Nullable
     public MoreOptionsV5Config getCurrentConfig() {
         return currentConfig;
     }
 
+    /**
+     * Used as fallback for options which are not present in the current config.
+     */
     public void setDefaultConfig(MoreOptionsV5Config defaultConfig) {
         log.debug("Setting Default Config");
         log.trace("Config: %s", defaultConfig);
@@ -161,22 +196,42 @@ public class ConfigStore implements Phases, Initializable<Void> {
             .orElseThrow(() -> new UninitializedException(Phase.INIT_SETTLEMENT_UI_PRESENT));
     }
 
+    /**
+     * @return file meta information about all available races config files
+     */
     public List<FileMeta> readRacesConfigMetas() {
         return configService.readRacesConfigMetas();
     }
 
+    /**
+     * @return path to the races config file, if present
+     */
     public Optional<Path> getRacesConfigPath() {
         return configService.getRacesConfigPath();
     }
 
+    /**
+     * Reloads all config files from disk.
+     *
+     * @return the reloaded config, if reloading succeeded
+     */
     public Optional<MoreOptionsV5Config> reloadConfig() {
         return configService.reloadAll();
     }
 
+    /**
+     * Loads a races config from the given file path.
+     *
+     * @param path path to the races config file
+     * @return the loaded races config, if present and readable
+     */
     public Optional<RacesConfig> loadRacesConfig(Path path) {
         return configService.loadRacesConfig(path);
     }
 
+    /**
+     * @return whether the backups were deleted successfully
+     */
     public boolean deleteBackups() {
         return configService.deleteBackups(true);
     }
