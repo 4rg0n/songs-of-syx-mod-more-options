@@ -34,7 +34,7 @@ public class ByteUtil {
     }
 
     /**
-     * Converts a byte amount into a given {@link ByteByteUnit.Unit.ByteUnit.Unit}.
+     * Converts a byte amount into a given {@link ByteUnit.Unit}.
      *
      * @param bytes to convert
      * @param unit to convert the bytes into
