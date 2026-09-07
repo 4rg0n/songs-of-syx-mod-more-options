@@ -19,6 +19,7 @@ import snake2d.util.gui.renderable.RENDEROBJ;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Container, which aligns elements evenly in the row.
@@ -34,12 +35,14 @@ public class ColumnRow<Value> extends Section implements
     Comparable<ColumnRow<Value>>,
     Initializable<List<Integer>>
 {
+
+    private static final AtomicLong KEY_COUNTER = new AtomicLong(0);
     /**
      * Used to identify the row.
      */
     @Getter
     @Builder.Default
-    private String key = UUID.randomUUID().toString();
+    private String key = "row-" + KEY_COUNTER.incrementAndGet();
 
     @Nullable
     @Setter
