@@ -176,6 +176,11 @@ public abstract class AbstractModSdkScript implements script.SCRIPT, Phases {
             initModCreateInstance();
             log.debug("Creating Instance");
             scriptInstance = new ScriptInstance(this, stateManager, gameApis);
+        } else {
+            // The game builds a whole new GAME for every started or loaded game, but reuses the script.
+            // Everything cached from the previous game (boostables, sounds, factions...) is stale now.
+            log.debug("New game created with present script instance");
+            onGameSaveReloaded();
         }
 
         log.debug("World Seed: " + WORLD.GEN().seed);

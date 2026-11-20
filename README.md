@@ -101,7 +101,7 @@ mvn install
 
 # Build commands
 
-**(i)** Installs only the games `SongsOfSyx.jar` and `info/SongsOfSyx-sources.jar` as a dependency, and validate whether it was successful.
+**(i)** Installs only the games `SongsOfSyx.jar` and `info/source/SongsOfSyx-sources.jar` as a dependency, and validate whether it was successful.
 ```
 mvn validate
 ```
