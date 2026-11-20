@@ -103,6 +103,7 @@ public class Window<Section extends GuiSection> extends Interrupter implements
      * @param isModal whether the area around the window shall be blacked out and is not clickable
      */
     public Window(@Nullable String title, Section section, boolean isModal) {
+        super("GENERIC_POPUP");
         this.section = section;
         this.panel = new GPanel();
         this.panel.setTitle(title);

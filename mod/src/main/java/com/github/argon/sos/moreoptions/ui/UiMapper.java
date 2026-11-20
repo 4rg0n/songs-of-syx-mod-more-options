@@ -193,7 +193,7 @@ public class UiMapper {
                 String key = entry.getKey();
                 Element element = entry.getValue();
 
-                String name = key;
+                String name = i18n.n(key);
                 SPRITE sprite = SPRITES.icons().m.clear_structure;
                 RoomBlueprintImp room = gameApis.rooms().getRoomBySound(key).orElse(null);
 

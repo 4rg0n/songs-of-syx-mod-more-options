@@ -131,6 +131,7 @@ public class NonHidingPopup {
 		
 		
 		Inter(GuiSection s){
+			super("GENERIC_POPUP");
 			box = new GPanel();
 			box.setButt();
 		}

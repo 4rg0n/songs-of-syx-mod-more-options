@@ -82,6 +82,7 @@ public class FullWindow<Section extends GuiSection> extends Interrupter implemen
      */
     @Builder
     public FullWindow(String name, Section section, @Nullable Switcher<String> menu) {
+        super("GENERIC_POPUP");
         this.view = new FullView<>(name, section);
         top.body().setHeight(TOP_HEIGHT);
         top.body().setWidth(C.WIDTH());
