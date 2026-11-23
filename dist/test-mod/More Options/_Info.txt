@@ -1,7 +1,0 @@
-VERSION: "3.7.1",
-GAME_VERSION_MAJOR: 71,
-GAME_VERSION_MINOR: 92,
-NAME: "More Options",
-DESC: "Adds more options to the game :)",
-AUTHOR: "4rg0n, VizardAlpha, Senso",
-INFO: "",

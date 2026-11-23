@@ -1,7 +1,0 @@
-VERSION: "0.2.1",
-GAME_VERSION_MAJOR: 71,
-GAME_VERSION_MINOR: 92,
-NAME: "Mod SDK V0",
-DESC: "Provides tools for code modding.",
-AUTHOR: "4rg0n",
-INFO: "",
