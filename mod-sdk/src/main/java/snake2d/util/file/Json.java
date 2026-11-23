@@ -59,6 +59,8 @@ public class Json {
 			boolean arrayAdd = e.map.containsKey("_ARRAY_ADD");
 			boolean jsonAdd = e.map.containsKey("_JSON_ADD");
 			data.overwrite(e, arrayAdd, jsonAdd);
+			testMap.putReplace("_ARRAY_ADD", true);
+			testMap.putReplace("_JSON_ADD", true);
 
 		}
 

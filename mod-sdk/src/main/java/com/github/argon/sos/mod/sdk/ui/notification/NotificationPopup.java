@@ -120,6 +120,7 @@ public final class NotificationPopup {
 		private final Panel box;
 		ACTION exit = this::hide;
 		Inter(GuiSection s){
+			super("GENERIC_POPUP");
 			box = new Panel();
 			box.setButton();
 		}

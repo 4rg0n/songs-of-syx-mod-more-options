@@ -1,8 +1,9 @@
 package com.github.argon.sos.mod.sdk.ui.switcher;
 
 import org.jetbrains.annotations.Nullable;
+import snake2d.CORE;
 import snake2d.SPRITE_RENDERER;
-import snake2d.SoundEffect;
+import snake2d.SoundSimple;
 import snake2d.util.datatypes.*;
 import snake2d.util.gui.GUI_BOX;
 import snake2d.util.gui.Hoverable.HOVERABLE;
@@ -21,6 +22,10 @@ public abstract class AbstractUiSwitcher implements CLICKABLE {
      * Whether the body needs to be re-aligned before the next render.
      */
     public boolean dirty = false;
+    /**
+     * Render loop index in which the view was asked to highlight; -1 when not highlighted.
+     */
+    private int highlightIndex = -1;
     private final Rec body = new Rec() {
         @Serial
         private static final long serialVersionUID = 1L;
@@ -235,10 +240,24 @@ public abstract class AbstractUiSwitcher implements CLICKABLE {
     public final void render(SPRITE_RENDERER renderer, float deltaSeconds) {
         dirty = true;
         RENDEROBJ renderobj = get();
-        if (renderobj != null) renderobj.render(renderer, deltaSeconds);
+        if (renderobj != null) {
+            renderobj.render(renderer, deltaSeconds);
+            if (!hoveredIs()) {
+                highlightIndex = renderHighlight(renderer, body, highlightIndex);
+            }
+        }
 
         renAction();
         dirty = true;
+        highlightIndex = -1;
+    }
+
+    /**
+     * Marks the view to be rendered with a highlight frame in the current render loop.
+     */
+    @Override
+    public void highlight() {
+        highlightIndex = (CORE.swapI() & Integer.MAX_VALUE);
     }
 
     /**
@@ -256,7 +275,7 @@ public abstract class AbstractUiSwitcher implements CLICKABLE {
      */
     @Nullable
     @Override
-    public CLICKABLE hoverSoundSet(SoundEffect sound) {
+    public CLICKABLE hoverSoundSet(SoundSimple sound) {
         CLICKABLE cli = cli();
         if (cli == null) return null;
         return cli.hoverSoundSet(sound);
@@ -302,7 +321,7 @@ public abstract class AbstractUiSwitcher implements CLICKABLE {
      */
     @Nullable
     @Override
-    public CLICKABLE clickSoundSet(SoundEffect sound) {
+    public CLICKABLE clickSoundSet(SoundSimple sound) {
         CLICKABLE cli = cli();
         if (cli == null) return null;
 
